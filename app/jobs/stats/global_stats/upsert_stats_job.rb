@@ -2,14 +2,22 @@ module Stats
   module GlobalStats
     class UpsertStatsJob < ApplicationJob
       def perform
-        Stats::GlobalStats::UpsertStatJob.perform_async("Department", nil)
+        upsert_stat("Department", nil)
 
         Department.find_each do |department|
-          Stats::GlobalStats::UpsertStatJob.perform_async("Department", department.id)
+          upsert_stat("Department", department.id)
         end
 
         Organisation.find_each do |organisation|
-          Stats::GlobalStats::UpsertStatJob.perform_async("Organisation", organisation.id)
+          upsert_stat("Organisation", organisation.id)
+        end
+      end
+
+      private
+
+      def upsert_stat(structure_type, structure_id)
+        Stat::GLOBAL_STAT_ATTRIBUTES.each do |method_name|
+          Stats::GlobalStats::UpsertStatJob.perform_async(structure_type, structure_id, method_name)
         end
       end
     end

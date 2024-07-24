@@ -54,8 +54,8 @@ class NotifyUnavailableCreneauJob < ApplicationJob
       " Motif : #{grouped_invitation_params[:motif_category_name]}\n" \
       " Nombre d'invitations concernées : #{grouped_invitation_params[:invitations_counter]}\n"
 
-    if grouped_invitation_params[:zip_codes].present?
-      string += " Codes postaux : #{grouped_invitation_params[:zip_codes].join(', ')}\n"
+    if grouped_invitation_params[:post_codes].present?
+      string += " Codes postaux : #{grouped_invitation_params[:post_codes].join(', ')}\n"
     end
 
     if grouped_invitation_params[:referent_ids].present?

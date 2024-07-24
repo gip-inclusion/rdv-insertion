@@ -1,5 +1,5 @@
 describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
-  subject { described_class.call(stat: stat, date: date) }
+  subject { described_class.new(stat: stat, date: date) }
 
   let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
 
@@ -52,107 +52,86 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
     end
 
-    it "is a success" do
-      expect(subject.success?).to eq(true)
-    end
-
-    it "renders a hash of stats" do
-      expect(subject.stats_values).to be_a(Hash)
-    end
-
-    it "renders all the stats" do
-      expect(subject.stats_values).to include(:users_count_grouped_by_month)
-      expect(subject.stats_values).to include(:users_with_rdv_count_grouped_by_month)
-      expect(subject.stats_values).to include(:rdvs_count_grouped_by_month)
-      expect(subject.stats_values).to include(:sent_invitations_count_grouped_by_month)
-      expect(subject.stats_values).to include(:rate_of_no_show_for_invitations_grouped_by_month)
-      expect(subject.stats_values).to include(:rate_of_no_show_for_convocations_grouped_by_month)
-      expect(subject.stats_values).to include(:average_time_between_invitation_and_rdv_in_days_by_month)
-      expect(subject.stats_values).to include(:rate_of_users_oriented_in_less_than_30_days_by_month)
-      expect(subject.stats_values).to include(:rate_of_users_oriented_grouped_by_month)
-      expect(subject.stats_values).to include(:rate_of_autonomous_users_grouped_by_month)
-    end
-
     it "renders the stats in the right format" do
-      expect(subject.stats_values[:users_count_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:users_with_rdv_count_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rdvs_count_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:sent_invitations_count_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rate_of_no_show_for_invitations_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rate_of_no_show_for_convocations_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:average_time_between_invitation_and_rdv_in_days_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rate_of_users_oriented_in_less_than_30_days_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rate_of_users_oriented_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rate_of_autonomous_users_grouped_by_month]).to be_a(Integer)
+      expect(subject.users_count_grouped_by_month).to be_a(Integer)
+      expect(subject.users_with_rdv_count_grouped_by_month).to be_a(Integer)
+      expect(subject.rdvs_count_grouped_by_month).to be_a(Integer)
+      expect(subject.sent_invitations_count_grouped_by_month).to be_a(Integer)
+      expect(subject.rate_of_no_show_for_invitations_grouped_by_month).to be_a(Integer)
+      expect(subject.rate_of_no_show_for_convocations_grouped_by_month).to be_a(Integer)
+      expect(subject.average_time_between_invitation_and_rdv_in_days_by_month).to be_a(Integer)
+      expect(subject.rate_of_users_oriented_in_less_than_30_days_by_month).to be_a(Integer)
+      expect(subject.rate_of_users_oriented_grouped_by_month).to be_a(Integer)
+      expect(subject.rate_of_autonomous_users_grouped_by_month).to be_a(Integer)
     end
 
     it "counts the users for the focused month" do
       expect(stat).to receive(:all_users)
       # user1 is ok, user2 is not created in the focused month
-      expect(subject.stats_values[:users_count_grouped_by_month]).to eq(1)
+      expect(subject.users_count_grouped_by_month).to eq(1)
     end
 
     it "counts the users with rdv for the focused month" do
       expect(stat).to receive(:user_ids_with_rdv_set)
-      expect(subject.stats_values[:users_with_rdv_count_grouped_by_month]).to eq(1)
+      expect(subject.users_with_rdv_count_grouped_by_month).to eq(1)
     end
 
     it "counts the rdvs for the focused month" do
       expect(stat).to receive(:all_participations)
       # rdv1 is ok, rdv2 is not created in the focused month
-      expect(subject.stats_values[:rdvs_count_grouped_by_month]).to eq(1)
+      expect(subject.rdvs_count_grouped_by_month).to eq(1)
     end
 
     it "counts the sent invitations for the focused month" do
       expect(stat).to receive(:invitations_set)
       # invitation1 is ok, invitation2 is not sent in the focused month
-      expect(subject.stats_values[:sent_invitations_count_grouped_by_month]).to eq(1)
+      expect(subject.sent_invitations_count_grouped_by_month).to eq(1)
     end
 
     it "computes the percentage of no show for invitations" do
       expect(stat).to receive(:participations_after_invitations_set)
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
-      subject
+      subject.rate_of_no_show_for_invitations_grouped_by_month
     end
 
     it "computes the percentage of no show for convocations" do
       expect(stat).to receive(:participations_with_notifications_set)
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
-      subject
+      subject.rate_of_no_show_for_convocations_grouped_by_month
     end
 
     it "computes the average time between first invitation and first rdv in days" do
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .with(structure: stat.statable, range: date.all_month)
-      subject
+      subject.average_time_between_invitation_and_rdv_in_days_by_month
     end
 
     it "computes the percentage of users with rdv seen in less than 30 days" do
       expect(stat).to receive(:users_first_orientation_follow_up)
       expect(Stats::ComputeRateOfRdvSeenInLessThanNDays).to receive(:call)
         .with(follow_ups: [], number_of_days: 30)
-      expect(subject.stats_values[:rate_of_users_oriented_in_less_than_30_days_by_month]).to eq(0)
+      expect(subject.rate_of_users_oriented_in_less_than_30_days_by_month).to eq(0)
     end
 
     it "computes the percentage of users with rdv seen in less than 15 days" do
       expect(stat).to receive(:users_first_orientation_follow_up)
       expect(Stats::ComputeRateOfRdvSeenInLessThanNDays).to receive(:call)
         .with(follow_ups: [], number_of_days: 15)
-      expect(subject.stats_values[:rate_of_users_oriented_in_less_than_15_days_by_month]).to eq(0)
+      expect(subject.rate_of_users_oriented_in_less_than_15_days_by_month).to eq(0)
     end
 
     it "computes the percentage of users with rdv seen posterior to an invitation" do
       expect(stat).to receive(:orientation_follow_ups_with_invitations)
       expect(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
         .with(follow_ups: [follow_up1])
-      subject
+      subject.rate_of_users_oriented_grouped_by_month
     end
 
     it "computes the percentage of invited users with at least on rdv taken in autonomy" do
       expect(stat).to receive(:invited_users_set)
       expect(Stats::ComputeRateOfAutonomousUsers).to receive(:call)
         .with(users: [user1])
-      subject
+      subject.rate_of_autonomous_users_grouped_by_month
     end
   end
 end

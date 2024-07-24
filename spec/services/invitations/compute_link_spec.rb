@@ -33,23 +33,17 @@ describe Invitations::ComputeLink, type: :service do
     )
   end
 
+  let!(:address_geocoding) do
+    create(:address_geocoding, user:, longitude: 2.308628, latitude: 48.850699, city_code: "75107",
+                               street_ban_id: "75107_8909")
+  end
+
   let!(:organisation1) { create(:organisation, department: department, rdv_solidarites_organisation_id: 333) }
   let!(:organisation2) { create(:organisation, department: department, rdv_solidarites_organisation_id: 444) }
 
   let!(:rdv_solidarites_token) { "sometoken" }
 
   describe "#call" do
-    before do
-      allow(RetrieveGeolocalisation).to receive(:call)
-        .with(address: address, department_number: department_number)
-        .and_return(
-          OpenStruct.new(
-            success?: true, longitude: 2.308628, latitude: 48.850699, city_code: "75107",
-            street_ban_id: "75107_8909"
-          )
-        )
-    end
-
     it("is a success") { is_a_success }
 
     it "returns the link" do
@@ -65,26 +59,12 @@ describe Invitations::ComputeLink, type: :service do
       )
     end
 
-    context "retrieves geolocalisation" do
-      it "tries to retrieve the geolocalisation" do
-        expect(RetrieveGeolocalisation).to receive(:call)
-          .with(
-            address: address,
-            department_number: department_number
-          )
-        subject
-      end
+    context "when the user address has not been geocoded" do
+      let!(:address_geocoding) { nil }
+
+      it("still succeeds") { is_a_success }
 
       context "when it fails" do
-        before do
-          allow(RetrieveGeolocalisation).to receive(:call)
-            .with(
-              address: address,
-              department_number: department_number
-            )
-            .and_return(OpenStruct.new(success?: false))
-        end
-
         it("still succeeds") { is_a_success }
 
         it "does not add the attributes to the link" do
@@ -108,11 +88,6 @@ describe Invitations::ComputeLink, type: :service do
           rdv_solidarites_token: rdv_solidarites_token,
           rdv_solidarites_lieu_id: 5
         )
-      end
-
-      it "does not retrieve the geolocalisation" do
-        expect(RetrieveGeolocalisation).not_to receive(:call)
-        subject
       end
 
       it "adds the lieu id instead of the geo attributes in the url" do

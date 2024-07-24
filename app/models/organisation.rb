@@ -25,6 +25,7 @@ class Organisation < ApplicationRecord
   has_many :tag_organisations, dependent: :destroy
   has_many :orientations, dependent: :restrict_with_error
   has_many :csv_exports, as: :structure, dependent: :destroy
+  has_many :webhook_endpoints, dependent: :destroy
 
   has_many :users, through: :users_organisations
   has_many :agents, through: :agent_roles
@@ -33,7 +34,6 @@ class Organisation < ApplicationRecord
   has_many :tags, through: :tag_organisations
 
   has_and_belongs_to_many :invitations, dependent: :nullify
-  has_and_belongs_to_many :webhook_endpoints
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 

@@ -3,23 +3,13 @@ module User::Address
 
   included do
     squishes :address
-  end
-
-  def street_address
-    split_address.present? ? split_address[1].strip.gsub(/-$/, "").gsub(/,$/, "").gsub(/\.$/, "") : nil
-  end
-
-  def zipcode_and_city
-    split_address.present? ? split_address[2].strip : nil
-  end
-
-  def zipcode
-    address&.match(/\d{5}/)&.to_s
+    delegate :parsed_street_address, :parsed_post_code, :parsed_city, :parsed_post_code_and_city, to: :address_parser
+    delegate :post_code, :city, to: :address_geocoding, allow_nil: true, prefix: :geocoded
   end
 
   private
 
-  def split_address
-    address&.match(/^(.+) (\d{5}.*)$/m)
+  def address_parser
+    Address::Parser.new(address)
   end
 end

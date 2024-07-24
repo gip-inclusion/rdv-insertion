@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "address_geocodings", force: :cascade do |t|
+    t.string "post_code"
+    t.string "city_code"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "city"
+    t.string "department_number"
+    t.bigint "user_id", null: false
+    t.string "street"
+    t.string "house_number"
+    t.string "street_ban_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_address_geocodings_on_user_id"
   end
 
   create_table "agent_roles", force: :cascade do |t|
@@ -307,12 +323,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
 
-  create_table "organisations_webhook_endpoints", id: false, force: :cascade do |t|
-    t.bigint "organisation_id", null: false
-    t.bigint "webhook_endpoint_id", null: false
-    t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
-  end
-
   create_table "orientation_types", force: :cascade do |t|
     t.string "casf_category"
     t.string "name"
@@ -518,6 +528,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
     t.datetime "updated_at", null: false
     t.string "subscriptions", array: true
     t.string "signature_type", default: "hmac"
+    t.bigint "organisation_id"
+    t.index ["organisation_id"], name: "index_webhook_endpoints_on_organisation_id"
   end
 
   create_table "webhook_receipts", force: :cascade do |t|
@@ -533,6 +545,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "address_geocodings", "users"
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "departments"
