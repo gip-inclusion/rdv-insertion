@@ -1,5 +1,5 @@
 describe Stats::GlobalStats::Compute, type: :service do
-  subject { described_class.call(stat: stat) }
+  subject { described_class.new(stat: stat) }
 
   let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
 
@@ -49,115 +49,92 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
     end
 
-    it "is a success" do
-      expect(subject.success?).to eq(true)
-    end
-
-    it "renders a hash of stats" do
-      expect(subject.stat_attributes).to be_a(Hash)
-    end
-
-    it "renders all the stats" do
-      expect(subject.stat_attributes).to include(:users_count)
-      expect(subject.stat_attributes).to include(:users_with_rdv_count)
-      expect(subject.stat_attributes).to include(:rdvs_count)
-      expect(subject.stat_attributes).to include(:sent_invitations_count)
-      expect(subject.stat_attributes).to include(:rate_of_no_show_for_invitations)
-      expect(subject.stat_attributes).to include(:rate_of_no_show_for_convocations)
-      expect(subject.stat_attributes).to include(:average_time_between_invitation_and_rdv_in_days)
-      expect(subject.stat_attributes).to include(:rate_of_users_oriented_in_less_than_30_days)
-      expect(subject.stat_attributes).to include(:rate_of_users_oriented_in_less_than_15_days)
-      expect(subject.stat_attributes).to include(:rate_of_users_oriented)
-      expect(subject.stat_attributes).to include(:rate_of_autonomous_users)
-      expect(subject.stat_attributes).to include(:agents_count)
-    end
-
     it "renders the stats in the right format" do
-      expect(subject.stat_attributes[:users_count]).to be_a(Integer)
-      expect(subject.stat_attributes[:users_with_rdv_count]).to be_a(Integer)
-      expect(subject.stat_attributes[:rdvs_count]).to be_a(Integer)
-      expect(subject.stat_attributes[:sent_invitations_count]).to be_a(Integer)
-      expect(subject.stat_attributes[:rate_of_no_show_for_invitations]).to be_a(Float)
-      expect(subject.stat_attributes[:rate_of_no_show_for_convocations]).to be_a(Float)
-      expect(subject.stat_attributes[:average_time_between_invitation_and_rdv_in_days]).to be_a(Float)
-      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_30_days]).to be_a(Float)
-      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_15_days]).to be_a(Float)
-      expect(subject.stat_attributes[:rate_of_users_oriented]).to be_a(Float)
-      expect(subject.stat_attributes[:rate_of_autonomous_users]).to be_a(Float)
-      expect(subject.stat_attributes[:agents_count]).to be_a(Integer)
+      expect(subject.users_count).to be_a(Integer)
+      expect(subject.users_with_rdv_count).to be_a(Integer)
+      expect(subject.rdvs_count).to be_a(Integer)
+      expect(subject.sent_invitations_count).to be_a(Integer)
+      expect(subject.rate_of_no_show_for_invitations).to be_a(Float)
+      expect(subject.rate_of_no_show_for_convocations).to be_a(Float)
+      expect(subject.average_time_between_invitation_and_rdv_in_days).to be_a(Float)
+      expect(subject.rate_of_users_oriented_in_less_than_30_days).to be_a(Float)
+      expect(subject.rate_of_users_oriented_in_less_than_15_days).to be_a(Float)
+      expect(subject.rate_of_users_oriented).to be_a(Float)
+      expect(subject.rate_of_autonomous_users).to be_a(Float)
+      expect(subject.agents_count).to be_a(Integer)
     end
 
     it "counts the users" do
       expect(stat).to receive(:all_users)
-      expect(subject.stat_attributes[:users_count]).to eq(2)
+      expect(subject.users_count).to eq(2)
     end
 
     it "counts the users with rdv" do
       expect(stat).to receive(:user_ids_with_rdv_set)
-      expect(subject.stat_attributes[:users_with_rdv_count]).to eq(2)
+      expect(subject.users_with_rdv_count).to eq(2)
     end
 
     it "counts the rdvs" do
       expect(stat).to receive(:all_participations)
-      expect(subject.stat_attributes[:rdvs_count]).to eq(2)
+      expect(subject.rdvs_count).to eq(2)
     end
 
     it "counts the sent invitations" do
       expect(stat).to receive(:invitations_set)
-      expect(subject.stat_attributes[:sent_invitations_count]).to eq(2)
+      expect(subject.sent_invitations_count).to eq(2)
     end
 
     it "computes the percentage of no show for invitations" do
       expect(stat).to receive(:participations_after_invitations_set)
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
         .with(participations: [participation1])
-      subject
+      subject.rate_of_no_show_for_invitations
     end
 
     it "computes the percentage of no show for convocations" do
       expect(stat).to receive(:participations_with_notifications_set)
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
         .with(participations: [participation2])
-      subject
+      subject.rate_of_no_show_for_convocations
     end
 
     it "computes the average time between first invitation and first rdv in days" do
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .with(structure: stat.statable)
-      subject
+      subject.average_time_between_invitation_and_rdv_in_days
     end
 
     it "computes the percentage of users with rdv seen in less than 30 days" do
       expect(stat).to receive(:users_first_orientation_follow_up)
       expect(Stats::ComputeRateOfRdvSeenInLessThanNDays).to receive(:call)
         .with(follow_ups: [follow_up1, follow_up2], number_of_days: 30)
-      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_30_days]).to eq(50.0)
+      expect(subject.rate_of_users_oriented_in_less_than_30_days).to eq(50.0)
     end
 
     it "computes the percentage of users with rdv seen in less than 15 days" do
       expect(stat).to receive(:users_first_orientation_follow_up)
       expect(Stats::ComputeRateOfRdvSeenInLessThanNDays).to receive(:call)
         .with(follow_ups: [follow_up1, follow_up2], number_of_days: 15)
-      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_15_days]).to eq(25.0)
+      expect(subject.rate_of_users_oriented_in_less_than_15_days).to eq(25.0)
     end
 
     it "computes the percentage of users oriented" do
       expect(stat).to receive(:orientation_follow_ups_with_invitations)
       expect(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
         .with(follow_ups: [follow_up1, follow_up2])
-      subject
+      subject.rate_of_users_oriented
     end
 
     it "computes the percentage of invited users with at least on rdv taken in autonomy" do
       expect(stat).to receive(:invited_users_set)
       expect(Stats::ComputeRateOfAutonomousUsers).to receive(:call)
         .with(users: [user1, user2])
-      subject
+      subject.rate_of_autonomous_users
     end
 
     it "counts the agents" do
       expect(stat).to receive(:agents_set)
-      expect(subject.stat_attributes[:agents_count]).to eq(1)
+      expect(subject.agents_count).to eq(1)
     end
   end
 end

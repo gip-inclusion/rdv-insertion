@@ -24,7 +24,7 @@ class Participation < ApplicationRecord
 
   after_commit :refresh_follow_up_status
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
-  after_commit :notify_external, if: :should_notify_external?, on: [:create, :update, :destroy]
+  after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
@@ -58,7 +58,9 @@ class Participation < ApplicationRecord
     notifiable? && event_to_notify
   end
 
-  def should_notify_external? = current_category_configuration&.notify_rdv_changes?
+  def should_notify_external?
+    current_category_configuration&.notify_rdv_changes? && rdv.in_the_future?
+  end
 
   def notify_user
     if phone_number_is_mobile?
@@ -69,8 +71,9 @@ class Participation < ApplicationRecord
   end
 
   def notify_external
-    NotifyParticipationToExternalOrganisationEmailJob.perform_async(
-      id,
+    NotifyRdvChangesToExternalOrganisationEmailJob.perform_async(
+      [id],
+      rdv_id,
       event_to_notify || :updated
     )
   end
