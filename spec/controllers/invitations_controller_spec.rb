@@ -36,7 +36,7 @@ describe InvitationsController do
     end
 
     let!(:motif_category_attributes) { { id: motif_category.id.to_s } }
-    let!(:invitation) { create(:invitation) }
+    let!(:invitation) { create(:invitation, user:) }
 
     before do
       sign_in(agent)

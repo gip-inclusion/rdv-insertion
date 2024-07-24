@@ -202,7 +202,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:rdv_solidarites_organisation_id) { 422 }
       let!(:agent) { create(:agent, organisations: [organisation]) }
 
-      let!(:user) { create(:user, **user_attributes) }
+      let!(:user) { create(:user, organisations: [organisation], **user_attributes) }
 
       let!(:email_invitation) { create(:invitation, user:, **email_attributes) }
       let!(:sms_invitation) { create(:invitation, user:, **sms_attributes) }
