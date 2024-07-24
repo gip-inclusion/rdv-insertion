@@ -18,19 +18,34 @@
         <% else %>
           <%= render "common/header_help_menu" %>
         <% end %>
-        <% if show_organisation_navigation_button? %>
-          <%= render "common/header_organisation_navigation_button" %>
-        <% end %>
         <div class="mx-3">
         <%= render "common/sign_out_button" %>
         </div>
       <% end %>
+      <div class="d-flex align-items-center">
+        <% if !current_agent %>
+          <div class="mx-3">
+            <%= link_to sign_in_path do %>
+              <button class="btn btn-blue w-100">
+                <span class="d-none d-sm-inline">Connexion agent</span>
+                <span class="d-inline d-sm-none">Connexion</span>
+              </button>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </nav>
-  <% if current_agent && agent_impersonated? %>
-    <div class="sub-header d-flex">
-      <div class="container d-flex justify-content-center">
-        <p class="mb-0"><i class="fas fa-info-circle"></i> Vous êtes connecté.e en tant que <%= current_agent.to_s %></p>
+  <% if current_agent %>
+    <div class="sub-header d-none d-md-flex">
+      <div class="container d-none d-md-flex ">
+        <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
+          <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
+        <% end %>
+        <%= link_to stats_path, class: "nav-link optional-link " do %>
+          <p class="mb-0">Statistiques d'utilisation</p>
+        <% end %>
+        <%= link_to "Contacter l'équipe", "mailto:rdv-insertion@beta.gouv.fr", class: "nav-link optional-link" %>
       </div>
     </div>
   <% end %>
