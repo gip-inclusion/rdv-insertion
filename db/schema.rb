@@ -99,11 +99,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
   end
 
   create_table "archives", force: :cascade do |t|
-    t.bigint "department_id", null: false
     t.bigint "user_id", null: false
     t.string "archiving_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "department_id", null: false
     t.index ["department_id"], name: "index_archives_on_department_id"
     t.index ["user_id"], name: "index_archives_on_user_id"
   end
@@ -500,8 +500,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
     t.string "nir"
     t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
-    t.string "created_through", default: "rdv_insertion"
+    t.string "created_through"
     t.bigint "old_rdv_solidarites_user_id"
+    t.string "created_from_structure_type"
+    t.bigint "created_from_structure_id"
+    t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"

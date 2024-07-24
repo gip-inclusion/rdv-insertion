@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include User::AffiliationNumber
   include User::Archivable
   include User::Referents
+  include User::CreationOrigin
   include User::Geocodable
 
   attr_accessor :skip_uniqueness_validations
@@ -62,7 +63,6 @@ class User < ApplicationRecord
 
   enum role: { demandeur: "demandeur", conjoint: "conjoint" }
   enum title: { monsieur: "monsieur", madame: "madame" }
-  enum created_through: { rdv_insertion: "rdv_insertion", rdv_solidarites: "rdv_solidarites" }, _prefix: true
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
