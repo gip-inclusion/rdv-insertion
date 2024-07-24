@@ -16,9 +16,9 @@ class RetrieveAddressGeocodingParams < BaseService
 
   def geocoding_params_matching_city
     [@address, parsed_post_code_and_city, parsed_city].find do |query|
-      # the endpoint accepts only queries starting with an alphanumeric character
+      # the endpoint accepts only queries starting with an alphanumeric character and less than 3 characters
       query = query&.gsub(/\A[^\p{Alnum}]+/, "")
-      next if query.blank?
+      next if query.blank? || query.length < 3
 
       response = ApiAdresseClient.get_geocoding(query) # This removes leading non alpha numerical character
       fail!("Impossible d'appeler l'API addresse!\n response body: #{response.body}") unless response.success?

@@ -25,3 +25,5 @@ fr:
         tags: Tags
         rdv_solidarites_user_id: ID de l'usager RDV-Solidarités
         birth_name: Nom de naissance
+        post_code: CP
+        city: Ville
