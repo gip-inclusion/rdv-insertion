@@ -121,9 +121,12 @@ class User < ApplicationRecord
     assign_attributes(follow_ups_attributes: [{ motif_category_id: motif_category_id }])
   end
 
-  def assign_authorized_attributes(organisation_to_be_assigned: nil, **attributes)
-    authorized_attributes = UserPolicy.authorized_user_attributes_for(user: self, organisation_to_be_assigned:)
-    assign_attributes(**attributes.slice(*authorized_attributes))
+  def assign_authorized_attributes(attributes, authorized_attributes)
+    filtered_attributes = attributes.reject do |attribute_name, _|
+      # the first condition is necessary, otherwise we would filter the nested attributes
+      attribute_name.in?(self.class.symbolized_attribute_names) && !attribute_name.in?(authorized_attributes)
+    end
+    assign_attributes(**filtered_attributes)
   end
 
   def phone_number_formatted

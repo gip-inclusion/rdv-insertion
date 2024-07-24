@@ -24,6 +24,10 @@ class UserPolicy < ApplicationPolicy
     authorized_user_attributes_for(user:, agent:, organisation_to_be_assigned:).include?(attribute_name.to_sym)
   end
 
+  def self.show_user_attribute_for_organisation_type?(attribute_name:, organisation_type:)
+    authorized_user_attributes_by_organisation_type[organisation_type.to_sym].include?(attribute_name)
+  end
+
   def new?
     true
   end

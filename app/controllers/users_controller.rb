@@ -70,7 +70,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.assign_authorized_attributes(**formatted_attributes)
+    @user.assign_authorized_attributes(formatted_attributes, authorized_user_attributes)
     authorize @user
     if save_user.success?
       render_save_user_success
@@ -84,6 +84,8 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
+
+  def authorized_user_attributes = UserPolicy.authorized_user_attributes_for(user: @user)
 
   def formatted_attributes
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise

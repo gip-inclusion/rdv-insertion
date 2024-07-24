@@ -8,7 +8,7 @@ module Users
     def call
       @user = find_or_initialize_user.user
       result.user = @user
-      @user.assign_authorized_attributes(organisation_to_be_assigned: @organisation, **@user_attributes)
+      @user.assign_authorized_attributes(@user_attributes, authorized_user_attributes)
       save_user!
     end
 
@@ -19,6 +19,12 @@ module Users
         Users::FindOrInitialize,
         attributes: @user_attributes,
         department_id: @organisation.department_id
+      )
+    end
+
+    def authorized_user_attributes
+      UserPolicy.authorized_user_attributes_for(
+        user: @user, agent: Current.agent, organisation_to_be_assigned: @organisation
       )
     end
 
