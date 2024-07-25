@@ -1,4 +1,4 @@
-describe StaticPagesController do
+describe Website::StaticPagesController do
   render_views
 
   let!(:organisation) { create(:organisation) }

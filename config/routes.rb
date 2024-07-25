@@ -28,15 +28,17 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
 
-  root "static_pages#welcome"
-  get "mentions-legales", to: "static_pages#legal_notice"
-  get "cgu", to: "static_pages#cgu"
-  get "politique-de-confidentialite", to: "static_pages#privacy_policy"
-  get "accessibilite", to: "static_pages#accessibility"
+  scope module: 'website' do
+    root "static_pages#welcome"
+    get "mentions-legales", to: "static_pages#legal_notice"
+    get "cgu", to: "static_pages#cgu"
+    get "politique-de-confidentialite", to: "static_pages#privacy_policy"
+    get "accessibilite", to: "static_pages#accessibility"
 
-  resources :teleprocedure_landings, param: "department_number",
-                                     path: '/parcours_insertion',
-                                     only: [:show]
+    resources :teleprocedure_landings, param: "department_number",
+                                       path: '/parcours_insertion',
+                                       only: [:show]
+  end
 
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
@@ -83,10 +85,10 @@ Rails.application.routes.draw do
       get :confirm_update
     end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
-    resource :stats, only: [:show]
+    resource :stats, only: [:show], controller: 'website/stats'
   end
 
-  resources :stats, only: [:index] do
+  resources :stats, only: [:index], controller: 'website/stats' do
     get :deployment_map, on: :collection
   end
 
@@ -154,7 +156,7 @@ Rails.application.routes.draw do
     resources :follow_ups, module: :follow_ups, only: [] do
       resource :closings, only: [:create, :destroy]
     end
-    resource :stats, only: [:show]
+    resource :stats, only: [:show], controller: 'website/stats'
     resources :users_organisations, only: [:index, :create]
     resource :users_organisations, only: [:destroy]
     resources :referent_assignations, only: [:index, :create]
