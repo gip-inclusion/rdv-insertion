@@ -8,6 +8,7 @@ module Users
     def call
       @user = find_or_initialize_user.user
       result.user = @user
+      filter_origin_attributes if @user.persisted?
       @user.assign_authorized_attributes(@user_attributes, authorized_user_attributes)
       save_user!
     end
@@ -26,6 +27,10 @@ module Users
       UserPolicy.authorized_user_attributes_for(
         user: @user, agent: Current.agent, organisation_to_be_assigned: @organisation
       )
+    end
+
+    def filter_origin_attributes
+      @user_attributes.except!(*User::ORIGIN_ATTRIBUTES)
     end
 
     def save_user!

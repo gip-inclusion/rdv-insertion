@@ -31,8 +31,15 @@
 @import "tippy.js/dist/tippy.css";
 
 @font-face {
-   font-family: 'Marianne';
-   src: url('../fonts/Marianne/Marianne-Regular.woff');
+  font-family: 'Marianne';
+  font-weight: 400;
+  src: url('../fonts/Marianne/Marianne-Regular.woff');
+}
+
+@font-face {
+  font-family: 'Marianne';
+  font-weight: 700;
+  src: url('../fonts/Marianne/Marianne-Bold.woff');
 }
 
 html {

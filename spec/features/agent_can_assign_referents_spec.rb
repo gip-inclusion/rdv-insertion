@@ -60,7 +60,7 @@ describe "Agents can assign referents", :js do
       modal = find(".modal")
       modal.click_button("Retirer")
 
-      expect(page).to have_no_css(".badge", text: "Derek Sheperd")
+      expect(page).to have_no_css(".badge", text: "Derek SHEPERD")
       expect(page).to have_css(".badge", text: "Meredith GREY")
       expect(user.reload.referents).to contain_exactly(second_agent)
     end

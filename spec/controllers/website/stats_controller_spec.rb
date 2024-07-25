@@ -1,4 +1,4 @@
-describe StatsController do
+describe Website::StatsController do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
 
