@@ -19,7 +19,8 @@ class UserDashboard < Administrate::BaseDashboard
     created_through: Field::Select.with_options(
       searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
     ),
-    created_from_structure: Field::BelongsTo,
+    created_from_structure_id: Field::String,
+    created_from_structure_type: Field::String,
     deleted_at: Field::DateTime,
     department_internal_id: Field::String,
     departments: Field::HasMany,
@@ -88,6 +89,9 @@ class UserDashboard < Administrate::BaseDashboard
     :rights_opening_date,
     :organisations,
     :tags,
+    :created_through,
+    :created_from_structure_id,
+    :created_from_structure_type,
     :created_at,
     :updated_at
   ].freeze
