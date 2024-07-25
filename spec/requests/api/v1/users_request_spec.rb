@@ -253,6 +253,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         run_test!
       end
 
+      # rubocop:disable RSpec/EmptyExampleGroup
       context "it does not show all the user attributes depending on organisation type" do
         [:siae, :delegataire_rsa, :autre].each do |organisation_type|
           response(
@@ -280,6 +281,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           end
         end
       end
+      # rubocop:enable RSpec/EmptyExampleGroup
 
       it_behaves_like "an endpoint that returns 403 - forbidden" do
         let!(:agent) { create(:agent) }

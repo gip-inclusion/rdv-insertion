@@ -168,8 +168,8 @@ RSpec.configure do |config|
               phone_number: { type: "string", nullable: true },
               department_internal_id: {
                 type: "string", nullable: true,
-                description: "Présent seulement pour les organisations de type: conseil départemental, délégataire RSA " \
-                             "et France Travail"
+                description: "Présent seulement pour les organisations de type: conseil départemental, " \
+                             "délégataire RSA et France Travail"
               },
               rights_opening_date: { type: "string", nullable: true },
               title: { type: "string", enum: %w[monsieur madame] },
