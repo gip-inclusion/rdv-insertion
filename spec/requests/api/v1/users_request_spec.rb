@@ -243,6 +243,34 @@ describe "Users API", swagger_doc: "v1/api.json" do
         run_test!
       end
 
+      context "it does not show all the user attributes depending on organisation type" do
+        [:siae, :delegataire_rsa, :autre].each do |organisation_type|
+          response(
+            200,
+            "Pour une organisation de type" \
+            "#{I18n.t("activerecord.attributes.organisation.organisation_types.#{organisation_type}")}",
+            document: false
+          ) do
+            let!(:organisation_type) { organisation_type }
+
+            schema type: "object",
+                   properties: {
+                     success: { type: "boolean" },
+                     user: {
+                       "$ref" => "#/components/schemas/user_with_referents_for_#{organisation_type}"
+                     },
+                     invitations: {
+                       type: "array",
+                       items: { "$ref" => "#/components/schemas/invitation" }
+                     }
+                   },
+                   required: %w[success user invitations]
+
+            run_test!
+          end
+        end
+      end
+
       it_behaves_like "an endpoint that returns 403 - forbidden" do
         let!(:agent) { create(:agent) }
       end
