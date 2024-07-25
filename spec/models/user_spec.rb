@@ -193,6 +193,16 @@ describe User do
 
       it { expect(user).not_to be_valid }
     end
+
+    context "cannot reassign attribute" do
+      let!(:user) { create(:user, created_through: "rdv_insertion_user_form") }
+
+      it "raises on reassign" do
+        expect do
+          user.assign_attributes(created_through: "rdv_insertion_upload_page")
+        end.to raise_error(ActiveRecord::ReadonlyAttributeError)
+      end
+    end
   end
 
   describe "nir validity" do

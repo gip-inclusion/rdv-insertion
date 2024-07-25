@@ -27,3 +27,6 @@ fr:
         birth_name: Nom de naissance
         post_code: CP
         city: Ville
+        created_through: Créé via
+        created_from_structure_type: Type de structure depuis lequel il a été créé
+        created_from_structure_id: ID de la structure depuis lequel il a été créé

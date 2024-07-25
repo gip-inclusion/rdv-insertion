@@ -496,9 +496,9 @@ export default class User {
       ...(this.currentConfiguration && {
         follow_ups_attributes: [{ motif_category_id: this.currentConfiguration.motif_category_id }],
       }),
-      created_through: "rdv_insertion_upload_page",
-      created_from_structure_type: this.list.isDepartmentLevel ? "Department" : "Organisation",
-      created_from_structure_id: this.list.isDepartmentLevel ? this.department.id : this.currentOrganisation.id,
+      ...(!this.createdAt && { created_through: "rdv_insertion_upload_page" }),
+      ...(!this.createdAt && { created_from_structure_type: this.list.isDepartmentLevel ? "Department" : "Organisation" }),
+      ...(!this.createdAt && { created_from_structure_id: this.list.isDepartmentLevel ? this.department.id : this.currentOrganisation.id }),
     };
   }
 }
