@@ -195,17 +195,12 @@ describe User do
     end
 
     context "cannot reassign attribute" do
-      let!(:department) { create(:department) }
-      let!(:user) { create(:user, created_through: "rdv_insertion_user_form", created_from_structure: department) }
+      let!(:user) { create(:user, created_through: "rdv_insertion_user_form") }
 
-      it "does not reassign" do
-        user.created_through = "rdv_insertion_upload_page"
-        user.created_from_structure = create(:organisation)
-
-        user.save!
-
-        expect(user.reload.created_through).to eq("rdv_insertion_user_form")
-        expect(user.reload.created_from_structure).to eq(department)
+      it "raises on reassign" do
+        expect do
+          user.assign_attributes(created_through: "rdv_insertion_upload_page")
+        end.to raise_error(ActiveRecord::ReadonlyAttributeError)
       end
     end
   end

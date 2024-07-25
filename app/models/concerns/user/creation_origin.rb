@@ -1,6 +1,8 @@
 module User::CreationOrigin
   extend ActiveSupport::Concern
 
+  ORIGIN_ATTRIBUTES = [:created_through, :created_from_structure_type, :created_from_structure_id].freeze
+
   included do
     enum created_through: {
       rdv_insertion_upload_page: "rdv_insertion_upload_page",
@@ -13,7 +15,8 @@ module User::CreationOrigin
 
     validates :created_through, :created_from_structure, presence: true, on: :create
 
-    before_update :reset_origin_attributes_if_changed
+    # prevent these attributes from being updated
+    attr_readonly(*ORIGIN_ATTRIBUTES)
 
     scope :created_through_rdv_solidarites, -> { where(created_through: "rdv_solidarites_webhook") }
   end
@@ -21,12 +24,4 @@ module User::CreationOrigin
   def created_through_rdv_solidarites? = created_through_rdv_solidarites_webhook?
 
   def created_through_rdv_insertion? = !created_through_rdv_solidarites?
-
-  private
-
-  def reset_origin_attributes_if_changed
-    [:created_through, :created_from_structure_id, :created_from_structure_type].each do |attribute_name|
-      public_send("#{attribute_name}=", attribute_was(attribute_name)) if attribute_changed?(attribute_name)
-    end
-  end
 end

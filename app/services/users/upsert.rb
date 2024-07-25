@@ -8,6 +8,7 @@ module Users
     def call
       @user = find_or_initialize_user.user
       result.user = @user
+      filter_origin_attributes if @user.persisted?
       @user.assign_attributes(**@user_attributes.compact_blank)
       save_user!
     end
@@ -20,6 +21,10 @@ module Users
         attributes: @user_attributes,
         department_id: @organisation.department_id
       )
+    end
+
+    def filter_origin_attributes
+      @user_attributes.except!(*User::ORIGIN_ATTRIBUTES)
     end
 
     def save_user!
