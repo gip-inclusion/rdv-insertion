@@ -11,6 +11,16 @@ describe Motif do
 
           motif.update(motif_category_id: create(:motif_category).id)
         end
+
+        context "when motif_category_id was nil" do
+          let(:motif) { create(:motif, motif_category_id: nil) }
+
+          it "does not call AlertMotifCategoryHasChangedJob.perform_async" do
+            expect(AlertMotifCategoryHasChangedJob).not_to receive(:perform_async)
+
+            motif.update(motif_category_id: create(:motif_category).id)
+          end
+        end
       end
 
       context "when motif has no rdvs" do

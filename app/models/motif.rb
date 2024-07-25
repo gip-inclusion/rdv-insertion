@@ -46,7 +46,7 @@ class Motif < ApplicationRecord
   end
 
   def alert_motif_category_has_changed
-    return unless saved_change_to_motif_category_id? && rdvs.any?
+    return unless motif_category_id_previously_changed? && motif_category_id_previously_was.present? && rdvs.any?
 
     AlertMotifCategoryHasChangedJob.perform_async(id)
   end
