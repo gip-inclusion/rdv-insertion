@@ -1,4 +1,4 @@
-describe NotifyMotifCategoryHasChangedJob do
+describe AlertMotifCategoryHasChangedJob do
   subject { described_class.new.perform(motif_id) }
 
   let(:motif_id) { motif.id }

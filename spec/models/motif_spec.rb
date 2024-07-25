@@ -6,18 +6,18 @@ describe Motif do
       context "when motif has rdvs" do
         let!(:rdv) { create(:rdv, motif:) }
 
-        it "calls NotifyMotifCategoryHasChangedJob.perform_async" do
-          expect(NotifyMotifCategoryHasChangedJob).to receive(:perform_async).with(motif.id)
+        it "calls AlertMotifCategoryHasChangedJob.perform_async" do
+          expect(AlertMotifCategoryHasChangedJob).to receive(:perform_async).with(motif.id)
 
           motif.update(motif_category_id: create(:motif_category).id)
         end
       end
 
       context "when motif has no rdvs" do
-        it "does not call NotifyMotifCategoryHasChangedJob.perform_async" do
+        it "does not call AlertMotifCategoryHasChangedJob.perform_async" do
           motif = create(:motif)
 
-          expect(NotifyMotifCategoryHasChangedJob).not_to receive(:perform_async)
+          expect(AlertMotifCategoryHasChangedJob).not_to receive(:perform_async)
 
           motif.update(motif_category_id: create(:motif_category).id)
         end
@@ -25,10 +25,10 @@ describe Motif do
     end
 
     context "motif_category not changed" do
-      it "does not call NotifyMotifCategoryHasChangedJob.perform_async" do
+      it "does not call AlertMotifCategoryHasChangedJob.perform_async" do
         motif = create(:motif)
 
-        expect(NotifyMotifCategoryHasChangedJob).not_to receive(:perform_async)
+        expect(AlertMotifCategoryHasChangedJob).not_to receive(:perform_async)
 
         motif.update(name: "New name")
       end

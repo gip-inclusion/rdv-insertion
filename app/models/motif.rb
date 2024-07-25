@@ -20,7 +20,7 @@ class Motif < ApplicationRecord
   scope :collectif, -> { where(collectif: true) }
   scope :individuel, -> { where(collectif: false) }
 
-  after_commit :notify_motif_category_has_changed, on: %i[update]
+  after_commit :alert_motif_category_has_changed, on: %i[update]
 
   def presential?
     location_type == "public_office"
@@ -45,9 +45,9 @@ class Motif < ApplicationRecord
       "agent_searches?#{params.to_query}"
   end
 
-  def notify_motif_category_has_changed
+  def alert_motif_category_has_changed
     return unless saved_change_to_motif_category_id? && rdvs.any?
 
-    NotifyMotifCategoryHasChangedJob.perform_async(id)
+    AlertMotifCategoryHasChangedJob.perform_async(id)
   end
 end

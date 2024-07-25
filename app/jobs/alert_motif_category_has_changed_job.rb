@@ -1,4 +1,4 @@
-class NotifyMotifCategoryHasChangedJob < ApplicationJob
+class AlertMotifCategoryHasChangedJob < ApplicationJob
   attr_reader :motif
 
   def perform(motif_id)
@@ -6,8 +6,8 @@ class NotifyMotifCategoryHasChangedJob < ApplicationJob
 
     return if motif&.rdvs.blank?
 
-    notify_on_mattermost
-    notify_on_sentry
+    alert_on_mattermost
+    alert_on_sentry
   end
 
   private
@@ -19,11 +19,11 @@ class NotifyMotifCategoryHasChangedJob < ApplicationJob
     "
   end
 
-  def notify_on_mattermost
+  def alert_on_mattermost
     MattermostClient.send_to_notif_channel(alert_message)
   end
 
-  def notify_on_sentry
+  def alert_on_sentry
     Sentry.capture_message(alert_message)
   end
 end
