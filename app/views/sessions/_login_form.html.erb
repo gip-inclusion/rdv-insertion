@@ -25,9 +25,13 @@
       </div>
     </div>
     <div class=text-center>
-      <%= form.submit "Se connecter", class: "btn btn-blue" %>
+      <%= form.submit "Se connecter", class: "btn btn-blue p-3 px-4" %>
     </div>
-    <h4 class="text-center my-4 font-weight-bold">OU</h4>
+    <div class="d-flex justify-content-center align-items-center">
+      <hr class="flex-fill">
+      <h4 class="text-center my-4 font-weight-bold px-3">OU</h4>
+      <hr class="flex-fill">
+    </div>
     <%= render 'common/inclusion_connect_button' %>
   <% end %>
 </div>
