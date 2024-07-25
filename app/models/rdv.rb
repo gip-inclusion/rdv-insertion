@@ -39,7 +39,7 @@ class Rdv < ApplicationRecord
   enum created_by: { agent: "agent", user: "user", file_attente: "file_attente", prescripteur: "prescripteur" },
        _prefix: :created_by
 
-  delegate :presential?, :by_phone?, :collectif?, :motif_category, to: :motif
+  delegate :presential?, :by_phone?, :collectif?, to: :motif
   delegate :department, :rdv_solidarites_organisation_id, to: :organisation
   delegate :name, to: :motif, prefix: true
   delegate :instruction_for_rdv, to: :motif
@@ -73,6 +73,10 @@ class Rdv < ApplicationRecord
     return lieu.phone_number if lieu&.phone_number.present?
 
     organisation.phone_number
+  end
+
+  def motif_category
+    follow_ups.first&.motif_category
   end
 
   def participation_for(user)
