@@ -208,6 +208,36 @@ describe "Agents can upload user list", :js do
       end
     end
 
+    describe "cannot assign all the attributes depending on the organisation type" do
+      before { organisation.update! organisation_type: "siae" }
+
+      it "cannot asssign nir and department_internal_id for SIAE" do
+        visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
+
+        expect(page).to have_content("Choisissez un fichier d'usagers")
+        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                    make_visible: true)
+
+        click_button("Créer compte")
+
+        expect(page).to have_css("i.fas.fa-link")
+
+        user = User.last
+
+        expect(user.first_name).to eq("Hernan")
+        expect(user.last_name).to eq("Crespo")
+        expect(user.affiliation_number).to eq("ISQCJQO")
+        expect(user.title).to eq("monsieur")
+        expect(user.role).to eq("demandeur")
+        expect(user.email).to eq("hernan@crespo.com")
+        expect(user.phone_number).to eq("+33620022002")
+        expect(user.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
+
+        expect(user.nir).to be_nil
+        expect(user.department_internal_id).to be_nil
+      end
+    end
+
     describe "Users matching" do
       describe "nir matching" do
         context "when the user is in the same org" do

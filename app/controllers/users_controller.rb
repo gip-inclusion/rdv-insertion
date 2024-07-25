@@ -85,7 +85,7 @@ class UsersController < ApplicationController
     params.require(:user).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
-  def authorized_user_attributes = UserPolicy.authorized_user_attributes_for(user: @user)
+  def authorized_user_attributes = UserPolicy.authorized_user_attributes_for(user: @user, agent: current_agent)
 
   def formatted_attributes
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
