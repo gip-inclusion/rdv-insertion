@@ -193,6 +193,21 @@ describe User do
 
       it { expect(user).not_to be_valid }
     end
+
+    context "cannot reassign attribute" do
+      let!(:department) { create(:department) }
+      let!(:user) { create(:user, created_through: "rdv_insertion_user_form", created_from_structure: department) }
+
+      it "does not reassign" do
+        user.created_through = "rdv_insertion_upload_page"
+        user.created_from_structure = create(:organisation)
+
+        user.save!
+
+        expect(user.reload.created_through).to eq("rdv_insertion_user_form")
+        expect(user.reload.created_from_structure).to eq(department)
+      end
+    end
   end
 
   describe "nir validity" do

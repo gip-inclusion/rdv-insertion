@@ -13,10 +13,20 @@ module User::CreationOrigin
 
     validates :created_through, :created_from_structure, presence: true, on: :create
 
+    before_update :reset_origin_attributes_if_changed
+
     scope :created_through_rdv_solidarites, -> { where(created_through: "rdv_solidarites_webhook") }
   end
 
   def created_through_rdv_solidarites? = created_through_rdv_solidarites_webhook?
 
   def created_through_rdv_insertion? = !created_through_rdv_solidarites?
+
+  private
+
+  def reset_origin_attributes_if_changed
+    [:created_through, :created_from_structure_id, :created_from_structure_type].each do |attribute_name|
+      public_send("#{attribute_name}=", attribute_was(attribute_name)) if attribute_changed?(attribute_name)
+    end
+  end
 end
