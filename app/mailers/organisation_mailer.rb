@@ -34,6 +34,7 @@ class OrganisationMailer < ApplicationMailer
     @rdv = rdv
     @participations = participations
     @event = event
+    @motif_category = @participations.first.motif_category
 
     mail(
       to:,

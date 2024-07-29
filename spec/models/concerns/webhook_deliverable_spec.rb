@@ -3,7 +3,7 @@ describe WebhookDeliverable, type: :concern do
   let!(:webhook_endpoint) do
     create(
       :webhook_endpoint,
-      organisations: [organisation],
+      organisation:,
       subscriptions: %w[rdv invitation]
     )
   end
@@ -101,7 +101,7 @@ describe WebhookDeliverable, type: :concern do
       let!(:webhook_endpoint) do
         create(
           :webhook_endpoint,
-          organisations: [organisation],
+          organisation:,
           subscriptions: %w[invitation]
         )
       end

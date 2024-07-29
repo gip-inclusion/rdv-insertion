@@ -188,8 +188,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
           department_internal_id: "11111444",
           nir: generate_random_nir,
           created_through: "rdv_insertion_api",
-          created_from_type: "Organisation",
-          created_from_id: organisation.id,
+          created_from_structure_type: "Organisation",
+          created_from_structure_id: organisation.id,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
           ]
