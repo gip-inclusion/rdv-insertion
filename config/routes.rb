@@ -151,7 +151,7 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:create]
       resources :archives, only: [] do
-        get :many_new, on: :collection
+        get :new_batch, on: :collection
         post :create_many, on: :collection
       end
     end

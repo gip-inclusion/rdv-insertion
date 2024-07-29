@@ -28,7 +28,7 @@ module NavigationHelper
   end
 
   def new_structure_user_archive_path(**params)
-    return send(:many_new_department_user_archives_path, { **structure_id_param, **params }) if department_level?
+    return send(:new_batch_department_user_archives_path, { **structure_id_param, **params }) if department_level?
 
     send(:new_organisation_user_archive_path, { **structure_id_param, **params })
   end

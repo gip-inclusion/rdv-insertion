@@ -1,10 +1,10 @@
 class ArchivesController < ApplicationController
   before_action :set_user, :set_organisation, for: [:new, :create]
-  before_action :set_user, :set_department, :set_user_archives, :set_archivable_organisations, for: :many_new
+  before_action :set_user, :set_department, :set_user_archives, :set_archivable_organisations, for: :new_batch
 
   def new; end
 
-  def many_new; end
+  def new_batch; end
 
   def create
     @archive = Archive.new(archive_params.merge(user: @user, organisation: @organisation))
