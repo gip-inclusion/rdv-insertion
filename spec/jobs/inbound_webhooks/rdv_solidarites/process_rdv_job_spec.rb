@@ -217,7 +217,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         context "when one of the user is not yet created" do
-          let!(:user_id1) { 555 }
+          let!(:user_id1) { 82_821 }
 
           let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
           let!(:new_follow_up) do
