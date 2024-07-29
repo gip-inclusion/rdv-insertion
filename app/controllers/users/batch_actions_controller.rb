@@ -77,7 +77,7 @@ module Users
                .preload({ organisations: [:motif_categories], follow_ups: [:participations] })
                .active.distinct
                .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-               .where.not(id: archived_users_ids_for(@current_organisations))
+               .where.not(id: archived_user_ids_in_organisations(@current_organisations))
                .joins(:follow_ups)
                .where(follow_ups: { motif_category: @current_motif_category })
                .where.not(follow_ups: { status: "closed" })

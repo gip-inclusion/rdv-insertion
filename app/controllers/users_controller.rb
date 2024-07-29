@@ -253,7 +253,7 @@ class UsersController < ApplicationController
   def set_all_users
     @users = policy_scope(User)
              .active.distinct
-             .where(organisations: @current_organisations)
+             .preload(:organisations).where(organisations: @current_organisations)
     return if request.format == "csv"
 
     @users = @users.preload(:archives, follow_ups: [:invitations])
@@ -264,7 +264,7 @@ class UsersController < ApplicationController
              .preload(:organisations, follow_ups: [:notifications, :invitations, { participations: :rdv }])
              .active.distinct
              .where(organisations: @current_organisations)
-             .where.not(id: archived_users_ids_for(@current_organisations))
+             .where.not(id: archived_user_ids_in_organisations(@current_organisations))
              .joins(:follow_ups)
              .where(follow_ups: { motif_category: @current_motif_category })
              .where.not(follow_ups: { status: "closed" })
@@ -274,7 +274,7 @@ class UsersController < ApplicationController
     @users = policy_scope(User)
              .includes(:archives)
              .preload(:invitations, :participations)
-             .where(id: archived_users_ids_for(@current_organisations))
+             .where(id: archived_user_ids_in_organisations(@current_organisations))
              .active.distinct
   end
 

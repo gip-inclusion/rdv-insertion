@@ -1,7 +1,7 @@
 module Users::Archivable
   private
 
-  def archived_users_ids_for(organisations)
+  def archived_user_ids_in_organisations(organisations)
     users_with_archives_in_all_their_organisations_in_list(organisations).map(&:id)
   end
 

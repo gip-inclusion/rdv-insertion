@@ -7,7 +7,7 @@
           <div class="flex-wrap d-flex">
             <% archives.each do |archive| %>
               <% organisation = archive.organisation %>
-              <%= render "users_organisations/user_organisation_badge", organisation:, department: organisation.department, user:, archive: archive_for(organisation, archives), with_delete: false %>
+              <%= render "users_organisations/user_organisation_badge", organisation:, department: organisation.department, user:, archive: organisation_archive(organisation, archives), with_delete: false %>
             <% end %>
           </div>
 
