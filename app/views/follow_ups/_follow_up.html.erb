@@ -16,7 +16,7 @@
               <%= render "follow_ups/convocation_button",
                          user_id: user.id, motif_category_id: follow_up.motif_category_id,
                          organisation_ids: department_level? ? user_department_organisations.ids : [organisation.id],
-                         user_is_archived:
+                         disabled: user_is_archived
               %>
             </div>
           <% end %>
