@@ -16,6 +16,8 @@
           Motif d'archivage <span class="link-primary">*</span> :
         </p>
           <%= f.text_field :archiving_reason, class: "form-control" %>
+          <%= f.hidden_field :user_id, value: user.id %>
+          <%= f.hidden_field :organisation_id, value: organisation_id %>
         <p class="link-primary icon-btn-sm mt-2">
           *Ce champ est une zone de commentaires libres : veillez à utiliser des termes objectifs, pertinents, non excessifs et/ou insultants. Conformément aux articles 9 et 10 du RGPD, les données sensibles telles que celles relatives à la santé, à la vie sexuelle des personnes, à leur situation judiciaire (infractions, condamnations et mesures de sureté) sont proscrites. L’équipe de rdv-insertion se réserve un droit de suppression des informations qui seraient considérées comme sensibles
         </p>

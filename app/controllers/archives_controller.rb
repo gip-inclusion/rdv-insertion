@@ -1,13 +1,14 @@
 class ArchivesController < ApplicationController
-  before_action :set_user, :set_organisation, for: [:new, :create]
-  before_action :set_user, :set_department, :set_user_archives, :set_archivable_organisations, for: :new_batch
+  before_action :set_user, only: [:new, :new_batch]
+  before_action :set_organisation, only: [:new]
+  before_action :set_department, :set_user_archives, :set_archivable_organisations, only: [:new_batch]
 
   def new; end
 
   def new_batch; end
 
   def create
-    @archive = Archive.new(archive_params.merge(user: @user, organisation: @organisation))
+    @archive = Archive.new(**archive_params)
     authorize @archive
     if @archive.save
       redirect_to structure_user_path(@archive.user_id)
@@ -17,11 +18,15 @@ class ArchivesController < ApplicationController
   end
 
   def create_many
-    if create_archives.success?
-      redirect_to structure_user_path(params[:user_id])
-    else
-      turbo_stream_display_error_modal(create_archives.errors)
+    @archives = create_many_archives_params[:organisation_ids].map do |organisation_id|
+      Archive.new(organisation_id:, user_id: create_many_archives_params[:user_id],
+                  archiving_reason: create_many_archives_params[:archiving_reason])
     end
+    authorize_all @archives, :create
+    Archive.transaction { @archives.each(&:save!) }
+    redirect_to structure_user_path(params[:user_id])
+  rescue ActiveRecord::RecordInvalid => e
+    turbo_stream_display_error_modal(e.record.errors.full_messages)
   end
 
   def destroy # rubocop:disable Metrics/AbcSize
@@ -43,12 +48,14 @@ class ArchivesController < ApplicationController
   private
 
   def archive_params
-    params.require(:archive).permit(:archiving_reason)
+    params.require(:archive).permit(:archiving_reason, :user_id, :organisation_id)
   end
 
   def create_many_archives_params
     params.require(:archives).permit(:user_id, :archiving_reason, organisation_ids: [])
   end
+
+  def organisation_ids = create_many_archives_params[:organisation_ids]
 
   def create_archives
     @create_archives ||= Archives::CreateMany.call(
@@ -59,7 +66,7 @@ class ArchivesController < ApplicationController
   end
 
   def set_user
-    @user = policy_scope(User).preload(archives: [:organisation]).find(params[:user_id])
+    @user = policy_scope(User).find(params[:user_id])
   end
 
   def set_organisation
