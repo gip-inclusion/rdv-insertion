@@ -25,7 +25,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def self.show_user_attribute_for_organisation_type?(attribute_name:, organisation_type:)
-    restricted_user_attributes_for[organisation_type.to_sym].exclude?(attribute_name)
+    RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE[organisation_type.to_sym].exclude?(attribute_name)
   end
 
   def new?
