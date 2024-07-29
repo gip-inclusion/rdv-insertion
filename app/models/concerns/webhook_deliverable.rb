@@ -17,6 +17,8 @@ module WebhookDeliverable
 
   def generate_payload_and_send_webhook(action)
     subscribed_webhook_endpoints.each do |endpoint|
+      # we need to precise the organisation type since the webhook payload can be
+      # different depending on organisation_type
       payload = generate_webhook_payload(action, endpoint.organisation_type)
       OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, payload)
     end

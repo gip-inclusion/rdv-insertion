@@ -86,10 +86,10 @@ module UsersHelper
   end
 
   def assignable_user_attribute?(user, attribute_name)
-    organisation_to_be_assigned =
-      current_organisation || current_agent_department_organisations.min_by do |organisation|
-        UserPolicy.authorized_user_attributes_by_organisation_type[organisation.organisation_type.to_sym].length
+    assigning_organisation =
+      current_organisation || current_agent_department_organisations.max_by do |organisation|
+        UserPolicy::RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE[organisation.organisation_type.to_sym].length
       end
-    UserPolicy.assignable_user_attribute?(user:, attribute_name:, organisation_to_be_assigned:)
+    UserPolicy.assignable_user_attribute?(user:, attribute_name:, assigning_organisation:)
   end
 end

@@ -1,31 +1,31 @@
 class UserPolicy < ApplicationPolicy
-  def self.authorized_user_attributes_by_organisation_type = {
-    conseil_departemental: User.symbolized_attribute_names,
-    france_travail: User.symbolized_attribute_names,
-    delegataire_rsa: User.symbolized_attribute_names - [:nir],
-    siae: User.symbolized_attribute_names - [:nir, :department_internal_id],
-    autre: User.symbolized_attribute_names - [:nir, :department_internal_id]
-  }
+  RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE = {
+    conseil_departemental: [],
+    france_travail: [],
+    delegataire_rsa: [:nir],
+    siae: [:nir, :department_internal_id],
+    autre: [:nir, :department_internal_id]
+  }.freeze
 
-  def self.authorized_user_attributes_for(user:, agent: Current.agent, organisation_to_be_assigned: nil)
+  def self.restricted_user_attributes_for(user:, agent: Current.agent, assigning_organisation: nil)
     common_organisations = Set.new(user.organisations & agent.organisations)
-    if organisation_to_be_assigned && agent.organisations.include?(organisation_to_be_assigned)
-      common_organisations << organisation_to_be_assigned
+    if assigning_organisation && agent.organisations.include?(assigning_organisation)
+      common_organisations << assigning_organisation
     end
     organisation_types = common_organisations.map(&:organisation_type).map(&:to_sym).uniq
-    authorized_user_attributes_by_organisation_type.slice(*organisation_types).values.max_by(&:length)
+    RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE.slice(*organisation_types).values.min_by(&:length)
   end
 
   def self.show_user_attribute?(user:, attribute_name:, agent: Current.agent)
-    authorized_user_attributes_for(user:, agent:).include?(attribute_name.to_sym)
+    restricted_user_attributes_for(user:, agent:).exclude?(attribute_name.to_sym)
   end
 
-  def self.assignable_user_attribute?(user:, attribute_name:, organisation_to_be_assigned:, agent: Current.agent)
-    authorized_user_attributes_for(user:, agent:, organisation_to_be_assigned:).include?(attribute_name.to_sym)
+  def self.assignable_user_attribute?(user:, attribute_name:, assigning_organisation:, agent: Current.agent)
+    restricted_user_attributes_for(user:, agent:, assigning_organisation:).exclude?(attribute_name.to_sym)
   end
 
   def self.show_user_attribute_for_organisation_type?(attribute_name:, organisation_type:)
-    authorized_user_attributes_by_organisation_type[organisation_type.to_sym].include?(attribute_name)
+    restricted_user_attributes_for[organisation_type.to_sym].exclude?(attribute_name)
   end
 
   def new?

@@ -14,8 +14,7 @@ class FileConfiguration < ApplicationRecord
   end
 
   def self.matching_user_attribute_name(attribute_name)
-    user_attribute_name = attribute_name.gsub("_column", "")
-    user_attribute_name if User.attribute_names.include?(user_attribute_name)
+    User.attribute_names.find { |n| n == attribute_name.delete_suffix("_column") }
   end
 
   private
