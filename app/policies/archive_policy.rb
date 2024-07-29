@@ -1,11 +1,11 @@
 class ArchivePolicy < ApplicationPolicy
   def create?
-    pundit_user.organisations.include?(record.organisation)
+    pundit_user.organisation_ids.include?(record.organisation_id)
   end
 
-  def destroy?
-    pundit_user.organisation_ids.intersect?(record.user.organisation_ids)
-  end
+  def show? = create?
+
+  def destroy? = create?
 
   def resolve
     Archive.where(organisation_id: pundit_user.organisations.pluck(:id))

@@ -20,11 +20,11 @@ export default class extends Controller {
   organisationArchiveInformations() {
     tippy(this.element, {
       content(reference) {
-        const { archiveCreationDate, archiveReason } = reference.dataset;
+        const { archiveCreationDate, archiveReason, showArchivingReason } = reference.dataset;
+        const displayedArchivingReason = showArchivingReason === "true" ? `Motif: ${archiveReason || "Aucun motif renseigné"}` : ""
+
         return (
-          `Archivé le ${archiveCreationDate}` +
-          "<br/>" +
-          `Motif: ${archiveReason || "Aucun motif renseigné"}`
+          `Archivé le ${archiveCreationDate}<br/>${displayedArchivingReason}`
         );
       },
       allowHTML: true,
