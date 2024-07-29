@@ -8,7 +8,7 @@
     sheetName: @file_configuration.sheet_name,
     department: @department,
     motifCategoryName: @motif_category_name,
-    currentAgent: AgentBlueprint.render_as_json(current_agent, view: :extended),
+    currentAgent: current_agent,
     tags: (@organisation || @department).tags
   }
 ) %>
