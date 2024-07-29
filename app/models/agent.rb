@@ -44,8 +44,8 @@ class Agent < ApplicationRecord
     "#{first_name} #{last_name&.upcase}".strip
   end
 
-  def department_organisations(department)
-    organisations.select { |organisation| organisation.department_id == department.id }
+  def department_organisations(department_id)
+    organisations.select { |organisation| organisation.department_id == department_id }
   end
 
   private
