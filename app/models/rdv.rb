@@ -8,8 +8,10 @@ class Rdv < ApplicationRecord
   include RdvParticipationStatus
   include WebhookDeliverable
   include Rdv::FranceTravailWebhooks
+  include HasCurrentCategoryConfiguration
 
   after_commit :notify_participations_to_users, on: :update, if: :should_notify_users?
+  after_commit :notify_changes_to_external, on: [:update], if: :should_notify_external?
   after_commit :refresh_follow_up_statuses, on: [:create, :update]
 
   belongs_to :organisation
@@ -24,6 +26,7 @@ class Rdv < ApplicationRecord
   has_many :agents, through: :agents_rdvs
   has_many :users, through: :participations
   has_many :webhook_endpoints, through: :organisation
+  has_many :category_configurations, through: :organisation
 
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
@@ -72,6 +75,10 @@ class Rdv < ApplicationRecord
     organisation.phone_number
   end
 
+  def motif_category
+    follow_ups.first&.motif_category
+  end
+
   def participation_for(user)
     participations.find { |p| p.user_id == user.id }
   end
@@ -96,8 +103,16 @@ class Rdv < ApplicationRecord
     NotifyParticipationsToUsersJob.perform_async(notifiable_participations.map(&:id), :updated)
   end
 
+  def notify_changes_to_external
+    NotifyRdvChangesToExternalOrganisationEmailJob.perform_async(participation_ids, id, :updated)
+  end
+
   def should_notify_users?
     in_the_future? && notifiable_participations.any? && reason_to_notify?
+  end
+
+  def should_notify_external?
+    in_the_future? && reason_to_notify? && current_category_configuration&.notify_rdv_changes?
   end
 
   def reason_to_notify?

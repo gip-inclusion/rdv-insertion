@@ -3,7 +3,7 @@
     <div class="w-100 px-2">
       <p>Sélectionnez les agents non-administrateurs de votre organisation qui peuvent avoir accès à la fonctionnalité d'export&nbsp;:</p>
     </div>
-    <div class="w-100 px-2 scrollable">
+    <div class="w-100 px-2 scrollable-list">
       <% agent_roles.each do |agent_role| %>
         <div class="d-flex my-2">
           <%= f.check_box :agent_role_ids, { multiple: true, checked: authorized_agent_role_ids.include?(agent_role.id) ,class: "form-check-input" }, agent_role.id, nil %>

@@ -52,6 +52,10 @@ describe "Agents can create user through form", :js do
       expect(page).to have_content("Bob")
       expect(page).to have_content("Kelso")
       expect(page).to have_content("bob@kelso.com")
+
+      user = User.last
+      expect(user.created_through).to eq("rdv_insertion_user_form")
+      expect(user.created_from_structure).to eq(organisation)
     end
 
     context "from department page" do
@@ -85,10 +89,10 @@ describe "Agents can create user through form", :js do
         end
 
         it "creates user directly" do
-          expect(RetrieveGeolocalisation).to receive(:call)
+          expect(RetrieveAddressGeocodingParams).to receive(:call)
             .with(address:, department_number: organisation.department.number)
             .once
-            .and_return(OpenStruct.new(success?: true, city_code:, street_ban_id:))
+            .and_return(OpenStruct.new(success?: true, geocoding_params: { city_code:, street_ban_id: }))
 
           expect(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
             .once
@@ -166,6 +170,32 @@ describe "Agents can create user through form", :js do
           expect(page).to have_content("bob@kelso.com")
           expect(User.count).to eq(1)
           expect(User.last.email).to eq("bob@kelso.com")
+        end
+
+        context "for creation origin attributes" do
+          let!(:user) do
+            create(
+              :user,
+              nir: nir, email: nil, created_at: Time.zone.parse("04/05/2022"),
+              rdv_solidarites_user_id: rdv_solidarites_user_id,
+              created_through: "rdv_insertion_upload_page", created_from_structure: department
+            )
+          end
+
+          it "does not update them" do
+            visit new_organisation_user_path(organisation.id)
+
+            page.fill_in "user_first_name", with: "Bob"
+            page.fill_in "user_last_name", with: "Kelso"
+            page.fill_in "user_email", with: "bob@kelso.com"
+            page.fill_in "user_nir", with: nir
+
+            click_button("Enregistrer")
+            expect(page).to have_content("bob@kelso.com")
+            expect(User.count).to eq(1)
+            expect(User.last.created_through).to eq("rdv_insertion_upload_page")
+            expect(User.last.created_from_structure).to eq(department)
+          end
         end
       end
 

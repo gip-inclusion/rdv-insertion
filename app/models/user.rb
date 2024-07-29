@@ -20,6 +20,8 @@ class User < ApplicationRecord
   include User::Nir
   include User::AffiliationNumber
   include User::Referents
+  include User::CreationOrigin
+  include User::Geocodable
 
   attr_accessor :skip_uniqueness_validations
 
@@ -60,7 +62,6 @@ class User < ApplicationRecord
 
   enum role: { demandeur: "demandeur", conjoint: "conjoint" }
   enum title: { monsieur: "monsieur", madame: "madame" }
-  enum created_through: { rdv_insertion: "rdv_insertion", rdv_solidarites: "rdv_solidarites" }, _prefix: true
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
@@ -89,6 +90,10 @@ class User < ApplicationRecord
 
   def follow_up_for(motif_category)
     follow_ups.to_a.find { |rc| rc.motif_category_id == motif_category.id }
+  end
+
+  def department_numbers
+    departments.map(&:number)
   end
 
   def deleted?
@@ -141,6 +146,18 @@ class User < ApplicationRecord
 
   def in_many_departments?
     organisations.map(&:department_id).uniq.length > 1
+  end
+
+  def current_department
+    return if in_many_departments?
+
+    departments.first
+  end
+
+  def address_department
+    return if parsed_post_code.blank?
+
+    departments.find { |d| parsed_post_code.include?(d.number) }
   end
 
   def belongs_to_org?(organisation_id)

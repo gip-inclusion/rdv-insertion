@@ -1,4 +1,4 @@
-class TagBlueprint < Blueprinter::Base
+class TagBlueprint < ApplicationBlueprint
   identifier :id
   fields :value
 end

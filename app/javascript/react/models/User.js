@@ -242,7 +242,7 @@ export default class User {
     const previousValue = this[attribute];
     this[attribute] = value;
 
-    if (this.createdAt) {
+    if (this.createdAt && this.belongsToCurrentOrg()) {
       this.triggers[`${attribute}Update`] = true;
       // No need to resetErrors as we are updating only a single attribute
       // If any error occurs within handleUserUpdate it will be displayed as a modal anyway.
@@ -338,8 +338,8 @@ export default class User {
     return (
       // we select the next rdv in the future
       this.currentFollowUp.participations
-          .filter((participation) => new Date(participation.starts_at) > new Date(todaysDateString()))
-          .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0]
+        .filter((participation) => new Date(participation.starts_at) > new Date(todaysDateString()))
+        .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0]
     );
   }
 
@@ -392,8 +392,8 @@ export default class User {
   lastParticipationRdvStartsAt() {
     return this.hasParticipations()
       ? this.sortedParticipationsByRdvStartsAt()[
-          this.sortedParticipationsByRdvStartsAt().length - 1
-        ].starts_at
+        this.sortedParticipationsByRdvStartsAt().length - 1
+      ].starts_at
       : null;
   }
 
@@ -526,6 +526,9 @@ export default class User {
       ...(this.currentConfiguration && {
         follow_ups_attributes: [{ motif_category_id: this.currentConfiguration.motif_category_id }],
       }),
+      ...(!this.createdAt && { created_through: "rdv_insertion_upload_page" }),
+      ...(!this.createdAt && { created_from_structure_type: this.list.isDepartmentLevel ? "Department" : "Organisation" }),
+      ...(!this.createdAt && { created_from_structure_id: this.list.isDepartmentLevel ? this.department.id : this.currentOrganisation.id }),
     };
   }
 }

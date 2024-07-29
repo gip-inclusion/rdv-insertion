@@ -118,7 +118,8 @@ module InboundWebhooks
           User.create!(
             rdv_solidarites_user_id: user.id,
             organisations: [organisation],
-            created_through: "rdv_solidarites",
+            created_through: "rdv_solidarites_webhook",
+            created_from_structure: organisation,
             **user.attributes.slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES).compact_blank
           )
         end

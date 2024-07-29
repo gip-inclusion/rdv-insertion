@@ -26,7 +26,7 @@ module Invitations
 
     def invitations_params
       organisation_valid_invitations.includes(:user).select("DISTINCT ON (follow_up_id) *").to_a.map do |invitation|
-        invitation.link_params.merge(zip_code: invitation.user.zipcode).symbolize_keys
+        invitation.link_params.merge(post_code: invitation.user.parsed_post_code).symbolize_keys
       end
     end
 
@@ -46,23 +46,29 @@ module Invitations
     end
 
     def group_invitation_params_by_category(invitation_params)
-      motif_category_name = MotifCategory.find_by(short_name: invitation_params[:motif_category_short_name]).name
-      zip_code = invitation_params[:zip_code]
+      motif_category = MotifCategory.find_by(short_name: invitation_params[:motif_category_short_name])
+
+      post_code = invitation_params[:post_code]
       referent_ids = invitation_params[:referent_ids]
-      category_params_group = find_or_initialize_category_params_group(motif_category_name)
+      category_params_group = find_or_initialize_category_params_group(motif_category)
       category_params_group[:invitations_counter] += 1
-      category_params_group[:zip_codes].add(zip_code) if zip_code.present?
+      category_params_group[:post_codes].add(post_code) if post_code.present?
       category_params_group[:referent_ids].merge(referent_ids) if referent_ids.present?
     end
 
-    def find_or_initialize_category_params_group(motif_category_name)
+    def find_or_initialize_category_params_group(motif_category)
       category_params_group = @grouped_invitation_params_by_category.find do |m|
-        m[:motif_category_name] == motif_category_name
+        m[:motif_category_name] == motif_category.name
       end
       return category_params_group if category_params_group.present?
 
-      category_params_group = { motif_category_name: motif_category_name, zip_codes: Set.new, referent_ids: Set.new,
-                                invitations_counter: 0 }
+      category_params_group = {
+        motif_category_name: motif_category.name,
+        motif_category_id: motif_category.id,
+        post_codes: Set.new,
+        referent_ids: Set.new,
+        invitations_counter: 0
+      }
       @grouped_invitation_params_by_category << category_params_group
       category_params_group
     end

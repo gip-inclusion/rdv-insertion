@@ -42,14 +42,14 @@ module Exporters
       @users =
         if @motif_category
           User.preload(
-            :archives, :organisations, :tags, :referents, :rdvs,
+            :archives, :organisations, :tags, :referents, :rdvs, :address_geocoding,
             participations: [:organisation, :follow_up],
             follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations, :users] }],
             orientations: [:orientation_type, :organisation]
           ).find(@user_ids)
         else
           User.preload(
-            :invitations, :notifications, :archives, :organisations, :tags, :referents,
+            :invitations, :notifications, :archives, :organisations, :tags, :referents, :address_geocoding,
             follow_ups: [:motif_category, :participations, :rdvs],
             participations: [:organisation, :rdv, { follow_up: :motif_category }],
             rdvs: [:motif, :participations],
@@ -67,6 +67,8 @@ module Exporters
        User.human_attribute_name(:france_travail_id),
        User.human_attribute_name(:email),
        User.human_attribute_name(:address),
+       User.human_attribute_name(:post_code),
+       User.human_attribute_name(:city),
        User.human_attribute_name(:phone_number),
        User.human_attribute_name(:birth_date),
        User.human_attribute_name(:created_at),
@@ -107,6 +109,8 @@ module Exporters
        user.france_travail_id,
        user.email,
        user.address,
+       user.geocoded_post_code,
+       user.geocoded_city,
        user.phone_number,
        display_date(user.birth_date),
        display_date(user.created_at),

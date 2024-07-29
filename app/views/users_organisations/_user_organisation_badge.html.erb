@@ -7,7 +7,7 @@
       </span>
     <% end %>
   </span>
-  <% if with_delete %>
+  <% if with_delete && policy(organisation).unassign? %>
     <%
       if user.organisations.count > 1
         data = {

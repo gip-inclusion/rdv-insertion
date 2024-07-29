@@ -229,9 +229,14 @@ describe OrganisationsController do
 
     before do
       sign_in(agent)
-      allow(RetrieveGeolocalisation).to receive(:call)
+      allow(RetrieveAddressGeocodingParams).to receive(:call)
         .with(address: address, department_number: department.number)
-        .and_return(OpenStruct.new(success?: true, city_code: city_code, street_ban_id: street_ban_id))
+        .and_return(
+          OpenStruct.new(
+            success?: true,
+            geocoding_params: { city_code: city_code, street_ban_id: street_ban_id }
+          )
+        )
       allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
         .and_return(OpenStruct.new(success?: true, organisations: [rdv_solidarites_organisation]))
     end
@@ -298,7 +303,7 @@ describe OrganisationsController do
 
     context "when it fails to geolocate" do
       before do
-        allow(RetrieveGeolocalisation).to receive(:call)
+        allow(RetrieveAddressGeocodingParams).to receive(:call)
           .and_return(OpenStruct.new(success?: false, failure?: true))
       end
 

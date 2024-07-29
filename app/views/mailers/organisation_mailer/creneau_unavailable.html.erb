@@ -11,9 +11,9 @@
   <div class="margined-paragraph">
     <p><span class="font-weight-bold"><%= grouped_invitation_params[:motif_category_name] %></span></p>
     <p>Nombre d'invitations concernnées : <span class="font-weight-bold"><%= grouped_invitation_params[:invitations_counter] %></span></p>
-    <%= tag.p ("Les codes postaux concernés sont : #{grouped_invitation_params[:zip_codes].join(", ")}.*") if grouped_invitation_params[:zip_codes].present? %>
-    <%= tag.p ("Les email des référents concernés sont : #{Agent.where(rdv_solidarites_agent_id: grouped_invitation_params[:referent_ids]).map(&:email).join(", ")}.") if grouped_invitation_params[:referent_ids].present? %>
-    <%= tag.p tag.span("*Les codes postaux n'ont de l'importance que si la sectorisation est activée.", style: "color: grey;") if grouped_invitation_params[:zip_codes].present? %>
+    <%= tag.p ("Les codes postaux concernés sont : #{grouped_invitation_params[:post_codes].join(", ")}.*") if grouped_invitation_params[:post_codes].present? %>
+    <%= tag.p ("Les email des référents concernés sont : #{grouped_invitation_params[:referent_emails].join(", ")}.") if grouped_invitation_params[:referent_emails].present? %>
+    <%= tag.p tag.span("*Les codes postaux n'ont de l'importance que si la sectorisation est activée.", style: "color: grey;") if grouped_invitation_params[:post_codes].present? %>
   </div>
 <% end %>
 

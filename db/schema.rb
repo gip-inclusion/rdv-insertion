@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "address_geocodings", force: :cascade do |t|
+    t.string "post_code"
+    t.string "city_code"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "city"
+    t.string "department_number"
+    t.bigint "user_id", null: false
+    t.string "street"
+    t.string "house_number"
+    t.string "street_ban_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_address_geocodings_on_user_id"
   end
 
   create_table "agent_roles", force: :cascade do |t|
@@ -307,12 +323,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
 
-  create_table "organisations_webhook_endpoints", id: false, force: :cascade do |t|
-    t.bigint "organisation_id", null: false
-    t.bigint "webhook_endpoint_id", null: false
-    t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
-  end
-
   create_table "orientation_types", force: :cascade do |t|
     t.string "casf_category"
     t.string "name"
@@ -361,7 +371,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
     t.bigint "follow_up_id"
     t.string "created_by", null: false
     t.boolean "convocable", default: false, null: false
-    t.integer "rdv_solidarites_agent_prescripteur_id"
+    t.bigint "rdv_solidarites_agent_prescripteur_id"
     t.index ["follow_up_id"], name: "index_participations_on_follow_up_id"
     t.index ["status"], name: "index_participations_on_status"
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true
@@ -490,8 +500,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
     t.string "nir"
     t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
-    t.string "created_through", default: "rdv_insertion"
+    t.string "created_through"
     t.bigint "old_rdv_solidarites_user_id"
+    t.string "created_from_structure_type"
+    t.bigint "created_from_structure_id"
+    t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
@@ -515,6 +528,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
     t.datetime "updated_at", null: false
     t.string "subscriptions", array: true
     t.string "signature_type", default: "hmac"
+    t.bigint "organisation_id"
+    t.index ["organisation_id"], name: "index_webhook_endpoints_on_organisation_id"
   end
 
   create_table "webhook_receipts", force: :cascade do |t|
@@ -530,6 +545,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "address_geocodings", "users"
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "organisations"
