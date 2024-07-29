@@ -76,7 +76,7 @@ class Rdv < ApplicationRecord
   end
 
   def motif_category
-    follow_ups.first&.motif_category
+    participations.first&.motif_category
   end
 
   def participation_for(user)
