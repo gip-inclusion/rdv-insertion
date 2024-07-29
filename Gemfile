@@ -56,7 +56,7 @@ gem "sidekiq"
 gem "sidekiq-cron"
 
 # Advance queue management
-gem 'sidekiq-limit_fetch'
+gem "sidekiq-limit_fetch"
 
 # Hotwire
 gem "turbo-rails"
