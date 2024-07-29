@@ -15,7 +15,6 @@
             <div class="mx-2">
               <%= render "follow_ups/convocation_button",
                          user_id: user.id, motif_category_id: follow_up.motif_category_id,
-                         organisation_ids: department_level? ? user_department_organisations.ids : [organisation.id],
                          disabled: user_is_archived
               %>
             </div>

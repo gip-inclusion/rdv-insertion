@@ -56,7 +56,6 @@
             <td>
               <%= render "follow_ups/convocation_button",
                           user_id: user.id, motif_category_id: @current_motif_category.id,
-                          organisation_ids: @current_organisations.map(&:id) & user.organisation_ids,
                           disabled: false
               %>
             </td>

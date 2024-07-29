@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
+    resources :convocations, only: [:new]
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         get :default_list
@@ -105,8 +106,6 @@ Rails.application.routes.draw do
 
   resources :csv_exports, only: :show
 
-  resources :convocations, only: [:new]
-
   resources :participations, only: [:update]
   resources :follow_ups, only: [:create]
 
@@ -134,6 +133,7 @@ Rails.application.routes.draw do
   resources :departments, only: [] do
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
+    resources :convocations, only: [:new]
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
         scope module: :users do

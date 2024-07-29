@@ -23,6 +23,10 @@ module NavigationHelper
     send(:"new_#{current_structure_type}_user_path", **structure_id_param)
   end
 
+  def new_structure_convocation_path(**params)
+    send(:"new_#{current_structure_type}_convocation_path", { **structure_id_param, **params })
+  end
+
   def new_structure_upload_path(**params)
     send(:"new_#{current_structure_type}_upload_path", { **structure_id_param, **params })
   end

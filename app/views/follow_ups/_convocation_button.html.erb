@@ -5,7 +5,7 @@
 <% else %>
   <%=
     link_to(
-      new_convocation_path(motif_category_id: motif_category_id, organisation_ids: organisation_ids, user_id: user_id),
+      new_structure_convocation_path(motif_category_id: motif_category_id, user_id: user_id),
       data: { turbo_frame: "remote_modal" }
     ) do
   %>
