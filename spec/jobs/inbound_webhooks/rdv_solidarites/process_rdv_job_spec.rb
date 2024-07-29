@@ -239,7 +239,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               last_name: "Cameron",
               address: "50 rue Victor Hugo 93500 Pantin",
               phone_number: "0755929249",
-              created_through: "rdv_solidarites_webhook"
+              created_through: "rdv_solidarites_webhook",
+              created_from_structure: organisation
             )
             subject
           end
