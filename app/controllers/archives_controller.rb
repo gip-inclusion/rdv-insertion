@@ -18,10 +18,7 @@ class ArchivesController < ApplicationController
   end
 
   def create_many
-    @archives = create_many_archives_params[:organisation_ids].map do |organisation_id|
-      Archive.new(organisation_id:, user_id: create_many_archives_params[:user_id],
-                  archiving_reason: create_many_archives_params[:archiving_reason])
-    end
+    @archives = Archive.new_batch(**create_many_params)
     authorize_all @archives, :create
     Archive.transaction { @archives.each(&:save!) }
     redirect_to structure_user_path(params[:user_id])
@@ -48,21 +45,11 @@ class ArchivesController < ApplicationController
   private
 
   def archive_params
-    params.require(:archive).permit(:archiving_reason, :user_id, :organisation_id)
+    params.require(:archive).permit(:archiving_reason, :user_id, :organisation_id).to_h.deep_symbolize_keys
   end
 
-  def create_many_archives_params
-    params.require(:archives).permit(:user_id, :archiving_reason, organisation_ids: [])
-  end
-
-  def organisation_ids = create_many_archives_params[:organisation_ids]
-
-  def create_archives
-    @create_archives ||= Archives::CreateMany.call(
-      user_id: create_many_archives_params[:user_id],
-      archiving_reason: create_many_archives_params[:archiving_reason],
-      organisation_ids: create_many_archives_params[:organisation_ids]
-    )
+  def create_many_params
+    params.require(:archives).permit(:user_id, :archiving_reason, organisation_ids: []).to_h.deep_symbolize_keys
   end
 
   def set_user
@@ -70,8 +57,6 @@ class ArchivesController < ApplicationController
   end
 
   def set_organisation
-    return if department_level?
-
     @organisation = policy_scope(Organisation).find(current_organisation_id)
   end
 

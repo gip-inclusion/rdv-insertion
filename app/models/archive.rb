@@ -6,6 +6,12 @@ class Archive < ApplicationRecord
 
   after_create :invalidate_related_invitations
 
+  def self.new_batch(organisation_ids:, user_id:, archiving_reason:)
+    organisation_ids.map do |organisation_id|
+      new(organisation_id:, user_id:, archiving_reason:)
+    end
+  end
+
   private
 
   def invalidate_related_invitations
