@@ -16,6 +16,8 @@
           </thead>
           <tbody>
             <% FileConfiguration.column_attributes_names.each do |column_name| %>
+              <% user_attribute_name = FileConfiguration.matching_user_attribute_name(column_name) %>
+              <% next if user_attribute_name && !assignable_user_attribute?(User.new, user_attribute_name) %>
               <tr>
                 <td><%= FileConfiguration.human_attribute_name(column_name) %></td>
                 <td><%= f.text_field column_name %></td>

@@ -10,6 +10,8 @@ describe Users::Upsert, type: :service do
 
   describe "#call" do
     before do
+      allow(UserPolicy).to receive(:restricted_user_attributes_for)
+        .and_return([])
       allow(Users::FindOrInitialize).to receive(:call)
         .with(attributes: user_attributes, department_id: department.id)
         .and_return(OpenStruct.new(success?: true, user:))

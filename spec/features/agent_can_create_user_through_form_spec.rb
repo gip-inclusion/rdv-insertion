@@ -42,8 +42,6 @@ describe "Agents can create user through form", :js do
       page.fill_in "user_first_name", with: "Bob"
       page.fill_in "user_last_name", with: "Kelso"
       page.fill_in "user_email", with: "bob@kelso.com"
-      # page.fill_in "user_affiliation_number", with: "SOXZAOZA"
-      # page.select "demandeur", from: "role"
 
       click_button("Enregistrer")
 
@@ -397,6 +395,55 @@ describe "Agents can create user through form", :js do
           expect(page).to have_content("Bob")
           expect(page).to have_content("bob@kelso.com")
           expect(User.count).to eq(2)
+        end
+      end
+    end
+
+    context "it shows different attributes depending on organisation type" do
+      context "for a conseil departemental" do
+        before { organisation.update! organisation_type: "conseil_departemental" }
+
+        it "shows all the attributes" do
+          visit new_organisation_user_path(organisation.id)
+
+          expect(page).to have_content("Numéro de sécurité sociale")
+          expect(page).to have_content("ID interne au département")
+        end
+      end
+
+      context "for an siae" do
+        before { organisation.update! organisation_type: "siae" }
+
+        it "does not show nir and department_internal_idd" do
+          visit new_organisation_user_path(organisation.id)
+
+          expect(page).to have_no_content("Numéro de sécurité sociale")
+          expect(page).to have_no_content("ID interne au département")
+        end
+      end
+
+      context "for delegataire rsa" do
+        before { organisation.update! organisation_type: "delegataire_rsa" }
+
+        it "does not show nir and department_internal_idd" do
+          visit new_organisation_user_path(organisation.id)
+
+          expect(page).to have_no_content("Numéro de sécurité sociale")
+          expect(page).to have_content("ID interne au département")
+        end
+      end
+
+      context "on department page" do
+        before do
+          organisation.update! organisation_type: "delegataire_rsa"
+          organisation2.update! organisation_type: "conseil_departemental"
+        end
+
+        it "shows the lowest informations possible from the organisations" do
+          visit new_department_user_path(department.id)
+
+          expect(page).to have_no_content("Numéro de sécurité sociale")
+          expect(page).to have_content("ID interne au département")
         end
       end
     end
