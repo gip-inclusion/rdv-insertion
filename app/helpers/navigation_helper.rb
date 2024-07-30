@@ -57,33 +57,37 @@ module NavigationHelper
 
   def edit_structure_user_orientation_path(user_id, orientation_id)
     send(
-      :"edit_#{current_structure_type}_user_orientation_path", { user_id:, id: orientation_id, **structure_id_param }
+      :edit_user_orientation_path, { user_id:, id: orientation_id, **structure_id_param }
     )
   end
 
   def structure_user_orientation_path(user_id, orientation_id)
-    send(:"#{current_structure_type}_user_orientation_path", { user_id:, id: orientation_id, **structure_id_param })
+    send(:user_orientation_path, { user_id:, id: orientation_id, **structure_id_param })
   end
 
   def structure_user_orientations_path(user_id)
-    send(:"#{current_structure_type}_user_orientations_path", { user_id:, **structure_id_param })
+    send(:user_orientations_path, { user_id:, **structure_id_param })
   end
 
   def new_structure_user_orientation_path(user_id)
-    send(:"new_#{current_structure_type}_user_orientation_path", { user_id:, **structure_id_param })
+    send(:new_user_orientation_path, { user_id:, **structure_id_param })
   end
 
   def structure_user_parcours_document_path(user_id, parcours_document_id)
-    send(:"#{current_structure_type}_user_parcours_document_path",
+    send(:user_parcours_document_path,
          { user_id:, id: parcours_document_id, **structure_id_param })
   end
 
   def structure_user_parcours_documents_path(user_id)
-    send(:"#{current_structure_type}_user_parcours_documents_path", { user_id:, **structure_id_param })
+    send(:user_parcours_documents_path, { user_id:, **structure_id_param })
   end
 
   def structure_tag_assignations_path(user_id, **params)
-    send(:"#{current_structure_type}_tag_assignations_path", { user_id:, **structure_id_param, **params })
+    send(:user_tag_assignations_path, { user_id:, **structure_id_param, **params })
+  end
+
+  def structure_tag_assignation_path(user_id, tag_id)
+    send(:user_tag_assignation_path, user_id, tag_id, **structure_id_param)
   end
 
   def structure_users_organisations_path(user_id, **params)
@@ -91,7 +95,11 @@ module NavigationHelper
   end
 
   def structure_referent_assignations_path(user_id, **params)
-    send(:"#{current_structure_type}_referent_assignations_path", { user_id:, **structure_id_param, **params })
+    send(:user_referent_assignations_path, { user_id:, **structure_id_param, **params })
+  end
+
+  def structure_referent_assignation_path(agent_id, user_id)
+    send(:user_referent_assignation_path, agent_id, user_id, **structure_id_param)
   end
 
   def structure_follow_up_closings_path(follow_up_id)
