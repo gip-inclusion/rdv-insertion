@@ -210,6 +210,36 @@ describe "Agents can upload user list", :js do
       end
     end
 
+    describe "cannot assign all the attributes depending on the organisation type" do
+      before { organisation.update! organisation_type: "siae" }
+
+      it "cannot asssign nir and department_internal_id for SIAE" do
+        visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
+
+        expect(page).to have_content("Choisissez un fichier d'usagers")
+        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                    make_visible: true)
+
+        click_button("Créer compte")
+
+        expect(page).to have_css("i.fas.fa-link")
+
+        user = User.last
+
+        expect(user.first_name).to eq("Hernan")
+        expect(user.last_name).to eq("Crespo")
+        expect(user.affiliation_number).to eq("ISQCJQO")
+        expect(user.title).to eq("monsieur")
+        expect(user.role).to eq("demandeur")
+        expect(user.email).to eq("hernan@crespo.com")
+        expect(user.phone_number).to eq("+33620022002")
+        expect(user.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
+
+        expect(user.nir).to be_nil
+        expect(user.department_internal_id).to be_nil
+      end
+    end
+
     describe "Users matching" do
       describe "nir matching" do
         context "when the user is in the same org" do
@@ -257,9 +287,9 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            expect(page).to have_content("Ajouter à cette organisation")
+            expect(page).to have_content("Créer compte")
 
-            click_button("Ajouter à cette organisation")
+            click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             expect(page).to have_css(
@@ -304,55 +334,55 @@ describe "Agents can upload user list", :js do
           end
         end
 
-        context "when the user is in another org" do
-          context "in the same department" do
-            let!(:user) do
-              create(
-                :user,
-                role: "demandeur", affiliation_number: "ISQCJQO",
-                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
-                phone_number: "+33782605941", email: "hernan@crespa.com",
-                organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
-              )
-            end
+        context "when the user is in another org common with the agent" do
+          let!(:agent) { create(:agent, organisations: [organisation, other_org_from_same_department]) }
 
-            it "can add the user to the org" do
-              visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
-
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
-                          make_visible: true)
-
-              expect(page).to have_content("Ajouter à cette organisation")
-
-              ## it does not display the db attributes
-              expect(page).to have_no_content("Crespa")
-              expect(page).to have_no_content("+33782605941")
-              expect(page).to have_no_content("hernan@crespa.com")
-              expect(page).to have_content("Cresp")
-              expect(page).to have_content("0620022002")
-              expect(page).to have_content("hernan@crespo.com")
-
-              click_button("Ajouter à cette organisation")
-
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_css(
-                "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
-              )
-
-              expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
-              expect(user.reload.first_name).to eq("Hernan")
-              expect(user.reload.last_name).to eq("Crespo")
-              expect(user.reload.affiliation_number).to eq("ISQCJQO")
-              expect(user.reload.title).to eq("monsieur")
-              expect(user.reload.role).to eq("demandeur")
-              expect(user.reload.nir).to eq("180333147687266")
-              expect(user.reload.email).to eq("hernan@crespo.com")
-              expect(user.reload.phone_number).to eq("+33620022002")
-              expect(user.reload.department_internal_id).to eq("8383")
-            end
+          let!(:user) do
+            create(
+              :user,
+              role: "demandeur", affiliation_number: "ISQCJQO",
+              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              phone_number: "+33782605941", email: "hernan@crespa.com",
+              organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+            )
           end
 
-          context "when the nir of does not match with the user in the db" do
+          it "can add the user to the org" do
+            visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
+
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
+
+            expect(page).to have_content("Ajouter à cette organisation")
+
+            ## it does not display the db attributes
+            expect(page).to have_no_content("Crespa")
+            expect(page).to have_no_content("+33782605941")
+            expect(page).to have_no_content("hernan@crespa.com")
+            expect(page).to have_content("Cresp")
+            expect(page).to have_content("0620022002")
+            expect(page).to have_content("hernan@crespo.com")
+
+            click_button("Ajouter à cette organisation")
+
+            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            )
+
+            expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
+            expect(user.reload.first_name).to eq("Hernan")
+            expect(user.reload.last_name).to eq("Crespo")
+            expect(user.reload.affiliation_number).to eq("ISQCJQO")
+            expect(user.reload.title).to eq("monsieur")
+            expect(user.reload.role).to eq("demandeur")
+            expect(user.reload.nir).to eq("180333147687266")
+            expect(user.reload.email).to eq("hernan@crespo.com")
+            expect(user.reload.phone_number).to eq("+33620022002")
+            expect(user.reload.department_internal_id).to eq("8383")
+          end
+
+          context "when the nir does not match with the user in the db" do
             let!(:user) do
               create(
                 :user,
@@ -391,7 +421,8 @@ describe "Agents can upload user list", :js do
           end
         end
 
-        context "in another department" do
+        context "when the user is in another org common with the agent in another department" do
+          let!(:agent) { create(:agent, organisations: [organisation, other_org_from_other_department]) }
           let!(:user) do
             create(
               :user,
@@ -451,9 +482,9 @@ describe "Agents can upload user list", :js do
               attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                           make_visible: true)
 
-              expect(page).to have_content("Ajouter à cette organisation")
+              expect(page).to have_content("Créer compte")
 
-              click_button("Ajouter à cette organisation")
+              click_button("Créer compte")
 
               expect(page).to have_css("i.fas.fa-link")
               expect(page).to have_css(
@@ -532,9 +563,9 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            expect(page).to have_content("Ajouter à cette organisation")
+            expect(page).to have_content("Créer compte")
 
-            click_button("Ajouter à cette organisation")
+            click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             expect(page).to have_css(
@@ -593,9 +624,9 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            expect(page).to have_content("Ajouter à cette organisation")
+            expect(page).to have_content("Créer compte")
 
-            click_button("Ajouter à cette organisation")
+            click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             expect(page).to have_css(
@@ -902,9 +933,9 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            expect(page).to have_content("Ajouter à cette organisation")
+            expect(page).to have_content("Créer compte")
 
-            click_button("Ajouter à cette organisation")
+            click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             expect(page).to have_css(
@@ -949,46 +980,95 @@ describe "Agents can upload user list", :js do
           end
         end
 
-        context "when the user is in another org" do
-          context "in the same department" do
+        context "when the user is in another org common with the agent" do
+          let!(:agent) { create(:agent, organisations: [organisation, other_org_from_same_department]) }
+
+          let!(:user) do
+            create(
+              :user,
+              role: "demandeur", affiliation_number: "ISQCJQO",
+              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              phone_number: "+33782605941", email: "hernan@crespa.com",
+              organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+            )
+          end
+
+          it "can add the user to the org" do
+            visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
+
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
+
+            ## it does not display the db attributes
+            expect(page).to have_no_content("Crespa")
+            expect(page).to have_no_content("+33782605941")
+            expect(page).to have_no_content("hernan@crespa.com")
+            expect(page).to have_content("Cresp")
+            expect(page).to have_content("0620022002")
+            expect(page).to have_content("hernan@crespo.com")
+
+            expect(page).to have_content("Ajouter à cette organisation")
+
+            click_button("Ajouter à cette organisation")
+
+            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            )
+
+            expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
+            expect(user.reload.first_name).to eq("Hernan")
+            expect(user.reload.last_name).to eq("Crespo")
+            expect(user.reload.affiliation_number).to eq("ISQCJQO")
+            expect(user.reload.title).to eq("monsieur")
+            expect(user.reload.role).to eq("demandeur")
+            expect(user.reload.nir).to eq("180333147687266")
+            expect(user.reload.email).to eq("hernan@crespo.com")
+            expect(user.reload.phone_number).to eq("+33620022002")
+            expect(user.reload.department_internal_id).to eq("8383")
+          end
+
+          context "when the nir does not match with the user in the db" do
             let!(:user) do
               create(
                 :user,
-                role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
+                role: "demandeur", affiliation_number: "ISQCJQO",
+                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+                phone_number: "+33782605941", email: "hernan@crespa.com", nir: generate_random_nir,
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
 
-            it "can add the user to the org" do
+            it "fails to add the user to the org" do
               visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
 
               attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                           make_visible: true)
 
+              ## it does not display the db attributes
+              expect(page).to have_no_content("Crespa")
+              expect(page).to have_no_content("+33782605941")
+              expect(page).to have_no_content("hernan@crespa.com")
+              expect(page).to have_content("Cresp")
+              expect(page).to have_content("0620022002")
+              expect(page).to have_content("hernan@crespo.com")
+
               expect(page).to have_content("Ajouter à cette organisation")
 
               click_button("Ajouter à cette organisation")
 
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_css(
-                "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+              # it did not add the user
+              expect(page).to have_content("Ajouter à cette organisation")
+              expect(page).to have_no_css("i.fas.fa-link")
+              expect(page).to have_content(
+                "Le bénéficiaire #{user.id} a les mêmes attributs mais un nir différent"
               )
-
-              expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
-              expect(user.reload.first_name).to eq("Hernan")
-              expect(user.reload.last_name).to eq("Crespo")
-              expect(user.reload.affiliation_number).to eq("ISQCJQO")
-              expect(user.reload.title).to eq("monsieur")
-              expect(user.reload.role).to eq("demandeur")
-              expect(user.reload.nir).to eq("180333147687266")
-              expect(user.reload.email).to eq("hernan@crespo.com")
-              expect(user.reload.phone_number).to eq("+33620022002")
-              expect(user.reload.department_internal_id).to eq("8383")
             end
           end
         end
 
-        context "in another department" do
+        context "when the user is in another org common with the agent in another department" do
+          let!(:agent) { create(:agent, organisations: [organisation, other_org_from_other_department]) }
           let!(:user) do
             create(
               :user,
@@ -1048,9 +1128,9 @@ describe "Agents can upload user list", :js do
               attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                           make_visible: true)
 
-              expect(page).to have_content("Ajouter à cette organisation")
+              expect(page).to have_content("Créer compte")
 
-              click_button("Ajouter à cette organisation")
+              click_button("Créer compte")
 
               expect(page).to have_css("i.fas.fa-link")
               expect(page).to have_css(
@@ -1129,9 +1209,9 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            expect(page).to have_content("Ajouter à cette organisation")
+            expect(page).to have_content("Créer compte")
 
-            click_button("Ajouter à cette organisation")
+            click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             expect(page).to have_css(
@@ -1208,9 +1288,9 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            expect(page).to have_content("Ajouter à cette organisation")
+            expect(page).to have_content("Créer compte")
 
-            click_button("Ajouter à cette organisation")
+            click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             expect(page).to have_css(

@@ -13,7 +13,8 @@ describe "Rdv API", swagger_doc: "v1/api.json" do
       end
       let!(:category_configuration) { create(:category_configuration, motif_category: category_rsa_orientation) }
       let!(:motif) { create(:motif, motif_category: category_rsa_orientation) }
-      let!(:rdv) { create(:rdv, uuid:, organisation:, motif:) }
+      let!(:rdv) { create(:rdv, uuid:, organisation:, motif:, participations: [create(:participation, user:)]) }
+      let!(:user) { create(:user, organisations: [organisation]) }
       let!(:agent) { create(:agent, organisations: [organisation]) }
 
       tags "Rdv"

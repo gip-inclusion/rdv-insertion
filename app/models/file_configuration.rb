@@ -13,6 +13,10 @@ class FileConfiguration < ApplicationRecord
     attribute_names.select { |attribute_name| attribute_name.end_with?("column") }
   end
 
+  def self.matching_user_attribute_name(attribute_name)
+    User.attribute_names.find { |n| n == attribute_name.delete_suffix("_column") }
+  end
+
   private
 
   def column_names_uniqueness

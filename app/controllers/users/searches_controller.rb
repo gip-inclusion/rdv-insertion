@@ -10,7 +10,7 @@ module Users
 
     def search_users
       @users =
-        User
+        policy_scope(User)
         .active
         .where(id: search_in_all_users.ids + search_in_department_organisations.ids)
         .preload(
