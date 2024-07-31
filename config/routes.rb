@@ -65,7 +65,6 @@ Rails.application.routes.draw do
     resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :tags, only: [:create, :destroy]
-    resources :users_organisations, only: [:index, :create, :destroy]
     resources :agent_roles, module: :agent_roles, only: [] do
       collection do
         resources :csv_export_authorizations, only: [:index]
@@ -104,6 +103,8 @@ Rails.application.routes.draw do
 
   resources :participations, only: [:update]
   resources :follow_ups, only: [:create]
+  resources :users_organisations, only: [:index, :create]
+  resource :users_organisations, only: [:destroy]
 
   namespace :users do
     resources :searches, only: :create
@@ -145,7 +146,6 @@ Rails.application.routes.draw do
         resource :parcours, only: [:show]
       end
       resources :invitations, only: [:create]
-      resources :archives, only: [:new, :create]
     end
     resources :follow_ups, module: :follow_ups, only: [] do
       resource :closings, only: [:create, :destroy]

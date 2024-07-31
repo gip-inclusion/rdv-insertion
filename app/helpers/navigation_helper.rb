@@ -3,114 +3,24 @@ module NavigationHelper
     department_level? ? { department_id: current_department_id } : { organisation_id: current_organisation_id }
   end
 
-  def structure_users_path(**params)
-    send(:"#{current_structure_type}_users_path", { **structure_id_param, **params.compact_blank })
+  def method_missing(method_name, params = {}, additional_params = {})
+    if method_name.to_s.ends_with?("_with_structure")
+      send(method_name.to_s.gsub("_with_structure", ""), { **params, **structure_id_param })
+    elsif method_name.to_s.include?("structure")
+      params = { id: params } if params.is_a?(Integer)
+
+      send(
+        method_name.to_s.gsub("structure", current_structure_type),
+        {
+          **structure_id_param,
+          **params,
+          **additional_params
+        }
+      )
+    end
   end
 
-  def structure_category_configurations_positions_update_path
-    send(:"#{current_structure_type}_category_configurations_positions_update_path", structure_id_param)
-  end
-
-  def edit_structure_user_path(user_id)
-    send(:"edit_#{current_structure_type}_user_path", { id: user_id, **structure_id_param })
-  end
-
-  def structure_user_path(user_id, **params)
-    send(:"#{current_structure_type}_user_path", { id: user_id, **structure_id_param, **params })
-  end
-
-  def structure_user_archives_path(user_id)
-    send(:archives_path, { user_id: user_id, **structure_id_param })
-  end
-
-  def new_structure_user_path
-    send(:"new_#{current_structure_type}_user_path", **structure_id_param)
-  end
-
-  def new_structure_upload_path(**params)
-    send(:"new_#{current_structure_type}_upload_path", { **structure_id_param, **params })
-  end
-
-  def new_structure_user_archive_path(**params)
-    send(:new_archive_path, { **structure_id_param, **params })
-  end
-
-  def uploads_category_selection_structure_users_path(**params)
-    send(:"uploads_category_selection_#{current_structure_type}_users_path", { **structure_id_param, **params })
-  end
-
-  def structure_user_invitations_path(user_id, **params)
-    send(:"#{current_structure_type}_user_invitations_path", { user_id:, **structure_id_param, **params })
-  end
-
-  def structure_user_follow_ups_path(user_id, **params)
-    send(:"#{current_structure_type}_user_follow_ups_path", { user_id:, **structure_id_param, **params })
-  end
-
-  def new_structure_batch_action_path(motif_category_id)
-    send(:"new_#{current_structure_type}_batch_action_path", { **structure_id_param, motif_category_id: })
-  end
-
-  def structure_parcours_path(user_id)
-    send(:"#{current_structure_type}_user_parcours_path", { user_id:, **structure_id_param })
-  end
-
-  def edit_structure_user_orientation_path(user_id, orientation_id)
-    send(
-      :edit_user_orientation_path, { user_id:, id: orientation_id, **structure_id_param }
-    )
-  end
-
-  def structure_user_orientation_path(user_id, orientation_id)
-    send(:user_orientation_path, { user_id:, id: orientation_id, **structure_id_param })
-  end
-
-  def structure_user_orientations_path(user_id)
-    send(:user_orientations_path, { user_id:, **structure_id_param })
-  end
-
-  def new_structure_user_orientation_path(user_id)
-    send(:new_user_orientation_path, { user_id:, **structure_id_param })
-  end
-
-  def structure_user_parcours_document_path(user_id, parcours_document_id)
-    send(:user_parcours_document_path,
-         { user_id:, id: parcours_document_id, **structure_id_param })
-  end
-
-  def structure_user_parcours_documents_path(user_id)
-    send(:user_parcours_documents_path, { user_id:, **structure_id_param })
-  end
-
-  def structure_tag_assignations_path(user_id, **params)
-    send(:user_tag_assignations_path, { user_id:, **structure_id_param, **params })
-  end
-
-  def structure_tag_assignation_path(user_id, tag_id)
-    send(:user_tag_assignation_path, user_id, tag_id, **structure_id_param)
-  end
-
-  def structure_users_organisations_path(user_id, **params)
-    send(:"#{current_structure_type}_users_organisations_path", { user_id:, **structure_id_param, **params })
-  end
-
-  def structure_referent_assignations_path(user_id, **params)
-    send(:user_referent_assignations_path, { user_id:, **structure_id_param, **params })
-  end
-
-  def structure_referent_assignation_path(agent_id, user_id)
-    send(:user_referent_assignation_path, agent_id, user_id, **structure_id_param)
-  end
-
-  def structure_follow_up_closings_path(follow_up_id)
-    send(:"#{current_structure_type}_follow_up_closings_path", { follow_up_id:, **structure_id_param })
-  end
-
-  def new_structure_creation_dates_filtering_path(url_params)
-    send(:"new_#{current_structure_type}_creation_dates_filtering_path", { **structure_id_param, **url_params })
-  end
-
-  def new_structure_invitation_dates_filtering_path(url_params)
-    send(:"new_#{current_structure_type}_invitation_dates_filtering_path", { **structure_id_param, **url_params })
+  def respond_to_missing?(method_name, include_private = false)
+    method_name.to_s.include?("structure") || super
   end
 end
