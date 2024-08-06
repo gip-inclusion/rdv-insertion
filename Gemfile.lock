@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/gip-inclusion/agent_connect_engine
-  revision: c0b5c2787eaaf79fe80d85d3b6984cde74911fa8
+  revision: 1bfb17fb43cc9267ec6d63cd1ab36f31fb2d4d53
   specs:
     agent_connect (0.1.0)
       openid_connect (>= 2)

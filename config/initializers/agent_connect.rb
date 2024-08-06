@@ -4,6 +4,7 @@ unless Rails.env.test?
     config.client_secret = ENV["AGENT_CONNECT_CLIENT_SECRET"]
     config.scope = "openid email"
     config.base_url = ENV["AGENT_CONNECT_BASE_URL"]
+    config.algorithm = "RS256"
 
     config.success_callback = lambda do |user_info|
       agent = Agent.find_by(email: user_info.email)
