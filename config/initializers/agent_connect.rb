@@ -10,7 +10,7 @@ unless Rails.env.test?
       agent = Agent.find_by(email: user_info.user_email)
 
       Sentry.capture_message("AgentConnect success_callback", extra: { user_info: user_info, agent: agent })
-      if agent && agent.update(last_sign_in_at: Time.zone.from_now)
+      if agent && agent.update(last_sign_in_at: Time.zone.now)
         timestamp = Time.zone.now.to_i
         session[:agent_auth] = {
           id: agent.id,
