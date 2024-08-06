@@ -19,16 +19,16 @@ unless Rails.env.test?
           created_at: timestamp,
           agent_connect_id_token: user_info.id_token_for_logout
         }
-        redirect_to session[:agent_return_to] || root_path
+        redirect_to session[:agent_return_to] || Rails.application.routes.url_helpers.root_path
       else
         flash[:error] = "Nous n'avons pas pu vous connecter. Veuillez réessayer."
-        redirect_to "/sign_in"
+        redirect_to Rails.application.routes.url_helpers.sign_in_path
       end
     end
 
     config.error_callback = lambda do |_|
       flash[:error] = "Nous n'avons pas pu vous connecter. Veuillez réessayer."
-      redirect_to "/sign_in"
+      redirect_to Rails.application.routes.url_helpers.sign_in_path
     end
   end
 end
