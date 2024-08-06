@@ -24,13 +24,13 @@ unless Rails.env.test?
         redirect_to session[:agent_return_to] || root_path
       else
         flash[:error] = "Nous n'avons pas pu vous connecter. Veuillez réessayer."
-        redirect_to sign_in_path
+        redirect_to "/sign_in"
       end
     end
 
     config.error_callback = lambda do |_|
       flash[:error] = "Nous n'avons pas pu vous connecter. Veuillez réessayer."
-      redirect_to sign_in_path
+      redirect_to "/sign_in"
     end
   end
 end
