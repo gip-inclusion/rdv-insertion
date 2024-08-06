@@ -28,7 +28,7 @@ unless Rails.env.test?
       end
     end
 
-    config.error_callback = lambda do
+    config.error_callback = lambda do |_|
       flash[:error] = "Nous n'avons pas pu vous connecter. Veuillez réessayer."
       redirect_to sign_in_path
     end
