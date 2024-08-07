@@ -1,8 +1,9 @@
 GIT
   remote: https://github.com/gip-inclusion/agent_connect_engine
-  revision: 1bfb17fb43cc9267ec6d63cd1ab36f31fb2d4d53
+  revision: e6125135d65ea213ee806b322a3bd2f211e88e53
   specs:
     agent_connect (0.1.0)
+      jwt (= 2.7.1)
       openid_connect (>= 2)
       rails (>= 7.0.8.4)
       typhoeus (>= 1.4.0)
