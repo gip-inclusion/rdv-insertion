@@ -20,7 +20,8 @@ unless Rails.env.test?
         }
         redirect_to session[:agent_return_to] || Rails.application.routes.url_helpers.root_path
       else
-        flash[:error] = "Nous n'avons pas pu vous connecter. Veuillez réessayer."
+        flash[:error] = "Il n'y a pas de compte agent pour l'adresse mail #{user_info.user_email}.
+          Vous devez utiliser Agent Connect avec l'adresse mail à laquelle vous avez reçu votre invitation"
         redirect_to Rails.application.routes.url_helpers.sign_in_path
       end
     end
