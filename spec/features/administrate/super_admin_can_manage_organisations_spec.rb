@@ -119,20 +119,6 @@ describe "Super admin can manage organisations" do
     before { visit new_super_admins_organisation_path }
 
     it "can create an organisation" do
-      stub_retrieve_rdv_solidarites_organisation = stub_request(
-        :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{new_organisation_rdv_solidarites_id}"
-      ).to_return(
-        status: 200,
-        body: {
-          organisation: {
-            id: new_organisation_rdv_solidarites_id,
-            email: "some@email.fr",
-            name: "Some name",
-            phone_number: "0102030405",
-            verticale: "rdv_solidarites"
-          }
-        }.to_json
-      )
       stub_retrieve_webhook_endpoint = stub_request(
         :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{new_organisation_rdv_solidarites_id}/" \
               "webhook_endpoints?target_url=#{ENV['HOST']}/rdv_solidarites_webhooks"
@@ -154,21 +140,6 @@ describe "Super admin can manage organisations" do
           }
         }.to_json
       )
-      stub_update_rdv_solidarites_organisation = stub_request(
-        :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{new_organisation_rdv_solidarites_id}"
-      ).to_return(
-        status: 200,
-        body: {
-          organisation: {
-            id: new_organisation_rdv_solidarites_id,
-            email: "some@email.fr",
-            name: "Some name",
-            phone_number: "0102030405",
-            verticale: "rdv_insertion"
-          }
-        }.to_json
-      )
-
       expect(page).to have_current_path(new_super_admins_organisation_path)
       expect(page).to have_content("Création Organisation")
       expect(page).to have_css(
@@ -186,16 +157,14 @@ describe "Super admin can manage organisations" do
 
       click_button("Enregistrer")
 
-      expect(stub_retrieve_rdv_solidarites_organisation).to have_been_requested
       expect(stub_retrieve_webhook_endpoint).to have_been_requested.at_least_once
       expect(stub_create_webhook_endpoint).to have_been_requested
-      expect(stub_update_rdv_solidarites_organisation).to have_been_requested
       expect(page).to have_current_path(super_admins_organisation_path(Organisation.last))
       expect(page).to have_content("Organisation a été correctement créé(e)")
-      expect(page).to have_content("Détails Some name")
+      expect(page).to have_content("Détails")
     end
 
-    context "when a required attribute is missing" do
+    context "when an attribute is incorrect" do
       it "returns an error" do
         stub_retrieve_rdv_solidarites_organisation = stub_request(
           :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{new_organisation_rdv_solidarites_id}"
@@ -227,13 +196,12 @@ describe "Super admin can manage organisations" do
 
         click_button("Enregistrer")
 
-        expect(stub_retrieve_rdv_solidarites_organisation).to have_been_requested
+        expect(stub_retrieve_rdv_solidarites_organisation).not_to have_been_requested
         expect(stub_retrieve_webhook_endpoint).not_to have_been_requested.at_least_once
         expect(stub_create_webhook_endpoint).not_to have_been_requested
         expect(stub_update_rdv_solidarites_organisation).not_to have_been_requested
         expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)")
         expect(page).to have_content("Département doit exister")
-        expect(page).to have_no_content("Détails Some name")
       end
     end
   end
@@ -292,7 +260,7 @@ describe "Super admin can manage organisations" do
       expect(page).to have_content("Détails Some other name")
     end
 
-    context "when a required attribute is missing" do
+    context "when a required attribute is incorrect" do
       it "returns an error" do
         stub_update_rdv_solidarites_organisation = stub_request(
           :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{organisation1.rdv_solidarites_organisation_id}"
@@ -300,14 +268,14 @@ describe "Super admin can manage organisations" do
 
         expect(page).to have_current_path(edit_super_admins_organisation_path(organisation1))
 
-        fill_in "organisation_name", with: ""
+        fill_in "organisation_email", with: "someemail.fr"
 
         click_button("Enregistrer")
 
         expect(stub_update_rdv_solidarites_organisation).not_to have_been_requested
         expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)")
-        expect(page).to have_content("Nom doit être rempli(e)")
-        expect(page).to have_no_content("Détails #{organisation1.name} (#{department1.name})")
+        expect(page).to have_content("Email n'est pas valide")
+        expect(page).to have_content("Détails #{organisation1.name} (#{department1.name})")
       end
     end
   end

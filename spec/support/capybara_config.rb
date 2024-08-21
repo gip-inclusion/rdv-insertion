@@ -6,6 +6,7 @@ Capybara.register_driver :selenium do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.chrome
 
   browser_options.add_argument("--window-size=1500,1000")
+  browser_options.add_argument("--disable-search-engine-choice-screen")
 
   unless ENV["WITH_BROWSER_VISIBLE"]
     browser_options.add_argument("--headless")
