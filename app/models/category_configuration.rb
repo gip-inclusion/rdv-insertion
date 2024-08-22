@@ -7,7 +7,7 @@ class CategoryConfiguration < ApplicationRecord
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
-  validate :delays_validity, :invitation_formats_validity
+  validate :delays_validity, :invitation_formats_validity, :phone_number_presence
 
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
@@ -54,5 +54,12 @@ class CategoryConfiguration < ApplicationRecord
 
       errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
     end
+  end
+
+  def phone_number_presence
+    return if phone_number.present? || organisation.phone_number.present?
+
+    errors.add(:base, "Vous devez renseigner un numéro de téléphone soit dans la configuration de la catégorie, " \
+                      "soit dans la configuration de l'organisation")
   end
 end

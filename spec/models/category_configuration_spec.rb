@@ -1,4 +1,37 @@
 describe CategoryConfiguration do
+  describe "phone number validation" do
+    context "organisation phone number is blank" do
+      let(:category_configuration) do
+        build(:category_configuration, phone_number: nil, convene_user: true,
+                                       organisation: create(:organisation, phone_number: nil))
+      end
+
+      it "adds errors" do
+        expect(category_configuration).not_to be_valid
+        expect(category_configuration.errors.full_messages.to_sentence)
+          .to include("téléphone")
+      end
+    end
+
+    context "organisation has a phone number" do
+      let(:category_configuration) do
+        build(:category_configuration, phone_number: nil, convene_user: true,
+                                       organisation: create(:organisation, phone_number: "0123456789"))
+      end
+
+      it { expect(category_configuration).to be_valid }
+    end
+
+    context "category configuration has a phone number" do
+      let(:category_configuration) do
+        build(:category_configuration, phone_number: "0123456789", convene_user: true,
+                                       organisation: create(:organisation, phone_number: nil))
+      end
+
+      it { expect(category_configuration).to be_valid }
+    end
+  end
+
   describe "delays validation" do
     context "number_of_days_before_action_required is superior to 3" do
       let(:category_configuration) do

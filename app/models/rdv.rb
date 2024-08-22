@@ -72,7 +72,7 @@ class Rdv < ApplicationRecord
   def phone_number
     return lieu.phone_number if lieu&.phone_number.present?
 
-    organisation.phone_number
+    current_category_configuration.phone_number
   end
 
   def motif_category
