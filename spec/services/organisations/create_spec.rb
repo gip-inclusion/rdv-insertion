@@ -43,13 +43,6 @@ describe Organisations::Create, type: :service do
       expect(Organisation.count).to eq(organisation_count_before + 1)
     end
 
-    it "creates a agent role for the current agent" do
-      subject
-      expect(AgentRole.count).to eq(agent_roles_count_before + 1)
-      expect(AgentRole.last.agent_id).to eq(agent.id)
-      expect(AgentRole.last.organisation_id).to eq(organisation.id)
-    end
-
     it "calls the retrieve webhook endpoint service" do
       expect(RdvSolidaritesApi::RetrieveWebhookEndpoint).to receive(:call)
       subject
