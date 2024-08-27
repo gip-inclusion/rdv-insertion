@@ -1,3 +1,5 @@
+class WebhookProcessingJobError < StandardError; end
+
 module InboundWebhooks
   module RdvSolidarites
     class ProcessOrganisationJob < ApplicationJob
@@ -7,16 +9,17 @@ module InboundWebhooks
         return if organisation.blank?
         return if event == "destroyed"
 
-        send_invalid_verticale_to_sentry unless verticale_is_valid?
+        raise_invalid_verticale unless verticale_is_valid?
         update_organisation
       end
 
       private
 
-      def send_invalid_verticale_to_sentry
+      def raise_invalid_verticale
         Sentry.capture_message(
           "Verticale attribute is not valid for rdv_solidarites_organisation_id : #{rdv_solidarites_organisation_id}"
         )
+        raise WebhookProcessingJobError, "Verticale attribute is not valid"
       end
 
       def verticale_is_valid?

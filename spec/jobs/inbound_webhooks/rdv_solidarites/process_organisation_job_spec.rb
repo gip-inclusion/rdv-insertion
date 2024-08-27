@@ -8,7 +8,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessOrganisationJob do
       "id" => rdv_solidarites_organisation_id,
       "name" => "CD 28",
       "email" => "contact@cd28.fr",
-      "phone_number" => "+33624242424"
+      "phone_number" => "+33624242424",
+      "verticale" => "rdv_insertion"
     }.deep_symbolize_keys
   end
 
@@ -69,11 +70,12 @@ describe InboundWebhooks::RdvSolidarites::ProcessOrganisationJob do
         }.deep_symbolize_keys
       end
 
-      it "send a sentry message" do
+      it "raises an error" do
         expect(Sentry).to receive(:capture_message).with(
           "Verticale attribute is not valid for rdv_solidarites_organisation_id : #{rdv_solidarites_organisation_id}"
         )
-        subject
+
+        expect { subject }.to raise_error(WebhookProcessingJobError, "Verticale attribute is not valid")
       end
     end
   end
