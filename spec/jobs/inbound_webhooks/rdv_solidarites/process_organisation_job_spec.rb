@@ -70,12 +70,12 @@ describe InboundWebhooks::RdvSolidarites::ProcessOrganisationJob do
         }.deep_symbolize_keys
       end
 
-      it "raises an error" do
-        expect(Sentry).to receive(:capture_message).with(
-          "Verticale attribute is not valid for rdv_solidarites_organisation_id : #{rdv_solidarites_organisation_id}"
-        )
+      it "doesn't trigger update" do
+        expect(Sentry).to receive(:capture_message).once
+        expect(MattermostClient).to receive(:send_to_main_channel).once
+        expect(UpsertRecordJob).not_to receive(:perform_async)
 
-        expect { subject }.to raise_error(WebhookProcessingJobError, "Verticale attribute is not valid")
+        subject
       end
     end
   end
