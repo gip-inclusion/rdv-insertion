@@ -11,7 +11,7 @@ module Notifications
 
     def call
       verify_format!(@notification)
-      verify_sender_phone_number!(@notification.rdv.phone_number)
+      verify_sender_phone_number!(@notification)
       verify_email!(@notification)
 
       NotificationMailer.with(
