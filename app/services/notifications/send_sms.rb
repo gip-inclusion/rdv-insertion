@@ -3,6 +3,7 @@ class SmsNotificationError < StandardError; end
 module Notifications
   class SendSms < BaseService
     include Notifications::SmsContent
+    include Notifications::SenderPhoneNumberValidation
     include Messengers::SendSms
 
     attr_reader :notification

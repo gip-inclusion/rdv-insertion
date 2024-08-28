@@ -20,11 +20,17 @@ describe Notifications::SendEmail, type: :service do
     end
 
     let!(:user) { create(:user) }
+    let!(:organisation) { create(:organisation) }
     let!(:rdv) do
       create(
         :rdv,
-        motif: motif
+        motif:,
+        lieu:,
+        organisation:,
       )
+    end
+    let!(:lieu) do
+      create(:lieu, name: "DINUM", address: "20 avenue de Ségur 75007 Paris", phone_number: "0101010101")
     end
     let!(:motif) { create(:motif, location_type: "public_office") }
     let!(:participation) do
@@ -137,6 +143,22 @@ describe Notifications::SendEmail, type: :service do
 
       it "returns an error" do
         expect(subject.errors).to eq(["Envoi d'un email alors que le format est sms"])
+      end
+    end
+
+    context "when the structure phone number is empty" do
+      let!(:lieu) do
+        create(:lieu, name: "DINUM", address: "20 avenue de Ségur 75007 Paris", phone_number: "")
+      end
+
+      let!(:organisation) { create(:organisation, phone_number: nil) }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(
+          ["Le numéro de téléphone de l'organisation, du lieu ou de la catégorie doit être renseigné"]
+        )
       end
     end
 

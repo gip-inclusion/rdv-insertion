@@ -3,6 +3,7 @@ class EmailNotificationError < StandardError; end
 module Notifications
   class SendEmail < BaseService
     include Messengers::SendEmail
+    include Notifications::SenderPhoneNumberValidation
 
     def initialize(notification:)
       @notification = notification
@@ -10,6 +11,7 @@ module Notifications
 
     def call
       verify_format!(@notification)
+      verify_sender_phone_number!(@notification.rdv.phone_number)
       verify_email!(@notification)
 
       NotificationMailer.with(
