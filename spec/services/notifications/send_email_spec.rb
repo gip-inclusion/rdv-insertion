@@ -26,7 +26,7 @@ describe Notifications::SendEmail, type: :service do
         :rdv,
         motif:,
         lieu:,
-        organisation:,
+        organisation:
       )
     end
     let!(:lieu) do
