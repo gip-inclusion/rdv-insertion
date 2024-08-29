@@ -21,7 +21,7 @@ const MazePoll = () => {
       s.async = true;
       a.getElementsByTagName("head")[0].appendChild(s);
       m.mazeUniversalSnippetApiKey = e;
-    })(window, document, "https://snippet.maze.co/maze-universal-loader.js", "dfa66380-6f7f-4d3b-99f9-439b5226c0c2");
+    })(window, document, "https://snippet.maze.co/maze-universal-loader.js", process.env.MAZE_API_KEY);
   }, []);
 
   return null;
