@@ -11,9 +11,13 @@ module Stats
 
           Stat.transaction do
             stat.reload(lock: true)
-            stat.update!(
-              attribute_name => (stat.send(attribute_name) || {}).merge({ date.strftime("%m/%Y") => result })
-            )
+            initial_value = stat.send(attribute_name) || {}
+            sorted_values = initial_value.merge({ date.strftime("%m/%Y") => result })
+                                         .sort_by { |d, _v| Date.strptime(d, "%m/%Y") }
+                                         .drop_while { |_, v| v.zero? }
+                                         .to_h
+
+            stat.update!(attribute_name => sorted_values)
           end
         end
       end
