@@ -14,7 +14,7 @@ module Stats
             initial_value = stat.send(attribute_name) || {}
             sorted_values = initial_value.merge({ date.strftime("%m/%Y") => result })
                                          .sort_by { |d, _v| Date.strptime(d, "%m/%Y") }
-                                         .drop_while { |_, v| v.zero? }
+                                         .drop_while { |d, v| d.ends_with?("2022") && v.zero? }
                                          .to_h
 
             stat.update!(attribute_name => sorted_values)

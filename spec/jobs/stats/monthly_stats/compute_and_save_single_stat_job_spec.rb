@@ -29,14 +29,14 @@ describe Stats::MonthlyStats::ComputeAndSaveSingleStatJob, type: :service do
         allow(Stats::MonthlyStats::ComputeForFocusedMonth).to receive(:new)
           .and_return(OpenStruct.new({ users_count_grouped_by_month: 0 }))
 
-        described_class.new.perform(stat.id, method, "2022-05-01 12:00:00 +0100")
         described_class.new.perform(stat.id, method, "2022-06-01 12:00:00 +0100")
+        described_class.new.perform(stat.id, method, "2022-05-01 12:00:00 +0100")
 
         allow(Stats::MonthlyStats::ComputeForFocusedMonth).to receive(:new)
           .and_return(OpenStruct.new({ users_count_grouped_by_month: 4 }))
 
-        described_class.new.perform(stat.id, method, "2022-07-01 12:00:00 +0100")
         described_class.new.perform(stat.id, method, "2022-08-01 12:00:00 +0100")
+        described_class.new.perform(stat.id, method, "2022-07-01 12:00:00 +0100")
 
         expect(stat.reload[method]).to eq(
           {
