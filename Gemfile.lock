@@ -1,6 +1,7 @@
 GIT
-  remote: https://github.com/gip-inclusion/agent_connect_engine
-  revision: e6125135d65ea213ee806b322a3bd2f211e88e53
+  remote: https://github.com/gip-inclusion/agent_connect_engine.git
+  revision: 23a2e1874a9cd1c2d875a10daad6d49cbf45a68a
+  branch: feat/improved-api
   specs:
     agent_connect (0.1.0)
       jwt (= 2.7.1)

@@ -16,9 +16,15 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    clear_session
     flash[:notice] = "Déconnexion réussie"
-    redirect_to root_path
+
+    if session[:agent_connect_id_token]
+      disconnect_from_agent_connect
+    else
+      redirect_to root_path
+    end
+
+    clear_session
   end
 
   private
@@ -32,6 +38,11 @@ class SessionsController < ApplicationController
       origin: "sign_in_form",
       signature: authenticated_agent.sign_with(timestamp)
     }
+  end
+
+  def disconnect_from_agent_connect
+    agent_connect_client = AgentConnect::Client::Logout.new(session.delete(:agent_connect_id_token))
+    redirect_to agent_connect_client.agent_connect_logout_url(root_url), allow_other_host: true
   end
 
   def set_agent_return_to_url
