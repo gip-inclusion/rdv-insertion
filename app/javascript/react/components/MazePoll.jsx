@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+// https://help.maze.co/hc/en-us/articles/9800356063891-Installing-the-Maze-snippet-on-your-website
+
 /* eslint-disable */
 const MazePoll = () => {
   useEffect(() => {
