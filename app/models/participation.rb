@@ -12,7 +12,7 @@ class Participation < ApplicationRecord
              foreign_key: "rdv_solidarites_agent_prescripteur_id",
              optional: true
 
-  has_many :notifications, dependent: :nullify
+  has_many :notifications, dependent: :destroy
   has_many :follow_up_invitations, through: :follow_up, source: :invitations
 
   has_one :organisation, through: :rdv
