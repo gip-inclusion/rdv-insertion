@@ -9,7 +9,7 @@ class AgentConnectController < ApplicationController
 
   private
 
-  def handle_agent_connect_success
+  def agent_connect_success
     agent = Agent.find_by(email: authentication.user_email)
 
     if agent&.update(last_sign_in_at: Time.zone.now)
@@ -22,7 +22,7 @@ class AgentConnectController < ApplicationController
     end
   end
 
-  def handle_agent_connect_failure
+  def agent_connect_failure
     flash[:error] = "Nous n'avons pas pu vous connecter. Veuillez réessayer."
     redirect_to sign_in_path
   end
