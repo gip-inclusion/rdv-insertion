@@ -1,5 +1,6 @@
 class AgentConnectController < ApplicationController
   skip_before_action :authenticate_agent!
+  after_action(only: :logout) { clear_session }
 
   def callback
     if authentication.success?
@@ -35,8 +36,7 @@ class AgentConnectController < ApplicationController
       id: agent.id,
       origin: "agent_connect",
       signature: agent.sign_with(timestamp),
-      created_at: timestamp,
-      agent_connect_id_token: authentication.id_token_for_logout
+      created_at: timestamp
     }
   end
 end

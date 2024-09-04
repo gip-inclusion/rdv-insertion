@@ -16,16 +16,10 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    agent_connect_token = session.dig(:agent_auth, :agent_connect_id_token)
-    clear_session
     flash[:notice] = "Déconnexion réussie"
+    clear_session
 
-    if agent_connect_token
-      agent_connect_client = AgentConnect::Client::Logout.new(agent_connect_token)
-      redirect_to agent_connect_client.agent_connect_logout_url(root_url), allow_other_host: true
-    else
-      redirect_to root_path
-    end
+    redirect_to root_path
   end
 
   private

@@ -26,6 +26,10 @@ module AgentSession
       origin == "inclusion_connect"
     end
 
+    def agent_connect?
+      origin == "agent_connect"
+    end
+
     private
 
     def signature_valid?
