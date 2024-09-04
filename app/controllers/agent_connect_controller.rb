@@ -1,4 +1,6 @@
 class AgentConnectController < ApplicationController
+  skip_before_action :authenticate_agent!
+
   def callback
     if authentication.success?
       agent_connect_success
