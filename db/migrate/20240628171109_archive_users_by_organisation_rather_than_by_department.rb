@@ -16,7 +16,9 @@ class ArchiveUsersByOrganisationRatherThanByDepartment < ActiveRecord::Migration
   # rubocop:disable Metrics/AbcSize
   def migrate_current_archives_to_organisations
     # we do that to avoid the archive created in the loop to be processed by the find_each
-    Archive.find_each do |archive|
+    archive_ids = Archive.pluck(:id)
+    archive_ids.each do |archive_id|
+      archive = Archive.find(archive_id)
       user = archive.user
       department = Department.find(archive.department_id)
       organisations_where_user_should_be_archived = department.organisations & user.organisations
