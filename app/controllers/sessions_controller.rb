@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    agent_connect_token = session[:agent_connect_id_token]
+    agent_connect_token = session.dig(:agent_auth, :agent_connect_id_token)
     clear_session
     flash[:notice] = "Déconnexion réussie"
 
