@@ -166,7 +166,7 @@ describe SessionsController do
 
     context "when an agent connect token is present" do
       before do
-        request.session[:agent_connect_id_token] = "some-token"
+        request.session[:agent_auth][:agent_connect_id_token] = "some-token"
       end
 
       it "logs out from agent connect" do
