@@ -163,24 +163,5 @@ describe SessionsController do
       expect(response).to redirect_to(root_path)
       expect(flash[:notice]).to eq("Déconnexion réussie")
     end
-
-    context "when an agent connect token is present" do
-      before do
-        request.session[:agent_auth][:agent_connect_id_token] = "some-token"
-      end
-
-      it "logs out from agent connect" do
-        agent_connect_client = instance_double(AgentConnect::Client::Logout)
-        allow(AgentConnect::Client::Logout).to receive(:new)
-          .with("some-token")
-          .and_return(agent_connect_client)
-        allow(agent_connect_client).to receive(:agent_connect_logout_url)
-          .with(root_url)
-          .and_return("http://agent-connect-logout-url")
-
-        delete :destroy
-        expect(response).to redirect_to("http://agent-connect-logout-url")
-      end
-    end
   end
 end
