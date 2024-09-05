@@ -60,6 +60,10 @@ Rails.application.configure do
     Prosopite.rails_logger = true
   end
 
+  config.after_initialize do
+    ActiveStorage::Current.url_options = { host: ENV["HOST"] }
+  end
+
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
