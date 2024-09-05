@@ -16,7 +16,7 @@ autocorrect: ## Fix autocorrectable lint issues
 	bundle exec rubocop --auto-correct-all
 
 test: ## Run all tests
-	bundle exec rspec
+	RAILS_ENV=test bundle exec spring rake parallel:spec
 
 clean: ## Clean temporary files (including weppacks) and logs
 	bundle exec rails log:clear tmp:clear

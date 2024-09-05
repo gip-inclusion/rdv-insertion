@@ -9,7 +9,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          ruby-version: .ruby-version
           bundler-cache: true
           rubygems: latest
       - run: bundle exec rubocop
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          ruby-version: .ruby-version
           bundler-cache: true
           rubygems: latest
       - name: Install JS dependencies
@@ -55,11 +55,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18.15.0
+          node-version-file: .node-version
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          ruby-version: .ruby-version
           bundler-cache: true
           rubygems: latest
       - name: Install JS dependencies
@@ -73,6 +73,7 @@ jobs:
           POSTGRES_DB: rdv_insertion_test
         run: bundle exec rails db:create db:schema:load RAILS_ENV=test
       - name: Run specs
+        run: RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec['spec\/(?!features)']
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -80,8 +81,6 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-          # Test
-        run: RAILS_ENV=test bundle exec rspec --exclude-pattern "spec/features/**/*"
   test_features:
     name: Feature Tests
     runs-on: ubuntu-latest
@@ -110,11 +109,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18.15.0
+          node-version-file: .node-version
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          ruby-version: .ruby-version
           bundler-cache: true
       - name: Install JS dependencies
         run: yarn install
@@ -125,7 +124,7 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-        run: bundle exec rails db:create db:schema:load RAILS_ENV=test
+        run: RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec[spec/features]
       - name: Run specs
         env:
           HOST: http://example.com

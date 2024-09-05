@@ -124,6 +124,8 @@ group :development, :test do
   gem "rubocop-rspec"
   gem "prosopite"
   gem "pg_query"
+  # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "parallel_tests"
 end
 
 group :development do

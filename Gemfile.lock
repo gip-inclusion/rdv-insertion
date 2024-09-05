@@ -261,6 +261,8 @@ GEM
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
     parallel (1.24.0)
+    parallel_tests (4.5.1)
+      parallel
     parser (3.3.0.2)
       ast (~> 2.4.1)
       racc
@@ -549,6 +551,7 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   listen (~> 3.2)
+  parallel_tests
   pdf-reader
   pg (>= 0.18, < 2.0)
   pg_query
