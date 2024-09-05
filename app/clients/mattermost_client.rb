@@ -8,6 +8,10 @@ class MattermostClient
       send_message(ENV["MATTERMOST_MAIN_CHANNEL_URL"], text)
     end
 
+    def send_to_private_channel(text)
+      send_message(ENV["MATTERMOST_PRIVATE_CHANNEL_URL"], text)
+    end
+
     private
 
     def send_message(url, text)
