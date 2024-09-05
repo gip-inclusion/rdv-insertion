@@ -15,9 +15,9 @@ class ArchiveUsersByOrganisationRatherThanByDepartment < ActiveRecord::Migration
 
   # rubocop:disable Metrics/AbcSize
   def migrate_current_archives_to_organisations
-    # we do that to avoid the archive created in the loop to be processed by the find_each
-    archive_ids = Archive.pluck(:id)
-    archive_ids.each do |archive_id|
+    existing_archive_ids = Archive.pluck(:id)
+
+    existing_archive_ids.each do |archive_id|
       archive = Archive.find(archive_id)
       user = archive.user
       department = Department.find(archive.department_id)
@@ -31,8 +31,16 @@ class ArchiveUsersByOrganisationRatherThanByDepartment < ActiveRecord::Migration
         archive.skip_after_create = true
         archive.save!
       end
-      archive.destroy!
     end
+
+    new_archives = Archive.where.not(id: existing_archive_ids)
+
+    if new_archives.count < existing_archive_ids.length
+      raise "Archive count should have raised (#{new_archives.count} vs #{existing_archive_ids.length}) "
+    end
+
+    Archive.where(id: existing_archive_ids).destroy_all
+    Sentry.set_extras(user_archived_without_org_ids: Archive.where(organisation_id: nil).map(&:user_id))
   end
   # rubocop:enable Metrics/AbcSize
 
