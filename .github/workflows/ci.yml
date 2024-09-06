@@ -5,25 +5,23 @@ jobs:
     name: Ruby linter
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-          rubygems: latest
       - run: bundle exec rubocop
   eslint:
     name: JS linter
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-          rubygems: latest
       - name: Install JS dependencies
         run: yarn install
       - run: yarn lint
@@ -51,9 +49,9 @@ jobs:
           - 6379:6379
         options: --entrypoint redis-server
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
       - name: Set up Ruby
@@ -61,11 +59,10 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-          rubygems: latest
       - name: Install JS dependencies
         run: yarn install
       - name: Precompile assets
-        run: RAILS_ENV=test bundle exec rake assets:precompile
+        run: yarn run build
       - name: Setup test database
         env:
           POSTGRES_USER: rdv_insertion_test
@@ -105,9 +102,9 @@ jobs:
           - 6379:6379
         options: --entrypoint redis-server
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
       - name: Set up Ruby
