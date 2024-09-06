@@ -1,8 +1,8 @@
 name: CI
 on: push
 jobs:
-  rubocop:
-    name: Ruby linter
+  linters:
+    name: Linters
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -11,20 +11,18 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-      - run: bundle exec rubocop
-  eslint:
-    name: JS linter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Cache js dependencies
+        uses: actions/cache@v4
         with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          path: node_modules
       - name: Install JS dependencies
         run: yarn install
-      - run: yarn lint
+      - name: Run Rubocop
+        run: bundle exec rubocop
+      - name: Run ESLint
+        run: yarn lint
+
   test_unit:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -59,18 +57,27 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+      - name: Cache js dependencies
+        uses: actions/cache@v4
+        with:
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          path: node_modules
       - name: Install JS dependencies
         run: yarn install
       - name: Precompile assets
         run: yarn run build
-      - name: Setup test database
-        env:
-          POSTGRES_USER: rdv_insertion_test
-          POSTGRES_PASSWORD: rdv_insertion_test
-          POSTGRES_DB: rdv_insertion_test
-        run: bundle exec rails db:create db:schema:load RAILS_ENV=test
-      - name: Run specs
-        run: RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec['spec\/(?!features)']
+      - name: Prepare runtime log cache key
+        run: |
+          mkdir -p tmp
+          ls spec/**/*.rb > tmp/spec_files.txt
+      - name: Cache parallel test unit spec runtime log
+        uses: actions/cache@v4
+        with:
+          key: unit-spec-runtime-log-${{ hashFiles('tmp/spec_files.txt') }}
+          path: tmp/parallel_runtime_rspec.log
+      - name: Setup test database and run specs
+        run: |
+          RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec['spec/(?!features)']
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -112,17 +119,27 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+      - name: Cache js dependencies
+        uses: actions/cache@v4
+        with:
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          path: node_modules
       - name: Install JS dependencies
         run: yarn install
       - name: Precompile assets
         run: RAILS_ENV=test bundle exec rake assets:precompile
-      - name: Setup test database
-        env:
-          POSTGRES_USER: rdv_insertion_test
-          POSTGRES_PASSWORD: rdv_insertion_test
-          POSTGRES_DB: rdv_insertion_test
-        run: RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec[spec/features]
-      - name: Run specs
+      - name: Prepare runtime log cache key
+        run: |
+          mkdir -p tmp
+          ls spec/features/**/*.rb > tmp/feature_spec_files.txt
+      - name: Cache parallel test feature spec runtime log
+        uses: actions/cache@v4
+        with:
+          key: feature-spec-runtime-log-${{ hashFiles('tmp/feature_spec_files.txt') }}
+          path: tmp/parallel_runtime_rspec.log
+      - name: Setup test database and run specs
+        run: |
+          RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec[spec/features]
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -130,4 +147,3 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-        run: RAILS_ENV=test bundle exec rspec ./spec/features/
