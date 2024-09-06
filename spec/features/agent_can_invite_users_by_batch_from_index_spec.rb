@@ -36,8 +36,10 @@ describe "Agent can invite users by batch from index" do
     stub_geo_api_request(user3.address)
     stub_request(
       :get,
-      /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
-    ).to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
+      "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/invitations/creneau_availability"
+    )
+      .with(query: hash_including({}))
+      .to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
     stub_brevo
     follow_up1.set_status
     follow_up1.save!

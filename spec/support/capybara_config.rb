@@ -1,5 +1,5 @@
 WebMock.disable_net_connect!(
-  allow: ["127.0.0.1", "localhost", "chromedriver.storage.googleapis.com"]
+  allow: ["127.0.0.1", "localhost", "chromedriver.storage.googleapis.com", "http://www.rdv-solidarites-test.localhost"]
 )
 
 Capybara.register_driver :selenium do |app|
@@ -26,6 +26,7 @@ end
 
 Capybara.default_driver = :selenium
 Capybara.javascript_driver = :selenium
+Capybara.server_port = 9887 + ENV["TEST_ENV_NUMBER"].to_i
 
 Capybara.configure do |config|
   config.javascript_driver = :selenium

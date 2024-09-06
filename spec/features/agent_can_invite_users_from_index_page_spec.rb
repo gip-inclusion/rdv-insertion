@@ -25,8 +25,10 @@ describe "Agents can invite from index page", :js do
     stub_brevo
     stub_request(
       :get,
-      /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
-    ).to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
+      "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/invitations/creneau_availability"
+    )
+      .with(query: hash_including({}))
+      .to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
   end
 
   context "when no invitations is sent" do
@@ -50,8 +52,10 @@ describe "Agents can invite from index page", :js do
       before do
         stub_request(
           :get,
-          /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
-        ).to_return(status: 200, body: { "creneau_availability" => false }.to_json, headers: {})
+          "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/invitations/creneau_availability"
+        )
+          .with(query: hash_including({}))
+          .to_return(status: 200, body: { "creneau_availability" => false }.to_json, headers: {})
       end
 
       it "cannot invite the user" do
@@ -143,8 +147,10 @@ describe "Agents can invite from index page", :js do
         before do
           stub_request(
             :get,
-            /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
-          ).to_return(status: 200, body: { "creneau_availability" => false }.to_json, headers: {})
+            "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/invitations/creneau_availability"
+          )
+            .with(query: hash_including({}))
+            .to_return(status: 200, body: { "creneau_availability" => false }.to_json, headers: {})
         end
 
         it "cannot invite the user" do
