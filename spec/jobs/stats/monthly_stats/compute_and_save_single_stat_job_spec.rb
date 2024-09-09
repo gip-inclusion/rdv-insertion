@@ -40,6 +40,8 @@ describe Stats::MonthlyStats::ComputeAndSaveSingleStatJob, type: :service do
 
         expect(stat.reload[method]).to eq(
           {
+            "05/2022" => 0,
+            "06/2022" => 0,
             "07/2022" => 4,
             "08/2022" => 4
           }

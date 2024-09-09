@@ -22,7 +22,6 @@ module Stats
       def new_values_with_result(date, initial_value, result)
         initial_value.merge({ date.strftime("%m/%Y") => result })
                      .sort_by { |d, _v| Date.strptime(d, "%m/%Y") }
-                     .drop_while { |d, v| d.ends_with?("2022") && v.zero? }
                      .to_h
       end
     end
