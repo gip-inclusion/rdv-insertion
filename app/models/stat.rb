@@ -127,9 +127,10 @@ class Stat < ApplicationRecord
   end
 
   def insert_month_result!(attribute_name, date, values)
+    raise "Invalid attribute name" unless MONTHLY_STAT_ATTRIBUTES.include?(attribute_name)
+
     Stat.transaction do
       reload(lock: true)
-      raise "Invalid attribute name" unless MONTHLY_STAT_ATTRIBUTES.include?(attribute_name)
 
       new_value = (send(attribute_name) || {})
                   .merge({ date.strftime("%m/%Y") => values })
