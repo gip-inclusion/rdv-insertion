@@ -125,4 +125,18 @@ class Stat < ApplicationRecord
             .preload(participations: :rdv)
             .distinct
   end
+
+  def insert_month_result!(attribute_name, date, values)
+    Stat.transaction do
+      reload(lock: true)
+      raise "Invalid attribute name" unless MONTHLY_STAT_ATTRIBUTES.include?(attribute_name)
+
+      new_value = (send(attribute_name) || {})
+                  .merge({ date.strftime("%m/%Y") => values })
+                  .sort_by { |d, _v| Date.strptime(d, "%m/%Y") }
+                  .to_h
+
+      update!(attribute_name => new_value)
+    end
+  end
 end

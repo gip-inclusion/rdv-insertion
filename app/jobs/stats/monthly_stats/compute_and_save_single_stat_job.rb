@@ -8,21 +8,8 @@ module Stats
           date = date.to_datetime
           stat = Stat.find(stat_id)
           result = Stats::MonthlyStats::ComputeForFocusedMonth.new(stat:, date:).send(attribute_name)
-
-          Stat.transaction do
-            stat.reload(lock: true)
-            initial_value = stat.send(attribute_name) || {}
-            stat.update!(attribute_name => new_values_with_result(date, initial_value, result))
-          end
+          stat.insert_month_result!(attribute_name, date, result)
         end
-      end
-
-      private
-
-      def new_values_with_result(date, initial_value, result)
-        initial_value.merge({ date.strftime("%m/%Y") => result })
-                     .sort_by { |d, _v| Date.strptime(d, "%m/%Y") }
-                     .to_h
       end
     end
   end
