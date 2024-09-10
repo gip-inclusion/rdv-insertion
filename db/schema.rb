@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_05_161813) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -316,7 +316,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
     t.bigint "department_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
-    t.string "logo_filename"
     t.string "safir_code"
     t.string "organisation_type"
     t.index ["department_id"], name: "index_organisations_on_department_id"
