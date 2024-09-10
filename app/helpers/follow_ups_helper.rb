@@ -1,11 +1,10 @@
 module FollowUpsHelper
-  def background_class_for_follow_up_status(follow_up, number_of_days_before_action_required)
+  def background_class_for_follow_up_status(follow_up)
     return "" if follow_up.nil?
 
     if follow_up.action_required_status?
       "bg-danger border-danger"
-    elsif number_of_days_before_action_required &&
-          follow_up.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+    elsif follow_up.time_to_accept_invitation_exceeded?
       "bg-warning border-warning"
     elsif follow_up.rdv_seen? || follow_up.closed?
       "bg-success border-success"
@@ -14,13 +13,12 @@ module FollowUpsHelper
     end
   end
 
-  def badge_background_class(follow_up, number_of_days_before_action_required)
+  def badge_background_class(follow_up)
     return "blue-out border border-blue" if follow_up.nil?
 
     if follow_up.action_required_status?
       "bg-danger border-danger"
-    elsif number_of_days_before_action_required &&
-          follow_up.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+    elsif follow_up.time_to_accept_invitation_exceeded?
       "bg-warning border-warning"
     elsif follow_up.rdv_seen? || follow_up.closed?
       "bg-success border-success"
@@ -29,18 +27,17 @@ module FollowUpsHelper
     end
   end
 
-  def display_follow_up_status(follow_up, number_of_days_before_action_required)
+  def display_follow_up_status(follow_up)
     return "Non rattaché" if follow_up.nil?
 
     I18n.t("activerecord.attributes.follow_up.statuses.#{follow_up.status}") +
-      display_follow_up_status_notice(follow_up, number_of_days_before_action_required)
+      display_follow_up_status_notice(follow_up)
   end
 
-  def display_follow_up_status_notice(follow_up, number_of_days_before_action_required)
+  def display_follow_up_status_notice(follow_up)
     return if follow_up.nil?
 
-    if number_of_days_before_action_required &&
-       follow_up.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+    if follow_up.time_to_accept_invitation_exceeded?
       " (Délai dépassé)"
     else
       ""
@@ -51,6 +48,6 @@ module FollowUpsHelper
     return false unless configuration.convene_user?
 
     follow_up.convocable_status? ||
-      follow_up.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
+      follow_up.time_to_accept_invitation_exceeded?
   end
 end

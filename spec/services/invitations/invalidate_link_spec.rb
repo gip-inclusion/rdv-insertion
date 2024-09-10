@@ -3,7 +3,7 @@ describe Invitations::InvalidateLink, type: :service do
     described_class.call(invitation: invitation)
   end
 
-  let!(:invitation) { create(:invitation, valid_until: 3.days.from_now) }
+  let!(:invitation) { create(:invitation, expires_at: 3.days.from_now) }
 
   describe "#call" do
     before do
@@ -24,8 +24,8 @@ describe Invitations::InvalidateLink, type: :service do
       expect(subject.invitation).to eq(invitation)
     end
 
-    it "updates valid_until" do
-      expect(subject.invitation.valid_until.to_date).to eq(Time.zone.today)
+    it "updates expires_at" do
+      expect(subject.invitation.expires_at.to_date).to eq(Time.zone.today)
       subject
     end
 

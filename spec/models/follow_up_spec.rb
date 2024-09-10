@@ -1,8 +1,6 @@
 describe FollowUp do
   describe "#action_required" do
-    subject { described_class.action_required(number_of_days_before_action_required) }
-
-    let!(:number_of_days_before_action_required) { 4 }
+    subject { described_class.action_required }
 
     context "when status requires action" do
       let!(:follow_up) { create(:follow_up, status: "rdv_noshow") }
@@ -20,22 +18,21 @@ describe FollowUp do
       end
     end
 
-    context "when status needs attention" do
+    context "when invitation is pending and invitations still valid" do
       let!(:follow_up) { create(:follow_up, status: "invitation_pending") }
 
       context "when the user has been invited less than 3 days ago in this context" do
-        let!(:invitation) { create(:invitation, follow_up: follow_up, created_at: 5.days.ago) }
-        let!(:invitation2) { create(:invitation, follow_up: follow_up, created_at: 2.hours.ago) }
+        let!(:invitation) { create(:invitation, follow_up: follow_up, expires_at: 5.days.ago) }
+        let!(:invitation2) { create(:invitation, follow_up: follow_up, expires_at: 2.days.from_now) }
 
         it "does not retrieve the follow_up" do
           expect(subject).not_to include(follow_up)
         end
       end
 
-      context "when the user has been last invited manually more than 3 days ago in this context" do
-        let!(:invitation) { create(:invitation, follow_up: follow_up, created_at: 5.days.ago) }
-        let!(:invitation2) { create(:invitation, follow_up: follow_up, created_at: 4.days.ago) }
-        let!(:invitation3) { create(:invitation, trigger: "reminder", follow_up: follow_up, created_at: 1.day.ago) }
+      context "when invitation is pending and invitations all expired" do
+        let!(:invitation) { create(:invitation, follow_up: follow_up, expires_at: 5.days.ago) }
+        let!(:invitation2) { create(:invitation, follow_up: follow_up, expires_at: 4.days.ago) }
 
         it "retrieve the follow_up" do
           expect(subject).to include(follow_up)
@@ -251,70 +248,40 @@ describe FollowUp do
       end
     end
 
-    describe "#invited_before_time_window?" do
-      let!(:number_of_days_before_action_required) { 4 }
+    describe "#time_to_accept_invitation_exceeded?" do
+      let!(:invitation) { create(:invitation, expires_at: 2.days.from_now) }
+      let!(:invitation2) { create(:invitation, expires_at: 4.days.from_now) }
+      let!(:follow_up) { create(:follow_up, invitations: [invitation, invitation2], status: "invitation_pending") }
 
-      context "when no rdv" do
-        let!(:invitation) { create(:invitation, created_at: 6.days.ago) }
-        let!(:invitation2) { create(:invitation, created_at: 1.day.ago) }
-        let!(:follow_up) { create(:follow_up, invitations: [invitation, invitation2]) }
+      context "when no invitations expired" do
+        it "is false" do
+          expect(follow_up.time_to_accept_invitation_exceeded?).to eq(false)
+        end
+      end
 
-        context "when invited in time window" do
-          it "is false" do
-            expect(follow_up.invited_before_time_window?(number_of_days_before_action_required)).to eq(false)
-          end
+      context "when all invitations expired" do
+        let!(:invitation) { create(:invitation, expires_at: 2.days.ago) }
+        let!(:invitation2) { create(:invitation, expires_at: 4.days.ago) }
+
+        it "is true" do
+          expect(follow_up.time_to_accept_invitation_exceeded?).to eq(true)
         end
 
-        context "when not invited in time window" do
-          let!(:invitation2) { create(:invitation, created_at: 4.days.ago) }
+        context "when status is not invitation_pending" do
+          let!(:follow_up) { create(:follow_up, invitations: [invitation, invitation2], status: "rdv_seen") }
 
-          it "is true" do
-            expect(follow_up.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
-          end
-
-          context "when there is a reminder" do
-            let!(:invitation3) { create(:invitation, follow_up: follow_up, trigger: "reminder", created_at: 1.day.ago) }
-
-            it "is not taken into account" do
-              expect(follow_up.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
-            end
+          it "is false" do
+            expect(follow_up.time_to_accept_invitation_exceeded?).to eq(false)
           end
         end
       end
 
-      context "when there is a rdv" do
-        let!(:user) { create(:user) }
-        let!(:rdv) { create(:rdv) }
-        let!(:participation) do
-          create(:participation, rdv: rdv, user: user, follow_up: follow_up, created_at: 5.days.ago)
-        end
-        let!(:invitation) { create(:invitation, created_at: 6.days.ago) }
-        let!(:invitation2) { create(:invitation, created_at: 2.days.ago) }
-        let!(:invitation3) { create(:invitation, created_at: 1.day.ago) }
-        let!(:follow_up) do
-          create(:follow_up, status: "invitation_pending", user: user,
-                             invitations: [invitation, invitation2, invitation3])
-        end
+      context "when some invitations expired" do
+        let!(:invitation) { create(:invitation, expires_at: 2.days.from_now) }
+        let!(:invitation2) { create(:invitation, expires_at: 4.days.ago) }
 
-        context "when there is a participation" do
-          it "is selecting the invitation after the participation" do
-            expect(follow_up.first_invitation_relative_to_last_participation_created_at).to eq(invitation2.created_at)
-          end
-        end
-
-        context "when invited in time window" do
-          it "is false" do
-            expect(follow_up.invited_before_time_window?(number_of_days_before_action_required)).to eq(false)
-          end
-        end
-
-        context "when not invited in time window" do
-          let!(:invitation2) { create(:invitation, created_at: 4.days.ago) }
-          let!(:invitation3) { create(:invitation, created_at: 4.days.ago) }
-
-          it "is true" do
-            expect(follow_up.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
-          end
+        it "is true" do
+          expect(follow_up.time_to_accept_invitation_exceeded?).to eq(false)
         end
       end
     end

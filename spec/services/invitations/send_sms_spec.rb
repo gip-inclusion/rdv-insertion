@@ -105,7 +105,7 @@ describe Invitations::SendSms, type: :service do
       end
 
       before do
-        invitation.update!(trigger: "reminder", valid_until: 5.days.from_now)
+        invitation.update!(trigger: "reminder", expires_at: 5.days.from_now)
       end
 
       it "calls the send transactional service with the right content" do

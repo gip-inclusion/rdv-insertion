@@ -155,19 +155,11 @@ module Exporters
     end
 
     def display_follow_up_status_notice(follow_up)
-      if @structure.present? && follow_up.invited_before_time_window?(number_of_days_before_action_required) &&
-         follow_up.invitation_pending?
+      if @structure.present? && follow_up.time_to_accept_invitation_exceeded?
         " (Délai dépassé)"
       else
         ""
       end
-    end
-
-    def number_of_days_before_action_required
-      @number_of_days_before_action_required ||=
-        @structure.category_configurations.includes(:motif_category).find do |c|
-          c.motif_category == @motif_category
-        end.number_of_days_before_action_required
     end
 
     def display_date(date)

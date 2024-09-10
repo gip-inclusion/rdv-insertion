@@ -697,10 +697,9 @@ describe UsersController do
       let!(:index_params) do
         { organisation_id: organisation.id, action_required: "true", motif_category_id: category_orientation.id }
       end
-      let!(:number_of_days_before_action_required) { 6 }
 
-      context "when the invitation has been sent before the number of days before action required" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, created_at: 7.days.ago) }
+      context "when one invitation is expired" do
+        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 7.days.ago) }
 
         it "filters by action required" do
           get :index, params: index_params
@@ -709,8 +708,8 @@ describe UsersController do
         end
       end
 
-      context "when the invitation has been sent after the number of days defined in the category_configuration" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, created_at: 3.days.ago) }
+      context "when no invitation expired" do
+        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 3.days.from_now) }
 
         it "filters by action required" do
           get :index, params: index_params
