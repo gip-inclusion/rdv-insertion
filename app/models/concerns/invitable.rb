@@ -52,7 +52,7 @@ module Invitable
     first_invitation_relative_to_last_participation_by(format)&.created_at
   end
 
-  def invitations_expired?
+  def all_invitations_expired?
     invitations.all?(&:expired?)
   end
 

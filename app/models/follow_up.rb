@@ -29,10 +29,10 @@ class FollowUp < ApplicationRecord
   scope :status, ->(status) { where(status: status) }
   scope :action_required, lambda {
                             status(STATUSES_WITH_ACTION_REQUIRED).or(
-                              invitation_pending.where(id: all_invitations_expired)
+                              status("invitation_pending").where(id: with_all_invitations_expired)
                             )
                           }
-  scope :all_invitations_expired, -> { where.not(invitations: Invitation.valid) }
+  scope :with_all_invitations_expired, -> { joins(:invitations).where.not(invitations: Invitation.valid) }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
   scope :orientation, -> { joins(:motif_category).where(motif_category: { leads_to_orientation: true }) }
 
@@ -44,8 +44,8 @@ class FollowUp < ApplicationRecord
     status.in?(CONVOCABLE_STATUSES)
   end
 
-  def time_to_accept_invitation_exceeded?
-    invitation_pending? && invitations_expired?
+  def no_upcoming_rdv_and_invitations_expired?
+    status == "invitation_pending" && all_invitations_expired?
   end
 
   def time_between_invitation_and_rdv_in_days

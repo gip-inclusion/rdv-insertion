@@ -4,7 +4,7 @@ module FollowUpsHelper
 
     if follow_up.action_required_status?
       "bg-danger border-danger"
-    elsif follow_up.time_to_accept_invitation_exceeded?
+    elsif follow_up.no_upcoming_rdv_and_invitations_expired?
       "bg-warning border-warning"
     elsif follow_up.rdv_seen? || follow_up.closed?
       "bg-success border-success"
@@ -18,7 +18,7 @@ module FollowUpsHelper
 
     if follow_up.action_required_status?
       "bg-danger border-danger"
-    elsif follow_up.time_to_accept_invitation_exceeded?
+    elsif follow_up.no_upcoming_rdv_and_invitations_expired?
       "bg-warning border-warning"
     elsif follow_up.rdv_seen? || follow_up.closed?
       "bg-success border-success"
@@ -37,7 +37,7 @@ module FollowUpsHelper
   def display_follow_up_status_notice(follow_up)
     return if follow_up.nil?
 
-    if follow_up.time_to_accept_invitation_exceeded?
+    if follow_up.no_upcoming_rdv_and_invitations_expired?
       " (Délai dépassé)"
     else
       ""
@@ -48,6 +48,6 @@ module FollowUpsHelper
     return false unless configuration.convene_user?
 
     follow_up.convocable_status? ||
-      follow_up.time_to_accept_invitation_exceeded?
+      follow_up.no_upcoming_rdv_and_invitations_expired?
   end
 end
