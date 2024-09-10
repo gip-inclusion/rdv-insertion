@@ -128,7 +128,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         .with(user: user2, motif_category: motif_category)
         .and_return(follow_up2)
       allow(UpsertRecordJob).to receive(:perform_async)
-      allow(InvalidateInvitationJob).to receive(:perform_async)
+      allow(ExpireInvitationJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
@@ -195,9 +195,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         it "enqueues jobs to invalidate the related sent valid invitations" do
-          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
-          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
-          expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
+          expect(ExpireInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
+          expect(ExpireInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
+          expect(ExpireInvitationJob).not_to receive(:perform_async).with(invitation3.id)
           subject
         end
 
@@ -207,7 +207,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           end
 
           it "does not enqueue a job to invalidate the related sent valid invitations" do
-            expect(InvalidateInvitationJob).not_to receive(:perform_async)
+            expect(ExpireInvitationJob).not_to receive(:perform_async)
             subject
           end
         end

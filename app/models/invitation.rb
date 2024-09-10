@@ -64,6 +64,12 @@ class Invitation < ApplicationRecord
     expires_at <= Time.zone.now
   end
 
+  def expire!
+    return if expired?
+
+    update!(expires_at: Time.zone.now)
+  end
+
   def sent_before?(date)
     created_at <= date
   end
