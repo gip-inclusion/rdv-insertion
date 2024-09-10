@@ -15,7 +15,7 @@ class AgentConnectController < ApplicationController
   def agent_connect_success
     agent = Agent.find_by(email: authentication.user_email)
 
-    if agent&.update(last_sign_in_at: Time.zone.now)
+    if agent&.update(connected_with_agent_connect_at: Time.zone.now, last_sign_in_at: Time.zone.now)
       sign_in(agent)
       redirect_to session[:agent_return_to] || root_path
     else
