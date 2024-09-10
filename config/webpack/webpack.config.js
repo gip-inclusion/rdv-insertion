@@ -51,8 +51,6 @@ module.exports = {
       "process.env.RAILS_ENV": JSON.stringify(process.env.RAILS_ENV),
       "process.env.MATOMO_CONTAINER_ID": JSON.stringify(process.env.MATOMO_CONTAINER_ID),
       "process.env.MAZE_API_KEY": JSON.stringify(process.env.MAZE_API_KEY),
-      "process.env.SENTRY_DSN": JSON.stringify(process.env.SENTRY_DSN),
-      "process.env.SENTRY_ENVIRONMENT": JSON.stringify(process.env.SENTRY_ENVIRONMENT),
     }),
     // Include plugins
     new RemoveEmptyScriptsPlugin(),
