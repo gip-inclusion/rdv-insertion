@@ -267,7 +267,7 @@ CategoryConfiguration.create!(
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
-  number_of_days_before_action_required: 10,
+  invitation_duration_in_days: 10,
   organisation: drome1_organisation
 )
 
@@ -276,7 +276,7 @@ CategoryConfiguration.create!(
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: accompagnement_category,
-  number_of_days_before_action_required: 10,
+  invitation_duration_in_days: 10,
   organisation: drome1_organisation
 )
 
@@ -301,7 +301,7 @@ CategoryConfiguration.create!(
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
-  number_of_days_before_action_required: 10,
+  invitation_duration_in_days: 10,
   organisation: drome2_organisation
 )
 
@@ -310,7 +310,7 @@ CategoryConfiguration.create!(
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: accompagnement_category,
-  number_of_days_before_action_required: 10,
+  invitation_duration_in_days: 10,
   organisation: drome2_organisation
 )
 
@@ -335,7 +335,7 @@ CategoryConfiguration.create!(
   convene_user: true,
   invitation_formats: [],
   motif_category: orientation_category,
-  number_of_days_before_action_required: 10,
+  invitation_duration_in_days: 10,
   organisation: yonne_organisation
 )
 

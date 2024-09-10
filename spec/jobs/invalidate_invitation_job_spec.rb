@@ -20,7 +20,7 @@ describe InvalidateInvitationJob do
     end
 
     context "when the invitation is expired" do
-      let!(:invitation) { create(:invitation, id: invitation_id, valid_until: 1.day.ago) }
+      let!(:invitation) { create(:invitation, id: invitation_id, expires_at: 1.day.ago) }
 
       it "does not call a InvalidateLink service" do
         expect(Invitations::InvalidateLink).not_to receive(:call)

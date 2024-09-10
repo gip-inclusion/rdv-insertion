@@ -87,7 +87,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       :invitation,
       organisations: [organisation],
       follow_up: follow_up,
-      valid_until: 3.days.from_now
+      expires_at: 3.days.from_now
     )
   end
 
@@ -97,7 +97,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       organisations:
       [organisation],
       follow_up: follow_up2,
-      valid_until: 3.days.from_now
+      expires_at: 3.days.from_now
     )
   end
 
@@ -106,7 +106,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       :invitation,
       organisations: [organisation],
       follow_up: follow_up,
-      valid_until: 3.days.ago
+      expires_at: 3.days.ago
     )
   end
 

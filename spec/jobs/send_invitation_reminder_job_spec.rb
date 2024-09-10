@@ -22,7 +22,7 @@ describe SendInvitationReminderJob do
   let!(:first_invitation) do
     create(
       :invitation,
-      valid_until: Time.zone.parse("2022-05-15 15:05"), created_at: Time.zone.parse("2022-05-01 14:01"),
+      expires_at: Time.zone.parse("2022-05-15 15:05"), created_at: Time.zone.parse("2022-05-01 14:01"),
       user: user, organisations: [organisation], follow_up: follow_up, rdv_solidarites_token: "123",
       link: "www.rdv-solidarités.fr/prendre_rdv",
       help_phone_number: "0101010101",
@@ -53,7 +53,7 @@ describe SendInvitationReminderJob do
         rdv_solidarites_lieu_id: nil,
         link: "www.rdv-solidarités.fr/prendre_rdv",
         rdv_solidarites_token: "123",
-        valid_until: Time.zone.parse("2022-05-15 15:05"),
+        expires_at: Time.zone.parse("2022-05-15 15:05"),
         rdv_with_referents: false
       )
     subject
@@ -85,7 +85,7 @@ describe SendInvitationReminderJob do
   end
 
   context "when the first invitation expires in less than 2 days" do
-    before { first_invitation.update! valid_until: Time.zone.parse("2022-05-05 14:01") }
+    before { first_invitation.update! expires_at: Time.zone.parse("2022-05-05 14:01") }
 
     it "does not instanciate an invitation" do
       expect(Invitation).not_to receive(:new)

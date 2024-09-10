@@ -14,7 +14,7 @@ describe InviteUser, type: :service do
     create(
       :category_configuration,
       motif_category:, rdv_with_referents: true, invite_to_user_organisations_only: true,
-      number_of_days_before_action_required: 5
+      invitation_duration_in_days: 5
     )
   end
 
@@ -41,7 +41,7 @@ describe InviteUser, type: :service do
     it "instanciates an invitation" do
       expect(Invitation).to receive(:new)
         .with(
-          organisations: [organisation], user:, department:, follow_up:, valid_until: 5.days.from_now,
+          organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
           rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
           help_phone_number: organisation.phone_number
         )
@@ -65,7 +65,7 @@ describe InviteUser, type: :service do
         it "instanciates an invitation" do
           expect(Invitation).to receive(:new)
             .with(
-              organisations: [organisation], user:, department:, follow_up:, valid_until: 5.days.from_now,
+              organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
               rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
               help_phone_number: organisation.phone_number
             )
@@ -113,7 +113,7 @@ describe InviteUser, type: :service do
           it "invites to the user org only" do
             expect(Invitation).to receive(:new)
               .with(
-                organisations: [organisation], user:, department:, follow_up:, valid_until: 5.days.from_now,
+                organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
                 rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
                 help_phone_number: organisation.phone_number
               )
@@ -131,7 +131,7 @@ describe InviteUser, type: :service do
             it "does not take the org in account" do
               expect(Invitation).to receive(:new)
                 .with(
-                  organisations: [], user:, department:, follow_up:, valid_until: 5.days.from_now,
+                  organisations: [], user:, department:, follow_up:, expires_at: 5.days.from_now,
                   rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
                   help_phone_number: organisation.phone_number
                 )
@@ -148,7 +148,7 @@ describe InviteUser, type: :service do
           it "invites with the proper phone number" do
             expect(Invitation).to receive(:new)
               .with(
-                organisations: [organisation], user:, department:, follow_up:, valid_until: 5.days.from_now,
+                organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
                 rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
                 help_phone_number: phone_number
               )
@@ -166,7 +166,7 @@ describe InviteUser, type: :service do
           it "invites to all the orgs" do
             expect(Invitation).to receive(:new)
               .with(
-                organisations:, user:, department:, follow_up:, valid_until: 5.days.from_now,
+                organisations:, user:, department:, follow_up:, expires_at: 5.days.from_now,
                 rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
                 help_phone_number: organisation.phone_number
               )

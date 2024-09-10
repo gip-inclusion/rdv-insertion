@@ -18,7 +18,7 @@ module Previews
       @invitation = Invitation.new(
         user: @user, organisations: [@organisation],
         follow_up: FollowUp.new(motif_category: @motif_category),
-        valid_until: @category_configuration.number_of_days_before_action_required.days.from_now,
+        expires_at: @category_configuration.invitation_duration_in_days.days.from_now,
         help_phone_number: @category_configuration.phone_number,
         department: @department,
         uuid: SecureRandom.send(:choose, [*"A".."Z", *"0".."9"], 8)

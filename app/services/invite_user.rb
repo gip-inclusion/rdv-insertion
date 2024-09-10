@@ -28,7 +28,7 @@ class InviteUser < BaseService
       follow_up: @follow_up,
       # the validity of an invitation is equal to the number of days before an action is required,
       # then the organisation usually convene the user
-      valid_until: @current_configuration.number_of_days_before_action_required.days.from_now,
+      expires_at: @current_configuration.invitation_duration_in_days.days.from_now,
       help_phone_number: @current_configuration.phone_number,
       rdv_with_referents: @current_configuration.rdv_with_referents,
       **@invitation_attributes

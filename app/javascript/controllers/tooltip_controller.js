@@ -5,10 +5,10 @@ export default class extends Controller {
   actionRequired() {
     tippy(this.element, {
       content(reference) {
-        const { numberOfDaysBeforeActionRequired } = reference.dataset;
+        const { invitationDurationInDays } = reference.dataset;
         return (
           "Une intervention est nécessaire quand: " +
-          `<ul><li>L'invitation a été envoyée depuis + de ${numberOfDaysBeforeActionRequired} jours sans réponse</li>` +
+          `<ul><li>L'invitation a été envoyée depuis + de ${invitationDurationInDays} jours sans réponse</li>` +
           "<li>Le RDV a été annulé par l'un des partis ou l'usager ne s'est pas présenté au RDV</li>" +
           "<li>L'issue du RDV n'a pas été renseignée sur RDV-Solidarités</li></ul>"
         );
@@ -185,7 +185,7 @@ export default class extends Controller {
   reinviteButton() {
     tippy(this.element, {
       content:
-       "Réinviter remettra les compteurs à 0 vis à vis des délais",
+        "Réinviter remettra les compteurs à 0 vis à vis des délais",
       placement: "bottom",
     });
   }

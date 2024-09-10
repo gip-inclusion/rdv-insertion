@@ -18,7 +18,7 @@ class Invitation < ApplicationRecord
 
   attr_accessor :content
 
-  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :valid_until, presence: true
+  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :expires_at, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
   delegate :motif_category, :motif_category_name, to: :follow_up
@@ -30,10 +30,8 @@ class Invitation < ApplicationRecord
   before_create :assign_uuid
   after_commit :set_follow_up_status
 
-  scope :sent_in_time_window, lambda { |number_of_days_before_action_required|
-    where("created_at > ?", number_of_days_before_action_required.days.ago)
-  }
-  scope :valid, -> { where("valid_until > ?", Time.zone.now) }
+  scope :valid, -> { where("expires_at > ?", Time.zone.now) }
+  scope :expired, -> { where("expires_at <= ?", Time.zone.now) }
 
   def send_to_user
     case self.format
@@ -58,12 +56,12 @@ class Invitation < ApplicationRecord
     if expired?
       0
     else
-      (valid_until.to_date - Time.zone.now.to_date).to_i
+      (expires_at.to_date - Time.zone.now.to_date).to_i
     end
   end
 
   def expired?
-    valid_until < Time.zone.now
+    expires_at <= Time.zone.now
   end
 
   def sent_before?(date)

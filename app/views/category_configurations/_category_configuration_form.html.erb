@@ -31,7 +31,7 @@
       <% end %>
       <%= render "common/attribute_input", f:f, attribute: :invitation_formats, as: :collection_check_boxes, collection: [["sms", "SMS"], ["email", "Email"], ["postal", "Courrier"]], mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :convene_user, as: :boolean, mandatory: true %>
-      <%= render "common/attribute_input", f:f, attribute: :number_of_days_before_action_required, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :invitation_duration_in_days, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :rdv_with_referents, as: :boolean, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :invite_to_user_organisations_only, as: :boolean, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :phone_number, mandatory: false %>

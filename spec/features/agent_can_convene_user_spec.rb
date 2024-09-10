@@ -16,7 +16,7 @@ describe "Agents can convene user to rdv", :js do
       organisation: organisation,
       motif_category: motif_category,
       convene_user: true,
-      number_of_days_before_action_required: 4
+      invitation_duration_in_days: 4
     )
   end
   let!(:motif_category) { create(:motif_category) }

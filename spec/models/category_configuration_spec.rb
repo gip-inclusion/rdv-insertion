@@ -1,16 +1,16 @@
 describe CategoryConfiguration do
   describe "delays validation" do
-    context "number_of_days_before_action_required is superior to 3" do
+    context "invitation_duration_in_days is superior to 3" do
       let(:category_configuration) do
-        build(:category_configuration, organisation: create(:organisation), number_of_days_before_action_required: 5)
+        build(:category_configuration, organisation: create(:organisation), invitation_duration_in_days: 5)
       end
 
       it { expect(category_configuration).to be_valid }
     end
 
-    context "number_of_days_before_action_required is inferior to 3" do
+    context "invitation_duration_in_days is inferior to 3" do
       let(:category_configuration) do
-        build(:category_configuration, organisation: create(:organisation), number_of_days_before_action_required: 2)
+        build(:category_configuration, organisation: create(:organisation), invitation_duration_in_days: 2)
       end
 
       it "adds errors" do
