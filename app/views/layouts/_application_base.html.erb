@@ -8,28 +8,6 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
     <meta name="turbo-cache-control" content="no-cache">
 
-    <script>
-    (function (m, a, z, e) {
-      var s, t;
-      try {
-        t = m.sessionStorage.getItem('maze-us');
-      } catch (err) {}
-
-      if (!t) {
-        t = new Date().getTime();
-        try {
-          m.sessionStorage.setItem('maze-us', t);
-        } catch (err) {}
-      }
-
-      s = a.createElement('script');
-      s.src = z + '?apiKey=' + e;
-      s.async = true;
-      a.getElementsByTagName('head')[0].appendChild(s);
-      m.mazeUniversalSnippetApiKey = e;
-    })(window, document, 'https://snippet.maze.co/maze-universal-loader.js', '<%= ENV['MAZE_API_KEY'] %>');
-    </script>
-
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= favicon_link_tag 'logos/rdvi-favicon.png' %>
@@ -41,7 +19,7 @@
     <%= content_for :head %>
   </head>
 
-  <body>
+  <body data-matomo-mask>
     <%= render 'common/confirm_modal' %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>

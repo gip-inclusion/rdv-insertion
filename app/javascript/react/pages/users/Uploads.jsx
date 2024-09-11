@@ -7,6 +7,7 @@ import EnrichWithContactFile from "../../components/users/EnrichWithContactFile"
 import BatchActionsButtons from "../../components/users/BatchActionsButtons";
 import DisplayReferentsColumnButton from "../../components/users/DisplayReferentsColumnButton";
 import UsersList from "../../components/users/UsersList";
+import MazePoll from "../../components/MazePoll";
 
 import uploadFile from "../../lib/uploadFile";
 import retrieveUpToDateUsers from "../../lib/retrieveUpToDateUsers";
@@ -228,6 +229,7 @@ const UsersUploads = observer(
               </div>
             </div>
             <UsersList users={users} />
+            <MazePoll />
           </>
         )}
       </>

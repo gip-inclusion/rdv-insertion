@@ -78,6 +78,22 @@ describe Notifications::SendSms, type: :service do
       end
     end
 
+    context "when the structure phone number is empty" do
+      let!(:lieu) do
+        create(:lieu, name: "DINUM", address: "20 avenue de Ségur 75007 Paris", phone_number: "")
+      end
+
+      let!(:organisation) { create(:organisation, phone_number: nil) }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(
+          ["Le numéro de téléphone de l'organisation, du lieu ou de la catégorie doit être renseigné"]
+        )
+      end
+    end
+
     context "when the phone number is not a mobile" do
       let!(:phone_number) { "0142249062" }
 

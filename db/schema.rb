@@ -317,7 +317,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_10_084610) do
     t.bigint "department_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
-    t.string "logo_filename"
     t.string "safir_code"
     t.string "organisation_type"
     t.index ["department_id"], name: "index_organisations_on_department_id"

@@ -40,7 +40,7 @@
     "stimulus-flatpickr": "^3.0.0-0",
     "sweetalert2": "^11.0.17",
     "tippy.js": "^6.3.2",
-    "webpack": "^5.89.0",
+    "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
     "webpack-remove-empty-scripts": "^1.0.4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"

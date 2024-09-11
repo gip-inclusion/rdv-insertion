@@ -480,5 +480,22 @@ describe Stat do
         end
       end
     end
+
+    describe "#insert_month_result!" do
+      let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
+      let(:date) { "07/2023".to_date }
+
+      it "inserts the result in the stat record" do
+        stat.insert_month_result!("users_count_grouped_by_month", date, 4)
+        stat.insert_month_result!("users_count_grouped_by_month", date - 1.month, 2)
+        stat.insert_month_result!("users_count_grouped_by_month", date + 1.month, 6)
+
+        expect(stat.users_count_grouped_by_month).to eq({
+                                                          "06/2023" => 2,
+                                                          "07/2023" => 4,
+                                                          "08/2023" => 6
+                                                        })
+      end
+    end
   end
 end

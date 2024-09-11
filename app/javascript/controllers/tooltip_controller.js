@@ -21,7 +21,7 @@ export default class extends Controller {
     tippy(this.element, {
       content(reference) {
         const { archiveCreationDate, archiveReason, showArchivingReason } = reference.dataset;
-        const displayedArchivingReason = showArchivingReason === "true" ? `Motif: ${archiveReason || "Aucun motif renseigné"}` : ""
+        const displayedArchivingReason = showArchivingReason === "true" ? `Motif : ${archiveReason || "Aucun motif renseigné"}` : ""
 
         return (
           `Archivé le ${archiveCreationDate}<br/>${displayedArchivingReason}`
