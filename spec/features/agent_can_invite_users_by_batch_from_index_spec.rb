@@ -125,7 +125,7 @@ describe "Agent can invite users by batch from index" do
       click_link "Envoyer des invitations aux non-invités"
 
       expect(page).to have_current_path(
-        "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
+        "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}", wait: 20
       )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)

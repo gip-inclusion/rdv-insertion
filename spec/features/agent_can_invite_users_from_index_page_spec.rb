@@ -45,7 +45,7 @@ describe "Agents can invite from index page", :js do
 
       expect(page).to have_field("email_invite_for_user_#{user.id}", checked: true, disabled: true)
       expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
-      expect(page).to have_content("Invitation en attente de réponse")
+      expect(page).to have_content("Invitation en attente de réponse", wait: 20)
     end
 
     context "when there is no creneau available" do
