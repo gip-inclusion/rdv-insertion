@@ -10,10 +10,10 @@ describe UsersController do
     create(
       :category_configuration,
       motif_category: category_orientation,
-      invitation_duration_in_days: invitation_duration_in_days
+      number_of_days_before_invitations_expire: number_of_days_before_invitations_expire
     )
   end
-  let!(:invitation_duration_in_days) { 6 }
+  let!(:number_of_days_before_invitations_expire) { 6 }
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                           department_id: department.id, category_configurations: [category_configuration])

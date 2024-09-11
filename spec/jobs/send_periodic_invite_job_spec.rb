@@ -43,7 +43,7 @@ describe SendPeriodicInviteJob do
 
         expect(invitation.expires_at.end_of_day).to eq(
           category_configuration
-            .invitation_duration_in_days
+            .number_of_days_before_invitations_expire
             .days
             .from_now
             .end_of_day

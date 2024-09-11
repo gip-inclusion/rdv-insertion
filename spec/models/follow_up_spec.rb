@@ -248,14 +248,14 @@ describe FollowUp do
       end
     end
 
-    describe "#no_upcoming_rdv_and_invitations_expired?" do
+    describe "#no_upcoming_rdv_and_all_invitations_expired?" do
       let!(:invitation) { create(:invitation, expires_at: 2.days.from_now) }
       let!(:invitation2) { create(:invitation, expires_at: 4.days.from_now) }
       let!(:follow_up) { create(:follow_up, invitations: [invitation, invitation2], status: "invitation_pending") }
 
       context "when no invitations expired" do
         it "is false" do
-          expect(follow_up.no_upcoming_rdv_and_invitations_expired?).to eq(false)
+          expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(false)
         end
       end
 
@@ -264,14 +264,14 @@ describe FollowUp do
         let!(:invitation2) { create(:invitation, expires_at: 4.days.ago) }
 
         it "is true" do
-          expect(follow_up.no_upcoming_rdv_and_invitations_expired?).to eq(true)
+          expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(true)
         end
 
         context "when status is not invitation_pending" do
           let!(:follow_up) { create(:follow_up, invitations: [invitation, invitation2], status: "rdv_seen") }
 
           it "is false" do
-            expect(follow_up.no_upcoming_rdv_and_invitations_expired?).to eq(false)
+            expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(false)
           end
         end
       end
@@ -281,7 +281,7 @@ describe FollowUp do
         let!(:invitation2) { create(:invitation, expires_at: 4.days.ago) }
 
         it "is true" do
-          expect(follow_up.no_upcoming_rdv_and_invitations_expired?).to eq(false)
+          expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(false)
         end
       end
     end

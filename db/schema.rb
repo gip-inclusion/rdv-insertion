@@ -113,7 +113,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_10_154029) do
     t.datetime "updated_at", null: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_user", default: true
-    t.integer "invitation_duration_in_days", default: 10
+    t.integer "number_of_days_before_invitations_expire", default: 10
     t.boolean "invite_to_user_organisations_only", default: true
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"

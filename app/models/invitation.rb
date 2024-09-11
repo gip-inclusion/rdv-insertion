@@ -65,7 +65,7 @@ class Invitation < ApplicationRecord
   end
 
   def expire!
-    return if expired?
+    return true if expired?
 
     update!(expires_at: Time.zone.now)
   end

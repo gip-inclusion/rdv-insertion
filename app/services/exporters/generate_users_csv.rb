@@ -155,7 +155,7 @@ module Exporters
     end
 
     def display_follow_up_status_notice(follow_up)
-      if @structure.present? && follow_up.no_upcoming_rdv_and_invitations_expired?
+      if @structure.present? && follow_up.no_upcoming_rdv_and_all_invitations_expired?
         " (Délai dépassé)"
       else
         ""

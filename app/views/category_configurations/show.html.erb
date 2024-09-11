@@ -21,7 +21,7 @@
         <p class="mb-2"><%= @category_configuration.invitation_formats.map { |format| I18n.t("invitation_formats.#{format}") }.join(", ") %></p>
     </div>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :convene_user %>
-    <%= render "common/attribute_display", record: @category_configuration, attribute: :invitation_duration_in_days %>
+    <%= render "common/attribute_display", record: @category_configuration, attribute: :number_of_days_before_invitations_expire %>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :rdv_with_referents %>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :invite_to_user_organisations_only %>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :phone_number %>

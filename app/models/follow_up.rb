@@ -44,7 +44,7 @@ class FollowUp < ApplicationRecord
     status.in?(CONVOCABLE_STATUSES)
   end
 
-  def no_upcoming_rdv_and_invitations_expired?
+  def no_upcoming_rdv_and_all_invitations_expired?
     status == "invitation_pending" && all_invitations_expired?
   end
 

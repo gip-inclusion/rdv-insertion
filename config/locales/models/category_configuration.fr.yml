@@ -5,7 +5,7 @@ fr:
     attributes:
       category_configuration:
         convene_user: Convocation possible
-        invitation_duration_in_days: Durée de validité du lien d'invitation (en jours)
+        number_of_days_before_invitations_expire: Durée de validité du lien d'invitation (en jours)
         number_of_days_between_periodic_invites: Délai entre 2 invitations récurrentes (en jours)
         day_of_the_month_periodic_invites: Jour du mois auquel envoyer les invitations récurrentes
         invite_to_user_organisations_only: Invitation limitée aux organisations du bénéficiaire

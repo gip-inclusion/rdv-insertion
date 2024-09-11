@@ -16,7 +16,7 @@ describe ExpireInvitationJob do
       expect(invitation.reload.expires_at).to eq(now)
     end
 
-    context "when the invitation is expired" do
+    context "when the invitation is already expired" do
       let!(:expired_at) { Time.zone.parse("04/10/2022") }
       let!(:invitation) { create(:invitation, id: invitation_id, expires_at: expired_at) }
 

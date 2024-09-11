@@ -16,7 +16,7 @@ class CategoryConfigurationDashboard < Administrate::BaseDashboard
     invitation_formats: Field::String,
     invite_to_user_organisations_only: Field::Boolean,
     motif_category: Field::BelongsTo,
-    invitation_duration_in_days: Field::Number,
+    number_of_days_before_invitations_expire: Field::Number,
     number_of_days_between_periodic_invites: Field::Number,
     organisation: Field::BelongsTo,
     position: Field::Number,
@@ -52,7 +52,7 @@ class CategoryConfigurationDashboard < Administrate::BaseDashboard
     invitation_formats
     invite_to_user_organisations_only
     motif_category
-    invitation_duration_in_days
+    number_of_days_before_invitations_expire
     number_of_days_between_periodic_invites
     organisation
     position
@@ -76,7 +76,7 @@ class CategoryConfigurationDashboard < Administrate::BaseDashboard
     invitation_formats
     invite_to_user_organisations_only
     motif_category
-    invitation_duration_in_days
+    number_of_days_before_invitations_expire
     number_of_days_between_periodic_invites
     organisation
     position

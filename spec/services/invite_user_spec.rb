@@ -14,7 +14,7 @@ describe InviteUser, type: :service do
     create(
       :category_configuration,
       motif_category:, rdv_with_referents: true, invite_to_user_organisations_only: true,
-      invitation_duration_in_days: 5
+      number_of_days_before_invitations_expire: 5
     )
   end
 
