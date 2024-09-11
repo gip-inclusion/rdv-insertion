@@ -161,7 +161,7 @@ describe SessionsController do
     it "redirects to root page" do
       delete :destroy
       expect(response).to redirect_to(root_path)
-      expect(flash[:notice]).to include("Déconnexion réussie")
+      expect(flash[:notice]).to eq("Déconnexion réussie")
     end
   end
 end
