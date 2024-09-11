@@ -83,7 +83,7 @@ gem "rqrcode", "~> 2.0", require: false
 gem "rexml"
 gem "addressable"
 
-gem "agent_connect", github: "gip-inclusion/agent_connect_engine", branch: "feat/improved-api"
+gem "agent_connect", github: "gip-inclusion/agent_connect_engine"
 
 # Easily generate PDF from HTML
 gem "wicked_pdf"
