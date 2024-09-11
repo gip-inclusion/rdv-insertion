@@ -69,7 +69,7 @@ describe "Agents can add or remove user from organisations", :js do
       expect(page).to have_content(other_org.name)
       expect(page).to have_content(user.last_name)
 
-      expect(stub_create_user_profiles).to have_been_requested, wait: 20
+      expect(stub_create_user_profiles).to have_been_requested
       expect(stub_update_user).to have_been_requested
       expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
       expect(user.reload.motif_categories).not_to include(other_motif_category)
