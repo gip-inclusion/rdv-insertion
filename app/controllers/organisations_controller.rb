@@ -1,6 +1,6 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
-    :name, :phone_number, :email, :slug, :logo_filename, :rdv_solidarites_organisation_id,
+    :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
     :department_id, :safir_code
   ].freeze
 

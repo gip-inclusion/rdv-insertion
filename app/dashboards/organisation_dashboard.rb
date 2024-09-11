@@ -27,7 +27,6 @@ class OrganisationDashboard < Administrate::BaseDashboard
     last_webhook_update_received_at: Field::DateTime,
     lieux: Field::HasMany,
     logo: Field::ActiveStorage.with_options(show_preview_variant: false),
-    logo_filename: Field::String,
     messages_configuration: Field::HasOne,
     motif_categories: Field::HasMany,
     motifs: Field::HasMany,
