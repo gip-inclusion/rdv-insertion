@@ -39,6 +39,10 @@ class CategoryConfiguration < ApplicationRecord
   def notify_no_available_slots? = email_to_notify_no_available_slots.present?
   def notify_rdv_changes? = email_to_notify_rdv_changes.present?
 
+  def new_invitation_will_expire_at
+    number_of_days_before_invitations_expire.days.from_now
+  end
+
   private
 
   def minimum_invitation_duration
