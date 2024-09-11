@@ -5,10 +5,10 @@ export default class extends Controller {
   actionRequired() {
     tippy(this.element, {
       content(reference) {
-        const { invitationDurationInDays } = reference.dataset;
+        const { numberOfDaysBeforeInvitationsExpire } = reference.dataset;
         return (
           "Une intervention est nécessaire quand: " +
-          `<ul><li>L'invitation a été envoyée depuis + de ${invitationDurationInDays} jours sans réponse</li>` +
+          `<ul><li>L'invitation a été envoyée depuis + de ${numberOfDaysBeforeInvitationsExpire} jours sans réponse</li>` +
           "<li>Le RDV a été annulé par l'un des partis ou l'usager ne s'est pas présenté au RDV</li>" +
           "<li>L'issue du RDV n'a pas été renseignée sur RDV-Solidarités</li></ul>"
         );
