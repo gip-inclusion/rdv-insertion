@@ -30,7 +30,7 @@ module InboundWebhooks
       def upsert_or_delete_lieu
         return delete_lieu if event == "destroyed"
 
-        UpsertRecordJob.perform_async(
+        UpsertRecordJob.perform_later(
           "Lieu",
           @data,
           { organisation_id: organisation.id, last_webhook_update_received_at: @meta[:timestamp] }

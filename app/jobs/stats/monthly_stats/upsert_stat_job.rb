@@ -18,7 +18,7 @@ module Stats
 
       def compute_monthly_stats
         Stat::MONTHLY_STAT_ATTRIBUTES.each do |method_name|
-          Stats::MonthlyStats::ComputeAndSaveSingleStatJob.perform_async(@stat.id, method_name, @date)
+          Stats::MonthlyStats::ComputeAndSaveSingleStatJob.perform_later(@stat.id, method_name, @date)
         end
       end
     end

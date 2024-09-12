@@ -19,7 +19,7 @@ module Stats
 
       def upsert_stat(structure_type, structure_id)
         Stat::GLOBAL_STAT_ATTRIBUTES.each do |method_name|
-          Stats::GlobalStats::UpsertStatJob.perform_async(structure_type, structure_id, method_name)
+          Stats::GlobalStats::UpsertStatJob.perform_later(structure_type, structure_id, method_name)
         end
       end
     end

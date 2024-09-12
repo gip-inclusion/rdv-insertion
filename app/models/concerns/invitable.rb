@@ -64,7 +64,7 @@ module Invitable
 
   def invalidate_invitations
     invitations.each do |invitation|
-      InvalidateInvitationJob.perform_async(invitation.id)
+      InvalidateInvitationJob.perform_later(invitation.id)
     end
   end
 end

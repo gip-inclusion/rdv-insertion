@@ -20,7 +20,7 @@ module WebhookDeliverable
       # we need to precise the organisation type since the webhook payload can be
       # different depending on organisation_type
       payload = generate_webhook_payload(action, endpoint.organisation_type)
-      OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, payload)
+      OutgoingWebhooks::SendWebhookJob.perform_later(endpoint.id, payload)
     end
   end
 
@@ -43,7 +43,7 @@ module WebhookDeliverable
     # Execute la suppression, après avoir construit les données à envoyer
     yield if block_given?
     payloads.each do |endpoint, payload|
-      OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, payload)
+      OutgoingWebhooks::SendWebhookJob.perform_later(endpoint.id, payload)
     end
   end
 

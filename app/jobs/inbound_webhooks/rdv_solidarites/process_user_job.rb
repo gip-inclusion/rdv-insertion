@@ -44,9 +44,9 @@ module InboundWebhooks
 
       def upsert_or_delete_user
         if event == "destroyed"
-          SoftDeleteUserJob.perform_async(rdv_solidarites_user_id)
+          SoftDeleteUserJob.perform_later(rdv_solidarites_user_id)
         else
-          UpsertRecordJob.perform_async("User", @data, { last_webhook_update_received_at: @meta[:timestamp] })
+          UpsertRecordJob.perform_later("User", @data, { last_webhook_update_received_at: @meta[:timestamp] })
         end
       end
     end

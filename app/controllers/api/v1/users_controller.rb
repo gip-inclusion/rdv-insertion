@@ -19,7 +19,7 @@ module Api
           invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
-          CreateAndInviteUserJob.perform_async(
+          CreateAndInviteUserJob.perform_later(
             @organisation.id,
             user_attributes.merge(creation_origin_attributes),
             invitation_attributes,

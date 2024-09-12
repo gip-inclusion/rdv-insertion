@@ -895,7 +895,7 @@ describe UsersController do
 
     context "when csv request" do
       before do
-        allow(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+        allow(Exporters::CreateUsersCsvExportJob).to receive(:perform_later)
       end
 
       context "at department level" do
@@ -904,7 +904,7 @@ describe UsersController do
         let!(:agent) { create(:agent, admin_role_in_organisations: [organisation, other_organisation]) }
 
         it "calls the service" do
-          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_later)
           get :index, params: index_params
         end
 
@@ -921,7 +921,7 @@ describe UsersController do
           end
 
           it "does not call the service" do
-            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_async)
+            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_later)
 
             get :index, params: index_params
             expect(response).to redirect_to(root_path)
@@ -935,7 +935,7 @@ describe UsersController do
         let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
 
         it "calls the service" do
-          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_later)
           get :index, params: index_params
         end
 
@@ -950,7 +950,7 @@ describe UsersController do
           end
 
           it "does not call the service" do
-            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_async)
+            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_later)
 
             get :index, params: index_params
             expect(response).to redirect_to(root_path)

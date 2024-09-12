@@ -36,7 +36,7 @@ module InboundWebhooks
       end
 
       def upsert_motif
-        UpsertRecordJob.perform_async(
+        UpsertRecordJob.perform_later(
           "Motif",
           rdv_solidarites_motif.to_rdv_insertion_attributes,
           {

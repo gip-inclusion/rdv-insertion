@@ -22,7 +22,7 @@ module InboundWebhooks
       end
 
       def upsert_agent
-        UpsertRecordJob.perform_async("Agent", @data, { last_webhook_update_received_at: @meta[:timestamp] })
+        UpsertRecordJob.perform_later("Agent", @data, { last_webhook_update_received_at: @meta[:timestamp] })
       end
     end
   end
