@@ -121,26 +121,26 @@ describe "Agents can archive and unarchive user", :js do
       let!(:agent) { create(:agent, organisations: [organisation, other_org]) }
       let!(:archive) { create(:archive, user:, organisation:, archiving_reason: "CDI") }
 
-      before do
-        visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
-
-        attach_file(
-          "users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true
-        )
-      end
-
       context "when the user is archived in all organisations of department" do
         let!(:archive2) { create(:archive, user:, organisation: other_org, archiving_reason: "CDI") }
 
         it "displays the user as archived but with no reopen button" do
+          visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
+          attach_file(
+            "users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true
+          )
           expect(page).to have_no_button "Rouvrir le dossier"
           expect(page).to have_css(".fa-link")
-          expect(page).to have_content("Dossier archivé", wait: 20)
+          expect(page).to have_content("Dossier archivé")
         end
       end
 
       context "when the user is partially archived in the department" do
         it "does not display the user as archived" do
+          visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
+          attach_file(
+            "users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true
+          )
           expect(page).to have_no_button "Rouvrir le dossier"
           expect(page).to have_button "Inviter par SMS"
           expect(page).to have_no_content "Dossier archivé"
