@@ -391,7 +391,7 @@ Motif.create!(
   reservable_online: true,
   deleted_at: nil,
   rdv_solidarites_service_id: 1,
-  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
+  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur  RDV-Solidarites
   collectif: false,
   location_type: "public_office",
   motif_category: accompagnement_category,
