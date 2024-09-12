@@ -1,6 +1,8 @@
 class ApplicationJob < ActiveJob::Base
   include EnvironmentsHelper
 
+  queue_as :default
+
   private
 
   class FailedServiceError < StandardError; end
