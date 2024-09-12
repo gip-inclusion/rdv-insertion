@@ -57,6 +57,7 @@ Rails.application.routes.draw do
         resources :follow_ups, only: [:index]
         resource :parcours, only: [:show]
       end
+      resources :archives, only: [:new, :create]
       resources :invitations, only: [:create]
     end
     resources :archives, only: [:destroy]
@@ -110,11 +111,6 @@ Rails.application.routes.draw do
     resources :searches, only: :create
   end
 
-  resources :archives, only: [:new, :create, :update, :destroy] do
-    get :new_batch, on: :collection
-    post :create_many, on: :collection
-  end
-
   namespace :organisations do
     resources :user_added_notifications, only: [:create]
   end
@@ -150,6 +146,10 @@ Rails.application.routes.draw do
         resource :parcours, only: [:show]
       end
       resources :invitations, only: [:create]
+      resources :archives, only: [] do
+        get :new_batch, on: :collection
+        post :create_many, on: :collection
+      end
     end
     resources :follow_ups, module: :follow_ups, only: [] do
       resource :closings, only: [:create, :destroy]
