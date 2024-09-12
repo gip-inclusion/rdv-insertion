@@ -1,5 +1,4 @@
-class ApplicationJob
-  include Sidekiq::Worker
+class ApplicationJob < ActiveJob::Base
   include EnvironmentsHelper
 
   private
