@@ -6,7 +6,6 @@ module Users
     end
 
     def call
-      debugger
       save_user
       result.user = @user
     end
