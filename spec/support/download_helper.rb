@@ -40,6 +40,5 @@ module DownloadHelper
 
   def clear_downloads
     FileUtils.rm_rf(DownloadHelper.download_path)
-    FileUtils.mkdir_p(DownloadHelper.download_path)
   end
 end
