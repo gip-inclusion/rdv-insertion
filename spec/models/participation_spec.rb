@@ -81,9 +81,9 @@ describe Participation do
 
     context "after record creation" do
       it "enqueues a job to notify the user" do
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation.id, "sms", "participation_created")
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation.id, "email", "participation_created")
         subject
       end
@@ -92,7 +92,7 @@ describe Participation do
         before { participation.update! convocable: false }
 
         it "does not enqueue a notify users job" do
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -101,9 +101,9 @@ describe Participation do
         let!(:user) { create(:user, email: nil) }
 
         it "enqueues a job to notify by sms only" do
-          expect(NotifyParticipationToUserJob).to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).to receive(:perform_later)
             .with(participation_id, "sms", "participation_created")
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
             .with(participation_id, "email", "participation_created")
           subject
         end
@@ -113,9 +113,9 @@ describe Participation do
         let!(:user) { create(:user, phone_number: nil) }
 
         it "enqueues a job to notify by sms only" do
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
             .with(participation_id, "sms", "participation_created")
-          expect(NotifyParticipationToUserJob).to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).to receive(:perform_later)
             .with(participation_id, "email", "participation_created")
           subject
         end
@@ -126,7 +126,7 @@ describe Participation do
       before { rdv.update! starts_at: 2.days.ago }
 
       it "doess not enqueue jobs" do
-        expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -144,9 +144,9 @@ describe Participation do
 
       it "enqueues a job to notify rdv users" do
         participation.status = "revoked"
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation.id, "sms", "participation_cancelled")
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation.id, "email", "participation_cancelled")
         subject
       end
@@ -155,7 +155,7 @@ describe Participation do
         before { participation.update! convocable: false }
 
         it "does not enqueue a notify users job" do
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -173,7 +173,7 @@ describe Participation do
 
         it "does not enqueue a notify users job" do
           participation.status = "revoked"
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -181,7 +181,7 @@ describe Participation do
       context "when the rdv is excused" do
         it "does not notify the user" do
           participation.status = "excused"
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
           subject
         end
       end

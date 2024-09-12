@@ -12,12 +12,12 @@ describe Stats::MonthlyStats::UpsertStatsJob do
 
   describe "#perform" do
     before do
-      allow(Stats::MonthlyStats::UpsertStatJob).to receive(:perform_async)
+      allow(Stats::MonthlyStats::UpsertStatJob).to receive(:perform_later)
         .and_return(OpenStruct.new(success?: true))
     end
 
     it "calls the appropriate service the right number of times" do
-      expect(Stats::MonthlyStats::UpsertStatJob).to receive(:perform_async).exactly(6).times
+      expect(Stats::MonthlyStats::UpsertStatJob).to receive(:perform_later).exactly(6).times
       subject
     end
   end

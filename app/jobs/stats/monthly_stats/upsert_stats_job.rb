@@ -1,8 +1,6 @@
 module Stats
   module MonthlyStats
-    class UpsertStatsJob < ApplicationJob
-      sidekiq_options queue: :stats
-
+    class UpsertStatsJob < Stats::BaseJob
       def perform
         Stats::MonthlyStats::UpsertStatJob.perform_later("Department", nil, Time.zone.now)
 

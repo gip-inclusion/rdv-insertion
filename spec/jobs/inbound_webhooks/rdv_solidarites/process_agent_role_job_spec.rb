@@ -41,7 +41,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
 
   describe "#perform" do
     it "upserts an agent_role record" do
-      expect(UpsertRecordJob).to receive(:perform_async)
+      expect(UpsertRecordJob).to receive(:perform_later)
         .with(
           "AgentRole", data,
           { organisation_id: organisation.id, agent_id: agent.id,
@@ -68,7 +68,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       end
 
       it "does not attach the agent to the organisation" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
 
@@ -114,7 +114,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       end
 
       it "does not attach the agent to the organisation" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -140,7 +140,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
             rdv_solidarites_attributes: agent_attributes,
             additional_attributes: { last_webhook_update_received_at: meta[:timestamp] }
           )
-        expect(UpsertRecordJob).to receive(:perform_async)
+        expect(UpsertRecordJob).to receive(:perform_later)
           .with(
             "AgentRole",
             data,
@@ -175,7 +175,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       end
 
       it "does not process the upsert" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end

@@ -30,7 +30,7 @@ describe Organisations::Create, type: :service do
         .and_return(OpenStruct.new(success?: true, webhook_endpoint: nil))
       allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
-      allow(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_async)
+      allow(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_later)
         .with(webhook_endpoint_id, rdv_solidarites_organisation_id)
     end
 
@@ -87,7 +87,7 @@ describe Organisations::Create, type: :service do
     end
 
     it "calls the TriggerRdvSolidaritesWebhooksJob" do
-      expect(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_async)
+      expect(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_later)
         .with(webhook_endpoint_id, rdv_solidarites_organisation_id)
       subject
     end
@@ -106,7 +106,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerRdvSolidaritesWebhooksJob" do
-        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_async)
+        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_later)
       end
     end
 
@@ -127,7 +127,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerRdvSolidaritesWebhooksJob" do
-        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_async)
+        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_later)
       end
     end
 
@@ -146,7 +146,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerRdvSolidaritesWebhooksJob" do
-        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_async)
+        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_later)
       end
     end
 
@@ -167,7 +167,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerRdvSolidaritesWebhooksJob" do
-        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_async)
+        expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_later)
       end
     end
 
@@ -205,7 +205,7 @@ describe Organisations::Create, type: :service do
         end
 
         it "does not call the TriggerRdvSolidaritesWebhooksJob" do
-          expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_async)
+          expect(TriggerRdvSolidaritesWebhooksJob).not_to receive(:perform_later)
         end
       end
     end

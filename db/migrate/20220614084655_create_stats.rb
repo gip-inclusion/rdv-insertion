@@ -25,7 +25,7 @@ class CreateStats < ActiveRecord::Migration[7.0]
 
     add_index "stats", ["department_number"], unique: true
     up_only do
-      UpsertStatsJob.perform_async
+      UpsertStatsJob.perform_later
     end
   end
 end

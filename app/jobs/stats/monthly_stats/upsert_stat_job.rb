@@ -1,8 +1,6 @@
 module Stats
   module MonthlyStats
-    class UpsertStatJob < ApplicationJob
-      sidekiq_options queue: :stats
-
+    class UpsertStatJob < Stats::BaseJob
       def perform(structure_type, structure_id, until_date_string)
         @stat = Stat.find_or_initialize_by(statable_type: structure_type, statable_id: structure_id)
         @date = @stat.statable&.created_at || DateTime.parse("01/01/2022")

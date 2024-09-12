@@ -1,8 +1,6 @@
 module Stats
   module GlobalStats
     class UpsertStatsJob < ApplicationJob
-      sidekiq_options queue: :stats
-
       def perform
         upsert_stat("Department", nil)
 

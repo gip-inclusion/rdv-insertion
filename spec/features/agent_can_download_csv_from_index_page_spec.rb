@@ -36,14 +36,14 @@ describe "Agents can download csv from index page", :js do
 
   shared_examples "triggering csv creation" do
     it "can trigger participation csv" do
-      expect(Exporters::CreateUsersParticipationsCsvExportJob).to receive(:perform_async).once
+      expect(Exporters::CreateUsersParticipationsCsvExportJob).to receive(:perform_later).once
       find_by_id("csvExportButton").click
 
       click_link("Export des rendez-vous des usagers")
     end
 
     it "can trigger users csv" do
-      expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async).once
+      expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_later).once
       find_by_id("csvExportButton").click
 
       click_link("Export des usagers")

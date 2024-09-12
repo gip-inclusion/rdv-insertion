@@ -15,7 +15,7 @@ describe SendCreneauAvailabilityAlertJob do
     end
 
     it "perform NotifyUnavailableCreneauJob for all organisations" do
-      expect(NotifyUnavailableCreneauJob).to receive(:perform_async).exactly(6).times
+      expect(NotifyUnavailableCreneauJob).to receive(:perform_later).exactly(6).times
 
       subject
     end

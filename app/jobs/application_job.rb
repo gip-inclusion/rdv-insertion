@@ -3,6 +3,10 @@ class ApplicationJob < ActiveJob::Base
 
   queue_as :default
 
+  def self.perform_in(wait_time, *)
+    set(wait: wait_time).perform_later(*)
+  end
+
   private
 
   class FailedServiceError < StandardError; end

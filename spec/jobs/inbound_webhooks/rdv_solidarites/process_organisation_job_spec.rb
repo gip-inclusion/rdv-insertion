@@ -26,11 +26,11 @@ describe InboundWebhooks::RdvSolidarites::ProcessOrganisationJob do
 
   describe "#call" do
     before do
-      allow(UpsertRecordJob).to receive(:perform_async)
+      allow(UpsertRecordJob).to receive(:perform_later)
     end
 
     it "enqueues upsert record job" do
-      expect(UpsertRecordJob).to receive(:perform_async)
+      expect(UpsertRecordJob).to receive(:perform_later)
         .with("Organisation", data, { last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" })
       subject
     end
@@ -39,7 +39,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessOrganisationJob do
       let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "some-id") }
 
       it "does not enqueue a job" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -53,7 +53,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessOrganisationJob do
       end
 
       it "does not enqueue a job" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end
