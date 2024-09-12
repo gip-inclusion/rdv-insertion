@@ -7,11 +7,11 @@ import InvitationCells from "./InvitationCells";
 function TableRow({ user }) {
   return (
     <>
-      <tr className={user.isArchivedInCurrentDepartment() || (!user.isValid && !user.errorsMayNoLongerBeRelevant) ? "table-danger" : ""}>
+      <tr className={user.isArchived() || (!user.isValid && !user.errorsMayNoLongerBeRelevant) ? "table-danger" : ""}>
         {user.list.columns.map((column) => {
           if (!column.visible || !column.content) return null
 
-          return <td key={column.name} className={user[`${column.key}Updated`] ? "table-success" : ""} data-matomo-mask>{column.content({ user })}</td>
+          return <td key={column.name} className={user[`${column.key}Updated`] ? "table-success" : ""}>{column.content({ user })}</td>
         })}
 
         {user.currentConfiguration && <InvitationCells user={user} />}
@@ -27,3 +27,4 @@ function TableRow({ user }) {
 }
 
 export default observer(TableRow);
+

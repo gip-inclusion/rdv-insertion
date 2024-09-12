@@ -17,13 +17,16 @@ module WebhookDeliverable
 
   def generate_payload_and_send_webhook(action)
     subscribed_webhook_endpoints.each do |endpoint|
-      OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, generate_webhook_payload(action))
+      # we need to precise the organisation type since the webhook payload can be
+      # different depending on organisation_type
+      payload = generate_webhook_payload(action, endpoint.organisation_type)
+      OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, payload)
     end
   end
 
-  def generate_webhook_payload(action)
+  def generate_webhook_payload(action, organisation_type)
     {
-      data: as_json,
+      data: as_json(organisation_type:),
       meta: {
         model: self.class.name,
         event: action,
@@ -34,8 +37,8 @@ module WebhookDeliverable
 
   def generate_payload_and_send_webhook_for_destroy
     # Prépare les données à envoyer, avant de supprimer l'objet
-    payloads = subscribed_webhook_endpoints.index_with do |_endpoint|
-      generate_webhook_payload(:destroyed)
+    payloads = subscribed_webhook_endpoints.index_with do |endpoint|
+      generate_webhook_payload(:destroyed, endpoint.organisation_type)
     end
     # Execute la suppression, après avoir construit les données à envoyer
     yield if block_given?

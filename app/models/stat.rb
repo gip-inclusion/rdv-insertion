@@ -34,14 +34,6 @@ class Stat < ApplicationRecord
     @all_users ||= statable.nil? ? User.all : statable.users
   end
 
-  def archived_user_ids
-    @archived_user_ids ||= if statable.nil?
-                             User.where.associated(:archives).select(:id).ids
-                           else
-                             statable.archived_users.select(:id).ids
-                           end
-  end
-
   def all_participations
     statable.nil? ? Participation.all : statable.participations
   end
@@ -53,7 +45,6 @@ class Stat < ApplicationRecord
   # We filter the participations to only keep the participations of the users in the scope
   def participations_set
     participations = all_participations
-                     .where.not(user_id: archived_user_ids)
                      .joins(:user)
                      .where(users: { deleted_at: nil })
 
@@ -93,9 +84,9 @@ class Stat < ApplicationRecord
     @invited_users_set ||= users_set.with_sent_invitations.distinct
   end
 
-  # We filter the users by organisations and retrieve deleted or archived users
+  # We filter the users by organisations and withdraw deleted users
   def users_set
-    users = User.active.where.not(id: archived_user_ids).preload(:participations)
+    users = User.active.preload(:participations)
     users = users.joins(:organisations).where(organisations: all_organisations) if statable.present?
 
     users.distinct
@@ -133,5 +124,20 @@ class Stat < ApplicationRecord
             .where(id: FollowUp.orientation.group(:user_id).minimum(:id).values)
             .preload(participations: :rdv)
             .distinct
+  end
+
+  def insert_month_result!(attribute_name, date, result)
+    raise "Invalid attribute name" unless MONTHLY_STAT_ATTRIBUTES.include?(attribute_name)
+
+    Stat.transaction do
+      reload(lock: true)
+
+      new_value = (send(attribute_name) || {})
+                  .merge({ date.strftime("%m/%Y") => result })
+                  .sort_by { |d, _v| Date.strptime(d, "%m/%Y") }
+                  .to_h
+
+      update!(attribute_name => new_value)
+    end
   end
 end

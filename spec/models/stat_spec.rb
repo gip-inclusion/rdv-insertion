@@ -115,10 +115,6 @@ describe Stat do
           create(:user, organisations: [organisation], deleted_at: date)
         end
         let!(:user4) do
-          create(:user, organisations: [organisation])
-        end
-        let!(:archive) { create(:archive, user: user4, department: department) }
-        let!(:user5) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
 
@@ -129,10 +125,6 @@ describe Stat do
 
         it "does not include the deleted users" do
           expect(stat.users_set).not_to include(user3)
-        end
-
-        it "does not include the archived users" do
-          expect(stat.users_set).not_to include(user4)
         end
       end
 
@@ -307,10 +299,6 @@ describe Stat do
           create(:user, organisations: [organisation], deleted_at: date)
         end
         let!(:user4) do
-          create(:user, organisations: [organisation])
-        end
-        let!(:archive) { create(:archive, user: user4, department: department) }
-        let!(:user5) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
 
@@ -323,12 +311,8 @@ describe Stat do
           expect(stat.users_set).not_to include(user3)
         end
 
-        it "does not include the archived users" do
-          expect(stat.users_set).not_to include(user4)
-        end
-
         it "does not include the user from irrelevant organisations" do
-          expect(stat.users_set).not_to include(user5)
+          expect(stat.users_set).not_to include(user4)
         end
       end
 
@@ -494,6 +478,23 @@ describe Stat do
         it "does not scope the collection to the department" do
           expect(stat.orientation_follow_ups_with_invitations).to include(follow_up2)
         end
+      end
+    end
+
+    describe "#insert_month_result!" do
+      let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
+      let(:date) { "07/2023".to_date }
+
+      it "inserts the result in the stat record" do
+        stat.insert_month_result!("users_count_grouped_by_month", date, 4)
+        stat.insert_month_result!("users_count_grouped_by_month", date - 1.month, 2)
+        stat.insert_month_result!("users_count_grouped_by_month", date + 1.month, 6)
+
+        expect(stat.users_count_grouped_by_month).to eq({
+                                                          "06/2023" => 2,
+                                                          "07/2023" => 4,
+                                                          "08/2023" => 6
+                                                        })
       end
     end
   end

@@ -46,10 +46,6 @@ module UsersHelper
     ]
   end
 
-  def archived_scope?(scope)
-    scope == "archived"
-  end
-
   def rdv_solidarites_agent_searches_url(
     rdv_solidarites_organisation_id, rdv_solidarites_user_id, rdv_solidarites_motif_id, rdv_solidarites_service_id
   )
@@ -79,5 +75,17 @@ module UsersHelper
 
   def current_or_mutual_organisation_id(user, agent, department)
     current_organisation_id || mutual_department_organisations(user, agent, department).first.id
+  end
+
+  def show_user_attribute?(user, attribute_name)
+    UserPolicy.show_user_attribute?(user:, attribute_name:)
+  end
+
+  def assignable_user_attribute?(user, attribute_name)
+    assigning_organisation =
+      current_organisation || current_agent_department_organisations.max_by do |organisation|
+        UserPolicy::RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE[organisation.organisation_type.to_sym].length
+      end
+    UserPolicy.assignable_user_attribute?(user:, attribute_name:, assigning_organisation:)
   end
 end

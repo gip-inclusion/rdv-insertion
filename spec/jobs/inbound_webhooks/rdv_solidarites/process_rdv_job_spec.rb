@@ -217,7 +217,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         context "when one of the user is not yet created" do
-          let!(:user_id1) { 555 }
+          let!(:user_id1) { 82_821 }
 
           let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
           let!(:new_follow_up) do
@@ -239,7 +239,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               last_name: "Cameron",
               address: "50 rue Victor Hugo 93500 Pantin",
               phone_number: "0755929249",
-              created_through: "rdv_solidarites_webhook"
+              created_through: "rdv_solidarites_webhook",
+              created_from_structure: organisation
             )
             subject
           end

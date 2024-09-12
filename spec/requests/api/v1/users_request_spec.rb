@@ -188,8 +188,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
           department_internal_id: "11111444",
           nir: generate_random_nir,
           created_through: "rdv_insertion_api",
-          created_from_type: "Organisation",
-          created_from_id: organisation.id,
+          created_from_structure_type: "Organisation",
+          created_from_structure_id: organisation.id,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
           ]
@@ -212,7 +212,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:rdv_solidarites_organisation_id) { 422 }
       let!(:agent) { create(:agent, organisations: [organisation]) }
 
-      let!(:user) { create(:user, **user_attributes) }
+      let!(:user) { create(:user, organisations: [organisation], **user_attributes) }
 
       let!(:email_invitation) { create(:invitation, user:, **email_attributes) }
       let!(:sms_invitation) { create(:invitation, user:, **sms_attributes) }
@@ -252,6 +252,36 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
         run_test!
       end
+
+      # rubocop:disable RSpec/EmptyExampleGroup
+      context "it does not show all the user attributes depending on organisation type" do
+        [:siae, :delegataire_rsa, :autre].each do |organisation_type|
+          response(
+            200,
+            "Pour une organisation de type" \
+            "#{I18n.t("activerecord.attributes.organisation.organisation_types.#{organisation_type}")}",
+            document: false
+          ) do
+            let!(:organisation_type) { organisation_type }
+
+            schema type: "object",
+                   properties: {
+                     success: { type: "boolean" },
+                     user: {
+                       "$ref" => "#/components/schemas/user_with_referents_for_#{organisation_type}"
+                     },
+                     invitations: {
+                       type: "array",
+                       items: { "$ref" => "#/components/schemas/invitation" }
+                     }
+                   },
+                   required: %w[success user invitations]
+
+            run_test!
+          end
+        end
+      end
+      # rubocop:enable RSpec/EmptyExampleGroup
 
       it_behaves_like "an endpoint that returns 403 - forbidden" do
         let!(:agent) { create(:agent) }

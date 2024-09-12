@@ -6,7 +6,7 @@ class Notification < ApplicationRecord
 
   attr_accessor :content
 
-  belongs_to :participation, optional: true
+  belongs_to :participation
 
   enum event: {
     participation_created: "participation_created",
@@ -18,8 +18,9 @@ class Notification < ApplicationRecord
 
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 
-  delegate :department, :user, :rdv, :motif_category, :instruction_for_rdv, :follow_up, to: :participation
-  delegate :organisation, to: :rdv, allow_nil: true
+  delegate :department, :user, :rdv, :motif_category, :instruction_for_rdv, :follow_up,
+           to: :participation
+  delegate :organisation, to: :rdv
   delegate :messages_configuration, :category_configurations, to: :organisation
 
   def send_to_user

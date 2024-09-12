@@ -5,7 +5,7 @@ class NotifyRdvChangesToExternalOrganisationEmailJob < ApplicationJob
     @category_configuration = @rdv.current_category_configuration
     @event = event
 
-    return if !@category_configuration.notify_rdv_changes? || already_notified?
+    return if !@category_configuration&.notify_rdv_changes? || already_notified?
 
     OrganisationMailer.notify_rdv_changes(
       to: @category_configuration.email_to_notify_rdv_changes,

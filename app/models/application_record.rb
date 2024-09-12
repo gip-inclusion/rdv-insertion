@@ -9,7 +9,7 @@ class ApplicationRecord < ActiveRecord::Base
     end
   end
 
-  def symbolized_attributes
-    attributes.deep_symbolize_keys
-  end
+  def self.symbolized_attribute_names = attribute_names.map(&:to_sym)
+
+  def symbolized_attributes = attributes.deep_symbolize_keys
 end

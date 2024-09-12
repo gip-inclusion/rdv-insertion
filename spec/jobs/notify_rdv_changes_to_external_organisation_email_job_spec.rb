@@ -3,26 +3,27 @@ describe NotifyRdvChangesToExternalOrganisationEmailJob do
     described_class.new.perform([participation_id], participation.rdv.id, event)
   end
 
-  let(:organisation) { create(:organisation) }
-  let(:category_configuration) do
-    create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com")
+  let!(:organisation) { create(:organisation) }
+  let!(:category_configuration) do
+    create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com", motif_category:)
   end
-  let(:follow_up) { create(:follow_up, motif_category_id: category_configuration.motif_category_id) }
-  let(:participation) { create(:participation, organisation:, follow_up:, rdv:) }
-  let(:rdv) do
+  let!(:motif_category) { create(:motif_category) }
+  let!(:follow_up) { create(:follow_up, motif_category:) }
+  let!(:participation) { create(:participation, organisation:, follow_up:) }
+  let!(:rdv) do
     create(
       :rdv,
       organisation:,
       address: "some place",
       starts_at: 2.days.from_now,
-      motif_id: create(:motif, motif_category_id: category_configuration.motif_category_id).id
+      participations: [participation]
     )
   end
-  let(:participation_id) { participation.id }
+  let!(:participation_id) { participation.id }
 
-  let(:event) { "created" }
-  let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
-  let(:cache) { Rails.cache }
+  let!(:event) { "created" }
+  let!(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+  let!(:cache) { Rails.cache }
 
   before do
     allow(Rails).to receive(:cache).and_return(memory_store)
@@ -31,7 +32,9 @@ describe NotifyRdvChangesToExternalOrganisationEmailJob do
 
   describe "#perform" do
     context "category_configuration does not notify_rdv_changes" do
-      let(:category_configuration) { create(:category_configuration, organisation:, email_to_notify_rdv_changes: nil) }
+      let!(:category_configuration) do
+        create(:category_configuration, organisation:, email_to_notify_rdv_changes: nil, motif_category:)
+      end
 
       it "does not send the notification" do
         expect(OrganisationMailer).not_to receive(:notify_rdv_changes)
