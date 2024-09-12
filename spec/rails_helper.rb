@@ -74,12 +74,14 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    DatabaseCleaner.strategy = if example.metadata[:js]
+    # Vérification du chemin du fichier
+    DatabaseCleaner.strategy = if example.file_path.include?("/spec/features")
                                  :truncation
                                else
                                  :transaction
                                end
 
+    # Nettoyage de la base de données
     DatabaseCleaner.cleaning do
       example.run
     end
