@@ -55,7 +55,7 @@ describe "Agent can invite users by batch from index" do
 
       expect(page).to have_link(
         "Envoyer des invitations aux non-invités",
-        href: "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}"
+        href: "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}", wait: 20
       )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
@@ -76,7 +76,7 @@ describe "Agent can invite users by batch from index" do
     it "can invite a selection of users" do
       visit "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}"
 
-      expect(page).to have_content(user1.last_name)
+      expect(page).to have_content(user1.last_name, wait: 20)
       expect(page).to have_content(user2.last_name)
       expect(page).to have_no_content(user3.last_name)
       expect(page).to have_no_content(user4.last_name)
@@ -115,15 +115,18 @@ describe "Agent can invite users by batch from index" do
 
       expect(page).to have_link(
         "Envoyer des invitations aux non-invités",
-        href: "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
+        href: "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}", wait: 20
       )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
       expect(page).to have_content(user3.last_name)
       expect(page).to have_no_content(user4.last_name)
 
-      click_link("Envoyer des invitations aux non-invités")
+      click_link "Envoyer des invitations aux non-invités"
 
+      expect(page).to have_current_path(
+        "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
+      )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
       expect(page).to have_no_content(user3.last_name)
