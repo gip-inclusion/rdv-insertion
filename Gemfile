@@ -126,6 +126,9 @@ group :development, :test do
   gem "pg_query"
   # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "parallel_tests"
+  # Strategies for cleaning databases. Can be used to ensure a clean slate for testing.
+  gem "database_cleaner"
+  gem "database_cleaner-active_record", "~> 2.2"
 end
 
 group :development do
