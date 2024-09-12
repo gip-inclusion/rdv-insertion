@@ -4,10 +4,8 @@ module NavigationHelper
   end
 
   #
-  # Will catch routes methods calls containing "structure"
-  #
-  # When method ends with "_with_structure" => it will add the current structure id as a query param
-  # When method contains "structure"        => it will replace structure with the current structure name
+  # Catches routes methods containing "structure" :
+  # => it will replace structure with the current structure name and add the structure_id to the params
   #
   # Example : current structure is a Department with id 1
   #
@@ -15,16 +13,12 @@ module NavigationHelper
   #        executes => department_foo_path(department_id: 1)
   #        returns  => /departments/1/foo
   #
-  # foo_path_with_structure will generate an unscoped path with the current structure id as a query parameter
-  #       executes => foo_path(department_id: 1)
-  #       returns  => /foo?department_id=1
-  #
   def method_missing(method_name, params = {}, additional_params = {})
     return super unless method_name.to_s.match(/^(?=.*structure)(?=.*(path|url))/)
 
     params = { id: params } if params.is_a?(Integer)
     params_with_structure = { **params, **structure_id_param, **additional_params }
-    route_name = method_name.to_s.gsub("_with_structure", "").gsub("structure", current_structure_type)
+    route_name = method_name.to_s.gsub("structure", current_structure_type)
 
     send(route_name, params_with_structure)
   end
