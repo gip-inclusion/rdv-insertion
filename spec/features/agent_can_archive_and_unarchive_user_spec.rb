@@ -37,6 +37,47 @@ describe "Agents can archive and unarchive user", :js do
       expect(Archive.count).to eq(0)
     end
 
+    context "department level" do
+      let!(:other_org) { create(:organisation, department: department, users: [user]) }
+      let!(:agent) { create(:agent, organisations: [organisation, other_org]) }
+      let!(:archive) { create(:archive, user: user, organisation: other_org) }
+
+      it "can archive a user" do
+        visit department_user_path(department, user)
+        expect(page).to have_link("Archiver le dossier")
+
+        click_link("Archiver le dossier")
+
+        expect(page).to have_content("Archives existantes")
+        expect(page).to have_content(other_org.name)
+        fill_in "archives[archiving_reason]", with: "déménagement"
+        check("archives[organisation_ids][]", match: :first)
+
+        click_button "Archiver"
+
+        expect(page).to have_content "Dossier archivé"
+
+        expect(Archive.count).to eq(2)
+      end
+
+      context "no organisation selected" do
+        it "prevents archiving" do
+          visit department_user_path(department, user)
+          expect(page).to have_link("Archiver le dossier")
+
+          click_link("Archiver le dossier")
+
+          expect(page).to have_content("Archives existantes")
+          expect(page).to have_content(other_org.name)
+          fill_in "archives[archiving_reason]", with: "déménagement"
+
+          click_button "Archiver"
+
+          expect(page).to have_content "La sélection d'une organisation est nécéssaire"
+        end
+      end
+    end
+
     context "when the user is archived in another organisation" do
       let!(:other_org) { create(:organisation, department: department, users: [user]) }
       let!(:archive) { create(:archive, user: user, organisation: other_org) }

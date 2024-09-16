@@ -1,6 +1,6 @@
 <%= render "common/remote_modal", title: "Archiver le dossier de l'usager sur..." do %>
   <div class="modal-body pt-0">
-    <%= form_for(:archives, url: create_many_department_user_archives_path(department, user), method: :post) do |f| %>
+    <%= form_for(:archives, url: create_many_department_user_archives_path(department, user), method: :post, data: { controller: "new-department-archive-form" }) do |f| %>
       <div id="custom-body" class="w-100">
         <% if archives.any? %>
           <p class="mb-2">Archives existantes</p>
@@ -21,6 +21,9 @@
             <% end %>
           </div>
         <% end %>
+        <p class="text-danger mt-3 d-none" id="error-message">
+          La sélection d'une organisation est nécessaire pour pouvoir archiver le dossier.
+        </p>
         <%= f.hidden_field :user_id, value: user.id %>
 
         <p class="text-center">
@@ -36,7 +39,7 @@
         <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
           Annuler
         </button>
-        <button type="submit" id="confirm-button" class="btn btn-primary me-2">
+        <button type="submit" id="confirm-button" class="btn btn-primary me-2" data-action="click->new-department-archive-form#submitStart">
           Archiver
         </button>
       </div>
