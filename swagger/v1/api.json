@@ -818,7 +818,12 @@
                 "type": "object",
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "short_name": {
+                    "type": "string",
+                    "nullable": true
                   }
                 }
               }
@@ -1023,6 +1028,10 @@
             "type": "string",
             "format": "date",
             "nullable": true
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date"
           }
         },
         "required": [
