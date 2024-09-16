@@ -5,6 +5,7 @@ module InboundWebhooks
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
         return if organisation.blank?
+        return if visio_motif_without_category?
 
         if event == "destroyed"
           delete_motif
@@ -21,6 +22,10 @@ module InboundWebhooks
 
       def rdv_solidarites_organisation_id
         @data[:organisation_id]
+      end
+
+      def visio_motif_without_category?
+        rdv_solidarites_motif.visio? && rdv_solidarites_motif.motif_category.nil?
       end
 
       def rdv_solidarites_motif
