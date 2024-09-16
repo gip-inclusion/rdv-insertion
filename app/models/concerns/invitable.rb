@@ -52,19 +52,13 @@ module Invitable
     first_invitation_relative_to_last_participation_by(format)&.created_at
   end
 
-  def last_invitation_sent_manually
-    invitations.reject { |invitation| invitation.trigger == "reminder" }
-               .max_by(&:created_at)
-  end
-
-  def invited_before_time_window?(number_of_days_before_action_required)
-    last_invitation_sent_manually.present? &&
-      last_invitation_sent_manually.created_at < number_of_days_before_action_required.days.ago
+  def all_invitations_expired?
+    invitations.all?(&:expired?)
   end
 
   def invalidate_invitations
     invitations.each do |invitation|
-      InvalidateInvitationJob.perform_async(invitation.id)
+      ExpireInvitationJob.perform_async(invitation.id)
     end
   end
 end

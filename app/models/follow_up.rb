@@ -27,17 +27,12 @@ class FollowUp < ApplicationRecord
   ].freeze
 
   scope :status, ->(status) { where(status: status) }
-  scope :action_required, lambda { |number_of_days_before_action_required|
-    status(STATUSES_WITH_ACTION_REQUIRED)
-      .or(invitation_pending.invited_before_time_window(number_of_days_before_action_required))
-  }
-  scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
-    where.not(
-      id: joins(:invitations).where("invitations.created_at > ?", number_of_days_before_action_required.days.ago)
-                             .where(invitations: { trigger: "manual" })
-                             .pluck(:follow_up_id)
-    )
-  }
+  scope :action_required, lambda {
+                            status(STATUSES_WITH_ACTION_REQUIRED).or(
+                              status("invitation_pending").where(id: with_all_invitations_expired)
+                            )
+                          }
+  scope :with_all_invitations_expired, -> { joins(:invitations).where.not(invitations: Invitation.valid) }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
   scope :orientation, -> { joins(:motif_category).where(motif_category: { leads_to_orientation: true }) }
 
@@ -49,8 +44,8 @@ class FollowUp < ApplicationRecord
     status.in?(CONVOCABLE_STATUSES)
   end
 
-  def time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
-    invitation_pending? && invited_before_time_window?(number_of_days_before_action_required)
+  def no_upcoming_rdv_and_all_invitations_expired?
+    status == "invitation_pending" && all_invitations_expired?
   end
 
   def time_between_invitation_and_rdv_in_days

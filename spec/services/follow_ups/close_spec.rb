@@ -8,7 +8,7 @@ describe FollowUps::Close, type: :service do
   describe "#call" do
     before do
       travel_to(Time.zone.parse("2023-05-04 12:30"))
-      allow(InvalidateInvitationJob).to receive(:perform_async)
+      allow(ExpireInvitationJob).to receive(:perform_async)
     end
 
     it "is a success" do
@@ -20,9 +20,9 @@ describe FollowUps::Close, type: :service do
       expect(follow_up.closed_at.strftime("%d/%m/%Y")).to eq("04/05/2023")
     end
 
-    it "calls the InvalidateInvitationJob for the users invitations" do
-      expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation1.id)
-      expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
+    it "calls the ExpireInvitationJob for the users invitations" do
+      expect(ExpireInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation1.id)
+      expect(ExpireInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
       subject
     end
 
@@ -42,8 +42,8 @@ describe FollowUps::Close, type: :service do
         expect(subject.errors).to eq(["some error"])
       end
 
-      it "does not call the InvalidateInvitationJob" do
-        expect(InvalidateInvitationJob).not_to receive(:perform_async)
+      it "does not call the ExpireInvitationJob" do
+        expect(ExpireInvitationJob).not_to receive(:perform_async)
         subject
       end
     end

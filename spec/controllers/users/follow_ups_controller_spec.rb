@@ -67,7 +67,7 @@ describe Users::FollowUpsController do
         create(
           :category_configuration,
           motif_category: category_orientation,
-          number_of_days_before_action_required: 10
+          number_of_days_before_invitations_expire: 10
         )
       end
       let!(:user) do

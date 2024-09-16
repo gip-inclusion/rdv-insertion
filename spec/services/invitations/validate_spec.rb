@@ -103,7 +103,7 @@ describe Invitations::Validate, type: :service do
     end
 
     context "when it is a postal invitation and the validity is < 5 days" do
-      before { invitation.assign_attributes(format: "postal", valid_until: 2.days.from_now) }
+      before { invitation.assign_attributes(format: "postal", expires_at: 2.days.from_now) }
 
       it("is a failure") { is_a_failure }
 

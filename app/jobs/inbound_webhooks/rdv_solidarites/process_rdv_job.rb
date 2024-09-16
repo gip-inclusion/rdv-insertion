@@ -234,7 +234,7 @@ module InboundWebhooks
       end
 
       def invalidate_related_invitations
-        invitations_to_invalidate.each { |invitation| InvalidateInvitationJob.perform_async(invitation.id) }
+        invitations_to_invalidate.each { |invitation| ExpireInvitationJob.perform_async(invitation.id) }
       end
 
       def follow_ups

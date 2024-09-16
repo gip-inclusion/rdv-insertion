@@ -7,7 +7,7 @@ class CategoryConfiguration < ApplicationRecord
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
-  validate :delays_validity, :invitation_formats_validity
+  validate :minimum_invitation_duration, :invitation_formats_validity
 
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
@@ -39,10 +39,14 @@ class CategoryConfiguration < ApplicationRecord
   def notify_no_available_slots? = email_to_notify_no_available_slots.present?
   def notify_rdv_changes? = email_to_notify_rdv_changes.present?
 
+  def new_invitation_will_expire_at
+    number_of_days_before_invitations_expire.days.from_now
+  end
+
   private
 
-  def delays_validity
-    return if number_of_days_before_action_required > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+  def minimum_invitation_duration
+    return if number_of_days_before_invitations_expire > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
 
     errors.add(:base, "Le délai d'expiration de l'invtation doit être supérieur " \
                       "à #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours")

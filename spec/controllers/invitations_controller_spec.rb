@@ -206,7 +206,7 @@ describe InvitationsController do
 
       context "when the invitation is no longer valid" do
         render_views
-        before { invitation2.update!(valid_until: 2.days.ago) }
+        before { invitation2.update!(expires_at: 2.days.ago) }
 
         it "says the invitation is invalid" do
           subject

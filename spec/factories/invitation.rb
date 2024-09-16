@@ -6,7 +6,7 @@ FactoryBot.define do
     department
     user
     help_phone_number { "0139393939" }
-    valid_until { 1.week.from_now }
+    expires_at { 1.week.from_now }
     follow_up
     rdv_with_referents { false }
     organisations { [create(:organisation)] }
