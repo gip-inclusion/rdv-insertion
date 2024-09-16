@@ -12,7 +12,7 @@ module Users
         @user.soft_delete if @user.organisations.empty?
       end
 
-      CleanUnusedFollowUpsJob.perform_async(@user.id)
+      CleanUnusedFollowUpsJob.perform_later(@user.id)
     end
 
     private

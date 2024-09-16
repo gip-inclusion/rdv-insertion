@@ -24,6 +24,9 @@ module RdvInsertion
     config.exceptions_app = routes
     config.active_storage.draw_routes = false if Rails.env.production?
 
+    # Use Sidekiq as the ActiveJob queue adapter
+    config.active_job.queue_adapter = :sidekiq
+
     # The following keys are generated using the following command:
     # bundle exec rails db:encryption:init
     #

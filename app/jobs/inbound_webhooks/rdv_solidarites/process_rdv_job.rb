@@ -34,9 +34,9 @@ module InboundWebhooks
 
       def delete_or_nullify_rdv
         if webhook_reason == "rgpd"
-          NullifyRdvSolidaritesIdJob.perform_async("Rdv", rdv&.id)
+          NullifyRdvSolidaritesIdJob.perform_later("Rdv", rdv&.id)
         else
-          DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
+          DeleteRdvJob.perform_later(rdv_solidarites_rdv.id)
         end
       end
 
@@ -207,7 +207,7 @@ module InboundWebhooks
       end
 
       def upsert_rdv
-        UpsertRecordJob.perform_async(
+        UpsertRecordJob.perform_later(
           "Rdv",
           @data,
           {
@@ -234,7 +234,7 @@ module InboundWebhooks
       end
 
       def invalidate_related_invitations
-        invitations_to_invalidate.each { |invitation| ExpireInvitationJob.perform_async(invitation.id) }
+        invitations_to_invalidate.each { |invitation| ExpireInvitationJob.perform_later(invitation.id) }
       end
 
       def follow_ups

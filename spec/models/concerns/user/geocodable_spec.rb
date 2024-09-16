@@ -8,14 +8,14 @@ describe User::Geocodable, type: :concern do
       context "when an address is assigned" do
         it "calls the assign geocoding job" do
           user.address = "20 avenue de Ségur"
-          expect(RetrieveAndAssignUserAddressGeocodingJob).to receive(:perform_async)
+          expect(RetrieveAndAssignUserAddressGeocodingJob).to receive(:perform_later)
           subject
         end
       end
 
       context "when no address is assigned" do
         it "does not call the assign geocoding job" do
-          expect(RetrieveAndAssignUserAddressGeocodingJob).not_to receive(:perform_async)
+          expect(RetrieveAndAssignUserAddressGeocodingJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -27,14 +27,14 @@ describe User::Geocodable, type: :concern do
       context "when the user address changes" do
         it "calls the assign geocoding job" do
           user.address = "120 boulevard de grenelle"
-          expect(RetrieveAndAssignUserAddressGeocodingJob).to receive(:perform_async)
+          expect(RetrieveAndAssignUserAddressGeocodingJob).to receive(:perform_later)
           subject
         end
 
         context "when the address is nullified" do
           it "calls the assign geocoding job" do
             user.address = nil
-            expect(RetrieveAndAssignUserAddressGeocodingJob).to receive(:perform_async)
+            expect(RetrieveAndAssignUserAddressGeocodingJob).to receive(:perform_later)
             subject
           end
         end
@@ -43,7 +43,7 @@ describe User::Geocodable, type: :concern do
       context "when the user address does not change" do
         it "does not call the assign geocoding job" do
           user.first_name = "Bill"
-          expect(RetrieveAndAssignUserAddressGeocodingJob).not_to receive(:perform_async)
+          expect(RetrieveAndAssignUserAddressGeocodingJob).not_to receive(:perform_later)
           subject
         end
       end

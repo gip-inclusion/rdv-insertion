@@ -5,7 +5,7 @@ class RdvSolidaritesWebhooksController < ApplicationController
   include FilterRdvSolidaritesWebhooksConcern
 
   def create
-    webhook_job_for(model).perform_async(data_params.to_h, meta_params.to_h)
+    webhook_job_for(model).perform_later(data_params.to_h, meta_params.to_h)
     head :ok
   end
 

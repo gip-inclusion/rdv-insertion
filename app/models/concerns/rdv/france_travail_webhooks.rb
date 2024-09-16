@@ -18,7 +18,7 @@ module Rdv::FranceTravailWebhooks
   private
 
   def send_france_travail_webhook(event)
-    OutgoingWebhooks::SendFranceTravailWebhookJob.perform_async(
+    OutgoingWebhooks::SendFranceTravailWebhookJob.perform_later(
       generate_france_travail_payload(event), updated_at
     )
   end
@@ -28,7 +28,7 @@ module Rdv::FranceTravailWebhooks
 
     yield if block_given?
 
-    OutgoingWebhooks::SendFranceTravailWebhookJob.perform_async(payload, updated_at)
+    OutgoingWebhooks::SendFranceTravailWebhookJob.perform_later(payload, updated_at)
   end
 
   # rubocop:disable Metrics/AbcSize

@@ -107,6 +107,6 @@ class Invitation < ApplicationRecord
   end
 
   def set_follow_up_status
-    RefreshFollowUpStatusesJob.perform_async(follow_up_id)
+    RefreshFollowUpStatusesJob.perform_later(follow_up_id)
   end
 end

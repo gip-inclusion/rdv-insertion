@@ -39,7 +39,7 @@ describe Stats::MonthlyStats::UpsertStatJob, type: :service do
     it "calls ComputeAndSaveSingleStat for each Stat attribute for each month" do
       Stat::MONTHLY_STAT_ATTRIBUTES.each do |method_name|
         4.times do |i|
-          expect(Stats::MonthlyStats::ComputeAndSaveSingleStatJob).to receive(:perform_async)
+          expect(Stats::MonthlyStats::ComputeAndSaveSingleStatJob).to receive(:perform_later)
             .with(stat.id, method_name, department.created_at + i.month)
             .once
         end

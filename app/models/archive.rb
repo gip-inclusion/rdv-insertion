@@ -21,7 +21,7 @@ class Archive < ApplicationRecord
 
     organisation.invitations.where(user_id: user.id).includes(:organisations).find_each do |invitation|
       invitation_archives = Archive.where(organisation_id: invitation.organisations, user_id: user.id)
-      ExpireInvitationJob.perform_async(invitation.id) if invitation_archives.count == invitation.organisations.count
+      ExpireInvitationJob.perform_later(invitation.id) if invitation_archives.count == invitation.organisations.count
     end
   end
 end

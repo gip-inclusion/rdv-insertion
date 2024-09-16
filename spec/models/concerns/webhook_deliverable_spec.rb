@@ -12,7 +12,7 @@ describe WebhookDeliverable, type: :concern do
 
   before do
     travel_to now
-    allow(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+    allow(OutgoingWebhooks::SendWebhookJob).to receive(:perform_later)
   end
 
   describe "#send_webhook" do
@@ -29,7 +29,7 @@ describe WebhookDeliverable, type: :concern do
         let!(:event) { :created }
 
         it "notifies the creation" do
-          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_later)
           # we don't put the arguments because it is difficult since the rdv is not created yet
           rdv.save
         end
@@ -40,7 +40,7 @@ describe WebhookDeliverable, type: :concern do
         let!(:event) { :updated }
 
         it "notifies on update" do
-          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_later)
             .with(webhook_endpoint.id, webhook_payload)
           rdv.save
         end
@@ -51,7 +51,7 @@ describe WebhookDeliverable, type: :concern do
         let!(:event) { :destroyed }
 
         it "notifies on deletion" do
-          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_later)
             .with(webhook_endpoint.id, webhook_payload)
           rdv.destroy
         end
@@ -64,7 +64,7 @@ describe WebhookDeliverable, type: :concern do
 
         it "does not send webhook" do
           rdv.should_send_webhook = false
-          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
           rdv.save
         end
       end
@@ -74,7 +74,7 @@ describe WebhookDeliverable, type: :concern do
 
         it "does not send webhook" do
           rdv.should_send_webhook = false
-          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
           rdv.save
         end
       end
@@ -84,7 +84,7 @@ describe WebhookDeliverable, type: :concern do
 
         it "does not send webhook on deletion" do
           rdv.should_send_webhook = false
-          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
           rdv.destroy
         end
       end
@@ -103,7 +103,7 @@ describe WebhookDeliverable, type: :concern do
         let!(:rdv) { build(:rdv, organisation: organisation) }
 
         it "does not send webhook" do
-          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
           rdv.save
         end
       end
@@ -112,7 +112,7 @@ describe WebhookDeliverable, type: :concern do
         let!(:rdv) { create(:rdv, organisation: organisation) }
 
         it "does not send webhook" do
-          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
           rdv.save
         end
       end
@@ -121,7 +121,7 @@ describe WebhookDeliverable, type: :concern do
         let!(:rdv) { create(:rdv, organisation: organisation) }
 
         it "does not send webhook on deletion" do
-          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
           rdv.destroy
         end
       end
@@ -144,7 +144,7 @@ describe WebhookDeliverable, type: :concern do
         it "sends the nir and department id" do
           expect(webhook_payload.to_json).to include(nir)
           expect(webhook_payload.to_json).to include(department_internal_id)
-          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_later)
             .with(webhook_endpoint.id, webhook_payload)
           rdv.save
         end
@@ -156,7 +156,7 @@ describe WebhookDeliverable, type: :concern do
         it "does not send the nir or the department internal id" do
           expect(webhook_payload.to_json).not_to include(nir)
           expect(webhook_payload.to_json).not_to include(department_internal_id)
-          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_later)
             .with(webhook_endpoint.id, webhook_payload)
           rdv.save
         end

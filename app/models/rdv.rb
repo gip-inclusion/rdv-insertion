@@ -96,15 +96,15 @@ class Rdv < ApplicationRecord
   private
 
   def refresh_follow_up_statuses
-    RefreshFollowUpStatusesJob.perform_async(follow_up_ids)
+    RefreshFollowUpStatusesJob.perform_later(follow_up_ids)
   end
 
   def notify_participations_to_users
-    NotifyParticipationsToUsersJob.perform_async(notifiable_participations.map(&:id), :updated)
+    NotifyParticipationsToUsersJob.perform_later(notifiable_participations.map(&:id), :updated)
   end
 
   def notify_changes_to_external
-    NotifyRdvChangesToExternalOrganisationEmailJob.perform_async(participation_ids, id, :updated)
+    NotifyRdvChangesToExternalOrganisationEmailJob.perform_later(participation_ids, id, :updated)
   end
 
   def should_notify_users?

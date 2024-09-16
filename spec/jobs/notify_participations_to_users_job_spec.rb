@@ -14,13 +14,13 @@ describe NotifyParticipationsToUsersJob do
 
   describe "#perform" do
     it "enqueues notification jobs for each users and each format" do
-      expect(NotifyParticipationToUserJob).to receive(:perform_async)
+      expect(NotifyParticipationToUserJob).to receive(:perform_later)
         .with(participation1.id, "sms", "participation_created")
-      expect(NotifyParticipationToUserJob).to receive(:perform_async)
+      expect(NotifyParticipationToUserJob).to receive(:perform_later)
         .with(participation1.id, "email", "participation_created")
-      expect(NotifyParticipationToUserJob).to receive(:perform_async)
+      expect(NotifyParticipationToUserJob).to receive(:perform_later)
         .with(participation2.id, "sms", "participation_created")
-      expect(NotifyParticipationToUserJob).to receive(:perform_async)
+      expect(NotifyParticipationToUserJob).to receive(:perform_later)
         .with(participation2.id, "email", "participation_created")
       subject
     end
@@ -29,7 +29,7 @@ describe NotifyParticipationsToUsersJob do
       before { user1.update!(phone_number: "0101010101") }
 
       it "does not enqueue a notification by sms job" do
-        expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
           .with(participation1.id, "sms", "participation_created")
         subject
       end
@@ -39,7 +39,7 @@ describe NotifyParticipationsToUsersJob do
       before { user1.update!(phone_number: nil) }
 
       it "does not enqueue a notification by sms job" do
-        expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
           .with(participation1.id, "sms", "participation_created")
         subject
       end
@@ -49,7 +49,7 @@ describe NotifyParticipationsToUsersJob do
       before { user1.update!(email: nil) }
 
       it "does not enqueue a notification by email job" do
-        expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
           .with(participation1.id, "email", "participation_created")
         subject
       end
@@ -59,13 +59,13 @@ describe NotifyParticipationsToUsersJob do
       let!(:event_to_notify) { "reminder" }
 
       it "enqueues notification jobs for each users and each format" do
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation1.id, "sms", "participation_reminder")
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation1.id, "email", "participation_reminder")
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation2.id, "sms", "participation_reminder")
-        expect(NotifyParticipationToUserJob).to receive(:perform_async)
+        expect(NotifyParticipationToUserJob).to receive(:perform_later)
           .with(participation2.id, "email", "participation_reminder")
         subject
       end
@@ -74,7 +74,7 @@ describe NotifyParticipationsToUsersJob do
         before { user1.update!(phone_number: "0101010101") }
 
         it "does not enqueue a notification by sms job" do
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
             .with(participation1.id, "sms", "participation_reminder")
           subject
         end
@@ -84,7 +84,7 @@ describe NotifyParticipationsToUsersJob do
         before { user1.update!(phone_number: nil) }
 
         it "does not enqueue a notification by sms job" do
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
             .with(participation1.id, "sms", "participation_reminder")
           subject
         end
@@ -94,7 +94,7 @@ describe NotifyParticipationsToUsersJob do
         before { user1.update!(email: nil) }
 
         it "does not enqueue a notification by email job" do
-          expect(NotifyParticipationToUserJob).not_to receive(:perform_async)
+          expect(NotifyParticipationToUserJob).not_to receive(:perform_later)
             .with(participation1.id, "email", "participation_reminder")
           subject
         end

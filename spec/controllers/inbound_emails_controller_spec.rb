@@ -1,7 +1,7 @@
 describe InboundEmailsController do
   describe "#brevo" do
     before do
-      allow(TransferEmailReplyJob).to receive(:perform_async)
+      allow(TransferEmailReplyJob).to receive(:perform_later)
       ENV["BREVO_INBOUND_PASSWORD"] = "T4ds4U"
     end
 
@@ -9,7 +9,7 @@ describe InboundEmailsController do
       let!(:brevo_params) { { items: [{ Subject: "Dummy email" }], password: "T4ds4U" } }
 
       it "enqueues the job that handles transferring the email" do
-        expect(TransferEmailReplyJob).to receive(:perform_async)
+        expect(TransferEmailReplyJob).to receive(:perform_later)
           .with({ Subject: "Dummy email" })
         post :brevo, params: brevo_params, as: :json
         expect(response).to be_successful
@@ -20,7 +20,7 @@ describe InboundEmailsController do
       let!(:brevo_params) { { items: [{ Subject: "Dummy email" }], password: "inv4l1d" } }
 
       it "does not enqueue any job" do
-        expect(TransferEmailReplyJob).not_to receive(:perform_async)
+        expect(TransferEmailReplyJob).not_to receive(:perform_later)
         post :brevo, params: brevo_params, as: :json
         expect(response).not_to be_successful
       end

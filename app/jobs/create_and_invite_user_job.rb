@@ -39,7 +39,7 @@ class CreateAndInviteUserJob < ApplicationJob
   end
 
   def enqueue_invite_job(invitation_format)
-    InviteUserJob.perform_async(
+    InviteUserJob.perform_later(
       @user.id,
       @organisation.id,
       @invitation_attributes.merge(format: invitation_format),

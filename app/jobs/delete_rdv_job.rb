@@ -5,6 +5,6 @@ class DeleteRdvJob < ApplicationJob
 
     follow_up_ids = rdv.follow_up_ids
     rdv.destroy!
-    RefreshFollowUpStatusesJob.perform_async(follow_up_ids)
+    RefreshFollowUpStatusesJob.perform_later(follow_up_ids)
   end
 end

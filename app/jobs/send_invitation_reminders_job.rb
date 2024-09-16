@@ -10,8 +10,8 @@ class SendInvitationRemindersJob < ApplicationJob
 
       user = follow_up.user
 
-      SendInvitationReminderJob.perform_async(follow_up.id, "email") if user.email?
-      SendInvitationReminderJob.perform_async(follow_up.id, "sms") if user.phone_number_is_mobile?
+      SendInvitationReminderJob.perform_later(follow_up.id, "email") if user.email?
+      SendInvitationReminderJob.perform_later(follow_up.id, "sms") if user.phone_number_is_mobile?
 
       @sent_reminders_user_ids << user.id
     end

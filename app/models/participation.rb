@@ -42,7 +42,7 @@ class Participation < ApplicationRecord
   private
 
   def refresh_follow_up_status
-    RefreshFollowUpStatusesJob.perform_async(follow_up_id)
+    RefreshFollowUpStatusesJob.perform_later(follow_up_id)
   end
 
   def status_reloaded_from_cancelled?
@@ -64,14 +64,14 @@ class Participation < ApplicationRecord
 
   def notify_user
     if phone_number_is_mobile?
-      NotifyParticipationToUserJob.perform_async(id, "sms",
+      NotifyParticipationToUserJob.perform_later(id, "sms",
                                                  "participation_#{event_to_notify}")
     end
-    NotifyParticipationToUserJob.perform_async(id, "email", "participation_#{event_to_notify}") if email?
+    NotifyParticipationToUserJob.perform_later(id, "email", "participation_#{event_to_notify}") if email?
   end
 
   def notify_external
-    NotifyRdvChangesToExternalOrganisationEmailJob.perform_async(
+    NotifyRdvChangesToExternalOrganisationEmailJob.perform_later(
       [id],
       rdv_id,
       event_to_notify || :updated

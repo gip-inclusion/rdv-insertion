@@ -83,7 +83,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       end
 
-      before { allow(CreateAndInviteUserJob).to receive(:perform_async) }
+      before { allow(CreateAndInviteUserJob).to receive(:perform_later) }
 
       with_authentication
 
@@ -91,14 +91,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
         schema "$ref" => "#/components/schemas/success_response"
 
         run_test! do
-          expect(CreateAndInviteUserJob).to have_received(:perform_async)
+          expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
               user1_params.merge(creation_source_attributes),
               {},
               {}
             )
-          expect(CreateAndInviteUserJob).to have_received(:perform_async)
+          expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
               user2_params.except(:invitation).merge(creation_source_attributes),

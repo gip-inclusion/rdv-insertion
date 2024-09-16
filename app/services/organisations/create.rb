@@ -45,7 +45,7 @@ module Organisations
     end
 
     def trigger_rdv_solidarites_webhook_endpoint
-      TriggerRdvSolidaritesWebhooksJob.perform_async(
+      TriggerRdvSolidaritesWebhooksJob.perform_later(
         rdv_solidarites_webhook_endpoint_id,
         @organisation.rdv_solidarites_organisation_id
       )

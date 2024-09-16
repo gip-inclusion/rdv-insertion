@@ -42,9 +42,9 @@ describe Rdv do
 
       it "enqueues a job to notify rdv users" do
         rdv.address = "some other place"
-        expect(NotifyParticipationsToUsersJob).to receive(:perform_async)
+        expect(NotifyParticipationsToUsersJob).to receive(:perform_later)
           .with([participation.id], :updated)
-        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_async)
+        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_later)
           .with([participation.id], rdv.id, :updated)
         subject
       end
@@ -54,7 +54,7 @@ describe Rdv do
 
         it "does not enqueue a notify users job" do
           rdv.address = "some other place"
-          expect(NotifyParticipationsToUsersJob).not_to receive(:perform_async)
+          expect(NotifyParticipationsToUsersJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -65,9 +65,9 @@ describe Rdv do
 
       it "enqueues a job to notify rdv users" do
         rdv.starts_at = 3.days.from_now
-        expect(NotifyParticipationsToUsersJob).to receive(:perform_async)
+        expect(NotifyParticipationsToUsersJob).to receive(:perform_later)
           .with([participation.id], :updated)
-        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_async)
+        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_later)
           .with([participation.id], rdv.id, :updated)
         subject
       end
@@ -77,7 +77,7 @@ describe Rdv do
 
         it "does not enqueue a notify external job" do
           rdv.starts_at = 3.days.from_now
-          expect(NotifyRdvChangesToExternalOrganisationEmailJob).not_to receive(:perform_async)
+          expect(NotifyRdvChangesToExternalOrganisationEmailJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -87,7 +87,7 @@ describe Rdv do
 
         it "does not enqueue a notify users job" do
           rdv.starts_at = 3.days.from_now
-          expect(NotifyParticipationsToUsersJob).not_to receive(:perform_async)
+          expect(NotifyParticipationsToUsersJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -97,7 +97,7 @@ describe Rdv do
       let!(:rdv) { create(:rdv, participations: [participation], starts_at: 2.days.ago) }
 
       it "does not enqueue a job to notify rdv users" do
-        expect(NotifyParticipationsToUsersJob).not_to receive(:perform_async)
+        expect(NotifyParticipationsToUsersJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -107,7 +107,7 @@ describe Rdv do
 
       it "does not enqueue a notify users job" do
         rdv.duration_in_min = 45
-        expect(NotifyParticipationsToUsersJob).not_to receive(:perform_async)
+        expect(NotifyParticipationsToUsersJob).not_to receive(:perform_later)
         subject
       end
     end

@@ -45,7 +45,7 @@ module InboundWebhooks
       def nullify_user_rdv_solidarites_id
         return unless user # if the user is in multiple organisations, he will already have been nullified
 
-        NullifyRdvSolidaritesIdJob.perform_async("User", user&.id)
+        NullifyRdvSolidaritesIdJob.perform_later("User", user&.id)
       end
 
       def attach_user_to_org
@@ -54,7 +54,7 @@ module InboundWebhooks
 
       def remove_user_from_organisation
         user.delete_organisation(organisation) if user.reload.belongs_to_org?(organisation.id)
-        SoftDeleteUserJob.perform_async(rdv_solidarites_user_id) if user.reload.organisations.empty?
+        SoftDeleteUserJob.perform_later(rdv_solidarites_user_id) if user.reload.organisations.empty?
       end
     end
   end

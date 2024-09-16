@@ -10,7 +10,7 @@ RSpec.describe "BrevoMailWebhooks" do
   let!(:user) { create(:user, email: "test@example.com", invitations: []) }
 
   before do
-    allow(InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob).to receive(:perform_async) do |*args|
+    allow(InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob).to receive(:perform_later) do |*args|
       InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob.new.perform(*args)
     end
     allow(Sentry).to receive(:capture_message)
