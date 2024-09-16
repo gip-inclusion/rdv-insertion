@@ -48,7 +48,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user1, follow_up: follow_up1,
-        created_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -57,7 +57,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user2, follow_up: follow_up2,
-        created_at: 4.days.ago, valid_until: 4.days.from_now
+        created_at: 4.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -66,7 +66,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user3, follow_up: follow_up3,
-        created_at: 3.days.ago, valid_until: 4.hours.from_now
+        created_at: 3.days.ago, expires_at: 4.hours.from_now
       )
     end
 
@@ -75,7 +75,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user4, follow_up: follow_up4,
-        created_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -84,7 +84,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user6, follow_up: follow_up6,
-        created_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -93,7 +93,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user1, follow_up: follow_up7,
-        created_at: 3.days.ago, valid_until: 4.days.from_now,
+        created_at: 3.days.ago, expires_at: 4.days.from_now,
         trigger: "reminder"
       )
     end

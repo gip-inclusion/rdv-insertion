@@ -8,7 +8,7 @@
             <strong><%= category_configuration.motif_category_name %></strong>
             <small><%= category_configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
           </h5>
-          <%= render "follow_ups/follow_up_status_badge", follow_up:, category_configuration: %>
+          <%= render "follow_ups/follow_up_status_badge", follow_up: %>
         </div>
         <div class="d-flex justify-content-center">
           <% if should_convene_for?(follow_up, category_configuration) %>

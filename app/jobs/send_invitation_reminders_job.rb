@@ -33,8 +33,8 @@ class SendInvitationRemindersJob < ApplicationJob
 
   def valid_invitations_sent_3_days_ago
     @valid_invitations_sent_3_days_ago ||=
-      # we want the token to be valid for at least two days to be sure the invitation will be valid
-      Invitation.where("valid_until > ?", 2.days.from_now)
+      # we want the invitation to be valid for at least two days to give time to the user to accept the invitation
+      Invitation.where("expires_at > ?", 2.days.from_now)
                 .where(
                   format: %w[email sms],
                   created_at: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.all_day

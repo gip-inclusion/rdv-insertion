@@ -19,7 +19,7 @@ describe SendPeriodicInvitesJob do
         :invitation,
         follow_up: follow_up,
         created_at: 15.days.ago,
-        valid_until: 1.day.from_now,
+        expires_at: 1.day.from_now,
         organisations: [organisation]
       )
     end
@@ -42,7 +42,7 @@ describe SendPeriodicInvitesJob do
               :invitation,
               follow_up: follow_up,
               created_at: 3.days.ago,
-              valid_until: 1.day.from_now,
+              expires_at: 1.day.from_now,
               organisations: [organisation]
             )
           end
@@ -99,7 +99,7 @@ describe SendPeriodicInvitesJob do
             :invitation,
             follow_up: follow_up,
             created_at: nil,
-            valid_until: 1.day.from_now,
+            expires_at: 1.day.from_now,
             organisations: [organisation]
           )
         end
