@@ -1,6 +1,6 @@
 module Stats
   module GlobalStats
-    class UpsertStatJob < ApplicationJob
+    class UpsertStatJob < Stats::BaseJob
       sidekiq_options retry: 3
 
       def perform(structure_type, structure_id, stat_name)

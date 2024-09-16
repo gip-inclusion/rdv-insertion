@@ -1,6 +1,6 @@
 module Stats
   module GlobalStats
-    class UpsertStatsJob < ApplicationJob
+    class UpsertStatsJob < Stats::BaseJob
       def perform
         upsert_stat("Department", nil)
 
