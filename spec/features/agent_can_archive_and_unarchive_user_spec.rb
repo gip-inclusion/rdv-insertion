@@ -73,7 +73,7 @@ describe "Agents can archive and unarchive user", :js do
 
           click_button "Archiver"
 
-          expect(page).to have_content "La sélection d'une organisation est nécéssaire"
+          expect(page).to have_content "La sélection d'une organisation est nécessaire"
         end
       end
     end
