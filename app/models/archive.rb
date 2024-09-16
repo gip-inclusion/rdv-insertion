@@ -2,8 +2,6 @@ class Archive < ApplicationRecord
   belongs_to :user
   belongs_to :organisation
 
-  attr_accessor :skip_after_create
-
   validates :user_id, uniqueness: { scope: :organisation_id }
 
   after_create :invalidate_related_invitations
@@ -17,8 +15,6 @@ class Archive < ApplicationRecord
   private
 
   def invalidate_related_invitations
-    return if skip_after_create
-
     organisation.invitations.where(user_id: user.id).includes(:organisations).find_each do |invitation|
       invitation_archives = Archive.where(organisation_id: invitation.organisations, user_id: user.id)
       ExpireInvitationJob.perform_async(invitation.id) if invitation_archives.count == invitation.organisations.count
