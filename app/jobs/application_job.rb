@@ -8,6 +8,8 @@ class ApplicationJob < ActiveJob::Base
     set(wait: wait_time).perform_later(*)
   end
 
+  def self.job_name = name.demodulize.underscore
+
   private
 
   class FailedServiceError < StandardError; end

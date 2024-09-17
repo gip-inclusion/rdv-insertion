@@ -4,6 +4,12 @@ module InboundWebhooks
   module RdvSolidarites
     # rubocop:disable Metrics/ClassLength
     class ProcessRdvJob < ApplicationJob
+      include LockedJobs
+
+      def self.lock_key(data, _meta)
+        "#{job_name}:#{data[:id]}"
+      end
+
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
@@ -18,18 +24,17 @@ module InboundWebhooks
       private
 
       def process_rdv
-        Rdv.with_advisory_lock("processing_rdv_#{rdv_solidarites_rdv.id}") do
-          verify_organisation!
-          verify_motif!
-          return if unhandled_category?
+        verify_organisation!
+        return if unhandled_category?
 
-          find_or_create_users
+        verify_motif!
 
-          # for a convocation, we have to verify the lieu is up to date in db
-          verify_lieu_sync! if convocable_participations?
-          upsert_rdv
-          invalidate_related_invitations if created_event?
-        end
+        find_or_create_users
+
+        # for a convocation, we have to verify the lieu is up to date in db
+        verify_lieu_sync! if convocable_participations?
+        upsert_rdv
+        invalidate_related_invitations if created_event?
       end
 
       def delete_or_nullify_rdv
