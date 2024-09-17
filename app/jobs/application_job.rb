@@ -1,5 +1,6 @@
 class ApplicationJob < ActiveJob::Base
   include EnvironmentsHelper
+  include RedisConnectionPool
 
   queue_as :default
 
