@@ -3,7 +3,7 @@ require_relative "../middlewares/sidekiq/set_current_agent"
 
 Sidekiq.configure_server do |config|
   config.redis = { url: ENV["REDIS_URL"] || "redis://localhost:6379/0" }
-  config.logger.level = Logger::INFO
+  config.logger.level = Rails.env.development? ? Logger::DEBUG : Logger::INFO
   # when jobs are pushing other jobs to Sidekiq they are acting as clients, so we need to add the middleware here
   config.client_middleware do |chain|
     chain.prepend Sidekiq::Middleware::CaptureCurrentAgent
