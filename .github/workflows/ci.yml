@@ -29,8 +29,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [16]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        ci_node_total: [4]
+        ci_node_index: [0, 1, 2, 3]
     services:
       postgres:
         image: postgres:13.2
@@ -83,7 +83,7 @@ jobs:
       - name: Setup test database and run specs
         run: |
           RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema
-          bundle exec parallel_test spec/ -n 4 --only-group $CI_NODE_INDEX:$CI_NODE_TOTAL --type rspec --exclude-pattern "spec/features/**/*_spec.rb"
+          bundle exec parallel_test spec/ -n 4 --only-group $CI_NODE_INDEX:$CI_NODE_TOTAL --type rspec --exclude-pattern "spec/features/*_spec.rb,spec/features/**/*_spec.rb"
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -100,8 +100,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [16]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        ci_node_total: [4]
+        ci_node_index: [0, 1, 2, 3]
     services:
       postgres:
         image: postgres:13.2
