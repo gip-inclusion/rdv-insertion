@@ -83,7 +83,7 @@ jobs:
       - name: Setup test database and run specs
         run: |
           RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema
-          bundle exec parallel_test spec/ --only-group $CI_NODE_INDEX:$CI_NODE_TOTAL --type rspec --exclude-pattern "spec/features/"
+          bundle exec parallel_test spec/ --type rspec --exclude-pattern "spec/features/"
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -154,7 +154,7 @@ jobs:
       - name: Setup test database and run specs
         run: |
           RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema
-          bundle exec parallel_test spec/features --only-group $CI_NODE_INDEX:$CI_NODE_TOTAL --type rspec
+          bundle exec parallel_test spec/features --type rspec
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
