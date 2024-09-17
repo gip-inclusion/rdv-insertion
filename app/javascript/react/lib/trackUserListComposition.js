@@ -2,9 +2,9 @@
 
 /* eslint-disable no-underscore-dangle */
 const trackUserListComposition = async (users) => {
-  if (!window._mtm) return;
-
   try {
+    if (!window._mtm || !users?.length) return;
+
     const payload = {
       event: "Fichier uploadé",
       numberOfUsers: users.length,
