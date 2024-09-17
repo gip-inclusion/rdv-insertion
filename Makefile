@@ -15,8 +15,11 @@ lint_eslint: ## JavaScript Linter
 autocorrect: ## Fix autocorrectable lint issues
 	bundle exec rubocop --auto-correct-all
 
-test: ## Run all tests
-	RAILS_ENV=test bundle exec spring rake parallel:spec
+test_unit: ## Run unit tests
+	RAILS_ENV=test bundle exec spring rake parallel:drop parallel:create parallel:load_schema parallel:spec['spec/(?!features)']
+
+test_features: ## Run features tests
+	RAILS_ENV=test bundle exec spring rake parallel:drop parallel:create parallel:load_schema parallel:spec[spec/features]
 
 clean: ## Clean temporary files (including weppacks) and logs
 	bundle exec rails log:clear tmp:clear
