@@ -1,7 +1,5 @@
 name: CI
-
 on: push
-
 jobs:
   linters:
     name: Linters
@@ -30,8 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ci_node_total: [4]
-        ci_node_index: [0, 1, 2, 3]
+        group: [1, 2, 3, 4]
     services:
       postgres:
         image: postgres:13.2
@@ -83,8 +80,7 @@ jobs:
           path: tmp/parallel_runtime_rspec.log
       - name: Setup test database and run specs
         run: |
-          RAILS_ENV=test bundle exec rake parallel:create parallel:load_schema
-          RAILS_ENV=test bundle exec rake parallel:spec['spec/(?!features)']
+          RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec['spec/(?!features)'] --only-group ${{ matrix.group }}
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -92,16 +88,13 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
 
   test_features:
     name: Feature Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ci_node_total: [4]
-        ci_node_index: [0, 1, 2, 3]
+        group: [1, 2, 3, 4]
     services:
       postgres:
         image: postgres:13.2
@@ -153,8 +146,7 @@ jobs:
           path: tmp/parallel_runtime_rspec.log
       - name: Setup test database and run specs
         run: |
-          RAILS_ENV=test bundle exec rake parallel:create parallel:load_schema
-          RAILS_ENV=test bundle exec rake parallel:spec[spec/features]
+          RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec[spec/features] --only-group ${{ matrix.group }}
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -162,5 +154,3 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
