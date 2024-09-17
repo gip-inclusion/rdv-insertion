@@ -27,7 +27,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         ci_node_total: [4]
         ci_node_index: [0, 1, 2, 3]
@@ -98,7 +98,7 @@ jobs:
     name: Feature Tests
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         ci_node_total: [4]
         ci_node_index: [0, 1, 2, 3]
