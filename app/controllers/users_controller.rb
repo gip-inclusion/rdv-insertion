@@ -189,11 +189,7 @@ class UsersController < ApplicationController
   end
 
   def set_structure_orientations
-    @structure_orientations = Orientation
-                              .active
-                              .where(organisation: @current_organisations)
-                              .joins(user: :organisations)
-                              .where(users: { deleted_at: nil, organisations: @current_organisations })
+    @structure_orientations = Orientation.active.relevant_for_organisations(@current_organisations)
   end
 
   def set_orientation_types
