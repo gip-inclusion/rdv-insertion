@@ -129,6 +129,12 @@ group :development, :test do
   gem "rubocop-rspec"
   gem "prosopite"
   gem "pg_query"
+  # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "parallel_tests"
+  # Strategies for cleaning databases. Can be used to ensure a clean slate for testing.
+  gem "database_cleaner"
+  # https://github.com/DatabaseCleaner/database_cleaner-active_record/blob/main/CHANGELOG.md#v210-2023-02-17
+  gem "database_cleaner-active_record", "~> 2.2" # For Rails 7.1 Support
 end
 
 group :development do

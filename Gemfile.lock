@@ -158,6 +158,12 @@ GEM
     crass (1.0.6)
     css_parser (1.16.0)
       addressable
+    database_cleaner (2.0.2)
+      database_cleaner-active_record (>= 2, < 3)
+    database_cleaner-active_record (2.2.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.3.4)
     diff-lcs (1.5.0)
     dotenv (2.8.1)
@@ -300,6 +306,8 @@ GEM
       validate_url
       webfinger (~> 2.0)
     parallel (1.24.0)
+    parallel_tests (4.5.1)
+      parallel
     parser (3.3.0.2)
       ast (~> 2.4.1)
       racc
@@ -598,6 +606,8 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15)
   chartkick
+  database_cleaner
+  database_cleaner-active_record (~> 2.2)
   dotenv-rails
   factory_bot_rails
   faraday
@@ -609,6 +619,7 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   listen (~> 3.2)
+  parallel_tests
   pdf-reader
   pg (>= 0.18, < 2.0)
   pg_query
