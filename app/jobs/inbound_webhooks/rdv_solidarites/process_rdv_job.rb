@@ -20,8 +20,9 @@ module InboundWebhooks
       def process_rdv
         Rdv.with_advisory_lock("processing_rdv_#{rdv_solidarites_rdv.id}") do
           verify_organisation!
-          verify_motif!
           return if unhandled_category?
+
+          verify_motif!
 
           find_or_create_users
 
