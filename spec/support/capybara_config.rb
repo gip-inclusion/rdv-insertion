@@ -25,6 +25,7 @@ end
 
 Capybara.default_driver = :selenium
 Capybara.javascript_driver = :selenium
+Capybara.server_port = 9887 + ENV["TEST_ENV_NUMBER"].to_i
 
 Capybara.configure do |config|
   config.javascript_driver = :selenium
