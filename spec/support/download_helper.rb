@@ -1,14 +1,10 @@
+# Inspired by https://dev.to/coorasse/test-downloaded-files-with-rspec-and-system-tests-55mn
 module DownloadHelper
   TIMEOUT = 10
   PATH = Rails.root.join("tmp/downloads")
 
-  def self.download_path
-    test_env_number = ENV["TEST_ENV_NUMBER"].to_s.empty? ? "" : ENV["TEST_ENV_NUMBER"]
-    PATH.join("process_#{test_env_number}")
-  end
-
   def downloads
-    Dir[DownloadHelper.download_path.join("*")]
+    Dir[PATH.join("*")]
   end
 
   def download
@@ -39,6 +35,6 @@ module DownloadHelper
   end
 
   def clear_downloads
-    FileUtils.rm_rf(DownloadHelper.download_path)
+    FileUtils.rm_f(downloads)
   end
 end
