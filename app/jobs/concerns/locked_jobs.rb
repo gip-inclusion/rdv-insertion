@@ -12,7 +12,7 @@ module LockedJobs
 
   def perform_with_lock(&block)
     ActiveRecord::Base.with_advisory_lock!(
-      self.class.lock_key(*arguments), timeout_seconds: self.class.timeout_seconds, &block
+      self.class.lock_key(*arguments), timeout_seconds: self.class.lock_timeout_seconds, &block
     )
   end
 
@@ -21,7 +21,7 @@ module LockedJobs
       raise NoMethodError
     end
 
-    def timeout_seconds
+    def lock_timeout_seconds
       # we leave the possibility to set the timeout to 0 to not block our workers
       # in case lot of jobs with the same lock key are enqueued somehow.
       # In this case the jobs will fail after one unsuccessful attempt to acquire the lock.
