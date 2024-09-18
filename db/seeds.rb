@@ -259,7 +259,8 @@ drome1_organisation = Organisation.create!(
   phone_number: "0475796991",
   rdv_solidarites_organisation_id: 1,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
-  department_id: drome.id
+  department_id: drome.id,
+  organisation_type: "delegataire_rsa"
 )
 
 CategoryConfiguration.create!(
@@ -293,7 +294,8 @@ drome2_organisation = Organisation.create!(
   phone_number: "0101010102",
   rdv_solidarites_organisation_id: 2,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
-  department_id: drome.id
+  department_id: drome.id,
+  organisation_type: "delegataire_rsa"
 )
 
 CategoryConfiguration.create!(
@@ -327,7 +329,8 @@ yonne_organisation = Organisation.create!(
   phone_number: "0303030303",
   rdv_solidarites_organisation_id: 3,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
-  department_id: yonne.id
+  department_id: yonne.id,
+  organisation_type: "delegataire_rsa"
 )
 
 CategoryConfiguration.create!(

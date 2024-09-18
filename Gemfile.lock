@@ -158,12 +158,6 @@ GEM
     crass (1.0.6)
     css_parser (1.16.0)
       addressable
-    database_cleaner (2.0.2)
-      database_cleaner-active_record (>= 2, < 3)
-    database_cleaner-active_record (2.2.0)
-      activerecord (>= 5.a)
-      database_cleaner-core (~> 2.0.0)
-    database_cleaner-core (2.0.1)
     date (3.3.4)
     diff-lcs (1.5.0)
     dotenv (2.8.1)
@@ -606,8 +600,6 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15)
   chartkick
-  database_cleaner
-  database_cleaner-active_record (~> 2.2)
   dotenv-rails
   factory_bot_rails
   faraday
@@ -667,4 +659,4 @@ RUBY VERSION
    ruby 3.3.3p89
 
 BUNDLED WITH
-   2.5.3
+   2.5.14
