@@ -14,7 +14,8 @@ Capybara.register_driver :selenium do |app|
     browser_options.add_argument("--disable-search-engine-choice-screen")
   end
 
-  browser_options.add_preference(:download, prompt_for_download: false, default_directory: DownloadHelper::PATH.to_s)
+  browser_options.add_preference(:download, prompt_for_download: false,
+                                            default_directory: DownloadHelper.download_path.to_s)
   browser_options.add_preference(:browser, set_download_behavior: { behavior: "allow" })
 
   Capybara::Selenium::Driver.new(
