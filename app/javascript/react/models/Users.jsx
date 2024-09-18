@@ -5,7 +5,6 @@ import CreationCell from "../components/user/CreationCell";
 import ReferentAssignationCell from "../components/user/ReferentAssignationCell";
 import CarnetCreationCell from "../components/user/CarnetCreationCell";
 import EditableCell from "../components/user/EditableCell";
-import trackUserListComposition from "../lib/trackUserListComposition";
 
 class Users {
   constructor() {
@@ -221,10 +220,6 @@ class Users {
 
   setUsers(users) {
     this.list = users;
-
-    if (users.length > 0) {
-      trackUserListComposition(users);
-    }
   }
 
   setLoading(loading) {

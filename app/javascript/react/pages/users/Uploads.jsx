@@ -16,6 +16,7 @@ import updateUserContactsData from "../../lib/updateUserContactsData";
 import retrieveContactsData from "../../lib/retrieveContactsData";
 import { formatDateInput } from "../../../lib/datesHelper";
 import { parameterizeObjectValues } from "../../../lib/parameterize";
+import trackUserListComposition from "../../lib/trackUserListComposition";
 
 import User from "../../models/User";
 import usersStore from "../../models/Users";
@@ -126,7 +127,9 @@ const UsersUploads = observer(
 
       if (users.list.length === 0) return;
 
-      users.setUsers(await retrieveUpToDateUsers(users.list, department.id));
+      const updatedUserList = await retrieveUpToDateUsers(users.list, department.id)
+      trackUserListComposition(updatedUserList);
+      users.setUsers(updatedUserList);
     };
 
     const handleContactsFile = async (file) => {
