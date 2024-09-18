@@ -13,10 +13,14 @@ class TestJob < ApplicationJob
 end
 
 RSpec.describe LockedAndOrderedJobs do
-  let(:redis) { Redis.new }
+  let!(:redis) { Redis.new }
 
   before do
     allow(Redis).to receive(:new).and_return(redis)
+  end
+
+  after do
+    redis.flushdb
   end
 
   describe ".perform_now" do

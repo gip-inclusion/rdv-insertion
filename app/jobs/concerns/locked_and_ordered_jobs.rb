@@ -21,7 +21,7 @@ module LockedAndOrderedJobs
 
       yield
 
-      redis.set(cache_key, job_timestamp, ex: CACHED_TIMESTAMP_EXPIRATION_TIME)
+      redis.set(cache_key, job_timestamp.to_s, ex: CACHED_TIMESTAMP_EXPIRATION_TIME)
     end
   end
 
