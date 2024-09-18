@@ -49,24 +49,4 @@ describe Orientation do
         .to include("La date de fin doit être postérieure à la date de début")
     end
   end
-
-  describe ".relevant_for_organisations" do
-    subject { described_class.relevant_for_organisations([organisation]) }
-
-    let!(:organisation) { create(:organisation) }
-
-    let!(:valid_user) { create(:user, organisations: [organisation]) }
-    let!(:not_in_org_user) { create(:user) }
-    let!(:deleted_user) { create(:user, organisations: [organisation], deleted_at: Time.zone.now) }
-
-    let!(:valid_orientation) { create(:orientation, organisation: organisation, user: valid_user) }
-    let!(:invalid_orientation) { create(:orientation, organisation: organisation, user: not_in_org_user) }
-    let!(:invalid_orientation2) { create(:orientation, organisation: organisation, user: deleted_user) }
-
-    it "returns orientations only for active users of the organisation" do
-      expect(subject).to include(valid_orientation)
-      expect(subject).not_to include(invalid_orientation)
-      expect(subject).not_to include(invalid_orientation2)
-    end
-  end
 end

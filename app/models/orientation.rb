@@ -11,11 +11,6 @@ class Orientation < ApplicationRecord
   validate :ends_at_after_starts_at, :starts_at_in_the_past
 
   scope :active, -> { where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)", Time.zone.today, Time.zone.today) }
-  scope :relevant_for_organisations, lambda { |organisations|
-    where(organisation: organisations)
-      .joins(user: :organisations)
-      .where(users: { deleted_at: nil, organisations: organisations })
-  }
 
   def time_range
     starts_at...(ends_at.presence || Time.zone.today)
