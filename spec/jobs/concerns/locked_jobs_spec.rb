@@ -17,16 +17,10 @@ RSpec.describe LockedJobs, type: :concern do
 
   describe "locking behavior", :no_transaction do
     it "prevents parallel execution of jobs with the same lock_key" do
-      job = dummy_class.new
       shared_array = []
 
-      thread1 = Thread.new do
-        job.send(:perform_with_lock, [1, shared_array]) { job.perform(1, shared_array) }
-      end
-
-      thread2 = Thread.new do
-        job.send(:perform_with_lock, [1, shared_array]) { job.perform(1, shared_array) }
-      end
+      thread1 = Thread.new { dummy_class.perform_now(1, shared_array) }
+      thread2 = Thread.new { dummy_class.perform_now(1, shared_array) }
 
       [thread1, thread2].each(&:join)
 
@@ -35,14 +29,13 @@ RSpec.describe LockedJobs, type: :concern do
     end
 
     it "allows parallel execution of jobs with different lock_keys" do
-      job = dummy_class.new
       shared_array = []
 
-      thread1 = Thread.new { job.send(:perform_with_lock, [1, shared_array]) { job.perform(1, shared_array) } }
-      thread2 = Thread.new { job.send(:perform_with_lock, [2, shared_array]) { job.perform(2, shared_array) } }
+      thread1 = Thread.new { dummy_class.perform_now(1, shared_array) }
+      thread2 = Thread.new { dummy_class.perform_now(2, shared_array) }
 
       [thread1, thread2].each(&:join)
-      # The exact order might vary, but we should see interleaved execution
+      # The exact order might vary, but the second job should start before the first job ends
       expect(shared_array.uniq.length).to eq(4)
       expect(shared_array.index("start 1")).to be < shared_array.index("end 1")
       expect(shared_array.index("start 2")).to be < shared_array.index("end 1")

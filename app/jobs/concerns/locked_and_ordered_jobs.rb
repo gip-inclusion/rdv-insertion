@@ -1,29 +1,25 @@
 module LockedAndOrderedJobs
   extend ActiveSupport::Concern
-  # jobs need to implement the lock_key method
+  # This will wrap the hook inside the perform_with_lock method
   prepend LockedJobs
 
   CACHED_TIMESTAMP_EXPIRATION_TIME = 5.minutes
 
   included do
-    around_perform do |job, block|
-      perform_in_order(job.arguments) do
-        block.call
-      end
-    end
+    around_perform :perform_in_order
   end
 
   private
 
-  def perform_in_order(job_args, &block)
+  def perform_in_order
     with_redis_connection_pool do |redis|
-      cache_key = self.class.lock_key(*job_args)
+      cache_key = self.class.lock_key(*arguments)
       cached_timestamp = redis.get(cache_key)
-      job_timestamp = self.class.job_timestamp(*job_args)
+      job_timestamp = self.class.job_timestamp(*arguments)
 
       next if cached_timestamp.present? && cached_timestamp.to_datetime > job_timestamp.to_datetime
 
-      block.call
+      yield
 
       redis.set(cache_key, job_timestamp, ex: CACHED_TIMESTAMP_EXPIRATION_TIME)
     end

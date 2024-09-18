@@ -1,54 +1,58 @@
-require "rails_helper"
-
 class TestJob < ApplicationJob
   include LockedAndOrderedJobs
 
   def self.lock_key(*args)
-    "test_job:#{args.join(':')}"
+    "test_job:#{args[0..1].join(':')}"
   end
 
-  def self.job_timestamp(*_args)
-    Time.zone.now
+  def self.job_timestamp(*args)
+    args.last
   end
 
-  def perform(*args)
-    # Simulate job execution
-  end
+  def perform(*args); end
 end
 
 RSpec.describe LockedAndOrderedJobs do
   let(:redis) { Redis.new }
-  let(:job) { TestJob.new }
 
   before do
     allow(Redis).to receive(:new).and_return(redis)
   end
 
-  describe "#perform_in_order" do
+  describe ".perform_now" do
+    let(:current_time) { Time.zone.now }
+
     it "executes the job when no cached timestamp exists" do
-      expect(job).to receive(:perform).with("arg1", "arg2")
-      job.send(:perform_in_order, %w[arg1 arg2]) { job.perform("arg1", "arg2") }
+      expect_any_instance_of(TestJob).to receive(:perform).with("arg1", "arg2", current_time)
+      TestJob.perform_now("arg1", "arg2", current_time)
     end
 
     it "skips execution when cached timestamp is newer" do
       future_time = 1.hour.from_now
       redis.set(TestJob.lock_key("arg1", "arg2"), future_time.to_s, ex: 300)
 
-      expect(job).not_to receive(:perform)
-      job.send(:perform_in_order, %w[arg1 arg2]) { job.perform("arg1", "arg2") }
+      expect_any_instance_of(TestJob).not_to receive(:perform)
+      TestJob.perform_now("arg1", "arg2", current_time)
     end
 
     it "executes the job when cached timestamp is older" do
       past_time = 1.hour.ago
       redis.set(TestJob.lock_key("arg1", "arg2"), past_time.to_s, ex: 300)
 
-      expect(job).to receive(:perform).with("arg1", "arg2")
-      job.send(:perform_in_order, %w[arg1 arg2]) { job.perform("arg1", "arg2") }
+      expect_any_instance_of(TestJob).to receive(:perform).with("arg1", "arg2", current_time)
+      TestJob.perform_now("arg1", "arg2", current_time)
     end
 
     it "sets the cache key after execution" do
-      job.send(:perform_in_order, %w[arg1 arg2]) { job.perform("arg1", "arg2") }
-      expect(redis.get(TestJob.lock_key("arg1", "arg2"))).to be_present
+      TestJob.perform_now("arg1", "arg2", current_time)
+      expect(redis.get(TestJob.lock_key("arg1", "arg2"))).to eq(current_time.to_s)
+    end
+
+    it "locks the job execution" do
+      expect(ActiveRecord::Base).to receive(:with_advisory_lock!).with("test_job:arg1:arg2",
+                                                                       timeout_seconds: LockedJobs::TIMEOUT_SECONDS)
+
+      TestJob.perform_now("arg1", "arg2", current_time)
     end
   end
 end
