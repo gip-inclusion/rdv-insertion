@@ -1,8 +1,8 @@
 module LockedJobs
   extend ActiveSupport::Concern
-  # We wait 5 seconds for the lock to be released
+  # We wait 3 seconds for the lock to be released
   # if it's not released, we raise an WithAdvisoryLock::FailedToAcquireLockError
-  TIMEOUT_SECONDS = 5
+  TIMEOUT_SECONDS = 3
 
   included do
     around_perform :perform_with_lock
