@@ -18,6 +18,9 @@ tables:
   - table_name: ar_internal_metadata
     truncated: true
 
+  - table_name: address_geocodings
+    truncated: true
+
   - table_name: agents
     anonymized_column_names:
       - email
@@ -31,6 +34,7 @@ tables:
       - last_webhook_update_received_at
       - rdv_solidarites_agent_id
       - inclusion_connect_open_id_sub
+      - connected_with_agent_connect_at
 
   - table_name: agent_roles
     anonymized_column_names: []
@@ -84,6 +88,7 @@ tables:
       - motif_category_id
       - file_configuration_id
       - organisation_id
+      - number_of_days_before_invitations_expire
 
   - table_name: csv_exports
     anonymized_column_names: []
@@ -161,6 +166,7 @@ tables:
       - uuid
       - trigger
       - rdv_with_referents
+      - expires_at
 
   - table_name: invitations_organisations
     non_anonymized_column_names:
