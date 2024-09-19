@@ -19,8 +19,18 @@ tables:
     truncated: true
 
   - table_name: agents
-    anonymized_column_names: [email first_name last_name]
-    non_anonymized_column_names: [super_admin last_sign_in_at created_at updated_at last_webhook_update_received_at rdv_solidarites_agent_id inclusion_connect_open_id_sub]
+    anonymized_column_names:
+      - email
+      - first_name
+      - last_name
+    non_anonymized_column_names:
+      - super_admin
+      - last_sign_in_at
+      - created_at
+      - updated_at
+      - last_webhook_update_received_at
+      - rdv_solidarites_agent_id
+      - inclusion_connect_open_id_sub
 
   - table_name: agent_roles
     anonymized_column_names: []
@@ -35,11 +45,20 @@ tables:
       - last_webhook_update_received_at
 
   - table_name: agents_rdvs
-    non_anonymized_column_names: [created_at updated_at agent_id rdv_id]
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - agent_id
+      - rdv_id
 
   - table_name: archives
-    anonymized_column_names: [archiving_reason]
-    non_anonymized_column_names: [created_at updated_at user_id department_id]
+    anonymized_column_names:
+      - archiving_reason
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - user_id
+      - department_id
 
   - table_name: category_configurations
     anonymized_column_names:
@@ -79,8 +98,19 @@ tables:
       - kind
 
   - table_name: departments
-    anonymized_column_names: [phone_number email]
-    non_anonymized_column_names: [name number region pronoun capital created_at updated_at display_in_stats carnet_de_bord_deploiement_id]
+    anonymized_column_names:
+      - phone_number
+      - email
+    non_anonymized_column_names:
+      - name
+      - number
+      - region
+      - pronoun
+      - capital
+      - created_at
+      - updated_at
+      - display_in_stats
+      - carnet_de_bord_deploiement_id
 
   - table_name: file_configurations
     anonymized_column_names:
@@ -107,10 +137,15 @@ tables:
       - referent_email_column
       - tags_column
       - france_travail_id_column
-    non_anonymized_column_names: [created_at updated_at]
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
 
   - table_name: invitations
-    anonymized_column_names: [link help_phone_number rdv_solidarites_token]
+    anonymized_column_names:
+      - link
+      - help_phone_number
+      - rdv_solidarites_token
     non_anonymized_column_names:
       - format
       - user_id
@@ -128,14 +163,29 @@ tables:
       - rdv_with_referents
 
   - table_name: invitations_organisations
-    non_anonymized_column_names: [organisation_id invitation_id]
+    non_anonymized_column_names:
+      - organisation_id
+      - invitation_id
 
   - table_name: lieux
-    anonymized_column_names: [name address phone_number]
-    non_anonymized_column_names: [created_at updated_at rdv_solidarites_lieu_id organisation_id last_webhook_update_received_at]
+    anonymized_column_names:
+      - name
+      - address
+      - phone_number
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - rdv_solidarites_lieu_id
+      - organisation_id
+      - last_webhook_update_received_at
 
   - table_name: messages_configurations
-    anonymized_column_names: [sender_city direction_names letter_sender_name signature_lines help_address]
+    anonymized_column_names:
+      - sender_city
+      - direction_names
+      - letter_sender_name
+      - signature_lines
+      - help_address
     non_anonymized_column_names:
       - created_at
       - updated_at
@@ -159,7 +209,8 @@ tables:
       - leads_to_orientation
 
   - table_name: motifs
-    anonymized_column_names: [instruction_for_rdv]
+    anonymized_column_names:
+      - instruction_for_rdv
     non_anonymized_column_names:
       - name
       - rdv_solidarites_service_id
@@ -176,7 +227,8 @@ tables:
       - motif_category_id
 
   - table_name: notifications
-    anonymized_column_names: [event]
+    anonymized_column_names:
+      - event
     non_anonymized_column_names:
       - sent_at
       - created_at
@@ -189,14 +241,34 @@ tables:
 
   - table_name: orientations
     anonymized_column_names: []
-    non_anonymized_column_names: [orientation_type_id user_id organisation_id agent_id starts_at ends_at created_at updated_at]
+    non_anonymized_column_names:
+      - orientation_type_id
+      - user_id
+      - organisation_id
+      - agent_id
+      - starts_at
+      - ends_at
+      - created_at
+      - updated_at
 
   - table_name: orientation_types
     anonymized_column_names: []
-    non_anonymized_column_names: [name casf_category department_id created_at updated_at]
+    non_anonymized_column_names:
+      - name
+      - casf_category
+      - department_id
+      - created_at
+      - updated_at
 
   - table_name: parcours_documents
-    non_anonymized_column_names: [department_id user_id agent_id type created_at updated_at document_date]
+    non_anonymized_column_names:
+      - department_id
+      - user_id
+      - agent_id
+      - type
+      - created_at
+      - updated_at
+      - document_date
 
   - table_name: participations
     non_anonymized_column_names:
@@ -251,7 +323,9 @@ tables:
       - created_through
 
   - table_name: rdvs
-    anonymized_column_names: [context address]
+    anonymized_column_names:
+      - context
+      - address
     non_anonymized_column_names:
       - rdv_solidarites_rdv_id
       - starts_at
@@ -270,7 +344,9 @@ tables:
       - max_participants_count
 
   - table_name: referent_assignations
-    non_anonymized_column_names: [agent_id user_id]
+    non_anonymized_column_names:
+      - agent_id
+      - user_id
 
   - table_name: stats
     non_anonymized_column_names:
@@ -303,14 +379,25 @@ tables:
       - rate_of_users_oriented_in_less_than_15_days_by_month
 
   - table_name: tag_organisations
-    non_anonymized_column_names: [organisation_id tag_id created_at updated_at]
+    non_anonymized_column_names:
+      - organisation_id
+      - tag_id
+      - created_at
+      - updated_at
 
   - table_name: tag_users
-    non_anonymized_column_names: [user_id tag_id created_at updated_at]
+    non_anonymized_column_names:
+      - user_id
+      - tag_id
+      - created_at
+      - updated_at
 
   - table_name: tags
     anonymized_column_names: []
-    non_anonymized_column_names: [value created_at updated_at]
+    non_anonymized_column_names:
+      - value
+      - created_at
+      - updated_at
 
   - table_name: templates
     anonymized_column_names: []
@@ -328,7 +415,11 @@ tables:
       - updated_at
 
   - table_name: organisations
-    anonymized_column_names: [phone_number email logo_filename safir_code]
+    anonymized_column_names:
+      - phone_number
+      - email
+      - logo_filename
+      - safir_code
     non_anonymized_column_names:
       - name
       - slug
@@ -340,12 +431,28 @@ tables:
       - last_webhook_update_received_at
 
   - table_name: users_organisations
-    non_anonymized_column_names: [user_id organisation_id created_at updated_at]
+    non_anonymized_column_names:
+      - user_id
+      - organisation_id
+      - created_at
+      - updated_at
 
   - table_name: webhook_endpoints
-    anonymized_column_names: [url secret signature_type]
-    non_anonymized_column_names: [created_at updated_at subscriptions organisation_id]
+    anonymized_column_names:
+      - url
+      - secret
+      - signature_type
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - subscriptions
+      - organisation_id
 
   - table_name: webhook_receipts
-    non_anonymized_column_names: [resource_id webhook_endpoint_id timestamp created_at updated_at resource_model]
-
+    non_anonymized_column_names:
+      - resource_id
+      - webhook_endpoint_id
+      - timestamp
+      - created_at
+      - updated_at
+      - resource_model
