@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/betagouv/rdv-service-public.git
+  revision: 4ae40afa996f9739f34be41d2e0779dc05e4ec67
+  branch: production
+  glob: lib/anonymizer/anonymizer.gemspec
+  specs:
+    anonymizer (0.1.0)
+      activerecord (>= 7.0)
+
+GIT
   remote: https://github.com/gip-inclusion/agent_connect_engine.git
   revision: 7dae451ec39dbd62c2a20ec61b15a4d53b0cd166
   specs:
@@ -592,6 +601,7 @@ DEPENDENCIES
   administrate!
   administrate-field-active_storage
   agent_connect!
+  anonymizer!
   aws-sdk-s3
   blueprinter
   bootsnap (>= 1.4.2)
