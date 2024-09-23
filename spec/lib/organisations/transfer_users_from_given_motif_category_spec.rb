@@ -1,8 +1,8 @@
 require Rails.root.join("lib/organisations/transfer_users_from_given_motif_category")
 
 describe Organisations::TransferUsersFromGivenMotifCategory do
-  describe "#perform" do
-    subject { transfer.perform }
+  describe "#call" do
+    subject { transfer.call }
 
     let(:source_organisation) { create(:organisation) }
     let(:target_organisation) { create(:organisation) }
@@ -33,7 +33,7 @@ describe Organisations::TransferUsersFromGivenMotifCategory do
     end
 
     it "transfers users from source to target organisation" do
-      transfer.perform
+      transfer.call
 
       expect(UsersOrganisation.where(user:, organisation: source_organisation)).to be_empty
       expect(UsersOrganisation.where(user:, organisation: target_organisation)).not_to be_empty

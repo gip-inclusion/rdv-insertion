@@ -17,7 +17,7 @@ namespace :organisations do
       source_organisation_id: source_organisation_id,
       target_organisation_id: target_organisation_id,
       motif_category_id: motif_category_id
-    ).perform
+    ).call
   end
 end
 

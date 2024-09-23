@@ -8,11 +8,13 @@ module Organisations
       @motif_category = MotifCategory.find(motif_category_id)
     end
 
-    def perform
-      transfer_rdvs
-      remove_users_from_source_organisation
-      add_users_to_target_organisation!
-      remove_old_category_configuration!
+    def call
+      ActiveRecord::Base.transaction do
+        transfer_rdvs
+        remove_users_from_source_organisation
+        add_users_to_target_organisation!
+        remove_old_category_configuration!
+      end
     end
 
     private
