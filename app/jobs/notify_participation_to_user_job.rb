@@ -4,7 +4,7 @@ class NotifyParticipationToUserJob < ApplicationJob
   include LockedJobs
 
   def self.lock_key(participation_id, format, event)
-    "#{job_name}:#{participation_id}:#{format}:#{event}"
+    "#{name}:#{participation_id}:#{format}:#{event}"
   end
 
   def perform(participation_id, format, event)

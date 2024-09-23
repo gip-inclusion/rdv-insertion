@@ -7,7 +7,7 @@ module InboundWebhooks
       include LockedJobs
 
       def self.lock_key(data, _meta)
-        "#{job_name}:#{data[:id]}"
+        "#{name}:#{data[:id]}"
       end
 
       def perform(data, meta)

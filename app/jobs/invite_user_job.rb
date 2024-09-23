@@ -4,7 +4,7 @@ class InviteUserJob < ApplicationJob
   sidekiq_options retry: 10
 
   def self.lock_key(user_id, _organisation_id, _invitation_attributes, _motif_category_attributes)
-    "#{job_name}:#{user_id}"
+    "#{name}:#{user_id}"
   end
 
   def perform(user_id, organisation_id, invitation_attributes, motif_category_attributes)
