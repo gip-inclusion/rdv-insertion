@@ -34,7 +34,7 @@ module CurrentStructure
   end
 
   def current_structure_type
-    @current_structure_type ||= session[:current_structure_type] || current_structure_type_in_params
+    @current_structure_type ||= session[:current_structure_type]
   end
 
   def department_level?
