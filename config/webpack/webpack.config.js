@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const RemoveEmptyScriptsPlugin = require("webpack-remove-empty-scripts");
 // The RAILS_ENV variable is set as "development" in Procfile.dev
-const mode = process.env.RAILS_ENV === "development" ? "development" : "production";
+const mode = (process.env.RAILS_ENV === "development" || process.env.RAILS_ENV === "test") ? "development" : "production";
 
 module.exports = {
   mode,
