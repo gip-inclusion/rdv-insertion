@@ -129,6 +129,9 @@ group :development, :test do
   gem "rubocop-rspec"
   gem "prosopite"
   gem "pg_query"
+  gem "anonymizer", git: "https://github.com/betagouv/rdv-service-public.git",
+                    branch: "production",
+                    glob: "lib/anonymizer/anonymizer.gemspec"
 end
 
 group :development do
