@@ -83,6 +83,8 @@ gem "rqrcode", "~> 2.0", require: false
 gem "rexml"
 gem "addressable"
 
+gem "agent_connect", github: "gip-inclusion/agent_connect_engine"
+
 # Easily generate PDF from HTML
 gem "wicked_pdf"
 gem "wkhtmltopdf-binary"
@@ -113,6 +115,9 @@ gem "bootsnap", ">= 1.4.2", require: false
 
 # APM
 gem "skylight"
+
+# Sets migrations timeouts
+gem "activerecord-safer_migrations"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

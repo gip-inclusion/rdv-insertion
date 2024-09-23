@@ -6,7 +6,7 @@ class RefreshOutOfDateFollowUpStatusesJob < ApplicationJob
     end
 
     notify_on_mattermost if production_env?
-    RefreshFollowUpStatusesJob.perform_async(@follow_up_ids)
+    RefreshFollowUpStatusesJob.perform_later(@follow_up_ids)
   end
 
   private

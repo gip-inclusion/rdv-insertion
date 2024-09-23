@@ -15,8 +15,7 @@ describe "Agents can convene user to rdv", :js do
       :category_configuration,
       organisation: organisation,
       motif_category: motif_category,
-      convene_user: true,
-      number_of_days_before_action_required: 4
+      convene_user: true
     )
   end
   let!(:motif_category) { create(:motif_category) }
@@ -33,7 +32,7 @@ describe "Agents can convene user to rdv", :js do
   let!(:follow_up) do
     create(:follow_up, status: "invitation_pending", user: user, motif_category: motif_category)
   end
-  let!(:invitation) { create(:invitation, follow_up: follow_up, created_at: 5.days.ago) }
+  let!(:invitation) { create(:invitation, follow_up: follow_up, expires_at: 2.days.ago) }
 
   let!(:motif) do
     create(

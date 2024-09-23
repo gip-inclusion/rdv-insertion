@@ -87,7 +87,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       :invitation,
       organisations: [organisation],
       follow_up: follow_up,
-      valid_until: 3.days.from_now
+      expires_at: 3.days.from_now
     )
   end
 
@@ -97,7 +97,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       organisations:
       [organisation],
       follow_up: follow_up2,
-      valid_until: 3.days.from_now
+      expires_at: 3.days.from_now
     )
   end
 
@@ -106,7 +106,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       :invitation,
       organisations: [organisation],
       follow_up: follow_up,
-      valid_until: 3.days.ago
+      expires_at: 3.days.ago
     )
   end
 
@@ -127,9 +127,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       allow(FollowUp).to receive(:find_or_create_by!)
         .with(user: user2, motif_category: motif_category)
         .and_return(follow_up2)
-      allow(UpsertRecordJob).to receive(:perform_async)
-      allow(InvalidateInvitationJob).to receive(:perform_async)
-      allow(DeleteRdvJob).to receive(:perform_async)
+      allow(UpsertRecordJob).to receive(:perform_later)
+      allow(ExpireInvitationJob).to receive(:perform_later)
+      allow(DeleteRdvJob).to receive(:perform_later)
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
@@ -177,7 +177,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
       context "it upserts the rdv (for a create)" do
         it "enqueues a job to upsert the rdv" do
-          expect(UpsertRecordJob).to receive(:perform_async)
+          expect(UpsertRecordJob).to receive(:perform_later)
             .with(
               "Rdv",
               data,
@@ -195,9 +195,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         it "enqueues jobs to invalidate the related sent valid invitations" do
-          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
-          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
-          expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
+          expect(ExpireInvitationJob).to receive(:perform_later).exactly(1).time.with(invitation.id)
+          expect(ExpireInvitationJob).to receive(:perform_later).exactly(1).time.with(invitation2.id)
+          expect(ExpireInvitationJob).not_to receive(:perform_later).with(invitation3.id)
           subject
         end
 
@@ -207,7 +207,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           end
 
           it "does not enqueue a job to invalidate the related sent valid invitations" do
-            expect(InvalidateInvitationJob).not_to receive(:perform_async)
+            expect(ExpireInvitationJob).not_to receive(:perform_later)
             subject
           end
         end
@@ -246,7 +246,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           end
 
           it "still upserts the rdv with the right attributes" do
-            expect(UpsertRecordJob).to receive(:perform_async)
+            expect(UpsertRecordJob).to receive(:perform_later)
               .with(
                 "Rdv",
                 data,
@@ -297,7 +297,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           before { user.update! rdv_solidarites_user_id: nil }
 
           it "discards the deleted user participation" do
-            expect(UpsertRecordJob).to receive(:perform_async)
+            expect(UpsertRecordJob).to receive(:perform_later)
               .with(
                 "Rdv",
                 data,
@@ -369,7 +369,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         it "enqueues a job to upsert the rdv with updated status and destroyed participation" do
-          expect(UpsertRecordJob).to receive(:perform_async)
+          expect(UpsertRecordJob).to receive(:perform_later)
             .with(
               "Rdv",
               data,
@@ -392,7 +392,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       let!(:meta) { { "model" => "Rdv", "event" => "destroyed" }.deep_symbolize_keys }
 
       it "enqueues a delete job" do
-        expect(DeleteRdvJob).to receive(:perform_async)
+        expect(DeleteRdvJob).to receive(:perform_later)
           .with(rdv_solidarites_rdv_id)
         subject
       end
@@ -402,13 +402,13 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation, motif:) }
 
         it "enqueues a nullify job" do
-          expect(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
+          expect(NullifyRdvSolidaritesIdJob).to receive(:perform_later)
             .with("Rdv", rdv.id)
           subject
         end
 
         it "does not enqueue a delete job" do
-          expect(DeleteRdvJob).not_to receive(:perform_async)
+          expect(DeleteRdvJob).not_to receive(:perform_later)
           subject
         end
       end
@@ -419,7 +419,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
       it "does not call any job" do
         [UpsertRecordJob, DeleteRdvJob].each do |klass|
-          expect(klass).not_to receive(:perform_async)
+          expect(klass).not_to receive(:perform_later)
         end
         subject
       end
@@ -430,7 +430,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
       it "does not call any job" do
         [UpsertRecordJob, DeleteRdvJob].each do |klass|
-          expect(klass).not_to receive(:perform_async)
+          expect(klass).not_to receive(:perform_later)
         end
         subject
       end
@@ -452,7 +452,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         it "sets the convocable attribute when upserting the rdv" do
-          expect(UpsertRecordJob).to receive(:perform_async).with(
+          expect(UpsertRecordJob).to receive(:perform_later).with(
             "Rdv",
             data,
             {
@@ -492,7 +492,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           before { category_configuration.update! convene_user: false }
 
           it "sets the convocable attribute when upserting the rdv" do
-            expect(UpsertRecordJob).to receive(:perform_async) do |_, _, args|
+            expect(UpsertRecordJob).to receive(:perform_later) do |_, _, args|
               expected_participation_attributes = [
                 {
                   id: nil,
@@ -573,7 +573,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         it "sets the participations created by the agent as convocable" do
-          expect(UpsertRecordJob).to receive(:perform_async).with(
+          expect(UpsertRecordJob).to receive(:perform_later).with(
             "Rdv",
             data,
             {
@@ -613,7 +613,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           before { category_configuration.update! convene_user: false }
 
           it "sets the convocable attribute when upserting the rdv" do
-            expect(UpsertRecordJob).to receive(:perform_async).with(
+            expect(UpsertRecordJob).to receive(:perform_later).with(
               "Rdv",
               data,
               {
@@ -693,7 +693,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         it "sets the participations rdv_solidarites_agent_prescripteur_id" do
-          expect(UpsertRecordJob).to receive(:perform_async).with(
+          expect(UpsertRecordJob).to receive(:perform_later).with(
             "Rdv",
             data,
             {

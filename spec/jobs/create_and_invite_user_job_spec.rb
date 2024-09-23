@@ -24,7 +24,7 @@ describe CreateAndInviteUserJob do
   let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms") }
 
   before do
-    allow(InviteUserJob).to receive(:perform_async)
+    allow(InviteUserJob).to receive(:perform_later)
     allow(Users::Upsert).to receive(:call)
       .with(organisation:, user_attributes:)
       .and_return(OpenStruct.new(success?: true, user: user))
@@ -37,11 +37,11 @@ describe CreateAndInviteUserJob do
   end
 
   it "enqueues invite user jobs" do
-    expect(InviteUserJob).to receive(:perform_async)
+    expect(InviteUserJob).to receive(:perform_later)
       .with(
         user.id, organisation.id, sms_invitation_attributes, motif_category_attributes
       )
-    expect(InviteUserJob).to receive(:perform_async)
+    expect(InviteUserJob).to receive(:perform_later)
       .with(
         user.id, organisation.id, email_invitation_attributes, motif_category_attributes
       )
@@ -52,7 +52,7 @@ describe CreateAndInviteUserJob do
     before { user.update! phone_number: nil }
 
     it "does not enqueue an invite sms job" do
-      expect(InviteUserJob).not_to receive(:perform_async)
+      expect(InviteUserJob).not_to receive(:perform_later)
         .with(
           user.id, organisation.id, sms_invitation_attributes, motif_category_attributes
         )
@@ -64,7 +64,7 @@ describe CreateAndInviteUserJob do
     before { user.update! phone_number: "0101010101" }
 
     it "does not enqueue an invite sms job" do
-      expect(InviteUserJob).not_to receive(:perform_async)
+      expect(InviteUserJob).not_to receive(:perform_later)
         .with(
           user.id, organisation.id, sms_invitation_attributes, motif_category_attributes
         )
@@ -76,7 +76,7 @@ describe CreateAndInviteUserJob do
     before { user.update! email: nil }
 
     it "does not enqueue an invite email job" do
-      expect(InviteUserJob).not_to receive(:perform_async)
+      expect(InviteUserJob).not_to receive(:perform_later)
         .with(
           user.id, organisation.id, email_invitation_attributes, motif_category_attributes
         )

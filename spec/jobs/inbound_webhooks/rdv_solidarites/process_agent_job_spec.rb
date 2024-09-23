@@ -23,7 +23,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentJob do
 
   describe "#perform" do
     it "upserts the agent" do
-      expect(UpsertRecordJob).to receive(:perform_async)
+      expect(UpsertRecordJob).to receive(:perform_later)
         .with("Agent", data, { last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" })
       subject
     end
@@ -40,7 +40,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentJob do
       end
 
       it "deletes the agent" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         expect { subject }.to change(Agent, :count).by(-1)
       end
     end
@@ -54,7 +54,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentJob do
       end
 
       it "does not upsert the agent" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end

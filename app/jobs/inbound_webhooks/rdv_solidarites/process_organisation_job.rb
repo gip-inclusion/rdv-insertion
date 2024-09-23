@@ -36,7 +36,7 @@ module InboundWebhooks
       end
 
       def update_organisation
-        UpsertRecordJob.perform_async("Organisation", @data, { last_webhook_update_received_at: @meta[:timestamp] })
+        UpsertRecordJob.perform_later("Organisation", @data, { last_webhook_update_received_at: @meta[:timestamp] })
       end
     end
   end

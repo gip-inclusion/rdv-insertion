@@ -48,7 +48,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user1, follow_up: follow_up1,
-        created_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -57,7 +57,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user2, follow_up: follow_up2,
-        created_at: 4.days.ago, valid_until: 4.days.from_now
+        created_at: 4.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -66,7 +66,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user3, follow_up: follow_up3,
-        created_at: 3.days.ago, valid_until: 4.hours.from_now
+        created_at: 3.days.ago, expires_at: 4.hours.from_now
       )
     end
 
@@ -75,7 +75,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user4, follow_up: follow_up4,
-        created_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -84,7 +84,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user6, follow_up: follow_up6,
-        created_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, expires_at: 4.days.from_now
       )
     end
 
@@ -93,44 +93,44 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user1, follow_up: follow_up7,
-        created_at: 3.days.ago, valid_until: 4.days.from_now,
+        created_at: 3.days.ago, expires_at: 4.days.from_now,
         trigger: "reminder"
       )
     end
 
     before do
-      allow(SendInvitationReminderJob).to receive(:perform_async)
+      allow(SendInvitationReminderJob).to receive(:perform_later)
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
     it "enqueues reminder jobs for the eligible contexts only" do
-      expect(SendInvitationReminderJob).to receive(:perform_async)
+      expect(SendInvitationReminderJob).to receive(:perform_later)
         .with(follow_up1.id, "sms")
-      expect(SendInvitationReminderJob).to receive(:perform_async)
+      expect(SendInvitationReminderJob).to receive(:perform_later)
         .with(follow_up1.id, "email")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up2.id, "sms")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up2.id, "email")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up3.id, "sms")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up3.id, "email")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up4.id, "sms")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up4.id, "email")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up5.id, "sms")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up5.id, "email")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up6.id, "sms")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up6.id, "email")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up7.id, "sms")
-      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+      expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up7.id, "email")
       subject
     end
@@ -149,13 +149,13 @@ describe SendInvitationRemindersJob do
       let!(:user2) { create(:user, phone_number: "0123456789", email: "") }
 
       it "does not enqueue reminder jobs" do
-        expect(SendInvitationReminderJob).not_to receive(:perform_async)
+        expect(SendInvitationReminderJob).not_to receive(:perform_later)
           .with(follow_up1.id, "sms")
-        expect(SendInvitationReminderJob).not_to receive(:perform_async)
+        expect(SendInvitationReminderJob).not_to receive(:perform_later)
           .with(follow_up2.id, "sms")
-        expect(SendInvitationReminderJob).not_to receive(:perform_async)
+        expect(SendInvitationReminderJob).not_to receive(:perform_later)
           .with(follow_up1.id, "email")
-        expect(SendInvitationReminderJob).not_to receive(:perform_async)
+        expect(SendInvitationReminderJob).not_to receive(:perform_later)
           .with(follow_up1.id, "email")
         subject
       end

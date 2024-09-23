@@ -28,12 +28,12 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
 
   describe "#call" do
     before do
-      allow(SoftDeleteUserJob).to receive(:perform_async)
-      allow(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
+      allow(SoftDeleteUserJob).to receive(:perform_later)
+      allow(NullifyRdvSolidaritesIdJob).to receive(:perform_later)
     end
 
     it "enqueues a soft delete user job" do
-      expect(SoftDeleteUserJob).to receive(:perform_async)
+      expect(SoftDeleteUserJob).to receive(:perform_later)
         .with(rdv_solidarites_user_id)
       subject
     end
@@ -51,7 +51,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       it "does not enqueue a delete user job" do
-        expect(SoftDeleteUserJob).not_to receive(:perform_async)
+        expect(SoftDeleteUserJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -67,7 +67,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       it "does not enqueue a delete user job" do
-        expect(SoftDeleteUserJob).not_to receive(:perform_async)
+        expect(SoftDeleteUserJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -83,7 +83,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       it "does not enqueue a delete user job" do
-        expect(SoftDeleteUserJob).not_to receive(:perform_async)
+        expect(SoftDeleteUserJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -101,7 +101,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       it "does not enqueue a delete user job" do
-        expect(SoftDeleteUserJob).not_to receive(:perform_async)
+        expect(SoftDeleteUserJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -126,14 +126,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
         end
 
         it "does not enqueue a delete user job" do
-          expect(SoftDeleteUserJob).not_to receive(:perform_async)
+          expect(SoftDeleteUserJob).not_to receive(:perform_later)
           subject
         end
       end
 
       context "when the user already belongs to org" do
         it "does not do anything" do
-          expect(SoftDeleteUserJob).not_to receive(:perform_async)
+          expect(SoftDeleteUserJob).not_to receive(:perform_later)
           subject
           expect(user.reload.organisations.ids).to eq([organisation.id])
         end
@@ -160,14 +160,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
         end
 
         it "does not enqueue a delete user job" do
-          expect(SoftDeleteUserJob).not_to receive(:perform_async)
+          expect(SoftDeleteUserJob).not_to receive(:perform_later)
           subject
         end
       end
 
       context "when the user already belongs to org" do
         it "does not do anything" do
-          expect(SoftDeleteUserJob).not_to receive(:perform_async)
+          expect(SoftDeleteUserJob).not_to receive(:perform_later)
           subject
           expect(user.reload.organisations.ids).to eq([organisation.id])
         end
@@ -184,7 +184,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       it "enqueues a nullify rdv_solidarites_id job" do
-        expect(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
+        expect(NullifyRdvSolidaritesIdJob).to receive(:perform_later)
           .with("User", user.id)
         subject
       end
@@ -195,8 +195,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
         end
 
         it "does not enqueue any job" do
-          expect(NullifyRdvSolidaritesIdJob).not_to receive(:perform_async)
-          expect(SoftDeleteUserJob).not_to receive(:perform_async)
+          expect(NullifyRdvSolidaritesIdJob).not_to receive(:perform_later)
+          expect(SoftDeleteUserJob).not_to receive(:perform_later)
           subject
         end
       end

@@ -19,7 +19,7 @@ describe SendPeriodicInvitesJob do
         :invitation,
         follow_up: follow_up,
         created_at: 15.days.ago,
-        valid_until: 1.day.from_now,
+        expires_at: 1.day.from_now,
         organisations: [organisation]
       )
     end
@@ -28,9 +28,9 @@ describe SendPeriodicInvitesJob do
       context "number_of_days_between_periodic_invites is set" do
         context "when renewing is due" do
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                           "email")
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                           "sms")
             subject
           end
@@ -42,15 +42,15 @@ describe SendPeriodicInvitesJob do
               :invitation,
               follow_up: follow_up,
               created_at: 3.days.ago,
-              valid_until: 1.day.from_now,
+              expires_at: 1.day.from_now,
               organisations: [organisation]
             )
           end
 
           it "does not send periodic invites" do
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                               "email")
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                               "sms")
             subject
           end
@@ -67,9 +67,9 @@ describe SendPeriodicInvitesJob do
 
         context "when renewing is due" do
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                           "email")
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                           "sms")
             subject
           end
@@ -84,9 +84,9 @@ describe SendPeriodicInvitesJob do
           end
 
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                               "email")
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                               "sms")
             subject
           end
@@ -99,15 +99,15 @@ describe SendPeriodicInvitesJob do
             :invitation,
             follow_up: follow_up,
             created_at: nil,
-            valid_until: 1.day.from_now,
+            expires_at: 1.day.from_now,
             organisations: [organisation]
           )
         end
 
         it "does not send periodic invites" do
-          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                             "email")
-          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                             "sms")
           subject
         end
@@ -124,9 +124,9 @@ describe SendPeriodicInvitesJob do
       end
 
       it "does not send periodic invites" do
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                           "email")
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, category_configuration.id,
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
                                                                           "sms")
         subject
       end

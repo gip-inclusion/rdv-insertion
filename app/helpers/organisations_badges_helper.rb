@@ -9,12 +9,16 @@ module OrganisationsBadgesHelper
   def tooltip_for_organisation_badge(archive)
     return if archive.nil?
 
-    html_escape(
-      "data-controller=tooltip " \
-      "data-action=mouseover->tooltip#organisationArchiveInformations " \
-      "data-archive-creation-date=#{format_date(archive.created_at)} " \
-      "data-archive-reason=#{archive.archiving_reason} " \
-      "data-show-archiving-reason=#{policy(archive).show?}"
-    )
+    attributes = {
+      data: {
+        controller: "tooltip",
+        action: "mouseover->tooltip#organisationArchiveInformations",
+        "archive-creation-date": format_date(archive.created_at),
+        "archive-reason": archive.archiving_reason,
+        "show-archiving-reason": policy(archive).show?
+      }
+    }
+
+    html_escape(tag.attributes(attributes))
   end
 end

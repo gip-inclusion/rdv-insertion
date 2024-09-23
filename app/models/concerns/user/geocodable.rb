@@ -28,6 +28,6 @@ module User::Geocodable
   end
 
   def assign_address_geocoding
-    RetrieveAndAssignUserAddressGeocodingJob.perform_async(id)
+    RetrieveAndAssignUserAddressGeocodingJob.perform_later(id)
   end
 end

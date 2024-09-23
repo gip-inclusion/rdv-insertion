@@ -16,7 +16,7 @@ class SendPeriodicInviteJob < ApplicationJob
 
     new_invitation.format = @format
     new_invitation.trigger = "periodic"
-    new_invitation.valid_until = @category_configuration.number_of_days_before_action_required.days.from_now
+    new_invitation.expires_at = @category_configuration.new_invitation_will_expire_at
     new_invitation.organisations = @invitation.organisations
     new_invitation.uuid = nil
     new_invitation.save!

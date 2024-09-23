@@ -10,6 +10,16 @@ module StatsHelper
               .unshift(["Toutes les organisations", "0"])
   end
 
+  def sanitize_monthly_data(stat)
+    exclude_starting_zeros(exclude_current_month(stat))
+  end
+
+  def exclude_starting_zeros(stat)
+    return unless stat
+
+    stat.to_a.drop_while { |_, value| value.to_i.zero? }.to_h
+  end
+
   def exclude_current_month(stat)
     exclude_months(stat, [Time.zone.now.strftime("%m/%Y")])
   end

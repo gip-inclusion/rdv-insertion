@@ -29,12 +29,12 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
 
   describe "#call" do
     before do
-      allow(UpsertRecordJob).to receive(:perform_async)
-      allow(SoftDeleteUserJob).to receive(:perform_async)
+      allow(UpsertRecordJob).to receive(:perform_later)
+      allow(SoftDeleteUserJob).to receive(:perform_later)
     end
 
     it "enqueues upsert record job" do
-      expect(UpsertRecordJob).to receive(:perform_async)
+      expect(UpsertRecordJob).to receive(:perform_later)
         .with("User", data, { last_webhook_update_received_at: timestamp })
       subject
     end
@@ -44,7 +44,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
 
       it "enqueues an upsert record job without affiliation_number" do
         filtered_data = data.except(:affiliation_number)
-        expect(UpsertRecordJob).to receive(:perform_async)
+        expect(UpsertRecordJob).to receive(:perform_later)
           .with("User", filtered_data, { last_webhook_update_received_at: timestamp })
         subject
       end
@@ -55,7 +55,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
 
       it "enqueues an upsert record job without the email" do
         filtered_data = data.except(:email)
-        expect(UpsertRecordJob).to receive(:perform_async)
+        expect(UpsertRecordJob).to receive(:perform_later)
           .with("User", filtered_data, { last_webhook_update_received_at: timestamp })
         subject
       end
@@ -65,7 +65,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
       let!(:user) { create(:user, rdv_solidarites_user_id: "some-id") }
 
       it "does not enqueue a job" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end
@@ -79,13 +79,13 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
       end
 
       it "enqueues a delete user job" do
-        expect(SoftDeleteUserJob).to receive(:perform_async)
+        expect(SoftDeleteUserJob).to receive(:perform_later)
           .with(rdv_solidarites_user_id)
         subject
       end
 
       it "does not enque an upsert record job" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end

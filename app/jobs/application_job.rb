@@ -1,6 +1,11 @@
-class ApplicationJob
-  include Sidekiq::Worker
+class ApplicationJob < ActiveJob::Base
   include EnvironmentsHelper
+
+  queue_as :default
+
+  def self.perform_in(wait_time, *)
+    set(wait: wait_time).perform_later(*)
+  end
 
   private
 

@@ -23,7 +23,7 @@ describe SendPeriodicInviteJob do
         :invitation,
         follow_up: follow_up,
         created_at: 15.days.ago,
-        valid_until: 1.day.ago,
+        expires_at: 1.day.ago,
         organisations: [organisation]
       )
     end
@@ -41,9 +41,9 @@ describe SendPeriodicInviteJob do
           trigger: "periodic"
         )
 
-        expect(invitation.valid_until.end_of_day).to eq(
+        expect(invitation.expires_at.end_of_day).to eq(
           category_configuration
-            .number_of_days_before_action_required
+            .number_of_days_before_invitations_expire
             .days
             .from_now
             .end_of_day

@@ -11,7 +11,7 @@ module Brevo
     def create
       return if params[:"X-Mailin-custom"].nil?
 
-      InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob.perform_async(brevo_webhook_params, record_identifier)
+      InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob.perform_later(brevo_webhook_params, record_identifier)
     end
 
     private

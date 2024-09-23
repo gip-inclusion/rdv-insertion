@@ -6,7 +6,7 @@ module Invitations
              :organisations,
              :motif_category,
              :follow_up,
-             :valid_until,
+             :expires_at,
              :motif_category_name,
              :department_id,
              :help_phone_number,
@@ -61,7 +61,7 @@ module Invitations
     end
 
     def validate_it_expires_in_more_than_5_days
-      return if valid_until > 5.days.from_now
+      return if expires_at > 5.days.from_now
 
       result.errors << "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours"
     end

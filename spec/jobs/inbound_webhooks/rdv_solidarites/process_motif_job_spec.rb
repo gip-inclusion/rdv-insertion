@@ -28,13 +28,13 @@ describe InboundWebhooks::RdvSolidarites::ProcessMotifJob do
 
   describe "#call" do
     before do
-      allow(UpsertRecordJob).to receive(:perform_async)
+      allow(UpsertRecordJob).to receive(:perform_later)
     end
 
     let!(:motif_attributes) { data.merge(rdv_solidarites_service_id: 444) }
 
     it "enqueues upsert record job" do
-      expect(UpsertRecordJob).to receive(:perform_async)
+      expect(UpsertRecordJob).to receive(:perform_later)
         .with(
           "Motif", motif_attributes,
           { organisation_id: organisation.id, last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" }
@@ -56,7 +56,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessMotifJob do
       end
 
       it "enqueues upsert record job with the motif category" do
-        expect(UpsertRecordJob).to receive(:perform_async)
+        expect(UpsertRecordJob).to receive(:perform_later)
           .with(
             "Motif", motif_attributes,
             {
@@ -81,7 +81,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessMotifJob do
       end
 
       it "deletes the lieu" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         expect { subject }.to change(Motif, :count).by(-1)
       end
     end
@@ -90,7 +90,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessMotifJob do
       let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "some-id") }
 
       it "does not enqueue a job" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect(UpsertRecordJob).not_to receive(:perform_later)
         subject
       end
     end

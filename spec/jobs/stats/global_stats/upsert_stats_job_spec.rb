@@ -12,12 +12,12 @@ describe Stats::GlobalStats::UpsertStatsJob do
 
   describe "#perform" do
     before do
-      allow(Stats::GlobalStats::UpsertStatJob).to receive(:perform_async)
+      allow(Stats::GlobalStats::UpsertStatJob).to receive(:perform_later)
         .and_return(OpenStruct.new(success?: true))
     end
 
     it "calls the appropriate service" do
-      expect(Stats::GlobalStats::UpsertStatJob).to receive(:perform_async).at_least(1).time
+      expect(Stats::GlobalStats::UpsertStatJob).to receive(:perform_later).at_least(1).time
       subject
     end
   end

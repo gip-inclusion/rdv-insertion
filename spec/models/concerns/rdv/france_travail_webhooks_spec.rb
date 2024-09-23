@@ -58,12 +58,12 @@ describe Rdv::FranceTravailWebhooks, type: :concern do
 
   before do
     allow(rdv).to receive(:updated_at).and_return(now)
-    allow(OutgoingWebhooks::SendFranceTravailWebhookJob).to receive(:perform_async)
+    allow(OutgoingWebhooks::SendFranceTravailWebhookJob).to receive(:perform_later)
   end
 
   describe "#send_france_travail_webhook" do
     it "enqueues the job" do
-      expect(OutgoingWebhooks::SendFranceTravailWebhookJob).to receive(:perform_async)
+      expect(OutgoingWebhooks::SendFranceTravailWebhookJob).to receive(:perform_later)
         .with(france_travail_payload, now)
       rdv.save
     end
@@ -72,7 +72,7 @@ describe Rdv::FranceTravailWebhooks, type: :concern do
       before { organisation.update! safir_code: nil }
 
       it "does not enqueue a job" do
-        expect(OutgoingWebhooks::SendFranceTravailWebhookJob).not_to receive(:perform_async)
+        expect(OutgoingWebhooks::SendFranceTravailWebhookJob).not_to receive(:perform_later)
       end
     end
   end

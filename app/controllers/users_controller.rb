@@ -105,7 +105,7 @@ class UsersController < ApplicationController
   end
 
   def generate_csv
-    csv_exporter.perform_async(
+    csv_exporter.perform_later(
       @users.map(&:id),
       department_level? ? "Department" : "Organisation",
       department_level? ? @department.id : @organisation.id,

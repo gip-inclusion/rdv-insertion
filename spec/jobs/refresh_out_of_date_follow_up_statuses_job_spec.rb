@@ -33,13 +33,13 @@ describe RefreshOutOfDateFollowUpStatusesJob do
     before do
       # remove follow-ups created in callbacks
       FollowUp.where.not(id: [1, 2, 3, 4, 5]).find_each(&:destroy!)
-      allow(RefreshFollowUpStatusesJob).to receive(:perform_async)
+      allow(RefreshFollowUpStatusesJob).to receive(:perform_later)
       allow(MattermostClient).to receive(:send_to_notif_channel)
       allow(ENV).to receive(:[]).with("SENTRY_ENVIRONMENT").and_return("production")
     end
 
     it "enqueues a refresh job for out of date follow-ups" do
-      expect(RefreshFollowUpStatusesJob).to receive(:perform_async)
+      expect(RefreshFollowUpStatusesJob).to receive(:perform_later)
         .with([1, 3, 5])
       subject
     end

@@ -22,6 +22,10 @@ module RdvSolidarites
       "#{name}-#{location_type}"
     end
 
+    def visio?
+      location_type == "visio"
+    end
+
     def motif_category
       if @attributes[:motif_category].blank?
         nil

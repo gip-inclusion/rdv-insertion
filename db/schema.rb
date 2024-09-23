@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_10_154029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
     t.boolean "super_admin", default: false
     t.datetime "last_sign_in_at"
     t.string "inclusion_connect_open_id_sub"
+    t.datetime "connected_with_agent_connect_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["inclusion_connect_open_id_sub"], name: "index_agents_on_inclusion_connect_open_id_sub", unique: true, where: "(inclusion_connect_open_id_sub IS NOT NULL)"
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
@@ -113,7 +114,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
     t.datetime "updated_at", null: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_user", default: true
-    t.integer "number_of_days_before_action_required", default: 10
+    t.integer "number_of_days_before_invitations_expire", default: 10
     t.boolean "invite_to_user_organisations_only", default: true
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
@@ -213,13 +214,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
     t.bigint "department_id"
     t.bigint "rdv_solidarites_lieu_id"
     t.bigint "follow_up_id"
-    t.datetime "valid_until"
+    t.datetime "expires_at"
     t.string "uuid"
     t.boolean "rdv_with_referents", default: false
     t.string "trigger", default: "manual", null: false
     t.string "delivery_status"
     t.datetime "last_brevo_webhook_received_at"
     t.index ["department_id"], name: "index_invitations_on_department_id"
+    t.index ["expires_at"], name: "index_invitations_on_expires_at"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
     t.index ["trigger"], name: "index_invitations_on_trigger"
     t.index ["user_id"], name: "index_invitations_on_user_id"
@@ -316,7 +318,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_23_232305) do
     t.bigint "department_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
-    t.string "logo_filename"
     t.string "safir_code"
     t.string "organisation_type"
     t.index ["department_id"], name: "index_organisations_on_department_id"

@@ -13,7 +13,7 @@ module Organisations
           next
         end
 
-        Organisations::DestroyJob.perform_async(organisation.id) if confirmed?(organisation)
+        Organisations::DestroyJob.perform_later(organisation.id) if confirmed?(organisation)
       end
     end
 
@@ -40,7 +40,7 @@ module Organisations
       puts "Last rdv created : #{last_rdv_created_at}" if any_rdvs
 
       if organisation_exists
-        puts "⚠️ This organisation is still present in RDV-Solidarités" 
+        puts "⚠️ This organisation is still present in RDV-Solidarités"
         exit
       end
     end

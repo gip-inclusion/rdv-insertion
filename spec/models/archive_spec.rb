@@ -50,13 +50,13 @@ describe Archive do
     end
 
     it "invalidates the user organisation invitations" do
-      expect(InvalidateInvitationJob).to receive(:perform_async)
+      expect(ExpireInvitationJob).to receive(:perform_later)
         .with(invitation_for_organisation.id)
-      expect(InvalidateInvitationJob).not_to receive(:perform_async)
+      expect(ExpireInvitationJob).not_to receive(:perform_later)
         .with(invitation_for_other_organisation.id)
-      expect(InvalidateInvitationJob).not_to receive(:perform_async)
+      expect(ExpireInvitationJob).not_to receive(:perform_later)
         .with(invitation_for_two_organisations.id)
-      expect(InvalidateInvitationJob).to receive(:perform_async)
+      expect(ExpireInvitationJob).to receive(:perform_later)
         .with(invitation_for_two_archived_organisations.id)
 
       subject.save

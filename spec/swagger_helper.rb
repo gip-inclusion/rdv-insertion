@@ -322,7 +322,8 @@ RSpec.configure do |config|
                   motif_category: {
                     type: "object",
                     properties: {
-                      name: { type: "string" }
+                      name: { type: "string", nullable: true },
+                      short_name: { type: "string", nullable: true }
                     }
                   }
                 }
@@ -420,7 +421,8 @@ RSpec.configure do |config|
               delivery_status: { type: "string",
                                  enum: %w[soft_bounce hard_bounce blocked invalid_email error delivered],
                                  nullable: true },
-              delivered_at: { type: "string", format: "date", nullable: true }
+              delivered_at: { type: "string", format: "date", nullable: true },
+              expires_at: { type: "string", format: "date" }
             },
             required: %w[id format clicked rdv_with_referents created_at motif_category]
           },

@@ -6,7 +6,7 @@ module Api
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
         :nir, :france_travail_id, :birth_date, :rights_opening_date, :address, :department_internal_id,
-        { invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name] }], referents_to_add: [:email] }
+        { invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name] }], referents_to_add: [:email] }
       ].freeze
 
       before_action :set_organisation
@@ -19,7 +19,7 @@ module Api
           invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
-          CreateAndInviteUserJob.perform_async(
+          CreateAndInviteUserJob.perform_later(
             @organisation.id,
             user_attributes.merge(creation_origin_attributes),
             invitation_attributes,

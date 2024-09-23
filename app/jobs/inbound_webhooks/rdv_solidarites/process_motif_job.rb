@@ -5,6 +5,7 @@ module InboundWebhooks
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
         return if organisation.blank?
+        return if visio_motif_without_category?
 
         if event == "destroyed"
           delete_motif
@@ -23,6 +24,10 @@ module InboundWebhooks
         @data[:organisation_id]
       end
 
+      def visio_motif_without_category?
+        rdv_solidarites_motif.visio? && rdv_solidarites_motif.motif_category.nil?
+      end
+
       def rdv_solidarites_motif
         ::RdvSolidarites::Motif.new(@data)
       end
@@ -36,7 +41,7 @@ module InboundWebhooks
       end
 
       def upsert_motif
-        UpsertRecordJob.perform_async(
+        UpsertRecordJob.perform_later(
           "Motif",
           rdv_solidarites_motif.to_rdv_insertion_attributes,
           {

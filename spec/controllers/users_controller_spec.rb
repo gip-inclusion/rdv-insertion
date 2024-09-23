@@ -10,10 +10,10 @@ describe UsersController do
     create(
       :category_configuration,
       motif_category: category_orientation,
-      number_of_days_before_action_required: number_of_days_before_action_required
+      number_of_days_before_invitations_expire: number_of_days_before_invitations_expire
     )
   end
-  let!(:number_of_days_before_action_required) { 6 }
+  let!(:number_of_days_before_invitations_expire) { 6 }
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                           department_id: department.id, category_configurations: [category_configuration])
@@ -697,10 +697,9 @@ describe UsersController do
       let!(:index_params) do
         { organisation_id: organisation.id, action_required: "true", motif_category_id: category_orientation.id }
       end
-      let!(:number_of_days_before_action_required) { 6 }
 
-      context "when the invitation has been sent before the number of days before action required" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, created_at: 7.days.ago) }
+      context "when one invitation is expired" do
+        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 7.days.ago) }
 
         it "filters by action required" do
           get :index, params: index_params
@@ -709,8 +708,8 @@ describe UsersController do
         end
       end
 
-      context "when the invitation has been sent after the number of days defined in the category_configuration" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, created_at: 3.days.ago) }
+      context "when no invitation expired" do
+        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 3.days.from_now) }
 
         it "filters by action required" do
           get :index, params: index_params
@@ -895,7 +894,7 @@ describe UsersController do
 
     context "when csv request" do
       before do
-        allow(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+        allow(Exporters::CreateUsersCsvExportJob).to receive(:perform_later)
       end
 
       context "at department level" do
@@ -904,7 +903,7 @@ describe UsersController do
         let!(:agent) { create(:agent, admin_role_in_organisations: [organisation, other_organisation]) }
 
         it "calls the service" do
-          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_later)
           get :index, params: index_params
         end
 
@@ -921,7 +920,7 @@ describe UsersController do
           end
 
           it "does not call the service" do
-            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_async)
+            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_later)
 
             get :index, params: index_params
             expect(response).to redirect_to(root_path)
@@ -935,7 +934,7 @@ describe UsersController do
         let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
 
         it "calls the service" do
-          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_later)
           get :index, params: index_params
         end
 
@@ -950,7 +949,7 @@ describe UsersController do
           end
 
           it "does not call the service" do
-            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_async)
+            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_later)
 
             get :index, params: index_params
             expect(response).to redirect_to(root_path)

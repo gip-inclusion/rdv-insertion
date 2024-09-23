@@ -26,7 +26,7 @@ class SendPeriodicInvitesJob < ApplicationJob
     %w[email sms].each do |format|
       next unless last_invitation.user.can_be_invited_through?(format)
 
-      SendPeriodicInviteJob.perform_async(last_invitation.id, category_configuration.id, format)
+      SendPeriodicInviteJob.perform_later(last_invitation.id, category_configuration.id, format)
     end
   end
 

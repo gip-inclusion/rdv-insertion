@@ -1,7 +1,7 @@
 describe Brevo::SmsWebhooksController do
   describe "#create" do
     before do
-      allow(InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob).to receive(:perform_async)
+      allow(InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob).to receive(:perform_later)
     end
 
     let(:valid_sms_params) do
@@ -9,7 +9,7 @@ describe Brevo::SmsWebhooksController do
     end
 
     it "enqueues the job for processing SMS delivery status" do
-      expect(InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob).to receive(:perform_async)
+      expect(InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob).to receive(:perform_later)
         .with({ to: "1234567890", msg_status: "delivered", date: "2023-06-07T12:34:56Z" }, "invitation_1")
       post :create, params: valid_sms_params, as: :json
       expect(response).to be_successful

@@ -19,9 +19,6 @@ require "webmock/rspec"
 require "rack_session_access/capybara"
 require "selenium-webdriver"
 
-# Calls Sidekiq::Testing.fake! which fakes pushing jobs to Redis
-require "sidekiq/testing"
-
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

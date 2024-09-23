@@ -19,7 +19,7 @@ module InboundWebhooks
 
         upsert_agent! if agent.nil?
 
-        UpsertRecordJob.perform_async(
+        UpsertRecordJob.perform_later(
           "AgentRole",
           @data,
           { organisation_id: organisation.id, agent_id: agent.id, last_webhook_update_received_at: @meta[:timestamp] }

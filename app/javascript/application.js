@@ -6,8 +6,6 @@
 import "bootstrap";
 import "./stylesheets/application.scss";
 import "@hotwired/turbo-rails";
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
 import { Application } from "@hotwired/stimulus";
 import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers";
 import "chartkick/chart.js";
@@ -41,20 +39,8 @@ ReactRailsUJS.handleEvent("turbo:before-render", ReactRailsUJS.handleUnmount);
 ReactRailsUJS.handleEvent("turbo:frame-load", ReactRailsUJS.handleMount);
 ReactRailsUJS.handleEvent("turbo:frame-render", ReactRailsUJS.handleUnmount);
 
-Turbo.StreamActions.redirect = function() {
+Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target);
-}
-
-if (process.env.RAILS_ENV === "production") {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.SENTRY_ENVIRONMENT,
-    integrations: [new Integrations.BrowserTracing()],
-
-    // We recommend adjusting this value in production, or using tracesSampler
-    // for finer control
-    tracesSampleRate: 0.1,
-  });
 }
 
 document.addEventListener("turbo:load", () => {
