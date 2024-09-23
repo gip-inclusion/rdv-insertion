@@ -12,7 +12,7 @@ module LockedAndOrderedJobs
   private
 
   def perform_in_order
-    with_redis_connection_pool do |redis|
+    RedisConnection.with_redis do |redis|
       cache_key = self.class.lock_key(*arguments)
       cached_timestamp = redis.get(cache_key)
       job_timestamp = self.class.job_timestamp(*arguments)
