@@ -260,7 +260,7 @@ drome1_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 1,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
-  organisation_type: "delegataire_rsa"
+  organisation_type: "conseil_departemental"
 )
 
 CategoryConfiguration.create!(
@@ -295,7 +295,7 @@ drome2_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 2,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
-  organisation_type: "delegataire_rsa"
+  organisation_type: "conseil_departemental"
 )
 
 CategoryConfiguration.create!(
@@ -330,7 +330,7 @@ yonne_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 3,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
-  organisation_type: "delegataire_rsa"
+  organisation_type: "conseil_departemental"
 )
 
 CategoryConfiguration.create!(

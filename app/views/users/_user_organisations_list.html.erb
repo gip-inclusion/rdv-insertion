@@ -9,7 +9,7 @@
     <% end %>
   </p>
 
-  <%= link_to(structure_users_organisations_path(user.id), data: { turbo_frame: 'remote_modal' }) do %>
+  <%= link_to(users_organisations_path(user_id: user.id), data: { turbo_frame: 'remote_modal' }) do %>
     <button class="btn btn-blue"><i class="fas fa-plus"></i> Ajouter une organisation </button>
   <% end %>
 </div>

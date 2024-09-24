@@ -131,6 +131,9 @@ group :development, :test do
   gem "pg_query"
   # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "parallel_tests"
+  gem "anonymizer", git: "https://github.com/betagouv/rdv-service-public.git",
+                    branch: "production",
+                    glob: "lib/anonymizer/anonymizer.gemspec"
 end
 
 group :development do

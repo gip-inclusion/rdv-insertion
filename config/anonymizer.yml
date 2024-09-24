@@ -1,0 +1,464 @@
+# Ce fichier est utilisé par https://github.com/betagouv/rdv-service-public-etl
+# Qui appelle la gem anonymizer versionnée dans https://github.com/betagouv/rdv-service-public/tree/production/lib/anonymizer
+# On l’utilise pour anonymiser la base lors des imports dans metabase
+
+tables:
+  - table_name: active_storage_attachments
+    truncated: true
+
+  - table_name: active_storage_blobs
+    truncated: true
+
+  - table_name: active_storage_variant_records
+    truncated: true
+
+  - table_name: schema_migrations
+    truncated: true
+
+  - table_name: ar_internal_metadata
+    truncated: true
+
+  - table_name: address_geocodings
+    truncated: true
+
+  - table_name: agents
+    anonymized_column_names:
+      - email
+      - first_name
+      - last_name
+    non_anonymized_column_names:
+      - super_admin
+      - last_sign_in_at
+      - created_at
+      - updated_at
+      - last_webhook_update_received_at
+      - rdv_solidarites_agent_id
+      - inclusion_connect_open_id_sub
+      - connected_with_agent_connect_at
+
+  - table_name: agent_roles
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - access_level
+      - agent_id
+      - authorized_to_export_csv
+      - organisation_id
+      - rdv_solidarites_agent_role_id
+      - created_at
+      - updated_at
+      - last_webhook_update_received_at
+
+  - table_name: agents_rdvs
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - agent_id
+      - rdv_id
+
+  - table_name: archives
+    anonymized_column_names:
+      - archiving_reason
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - user_id
+      - department_id
+
+  - table_name: category_configurations
+    anonymized_column_names:
+      - template_rdv_title_override
+      - template_rdv_title_by_phone_override
+      - template_user_designation_override
+      - template_rdv_purpose_override
+      - email_to_notify_rdv_changes
+      - email_to_notify_no_available_slots
+      - phone_number
+    non_anonymized_column_names:
+      - number_of_days_between_periodic_invites
+      - day_of_the_month_periodic_invites
+      - position
+      - department_position
+      - created_at
+      - updated_at
+      - invitation_formats
+      - convene_user
+      - number_of_days_before_action_required
+      - invite_to_user_organisations_only
+      - rdv_with_referents
+      - motif_category_id
+      - file_configuration_id
+      - organisation_id
+      - number_of_days_before_invitations_expire
+
+  - table_name: csv_exports
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - agent_id
+      - created_at
+      - updated_at
+      - structure_id
+      - structure_type
+      - request_params
+      - purged_at
+      - kind
+
+  - table_name: departments
+    anonymized_column_names:
+      - phone_number
+      - email
+    non_anonymized_column_names:
+      - name
+      - number
+      - region
+      - pronoun
+      - capital
+      - created_at
+      - updated_at
+      - display_in_stats
+      - carnet_de_bord_deploiement_id
+
+  - table_name: file_configurations
+    anonymized_column_names:
+      - sheet_name
+      - title_column
+      - first_name_column
+      - last_name_column
+      - role_column
+      - email_column
+      - phone_number_column
+      - birth_date_column
+      - birth_name_column
+      - address_first_field_column
+      - address_second_field_column
+      - address_third_field_column
+      - address_fourth_field_column
+      - address_fifth_field_column
+      - affiliation_number_column
+      - pole_emploi_id_column
+      - nir_column
+      - department_internal_id_column
+      - rights_opening_date_column
+      - organisation_search_terms_column
+      - referent_email_column
+      - tags_column
+      - france_travail_id_column
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+
+  - table_name: invitations
+    anonymized_column_names:
+      - link
+      - help_phone_number
+      - rdv_solidarites_token
+    non_anonymized_column_names:
+      - format
+      - user_id
+      - delivery_status
+      - last_brevo_webhook_received_at
+      - created_at
+      - updated_at
+      - clicked
+      - department_id
+      - rdv_solidarites_lieu_id
+      - follow_up_id
+      - valid_until
+      - uuid
+      - trigger
+      - rdv_with_referents
+      - expires_at
+
+  - table_name: invitations_organisations
+    non_anonymized_column_names:
+      - organisation_id
+      - invitation_id
+
+  - table_name: lieux
+    anonymized_column_names:
+      - name
+      - address
+      - phone_number
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - rdv_solidarites_lieu_id
+      - organisation_id
+      - last_webhook_update_received_at
+
+  - table_name: messages_configurations
+    anonymized_column_names:
+      - sender_city
+      - direction_names
+      - letter_sender_name
+      - signature_lines
+      - help_address
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - display_france_travail_logo
+      - display_europe_logos
+      - display_department_logo
+      - display_pole_emploi_logo
+      - sms_sender_name
+      - organisation_id
+
+  - table_name: motif_categories
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - short_name
+      - name
+      - template_id
+      - rdv_solidarites_motif_category_id
+      - created_at
+      - updated_at
+      - optional_rdv_subscription
+      - leads_to_orientation
+
+  - table_name: motifs
+    anonymized_column_names:
+      - instruction_for_rdv
+    non_anonymized_column_names:
+      - name
+      - rdv_solidarites_service_id
+      - rdv_solidarites_motif_id
+      - reservable_online
+      - deleted_at
+      - collectif
+      - location_type
+      - last_webhook_update_received_at
+      - organisation_id
+      - created_at
+      - updated_at
+      - follow_up
+      - motif_category_id
+
+  - table_name: notifications
+    anonymized_column_names:
+      - event
+    non_anonymized_column_names:
+      - sent_at
+      - created_at
+      - delivery_status
+      - last_brevo_webhook_received_at
+      - updated_at
+      - rdv_solidarites_rdv_id
+      - format
+      - participation_id
+
+  - table_name: orientations
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - orientation_type_id
+      - user_id
+      - organisation_id
+      - agent_id
+      - starts_at
+      - ends_at
+      - created_at
+      - updated_at
+
+  - table_name: orientation_types
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - name
+      - casf_category
+      - department_id
+      - created_at
+      - updated_at
+
+  - table_name: parcours_documents
+    non_anonymized_column_names:
+      - department_id
+      - user_id
+      - agent_id
+      - type
+      - created_at
+      - updated_at
+      - document_date
+
+  - table_name: participations
+    non_anonymized_column_names:
+      - user_id
+      - rdv_id
+      - status
+      - rdv_solidarites_participation_id
+      - rdv_solidarites_agent_prescripteur_id
+      - created_at
+      - updated_at
+      - follow_up_id
+      - created_by
+      - convocable
+
+  - table_name: follow_ups
+    non_anonymized_column_names:
+      - status
+      - user_id
+      - created_at
+      - updated_at
+      - motif_category_id
+      - closed_at
+
+  - table_name: users
+    anonymized_column_names:
+      - affiliation_number
+      - first_name
+      - last_name
+      - address
+      - phone_number
+      - email
+      - title
+      - birth_date
+      - birth_name
+      - nir
+      - france_travail_id
+      - pole_emploi_id
+      - carnet_de_bord_carnet_id
+    non_anonymized_column_names:
+      - rights_opening_date
+      - rdv_solidarites_user_id
+      - department_internal_id
+      - created_from_structure_type
+      - created_from_structure_id
+      - uid
+      - old_rdv_solidarites_user_id
+      - role
+      - created_at
+      - updated_at
+      - deleted_at
+      - last_webhook_update_received_at
+      - created_through
+
+  - table_name: rdvs
+    anonymized_column_names:
+      - context
+      - address
+    non_anonymized_column_names:
+      - rdv_solidarites_rdv_id
+      - starts_at
+      - duration_in_min
+      - cancelled_at
+      - uuid
+      - created_by
+      - status
+      - created_at
+      - updated_at
+      - organisation_id
+      - last_webhook_update_received_at
+      - motif_id
+      - lieu_id
+      - users_count
+      - max_participants_count
+
+  - table_name: referent_assignations
+    non_anonymized_column_names:
+      - agent_id
+      - user_id
+
+  - table_name: stats
+    non_anonymized_column_names:
+      - users_count
+      - users_count_grouped_by_month
+      - rdvs_count
+      - rdvs_count_grouped_by_month
+      - sent_invitations_count
+      - sent_invitations_count_grouped_by_month
+      - average_time_between_invitation_and_rdv_in_days
+      - average_time_between_invitation_and_rdv_in_days_by_month
+      - rate_of_users_oriented_in_less_than_30_days
+      - rate_of_users_oriented_in_less_than_30_days_by_month
+      - agents_count
+      - created_at
+      - updated_at
+      - rate_of_autonomous_users
+      - rate_of_autonomous_users_grouped_by_month
+      - statable_type
+      - statable_id
+      - rate_of_no_show_for_convocations
+      - rate_of_no_show_for_convocations_grouped_by_month
+      - rate_of_no_show_for_invitations
+      - rate_of_no_show_for_invitations_grouped_by_month
+      - rate_of_users_oriented
+      - rate_of_users_oriented_grouped_by_month
+      - users_with_rdv_count
+      - users_with_rdv_count_grouped_by_month
+      - rate_of_users_oriented_in_less_than_15_days
+      - rate_of_users_oriented_in_less_than_15_days_by_month
+
+  - table_name: tag_organisations
+    non_anonymized_column_names:
+      - organisation_id
+      - tag_id
+      - created_at
+      - updated_at
+
+  - table_name: tag_users
+    non_anonymized_column_names:
+      - user_id
+      - tag_id
+      - created_at
+      - updated_at
+
+  - table_name: tags
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - value
+      - created_at
+      - updated_at
+
+  - table_name: templates
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - rdv_title
+      - rdv_title_by_phone
+      - rdv_purpose
+      - user_designation
+      - rdv_subject
+      - custom_sentence
+      - punishable_warning
+      - model
+      - display_mandatory_warning
+      - created_at
+      - updated_at
+
+  - table_name: organisations
+    anonymized_column_names:
+      - phone_number
+      - email
+      - logo_filename
+      - safir_code
+    non_anonymized_column_names:
+      - name
+      - slug
+      - organisation_type
+      - rdv_solidarites_organisation_id
+      - created_at
+      - updated_at
+      - department_id
+      - last_webhook_update_received_at
+
+  - table_name: users_organisations
+    non_anonymized_column_names:
+      - user_id
+      - organisation_id
+      - created_at
+      - updated_at
+
+  - table_name: webhook_endpoints
+    anonymized_column_names:
+      - url
+      - secret
+      - signature_type
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - subscriptions
+      - organisation_id
+
+  - table_name: webhook_receipts
+    non_anonymized_column_names:
+      - resource_id
+      - webhook_endpoint_id
+      - timestamp
+      - created_at
+      - updated_at
+      - resource_model

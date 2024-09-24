@@ -1,5 +1,5 @@
 class DesignateOnWatchDeveloperJob < ApplicationJob
-  DEVELOPERS_HANDLE = %w[amine.dhobb michael.villeneuve].freeze
+  DEVELOPERS_HANDLE = %w[amine.dhobb michael.villeneuve romain.neuville].freeze
 
   def perform
     current_on_watch_developer_handle = redis_client.get("current_on_watch_developer_handle")

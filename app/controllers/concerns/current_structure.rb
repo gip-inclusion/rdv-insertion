@@ -10,10 +10,20 @@ module CurrentStructure
 
     delegate :name, to: :current_structure, prefix: true
     delegate :name, to: :current_department, prefix: true
+
+    before_action :set_current_structure_in_session
   end
 
-  def current_structure_type
-    @current_structure_type ||=
+  def set_current_structure_in_session
+    return if current_structure_type_in_params.blank?
+
+    session[:current_structure_type] = current_structure_type_in_params
+    session[:department_id] = params[:department_id]
+    session[:organisation_id] = params[:organisation_id]
+  end
+
+  def current_structure_type_in_params
+    @current_structure_type_in_params ||=
       if params[:department_id].nil? && params[:organisation_id].nil?
         nil
       elsif params[:organisation_id].present?
@@ -23,22 +33,26 @@ module CurrentStructure
       end
   end
 
+  def current_structure_type
+    @current_structure_type ||= session[:current_structure_type]
+  end
+
   def department_level?
     current_structure_type == "department"
   end
 
   def current_organisation_id
-    @current_organisation_id ||= params[:organisation_id].to_i if current_structure_type == "organisation"
+    @current_organisation_id ||= session[:organisation_id].to_i if current_structure_type == "organisation"
   end
 
   def current_department_id
-    @current_department_id ||= department_level? ? params[:department_id].to_i : current_department&.id
+    @current_department_id ||= department_level? ? session[:department_id].to_i : current_department&.id
   end
 
   def current_structure_id = current_organisation_id || current_department_id
 
   def current_structure
-    return unless params[:department_id] || params[:organisation_id]
+    return unless session[:department_id] || session[:organisation_id]
 
     @current_structure ||=
       department_level? ? Department.find(current_department_id) : Organisation.find(current_organisation_id)
