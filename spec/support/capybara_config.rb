@@ -11,6 +11,7 @@ Capybara.register_driver :selenium do |app|
     browser_options.add_argument("--headless")
     browser_options.add_argument("--no-sandbox")
     browser_options.add_argument("--disable-gpu")
+    browser_options.add_argument("--disable-search-engine-choice-screen")
   end
 
   browser_options.add_preference(:download, prompt_for_download: false, default_directory: DownloadHelper::PATH.to_s)
