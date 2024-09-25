@@ -7,7 +7,9 @@ RSpec.describe LockedJobs, type: :concern do
         "test_lock_#{id}"
       end
 
-      def perform(id); end
+      def perform(_id)
+        sleep 0.2
+      end
     end
   end
 
