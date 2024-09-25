@@ -1,5 +1,4 @@
 spec
-!spec/fixtures/logo.png
 /tmp/cache
 /node_modules
 /.cache/yarn
