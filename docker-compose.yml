@@ -1,0 +1,29 @@
+services:
+  web:
+    image: rdv-insertion-web
+    build: .
+    depends_on:
+      - db
+    env_file:
+      - '.env'
+    ports:
+      - "8000:8000"
+    volumes:
+      - assets:/app/app/assets/builds
+  js:
+    image: rdv-insertion-web
+    command: ["yarn", "build", "--watch"]
+    entrypoint: '' # ignore the Rails commands in entrypoint.sh
+    volumes:
+      - assets:/app/app/assets/builds
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: dummy
+      PGPORT: 5433
+    volumes:
+      - "./tmp/db:/var/lib/postgresql/data"
+    ports:
+      - "5433:5433"
+volumes:
+  assets:
