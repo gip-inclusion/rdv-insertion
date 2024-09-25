@@ -6,4 +6,8 @@ Sentry.init do |config|
   # of transactions for performance monitoring.
   # We recommend adjusting this value in production
   config.traces_sample_rate = 0.05
+
+  # if a job cannot execute because of a lock it fails and will be retried later,
+  # see https://github.com/gip-inclusion/rdv-insertion/pull/2340
+  config.excluded_exceptions += ["WithAdvisoryLock::FailedToAcquireLock"]
 end

@@ -55,7 +55,7 @@ RSpec.describe LockedAndOrderedJobs do
     it "locks the job execution" do
       expect(ActiveRecord::Base).to receive(:with_advisory_lock!).with(
         "test_job:arg1:arg2",
-        timeout_seconds: LockedJobs::DEFAULT_TIMEOUT_SECONDS
+        timeout_seconds: 0
       )
 
       TestJob.perform_now("arg1", "arg2", current_time)
