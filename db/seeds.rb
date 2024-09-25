@@ -10,10 +10,13 @@
 # Les seeds de rdv-solidarités permettent de créer ces différents éléments
 # L'agent à utiliser est alors "Alain Sertion"
   # email: "alain.sertion@rdv-insertion-demo.fr",
-  # password: "123456",
+  # password: "Rdvservicepublictest1!",
 # Les rdv_solidarites_organisation_id sont configurées pour match ces seeds, mais il est préférable de les vérifier
 
-
+if Agent.exists?(email: "alain.sertion@rdv-insertion-demo.fr")
+  puts "Les seeds ont déjà été exécutées, il n'est pas nécessaire de les relancer."
+  exit(0)
+end
 
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating departments..."
@@ -364,10 +367,31 @@ agent = Agent.create!(
   last_webhook_update_received_at: Time.zone.now
 )
 
-agent.organisations << drome1_organisation
-agent.organisations << drome2_organisation
-agent.organisations << yonne_organisation
-agent.save!
+agent.update_column(:super_admin, true)
+
+AgentRole.create!(agent:, organisation: drome1_organisation, access_level: "admin")
+AgentRole.create!(agent:, organisation: drome2_organisation, access_level: "admin")
+AgentRole.create!(agent:, organisation: yonne_organisation, access_level: "admin")
+
+User.create!(
+  rdv_solidarites_user_id: 1,
+  email: "jean.rsavalence@testinvitation.fr",
+  first_name: "Jean",
+  last_name: "RSAValence",
+  phone_number: "0601020304",
+  created_from_structure: drome1_organisation,
+  created_through: "rdv_insertion_api"
+)
+
+User.create!(
+  rdv_solidarites_user_id: 2,
+  email: "jean.rsaAuxerre@testinvitation.fr",
+  address: "12 Rue Joubert, Auxerre, 89000",
+  first_name: "Jean",
+  last_name: "RSAAuxerre",
+  created_from_structure: yonne_organisation,
+  created_through: "rdv_insertion_api"
+)
 
 Motif.create!(
   rdv_solidarites_motif_id: 1,
@@ -447,5 +471,3 @@ Motif.create!(
   organisation_id: yonne_organisation.id,
   follow_up: false
 )
-
-puts "Done!"
