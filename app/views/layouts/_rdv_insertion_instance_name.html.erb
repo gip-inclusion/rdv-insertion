@@ -1,7 +1,7 @@
 <% if rdv_insertion_instance_name.present? %>
   <div class="rdv-insertion-instance-name-wrapper right" aria-hidden=true>
     <div class="rdv-insertion-instance-name">
-      <a><%= rdv_insertion_instance_name %></a>
+      <a href="<%= ENV.fetch("ENV_BANNER_URL", "#") %>" target="_blank"><%= rdv_insertion_instance_name %></a>
     </div>
   </div>
 <% end %>

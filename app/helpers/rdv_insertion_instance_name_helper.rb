@@ -4,6 +4,8 @@ module RdvInsertionInstanceNameHelper
 
     if Rails.env.development?
       Rails.env
+    elsif ENV["HOST"].include?("staging")
+      "Staging"
     else
       "Démo"
     end
