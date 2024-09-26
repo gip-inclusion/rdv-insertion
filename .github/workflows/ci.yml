@@ -1,32 +1,27 @@
 name: CI
 on: push
 jobs:
-  rubocop:
-    name: Ruby linter
+  linters:
+    name: Linters
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          ruby-version: .ruby-version
           bundler-cache: true
-          rubygems: latest
-      - run: bundle exec rubocop
-  eslint:
-    name: JS linter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Cache js dependencies
+        uses: actions/cache@v4
         with:
-          ruby-version: 3.3.3
-          bundler-cache: true
-          rubygems: latest
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          path: node_modules
       - name: Install JS dependencies
         run: yarn install
-      - run: yarn lint
+      - name: Run Rubocop
+        run: bundle exec rubocop
+      - name: Run ESLint
+        run: yarn lint
   test_unit:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -51,28 +46,37 @@ jobs:
           - 6379:6379
         options: --entrypoint redis-server
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.15.0
+          node-version-file: .node-version
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          ruby-version: .ruby-version
           bundler-cache: true
-          rubygems: latest
+      - name: Cache js dependencies
+        uses: actions/cache@v4
+        with:
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          path: node_modules
       - name: Install JS dependencies
         run: yarn install
       - name: Precompile assets
-        run: RAILS_ENV=test bundle exec rake assets:precompile
-      - name: Setup test database
-        env:
-          POSTGRES_USER: rdv_insertion_test
-          POSTGRES_PASSWORD: rdv_insertion_test
-          POSTGRES_DB: rdv_insertion_test
-        run: bundle exec rails db:create db:schema:load RAILS_ENV=test
-      - name: Run specs
+        run: yarn run build
+      - name: List all unit spec files
+        run: |
+          mkdir -p tmp
+          ls spec/**/*.rb | grep -v spec/features > tmp/unit_spec_files.txt
+      - name: Cache parallel test unit spec runtime log
+        uses: actions/cache@v4
+        with:
+          key: unit-spec-runtime-log-${{ hashFiles('tmp/unit_spec_files.txt') }}
+          path: tmp/parallel_runtime_rspec.log
+      - name: Setup test database and run specs
+        run: |
+          RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec['spec/(?!features)']
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -80,10 +84,15 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-        run: RAILS_ENV=test bundle exec rspec --exclude-pattern "spec/features/**/*"
+
   test_features:
     name: Feature Tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [4]
+        ci_node_index: [0, 1, 2, 3]
     services:
       postgres:
         image: postgres:13.2
@@ -105,27 +114,45 @@ jobs:
           - 6379:6379
         options: --entrypoint redis-server
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.15.0
+          node-version-file: .node-version
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          ruby-version: .ruby-version
           bundler-cache: true
+      - name: Cache js dependencies
+        uses: actions/cache@v4
+        with:
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          path: node_modules
       - name: Install JS dependencies
         run: yarn install
       - name: Precompile assets
         run: RAILS_ENV=test bundle exec rake assets:precompile
-      - name: Setup test database
-        env:
-          POSTGRES_USER: rdv_insertion_test
-          POSTGRES_PASSWORD: rdv_insertion_test
-          POSTGRES_DB: rdv_insertion_test
-        run: bundle exec rails db:create db:schema:load RAILS_ENV=test
-      - name: Run specs
+      - name: List all feature spec files
+        run: |
+          mkdir -p tmp
+          find spec/features -name "*_spec.rb" > tmp/feature_spec_files.txt
+          echo "Total feature spec files found:"
+          wc -l tmp/feature_spec_files.txt
+      - name: Setup test database and run specs
+        run: |
+          echo "Spec files for this node:"
+          cat tmp/feature_spec_files.txt | sort | awk "NR % $CI_NODE_TOTAL == $CI_NODE_INDEX" | tee node_spec_files.txt
+
+          FILE_COUNT=$(cat node_spec_files.txt | wc -l)
+          echo "Running $FILE_COUNT spec files on CI node index $CI_NODE_INDEX"
+
+          if [ $FILE_COUNT -eq 0 ]; then
+            echo "No spec files to run on this node. This is likely an error in file distribution."
+            exit 1
+          fi
+
+          RAILS_ENV=test bundle exec rspec $(cat node_spec_files.txt)
         env:
           HOST: http://example.com
           POSTGRES_HOST: localhost
@@ -133,4 +160,5 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-        run: RAILS_ENV=test bundle exec rspec ./spec/features/
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}

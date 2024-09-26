@@ -309,6 +309,8 @@ GEM
       validate_url
       webfinger (~> 2.0)
     parallel (1.24.0)
+    parallel_tests (4.5.1)
+      parallel
     parser (3.3.0.2)
       ast (~> 2.4.1)
       racc
@@ -619,6 +621,7 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   listen (~> 3.2)
+  parallel_tests
   pdf-reader
   pg (>= 0.18, < 2.0)
   pg_query
