@@ -353,6 +353,10 @@ MessagesConfiguration.create!(
   organisation: yonne_organisation
 )
 
+OrientationType.create!(casf_category: "social", name: "Sociale")
+OrientationType.create!(casf_category: "pro", name: "Professionnelle")
+OrientationType.create!(casf_category: "socio_pro", name: "Socio-professionnelle")
+
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating agent and motifs..."
 # Faking Webhooks entries (for avoiding resending them from rdv solidarites manually), update ids from rdv-s if rdv solidarite seed is changing
