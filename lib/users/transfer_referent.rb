@@ -9,7 +9,7 @@ module Users
     end
 
     def call
-      ReferentAssignation.includes(user: :organisations).where(agent: source_referent).each do |referent_assignation|
+      ReferentAssignation.where(agent: source_referent).find_each do |referent_assignation|
         ActiveRecord::Base.transaction do
           set_current_agent(referent_assignation)
           assign_target_and_remove_source_referent(referent_assignation)
