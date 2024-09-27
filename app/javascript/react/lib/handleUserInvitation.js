@@ -1,4 +1,3 @@
-import Swal from "sweetalert2";
 import inviteUser from "../actions/inviteUser";
 import createInvitationLetter from "./createInvitationLetter";
 
@@ -29,11 +28,7 @@ const handleUserInvitation = async (
     motifCategoryId
   );
   if (!result.success && options.raiseError) {
-    Swal.fire(
-      "Impossible d'inviter l'utilisateur",
-      result.errors && result.errors.join("<br/><br/>"),
-      "error"
-    );
+    Turbo.renderStreamMessage(result.payload); // eslint-disable-line no-undef
   }
   return result;
 };
