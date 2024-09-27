@@ -475,3 +475,13 @@ Motif.create!(
   organisation_id: yonne_organisation.id,
   follow_up: false
 )
+
+# --------------------------------------------------------------------------------------------------------------------
+puts "Creating stats..."
+
+Stat.create!(statable_type: "Department")
+Stat.create!(statable: yonne)
+Stat.create!(statable: drome)
+Stat.create!(statable: yonne_organisation)
+Stat.create!(statable: drome1_organisation)
+Stat.create!(statable: drome2_organisation)
