@@ -10,7 +10,18 @@ export default function InvitationCells({ user }) {
     /* ----------------------------- Disabled invitations cases -------------------------- */
     user.isArchived() ? (
       <td colSpan={user.list.invitationsColSpan}>
-        Dossier archivé
+        Dossier archivé 
+        {user.isArchivedInCurrentOrganisation() && (
+          <Tippy
+            content={
+              <>
+                Usager archivé pour le motif suivant : {user.archiveInCurrentOrganisation().archiving_reason}
+              </>
+            }
+          >
+            <i className="ms-2 fas fa-info-circle" />
+          </Tippy>
+        )}
       </td>
     ) : user.createdAt && user.list.isDepartmentLevel && !user.linkedToCurrentCategory() ? (
       <td colSpan={user.list.invitationsColSpan}>
