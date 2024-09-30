@@ -1,6 +1,12 @@
 class NotificationsJobError < StandardError; end
 
 class NotifyParticipationToUserJob < ApplicationJob
+  include LockedJobs
+
+  def self.lock_key(participation_id, format, event)
+    "#{name}:#{participation_id}:#{format}:#{event}"
+  end
+
   def perform(participation_id, format, event)
     @participation = Participation.find(participation_id)
     @format = format
@@ -9,11 +15,9 @@ class NotifyParticipationToUserJob < ApplicationJob
     return unless @participation.notifiable? && user.notifiable?
     return if reminder_of_cancelled_participation?
 
-    Notification.with_advisory_lock "notifying_particpation_#{@participation.id}" do
-      return if already_notified?
+    return if already_notified?
 
-      save_and_send_notification!
-    end
+    save_and_send_notification!
   end
 
   private

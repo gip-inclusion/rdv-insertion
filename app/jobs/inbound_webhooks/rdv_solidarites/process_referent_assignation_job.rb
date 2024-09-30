@@ -1,16 +1,18 @@
 module InboundWebhooks
   module RdvSolidarites
-    class ProcessReferentAssignationJob < ApplicationJob
+    class ProcessReferentAssignationJob < LockedAndOrderedJobBase
+      def self.lock_key(data, _meta)
+        "#{name}:#{data.dig(:agent, :id)}:#{data.dig(:user, :id)}"
+      end
+
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
         # if webhook_reason is rgpd we want to keep the relation to be able to recreate it on rdvs if necessary
         return if user.blank? || agent.blank? || webhook_reason == "rgpd"
 
-        User.with_advisory_lock "assigning_#{rdv_solidarites_agent_id}_to_#{rdv_solidarites_user_id}" do
-          attach_agent_to_user if event == "created"
-          remove_agent_from_user if event == "destroyed"
-        end
+        attach_agent_to_user if event == "created"
+        remove_agent_from_user if event == "destroyed"
       end
 
       private

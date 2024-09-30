@@ -27,6 +27,9 @@ module RdvInsertion
     # Use Sidekiq as the ActiveJob queue adapter
     config.active_job.queue_adapter = :sidekiq
 
+    # specify redis url
+    config.x.redis_url = ENV.fetch("REDIS_URL") { "redis://localhost:6379" }
+
     # The following keys are generated using the following command:
     # bundle exec rails db:encryption:init
     #

@@ -1,5 +1,11 @@
 class InviteUserJob < ApplicationJob
+  include LockedJobs
+
   sidekiq_options retry: 10
+
+  def self.lock_key(user_id, _organisation_id, _invitation_attributes, _motif_category_attributes)
+    "#{name}:#{user_id}"
+  end
 
   def perform(user_id, organisation_id, invitation_attributes, motif_category_attributes)
     @user = User.find(user_id)
@@ -7,9 +13,7 @@ class InviteUserJob < ApplicationJob
     @invitation_attributes = invitation_attributes.deep_symbolize_keys
     @motif_category_attributes = motif_category_attributes
 
-    Invitation.with_advisory_lock "invite_user_job_#{@user.id}" do
-      invite_user!
-    end
+    invite_user!
   end
 
   private

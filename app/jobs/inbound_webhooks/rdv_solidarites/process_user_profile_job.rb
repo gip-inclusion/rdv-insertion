@@ -1,6 +1,10 @@
 module InboundWebhooks
   module RdvSolidarites
-    class ProcessUserProfileJob < ApplicationJob
+    class ProcessUserProfileJob < LockedAndOrderedJobBase
+      def self.lock_key(data, _meta)
+        "#{name}:#{data.dig(:user, :id)}:#{data.dig(:organisation, :id)}"
+      end
+
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
