@@ -16,7 +16,11 @@ class InvitationsController < ApplicationController
           render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
         end
         format.json do
-          render_error_partial(invite_user.errors)
+          render json: {
+            success: false,
+            payload: turbo_stream.replace("remote_modal", partial: "invitation_error_modal",
+                                                          locals: { errors: invite_user.errors })
+          }, status: :unprocessable_entity
         end
       end
     end
@@ -35,29 +39,6 @@ class InvitationsController < ApplicationController
   end
 
   private
-
-  def render_error_partial(errors)
-    if errors.any? { |error| error[:error_type].include?("no_follow_up_category") }
-      render json: {
-        success: false,
-        payload: turbo_stream.replace("remote_modal", partial: "no_follow_up_category_modal",
-        # TODO : check errors.first, multiple errors can be returned ??
-                                                      locals: { error: errors.first })
-      }, status: :unprocessable_entity
-    elsif errors.any? { |error| error[:error_type].include?("no_creneau_available") }
-      render json: {
-        success: false,
-        payload: turbo_stream.replace("remote_modal", partial: "no_creneau_available_modal",
-                                                      locals: { error: errors.first })
-      }, status: :unprocessable_entity
-    else
-      render json: {
-        success: false,
-        payload: turbo_stream.replace("remote_modal", partial: "common/modal_error",
-                                                      locals: { errors: errors })
-      }, status: :unprocessable_entity
-    end
-  end
 
   def invitation_params
     params.require(:invitation).permit(

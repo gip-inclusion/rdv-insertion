@@ -32,10 +32,10 @@ module Invitations
     private
 
     def validate_invitation_not_already_sent_today
+      add_error(message: "Une invitation #{invitation.format} a déjà été envoyée aujourd'hui à cet usager")
       return if invitation.format_postal?
-      return unless invitation_already_sent_today?
 
-      result.errors << "Une invitation #{invitation.format} a déjà été envoyée aujourd'hui à cet usager"
+      nil unless invitation_already_sent_today?
     end
 
     def invitation_already_sent_today?
@@ -43,46 +43,45 @@ module Invitations
     end
 
     def validate_user_title_presence
-      return if user.title?
-
-      result.errors << "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation"
+      add_error(message: "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation")
+      nil if user.title?
     end
 
     def validate_organisations_are_not_from_different_departments
       return if organisations.map(&:department_id).uniq == [department_id]
 
-      result.errors << "Les organisations ne peuvent pas être liés à des départements différents de l'invitation"
+      add_error(message: "Les organisations ne peuvent pas être liés à des départements différents de l'invitation")
     end
 
     def validate_no_rdv_pending_taken_today
       return if follow_up.participations.none?(&:pending?)
 
-      result.errors << "Cet usager a déjà un rendez-vous à venir pour ce motif"
+      add_error(message: "Cet usager a déjà un rendez-vous à venir pour ce motif")
     end
 
     def validate_it_expires_in_more_than_5_days
       return if expires_at > 5.days.from_now
 
-      result.errors << "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours"
+      add_error(message: "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours")
     end
 
     def validate_user_belongs_to_an_org_linked_to_motif_category
-      return if user.unarchived_organisations.flat_map(&:motif_categories).include?(motif_category)
-
-      result.errors << "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie " \
-                       "#{motif_category_name}"
+      add_error(message:
+       "L'usager n'appartient pas ou n'est pas actif \
+       dans une organisation qui gère la catégorie #{motif_category_name}")
+      nil if user.unarchived_organisations.flat_map(&:motif_categories).include?(motif_category)
     end
 
     def validate_motif_of_this_category_is_defined_in_organisations
       return if organisations_motifs.map(&:motif_category).include?(motif_category)
 
-      result.errors << "Aucun motif de la catégorie #{motif_category_name} n'est défini sur RDV-Solidarités"
+      add_error(message: "Aucun motif de la catégorie #{motif_category_name} n'est défini sur RDV-Solidarités")
     end
 
     def validate_referents_are_assigned
       return if user.referent_ids.any?
 
-      result.errors << "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
+      add_error(message: "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents")
     end
 
     def validate_follow_up_motifs_are_defined
@@ -90,14 +89,13 @@ module Invitations
         motif.follow_up? && motif.motif_category == motif_category
       end
 
-      result.errors << {
+      add_error(
         error_type: "no_follow_up_category",
-        # Organisation.first est arbitraire, on pourait prendre n'importe quelle organisation ?
         attributes: {
           organisation_id: organisations.first.id,
           motif_category_name: motif_category_name
         }
-      }
+      )
     end
 
     def organisations_motifs
@@ -112,10 +110,24 @@ module Invitations
 
       organisation_names = organisations_without_phone_number.map(&:name).to_sentence(last_word_connector: " et ")
       if organisations_without_phone_number.size > 1
-        result.errors << "Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués."
+        add_error(message: "Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués.")
       elsif organisations_without_phone_number.size == 1
-        result.errors << "Le téléphone de contact de l'organisation #{organisation_names} doit être indiqué."
+        add_error(message: "Le téléphone de contact de l'organisation #{organisation_names} doit être indiqué.")
       end
+    end
+
+    def add_error(error_type: "generic", message: nil, attributes: {})
+      # Attributes are used to build the error message in the view
+      # Error type is used to determine which custom message will be displayed in the view
+      if error_type == "generic" && message.blank?
+        raise ArgumentError, "Le message est requis pour les erreurs génériques"
+      end
+
+      result.errors << {
+        error_type: error_type,
+        message: message,
+        attributes: attributes
+      }
     end
   end
 end

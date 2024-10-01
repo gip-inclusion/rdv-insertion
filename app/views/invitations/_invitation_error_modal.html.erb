@@ -1,0 +1,25 @@
+<%= render "common/remote_modal" do %>
+  <div>
+    <div class="text-center mb-3">
+      <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
+    </div>
+    <h4 class="text-center"><b>Impossible d'inviter l'usager</b></h4>
+    <div class="p-3">
+      <% errors.each_with_index do |error, index| %>
+        <% if error[:error_type] != "generic" %>
+          <%= render "invitations/custom_errors/#{error[:error_type]}", error: error %>
+        <% else %>
+          <p><%= error[:message] %></p>
+        <% end %>
+        <% if index < errors.size - 1 %>
+          <hr class="mx-5">
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center px-3">
+    <button type="button" id="confirm-button" class="btn btn-primary me-2" data-bs-dismiss="modal">
+      OK
+    </button>
+  </div>
+<% end %>
