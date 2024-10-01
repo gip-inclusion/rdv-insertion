@@ -10,16 +10,8 @@ module Users
 
     def call
       ReferentAssignation.where(agent: source_referent).find_each do |referent_assignation|
-        ActiveRecord::Base.transaction do
-          set_current_agent(referent_assignation)
-          assign_target_and_remove_source_referent(referent_assignation)
-        end
-      end
-
-      if errors.any?
-        puts "Les usagers suivants n'ont pas pu être transférés : #{errors.map { |e| e[:user].id }.join(', ')}"
-      else
-        puts "Tous les usagers ont été transférés avec succès"
+        set_current_agent(referent_assignation)
+        assign_target_and_remove_source_referent(referent_assignation)
       end
     end
 
@@ -44,7 +36,6 @@ module Users
 
       if !remove_service.success?
         @errors << { error: remove_service.error, user: referent_assignation.user }
-        raise ActiveRecord::Rollback
       end
     end
   end

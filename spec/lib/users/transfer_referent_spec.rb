@@ -17,13 +17,11 @@ describe Users::TransferReferent do
       user.rdv_solidarites_user_id,
       source_referent.rdv_solidarites_agent_id
     )
-    allow($stdout).to receive(:puts)
   end
 
   it "calls appropriate services and assigns referent" do
     expect(Users::AssignReferent).to receive(:call).with(user:, agent: target_referent).once.and_call_original
     expect(Users::RemoveReferent).to receive(:call).with(user:, agent: source_referent).once.and_call_original
-    expect($stdout).to receive(:puts).with(/succès/).once
 
     subject
 
@@ -41,7 +39,6 @@ describe Users::TransferReferent do
 
     it "does not call remove referent" do
       expect(Users::RemoveReferent).not_to receive(:call)
-      expect($stdout).to receive(:puts).with(/#{user.id}/).once
 
       subject
     end
