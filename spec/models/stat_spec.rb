@@ -203,14 +203,14 @@ describe Stat do
           create(
             :follow_up,
             user: first_user,
-            motif_category: create(:motif_category, leads_to_orientation: true)
+            motif_category: create(:motif_category, motif_category_type: "rsa_orientation")
           )
         end
         let!(:first_user_second_orientation_follow_up) do
           create(
             :follow_up,
             user: first_user,
-            motif_category: create(:motif_category, leads_to_orientation: true)
+            motif_category: create(:motif_category, motif_category_type: "rsa_orientation")
           )
         end
 
@@ -218,7 +218,7 @@ describe Stat do
           create(
             :follow_up,
             user: second_user,
-            motif_category: create(:motif_category, leads_to_orientation: true)
+            motif_category: create(:motif_category, motif_category_type: "rsa_orientation")
           )
         end
 
@@ -226,7 +226,7 @@ describe Stat do
           create(
             :follow_up,
             user: third_user,
-            motif_category: create(:motif_category, leads_to_orientation: false)
+            motif_category: create(:motif_category, motif_category_type: "rsa_accompagnement")
           )
         end
 

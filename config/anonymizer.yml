@@ -213,7 +213,6 @@ tables:
       - created_at
       - updated_at
       - optional_rdv_subscription
-      - leads_to_orientation
 
   - table_name: motifs
     anonymized_column_names:

@@ -10,7 +10,6 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     category_configurations: Field::HasMany,
-    leads_to_orientation: Field::Boolean,
     motifs: Field::HasMany,
     name: Field::String,
     motif_category_type: Field::Select.with_options(
@@ -46,7 +45,6 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     template
     motif_category_type
     motifs
-    leads_to_orientation
     optional_rdv_subscription
     created_at
     updated_at
@@ -60,14 +58,12 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     short_name
     template
     motif_category_type
-    leads_to_orientation
     optional_rdv_subscription
   ].freeze
 
   FORM_ATTRIBUTES_EDIT = %i[
     template
     motif_category_type
-    leads_to_orientation
     optional_rdv_subscription
   ].freeze
 
