@@ -46,21 +46,11 @@ module Organisations
     end
 
     def organisation_exists_in_rdv_solidarites?(organisation)
-      with_faked_agent_auth(organisation) do
+      organisation.agents.first.with_rdv_solidarites_client do
         RdvSolidaritesApi::RetrieveOrganisation
           .call(rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id)
           .success?
       end
-    end
-
-    def with_faked_agent_auth(organisation)
-      return yield if Current.agent.present?
-
-      Current.agent = organisation.agents.first
-      result = yield
-      Current.agent = nil
-
-      result
     end
   end
 end
