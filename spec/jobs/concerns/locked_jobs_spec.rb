@@ -8,31 +8,70 @@ RSpec.describe LockedJobs, type: :concern do
       end
 
       def perform(_id)
-        sleep 0.2
+        sleep 0.1
       end
     end
   end
 
-  describe "locking behavior", :no_transaction do
+  after do
+    # Ensure all connections are returned to the pool and locks are released
+    ActiveRecord::Base.clear_all_connections!
+  end
+
+  describe "locking behavior with same lock_key", :no_transaction do
     it "prevents parallel execution of jobs with the same lock_key" do
-      thread1 = Thread.new { dummy_class.perform_now(1) }
-      thread1.report_on_exception = false
+      exceptions = []
 
-      thread2 = Thread.new { dummy_class.perform_now(1) }
-      thread2.report_on_exception = false
+      thread1 = Thread.new do
+        # this ensures the thread release its database connections properly so that locks don't persist
+        # beyond the test
+        ActiveRecord::Base.connection_pool.with_connection do
+          dummy_class.perform_now(1)
+        rescue StandardError => e
+          exceptions << e
+        end
+      end
 
-      expect do
-        [thread1, thread2].each(&:join)
-      end.to raise_error(WithAdvisoryLock::FailedToAcquireLock)
+      thread2 = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection do
+          dummy_class.perform_now(1)
+        rescue StandardError => e
+          exceptions << e
+        end
+      end
+
+      [thread1, thread2].each(&:join)
+
+      # Expect one of the threads to raise a FailedToAcquireLock error
+      expect(exceptions.size).to eq(1)
+      expect(exceptions.first).to be_a(WithAdvisoryLock::FailedToAcquireLock)
     end
+  end
 
+  describe "no locking behavior with different lock_key", :no_transaction do
     it "allows parallel execution of jobs with different lock_keys" do
-      thread1 = Thread.new { dummy_class.perform_now(1) }
-      thread2 = Thread.new { dummy_class.perform_now(2) }
+      exceptions = []
 
-      expect do
-        [thread1, thread2].each(&:join)
-      end.not_to raise_error
+      thread1 = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection do
+          dummy_class.perform_now(1)
+        rescue StandardError => e
+          exceptions << e
+        end
+      end
+
+      thread2 = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection do
+          dummy_class.perform_now(2)
+        rescue StandardError => e
+          exceptions << e
+        end
+      end
+
+      [thread1, thread2].each(&:join)
+
+      # Expect no errors since locks are different
+      expect(exceptions).to be_empty
     end
   end
 end
