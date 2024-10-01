@@ -69,9 +69,10 @@ module Invitations
     def validate_user_belongs_to_an_org_linked_to_motif_category
       return if user.unarchived_organisations.flat_map(&:motif_categories).include?(motif_category)
 
-      add_error(message:
-       "L'usager n'appartient pas ou n'est pas actif \
-       dans une organisation qui gère la catégorie #{motif_category_name}")
+      add_error(
+        message:
+       "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie #{motif_category_name}"
+      )
     end
 
     def validate_motif_of_this_category_is_defined_in_organisations

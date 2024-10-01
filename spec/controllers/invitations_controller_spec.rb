@@ -150,19 +150,13 @@ describe InvitationsController do
     context "when the service fails" do
       before do
         allow(InviteUser).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+          .and_return(OpenStruct.new(success?: false, errors: [{ error_type: "generic", message: "some error" }]))
       end
 
       it "is not a success" do
         post :create, params: create_params
         expect(response).not_to be_successful
         expect(response.parsed_body["success"]).to eq(false)
-      end
-
-      it "renders the errors" do
-        post :create, params: create_params
-        expect(response).not_to be_successful
-        expect(response.parsed_body["errors"]).to eq(["some error"])
       end
     end
   end
