@@ -134,7 +134,8 @@ describe Invitations::Validate, type: :service do
       it "stores an error message" do
         expect(subject.errors).to include(
           { error_type: "generic",
-            message: "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie RSA orientation",
+            message:
+            "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie RSA orientation",
             attributes: {} }
         )
       end
@@ -147,7 +148,9 @@ describe Invitations::Validate, type: :service do
         it "stores an error message" do
           expect(subject.errors).to include(
             { error_type: "generic",
-              message: "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie RSA orientation",
+              message:
+              "L'usager n'appartient pas ou n'est pas actif dans une organisation qui " \
+              "gère la catégorie RSA orientation",
               attributes: {} }
           )
         end
