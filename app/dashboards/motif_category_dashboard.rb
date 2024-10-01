@@ -13,6 +13,10 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     leads_to_orientation: Field::Boolean,
     motifs: Field::HasMany,
     name: Field::String,
+    motif_category_type: Field::Select.with_options(
+      searchable: false,
+      collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
+    ),
     optional_rdv_subscription: Field::Boolean,
     follow_ups: Field::HasMany,
     rdv_solidarites_motif_category_id: Field::Number,
@@ -30,6 +34,7 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     id
     name
+    motif_category_type
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -39,6 +44,7 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     name
     short_name
     template
+    motif_category_type
     motifs
     leads_to_orientation
     optional_rdv_subscription
@@ -53,12 +59,14 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     name
     short_name
     template
+    motif_category_type
     leads_to_orientation
     optional_rdv_subscription
   ].freeze
 
   FORM_ATTRIBUTES_EDIT = %i[
     template
+    motif_category_type
     leads_to_orientation
     optional_rdv_subscription
   ].freeze

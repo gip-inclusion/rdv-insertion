@@ -208,6 +208,7 @@ tables:
       - short_name
       - name
       - template_id
+      - motif_category_type
       - rdv_solidarites_motif_category_id
       - created_at
       - updated_at
