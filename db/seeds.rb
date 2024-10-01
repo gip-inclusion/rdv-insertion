@@ -213,7 +213,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA SPIE",
   short_name: "rsa_spie",
-  motif_category_type: "spie",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
