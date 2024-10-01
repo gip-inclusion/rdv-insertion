@@ -27,7 +27,7 @@ module Users
       if assignation_service.success?
         remove_source_referent(referent_assignation)
       else
-        @errors << { error: assignation_service.error, user: referent_assignation.user }
+        @errors << { error: { message: assignation_service.error, source: Users::AssignReferent.to_s }, user: referent_assignation.user }
       end
     end
 
@@ -35,7 +35,7 @@ module Users
       remove_service = Users::RemoveReferent.call(user: referent_assignation.user, agent: source_referent)
 
       if !remove_service.success?
-        @errors << { error: remove_service.error, user: referent_assignation.user }
+        @errors << { error: { message: remove_service.error, source: Users::RemoveReferent.to_s  }, user: referent_assignation.user }
       end
     end
   end
