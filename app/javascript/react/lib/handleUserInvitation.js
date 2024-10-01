@@ -28,7 +28,7 @@ const handleUserInvitation = async (
     motifCategoryId
   );
   if (!result.success && options.raiseError) {
-    Turbo.renderStreamMessage(result.payload); // eslint-disable-line no-undef
+    window.Turbo.renderStreamMessage(result.payload);
   }
   return result;
 };

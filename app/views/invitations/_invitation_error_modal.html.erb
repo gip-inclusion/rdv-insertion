@@ -1,7 +1,7 @@
 <%= render "common/remote_modal" do %>
   <div>
     <div class="text-center mb-3">
-      <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
+      <%= image_tag "illustrations/error-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
     </div>
     <h4 class="text-center"><b>Impossible d'inviter l'usager</b></h4>
     <div class="p-3">
@@ -12,7 +12,7 @@
           <p><%= error[:message] %></p>
         <% end %>
         <% if index < errors.size - 1 %>
-          <hr class="mx-5">
+          <hr class="mx-auto w-50">
         <% end %>
       <% end %>
     </div>
