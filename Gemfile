@@ -123,6 +123,10 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "rspec-rails"
+  # Strategies for cleaning databases. Can be used to ensure a clean slate for testing.
+  gem "database_cleaner"
+  # https://github.com/DatabaseCleaner/database_cleaner-active_record/blob/main/CHANGELOG.md#v210-2023-02-17
+  gem "database_cleaner-active_record", "~> 2.2" # For Rails 7.1 Support
   gem "factory_bot_rails"
   gem "rubocop"
   gem "rubocop-rails"
