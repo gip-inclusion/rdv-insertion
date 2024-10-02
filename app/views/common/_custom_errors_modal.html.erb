@@ -1,15 +1,15 @@
 <%= render "common/remote_modal" do %>
   <div>
     <div class="text-center mb-3">
-      <%= image_tag "illustrations/error-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
+      <%= image_tag "illustrations/error-line.svg", alt: "Illustration d'un message d'erreur", class: "mb-3" %>
     </div>
     <h4 class="text-center"><b>Impossible d'inviter l'usager</b></h4>
     <div class="p-3">
       <% errors.each_with_index do |error, index| %>
-        <% if error[:error_type] != "generic" %>
-          <%= render "invitations/custom_errors/#{error[:error_type]}", error: error %>
+        <% if error.is_a?(CustomServiceError) %>
+          <%= render error, locals: error.attributes %>
         <% else %>
-          <p><%= error[:message] %></p>
+          <p><%= error.to_s %></p>
         <% end %>
         <% if index < errors.size - 1 %>
           <hr class="mx-auto w-50">

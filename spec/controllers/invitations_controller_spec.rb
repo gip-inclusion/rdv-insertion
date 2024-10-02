@@ -1,5 +1,4 @@
 describe InvitationsController do
-  # TOCHECK
   describe "#create" do
     let!(:user_id) { "24213123" }
     let!(:organisation_id) { "22232" }
@@ -157,6 +156,12 @@ describe InvitationsController do
         post :create, params: create_params
         expect(response).not_to be_successful
         expect(response.parsed_body["success"]).to eq(false)
+      end
+
+      it "renders the errors" do
+        post :create, params: create_params
+        expect(response).not_to be_successful
+        expect(response.parsed_body["turbo_stream_html"]).to include('action="replace"')
       end
     end
   end

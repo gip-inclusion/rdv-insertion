@@ -35,7 +35,7 @@ module Invitations
       return if invitation.format_postal?
       return unless invitation_already_sent_today?
 
-      add_error(message: "Une invitation #{invitation.format} a déjà été envoyée aujourd'hui à cet usager")
+      add_error("Une invitation #{invitation.format} a déjà été envoyée aujourd'hui à cet usager")
     end
 
     def invitation_already_sent_today?
@@ -45,25 +45,25 @@ module Invitations
     def validate_user_title_presence
       return if user.title?
 
-      add_error(message: "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation")
+      add_error("La civilité de la personne doit être précisée pour pouvoir envoyer une invitation")
     end
 
     def validate_organisations_are_not_from_different_departments
       return if organisations.map(&:department_id).uniq == [department_id]
 
-      add_error(message: "Les organisations ne peuvent pas être liés à des départements différents de l'invitation")
+      add_error("Les organisations ne peuvent pas être liés à des départements différents de l'invitation")
     end
 
     def validate_no_rdv_pending_taken_today
       return if follow_up.participations.none?(&:pending?)
 
-      add_error(message: "Cet usager a déjà un rendez-vous à venir pour ce motif")
+      add_error("Cet usager a déjà un rendez-vous à venir pour ce motif")
     end
 
     def validate_it_expires_in_more_than_5_days
       return if expires_at > 5.days.from_now
 
-      add_error(message: "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours")
+      add_error("La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours")
     end
 
     def validate_user_belongs_to_an_org_linked_to_motif_category
@@ -78,13 +78,13 @@ module Invitations
     def validate_motif_of_this_category_is_defined_in_organisations
       return if organisations_motifs.map(&:motif_category).include?(motif_category)
 
-      add_error(message: "Aucun motif de la catégorie #{motif_category_name} n'est défini sur RDV-Solidarités")
+      add_error("Aucun motif de la catégorie #{motif_category_name} n'est défini sur RDV-Solidarités")
     end
 
     def validate_referents_are_assigned
       return if user.referent_ids.any?
 
-      add_error(message: "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents")
+      add_error("Un référent doit être assigné au bénéficiaire pour les rdvs avec référents")
     end
 
     def validate_follow_up_motifs_are_defined
@@ -92,13 +92,12 @@ module Invitations
         motif.follow_up? && motif.motif_category == motif_category
       end
 
-      add_error(
-        error_type: "no_follow_up_category",
-        attributes: {
-          organisation_id: organisations.first.id,
-          motif_category_name: motif_category_name
-        }
-      )
+      add_custom_error("Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_name}",
+                       type: "no_follow_up_category",
+                       attributes: {
+                         organisation_id: organisations.first.id,
+                         motif_category_name: motif_category_name
+                       })
     end
 
     def organisations_motifs
@@ -113,24 +112,10 @@ module Invitations
 
       organisation_names = organisations_without_phone_number.map(&:name).to_sentence(last_word_connector: " et ")
       if organisations_without_phone_number.size > 1
-        add_error(message: "Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués.")
+        add_error("Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués.")
       elsif organisations_without_phone_number.size == 1
-        add_error(message: "Le téléphone de contact de l'organisation #{organisation_names} doit être indiqué.")
+        add_error("Le téléphone de contact de l'organisation #{organisation_names} doit être indiqué.")
       end
-    end
-
-    def add_error(error_type: "generic", message: nil, attributes: {})
-      # Attributes are used to build the error message in the view
-      # Error type is used to determine which custom message will be displayed in the view
-      if error_type == "generic" && message.blank?
-        raise ArgumentError, "Le message est requis pour les erreurs génériques"
-      end
-
-      result.errors << {
-        error_type: error_type,
-        message: message,
-        attributes: attributes
-      }
     end
   end
 end

@@ -33,9 +33,8 @@ module Invitations
     def verify_creneaux_are_available
       return if retrieve_creneau_availability.creneau_availability
 
-      result.errors << {
-        error_type: "no_creneau_available"
-      }
+      add_custom_error("Il n'y a plus de créneaux disponibles pour inviter cet usager",
+                       type: "no_creneau_available")
       fail!
     end
 

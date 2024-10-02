@@ -18,8 +18,8 @@ class InvitationsController < ApplicationController
         format.json do
           render json: {
             success: false,
-            payload: turbo_stream.replace("remote_modal", partial: "invitation_error_modal",
-                                                          locals: { errors: invite_user.errors })
+            turbo_stream_html: turbo_stream.replace("remote_modal", partial: "common/custom_errors_modal",
+                                                                    locals: { errors: invite_user.errors })
           }, status: :unprocessable_entity
         end
       end

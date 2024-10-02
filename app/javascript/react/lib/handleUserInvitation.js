@@ -28,7 +28,7 @@ const handleUserInvitation = async (
     motifCategoryId
   );
   if (!result.success && options.raiseError) {
-    window.Turbo.renderStreamMessage(result.payload);
+    window.Turbo.renderStreamMessage(result.turbo_stream_html);
   }
   return result;
 };
