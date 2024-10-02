@@ -4,7 +4,8 @@ describe Exporters::GenerateUsersCsv, type: :service do
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
   let!(:motif_category) do
-    create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation", leads_to_orientation: true)
+    create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation",
+                            motif_category_type: "rsa_orientation")
   end
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
@@ -284,7 +285,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
 
         context "if it is not the orientation date" do
           let!(:motif_category) do
-            create(:motif_category, leads_to_orientation: false)
+            create(:motif_category, motif_category_type: "rsa_accompagnement")
           end
 
           it "does not take it into account" do

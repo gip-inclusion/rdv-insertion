@@ -43,7 +43,9 @@ yonne = Department.create!(
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating motif categories..."
 orientation_category = MotifCategory.create!(
-  short_name: "rsa_orientation", name: "RSA orientation",
+  name: "RSA orientation",
+  short_name: "rsa_orientation",
+  motif_category_type: "rsa_orientation",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'orientation",
@@ -55,7 +57,9 @@ orientation_category = MotifCategory.create!(
   )
 )
 accompagnement_category = MotifCategory.create!(
-  short_name: "rsa_accompagnement", name: "RSA accompagnement",
+  name: "RSA accompagnement",
+  short_name: "rsa_accompagnement",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -70,6 +74,7 @@ accompagnement_category = MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA accompagnement socio-pro",
   short_name: "rsa_accompagnement_sociopro",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -84,6 +89,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA accompagnement social",
   short_name: "rsa_accompagnement_social",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -98,6 +104,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA signature CER",
   short_name: "rsa_cer_signature",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous de signature de CER",
@@ -111,6 +118,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA suivi",
   short_name: "rsa_follow_up",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous de suivi",
@@ -124,6 +132,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA offre insertion pro",
   short_name: "rsa_insertion_offer",
+  motif_category_type: "rsa_accompagnement",
   optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
@@ -137,6 +146,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA orientation sur plateforme téléphonique",
   short_name: "rsa_orientation_on_phone_platform",
+  motif_category_type: "rsa_orientation",
   template: Template.find_or_create_by!(
     model: "phone_platform",
     rdv_title: "rendez-vous d'orientation téléphonique",
@@ -149,6 +159,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier collectif obligatoire",
   short_name: "rsa_atelier_collectif_mandatory",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "atelier collectif",
@@ -162,6 +173,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier rencontres professionnelles",
   short_name: "rsa_atelier_rencontres_pro",
+  motif_category_type: "rsa_accompagnement",
   optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
@@ -174,6 +186,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier compétences",
   short_name: "rsa_atelier_competences",
+  motif_category_type: "rsa_accompagnement",
   optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
@@ -186,6 +199,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Main Tendue",
   short_name: "rsa_main_tendue",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "entretien de main tendue",
@@ -199,6 +213,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA SPIE",
   short_name: "rsa_spie",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -213,6 +228,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Information d'intégration",
   short_name: "rsa_integration_information",
+  motif_category_type: "autre",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'information",
