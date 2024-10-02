@@ -35,7 +35,7 @@ describe RefreshOutOfDateFollowUpStatusesJob do
       FollowUp.where.not(id: [1, 2, 3, 4, 5]).find_each(&:destroy!)
       allow(RefreshFollowUpStatusesJob).to receive(:perform_later)
       allow(MattermostClient).to receive(:send_to_notif_channel)
-      allow(ENV).to receive(:[]).with("SENTRY_ENVIRONMENT").and_return("production")
+      allow(ENV).to receive(:[]).with("HOST").and_return("https://rdv-insertion.fr")
     end
 
     it "enqueues a refresh job for out of date follow-ups" do
