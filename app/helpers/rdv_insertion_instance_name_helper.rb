@@ -1,12 +1,10 @@
 module RdvInsertionInstanceNameHelper
   def rdv_insertion_instance_name
-    return if production_env?
-
-    if Rails.env.development?
-      Rails.env
-    elsif ENV["HOST"].include?("staging")
+    if local_env?
+      "Local"
+    elsif staging_env?
       "Staging"
-    else
+    elsif demo_env?
       "Démo"
     end
   end
