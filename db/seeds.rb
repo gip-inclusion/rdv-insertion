@@ -298,7 +298,7 @@ drome2_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 2,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
-  organisation_type: "conseil_departemental"
+  organisation_type: "france_travail"
 )
 
 CategoryConfiguration.create!(
@@ -333,7 +333,7 @@ yonne_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 3,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
-  organisation_type: "conseil_departemental"
+  organisation_type: "siae"
 )
 
 CategoryConfiguration.create!(
@@ -352,6 +352,10 @@ MessagesConfiguration.create!(
     "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"],
   organisation: yonne_organisation
 )
+
+OrientationType.create!(casf_category: "social", name: "Sociale")
+OrientationType.create!(casf_category: "pro", name: "Professionnelle")
+OrientationType.create!(casf_category: "socio_pro", name: "Socio-professionnelle")
 
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating agent and motifs..."
@@ -471,3 +475,13 @@ Motif.create!(
   organisation_id: yonne_organisation.id,
   follow_up: false
 )
+
+# --------------------------------------------------------------------------------------------------------------------
+puts "Creating stats..."
+
+Stat.create!(statable_type: "Department")
+Stat.create!(statable: yonne)
+Stat.create!(statable: drome)
+Stat.create!(statable: yonne_organisation)
+Stat.create!(statable: drome1_organisation)
+Stat.create!(statable: drome2_organisation)
