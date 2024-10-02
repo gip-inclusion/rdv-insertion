@@ -21,7 +21,7 @@ const retrieveUsersFromApp = async (
     return result.users;
   }
   Swal.fire(
-    "Une erreur s'est produite en récupérant les infos utilisateurs sur le serveur",
+    "Une erreur s'est produite en récupérant les infos des usagers sur le serveur",
     result.errors && result.errors.join(" - "),
     "warning"
   );
@@ -56,7 +56,7 @@ const retrieveUpToDateUsers = async (usersFromList, departmentId) => {
         (a.email &&
           a.email === user.email &&
           a.first_name.split(" ")[0].toLowerCase() ===
-            user.firstName.split(" ")[0].toLowerCase()) ||
+          user.firstName.split(" ")[0].toLowerCase()) ||
         (a.phone_number &&
           // since the phone are not formatted in the file we compare the 8 last digits
           a.phone_number.slice(-8) === user.phoneNumber?.slice(-8) &&
