@@ -617,7 +617,6 @@ DEPENDENCIES
   capybara (>= 2.15)
   chartkick
   database_cleaner
-  database_cleaner-active_record (~> 2.2)
   dotenv-rails
   factory_bot_rails
   faraday
