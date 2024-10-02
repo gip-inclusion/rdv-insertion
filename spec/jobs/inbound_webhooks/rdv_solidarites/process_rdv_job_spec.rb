@@ -59,8 +59,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
     }.deep_symbolize_keys
   end
 
-  let!(:user) { create(:user, organisations: [organisation], id: 3) }
-  let!(:user2) { create(:user, organisations: [organisation], id: 4) }
+  let!(:user) { create(:user, organisations: [organisation]) }
+  let!(:user2) { create(:user, organisations: [organisation]) }
 
   let!(:agent) { create(:agent) }
 
@@ -98,15 +98,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       [organisation],
       follow_up: follow_up2,
       expires_at: 3.days.from_now
-    )
-  end
-
-  let!(:invitation3) do
-    create(
-      :invitation,
-      organisations: [organisation],
-      follow_up: follow_up,
-      expires_at: 3.days.ago
     )
   end
 
@@ -176,6 +167,15 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       end
 
       context "it upserts the rdv (for a create)" do
+        let!(:invitation3) do
+          create(
+            :invitation,
+            organisations: [organisation],
+            follow_up: follow_up,
+            expires_at: 3.days.ago
+          )
+        end
+
         it "enqueues a job to upsert the rdv" do
           expect(UpsertRecordJob).to receive(:perform_later)
             .with(
@@ -355,7 +355,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               id: 2,
               status: "seen",
               created_by: "user",
-              user_id: 4,
+              user_id: user2.id,
               rdv_solidarites_participation_id: 999,
               follow_up_id: follow_up2.id,
               rdv_solidarites_agent_prescripteur_id: nil
@@ -461,7 +461,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  user_id: 3,
+                  user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
                   convocable: true,
@@ -471,7 +471,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  user_id: 4,
+                  user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
                   convocable: true,
@@ -498,7 +498,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  user_id: 3,
+                  user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
                   convocable: false,
@@ -508,7 +508,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  user_id: 4,
+                  user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
                   convocable: false,
@@ -582,7 +582,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "agent",
-                  user_id: 3,
+                  user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
                   convocable: true,
@@ -592,7 +592,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  user_id: 4,
+                  user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
                   convocable: false,
@@ -622,7 +622,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     id: nil,
                     status: "unknown",
                     created_by: "agent",
-                    user_id: 3,
+                    user_id: user.id,
                     rdv_solidarites_participation_id: 998,
                     follow_up_id: follow_up.id,
                     convocable: false,
@@ -632,7 +632,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     id: nil,
                     status: "unknown",
                     created_by: "user",
-                    user_id: 4,
+                    user_id: user2.id,
                     rdv_solidarites_participation_id: 999,
                     follow_up_id: follow_up2.id,
                     convocable: false,
@@ -702,7 +702,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "agent",
-                  user_id: 3,
+                  user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
                   convocable: true,
@@ -712,7 +712,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  user_id: 4,
+                  user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
                   convocable: false,
