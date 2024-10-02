@@ -14,6 +14,6 @@ module EnvironmentsHelper
   end
 
   def local_env?
-    ENV["HOST"].include?("local")
+    Rails.env.development?
   end
 end
