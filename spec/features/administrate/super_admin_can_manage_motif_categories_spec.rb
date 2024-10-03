@@ -63,8 +63,8 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_css("dt", id: "motifs", text: "MOTIFS")
       expect(page).to have_css("tr", class: "js-table-row", count: 1)
       within("tr.js-table-row") { expect(page).to have_css("td.cell-data", text: motif.name) }
-      expect(page).to have_css("dt", id: "leads_to_orientation", text: "LEADS TO ORIENTATION")
-      expect(page).to have_css("dd", class: "attribute-data", text: motif_category.leads_to_orientation)
+      expect(page).to have_css("dt", id: "motif_category_type", text: "TYPE DE CATÉGORIE")
+      expect(page).to have_css("dd", class: "attribute-data", text: motif_category.motif_category_type)
       expect(page).to have_css("dt", id: "optional_rdv_subscription", text: "PRISE DE RDV FACULTATIVE")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.optional_rdv_subscription)
     end
@@ -98,7 +98,7 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_field("motif_category[short_name]")
       expect(page).to have_css("label[for=\"motif_category_template_id-selectized\"]", text: "Template")
       expect(page).to have_field("motif_category_template_id-selectized")
-      expect(page).to have_css("label[for=\"motif_category_leads_to_orientation\"]", text: "Leads to orientation")
+      expect(page).to have_field("motif_category_motif_category_type-selectized")
       expect(page).to have_css(
         "label[for=\"motif_category_optional_rdv_subscription\"]", text: "Prise de rdv facultative"
       )
