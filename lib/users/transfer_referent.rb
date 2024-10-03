@@ -10,16 +10,13 @@ module Users
 
     def call
       ReferentAssignation.where(agent: source_referent).find_each do |referent_assignation|
-        set_current_agent(referent_assignation)
-        assign_target_and_remove_source_referent(referent_assignation)
+        referent_assignation.agent.with_rdv_solidarites_session do
+          assign_target_and_remove_source_referent(referent_assignation)
+        end
       end
     end
 
     private
-
-    def set_current_agent(referent_assignation)
-      Current.agent = referent_assignation.agent
-    end
 
     def assign_target_and_remove_source_referent(referent_assignation)
       assignation_service = Users::AssignReferent.call(user: referent_assignation.user, agent: target_referent)
