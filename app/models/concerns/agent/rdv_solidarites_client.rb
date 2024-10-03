@@ -3,14 +3,6 @@ module Agent::RdvSolidaritesClient
     RdvSolidaritesClient.new(auth_headers: rdv_solidarites_auth_headers_with_shared_secret)
   end
 
-  def with_rdv_solidarites_session(&)
-    # This ensure Current.rdv_solidarites_client would call the agent rdv_solidarites_client
-    Current.agent = self
-    yield
-  ensure
-    Current.agent = nil
-  end
-
   private
 
   def rdv_solidarites_auth_headers_with_shared_secret

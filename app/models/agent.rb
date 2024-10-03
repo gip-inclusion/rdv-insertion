@@ -48,6 +48,14 @@ class Agent < ApplicationRecord
     organisations.select { |organisation| organisation.department_id == department_id }
   end
 
+  def with_rdv_solidarites_session(&)
+    # This ensure Current.rdv_solidarites_client would call the agent rdv_solidarites_client
+    Current.agent = self
+    yield
+  ensure
+    Current.agent = nil
+  end
+
   private
 
   # This is to make sure an agent can't be set as super_admin through an agent creation or update in the app.
