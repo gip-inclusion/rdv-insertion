@@ -135,7 +135,7 @@ module InboundWebhooks
       # rubocop:enable Metrics/AbcSize
 
       def retrieve_user_organisation_ids(rdv_solidarites_user_id)
-        rdv_solidarites_organisation_ids = agents.first.with_rdv_solidarites_client do
+        rdv_solidarites_organisation_ids = agents.first.with_rdv_solidarites_session do
           call_service!(RdvSolidaritesApi::RetrieveUser, rdv_solidarites_user_id:).user.organisation_ids
         end
         Organisation.where(rdv_solidarites_organisation_id: rdv_solidarites_organisation_ids).ids

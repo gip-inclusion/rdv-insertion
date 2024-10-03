@@ -46,7 +46,7 @@ module Organisations
     end
 
     def organisation_exists_in_rdv_solidarites?(organisation)
-      organisation.agents.first.with_rdv_solidarites_client do
+      organisation.agents.first.with_rdv_solidarites_session do
         RdvSolidaritesApi::RetrieveOrganisation
           .call(rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id)
           .success?
