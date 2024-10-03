@@ -10,8 +10,12 @@ module Users
 
     def call
       ReferentAssignation.where(agent: source_referent).find_each do |referent_assignation|
-        set_current_agent(referent_assignation)
-        assign_target_and_remove_source_referent(referent_assignation)
+        begin
+          set_current_agent(referent_assignation)
+          assign_target_and_remove_source_referent(referent_assignation)
+        rescue => e
+          @errors << { error: { message: e.message, source: e.class.to_s }, user: referent_assignation.user }
+        end
       end
     end
 
