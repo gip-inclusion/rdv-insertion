@@ -6,8 +6,8 @@
     <h4 class="text-center"><b>Impossible d'inviter l'usager</b></h4>
     <div class="p-3">
       <% errors.each_with_index do |error, index| %>
-        <% if error.is_a?(CustomServiceError) %>
-          <%= render error, locals: error.attributes %>
+        <% if error.is_a?(TemplatedErrorPresenter) %>
+          <%= render error, **error.locals %>
         <% else %>
           <p><%= error.to_s %></p>
         <% end %>

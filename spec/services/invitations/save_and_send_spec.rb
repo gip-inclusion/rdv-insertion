@@ -124,7 +124,10 @@ describe Invitations::SaveAndSend, type: :service do
       it("is a failure") { is_a_failure }
 
       it "stores an error message" do
-        expect(subject.errors).to include({ :error_type => "no_creneau_available" })
+        expect(subject.errors).to include(
+          an_object_having_attributes(template_name: "no_creneau_available")
+        )
+        expect(subject.errors.first).to be_a(TemplatedErrorPresenter)
       end
 
       context "when we don't check the creneau availability" do

@@ -70,8 +70,8 @@ module Invitations
       return if user.unarchived_organisations.flat_map(&:motif_categories).include?(motif_category)
 
       add_error(
-        message:
-       "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie #{motif_category_name}"
+        "L'usager n'appartient pas ou n'est pas actif" \
+        " dans une organisation qui gère la catégorie #{motif_category_name}"
       )
     end
 
@@ -93,8 +93,8 @@ module Invitations
       end
 
       add_custom_error("Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_name}",
-                       type: "no_follow_up_category",
-                       attributes: {
+                       template_name: "no_follow_up_category",
+                       locals: {
                          organisation_id: organisations.first.id,
                          motif_category_name: motif_category_name
                        })

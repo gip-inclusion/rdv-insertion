@@ -35,7 +35,8 @@ class BaseService
       errors = result.errors
       raise UnexpectedResultBehaviourError unless errors.is_a? Array
 
-      errors << ServiceError.new(exception.message) if exception.message != exception.class.to_s
+      # we add the exception message only if it is a custom message
+      errors << exception.message if exception.message != exception.class.to_s
       result.errors = errors
       result[:success?] = false
       result[:failure?] = true
@@ -52,11 +53,11 @@ class BaseService
   private
 
   def add_error(message)
-    result.errors << ServiceError.new(message)
+    result.errors << ErrorPresenter.new(message)
   end
 
-  def add_custom_error(message, type:, attributes: {})
-    result.errors << CustomServiceError.new(message, type: type, attributes: attributes)
+  def add_custom_error(message, template_name:, locals: {})
+    result.errors << TemplatedErrorPresenter.new(message, template_name: template_name, locals: locals)
   end
 
   def call_service!(service_class, **)
@@ -70,14 +71,11 @@ class BaseService
   def save_record!(record)
     return if record.save
 
-    record.errors.full_messages.each do |message|
-      result.errors << ServiceError.new(message)
-    end
+    result.errors << record.errors.full_messages.to_sentence
     fail!
   end
 
   def fail!(error_message = nil)
-    result.errors << ServiceError.new(error_message) if error_message.present?
     raise FailedServiceError, error_message
   end
 end

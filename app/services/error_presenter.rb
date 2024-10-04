@@ -1,4 +1,4 @@
-class ServiceError
+class ErrorPresenter
   attr_reader :message
 
   def initialize(message)
