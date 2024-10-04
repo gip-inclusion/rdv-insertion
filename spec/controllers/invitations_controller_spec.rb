@@ -149,7 +149,7 @@ describe InvitationsController do
     context "when the service fails" do
       before do
         allow(InviteUser).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: [{ error_type: "generic", message: "some error" }]))
+          .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
       end
 
       it "is not a success" do
