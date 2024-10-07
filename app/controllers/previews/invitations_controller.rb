@@ -111,7 +111,7 @@ module Previews
         custom_sentence: @invitation.custom_sentence,
         invitation_url: @invitation.rdv_solidarites_public_url(with_protocol: false),
         qr_code: @invitation.qr_code,
-        optional_rdv_subscription: @invitation.expireable?
+        optional_rdv_subscription: !@invitation.expireable?
       }
     end
 
