@@ -58,6 +58,12 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
+  def atelier_invitation_reminder
+    mail(
+      subject: "[Rappel]: Participer à un atelier dans le cadre de votre parcours"
+    )
+  end
+
   def atelier_enfants_ados_invitation_reminder
     mail(
       subject: "[Rappel]: Invitation à un #{@rdv_title}"
