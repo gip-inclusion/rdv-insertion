@@ -111,7 +111,7 @@ class InvitationMailer < ApplicationMailer
   end
 
   def set_optional_rdv_subscription
-    @optional_rdv_subscription = @invitation.motif_category.optional_rdv_subscription?
+    @optional_rdv_subscription = @invitation.expires_at.nil?
   end
 
   def set_mandatory_warning

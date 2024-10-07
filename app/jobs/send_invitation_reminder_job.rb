@@ -53,7 +53,7 @@ class SendInvitationReminderJob < ApplicationJob
   def eligible_for_reminder?
     @follow_up.status == "invitation_pending" &&
       first_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
-      first_invitation.expires_at >= 2.days.from_now
+      first_invitation.expires_at.present? && first_invitation.expires_at >= 2.days.from_now
   end
 
   def first_invitation
