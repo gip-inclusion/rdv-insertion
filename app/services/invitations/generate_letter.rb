@@ -24,7 +24,7 @@ module Invitations
       )
     end
 
-    def locals # rubocop:disable Metrics/AbcSize
+    def locals
       {
         invitation: @invitation,
         department: @invitation.department,

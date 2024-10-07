@@ -46,7 +46,8 @@ class CategoryConfiguration < ApplicationRecord
   private
 
   def minimum_invitation_duration
-    return if number_of_days_before_invitations_expire.nil? || number_of_days_before_invitations_expire > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+    return if number_of_days_before_invitations_expire.nil? ||
+              number_of_days_before_invitations_expire > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
 
     errors.add(:base, "Le délai d'expiration de l'invitation doit être supérieur " \
                       "à #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours")
