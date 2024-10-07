@@ -6,5 +6,7 @@ class MigrateOptionalRdvSubscriptionToInvitations < ActiveRecord::Migration[7.1]
       .find_each do |invitation|
       invitation.update!(expires_at: nil)
     end
+
+    drop_column :motif_categories, :optional_rdv_subscription
   end
 end

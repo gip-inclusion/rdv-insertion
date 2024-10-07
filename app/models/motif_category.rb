@@ -1,4 +1,6 @@
 class MotifCategory < ApplicationRecord
+  self.ignored_columns += ["optional_rdv_subscription"]
+
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :name, :short_name
   ].freeze
