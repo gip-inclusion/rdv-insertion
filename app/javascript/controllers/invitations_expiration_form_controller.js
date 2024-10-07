@@ -16,7 +16,7 @@ export default class extends Controller {
 
   toggleInvitationExpiration() {
     this.numberOfDaysTarget.readOnly = !this.enableTarget.checked
-    this.numberOfDaysTarget.value = this.enableTarget.checked ? 1 : null
+    this.numberOfDaysTarget.value = this.enableTarget.checked ? 10 : null
 
     this.element.classList.toggle("disabled", !this.enableTarget.checked)
     this.showIndicator()
