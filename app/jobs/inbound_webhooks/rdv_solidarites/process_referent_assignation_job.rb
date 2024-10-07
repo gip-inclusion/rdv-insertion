@@ -42,9 +42,7 @@ module InboundWebhooks
       end
 
       def attach_agent_to_user
-        return if user.reload.referent_ids.include?(agent.id)
-
-        user.referents << agent
+        ReferentAssignation.find_or_create_by!(agent:, user:)
       end
 
       def remove_agent_from_user
