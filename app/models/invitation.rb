@@ -64,7 +64,7 @@ class Invitation < ApplicationRecord
   end
 
   def expireable?
-    expires_at.nil?
+    expires_at.present?
   end
 
   def expired?
