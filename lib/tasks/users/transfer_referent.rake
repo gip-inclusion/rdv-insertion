@@ -14,7 +14,7 @@ namespace :users do
     service.call
 
     if service.errors.any?
-      puts "Les usagers suivants n'ont pas pu être transférés : #{service.errors { |e| e[:user].id }.join(', ')}"
+      puts "Les usagers suivants n'ont pas pu être transférés : #{service.errors.map { |e| e[:user].id }.join(', ')}"
     else
       puts "Tous les usagers ont été transférés avec succès"
     end
