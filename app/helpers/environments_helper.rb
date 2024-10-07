@@ -2,18 +2,18 @@ module EnvironmentsHelper
   private
 
   def production_env?
-    !staging_env? && !demo_env? && !local_env?
+    ENV["ENVIRONMENT_NAME"] == "production"
   end
 
   def staging_env?
-    ENV["HOST"].include?("staging")
+    ENV["ENVIRONMENT_NAME"] == "staging"
   end
 
   def demo_env?
-    ENV["HOST"].include?("demo")
+    ENV["ENVIRONMENT_NAME"] == "demo"
   end
 
-  def local_env?
+  def development_env?
     Rails.env.development?
   end
 end
