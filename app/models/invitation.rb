@@ -32,6 +32,7 @@ class Invitation < ApplicationRecord
 
   scope :valid, -> { where("expires_at > ?", Time.zone.now).or(where(expires_at: nil)) }
   scope :expired, -> { where.not(expires_at: nil).where("expires_at <= ?", Time.zone.now) }
+  scope :expireable, -> { where.not(expires_at: nil).where("expires_at > ?", Time.zone.now) }
 
   def send_to_user
     case self.format
@@ -53,17 +54,21 @@ class Invitation < ApplicationRecord
   end
 
   def number_of_days_before_expiration
-    if expired?
-      0
-    elsif expires_at.nil?
+    if !expireable?
       nil
+    elsif expired?
+      0
     else
       (expires_at.to_date - Time.zone.now.to_date).to_i
     end
   end
 
+  def expireable?
+    expires_at.nil?
+  end
+
   def expired?
-    return false if expires_at.nil?
+    return false if expireable?
 
     expires_at <= Time.zone.now
   end

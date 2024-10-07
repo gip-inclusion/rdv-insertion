@@ -12,14 +12,14 @@ describe SendPeriodicInvitesJob do
              motif_category: motif_category)
     end
 
-    let!(:motif_category) { create(:motif_category, optional_rdv_subscription: true) }
+    let!(:motif_category) { create(:motif_category) }
     let!(:follow_up) { create(:follow_up, motif_category: motif_category) }
     let!(:invitation) do
       create(
         :invitation,
         follow_up: follow_up,
         created_at: 15.days.ago,
-        expires_at: 1.day.from_now,
+        expires_at: nil,
         organisations: [organisation]
       )
     end

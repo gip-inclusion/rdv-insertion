@@ -97,10 +97,20 @@ module Invitations
         "En cas de problème, tu peux contacter le #{formatted_phone_number}."
     end
 
+    def atelier_reminder_content
+      "RAPPEL : #{user.full_name},\nVous êtes #{user_designation} et bénéficiez d'un accompagnement. " \
+        "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
+        "librement, dans la limite des places disponibles, en cliquant sur ce lien:" \
+        " #{@invitation.rdv_solidarites_public_url(with_protocol: false)}\n" \
+        "#{mandatory_warning_message}" \
+        "#{punishable_warning_message}" \
+        "En cas de problème, contactez le #{formatted_phone_number}."
+    end
+
     ###
 
     def display_time_to_accept_invitation
-      " dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours" unless motif_category.optional_rdv_subscription?
+      " dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours" if invitation.expireable?
     end
 
     def mandatory_warning_message

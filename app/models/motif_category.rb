@@ -18,8 +18,4 @@ class MotifCategory < ApplicationRecord
 
   enum motif_category_type: { autre: "autre", siae: "siae", rsa_orientation: "rsa_orientation",
                               rsa_accompagnement: "rsa_accompagnement" }
-
-  scope :optional_rdv_subscription, lambda { |optional_rdv_subscription = true|
-    where(optional_rdv_subscription: optional_rdv_subscription)
-  }
 end

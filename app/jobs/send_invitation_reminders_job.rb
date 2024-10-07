@@ -24,8 +24,8 @@ class SendInvitationRemindersJob < ApplicationJob
   def follow_ups_with_reminder_needed
     @follow_ups_with_reminder_needed ||=
       FollowUp.invitation_pending
-              .joins(:motif_category)
-              .where(motif_category: MotifCategory.optional_rdv_subscription(false))
+              .joins(:invitations)
+              .where(invitations: Invitation.expireable)
               .where(id: valid_invitations_sent_3_days_ago.pluck(:follow_up_id))
               .where(user_id: User.active.select(:id))
               .distinct
