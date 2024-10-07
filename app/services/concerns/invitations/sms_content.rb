@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module Invitations
   module SmsContent
     extend ActiveSupport::Concern
@@ -130,3 +131,5 @@ module Invitations
     end
   end
 end
+
+# rubocop:enable Metrics/ModuleLength
