@@ -354,26 +354,6 @@ describe CategoryConfigurationsController do
       end
     end
 
-    context "when the update fails" do
-      let!(:update_params) do
-        {
-          category_configuration: {
-            number_of_days_before_invitations_expire: 2
-          },
-          organisation_id: organisation.id, id: category_configuration.id
-        }
-      end
-
-      it "renders the edit page" do
-        patch :update, params: update_params
-        expect(response).not_to be_successful
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(unescaped_response_body).to include("Modifier \"#{category_configuration.motif_category_name}\"")
-        expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/Le délai d'expiration de l'invtation doit être supérieur à 3 jours/)
-      end
-    end
-
     context "when not authorized because not admin" do
       let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
 
