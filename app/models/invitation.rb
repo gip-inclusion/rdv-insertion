@@ -30,7 +30,7 @@ class Invitation < ApplicationRecord
   before_create :assign_uuid
   after_commit :set_follow_up_status
 
-  scope :valid, -> { where("expires_at > ?", Time.zone.now).or(expires_at: nil) }
+  scope :valid, -> { where("expires_at > ?", Time.zone.now).or(where(expires_at: nil)) }
   scope :expired, -> { where.not(expires_at: nil).where("expires_at <= ?", Time.zone.now) }
 
   def send_to_user
