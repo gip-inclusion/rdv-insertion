@@ -13,6 +13,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_user(user_id)
+    Faraday.get(
+      "#{@url}/api/rdvinsertion/users/#{user_id}",
+      {},
+      request_headers
+    )
+  end
+
   def create_user_profiles(user_id, organisation_ids)
     Faraday.post(
       "#{@url}/api/rdvinsertion/user_profiles/create_many",

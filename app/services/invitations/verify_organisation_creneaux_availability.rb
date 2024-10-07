@@ -2,16 +2,17 @@ module Invitations
   class VerifyOrganisationCreneauxAvailability < BaseService
     def initialize(organisation_id:)
       @organisation = Organisation.find(organisation_id)
-      # On prend le premier agent de l'organisation pour les appels à l'API RDVSP
-      Current.agent = @organisation.agents.first
       @invitations_params_without_creneau = []
       @grouped_invitation_params_by_category = []
     end
 
     def call
-      process_invitations
-      process_invitations_params_without_creneau
-      result.grouped_invitation_params_by_category = @grouped_invitation_params_by_category
+      # On prend le premier agent de l'organisation pour les appels à l'API RDVSP
+      @organisation.agents.first.with_rdv_solidarites_session do
+        process_invitations
+        process_invitations_params_without_creneau
+        result.grouped_invitation_params_by_category = @grouped_invitation_params_by_category
+      end
     end
 
     private
