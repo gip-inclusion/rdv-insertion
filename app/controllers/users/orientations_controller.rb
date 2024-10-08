@@ -50,7 +50,10 @@ module Users
     end
 
     def set_organisations
-      @organisations = current_department.organisations.includes(:agents)
+      @organisations = current_department
+                       .organisations
+                       .where(organisation_type: Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+                       .includes(:agents)
     end
 
     def set_agents
