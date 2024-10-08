@@ -22,7 +22,7 @@ class ApplicationJob < ActiveJob::Base
     raise(
       ApplicationJob::FailedServiceError,
       "Calling service #{service_class} failed in #{self.class}:\n" \
-      "Errors: #{service_result.errors.join(', ')}"
+      "Errors: #{service_result.errors.map(&:to_s)}"
     )
   end
 end

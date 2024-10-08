@@ -106,6 +106,7 @@ describe UsersOrganisationsController do
 
         expect(response).to have_http_status(:see_other)
         expect(response.location).to eq(department_user_url(department, user))
+        expect(flash[:error]).to include("L'usager n'est plus lié à rdv-solidarités: [\"Something went wrong\"]")
       end
     end
   end
