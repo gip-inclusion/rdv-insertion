@@ -6,4 +6,5 @@ Sentry.init do |config|
   # of transactions for performance monitoring.
   # We recommend adjusting this value in production
   config.traces_sample_rate = 0.05
+  config.excluded_exceptions += ["WithAdvisoryLock::FailedToAcquireLock"]
 end
