@@ -14,9 +14,9 @@ class AlertMotifCategoryHasChangedJob < ApplicationJob
 
   def alert_message
     @alert_message ||=
-      "⚠️ Le motif #{motif.name} (#{motif.rdv_solidarites_motif_id}) de l'organisation #{motif.organisation.name}" \
-      " (#{motif.organisation.rdv_solidarites_organisation_id}) vient de changer" \
-      " de catégorie malgré la présence de #{motif.rdvs.count} rendez-vous associés."
+      "⚠️ Le motif #{motif.name} (ID rdv-sp: #{motif.rdv_solidarites_motif_id}) de l'organisation" \
+      " #{motif.organisation.name} (ID rdv-sp: #{motif.organisation.rdv_solidarites_organisation_id})" \
+      " vient de changer de catégorie malgré la présence de #{motif.rdvs.count} rendez-vous associés."
   end
 
   def alert_on_mattermost
