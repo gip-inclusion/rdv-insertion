@@ -1,7 +1,21 @@
 <div class="container-fluid mt-5">
   <div class="row justify-content-center mb-5">
-    <div class="col-11 col-lg-5 welcome-title">
-      <h1 class="text-left w-100">Accélérez les rendez&#8209;vous d'insertion et diminuez le taux d'absentéisme</h1>
+    <div class="col-11 col-lg-5 d-flex flex-column mt-auto mb-5">
+      <div class="welcome-title mt-sm-5">
+        <h1 class="text-left w-100">Accélérez les rendez&#8209;vous d'insertion et diminuez le taux d'absentéisme</h1>
+      </div>
+      <div class="d-flex">
+        <div class="me-2">
+          <%= link_to "https://tally.so/r/nro2X2", target: "_blank" do %>
+            <button class="btn btn-blue">Être rappelé</button>
+          <% end %>
+        </div>
+        <div>
+          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/blog", target: "_blank" do %>
+            <button class="btn btn-blue-out">Découvrir un cas utilisateur</button>
+          <% end %>
+        </div>
+      </div>
     </div>
     <div class="col-11 col-lg-5">
       <%= image_tag "illustrations/welcome-illustration.svg", class: "welcome-illustration", alt: "Image d'illustration de prise de rendez-vous" %>
@@ -9,7 +23,7 @@
   </div>
 
   <div class="row justify-content-center">
-    <h3 class="col-10 text-left mb-5">rdv-insertion permet aux départements et aux structures d'insertion d'organiser facilement leurs rendez-vous (individuels, collectifs, entretiens d'embauche, suivi RSA,...)</h3>
+    <h3 class="col-10 text-left mb-5">Rdv-insertion permet aux départements d’organiser facilement leurs rendez-vous avec leurs usagers allocataires du RSA (rendez-vous individuels, collectifs, rendez-vous de suivi ou ateliers).</h3>
   </div>
 
   <div class="row mx-5 mb-4">
@@ -42,28 +56,12 @@
 
   <div class="row justify-content-center card-demo">
     <h2 class="col-10 text-center text-dark-blue bold mb-4">Ça vous intéresse&nbsp;?</h2>
-    <p class="col-10 text-center mb-5">Nous sommes à votre écoute pour adapter notre service à vos besoins et vous aider à le déployer.</p>
-    <div class="d-flex justify-content-between col-10 flex-wrap">
-      <div class="col-10 col-sm-5 mb-5">
-        <p class="text-left">Vous êtes <strong>un conseil départemental</strong> et souhaitez diminuer le délai d'orientation des bénéficiaires du RSA dans votre département et réduire le taux d'absentéisme du rendez-vous d'orientation&nbsp;?</p>
-        <div class="d-flex justify-content-center">
-          <div class="col-10 text-center mt-4">
-            <%= link_to "https://calendly.com/eva-laurent-rdvi/60min", target: "_blank" do %>
-              <button class="btn btn-blue-out w-100 ">Demander une démo</button>
-            <% end %>
-          </div>
-        </div>
-      </div>
-      <div class="col-10 col-sm-5">
-        <p>Vous êtes <strong>une structure d'insertion (SIAE, association ou autre)</strong> et souhaitez utiliser rdv-insertion pour mieux gérer vos agendas et maximiser le taux de présence à vos rendez-vous&nbsp;?</p>
-        <div class="d-flex justify-content-center">
-          <div class="col-10 text-center mt-4">
-            <%= link_to "https://tally.so/r/nro2X2", target: "_blank" do %>
-              <button class="btn btn-blue-out w-100 ">Demander une démo</button>
-            <% end %>
-          </div>
-        </div>
-      </div>
+    <p class="col-10 text-center">Vous êtes un conseil départemental et vous souhaitez en savoir plus sur notre service ?</p>
+    <p class="col-10 text-center mb-4">Notre équipe est à votre écoute pour adapter rdv-insertion à vos besoins.</p>
+    <div class="col-10 text-center">
+      <%= link_to "https://calendly.com/eva-laurent-rdvi/60min", target: "_blank" do %>
+        <button class="btn btn-blue">Demander une démo</button>
+      <% end %>
     </div>
   </div>
 
