@@ -5,7 +5,7 @@ namespace :users do
     This task allows to transfer users from one organisation to another
     with a filter on a specific motif category
     
-    SOURCE_ORGANISATION_ID=1 SOURCE_ORGANISATION_ID=2 SOURCE_MOTIF_CATEGORY_ID=1 bundle exec rails users:transfer_organisation
+    SOURCE_ORGANISATION_ID=1 TARGET_ORGANISATION_ID=2 SOURCE_MOTIF_CATEGORY_ID=1 bundle exec rails users:transfer_organisation
   DESC
   task transfer_organisation: :environment do
     source_organisation_id = ENV['SOURCE_ORGANISATION_ID'].to_i

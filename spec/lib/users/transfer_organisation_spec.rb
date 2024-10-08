@@ -7,7 +7,7 @@ describe Users::TransferOrganisation do
 
   let(:service) do
     described_class.new(
-      source_organisation_id: source_organisation.id, 
+      source_organisation_id: source_organisation.id,
       target_organisation_id: target_organisation.id,
       source_motif_category_id: motif_category.id
     )
@@ -23,17 +23,19 @@ describe Users::TransferOrganisation do
     source_organisation.users << user
     source_organisation.agents << agent
     allow(Users::SyncWithRdvSolidarites).to receive(:call)
-        .with(user: user).and_return(OpenStruct.new(success?: true))
+      .with(user: user).and_return(OpenStruct.new(success?: true))
     allow(RdvSolidaritesApi::DeleteUserProfile).to receive(:call)
-        .with(
-          rdv_solidarites_user_id: user.rdv_solidarites_user_id,
-          rdv_solidarites_organisation_id: source_organisation.rdv_solidarites_organisation_id
-        ).and_return(OpenStruct.new(success?: true))
+      .with(
+        rdv_solidarites_user_id: user.rdv_solidarites_user_id,
+        rdv_solidarites_organisation_id: source_organisation.rdv_solidarites_organisation_id
+      ).and_return(OpenStruct.new(success?: true))
   end
 
   it "calls appropriate services and assigns organisation" do
-    expect(Users::Save).to receive(:call).with(user:, organisation: target_organisation).once.and_call_original
-    expect(Users::RemoveFromOrganisation).to receive(:call).with(user:, organisation: source_organisation).once.and_call_original
+    expect(Users::Save).to receive(:call)
+      .with(user:, organisation: target_organisation).once.and_call_original
+    expect(Users::RemoveFromOrganisation).to receive(:call)
+      .with(user:, organisation: source_organisation).once.and_call_original
 
     subject
 

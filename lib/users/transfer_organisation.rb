@@ -25,7 +25,6 @@ module Users
       UsersOrganisation
         .joins(user: :follow_ups)
         .where(follow_ups: { motif_category: source_motif_category })
-        .where.not(follow_ups: { status: "closed" })
         .where(organisation: source_organisation)
         .find_each do |user_organisation|
         yield user_organisation.user
