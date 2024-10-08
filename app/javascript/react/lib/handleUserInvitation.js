@@ -30,7 +30,7 @@ const handleUserInvitation = async (
   );
   if (!result.success && options.raiseError) {
     Swal.fire(
-      "Impossible d'inviter l'utilisateur",
+      "Impossible d'inviter l'usager",
       result.errors && result.errors.join("<br/><br/>"),
       "error"
     );

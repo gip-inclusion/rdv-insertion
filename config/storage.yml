@@ -13,4 +13,4 @@ scaleway:
   region: fr-par
   # see: https://edgeguides.rubyonrails.org/active_storage_overview.html#s3-service-amazon-s3-and-s3-compatible-apis
   endpoint: https://s3.fr-par.scw.cloud
-  bucket: rdv-insertion-medias-<%= ENV["SENTRY_ENVIRONMENT"] %>
+  bucket: rdv-insertion-medias-<%= ENV["ENVIRONMENT_NAME"] %>

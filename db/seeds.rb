@@ -10,10 +10,13 @@
 # Les seeds de rdv-solidarités permettent de créer ces différents éléments
 # L'agent à utiliser est alors "Alain Sertion"
   # email: "alain.sertion@rdv-insertion-demo.fr",
-  # password: "123456",
+  # password: "Rdvservicepublictest1!",
 # Les rdv_solidarites_organisation_id sont configurées pour match ces seeds, mais il est préférable de les vérifier
 
-
+if Agent.exists?(email: "alain.sertion@rdv-insertion-demo.fr")
+  puts "Les seeds ont déjà été exécutées, il n'est pas nécessaire de les relancer."
+  exit(0)
+end
 
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating departments..."
@@ -24,7 +27,7 @@ drome = Department.create!(
   capital: "Valence",
   region: "Auvergne-Rhône-Alpes",
   pronoun: "la",
-  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/logos/france-travail.png"))
 )
 
 # Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (convene_user: true)
@@ -34,13 +37,15 @@ yonne = Department.create!(
   capital: "Auxerre",
   region: "Bourgogne-Franche-Comté",
   pronoun: "l'",
-  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/logos/france-travail.png"))
 )
 
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating motif categories..."
 orientation_category = MotifCategory.create!(
-  short_name: "rsa_orientation", name: "RSA orientation",
+  name: "RSA orientation",
+  short_name: "rsa_orientation",
+  motif_category_type: "rsa_orientation",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'orientation",
@@ -52,7 +57,9 @@ orientation_category = MotifCategory.create!(
   )
 )
 accompagnement_category = MotifCategory.create!(
-  short_name: "rsa_accompagnement", name: "RSA accompagnement",
+  name: "RSA accompagnement",
+  short_name: "rsa_accompagnement",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -67,6 +74,7 @@ accompagnement_category = MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA accompagnement socio-pro",
   short_name: "rsa_accompagnement_sociopro",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -81,6 +89,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA accompagnement social",
   short_name: "rsa_accompagnement_social",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -95,6 +104,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA signature CER",
   short_name: "rsa_cer_signature",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous de signature de CER",
@@ -108,6 +118,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA suivi",
   short_name: "rsa_follow_up",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous de suivi",
@@ -121,6 +132,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA offre insertion pro",
   short_name: "rsa_insertion_offer",
+  motif_category_type: "rsa_accompagnement",
   optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
@@ -134,6 +146,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA orientation sur plateforme téléphonique",
   short_name: "rsa_orientation_on_phone_platform",
+  motif_category_type: "rsa_orientation",
   template: Template.find_or_create_by!(
     model: "phone_platform",
     rdv_title: "rendez-vous d'orientation téléphonique",
@@ -146,6 +159,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier collectif obligatoire",
   short_name: "rsa_atelier_collectif_mandatory",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "atelier collectif",
@@ -159,6 +173,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier rencontres professionnelles",
   short_name: "rsa_atelier_rencontres_pro",
+  motif_category_type: "rsa_accompagnement",
   optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
@@ -171,6 +186,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier compétences",
   short_name: "rsa_atelier_competences",
+  motif_category_type: "rsa_accompagnement",
   optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
@@ -183,6 +199,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Main Tendue",
   short_name: "rsa_main_tendue",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "entretien de main tendue",
@@ -196,6 +213,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA SPIE",
   short_name: "rsa_spie",
+  motif_category_type: "rsa_accompagnement",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
@@ -210,6 +228,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Information d'intégration",
   short_name: "rsa_integration_information",
+  motif_category_type: "autre",
   template: Template.find_or_create_by!(
     model: "standard",
     rdv_title: "rendez-vous d'information",
@@ -295,7 +314,7 @@ drome2_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 2,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
-  organisation_type: "conseil_departemental"
+  organisation_type: "france_travail"
 )
 
 CategoryConfiguration.create!(
@@ -330,7 +349,7 @@ yonne_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 3,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
-  organisation_type: "conseil_departemental"
+  organisation_type: "siae"
 )
 
 CategoryConfiguration.create!(
@@ -350,6 +369,10 @@ MessagesConfiguration.create!(
   organisation: yonne_organisation
 )
 
+OrientationType.create!(casf_category: "social", name: "Sociale")
+OrientationType.create!(casf_category: "pro", name: "Professionnelle")
+OrientationType.create!(casf_category: "socio_pro", name: "Socio-professionnelle")
+
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating agent and motifs..."
 # Faking Webhooks entries (for avoiding resending them from rdv solidarites manually), update ids from rdv-s if rdv solidarite seed is changing
@@ -364,10 +387,31 @@ agent = Agent.create!(
   last_webhook_update_received_at: Time.zone.now
 )
 
-agent.organisations << drome1_organisation
-agent.organisations << drome2_organisation
-agent.organisations << yonne_organisation
-agent.save!
+agent.update_column(:super_admin, true)
+
+AgentRole.create!(agent:, organisation: drome1_organisation, access_level: "admin")
+AgentRole.create!(agent:, organisation: drome2_organisation, access_level: "admin")
+AgentRole.create!(agent:, organisation: yonne_organisation, access_level: "admin")
+
+User.create!(
+  rdv_solidarites_user_id: 1,
+  email: "jean.rsavalence@testinvitation.fr",
+  first_name: "Jean",
+  last_name: "RSAValence",
+  phone_number: "0601020304",
+  created_from_structure: drome1_organisation,
+  created_through: "rdv_insertion_api"
+)
+
+User.create!(
+  rdv_solidarites_user_id: 2,
+  email: "jean.rsaAuxerre@testinvitation.fr",
+  address: "12 Rue Joubert, Auxerre, 89000",
+  first_name: "Jean",
+  last_name: "RSAAuxerre",
+  created_from_structure: yonne_organisation,
+  created_through: "rdv_insertion_api"
+)
 
 Motif.create!(
   rdv_solidarites_motif_id: 1,
@@ -448,4 +492,12 @@ Motif.create!(
   follow_up: false
 )
 
-puts "Done!"
+# --------------------------------------------------------------------------------------------------------------------
+puts "Creating stats..."
+
+Stat.create!(statable_type: "Department")
+Stat.create!(statable: yonne)
+Stat.create!(statable: drome)
+Stat.create!(statable: yonne_organisation)
+Stat.create!(statable: drome1_organisation)
+Stat.create!(statable: drome2_organisation)

@@ -17,7 +17,7 @@ const trackUserListComposition = async (users) => {
 
     window._mtm.push(payload)
   } catch (error) {
-    console.warn("Impossible de tracker la composition de la liste d'utilisateurs", error);
+    console.warn("Impossible de tracker la composition de la liste des usagers", error);
   }
 };
 

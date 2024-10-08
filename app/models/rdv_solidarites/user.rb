@@ -9,5 +9,15 @@ module RdvSolidarites
     def deleted?
       email&.ends_with?("@deleted.rdv-solidarites.fr")
     end
+
+    def organisation_ids
+      @attributes[:user_profiles].map do |user_profile_attributes|
+        user_profile_attributes.dig(:organisation, :id)
+      end.compact
+    end
+
+    def user_profiles
+      @attributes[:user_profiles].to_a
+    end
   end
 end

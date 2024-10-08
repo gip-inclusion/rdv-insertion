@@ -23,12 +23,12 @@ const createInvitationLetter = async (
     const result = await response.json();
     if (result.errors[0] === "Le format de l'adresse est invalide") {
       Swal.fire({
-        title: "Impossible d'inviter l'utilisateur",
+        title: "Impossible d'inviter l'usager",
         html: "L'adresse n'est pas complète ou elle n'est pas enregistrée correctement",
         icon: "error",
       });
     } else {
-      Swal.fire("Impossible d'inviter l'utilisateur", result.errors[0], "error");
+      Swal.fire("Impossible d'inviter l'usager", result.errors[0], "error");
     }
     return result;
   }

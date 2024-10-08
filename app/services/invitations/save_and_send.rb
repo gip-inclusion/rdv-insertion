@@ -34,7 +34,7 @@ module Invitations
       return if retrieve_creneau_availability.creneau_availability
 
       fail!(
-        "<strong>Il n'y a plus de créneaux disponibles</strong> pour inviter cet utilisateur. " \
+        "<strong>Il n'y a plus de créneaux disponibles</strong> pour inviter cet usager. " \
         "<br/><br/>" \
         "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
         "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations." \

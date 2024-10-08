@@ -5,7 +5,7 @@ class RefreshOutOfDateFollowUpStatusesJob < ApplicationJob
       @follow_up_ids << follow_up.id if follow_up.status != follow_up.set_status.to_s
     end
 
-    notify_on_mattermost if production_env?
+    notify_on_mattermost
     RefreshFollowUpStatusesJob.perform_later(@follow_up_ids)
   end
 
