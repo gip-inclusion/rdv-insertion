@@ -123,7 +123,7 @@ describe Invitations::SaveAndSend, type: :service do
 
       it("is a failure") { is_a_failure }
 
-      it "stores an error message" do
+      it "stores a templated error message" do
         expect(subject.errors).to include(
           an_object_having_attributes(
             message: "Il n'y a plus de créneaux disponibles pour inviter cet usager",
