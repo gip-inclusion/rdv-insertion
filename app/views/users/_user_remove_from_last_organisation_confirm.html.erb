@@ -11,7 +11,7 @@
 
     <% motif_categories_in_this_org = user.motif_categories & organisation.motif_categories %>
     <% if motif_categories_in_this_org.any? %>
-      <p>Cet utilisateur a des suivis en cours dans cette organisation :</p>
+      <p>Cet usager a des suivis en cours dans cette organisation :</p>
       <ul class="mt-2">
         <% motif_categories_in_this_org.each do |motif_category| %>
           <li><b><%= motif_category.name %></b> - <%= I18n.t("activerecord.attributes.follow_up.statuses.#{user.follow_up_for(motif_category).status}") %></li>

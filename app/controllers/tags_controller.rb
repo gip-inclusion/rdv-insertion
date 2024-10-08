@@ -10,6 +10,8 @@ class TagsController < ApplicationController
     @organisation.tags << tag
 
     redirect_to organisation_category_configurations_path(@organisation)
+  rescue ActiveRecord::ActiveRecordError => e
+    turbo_stream_display_error_modal(e.record.errors.full_messages)
   end
 
   def destroy

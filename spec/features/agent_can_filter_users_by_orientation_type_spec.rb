@@ -34,4 +34,27 @@ describe "Agents can sort users by orientation on index page", :js do
     expect(page).to have_no_content(user2.first_name)
     expect(page).to have_no_content(user3.first_name)
   end
+
+  context "with orientations for user that are no longer in current org" do
+    let!(:user4) { create(:user, first_name: "Diane", last_name: "Dujardin") }
+    let!(:users_organisation4) do
+      create(:users_organisation, user: user4, organisation: organisation2, created_at: 3.days.ago)
+    end
+
+    let!(:organisation2) { create(:organisation) }
+
+    let!(:orientation2) do
+      create(:orientation, organisation: organisation2, user: user4, orientation_type: orientation_type2)
+    end
+    let(:orientation_type2) { create(:orientation_type, name: "Coucou", casf_category: "pro") }
+
+    before do
+      create(:users_organisation, user: user2, organisation: organisation2)
+      visit organisation_users_path(organisation)
+    end
+
+    it "does not show Coucou in orientation filters" do
+      expect(page).to have_no_content(orientation_type2.name)
+    end
+  end
 end

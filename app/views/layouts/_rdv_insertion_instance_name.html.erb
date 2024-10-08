@@ -1,7 +1,13 @@
 <% if rdv_insertion_instance_name.present? %>
   <div class="rdv-insertion-instance-name-wrapper right" aria-hidden=true>
     <div class="rdv-insertion-instance-name">
-      <a><%= rdv_insertion_instance_name %></a>
+      <% if ENV["ENV_BANNER_URL"] %>
+        <a href="<%= ENV["ENV_BANNER_URL"] %>" target="_blank">
+          <%= rdv_insertion_instance_name %>
+        </a>
+      <% else %>
+        <span><%= rdv_insertion_instance_name %></span>
+      <% end %>
     </div>
   </div>
 <% end %>

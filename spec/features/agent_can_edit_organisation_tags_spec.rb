@@ -20,5 +20,26 @@ describe "Agents can edit organisation tags", :js do
       expect(tag).to have_content(tag_value)
       expect(organisation.reload.tags.first.value).to eq(tag_value)
     end
+
+    it "allows to delete the organisation tags" do
+      organisation.tags << Tag.create(value: tag_value)
+
+      visit organisation_category_configurations_path(organisation)
+      find("#tag_#{organisation.tags.first.id} a").click
+      find_by_id("confirm-button").click
+      expect(page).to have_no_selector("#tag_#{organisation.tags.first.id}")
+
+      expect(organisation.reload.tags).to be_empty
+    end
+
+    it "displays an error message when tag already exist in this organisation" do
+      organisation.tags << Tag.create(value: tag_value)
+
+      visit organisation_category_configurations_path(organisation)
+      page.fill_in "tag_value", with: tag_value
+      click_button("Créer le tag")
+
+      expect(page).to have_content("Tag est déjà utilisé")
+    end
   end
 end

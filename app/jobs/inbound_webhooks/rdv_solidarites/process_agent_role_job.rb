@@ -1,9 +1,14 @@
 module InboundWebhooks
   module RdvSolidarites
-    class ProcessAgentRoleJob < ApplicationJob
+    class ProcessAgentRoleJob < LockedAndOrderedJobBase
+      def self.lock_key(data, _meta)
+        "#{name}:#{data.dig(:agent, :id)}:#{data.dig(:organisation, :id)}"
+      end
+
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
+
         return if organisation.blank? || @data[:access_level] == "intervenant"
 
         # This is necessary when the agent role has been created through rdv-i without the rdv-s record

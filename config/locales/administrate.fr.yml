@@ -5,7 +5,6 @@ fr:
     field_hints:
       motif_category:
         short_name: "en minuscule, sans accents, sans espace. Par exemple, \"RDV Orientation\" devient \"rdv_orientation\""
-        leads_to_orientation: "Sert pour les stats ; si cochée, les RDV de cette catégorie sont considérés comme des RDV d'orientation"
         optional_rdv_subscription: "Si cochée, pas de rappels envoyés pour les invitations et les invitations ne sont pas invalidées"
       department:
         pronoun: "en minuscule - par exemple, \"la\" pour \"la Drôme\""

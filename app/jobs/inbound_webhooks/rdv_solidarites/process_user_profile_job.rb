@@ -1,6 +1,10 @@
 module InboundWebhooks
   module RdvSolidarites
-    class ProcessUserProfileJob < ApplicationJob
+    class ProcessUserProfileJob < LockedAndOrderedJobBase
+      def self.lock_key(data, _meta)
+        "#{name}:#{data.dig(:user, :id)}:#{data.dig(:organisation, :id)}"
+      end
+
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
@@ -49,7 +53,7 @@ module InboundWebhooks
       end
 
       def attach_user_to_org
-        user.organisations << organisation unless user.reload.belongs_to_org?(organisation.id)
+        UsersOrganisation.find_or_create_by!(user:, organisation:)
       end
 
       def remove_user_from_organisation
