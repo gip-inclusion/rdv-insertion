@@ -35,7 +35,7 @@ module Invitations
       return if invitation.format_postal?
       return unless invitation_already_sent_today?
 
-      add_error("Une invitation #{invitation.format} a déjà été envoyée aujourd'hui à cet usager")
+      result.errors << "Une invitation #{invitation.format} a déjà été envoyée aujourd'hui à cet usager"
     end
 
     def invitation_already_sent_today?
@@ -45,46 +45,44 @@ module Invitations
     def validate_user_title_presence
       return if user.title?
 
-      add_error("La civilité de la personne doit être précisée pour pouvoir envoyer une invitation")
+      result.errors << "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation"
     end
 
     def validate_organisations_are_not_from_different_departments
       return if organisations.map(&:department_id).uniq == [department_id]
 
-      add_error("Les organisations ne peuvent pas être liés à des départements différents de l'invitation")
+      result.errors << "Les organisations ne peuvent pas être liés à des départements différents de l'invitation"
     end
 
     def validate_no_rdv_pending_taken_today
       return if follow_up.participations.none?(&:pending?)
 
-      add_error("Cet usager a déjà un rendez-vous à venir pour ce motif")
+      result.errors << "Cet usager a déjà un rendez-vous à venir pour ce motif"
     end
 
     def validate_it_expires_in_more_than_5_days
       return if expires_at > 5.days.from_now
 
-      add_error("La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours")
+      result.errors << "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours"
     end
 
     def validate_user_belongs_to_an_org_linked_to_motif_category
       return if user.unarchived_organisations.flat_map(&:motif_categories).include?(motif_category)
 
-      add_error(
-        "L'usager n'appartient pas ou n'est pas actif" \
-        " dans une organisation qui gère la catégorie #{motif_category_name}"
-      )
+      result.errors << "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie " \
+                       "#{motif_category_name}"
     end
 
     def validate_motif_of_this_category_is_defined_in_organisations
       return if organisations_motifs.map(&:motif_category).include?(motif_category)
 
-      add_error("Aucun motif de la catégorie #{motif_category_name} n'est défini sur RDV-Solidarités")
+      result.errors << "Aucun motif de la catégorie #{motif_category_name} n'est défini sur RDV-Solidarités"
     end
 
     def validate_referents_are_assigned
       return if user.referent_ids.any?
 
-      add_error("Un référent doit être assigné au bénéficiaire pour les rdvs avec référents")
+      result.errors << "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
     end
 
     def validate_follow_up_motifs_are_defined
@@ -92,7 +90,7 @@ module Invitations
         motif.follow_up? && motif.motif_category == motif_category
       end
 
-      add_custom_error("Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_name}",
+      add_custom_error(message: "Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_name}",
                        template_name: "no_follow_up_category",
                        locals: {
                          organisation_id: organisations.first.id,
@@ -112,9 +110,9 @@ module Invitations
 
       organisation_names = organisations_without_phone_number.map(&:name).to_sentence(last_word_connector: " et ")
       if organisations_without_phone_number.size > 1
-        add_error("Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués.")
+        result.errors << "Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués."
       elsif organisations_without_phone_number.size == 1
-        add_error("Le téléphone de contact de l'organisation #{organisation_names} doit être indiqué.")
+        result.errors << "Le téléphone de contact de l'organisation #{organisation_names} doit être indiqué."
       end
     end
   end

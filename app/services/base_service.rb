@@ -52,12 +52,8 @@ class BaseService
 
   private
 
-  def add_error(message)
-    result.errors << ErrorPresenter.new(message)
-  end
-
-  def add_custom_error(message, template_name:, locals: {})
-    result.errors << TemplatedErrorPresenter.new(message, template_name: template_name, locals: locals)
+  def add_custom_error(message:, template_name:, locals: {})
+    result.errors << TemplatedErrorPresenter.new(message: message, template_name: template_name, locals: locals)
   end
 
   def call_service!(service_class, **)

@@ -125,7 +125,10 @@ describe Invitations::SaveAndSend, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(template_name: "no_creneau_available")
+          an_object_having_attributes(
+            message: "Il n'y a plus de créneaux disponibles pour inviter cet usager",
+            template_name: "no_creneau_available"
+          )
         )
         expect(subject.errors.first).to be_a(TemplatedErrorPresenter)
       end

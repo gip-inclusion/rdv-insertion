@@ -57,9 +57,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "Le téléphone de contact de l'organisation #{organisation.name} doit être indiqué."
-          )
+          "Le téléphone de contact de l'organisation #{organisation.name} doit être indiqué."
         )
       end
     end
@@ -71,9 +69,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "Les organisations ne peuvent pas être liés à des départements différents de l'invitation"
-          )
+          "Les organisations ne peuvent pas être liés à des départements différents de l'invitation"
         )
       end
     end
@@ -89,9 +85,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "Cet usager a déjà un rendez-vous à venir pour ce motif"
-          )
+          "Cet usager a déjà un rendez-vous à venir pour ce motif"
         )
       end
     end
@@ -103,9 +97,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation"
-          )
+          "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation"
         )
       end
     end
@@ -117,9 +109,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours"
-          )
+          "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours"
         )
       end
     end
@@ -133,10 +123,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "L'usager n'appartient pas ou n'est pas actif dans" \
-                     " une organisation qui gère la catégorie RSA orientation"
-          )
+          "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie RSA orientation"
         )
       end
 
@@ -147,10 +134,7 @@ describe Invitations::Validate, type: :service do
 
         it "stores an error message" do
           expect(subject.errors).to include(
-            an_object_having_attributes(
-              message: "L'usager n'appartient pas ou n'est pas actif dans" \
-                       " une organisation qui gère la catégorie RSA orientation"
-            )
+            "L'usager n'appartient pas ou n'est pas actif dans une organisation qui gère la catégorie RSA orientation"
           )
         end
       end
@@ -163,9 +147,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "Aucun motif de la catégorie RSA orientation n'est défini sur RDV-Solidarités"
-          )
+          "Aucun motif de la catégorie RSA orientation n'est défini sur RDV-Solidarités"
         )
       end
     end
@@ -178,11 +160,7 @@ describe Invitations::Validate, type: :service do
       end
 
       it "stores the error" do
-        expect(subject.errors).to include(
-          an_object_having_attributes(
-            message: "Une invitation sms a déjà été envoyée aujourd'hui à cet usager"
-          )
-        )
+        expect(subject.errors).to include("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
       end
 
       context "when the format is postal" do
@@ -213,9 +191,7 @@ describe Invitations::Validate, type: :service do
 
         it "stores an error message" do
           expect(subject.errors).to include(
-            an_object_having_attributes(
-              message: "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
-            )
+            "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
           )
         end
       end
@@ -225,11 +201,14 @@ describe Invitations::Validate, type: :service do
 
         it("is a failure") { is_a_failure }
 
-        it "stores an error message" do
+        it "stores a templated error message" do
           expect(subject.errors).to include(
-            an_object_having_attributes(template_name: "no_follow_up_category",
-                                        locals: { motif_category_name: "RSA orientation",
-                                                  organisation_id: organisation.id })
+            an_object_having_attributes(
+              message: "Aucun motif de suivi n'a été défini pour la catégorie #{category_orientation.name}",
+              template_name: "no_follow_up_category",
+              locals: { motif_category_name: "RSA orientation",
+                        organisation_id: organisation.id }
+            )
           )
         end
       end

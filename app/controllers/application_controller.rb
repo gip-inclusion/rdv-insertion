@@ -36,8 +36,8 @@ class ApplicationController < ActionController::Base
     return if sync.success?
 
     respond_to do |format|
-      format.turbo_stream { flash.now[:error] = "L'usager n'est plus lié à rdv-solidarités: #{sync.errors}" }
-      format.json { render json: { errors: sync.errors }, status: :unprocessable_entity }
+      format.turbo_stream { flash.now[:error] = "L'usager n'est plus lié à rdv-solidarités: #{sync.errors.join(', ')}" }
+      format.json { render json: { errors: sync.errors.join(", ") }, status: :unprocessable_entity }
     end
   end
 end

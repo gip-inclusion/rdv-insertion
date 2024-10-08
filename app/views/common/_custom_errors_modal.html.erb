@@ -9,7 +9,7 @@
         <% if error.is_a?(TemplatedErrorPresenter) %>
           <%= render error, **error.locals %>
         <% else %>
-          <p><%= error.to_s %></p>
+          <p><%= error %></p>
         <% end %>
         <% if index < errors.size - 1 %>
           <hr class="mx-auto w-50">
