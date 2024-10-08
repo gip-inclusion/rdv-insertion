@@ -13,14 +13,14 @@ class AlertMotifCategoryHasChangedJob < ApplicationJob
   private
 
   def alert_message
-    @alert_message ||= "
-      ⚠️ Le motif #{motif.name} (#{motif.id}) vient de changer
-      de catégory malgré la présence de #{motif.rdvs.count} associés.
-    "
+    @alert_message ||=
+      "⚠️ Le motif #{motif.name} (ID rdv-sp: #{motif.rdv_solidarites_motif_id}) de l'organisation" \
+      " #{motif.organisation.name} (ID rdv-sp: #{motif.organisation.rdv_solidarites_organisation_id})" \
+      " vient de changer de catégorie malgré la présence de #{motif.rdvs.count} rendez-vous associés."
   end
 
   def alert_on_mattermost
-    MattermostClient.send_to_notif_channel(alert_message)
+    MattermostClient.send_to_private_channel(alert_message)
   end
 
   def alert_on_sentry
