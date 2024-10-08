@@ -6,4 +6,15 @@ Sentry.init do |config|
   # of transactions for performance monitoring.
   # We recommend adjusting this value in production
   config.traces_sample_rate = 0.05
+
+  config.before_send = lambda do |event, _hint|
+    # We filter sensitive data from Sidekiq arguments
+    sidekiq_args = event.contexts.dig(:sidekiq, "args")
+    if sidekiq_args
+      sidekiq_args.each do |arg|
+        Sidekiq::ArgumentsFilter.filter_arguments!(arg["arguments"]) if arg.is_a?(Hash) && arg["arguments"]
+      end
+    end
+    event
+  end
 end
