@@ -18,8 +18,8 @@ class TemplatedErrorPresenter
   def render(view_context)
     view_context.render(partial_path, **@locals)
   rescue ActionView::MissingTemplate, ActionView::Template::Error => e
-    # Fallback sur un message simple
-    "<p>#{@message}</p>".html_safe # rubocop:disable Rails/OutputSafety
     Sentry.capture_exception(e)
+    # Fallback sur un message simple
+    view_context.content_tag(:p, @message)
   end
 end
