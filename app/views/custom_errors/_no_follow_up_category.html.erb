@@ -1,0 +1,12 @@
+<%# locals: (motif_category_name:, organisation_id:) %>
+<p>
+  La catégorie <%= motif_category_name %> a été configurée en « RDV de suivi (avec référent) » sur rdv-insertion.
+</p>
+<p>
+  Pour inviter des usagers à ces rendez-vous, créez un motif de suivi dans les <%= link_to("paramètres de votre organisation sur RDV-Solidarités",
+              "https://www.rdv-solidarites.fr/admin/organisations/#{organisation_id}/motifs",
+              target: "_blank", class: "text-decoration-underline") %>.
+</p>
+<p>
+  Besoin d’aide ? <a href="https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/orientation-des-brsa/assigner-un-referent-de-parcours-et-faciliter-la-prise-de-rdv-pour-les-rdv-de-suivi" target="_blank" class="text-decoration-underline">Consulter notre guide d’utilisation</a>
+</p>

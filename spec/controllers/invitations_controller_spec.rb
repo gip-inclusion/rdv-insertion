@@ -161,7 +161,7 @@ describe InvitationsController do
       it "renders the errors" do
         post :create, params: create_params
         expect(response).not_to be_successful
-        expect(response.parsed_body["errors"]).to eq(["some error"])
+        expect(response.parsed_body["turbo_stream_html"]).to include('action="replace"')
       end
     end
   end

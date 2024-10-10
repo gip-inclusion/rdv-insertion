@@ -1,0 +1,25 @@
+<%= render "common/remote_modal" do %>
+  <div>
+    <div class="text-center mb-3">
+      <%= image_tag "illustrations/error-line.svg", alt: "Illustration d'un message d'erreur", class: "mb-3" %>
+    </div>
+    <h4 class="text-center"><b>Impossible d'inviter l'usager</b></h4>
+    <div class="p-3">
+      <% errors.each_with_index do |error, index| %>
+        <% if error.is_a?(TemplatedErrorPresenter) %>
+          <%= error.render(self) %>
+        <% else %>
+          <p><%= error %></p>
+        <% end %>
+        <% if index < errors.size - 1 %>
+          <hr class="mx-auto w-50">
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center px-3">
+    <button type="button" id="confirm-button" class="btn btn-primary me-2" data-bs-dismiss="modal">
+      OK
+    </button>
+  </div>
+<% end %>
