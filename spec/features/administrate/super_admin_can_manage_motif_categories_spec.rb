@@ -65,8 +65,6 @@ describe "Super admin can manage motif categories" do
       within("tr.js-table-row") { expect(page).to have_css("td.cell-data", text: motif.name) }
       expect(page).to have_css("dt", id: "motif_category_type", text: "TYPE DE CATÉGORIE")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.motif_category_type)
-      expect(page).to have_css("dt", id: "optional_rdv_subscription", text: "PRISE DE RDV FACULTATIVE")
-      expect(page).to have_css("dd", class: "attribute-data", text: motif_category.optional_rdv_subscription)
     end
 
     it "can navigate to a motif category edit page" do
@@ -99,9 +97,6 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_css("label[for=\"motif_category_template_id-selectized\"]", text: "Template")
       expect(page).to have_field("motif_category_template_id-selectized")
       expect(page).to have_field("motif_category_motif_category_type-selectized")
-      expect(page).to have_css(
-        "label[for=\"motif_category_optional_rdv_subscription\"]", text: "Prise de rdv facultative"
-      )
       expect(page).to have_button("Enregistrer")
 
       fill_in "motif_category_name", with: "France Travail orientation"

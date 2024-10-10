@@ -4,5 +4,4 @@ fr:
       motif_category: Catégorie de motifs
     attributes:
       motif_category:
-        optional_rdv_subscription: Prise de rdv facultative
         motif_category_type: Type de catégorie

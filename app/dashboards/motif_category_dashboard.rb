@@ -16,7 +16,6 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
       searchable: false,
       collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
     ),
-    optional_rdv_subscription: Field::Boolean,
     follow_ups: Field::HasMany,
     rdv_solidarites_motif_category_id: Field::Number,
     short_name: Field::String,
@@ -45,7 +44,6 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     template
     motif_category_type
     motifs
-    optional_rdv_subscription
     created_at
     updated_at
   ].freeze
@@ -58,13 +56,11 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     short_name
     template
     motif_category_type
-    optional_rdv_subscription
   ].freeze
 
   FORM_ATTRIBUTES_EDIT = %i[
     template
     motif_category_type
-    optional_rdv_subscription
   ].freeze
 
   # COLLECTION_FILTERS

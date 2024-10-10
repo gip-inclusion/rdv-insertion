@@ -11,7 +11,7 @@ class InvitationPreview < ActionMailer::Preview
                       .send("#{motif_category.template_model}_invitation")
     end
 
-    next if motif_category.optional_rdv_subscription?
+    next unless invitation.expireable?
 
     define_method "#{motif_category.short_name}_rappel" do
       InvitationMailer.with(invitation: invitation, user: invitation.user)

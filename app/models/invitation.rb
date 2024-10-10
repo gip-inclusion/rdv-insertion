@@ -18,7 +18,7 @@ class Invitation < ApplicationRecord
 
   attr_accessor :content
 
-  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :expires_at, presence: true
+  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
   delegate :motif_category, :motif_category_name, to: :follow_up
@@ -30,8 +30,10 @@ class Invitation < ApplicationRecord
   before_create :assign_uuid
   after_commit :set_follow_up_status
 
-  scope :valid, -> { where("expires_at > ?", Time.zone.now) }
+  scope :valid, -> { where("expires_at > ?", Time.zone.now).or(never_expire) }
   scope :expired, -> { where("expires_at <= ?", Time.zone.now) }
+  scope :expireable, -> { where.not(expires_at: nil) }
+  scope :never_expire, -> { where(expires_at: nil) }
 
   def send_to_user
     case self.format
@@ -53,6 +55,8 @@ class Invitation < ApplicationRecord
   end
 
   def number_of_days_before_expiration
+    return if never_expires?
+
     if expired?
       0
     else
@@ -60,8 +64,12 @@ class Invitation < ApplicationRecord
     end
   end
 
+  def never_expires? = expires_at.nil?
+
+  def expireable? = expires_at.present?
+
   def expired?
-    expires_at <= Time.zone.now
+    expireable? && expires_at <= Time.zone.now
   end
 
   def expire!

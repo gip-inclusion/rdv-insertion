@@ -31,12 +31,14 @@
       <% end %>
       <%= render "common/attribute_input", f:f, attribute: :invitation_formats, as: :collection_check_boxes, collection: [["sms", "SMS"], ["email", "Email"], ["postal", "Courrier"]], mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :convene_user, as: :boolean, mandatory: true %>
-      <%= render "common/attribute_input", f:f, attribute: :number_of_days_before_invitations_expire, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :rdv_with_referents, as: :boolean, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :invite_to_user_organisations_only, as: :boolean, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :phone_number, mandatory: false %>
     </div>
 
+    <div class="row my-4">
+      <%= render "category_configurations/invitations_expiration_form", f: f, category_configuration: category_configuration %>
+    </div>
     <div class="row my-4">
       <%= render "category_configurations/external_email_notification_form", f: f, category_configuration: category_configuration %>
     </div>

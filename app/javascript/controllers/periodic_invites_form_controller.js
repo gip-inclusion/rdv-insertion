@@ -16,6 +16,11 @@ export default class extends Controller {
     this.periodicityTypeChanged()
   }
 
+  disable() {
+    this.enableTarget.checked = false
+    this.togglePeriodicInvites()
+  }
+
   periodicityTypeChanged() {
     if (this.typeRadioTargets[0].checked) {
       this.numberOfDaysInputChanged()
@@ -25,6 +30,8 @@ export default class extends Controller {
   }
 
   togglePeriodicInvites() {
+    if (this.enableTarget.checked) this.disableInvitationsExpiration()
+
     this.numberOfDaysTarget.readOnly = !this.enableTarget.checked
     this.numberOfDaysTarget.value = this.enableTarget.checked ? this.constructor.minValueForNumberOfDays : null
     this.dayOfTheMonthTarget.readOnly = !this.enableTarget.checked
@@ -77,6 +84,17 @@ export default class extends Controller {
       this.nextInviteIndicatorTarget.innerHTML = `Une invitation sera envoyée le ${this.dayOfTheMonthTarget.value} de chaque mois.`
     } else if (this.enable.checked) {
       this.nextInviteIndicatorTarget.innerHTML = "Vous devez configurer la récurrence afin d'activer les invitations périodiques."
+    }
+  }
+
+  disableInvitationsExpiration() {
+    const invitationsExpirationFormController = this.application.getControllerForElementAndIdentifier(
+      document.querySelector("[data-controller=\"invitations-expiration-form\"]"), 
+      "invitations-expiration-form"
+    );
+
+    if (invitationsExpirationFormController) {
+      invitationsExpirationFormController.disable();
     }
   }
 }

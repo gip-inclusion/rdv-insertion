@@ -212,7 +212,6 @@ tables:
       - rdv_solidarites_motif_category_id
       - created_at
       - updated_at
-      - optional_rdv_subscription
 
   - table_name: motifs
     anonymized_column_names:

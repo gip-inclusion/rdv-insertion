@@ -21,11 +21,19 @@
         <p class="mb-2"><%= @category_configuration.invitation_formats.map { |format| I18n.t("invitation_formats.#{format}") }.join(", ") %></p>
     </div>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :convene_user %>
-    <%= render "common/attribute_display", record: @category_configuration, attribute: :number_of_days_before_invitations_expire %>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :rdv_with_referents %>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :invite_to_user_organisations_only %>
     <%= render "common/attribute_display", record: @category_configuration, attribute: :phone_number %>
   </div>
+
+  <h3>Durée de validité des liens d'invitation</h3>
+  <p class="mt-3">
+    <% if @category_configuration.number_of_days_before_invitations_expire.present? %>
+      Les liens d'invitation expireront <%= @category_configuration.number_of_days_before_invitations_expire %> jours après l'envoi de l'invitation.
+    <% else %>
+      Aucune limite définie, les invitations n'expireront jamais.
+    <% end %>
+  </p>
 
   <h3>Notifications tierces</h3>
   <ul class="mt-3">

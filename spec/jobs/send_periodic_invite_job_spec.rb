@@ -14,9 +14,10 @@ describe SendPeriodicInviteJob do
       create(:category_configuration,
              organisation: organisation,
              number_of_days_between_periodic_invites: 15,
+             number_of_days_before_invitations_expire: nil,
              motif_category: motif_category)
     end
-    let!(:motif_category) { create(:motif_category, optional_rdv_subscription: false) }
+    let!(:motif_category) { create(:motif_category) }
     let!(:follow_up) { create(:follow_up, motif_category: motif_category) }
     let!(:invitation) do
       create(
@@ -41,13 +42,7 @@ describe SendPeriodicInviteJob do
           trigger: "periodic"
         )
 
-        expect(invitation.expires_at.end_of_day).to eq(
-          category_configuration
-            .number_of_days_before_invitations_expire
-            .days
-            .from_now
-            .end_of_day
-        )
+        expect(invitation.expires_at).to eq(category_configuration.number_of_days_before_invitations_expire)
       end
 
       it "sends invitation" do

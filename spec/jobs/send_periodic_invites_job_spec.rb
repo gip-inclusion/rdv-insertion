@@ -9,17 +9,18 @@ describe SendPeriodicInvitesJob do
       create(:category_configuration,
              organisation: organisation,
              number_of_days_between_periodic_invites: 15,
+             number_of_days_before_invitations_expire: nil,
              motif_category: motif_category)
     end
 
-    let!(:motif_category) { create(:motif_category, optional_rdv_subscription: true) }
+    let!(:motif_category) { create(:motif_category) }
     let!(:follow_up) { create(:follow_up, motif_category: motif_category) }
     let!(:invitation) do
       create(
         :invitation,
         follow_up: follow_up,
         created_at: 15.days.ago,
-        expires_at: 1.day.from_now,
+        expires_at: nil,
         organisations: [organisation]
       )
     end
@@ -62,6 +63,7 @@ describe SendPeriodicInvitesJob do
           create(:category_configuration,
                  organisation: organisation,
                  day_of_the_month_periodic_invites: Time.zone.today.day,
+                 number_of_days_before_invitations_expire: nil,
                  motif_category: motif_category)
         end
 
@@ -80,6 +82,7 @@ describe SendPeriodicInvitesJob do
             create(:category_configuration,
                    organisation: organisation,
                    day_of_the_month_periodic_invites: Time.zone.yesterday.day,
+                   number_of_days_before_invitations_expire: nil,
                    motif_category: motif_category)
           end
 

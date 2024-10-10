@@ -4,6 +4,5 @@ FactoryBot.define do
     motif_category_type { "autre" }
     sequence(:short_name) { |n| "rsa_orientation_#{n}" }
     name { "RSA orientation" }
-    optional_rdv_subscription { false }
   end
 end

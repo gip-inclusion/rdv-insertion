@@ -1,6 +1,6 @@
 # Preview all emails at http://localhost:8000/rails/mailers/notification
 class NotificationPreview < ActionMailer::Preview
-  MotifCategory.optional_rdv_subscription(false).find_each do |motif_category|
+  MotifCategory.find_each do |motif_category|
     notification =
       Notification
       .joins(:participation)

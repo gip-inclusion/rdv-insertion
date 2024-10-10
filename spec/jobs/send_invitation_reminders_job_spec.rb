@@ -14,33 +14,27 @@ describe SendInvitationRemindersJob do
     let!(:user6) { create(:user, email: "camille6@gouv.fr", phone_number: "0649031935") }
 
     let!(:follow_up1) do
-      create(:follow_up, status: "invitation_pending", user: user1,
-                         motif_category: create(:motif_category, optional_rdv_subscription: false))
+      create(:follow_up, status: "invitation_pending", user: user1)
     end
     let!(:follow_up2) do
-      create(:follow_up, status: "invitation_pending", user: user2,
-                         motif_category: create(:motif_category, optional_rdv_subscription: false))
+      create(:follow_up, status: "invitation_pending", user: user2)
     end
     let!(:follow_up3) do
-      create(:follow_up, status: "invitation_pending", user: user3,
-                         motif_category: create(:motif_category, optional_rdv_subscription: false))
+      create(:follow_up, status: "invitation_pending", user: user3)
     end
     let!(:follow_up4) { create(:follow_up, status: "rdv_pending", user: user4) }
     let!(:follow_up5) do
-      create(:follow_up, status: "invitation_pending", user: user5,
-                         motif_category: create(:motif_category, optional_rdv_subscription: false))
+      create(:follow_up, status: "invitation_pending", user: user5)
     end
     let!(:follow_up6) do
       create(
         :follow_up,
         status: "invitation_pending",
-        motif_category: create(:motif_category, optional_rdv_subscription: true),
         user: user6
       )
     end
     let!(:follow_up7) do
-      create(:follow_up, status: "invitation_pending", user: user1,
-                         motif_category: create(:motif_category, optional_rdv_subscription: false))
+      create(:follow_up, status: "invitation_pending", user: user1)
     end
 
     # OK
@@ -84,7 +78,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user6, follow_up: follow_up6,
-        created_at: 3.days.ago, expires_at: 4.days.from_now
+        created_at: 3.days.ago, expires_at: nil
       )
     end
 

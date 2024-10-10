@@ -61,7 +61,7 @@ module Invitations
     end
 
     def validate_it_expires_in_more_than_5_days
-      return if expires_at > 5.days.from_now
+      return if expires_at.nil? || expires_at > 5.days.from_now
 
       result.errors << "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours"
     end

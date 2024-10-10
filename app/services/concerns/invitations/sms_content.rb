@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module Invitations
   module SmsContent
     extend ActiveSupport::Concern
@@ -97,10 +98,14 @@ module Invitations
         "En cas de problème, tu peux contacter le #{formatted_phone_number}."
     end
 
+    def atelier_reminder_content
+      "RAPPEL : #{atelier_content}"
+    end
+
     ###
 
     def display_time_to_accept_invitation
-      " dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours" unless motif_category.optional_rdv_subscription?
+      " dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours" if invitation.expireable?
     end
 
     def mandatory_warning_message
@@ -120,3 +125,5 @@ module Invitations
     end
   end
 end
+
+# rubocop:enable Metrics/ModuleLength
