@@ -31,6 +31,8 @@ module ApplicationHelper
   end
 
   def show_organisation_navigation_button?
+    return false if current_page?(controller: :organisations, action: :index)
+
     current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 
