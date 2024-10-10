@@ -1,3 +1,6 @@
+DOCKER-RUN = docker compose run -e TERM -e DISABLE_SPRING_WATCHER_LISTEN=1 --rm --entrypoint=""
+BUNDLE-EXEC = bundle exec
+
 install: ## Setup development environment
 	bin/setup
 
@@ -26,3 +29,9 @@ help: ## Display available commands
 
 rswag:
 	SWAGGER_DRY_RUN=0 RAILS_ENV=test rake rswag:specs:swaggerize PATTERN="spec/requests/api/**/*_spec.rb"
+
+sh: ## [docker] Runs a shell within the web container
+	$(DOCKER-RUN) web bash
+
+cl: ## [docker] Runs a Rails console within the web container
+	$(DOCKER-RUN) web $(BUNDLE-EXEC) bin/rails c

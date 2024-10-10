@@ -2,12 +2,31 @@
 
 ## Outils à installer
 
-- Ruby 3.0.3 (nous conseillons l’utilisation de [rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts))
+Pour lancer l'application en local :
+
+- Ruby 3.3.3 (nous conseillons l’utilisation de [rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts))
 - PostgreSQL >= 12, l’utilisateur doit avoir les droits `superuser`. C'est nécessaire pour pouvoir activer les extensions utilisés.
 - [Yarn](https://yarnpkg.com/en/docs/install)
 - [Foreman](https://github.com/ddollar/foreman), (ou équivalent, comme [Overmind](https://github.com/DarthSim/overmind))
 - [Scalingo CLI](https://doc.scalingo.com/cli) (OPTIONAL)
 - [Make](https://fr.wikipedia.org/wiki/Make) (OPTIONAL)
+
+## Avec Docker
+
+Pour lancer l'applicaiton avec Docker :
+
+Installez Docker et Docker Compose (avec [Docker Desktop](https://www.docker.com/products/docker-desktop/) par exemple) puis lancez :
+
+```sh
+docker-compose up
+```
+
+Quelques commandes de base sont fournies pour accéder à votre conteneur web :
+
+```
+make sh # lance un terminal
+make cl # lance une console Rails
+```
 
 ## Avant de commencer
 
