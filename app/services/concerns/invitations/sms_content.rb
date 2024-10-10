@@ -99,13 +99,7 @@ module Invitations
     end
 
     def atelier_reminder_content
-      "RAPPEL : #{user.full_name},\nVous êtes #{user_designation} et bénéficiez d'un accompagnement. " \
-        "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
-        "librement, dans la limite des places disponibles, en cliquant sur ce lien:" \
-        " #{@invitation.rdv_solidarites_public_url(with_protocol: false)}\n" \
-        "#{mandatory_warning_message}" \
-        "#{punishable_warning_message}" \
-        "En cas de problème, contactez le #{formatted_phone_number}."
+      "RAPPEL : #{atelier_content}"
     end
 
     ###

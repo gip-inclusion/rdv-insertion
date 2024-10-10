@@ -40,8 +40,8 @@ export default class extends Controller {
 
   disablePeriodicInvites() {
     const periodicInvitesFormController = this.application.getControllerForElementAndIdentifier(
-      document.querySelector('[data-controller="periodic-invites-form"]'), 
-      'periodic-invites-form'
+      document.querySelector("[data-controller=\"periodic-invites-form\"]"), 
+      "periodic-invites-form"
     );
 
     

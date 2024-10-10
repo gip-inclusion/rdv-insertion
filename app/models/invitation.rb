@@ -30,9 +30,10 @@ class Invitation < ApplicationRecord
   before_create :assign_uuid
   after_commit :set_follow_up_status
 
-  scope :valid, -> { where("expires_at > ?", Time.zone.now).or(where(expires_at: nil)) }
-  scope :expired, -> { where.not(expires_at: nil).where("expires_at <= ?", Time.zone.now) }
-  scope :expireable, -> { where.not(expires_at: nil).where("expires_at > ?", Time.zone.now) }
+  scope :valid, -> { where("expires_at > ?", Time.zone.now).or(never_expire) }
+  scope :expired, -> { where("expires_at <= ?", Time.zone.now) }
+  scope :expireable, -> { where.not(expires_at: nil) }
+  scope :never_expire, -> { where(expires_at: nil) }
 
   def send_to_user
     case self.format
@@ -68,9 +69,7 @@ class Invitation < ApplicationRecord
   end
 
   def expired?
-    return false unless expireable?
-
-    expires_at <= Time.zone.now
+    expireable? && expires_at <= Time.zone.now
   end
 
   def expire!

@@ -89,8 +89,8 @@ export default class extends Controller {
 
   disableInvitationsExpiration() {
     const invitationsExpirationFormController = this.application.getControllerForElementAndIdentifier(
-      document.querySelector('[data-controller="invitations-expiration-form"]'), 
-      'invitations-expiration-form'
+      document.querySelector("[data-controller=\"invitations-expiration-form\"]"), 
+      "invitations-expiration-form"
     );
 
     if (invitationsExpirationFormController) {
