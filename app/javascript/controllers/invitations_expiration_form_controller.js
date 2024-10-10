@@ -4,14 +4,19 @@ export default class extends Controller {
   static targets = [
     "enable",
     "numberOfDays",
-    "limitIndicator",
+    "noLimitMessage",
     "inputGroup"
   ]
 
   static minValueForNumberOfDays = 1
 
   connect() {
-    this.showIndicator()
+    this.toggleElementsVisibility()
+  }
+
+  disable() {
+    this.enableTarget.checked = false
+    this.toggleInvitationExpiration()
   }
 
   toggleInvitationExpiration() {
@@ -19,16 +24,29 @@ export default class extends Controller {
     this.numberOfDaysTarget.value = this.enableTarget.checked ? 10 : null
 
     this.element.classList.toggle("disabled", !this.enableTarget.checked)
-    this.showIndicator()
+    this.toggleElementsVisibility()
   }
 
-  showIndicator() {
+  toggleElementsVisibility() {
     if (this.enableTarget.checked) {
-      this.limitIndicatorTarget.classList.add("d-none")
+      this.noLimitMessageTarget.classList.add("d-none")
       this.inputGroupTarget.classList.remove("d-none")
+      this.disablePeriodicInvites()
     } else {
-      this.limitIndicatorTarget.classList.remove("d-none")
+      this.noLimitMessageTarget.classList.remove("d-none")
       this.inputGroupTarget.classList.add("d-none")
+    }
+  }
+
+  disablePeriodicInvites() {
+    const periodicInvitesFormController = this.application.getControllerForElementAndIdentifier(
+      document.querySelector('[data-controller="periodic-invites-form"]'), 
+      'periodic-invites-form'
+    );
+
+    
+    if (periodicInvitesFormController) {
+      periodicInvitesFormController.disable();
     }
   }
 }
