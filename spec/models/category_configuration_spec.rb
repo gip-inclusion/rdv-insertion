@@ -19,6 +19,20 @@ describe CategoryConfiguration do
           .to include("Le délai d'expiration de l'invitation doit être supérieur à 3 jours")
       end
     end
+
+    context "periodic_invites_activated is true and number_of_days_before_invitations_expire is set" do
+      let(:category_configuration) do
+        build(:category_configuration, organisation: create(:organisation),
+                                       number_of_days_before_invitations_expire: 5,
+                                       number_of_days_between_periodic_invites: 15)
+      end
+
+      it "adds errors" do
+        expect(category_configuration).not_to be_valid
+        expect(category_configuration.errors.full_messages.to_sentence)
+          .to include("Les invitations périodiques ne peuvent pas être activées")
+      end
+    end
   end
 
   describe "invitation formats validity" do
