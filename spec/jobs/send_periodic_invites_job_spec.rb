@@ -9,6 +9,7 @@ describe SendPeriodicInvitesJob do
       create(:category_configuration,
              organisation: organisation,
              number_of_days_between_periodic_invites: 15,
+             number_of_days_before_invitations_expire: nil,
              motif_category: motif_category)
     end
 
@@ -62,6 +63,7 @@ describe SendPeriodicInvitesJob do
           create(:category_configuration,
                  organisation: organisation,
                  day_of_the_month_periodic_invites: Time.zone.today.day,
+                 number_of_days_before_invitations_expire: nil,
                  motif_category: motif_category)
         end
 
@@ -80,6 +82,7 @@ describe SendPeriodicInvitesJob do
             create(:category_configuration,
                    organisation: organisation,
                    day_of_the_month_periodic_invites: Time.zone.yesterday.day,
+                   number_of_days_before_invitations_expire: nil,
                    motif_category: motif_category)
           end
 
