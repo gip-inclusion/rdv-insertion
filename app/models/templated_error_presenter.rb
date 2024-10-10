@@ -12,6 +12,6 @@ class TemplatedErrorPresenter
   end
 
   def to_partial_path
-    "common/custom_errors/#{@template_name}"
+    "custom_errors/#{@template_name}"
   end
 end

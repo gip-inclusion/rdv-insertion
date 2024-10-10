@@ -54,7 +54,7 @@ class BaseService
 
   # On peut ajouter des TemplatedErrorPresenter à errors tout en gardant la possibilité d'ajouter des
   # strings simples dans le tableau errors. TemplatedErrorPresenter répond à to_s avec le message
-  def add_custom_error(message:, template_name:, locals: {})
+  def add_templated_error(message:, template_name:, locals: {})
     result.errors << TemplatedErrorPresenter.new(message: message, template_name: template_name, locals: locals)
   end
 

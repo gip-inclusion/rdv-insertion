@@ -18,6 +18,11 @@ class InvitationsController < ApplicationController
         format.json do
           render json: {
             success: false,
+            # En cas d'erreur, le serveur renvoie un JSON contenant un champ turbo_stream_html qui correspond à un HTML
+            #   sous forme de string, généré avec un stream Turbo (via turbo_stream.replace).
+            # Une fois le JSON reçu, le client parse la réponse et applique le Turbo stream en utilisant
+            #   window.Turbo.renderStreamMessage.
+            # Discussion ici : https://github.com/gip-inclusion/rdv-insertion/pull/2361#discussion_r1784538358
             turbo_stream_html: turbo_stream.replace("remote_modal", partial: "common/custom_errors_modal",
                                                                     locals: { errors: invite_user.errors })
           }, status: :unprocessable_entity
