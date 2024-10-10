@@ -9,7 +9,7 @@ describe SendCreneauAvailabilityAlertJob do
       before do
         departments_count.times do
           department = create(:department)
-          organisations_per_department.times do |i|
+          organisations_per_department.times do |_i|
             organisation = create(:organisation, department: department)
             agent = create(:agent)
             organisation.agents << agent
