@@ -246,7 +246,7 @@ describe CategoryConfigurationsController do
       {
         invitation_formats: %w[sms email postal], convene_user: false,
         rdv_with_referents: true, invite_to_user_organisations_only: true,
-        number_of_days_before_invitations_expire: 12,
+        number_of_days_before_invitations_expire: nil,
         motif_category_id: motif_category.id, file_configuration_id: file_configuration.id,
         number_of_days_between_periodic_invites: 15
       }
@@ -330,7 +330,7 @@ describe CategoryConfigurationsController do
         category_configuration: {
           invitation_formats: %w[sms email postal], convene_user: false,
           rdv_with_referents: true, invite_to_user_organisations_only: true,
-          number_of_days_before_invitations_expire: 12,
+          number_of_days_before_invitations_expire: nil,
           day_of_the_month_periodic_invites: 5
         },
         organisation_id: organisation.id, id: category_configuration.id
@@ -343,7 +343,7 @@ describe CategoryConfigurationsController do
       expect(category_configuration.reload.convene_user).to eq(false)
       expect(category_configuration.reload.rdv_with_referents).to eq(true)
       expect(category_configuration.reload.invite_to_user_organisations_only).to eq(true)
-      expect(category_configuration.reload.number_of_days_before_invitations_expire).to eq(12)
+      expect(category_configuration.reload.number_of_days_before_invitations_expire).to eq(nil)
       expect(category_configuration.reload.day_of_the_month_periodic_invites).to eq(5)
     end
 

@@ -1,10 +1,13 @@
 class MigrateOptionalRdvSubscriptionToInvitations < ActiveRecord::Migration[7.1]
   def up
-    Invitation
-      .joins(follow_up: :motif_category)
-      .where(follow_up: { motif_categories: { optional_rdv_subscription: true } })
-      .find_each do |invitation|
-      invitation.update!(expires_at: nil)
+    MotifCategory.where(optional_rdv_subscription: true).find_each do |motif_category|
+      motif_category.category_configurations.find_each do |category_configuration|
+        category_configuration.invitations.find_each do |invitation|
+          invitation.update!(expires_at: nil)
+        end
+
+        category_configuration.update!(number_of_days_before_invitations_expire: nil)
+      end
     end
 
     remove_column :motif_categories, :optional_rdv_subscription

@@ -55,18 +55,18 @@ class Invitation < ApplicationRecord
   end
 
   def number_of_days_before_expiration
-    if !expireable?
-      nil
-    elsif expired?
+    return if never_expires?
+
+    if expired?
       0
     else
       (expires_at.to_date - Time.zone.now.to_date).to_i
     end
   end
 
-  def expireable?
-    expires_at.present?
-  end
+  def never_expires? = expires_at.nil?
+
+  def expireable? = expires_at.present?
 
   def expired?
     expireable? && expires_at <= Time.zone.now
