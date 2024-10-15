@@ -52,6 +52,12 @@ class BaseService
 
   private
 
+  # On peut ajouter des TemplatedErrorPresenter à errors tout en gardant la possibilité d'ajouter des
+  # strings simples dans le tableau errors. TemplatedErrorPresenter répond à to_s avec le message
+  def add_templated_error(message:, template_name:, locals: {})
+    result.errors << TemplatedErrorPresenter.new(message: message, template_name: template_name, locals: locals)
+  end
+
   def call_service!(service_class, **)
     service_result = service_class.call(**)
     return service_result if service_result.success?
