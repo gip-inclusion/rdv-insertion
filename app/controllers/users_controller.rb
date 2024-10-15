@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   ].freeze
 
   include BackToListConcern
+  include UserArchivedConcern
   include Users::Filterable
   include Users::Sortable
   include Users::Taggable
@@ -282,16 +283,6 @@ class UsersController < ApplicationController
 
   def set_user_archives
     @user_archives = @user.archives
-  end
-
-  def set_user_is_archived
-    @user_is_archived =
-      @user.archives.where(organisation: user_agent_department_organisations).count ==
-      user_agent_department_organisations.count
-  end
-
-  def user_agent_department_organisations
-    @user_agent_department_organisations ||= @user.organisations & @current_organisations
   end
 
   def set_follow_ups
