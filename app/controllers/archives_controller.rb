@@ -11,16 +11,30 @@ class ArchivesController < ApplicationController
     @archive = Archive.new(**archive_params)
     authorize @archive
     if @archive.save
+      flash[:success] = {
+        title: "Dossier archivé",
+        description: "Le bénéficiaire a bien été archivé sur l'organisation #{@archive.organisation.name}"
+      }
       redirect_to structure_user_path(@archive.user_id)
     else
       turbo_stream_display_error_modal(@archive.errors.full_messages)
     end
   end
 
-  def create_many
+  def create_many # rubocop:disable Metrics/AbcSize
     @archives = Archive.new_batch(**create_many_params)
     authorize_all @archives, :create
     Archive.transaction { @archives.each(&:save!) }
+    archived_organisations = @archives.map(&:organisation)
+    archived_organisations_names = @archives.map(&:organisation).map(&:name).join(", ")
+
+    organisation_count = archived_organisations.size
+    organisation_wording = organisation_count > 1 ? "les organisations" : "l'organisation"
+
+    flash[:success] = {
+      title: "Dossier archivé",
+      description: "Le bénéficiaire a bien été archivé sur #{organisation_wording} #{archived_organisations_names}"
+    }
     redirect_to structure_user_path(params[:user_id])
   rescue ActiveRecord::RecordInvalid => e
     turbo_stream_display_error_modal(e.record.errors.full_messages)
@@ -31,6 +45,10 @@ class ArchivesController < ApplicationController
     authorize @archive
     respond_to do |format|
       if @archive.destroy
+        flash[:success] = {
+          title: "Dossier désarchivé",
+          description: "Le dossier du bénéficiaire a bien été ouvert sur cette organisation"
+        }
         format.html { redirect_to structure_user_path(@archive.user_id) }
         format.json { render json: { success: true, archive: @archive, redirect_path: request.referer } }
       else

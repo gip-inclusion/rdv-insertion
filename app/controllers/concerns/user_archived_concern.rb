@@ -9,13 +9,17 @@ module UserArchivedConcern
       user_agent_department_organisations.count
     return unless @user_is_archived
 
-    archived_organisations_names = @user.archives.map(&:organisation).map(&:name).join(", ")
-    @archived_message =
-      FlashMessage.new(
-        title: "Dossier archivé",
-        description: "Ce bénéficiaire est archivé sur les organisations #{archived_organisations_names}",
-        persist: true
-      )
+    archived_organisations = @user.archives.map(&:organisation)
+    archived_organisations_names = archived_organisations.map(&:name).join(", ")
+
+    organisation_count = archived_organisations.size
+    organisation_wording = organisation_count > 1 ? "les organisations" : "l'organisation"
+
+    @archived_message = {
+      title: "Dossier archivé",
+      description: "Ce bénéficiaire est archivé sur #{organisation_wording} #{archived_organisations_names}",
+      persist: true
+    }
   end
 
   def user_agent_department_organisations
