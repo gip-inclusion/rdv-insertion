@@ -49,7 +49,7 @@ class ArchivesController < ApplicationController
           title: "Dossier désarchivé",
           description: "Le dossier du bénéficiaire a bien été ouvert sur cette organisation"
         }
-        format.html { redirect_to structure_user_path(@archive.user_id) }
+        format.turbo_stream { turbo_stream_redirect(structure_user_path(@archive.user_id)) }
         format.json { render json: { success: true, archive: @archive, redirect_path: request.referer } }
       else
         format.html { turbo_stream_display_error_modal(@archive.errors.full_messages) }

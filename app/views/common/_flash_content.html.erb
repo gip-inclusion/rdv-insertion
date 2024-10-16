@@ -5,7 +5,7 @@
     <%# Pour les messages flash historiques %>
     <% flash_message = FlashMessage.new(description: message) %>
   <% end %>
-  <div class="row text-center pt-4 <%= (flash_message.persist || type == :error) ? "" : "flash_message_fade" %>" data-controller="flash" data-action="animationend->flash#remove">
+  <div class="row text-center pt-4 <%= (flash_message.persist || type.to_sym == :error) ? "" : "flash_message_fade" %>" data-controller="flash" data-action="animationend->flash#remove">
     <div class="alert <%= alert_class_for(type) %> alert-dismissible fade show" role="alert">
       <div class="d-flex">
         <span class="mx-3"><i class="<%= icon_class_for(type) %>"></i></span>
