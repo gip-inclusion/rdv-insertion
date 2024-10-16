@@ -1,0 +1,34 @@
+<%= render "common/remote_modal", title: "Filtrer par date d'invitation ou de convocation" do %>
+  <%= form_with method: :get, local: true, url: new_structure_invitation_or_convocation_dates_filtering_path, data: { "turbo-frame" => "_top" } do |form| %>
+    <% url_params.each do |key, value| %>
+      <%= form.hidden_field key, value: value %>
+    <% end %>
+    <div class="d-flex flex-column mb-3 rdv-insertion-form">
+      <div class="mt-2 input radio_button">
+        <span class="radio w-100">
+          <%= form.label "invitation_type", for: "invitation_type_convocation", class: "d-flex align-items-center" do %>
+            <%= form.radio_button "invitation_type", "convocation", id: "invitation_type_convocation", class: "radio_buttons big" %>
+            Filtrer par date de convocation
+          <% end %>
+        </span>
+      </div>
+      <div class="mt-2 input radio_button">
+        <span class="radio w-100">
+          <%= form.label "invitation_type", for: "invitation_type_invitation", class: "d-flex align-items-center" do %>
+            <%= form.radio_button "invitation_type", "invitation", id: "invitation_type_invitation", class: "radio_buttons big" %>
+            Filtrer par date d'invitation
+          <% end %>
+        </span>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end align-items-center px-3">
+      <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+        Annuler
+      </button>
+      <button type="submit" class="btn btn-primary me-2">
+        Valider
+      </button>
+    </div>
+    </div>
+  <% end %>
+<% end %>
