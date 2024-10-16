@@ -89,17 +89,17 @@ module Users::Filterable
   def filter_users_by_convocation_date_before
     return if params[:convocation_date_before].blank?
 
-    @users = @users.joins(participations: :rdv)
-                   .where(participations: { convocable: true })
-                   .where("rdvs.starts_at < ?", params[:convocation_date_before].to_date.end_of_day)
+    @users = @users.joins(participations: :notifications)
+                   .where(participations: { convocable: true, follow_up: @follow_ups })
+                   .where("notifications.created_at < ?", params[:convocation_date_before].to_date.end_of_day)
   end
 
   def filter_users_by_convocation_date_after
     return if params[:convocation_date_after].blank?
 
-    @users = @users.joins(participations: :rdv)
-                   .where(participations: { convocable: true })
-                   .where("rdvs.starts_at > ?", params[:convocation_date_after].to_date.beginning_of_day)
+    @users = @users.joins(participations: :notifications)
+                   .where(participations: { convocable: true, follow_up: @follow_ups })
+                   .where("notifications.created_at > ?", params[:convocation_date_after].to_date.beginning_of_day)
   end
 
   def filter_users_by_first_invitations
