@@ -7,7 +7,9 @@ class NotificationPreview < ActionMailer::Preview
   user.assign_attributes(
     first_name: "Camille", last_name: "Martin", title: "madame", email: "camille@gouv.fr"
   )
-  # we don't set linked category_configuration that there is no template overrides
+  # we don't set current_category_configuration, so that notification.rdv_title_by_phone, notification.rdv_title,
+  # notification.user_designation, notification.rdv_purpose returns the values from the template and not
+  # from current_category_configuration.***_override attributes. These methods are implemented in the Templatable concern
   notification.define_singleton_method(:current_category_configuration) { nil }
 
   MotifCategory.find_each do |motif_category|

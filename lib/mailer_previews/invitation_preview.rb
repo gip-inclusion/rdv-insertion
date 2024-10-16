@@ -8,7 +8,9 @@ class InvitationPreview < ActionMailer::Preview
   )
   invitation.expires_at = 5.days.from_now
 
-  # we don't set linked category_configuration that there is no template overrides
+  # we don't set current_category_configuration, so that invitation.rdv_title_by_phone, invitation.rdv_title,
+  # invitation.user_designation, notification.rdv_purpose returns the values from the template and not
+  # from current_category_configuration.***_override attributes. These methods are implemented in the Templatable concern
   invitation.define_singleton_method(:current_category_configuration) { nil }
 
   MotifCategory.find_each do |motif_category|
