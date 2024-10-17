@@ -42,14 +42,14 @@ class Users {
           </>
         ),
         content: ({ user }) => (
-            <input
-              type="checkbox"
-              className="form-check-input"
-              checked={Boolean(user.selected)}
-              onChange={(event) => {
-                user.selected = event.target.checked;
-              }}
-            />
+          <input
+            type="checkbox"
+            className="form-check-input"
+            checked={Boolean(user.selected)}
+            onChange={(event) => {
+              user.selected = event.target.checked;
+            }}
+          />
         )
       },
       {
@@ -81,15 +81,22 @@ class Users {
         content: ({ user }) => <EditableCell type="text" user={user} cell="lastName" />
       },
       {
+        name: "Ville",
+        sortable: true,
+        key: "city",
+        visible: this.sourcePage === "batchActions",
+        content: ({ user }) => user.addressGeocoding?.city ?? " - "
+      },
+      {
         name: "Numéro CAF",
-        visible: this.sourcePage === "upload" && this.fileColumnNames?.affiliation_number_column,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.affiliation_number_column) || this.sourcePage === "batchActions",
         content: ({ user }) => <EditableCell type="text" user={user} cell="affiliationNumber" />
       },
       {
         name: "Rôle",
         sortable: true,
         key: "role",
-        visible: (this.sourcePage === "upload" && this.fileColumnNames?.role_column) || this.sourcePage === "batchActions",
+        visible: this.sourcePage === "upload" && this.fileColumnNames?.role_column,
         content: ({ user }) => (
           <EditableCell
             user={user}
@@ -122,7 +129,14 @@ class Users {
         key: "email",
         isInContactFile: true,
         visible: (this.sourcePage === "upload" && this.fileColumnNames?.email_column) || this.sourcePage === "batchActions",
-        content: ({ user }) => <EditableCell user={user} cell="email" />
+        content: ({ user }) => (
+          <EditableCell
+            user={user}
+            cell="email"
+            labelClassName={this.sourcePage === "batchActions" ? "text-truncate" : ""}
+            labelStyle={this.sourcePage === "batchActions" ? { maxWidth: "100px" } : {}}
+          />
+        )
       },
       {
         name: "Téléphone",

@@ -53,7 +53,8 @@ const UsersBatchActions = observer(
             birthName: userFromApp.birth_name,
             departmentInternalId: userFromApp.department_internal_id,
             rightsOpeningDate: formatDateInput(userFromApp.rights_opening_date),
-            referentEmail: userFromApp.referent_email
+            referentEmail: userFromApp.referent_email,
+            addressGeocoding: userFromApp.address_geocoding
           },
           department,
           organisation,
@@ -72,13 +73,13 @@ const UsersBatchActions = observer(
         <div className="container mt-5 mb-3">
           <div className="row card-white justify-content-center">
             <div className="col-4 text-center d-flex align-items-center justify-content-start">
-                <button
-                  type="submit"
-                  className="btn btn-secondary btn-blue-out"
-                  onClick={redirectToUsersList}
-                >
-                  Retour au suivi
-                </button>
+              <button
+                type="submit"
+                className="btn btn-secondary btn-blue-out"
+                onClick={redirectToUsersList}
+              >
+                Retour au suivi
+              </button>
             </div>
             <div className="col-4 text-center">
               <h2 className="text-center new-users-title">Envoyer des invitations aux usagers non-invités</h2>
@@ -86,9 +87,14 @@ const UsersBatchActions = observer(
             <div className="col-4" />
           </div>
           <div className="row my-3" style={{ height: 50 }}>
-            <div className="d-flex justify-content-end align-items-center">
-              <BatchActionsButtons users={users} />
-              <DisplayReferentsColumnButton users={users} />
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                {`${users.list.length} usagers non-invités`}
+              </div>
+              <div className="d-flex justify-content-end">
+                <BatchActionsButtons users={users} />
+                <DisplayReferentsColumnButton users={users} />
+              </div>
             </div>
           </div>
         </div>

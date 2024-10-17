@@ -27,6 +27,7 @@ class UserBlueprint < ApplicationBlueprint
     association :organisations, blueprint: OrganisationBlueprint
     association :referents, blueprint: AgentBlueprint
     association :archives, blueprint: ArchiveBlueprint
+    association :address_geocoding, blueprint: AddressGeocodingBlueprint
 
     policy_scoped_association :invitations, blueprint: InvitationBlueprint
     policy_scoped_association :follow_ups, blueprint: FollowUpBlueprint

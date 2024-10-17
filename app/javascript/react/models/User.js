@@ -71,6 +71,8 @@ export default class User {
     this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
     this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
     this.tags = attributes.tags || [];
+    this.addressGeocoding = attributes.addressGeocoding
+
 
     this.currentAgent = currentAgent;
     this.department = department;

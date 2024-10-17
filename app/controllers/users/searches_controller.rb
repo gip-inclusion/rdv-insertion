@@ -14,9 +14,9 @@ module Users
         .active
         .where(id: search_in_all_users.ids + search_in_department_organisations.ids)
         .preload(
-          :referents, :archives,
+          :referents, :archives, :address_geocoding,
           invitations: [follow_up: :motif_category],
-          follow_ups: [:participations],
+          follow_ups: [participations: :rdv],
           tags: [:tag_organisations],
           organisations: [:motif_categories, :department, :category_configurations]
         ).distinct
