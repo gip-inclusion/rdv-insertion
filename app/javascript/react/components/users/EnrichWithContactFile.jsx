@@ -14,7 +14,7 @@ export default function EnrichWithContactFile({ handleContactsFile, fileSize }) 
               placement="right"
               content={
                 <span>
-                  Les informations de contact ne sont pas ajoutées aux utilisateurs déjà créés.
+                  Les informations de contact ne sont pas ajoutées aux usagers déjà créés.
                 </span>
               }
             >

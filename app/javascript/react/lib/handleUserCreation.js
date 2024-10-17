@@ -6,7 +6,7 @@ const handleUserCreation = async (user, organisationId, options = { raiseError: 
   if (result.success) {
     user.updateWith(result.user);
   } else if (options.raiseError)
-    Swal.fire("Impossible de créer l'utilisateur", result.errors[0], "error");
+    Swal.fire("Impossible de créer l'usager", result.errors[0], "error");
   return result;
 };
 

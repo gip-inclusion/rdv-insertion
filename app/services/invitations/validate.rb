@@ -90,7 +90,12 @@ module Invitations
         motif.follow_up? && motif.motif_category == motif_category
       end
 
-      result.errors << "Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_name}"
+      add_templated_error(message: "Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_name}",
+                          template_name: "no_follow_up_category",
+                          locals: {
+                            organisation_id: organisations.first.id,
+                            motif_category_name: motif_category_name
+                          })
     end
 
     def organisations_motifs

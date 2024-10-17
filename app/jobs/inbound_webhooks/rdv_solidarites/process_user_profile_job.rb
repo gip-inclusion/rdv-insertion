@@ -53,7 +53,7 @@ module InboundWebhooks
       end
 
       def attach_user_to_org
-        user.organisations << organisation unless user.reload.belongs_to_org?(organisation.id)
+        UsersOrganisation.find_or_create_by!(user:, organisation:)
       end
 
       def remove_user_from_organisation
