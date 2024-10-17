@@ -1,10 +1,9 @@
 <h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
-<p>Vous êtes <%= @user_designation %> et à ce titre vous êtes <%= @user.conjugate('invité') %> à participer à un <%= @rdv_title %> afin de <%= @rdv_purpose %>.</p>
-<%= tag.p(@custom_sentence) if @custom_sentence %>
-<p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant<%= tag.span(" dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours", class: ["font-weight-bold"]) if @invitation.expireable? %>:</p>
+<p>Vous avez reçu un mail il y a <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours vous invitant à <span class="font-weight-bold">consulter le(s) atelier(s) et formation(s) proposé(s)</span> sur la plateforme RDV-Solidarités. 
+Sachez que vous pouvez toujours vous y inscrire directement et librement, dans la limite des places disponibles.</p>
 <p class="btn-wrapper">
   <%= link_to @invitation.rdv_solidarites_public_url, class: "btn btn-primary" do %>
-    Choisir un créneau
+    M'inscrire
   <% end %>
 </p>
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>

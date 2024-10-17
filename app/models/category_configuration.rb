@@ -7,7 +7,7 @@ class CategoryConfiguration < ApplicationRecord
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
-  validate :minimum_invitation_duration, :invitation_formats_validity
+  validate :minimum_invitation_duration, :invitation_formats_validity, :periodic_invites_can_be_activated
 
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
@@ -39,16 +39,31 @@ class CategoryConfiguration < ApplicationRecord
   def notify_no_available_slots? = email_to_notify_no_available_slots.present?
   def notify_rdv_changes? = email_to_notify_rdv_changes.present?
 
+  def invitations_expire? = number_of_days_before_invitations_expire.present?
+  def invitations_never_expire? = !invitations_expire?
+
   def new_invitation_will_expire_at
+    return if invitations_never_expire?
+
     number_of_days_before_invitations_expire.days.from_now
   end
 
   private
 
-  def minimum_invitation_duration
-    return if number_of_days_before_invitations_expire > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+  def periodic_invites_can_be_activated
+    return unless periodic_invites_activated? && invitations_expire?
 
-    errors.add(:base, "Le délai d'expiration de l'invtation doit être supérieur " \
+    errors.add(:base, "Les invitations périodiques ne peuvent pas être activées si " \
+                      "les liens des invitations ont une durée de validitée définie. " \
+                      "Veuillez retirer la limite de durée de validité des liens d'invitation, " \
+                      "ou désactiver les invitations périodiques.")
+  end
+
+  def minimum_invitation_duration
+    return if invitations_never_expire? ||
+              number_of_days_before_invitations_expire > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+
+    errors.add(:base, "Le délai d'expiration de l'invitation doit être supérieur " \
                       "à #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours")
   end
 
