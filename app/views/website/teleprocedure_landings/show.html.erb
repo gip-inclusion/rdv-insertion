@@ -1,6 +1,6 @@
 <div class="container text-dark-blue mb-5">
   <!-- https://coderwall.com/p/ftbmsa/render-template-if-exists-in-rails -->
-  <% if lookup_context.exists?(@department.number, ["teleprocedure_landings"], true) %>
+  <% if lookup_context.exists?("website/teleprocedure_landings/_#{@department.number}") %>
     <div class="welcome-title justify-content-around mt-5 flex-wrap text-center">
       <h1 class="pb-3">INFORMATION - RSA</h1>
       <%= image_tag @department.logo.url, alt: "Logo Département", class: "teleprocedure-department-logo" if @department.logo.attached? %>
