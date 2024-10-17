@@ -7,6 +7,7 @@ describe Website::TeleprocedureLandingsController do
     it "returns a success response" do
       get :show, params: { department_number: "13" }
       expect(response).to be_successful
+      expect(response.body).to include("INFORMATION - RSA")
     end
   end
 end
