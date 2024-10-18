@@ -32,4 +32,11 @@ module TurboStreamConcern
       status: :unprocessable_entity
     )
   end
+
+  def turbo_stream_display_modal(partial, status: :ok)
+    render(
+      turbo_stream: turbo_stream.replace("remote_modal", partial:),
+      status:
+    )
+  end
 end

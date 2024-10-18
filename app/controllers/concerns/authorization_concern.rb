@@ -14,11 +14,13 @@ module AuthorizationConcern
   end
 
   def agent_not_authorized
-    should_return_json? ? render_not_authorized : redirect_not_authorized
-  end
-
-  def should_return_json?
-    request.accept == "application/json"
+    respond_to do |format|
+      format.json { render_not_authorized }
+      format.html { redirect_not_authorized }
+      format.turbo_stream do
+        turbo_stream_display_modal("errors/forbidden_modal", status: :forbidden)
+      end
+    end
   end
 
   def redirect_not_authorized
