@@ -101,7 +101,7 @@
     </h4>
     <% unless department_level? %>
       <div class="mt-2">
-        <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
+        <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdvs_impersonation_warning(@organisation.rdv_solidarites_url) do %>
           <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
         <% end %>
       </div>
