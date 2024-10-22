@@ -15,18 +15,57 @@ header {
   margin-left: 15px;
 }
 
+
 .sub-header {
-  height: 40px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: left;
-  border-top: 1px solid $dark-grey;
+  background-color: #C0DAF4;
   position: relative;
   z-index: 2;
-  p, a {
-    font-size: 12px;
-    color: black;
+
+  &.hidden {
+    height: 0px;
+    .sub-header-content {
+      display: none !important;
+    }
+    #toggle-navbar {
+      top: 0px;
+    }
   }
+
+  #toggle-navbar {
+    right: 50px;
+    top: 45px;
+    width: 45px;
+    height: 30px;
+    justify-content: center;
+    display: flex;
+    background-color: #C0DAF4;
+    align-items: center;
+    border-radius: 0px 0px 10px 10px;
+  }
+
+  p, a, button {
+    color: #083B66;
+  }
+  a {
+    border-bottom: 2px solid;
+    padding-bottom: 1px;
+  }
+
+  &.dark-blue-style {
+    background-color: #1876D0;
+
+    p, a, button {
+      color: white;
+    }
+    #toggle-navbar {
+      background-color: #1876D0;
+    }
+  }
+
 }
 
 .nav {
