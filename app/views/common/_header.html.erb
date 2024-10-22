@@ -1,4 +1,42 @@
 <header>
+  <% if current_agent.super_admin? || agent_impersonated? %>
+    <div class="sub-header d-flex <%= agent_impersonated? ? "dark-blue-style" : "" %>" data-controller="super-admin-header">
+      <div class="container d-flex position-relative sub-header-content">
+        <div class="container d-flex justify-content-start px-3">
+          <% if agent_impersonated? %>
+            <p class="mb-0">Vous êtes connecté.e en tant que <%= current_agent.to_s %></p>
+          <% else %>
+            <p class="mb-0">Bonjour <%= current_agent.first_name %>, voulez-vous accéder au SuperAdmin ?</p>
+          <% end %>
+        </div>
+        <div class="container d-flex justify-content-end px-4">
+          <% if agent_impersonated? %>
+            <p class="mb-0">
+              <%= link_to super_admins_root_path, class: "me-5" do %>
+                <i class="fas fa-shield-alt me-1"></i>
+                Revenir au Super admin
+              <% end %>
+
+              <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
+                <i class="fas fa-user me-1"></i>
+                Revenir à ma session
+              <% end %>
+            </p>
+          <% else %>
+            <p class="mb-0">
+              <%= link_to super_admins_root_path do %>
+                <i class="fas fa-shield-alt me-1"></i>
+                Accéder au Super admin
+              <% end %>
+            </p>
+          <% end %>
+        </div>
+      </div>
+      <button type="button" id="toggle-navbar" class="position-absolute" data-action="click->super-admin-header#toggle">
+        <i class="fas fa-shield-alt"></i>
+      </button>
+    </div>
+  <% end %>
   <nav class="container navbar px-3 navbar-expand-lg">
     <div class="d-flex justify-content-start">
       <%= link_to root_path do %>
@@ -8,16 +46,7 @@
     </div>
     <div class="nav col justify-content-end align-items-center">
       <% if current_agent %>
-        <% if current_agent.super_admin? %>
-          <%= link_to super_admins_root_path do %>
-            <button class="btn btn-header border-light-grey w-100">
-              <span class="d-none d-sm-inline">Super admin</span>
-              <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
-            </button>
-          <% end %>
-        <% else %>
-          <%= render "common/header_help_menu" %>
-        <% end %>
+        <%= render "common/header_help_menu" %>
         <% if show_organisation_navigation_button? %>
           <%= render "common/header_organisation_navigation_button" %>
         <% end %>
@@ -27,11 +56,4 @@
       <% end %>
     </div>
   </nav>
-  <% if current_agent && agent_impersonated? %>
-    <div class="sub-header d-flex">
-      <div class="container d-flex justify-content-center">
-        <p class="mb-0"><i class="fas fa-info-circle"></i> Vous êtes connecté.e en tant que <%= current_agent.to_s %></p>
-      </div>
-    </div>
-  <% end %>
 </header>
