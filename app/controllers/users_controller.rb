@@ -22,7 +22,7 @@ class UsersController < ApplicationController
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_current_organisations, :set_all_configurations,
                 :set_user_tags, :set_user_referents, :set_back_to_users_list_url, :set_user_archives,
-                :set_user_is_archived,
+                :set_user_archiving_info,
                 for: :show
   before_action :set_organisation, :set_department,
                 for: :new
@@ -112,6 +112,15 @@ class UsersController < ApplicationController
       current_agent.id,
       request.query_parameters
     )
+  end
+
+  def set_user_archiving_info
+    archived_status = Users::ArchivedStatus.call(
+      user: @user,
+      organisations: @current_organisations
+    )
+    @user_is_archived = archived_status.is_archived
+    @archived_banner_content = archived_status.archived_banner_content if @user_is_archived
   end
 
   def set_filterable_tags
@@ -282,16 +291,6 @@ class UsersController < ApplicationController
 
   def set_user_archives
     @user_archives = @user.archives
-  end
-
-  def set_user_is_archived
-    @user_is_archived =
-      @user.archives.where(organisation: user_agent_department_organisations).count ==
-      user_agent_department_organisations.count
-  end
-
-  def user_agent_department_organisations
-    @user_agent_department_organisations ||= @user.organisations & @current_organisations
   end
 
   def set_follow_ups
