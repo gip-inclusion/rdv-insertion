@@ -36,5 +36,10 @@
     <div class="d-flex mt-4 justify-content-center align-items-center">
       <%= render 'agent_connect/connect_button' %>
     </div>
+
   <% end %>
+  <%= form_tag('/auth/rdvsolidarites', method: 'post', data: {turbo: false}) do %>
+    <button class="btn btn-blue" type='submit'>Se connecter avec RDV Solidarités</button>
+  <% end %>
+
 </div>

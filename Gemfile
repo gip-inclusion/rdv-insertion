@@ -7,10 +7,15 @@ ruby "3.3.3"
 gem "dotenv-rails"
 # Policies management
 gem "pundit"
+# Authentication
+gem "oauth2"
+gem "omniauth"
+gem "omniauth-rails_csrf_protection"
+gem "omniauth-oauth2"
 # Http client
 gem "faraday"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", ">= 6.0.4.1"
+gem "rails", "~> 7.1.3.4"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server

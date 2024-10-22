@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   agent_connect controller: AgentConnectController
 
+  get 'auth/:provider/callback', to: 'sessions#create'
+
   scope module: 'website' do
     root "static_pages#welcome"
     get "mentions-legales", to: "static_pages#legal_notice"
