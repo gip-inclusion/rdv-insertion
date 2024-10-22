@@ -1,9 +1,9 @@
 <div class="container">
-  <% if message.is_a?(Hash)  %>
-    <% flash_message = FlashMessage.new(**message.symbolize_keys) %>
-  <% else %>
+  <% if content.is_a?(Hash) %>
+    <% flash_message = FlashMessage.new(**content.symbolize_keys) %>
+  <% elsif content.is_a?(String) %>
     <%# Pour les messages flash historiques %>
-    <% flash_message = FlashMessage.new(description: message) %>
+    <% flash_message = FlashMessage.new(description: content) %>
   <% end %>
   <div class="row text-center pt-4 <%= (flash_message.persist || type.to_sym == :error) ? "" : "flash_message_fade" %>" data-controller="flash" data-action="animationend->flash#remove">
     <div class="alert <%= alert_class_for(type) %> alert-dismissible fade show" role="alert">

@@ -15,7 +15,7 @@ module UserArchivedConcern
     organisation_count = archived_organisations.size
     organisation_wording = organisation_count > 1 ? "les organisations" : "l'organisation"
 
-    @archived_message = {
+    @archived_banner_content = {
       title: "Dossier archivé",
       description: "Ce bénéficiaire est archivé sur #{organisation_wording} #{archived_organisations_names}",
       persist: true
