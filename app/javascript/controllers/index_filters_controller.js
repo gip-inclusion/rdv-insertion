@@ -2,8 +2,15 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   connect() {
-    if (this.element.clientHeight > 200 && !window.location.href.includes("expanded-filters=true")) {
-      this.element.classList.add("is-clipped");
+    const isExpandedInUrl = window.location.href.includes("expanded-filters=true");
+    const exceedsMaxHeight = this.element.clientHeight > 200;
+
+    if (exceedsMaxHeight) {
+      if (isExpandedInUrl) {
+        this.element.classList.add("is-expanded");
+      } else {
+        this.element.classList.add("is-collapsed");
+      }
     }
 
     this.element.querySelectorAll("input[type=checkbox]").forEach((checkbox) => {
@@ -14,13 +21,22 @@ export default class extends Controller {
         this.setInitialValue(checkbox);
         this.attachListeners(checkbox);
       }
-    })
+    });
   }
 
   expand() {
-    this.element.classList.remove("is-clipped");
+    this.element.classList.remove("is-collapsed");
+    this.element.classList.add("is-expanded");
     const url = new URL(window.location.href);
     url.searchParams.set("expanded-filters", "true");
+    window.history.replaceState({}, "", url);
+  }
+
+  collapse() {
+    this.element.classList.remove("is-expanded");
+    this.element.classList.add("is-collapsed");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("expanded-filters");
     window.history.replaceState({}, "", url);
   }
 
@@ -43,7 +59,7 @@ export default class extends Controller {
   attachListeners(checkbox) {
     checkbox.addEventListener("change", () => {
       const url = new URL(window.location.href);
-  
+
       if (checkbox.checked) {
         url.searchParams.set(checkbox.name, true);
       } else {

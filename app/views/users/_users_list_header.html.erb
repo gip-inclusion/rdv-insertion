@@ -81,6 +81,11 @@
           <i class="fas fa-arrow-down"></i> Voir plus de filtres
         </button>
       </div>
+      <div class="collapse-button-container">
+        <button data-action="index-filters#collapse">
+          <i class="fas fa-arrow-up"></i> Voir moins de filtres
+        </button>
+      </div>
       <% if display_back_to_list_button? %>
         <div>
           <%= link_to structure_users_path(motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
