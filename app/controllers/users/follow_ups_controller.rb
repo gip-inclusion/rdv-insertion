@@ -2,10 +2,9 @@ module Users
   class FollowUpsController < ApplicationController
     before_action :set_user, :set_department, :set_organisation, :set_user_department_organisations,
                   :set_all_configurations, :set_user_tags, :set_current_organisations, :set_user_archives,
-                  :set_user_is_archived, :set_back_to_users_list_url, only: [:index]
+                  :set_user_archiving_info, :set_back_to_users_list_url, only: [:index]
 
     include BackToListConcern
-    include UserArchivedConcern
     include Users::Taggable
     include Users::Archivable
 
@@ -23,6 +22,15 @@ module Users
     end
 
     private
+
+    def set_user_archiving_info
+      archived_status = Users::ArchivedStatus.call(
+        user: @user,
+        organisations: @current_organisations
+      )
+      @user_is_archived = archived_status.is_archived
+      @archived_banner_content = archived_status.archived_banner_content if @user_is_archived
+    end
 
     def set_user
       @user = policy_scope(User).preload(
