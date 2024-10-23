@@ -26,7 +26,9 @@ class SessionsController < ApplicationController
 
   def destroy
     # TODO: trouver un moyen de déconnecter de RDV Solidarités si on s'en sert pour l'oauth. Actuellement il faut ajouter une route et gérer le header de Allow-Origin
+    # Peut-être juste avertir l'agent qu'il faut aussi se déconnecter de RDV Solidarités ?
     clear_session
+
     flash[:notice] = "Déconnexion réussie"
     redirect_to root_path
   end
