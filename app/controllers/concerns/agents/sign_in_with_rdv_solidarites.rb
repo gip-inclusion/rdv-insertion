@@ -40,8 +40,17 @@ module Agents::SignInWithRdvSolidarites
   def retrieve_agent!
     return if authenticated_agent
 
-    render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
+    respond_to do |format|
+      format.json do
+        render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
            status: :forbidden
+      end
+
+      format.html do
+        flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion"
+        redirect_to @agent_return_to_url || sign_in_path
+      end
+    end
   end
 
   def mark_agent_as_logged_in!

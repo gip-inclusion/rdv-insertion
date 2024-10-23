@@ -18,6 +18,7 @@ class SessionsController < ApplicationController
       end
 
       format.html do
+        flash[:success] = "Connexion réussie"
         redirect_to @agent_return_to_url || root_path
       end
     end
