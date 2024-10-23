@@ -11,8 +11,6 @@ module Agents::SignInWithRdvSolidarites
 
   def validate_rdv_solidarites_credentials!
     if request.env['omniauth.auth']
-      # TODO: stocker ce token pour pouvoir l'utiliser
-      rdv_solidarites_api_token = request.env['omniauth.auth']['credentials']['token']
       @rdv_solidarites_credentials = OpenStruct.new(
         uid: request.env['omniauth.auth']["info"]["agent"]["email"],
         "valid?": true

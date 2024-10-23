@@ -25,6 +25,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    # TODO: trouver un moyen de déconnecter de RDV Solidarités si on s'en sert pour l'oauth. Actuellement il faut ajouter une route et gérer le header de Allow-Origin
     clear_session
     flash[:notice] = "Déconnexion réussie"
     redirect_to root_path
@@ -34,6 +35,11 @@ class SessionsController < ApplicationController
 
   def set_session_credentials
     clear_session
+
+    if request.env['omniauth.auth']
+      session[:rdv_solidarites_oauth_token] = request.env['omniauth.auth']['credentials']['token']
+    end
+
     timestamp = Time.zone.now.to_i
     session[:agent_auth] = {
       id: authenticated_agent.id,
