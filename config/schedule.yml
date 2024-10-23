@@ -28,6 +28,9 @@ upsert_monthly_stats_job:
 refresh_out_of_date_follow_up_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
   class: "RefreshOutOfDateFollowUpStatusesJob"
+remove_organisation_users_for_expired_archives_job:
+  cron: "0 23 * * *" # we remove expired archived users from organisations once a day, at 23:00
+  class: "RemoveOrganisationUsersForExpiredArchivesJob"
 destroy_old_ressources_job:
   cron: "0 0 * * *" # we destroy inactive users and useless ressources once a day, at 00:00
   class: "DestroyOldRessourcesJob"
