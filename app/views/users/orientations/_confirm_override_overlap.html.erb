@@ -1,0 +1,35 @@
+<%= render "common/remote_modal", locals: { custom_render: true } do %>
+  <div class="modal-body pt-0">
+    <div id="custom-body" class="w-100 mb-4">
+      <div class="w-100 text-center mb-3">
+        <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
+        <h4 class="mt-2">Cette orientation chevauche une autre orientation</h4>
+      </div>
+      <p>
+        Les dates sélectionnées pour cette nouvelle orientation se superposent à une orientation existante notée du <%= format_date(overlapping_orientation.starts_at) %> au <strong><%= format_date(overlapping_orientation.ends_at) %></strong>.
+      </p>
+      <p>
+        Cliquez sur confirmer pour ajuster la date de fin de l'ancienne orientation, qui sera déplacée automatiquement au <%= format_date(@orientation.starts_at - 1.day) %>, ou modifier les dates de la nouvelle orientation.
+      </p>
+    </div>
+    <div class="d-flex justify-content-end align-items-center px-3 mt-5">
+      <%= link_to @orientation.persisted? ? edit_user_orientation_path(user_id: @user.id, id: @orientation.id) : new_user_orientation_path(user_id: @user.id), class: "btn btn-blue-out border-0 me-2" do %>
+        Modifier les dates
+      <% end %>
+      <%= 
+        form_for(
+          @orientation, 
+          url: @orientation.id.nil? ? user_orientations_path(user_id: @user.id, override_overlap: true) : user_orientation_path(id: @orientation.id, user_id: @user.id, override_overlap: true), 
+          method: @orientation.id.nil? ? :post : :put
+        ) do |form|
+      %>
+        <% @orientation_params.each do |key, value| %>
+          <%= form.hidden_field key, value: %>
+        <% end %>
+        <button type="submit" id="confirm-button" class="btn btn-primary btn-blue me-2" data-bs-dismiss="modal">
+          Confirmer
+        </button>
+      <% end %>
+    </div>
+  </div>
+<% end %>

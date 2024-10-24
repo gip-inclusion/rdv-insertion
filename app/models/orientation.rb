@@ -1,4 +1,6 @@
 class Orientation < ApplicationRecord
+  MINIMUM_DURATION_IN_DAYS = 7
+
   belongs_to :user
   belongs_to :organisation
   belongs_to :orientation_type
@@ -8,9 +10,17 @@ class Orientation < ApplicationRecord
 
   validates :starts_at, :ends_at, uniqueness: { scope: :user_id }
 
-  validate :ends_at_after_starts_at, :starts_at_in_the_past
+  validate :ends_at_after_starts_at, :starts_at_in_the_past, :time_range_is_sufficiently_long
 
   scope :active, -> { where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)", Time.zone.today, Time.zone.today) }
+
+  scope :overlapping, lambda { |orientation|
+    where(user_id: orientation.user_id)
+      .where.not(id: orientation.id)
+      .where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)",
+             orientation.ends_at || Float::INFINITY,
+             orientation.starts_at)
+  }
 
   def time_range
     starts_at...(ends_at.presence || Time.zone.today)
@@ -37,5 +47,12 @@ class Orientation < ApplicationRecord
     return if starts_at <= Time.zone.today
 
     errors.add(:starts_at, "la date de début doit être antérieure ou égale à la date d'aujourd'hui")
+  end
+
+  def time_range_is_sufficiently_long
+    return if ends_at.nil?
+    return if (ends_at - starts_at).to_i >= MINIMUM_DURATION_IN_DAYS
+
+    errors.add(:base, "La période doit être d'au moins une semaine")
   end
 end

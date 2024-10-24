@@ -1,7 +1,8 @@
 module Orientations
   class Save < BaseService
-    def initialize(orientation:)
+    def initialize(orientation:, should_override_overlap: false)
       @orientation = orientation
+      @should_override_overlap = should_override_overlap
     end
 
     def call
@@ -9,9 +10,9 @@ module Orientations
         validate_starts_at_presence
         update_previous_orientation_ends_at if previous_orientation_without_end_date.present?
         fill_current_orientation_ends_at if @orientation.ends_at.nil? && posterior_orientations.any?
-        validate_no_orientations_overlap
         add_user_to_organisation unless @orientation.user.belongs_to_org?(@orientation.organisation_id)
         save_record!(@orientation)
+        validate_or_override_orientation_overlap
       end
     end
 
@@ -65,12 +66,39 @@ module Orientations
       fail!("Une date de début doit être indiquée") unless @orientation.starts_at?
     end
 
+    def validate_or_override_orientation_overlap
+      if @should_override_overlap
+        overlapping_orientations.first.update!(ends_at: @orientation.starts_at - 1.day)
+      else
+        validate_no_orientations_overlap
+      end
+    end
+
+    def overlapping_orientations
+      @overlapping_orientations ||= @orientation.user.orientations.overlapping(@orientation)
+    end
+
     def validate_no_orientations_overlap
-      return if other_user_orientations.none? do |other_orientation|
-        other_orientation.time_range.to_a.intersect?(@orientation.time_range.to_a)
+      return if overlapping_orientations.empty?
+
+      if overlapping_orientations.size > 1
+        return fail!(
+          "Cette orientation chevauche plusieurs autres orientations, veuillez adapter les dates de début et de fin"
+        )
       end
 
-      fail!("Les dates se chevauchent avec une autre orientation")
+      if overrideable_overlap?
+        result.errors << { overrideable_overlap: true, overlapping_orientation: overlapping_orientations.first }
+        return fail!
+      end
+
+      fail!("Cette orientation chevauche une autre orientation qui ne peut être raccourcie automatiquement,
+                    veuillez modifier l'orientation en question ou changer les dates renseignées ci-dessous")
+    end
+
+    def overrideable_overlap?
+      starts_at_delta = (@orientation.starts_at - overlapping_orientations.first.starts_at).to_i
+      starts_at_delta > Orientation::MINIMUM_DURATION_IN_DAYS + 1
     end
   end
 end
