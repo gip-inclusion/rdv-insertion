@@ -1,23 +1,27 @@
 <%= turbo_frame_tag "remote_modal" do %>
   <%= tag.div data: { controller: "remote-modal", action: "turbo:before-render@document->remote-modal#hideBeforeRender turbo:submit-end->remote-modal#submitEnd" }, class: "modal fade", tabindex: "-1" do %>
-    <div class="modal-dialog <%= "large-modal-card" if local_assigns[:size] == :large %>">
-      <div class="modal-content">
-        <% if local_assigns[:title] %>
-          <div class="modal-header">
-            <h5 class="modal-title">
-              <%= title %>
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <% if local_assigns[:custom_render] %>
+      <%= yield %>
+    <% else %>
+      <div class="modal-dialog <%= "large-modal-card" if local_assigns[:size] == :large %>">
+        <div class="modal-content">
+          <% if local_assigns[:title] %>
+            <div class="modal-header">
+              <h5 class="modal-title">
+                <%= title %>
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          <% else %>
+            <div class="modal-header border-0 pb-0">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          <% end %>
+          <div class="modal-body" id="remote_modal_body">
+            <%= yield %>
           </div>
-        <% else %>
-          <div class="modal-header border-0 pb-0">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-        <% end %>
-        <div class="modal-body" id="remote_modal_body">
-          <%= yield %>
         </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 <% end %>

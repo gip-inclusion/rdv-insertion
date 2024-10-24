@@ -12,20 +12,12 @@ module Users
 
     def create
       @orientation = Orientation.new(user: @user, **orientation_params)
-      if save_orientation.success?
-        redirect_to structure_user_parcours_path(@user.id)
-      else
-        turbo_stream_replace_error_list_with(save_orientation.errors)
-      end
+      save_orientation_and_redirect
     end
 
     def update
       @orientation.assign_attributes(**orientation_params)
-      if save_orientation.success?
-        redirect_to structure_user_parcours_path(@user.id)
-      else
-        turbo_stream_replace_error_list_with(save_orientation.errors)
-      end
+      save_orientation_and_redirect
     end
 
     def destroy
@@ -42,7 +34,8 @@ module Users
     private
 
     def orientation_params
-      params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id, :organisation_id, :agent_id)
+      @orientation_params ||= params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id,
+                                                                  :organisation_id, :agent_id)
     end
 
     def set_user
@@ -79,8 +72,35 @@ module Users
       @user.reload.orientations.includes(:organisation, :agent)
     end
 
+    def save_orientation_and_redirect
+      if save_orientation.success?
+        turbo_stream_redirect structure_user_parcours_path(@user.id)
+      elsif requires_overlap_override_confirmation?
+        turbo_stream_confirm_override_overlap_modal
+      else
+        turbo_stream_replace_error_list_with(save_orientation.errors)
+      end
+    end
+
     def save_orientation
-      @save_orientation ||= Orientations::Save.call(orientation: @orientation)
+      @save_orientation ||= Orientations::Save.call(
+        orientation: @orientation,
+        should_override_overlap: params[:override_overlap]
+      )
+    end
+
+    def requires_overlap_override_confirmation?
+      save_orientation.errors.one? &&
+        save_orientation.errors.first.is_a?(Hash) &&
+        save_orientation.errors.first[:overrideable_overlap]
+    end
+
+    def turbo_stream_confirm_override_overlap_modal
+      render turbo_stream: turbo_stream.replace(
+        "remote_modal",
+        partial: "users/orientations/confirm_override_overlap",
+        locals: { overlapping_orientation: save_orientation.errors.first[:overlapping_orientation] }
+      )
     end
   end
 end
