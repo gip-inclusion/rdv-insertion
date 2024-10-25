@@ -1,8 +1,10 @@
 <% if max_number_of_convocations_in_any_format == 0 %>
   <tr>
-    <% ["sms", "email", "postal"].each do |format| %>
-      <td class="px-4 py-3">-</td>
-    <% end %>
+    <td class="px-4 py-3">-</td>
+    <td class="px-4 py-3">-</td>
+    <td class="px-4 py-3">
+      <%= render "follow_ups/convocation_postal_link", participation: last_convocable_participation %>
+    </td>
   </tr>
 <% else %>
   <% max_number_of_convocations_in_any_format.times do |idx| %>
@@ -20,7 +22,7 @@
       <% end %>
       <% if idx == 0 # On affiche le lien de téléchargement pour la convocation la plus récente uniquement %>
         <td class="px-4 py-3">
-            <%= render "follow_ups/convocation_postal_link", convocation: last_convocation %>
+            <%= render "follow_ups/convocation_postal_link", participation: last_convocable_participation %>
         </td>
       <% end %>
     </tr>

@@ -70,10 +70,11 @@
           </div>
         <% end %>
         <% if category_configuration.invitation_formats.any? %>
-         <%= render "follow_ups/invitation_block", user:, organisation:, department:, invitations:, category_configuration:, follow_up:, motif_category: follow_up.motif_category, invitation_formats: category_configuration.invitation_formats, user_is_archived: %>
+          <%= render "follow_ups/invitation_block", user:, organisation:, department:, invitations:, category_configuration:, follow_up:, motif_category: follow_up.motif_category, invitation_formats: category_configuration.invitation_formats, user_is_archived: %>
         <% end %>
         <% if convocable_participations.present? %>
-         <%= render "follow_ups/convocation_block", convocations:, motif_category: follow_up.motif_category %>
+          <% last_convocable_participation = convocable_participations.max_by(&:created_at) %>
+          <%= render "follow_ups/convocation_block", convocations:, motif_category: follow_up.motif_category, last_convocable_participation: %>
         <% end %>
       </div>
     </div>
