@@ -1,0 +1,28 @@
+<% if max_number_of_convocations_in_any_format == 0 %>
+  <tr>
+    <% ["sms", "email", "postal"].each do |format| %>
+      <td class="px-4 py-3">-</td>
+    <% end %>
+  </tr>
+<% else %>
+  <% max_number_of_convocations_in_any_format.times do |idx| %>
+    <tr class="<%= idx == 0 ? "motif-category-#{motif_category.id}-last-convocations" : "d-none motif-category-#{motif_category.id}-other-convocations" %>">
+      <% ["sms", "email"].each do |format| %>
+        <td class="px-4 py-3">
+          <% if convocations_by_format[format]&.fetch(idx, nil).present? %>
+            <% convocation = convocations_by_format[format].fetch(idx, nil) %>
+            <%= format_date(convocation.created_at) %>
+            <%= render "follow_ups/delivery_status", delivery: convocation, format: format %>
+          <% elsif idx == 0 %>
+            -
+          <% end %>
+        </td>
+      <% end %>
+      <% if idx == 0 # On affiche le lien de téléchargement pour la convocation la plus récente uniquement %>
+        <td class="px-4 py-3">
+            <%= render "follow_ups/convocation_postal_link", convocation: last_convocation %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+<% end %>

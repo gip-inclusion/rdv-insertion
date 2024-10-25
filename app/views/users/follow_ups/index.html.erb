@@ -17,7 +17,7 @@
             participations: follow_up.participations, user_department_organisations: @user_department_organisations,
             convocable_participations: follow_up.participations.select(&:convocable?), category_configuration:,
             user_is_archived: @user_is_archived,
-            invitations: follow_up.invitations
+            invitations: follow_up.invitations, convocations: follow_up.convocations
           )
         %>
       <% else %>
