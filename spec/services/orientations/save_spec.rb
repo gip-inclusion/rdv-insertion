@@ -81,7 +81,7 @@ describe Orientations::Save, type: :service do
           it "sets the ends_at at the posterior starts_at" do
             subject
             is_a_success
-            expect(orientation.reload.ends_at).to eq(Date.parse("09/10/2022"))
+            expect(orientation.reload.ends_at).to eq(Date.parse("08/10/2022"))
             expect(second_orientation.reload.ends_at).to be_nil
           end
         end
@@ -94,7 +94,7 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
+            expect(subject.errors.first).to include("Cette orientation chevauche plusieurs autres orientations")
           end
         end
 
@@ -111,14 +111,14 @@ describe Orientations::Save, type: :service do
       end
 
       context "when the time range includes an other orientation" do
-        let!(:starts_at) { Date.parse("09/10/2022") }
+        let!(:starts_at) { Date.parse("10/10/2022") }
 
         it "is a failure" do
           is_a_failure
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors.first).to include("Cette orientation chevauche plusieurs autres orientations")
         end
 
         it "does not set the previous ends_at" do
@@ -135,7 +135,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors.first).to include(["Cette orientation chevauche plusieurs autres orientations"])
         end
 
         it "does not set the previous ends_at" do
@@ -175,14 +175,14 @@ describe Orientations::Save, type: :service do
 
       context "when both starts_at and ends_at are included in another orientation time range" do
         let!(:starts_at) { Date.parse("15/10/2022") }
-        let!(:ends_at) { Date.parse("20/10/2022") }
+        let!(:ends_at) { Date.parse("24/10/2022") }
 
         it "is a failure" do
           is_a_failure
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors.first).to include("Cette orientation chevauche une autre orientation")
         end
 
         it "does not set the previous ends_at" do

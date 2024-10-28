@@ -46,7 +46,7 @@ module Orientations
     end
 
     def fill_current_orientation_ends_at
-      @orientation.ends_at = posterior_orientations.min_by(&:starts_at).starts_at
+      @orientation.ends_at = posterior_orientations.min_by(&:starts_at).starts_at - 1.day
     end
 
     # We want to validate this before saving the record.
