@@ -6,15 +6,22 @@
         <h4 class="mt-2">Cette orientation chevauche une autre orientation</h4>
       </div>
       <p>
-        Les dates sélectionnées pour cette nouvelle orientation se superposent à une orientation existante notée du <%= format_date(overlapping_orientation.starts_at) %> au <strong><%= format_date(overlapping_orientation.ends_at) %></strong>.
+        Les dates sélectionnées pour cette nouvelle orientation se superposent à une orientation existante notée
+        <% if overlapping_orientation.ends_at.present? %>
+          du <%= format_date(overlapping_orientation.starts_at) %> au <strong><%= format_date(overlapping_orientation.ends_at) %></strong>.
+        <% else %>
+          à partir du <%= format_date(overlapping_orientation.starts_at) %>.
+        <% end %>
       </p>
       <p>
         Cliquez sur confirmer pour ajuster la date de fin de l'ancienne orientation, qui sera déplacée automatiquement au <%= format_date(@orientation.starts_at - 1.day) %>, ou modifier les dates de la nouvelle orientation.
       </p>
     </div>
     <div class="d-flex justify-content-end align-items-center px-3 mt-5">
-      <%= link_to @orientation.persisted? ? edit_user_orientation_path(user_id: @user.id, id: @orientation.id) : new_user_orientation_path(user_id: @user.id), class: "btn btn-blue-out border-0 me-2" do %>
-        Modifier les dates
+      <%= form_for(@orientation, url: @orientation.persisted? ? edit_user_orientation_path(user_id: @user.id, id: @orientation.id) : new_user_orientation_path(user_id: @user.id), method: :get) do |form| %>
+        <button type="submit" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+          Modifier les dates
+        </button>
       <% end %>
       <%= 
         form_for(

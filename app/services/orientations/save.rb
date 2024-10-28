@@ -8,7 +8,6 @@ module Orientations
     def call
       ActiveRecord::Base.transaction do
         validate_starts_at_presence
-        update_previous_orientation_ends_at if previous_orientation_without_end_date.present?
         fill_current_orientation_ends_at if @orientation.ends_at.nil? && posterior_orientations.any?
         add_user_to_organisation unless @orientation.user.belongs_to_org?(@orientation.organisation_id)
         save_record!(@orientation)
@@ -44,16 +43,6 @@ module Orientations
       @posterior_orientations ||= other_user_orientations.select do |o|
         o.starts_at > @orientation.starts_at
       end
-    end
-
-    def update_previous_orientation_ends_at
-      previous_orientation_without_end_date.ends_at = @orientation.starts_at
-      return if previous_orientation_without_end_date.save
-
-      fail!(
-        "La date de fin n'a pas pu être mise automatiquement sur l'orientation précédente: " \
-        "#{previous_orientation_without_end_date}"
-      )
     end
 
     def fill_current_orientation_ends_at

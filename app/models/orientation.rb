@@ -8,7 +8,7 @@ class Orientation < ApplicationRecord
 
   validates :starts_at, presence: true
 
-  validates :starts_at, :ends_at, uniqueness: { scope: :user_id }
+  validates :starts_at, uniqueness: { scope: :user_id }
 
   validate :ends_at_after_starts_at, :starts_at_in_the_past, :time_range_is_sufficiently_long
 
