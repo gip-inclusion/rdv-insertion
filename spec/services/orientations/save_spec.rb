@@ -48,18 +48,73 @@ describe Orientations::Save, type: :service do
       end
 
       context "when the previous orientation does not have an end date" do
-        it "is a success" do
-          is_a_success
+        context "without overlap override" do
+          it "is a failure" do
+            is_a_failure
+          end
+
+          it "outputs an error" do
+            expect(subject.errors.first[:overrideable_overlap]).to eq(true)
+          end
         end
 
-        it "saves the orientation" do
-          subject
-          expect(orientation.persisted?).to eq(true)
+        context "when we force overlap override" do
+          subject do
+            described_class.call(orientation:, should_override_overlap: true)
+          end
+
+          it "is a success" do
+            is_a_success
+          end
+
+          it "saves the orientation" do
+            subject
+            expect(orientation.persisted?).to eq(true)
+          end
+
+          it "sets the ends_at of the last orientation" do
+            subject
+            expect(second_orientation.reload.ends_at).to eq(starts_at - 1.day)
+          end
+        end
+      end
+
+      context "when the previous orientation end date overlaps" do
+        let!(:second_orientation) do
+          create(:orientation, user:, starts_at: Date.parse("11/11/2022"), ends_at: Date.parse("24/11/2022"))
         end
 
-        it "sets the ends_at of the last orientation" do
-          subject
-          expect(second_orientation.reload.ends_at).to eq(starts_at)
+        let!(:starts_at) { Date.parse("22/11/2022") }
+        let!(:ends_at) { Date.parse("30/12/2022") }
+
+        context "without overlap override" do
+          it "is a failure" do
+            is_a_failure
+          end
+
+          it "outputs an error" do
+            expect(subject.errors.first[:overrideable_overlap]).to eq(true)
+          end
+        end
+
+        context "when we force overlap override" do
+          subject do
+            described_class.call(orientation:, should_override_overlap: true)
+          end
+
+          it "is a success" do
+            is_a_success
+          end
+
+          it "saves the orientation" do
+            subject
+            expect(orientation.persisted?).to eq(true)
+          end
+
+          it "sets the ends_at of the last orientation" do
+            subject
+            expect(second_orientation.reload.ends_at).to eq(starts_at - 1.day)
+          end
         end
       end
 
@@ -67,11 +122,15 @@ describe Orientations::Save, type: :service do
         let!(:ends_at) { nil }
 
         context "when it starts after all the other orientations" do
+          subject do
+            described_class.call(orientation:, should_override_overlap: true)
+          end
+
           it "stays at nil and set the previous ends_at" do
             subject
             is_a_success
             expect(orientation.reload.ends_at).to be_nil
-            expect(second_orientation.reload.ends_at).to eq(starts_at)
+            expect(second_orientation.reload.ends_at).to eq(starts_at - 1.day)
           end
         end
 
@@ -94,17 +153,21 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.errors.first).to include("Cette orientation chevauche plusieurs autres orientations")
+            expect(subject.errors.first).to include("Cette orientation chevauche une autre orientation")
           end
         end
 
         context "when it is between two orientations" do
           let!(:starts_at) { Date.parse("10/11/2022") }
 
+          let!(:second_orientation) do
+            create(:orientation, user:, starts_at: Date.parse("21/11/2022"), ends_at: nil)
+          end
+
           it "sets the ends_at at the posterior starts_at" do
             subject
             is_a_success
-            expect(orientation.reload.ends_at).to eq(Date.parse("11/11/2022"))
+            expect(orientation.reload.ends_at).to eq(Date.parse("20/11/2022"))
             expect(second_orientation.reload.ends_at).to be_nil
           end
         end
@@ -135,7 +198,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors.first).to include(["Cette orientation chevauche plusieurs autres orientations"])
+          expect(subject.errors.first).to include("Cette orientation chevauche plusieurs autres orientations")
         end
 
         it "does not set the previous ends_at" do
@@ -153,7 +216,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors.first).to include("Cette orientation chevauche une autre orientation")
         end
 
         it "does not set the previous ends_at" do
