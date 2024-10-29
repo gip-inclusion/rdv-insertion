@@ -60,11 +60,11 @@ describe "Agents can invite from index page", :js do
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
         check("email_invite_for_user_#{user.id}")
-        expect(page).to have_content("Impossible d'inviter l'utilisateur")
+        expect(page).to have_content("Impossible d'inviter l'usager")
         expect(page).to have_content(
-          "Il n'y a plus de créneaux disponibles pour inviter cet utilisateur.\n\n" \
+          "Il n'y a plus de créneaux disponibles pour inviter cet usager.\n" \
           "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
-          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\n\nPlus d'informations sur notre guide"
+          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\nPlus d'informations sur notre guide"
         )
       end
     end
@@ -153,11 +153,11 @@ describe "Agents can invite from index page", :js do
 
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
           check("email_invite_for_user_#{user.id}")
-          expect(page).to have_content("Impossible d'inviter l'utilisateur")
+          expect(page).to have_content("Impossible d'inviter l'usager")
           expect(page).to have_content(
-            "Il n'y a plus de créneaux disponibles pour inviter cet utilisateur.\n\n" \
+            "Il n'y a plus de créneaux disponibles pour inviter cet usager.\n" \
             "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
-            "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\n\nPlus d'informations sur notre guide"
+            "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\nPlus d'informations sur notre guide"
           )
         end
       end

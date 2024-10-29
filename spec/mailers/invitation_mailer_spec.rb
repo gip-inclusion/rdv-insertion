@@ -19,6 +19,7 @@ RSpec.describe InvitationMailer do
       organisations: [organisation]
     )
   end
+
   let!(:follow_up) { build(:follow_up) }
 
   describe "#standard_invitation" do

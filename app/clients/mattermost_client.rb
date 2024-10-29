@@ -15,7 +15,7 @@ class MattermostClient
     private
 
     def send_message(url, text)
-      return unless ENV["SENTRY_ENVIRONMENT"] == "production"
+      return unless ENV["ENVIRONMENT_NAME"] == "production"
 
       Faraday.post(
         url,

@@ -201,9 +201,14 @@ describe Invitations::Validate, type: :service do
 
         it("is a failure") { is_a_failure }
 
-        it "stores an error message" do
+        it "stores a templated error message" do
           expect(subject.errors).to include(
-            "Aucun motif de suivi n'a été défini pour la catégorie RSA orientation"
+            an_object_having_attributes(
+              message: "Aucun motif de suivi n'a été défini pour la catégorie #{category_orientation.name}",
+              template_name: "no_follow_up_category",
+              locals: { motif_category_name: "RSA orientation",
+                        organisation_id: organisation.id }
+            )
           )
         end
       end

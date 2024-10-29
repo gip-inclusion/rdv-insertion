@@ -64,7 +64,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
   let!(:agent) { create(:agent) }
 
-  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", optional_rdv_subscription: false) }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, convene_user: false, motif_category: motif_category)
   end
@@ -202,8 +202,22 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         context "when participation is optional" do
-          let!(:motif_category) do
-            create(:motif_category, short_name: "rsa_orientation", optional_rdv_subscription: true)
+          let!(:invitation) do
+            create(
+              :invitation,
+              organisations: [organisation],
+              follow_up: follow_up,
+              expires_at: nil
+            )
+          end
+
+          let!(:invitation2) do
+            create(
+              :invitation,
+              organisations: [organisation],
+              follow_up: follow_up2,
+              expires_at: nil
+            )
           end
 
           it "does not enqueue a job to invalidate the related sent valid invitations" do
@@ -223,18 +237,32 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           let!(:new_follow_up) do
             build(:follow_up, motif_category: motif_category, user: new_user)
           end
+          let!(:other_rdv_solidarites_organisation_id) { 22_424 }
+          let!(:other_user_organisation) do
+            create(:organisation, rdv_solidarites_organisation_id: other_rdv_solidarites_organisation_id)
+          end
 
           before do
             allow(User).to receive(:create!).and_return(new_user)
             allow(FollowUp).to receive(:find_or_create_by!)
               .with(user: new_user, motif_category: motif_category)
               .and_return(new_follow_up)
+
+            allow(RdvSolidaritesApi::RetrieveUser).to receive(:call)
+              .with(rdv_solidarites_user_id: user_id1)
+              .and_return(
+                OpenStruct.new(
+                  success?: true,
+                  user: OpenStruct.new(organisation_ids: [rdv_solidarites_organisation_id,
+                                                          other_rdv_solidarites_organisation_id])
+                )
+              )
           end
 
           it "creates the user" do
             expect(User).to receive(:create!).with(
               rdv_solidarites_user_id: user_id1,
-              organisations: [organisation],
+              organisation_ids: [organisation.id, other_user_organisation.id],
               first_name: "James",
               last_name: "Cameron",
               address: "50 rue Victor Hugo 93500 Pantin",

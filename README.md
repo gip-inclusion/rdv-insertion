@@ -7,6 +7,7 @@ Le site est disponible
 
 - En production sur [rdv-insertion.fr/](https://rdv-insertion.fr/).
 - En démo sur [www.rdv-insertion-demo.fr](https://www.rdv-insertion-demo.fr).
+- En staging sur [staging.rdv-insertion.fr](https://staging.rdv-insertion.fr).
 
 ## Installation
 

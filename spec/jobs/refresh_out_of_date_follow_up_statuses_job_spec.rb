@@ -36,7 +36,6 @@ describe RefreshOutOfDateFollowUpStatusesJob do
                               follow_up5.id]).find_each(&:destroy!)
       allow(RefreshFollowUpStatusesJob).to receive(:perform_later)
       allow(MattermostClient).to receive(:send_to_notif_channel)
-      allow(ENV).to receive(:[]).with("SENTRY_ENVIRONMENT").and_return("production")
     end
 
     it "enqueues a refresh job for out of date follow-ups" do

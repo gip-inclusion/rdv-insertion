@@ -33,17 +33,9 @@ module Invitations
     def verify_creneaux_are_available
       return if retrieve_creneau_availability.creneau_availability
 
-      fail!(
-        "<strong>Il n'y a plus de créneaux disponibles</strong> pour inviter cet utilisateur. " \
-        "<br/><br/>" \
-        "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
-        "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations." \
-        "<br/><br/>" \
-        "Plus d'informations sur " \
-        "<a href='https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/configurer-loutil-et-envoyer" \
-        "-des-invitations/envoyer-des-invitations-ou-convocations/inviter-les-personnes-a-prendre-rdv" \
-        "#cas-des-creneaux-indisponibles' target='_blank' class='link-purple-underlined'>notre guide</a>." \
-      )
+      add_templated_error(message: "Il n'y a plus de créneaux disponibles pour inviter cet usager",
+                          template_name: "no_creneau_available")
+      fail!
     end
 
     def retrieve_creneau_availability
