@@ -8,7 +8,9 @@ class MigrateOptionalRdvSubscriptionToInvitations < ActiveRecord::Migration[7.1]
 
     Invitation
       .joins(follow_up: :motif_category)
+      .joins(:organisations)
       .where(follow_up: { motif_categories: { optional_rdv_subscription: true } })
+      .where.not(expires_at: nil)
       .find_each do |invitation|
       invitation.update!(expires_at: nil)
     end
