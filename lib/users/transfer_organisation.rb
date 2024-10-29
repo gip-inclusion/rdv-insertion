@@ -10,12 +10,13 @@ module Users
     end
 
     def call
-      set_current_agent
-      each_matching_user do |user|
-        transfer_to_target_organisation(user)
-        remove_from_source_organisation(user) 
-      rescue => error
-        errors << { user:, error: }
+      source_organisation.agents.take.with_rdv_solidarites_session do
+        each_matching_user do |user|
+          transfer_to_target_organisation(user)
+          remove_from_source_organisation(user) 
+        rescue => error
+          errors << { user:, error: }
+        end
       end
     end
 
@@ -31,18 +32,14 @@ module Users
       end
     end
 
-    def set_current_agent
-      Current.agent = source_organisation.agents.take
-    end
-
     def transfer_to_target_organisation(user)
       service = Users::Save.call(user:, organisation: target_organisation)
-      raise "Unable to transfer to target organisation" unless service.success?
+      raise "Unable to transfer to target organisation #{service.errors.join(', ')}" unless service.success?
     end
 
     def remove_from_source_organisation(user)
       service = Users::RemoveFromOrganisation.call(user:, organisation: source_organisation)
-      raise "Unable to remove from source organisation" unless service.success?
+      raise "Unable to remove from source organisation #{service.errors.join(', ')}" unless service.success?
     end
   end
 end
