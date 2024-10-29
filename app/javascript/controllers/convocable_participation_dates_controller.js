@@ -5,9 +5,9 @@ export default class extends Controller {
     this.motifCategoryId = this.element.dataset.motifCategoryId;
 
     this.buttons = this.element.querySelectorAll("button");
-    this.convocationDatesRow = document.querySelectorAll(`.motif-category-${this.motifCategoryId}-other-convocations`);
+    this.convocableParticipationDatesRow = document.querySelectorAll(`.motif-category-${this.motifCategoryId}-other-convocable_participations`);
 
-    this.convocationDatesRow.forEach((row) => {
+    this.convocableParticipationDatesRow.forEach((row) => {
       row.classList.toggle("d-none");
     });
     this.buttons.forEach((button) => {

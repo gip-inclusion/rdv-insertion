@@ -17,7 +17,7 @@
       <%= render "follow_ups/convocation_dates_rows", convocable_participations:, motif_category: %>
       <% if convocable_participations.count > 1 %>
         <tr>
-          <td class="px-4 py-2" colspan="3" style="cursor='pointer'" data-controller="convocation-dates" data-action="click->convocation-dates#toggleHistory" data-motif-category-id="<%= motif_category.id %>">
+          <td class="px-4 py-2" colspan="3" style="cursor='pointer'" data-controller="convocable-participation-dates" data-action="click->convocable-participation-dates#toggleHistory" data-motif-category-id="<%= motif_category.id %>">
               <button type="button">
                 <i class="fas fa-angle-down"></i> Voir l'historique <i class="fas fa-angle-down"></i>
               </button>

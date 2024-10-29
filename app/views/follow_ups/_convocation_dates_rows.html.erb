@@ -1,6 +1,6 @@
 <% last_convocable_participation = convocable_participations.max_by(&:created_at) %>
 <% convocable_participations.each_with_index do |participation, index| %>
-  <tr class="<%= index == 0 ? "motif-category-#{motif_category.id}-last-convocations" : "d-none motif-category-#{motif_category.id}-other-convocations" %>">
+  <tr class="<%= index == 0 ? "motif-category-#{motif_category.id}-last-convocable_participations" : "d-none motif-category-#{motif_category.id}-other-convocable_participations" %>">
     <% ["sms", "email", "postal"].each do |format| %>
       <% notification = notification_for_participation(participation, format) %>
       <td class="px-4 py-3">
@@ -11,9 +11,11 @@
           <% else %>
             <%= render "follow_ups/convocation_postal_link", participation: participation %>
           <% end %>
-        <% elsif format == "postal" %>
+        <% elsif index == 0 && format == "postal" %>
           <%# Dans le cas ou il n'y a pas encore de notification on affiche le bouton pour télécharger la lettre et en créer une %>
           <%= render "follow_ups/convocation_postal_link", participation: last_convocable_participation %>
+        <% else %>
+        -
         <% end %>
       </td>
     <% end %>
