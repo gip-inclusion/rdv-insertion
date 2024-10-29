@@ -9,13 +9,14 @@
     <%= render "users/user_tabs", user: @user, tab: "rdvs" %>
     <% @all_configurations.each do |category_configuration| %>
       <% follow_up = @follow_ups.find { |rc| rc.motif_category_id == category_configuration.motif_category_id } %>
+      <% convocable_participations = follow_up.participations.select(&:convocable?).sort_by(&:created_at).reverse %>
       <% if follow_up %>
         <%=
           render(
             "follow_ups/follow_up",
             follow_up: follow_up, organisation: @organisation, user: @user, department: @department,
             participations: follow_up.participations, user_department_organisations: @user_department_organisations,
-            convocable_participations: follow_up.participations.select(&:convocable?), category_configuration:,
+            convocable_participations: convocable_participations, category_configuration:,
             user_is_archived: @user_is_archived,
             invitations: follow_up.invitations, convocations: follow_up.convocations
           )

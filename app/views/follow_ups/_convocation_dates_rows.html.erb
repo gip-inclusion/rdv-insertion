@@ -1,30 +1,21 @@
-<% if max_number_of_convocations_in_any_format == 0 %>
-  <tr>
-    <td class="px-4 py-3">-</td>
-    <td class="px-4 py-3">-</td>
-    <td class="px-4 py-3">
-      <%= render "follow_ups/convocation_postal_link", participation: last_convocable_participation %>
-    </td>
-  </tr>
-<% else %>
-  <% max_number_of_convocations_in_any_format.times do |idx| %>
-    <tr class="<%= idx == 0 ? "motif-category-#{motif_category.id}-last-convocations" : "d-none motif-category-#{motif_category.id}-other-convocations" %>">
-      <% ["sms", "email"].each do |format| %>
-        <td class="px-4 py-3">
-          <% if convocations_by_format[format]&.fetch(idx, nil).present? %>
-            <% convocation = convocations_by_format[format].fetch(idx, nil) %>
-            <%= format_date(convocation.created_at) %>
-            <%= render "follow_ups/delivery_status", delivery: convocation, format: format %>
-          <% elsif idx == 0 %>
-            -
+<% last_convocable_participation = convocable_participations.max_by(&:created_at) %>
+<% convocable_participations.each_with_index do |participation, index| %>
+  <tr class="<%= index == 0 ? "motif-category-#{motif_category.id}-last-convocations" : "d-none motif-category-#{motif_category.id}-other-convocations" %>">
+    <% ["sms", "email", "postal"].each do |format| %>
+      <% notification = notification_for_participation(participation, format) %>
+      <td class="px-4 py-3">
+        <% if notification.present? %>
+          <%= format_date(notification.created_at) %>
+          <% if format != "postal" %>
+            <%= render "follow_ups/delivery_status", delivery: notification, format: format %>
+          <% else %>
+            <%= render "follow_ups/convocation_postal_link", participation: participation %>
           <% end %>
-        </td>
-      <% end %>
-      <% if idx == 0 # On affiche le lien de téléchargement pour la convocation la plus récente uniquement %>
-        <td class="px-4 py-3">
-            <%= render "follow_ups/convocation_postal_link", participation: last_convocable_participation %>
-        </td>
-      <% end %>
-    </tr>
-  <% end %>
+        <% elsif format == "postal" %>
+          <%# Dans le cas ou il n'y a pas encore de notification on affiche le bouton pour télécharger la lettre et en créer une %>
+          <%= render "follow_ups/convocation_postal_link", participation: last_convocable_participation %>
+        <% end %>
+      </td>
+    <% end %>
+  </tr>
 <% end %>
