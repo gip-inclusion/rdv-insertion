@@ -16,7 +16,7 @@ module AuthorizationConcern
   def agent_not_authorized
     respond_to do |format|
       format.json { render_not_authorized }
-      format.html { redirect_not_authorized }
+      format.any(:html, :csv) { redirect_not_authorized }
       format.turbo_stream do
         turbo_stream_display_modal(partial: "errors/forbidden_modal", status: :forbidden)
       end

@@ -12,7 +12,7 @@ class InvitationsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.any(:pdf) do
+        format.pdf do
           render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
         end
         format.json do
