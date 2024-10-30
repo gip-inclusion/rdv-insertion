@@ -48,14 +48,14 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  config.log_level = :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
 
   if ENV['ENABLE_MAILER_PREVIEWS'].present?
     config.action_mailer.show_previews = true
-    config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
+    config.action_mailer.preview_path = Rails.root.join("lib/mailer_previews")
   end
 
   # Use a different cache store in production.

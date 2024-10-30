@@ -26,17 +26,19 @@ module TurboStreamConcern
     render turbo_stream: turbo_stream.action(:redirect, path)
   end
 
-  def turbo_stream_display_error_modal(errors)
+  def turbo_stream_display_modal(partial:, locals: {}, status: :ok)
     render(
-      turbo_stream: turbo_stream.replace("remote_modal", partial: "common/error_modal", locals: { errors: }),
-      status: :unprocessable_entity
+      turbo_stream: turbo_stream.replace("remote_modal", partial:, locals:),
+      status:
     )
   end
 
-  def turbo_stream_display_modal(partial, status: :ok)
-    render(
-      turbo_stream: turbo_stream.replace("remote_modal", partial:),
-      status:
-    )
+  def turbo_stream_display_error_modal(errors)
+    turbo_stream_display_modal(partial: "common/error_modal", locals: { errors: }, status: :unprocessable_entity)
+  end
+
+  def turbo_stream_display_custom_error_modal(errors)
+    turbo_stream_display_modal(partial: "common/custom_errors_modal", locals: { errors: },
+                               status: :unprocessable_entity)
   end
 end

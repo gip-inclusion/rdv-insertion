@@ -2,11 +2,28 @@
   display: none;
 }
 
-.is-clipped {
+.collapse-button-container {
+  display: none;
+}
+
+.is-expanded {
+  position: relative;
+
+  .collapse-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.is-collapsed {
   overflow: hidden;
   max-height: 200px;
   position: relative;
-  
+
   .expand-button-container {
     display: flex;
     justify-content: center;

@@ -133,7 +133,6 @@ MotifCategory.create!(
   name: "RSA offre insertion pro",
   short_name: "rsa_insertion_offer",
   motif_category_type: "rsa_accompagnement",
-  optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
     rdv_title: "atelier",
@@ -174,7 +173,6 @@ MotifCategory.create!(
   name: "RSA Atelier rencontres professionnelles",
   short_name: "rsa_atelier_rencontres_pro",
   motif_category_type: "rsa_accompagnement",
-  optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
     rdv_title: "atelier",
@@ -187,7 +185,6 @@ MotifCategory.create!(
   name: "RSA Atelier compétences",
   short_name: "rsa_atelier_competences",
   motif_category_type: "rsa_accompagnement",
-  optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
     rdv_title: "atelier",

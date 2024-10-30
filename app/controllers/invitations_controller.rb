@@ -27,6 +27,7 @@ class InvitationsController < ApplicationController
                                                                     locals: { errors: invite_user.errors })
           }, status: :unprocessable_entity
         end
+        format.turbo_stream { turbo_stream_display_custom_error_modal(invite_user.errors) }
       end
     end
   end

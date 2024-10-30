@@ -1,4 +1,4 @@
-.periodic-invites-form {
+.form-group-toggle {
   input[name=periodicity-type] {
     width: 20px;
     height: 30px;
@@ -7,7 +7,7 @@
     width: 45px;
   }
   &.disabled {
-    .periodic-invites-form-content {
+    .form-group-toggle-content {
       opacity: 0.7;
       pointer-events: none;
     }
