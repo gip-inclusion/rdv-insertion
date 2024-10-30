@@ -75,7 +75,12 @@ Rails.application.routes.draw do
         patch "csv_export_authorizations/batch_update", to: "csv_export_authorizations#batch_update"
       end
     end
-    resources :invitation_or_convocation_dates_filterings, :creation_dates_filterings, only: [:new]
+    scope module: :dates_filterings do
+      resources :choose_date_kind,
+                :invitation_dates_filterings,
+                :convocation_dates_filterings,
+                :creation_dates_filterings, only: [:new]
+    end
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
     end
@@ -158,7 +163,12 @@ Rails.application.routes.draw do
     resource :stats, only: [:show], controller: 'website/stats'
     resources :users_organisations, only: [:index, :create]
     resource :users_organisations, only: [:destroy]
-    resources :invitation_or_convocation_dates_filterings, :creation_dates_filterings, only: [:new]
+    scope module: :dates_filterings do
+      resources :choose_date_kind,
+                :invitation_dates_filterings,
+                :convocation_dates_filterings,
+                :creation_dates_filterings, only: [:new]
+    end
   end
 
   namespace :api do
