@@ -1,14 +1,14 @@
 class ParcoursDocumentPolicy < ApplicationPolicy
-  def create?
+  def edit?
     record.agent == pundit_user || admin_in_user_parcours_org?
   end
-  alias edit? create?
-  alias update? create?
-  alias destroy? create?
+  alias update? edit?
+  alias destroy? edit?
 
   def show?
     in_user_parcours_org?
   end
+  alias create? show?
 
   private
 
