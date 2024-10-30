@@ -1,5 +1,5 @@
 module ImpersonationHelper
-  def with_rdvs_impersonation_warning(url)
+  def with_rdv_solidarites_impersonation_warning(url)
     return {} unless agent_impersonated?
 
     {
