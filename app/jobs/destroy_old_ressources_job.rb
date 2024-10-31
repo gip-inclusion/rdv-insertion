@@ -38,7 +38,17 @@ class DestroyOldRessourcesJob < ApplicationJob
   end
 
   def destroy_useless_rdvs
-    useless_rdvs = Rdv.where.missing(:participations).where("rdvs.created_at < ?", date_limit).destroy_all
+    useless_rdvs = Rdv.where.missing(:participations).where("rdvs.created_at < ?", date_limit)
+
+    # On envoit pas de webhook de destroy rgpd pour les rdvs du département 13
+    bdr_rdv_ids = useless_rdvs.joins(organisation: :department)
+                              .where(departments: { number: "13" })
+                              .pluck(:id)
+    useless_rdvs.each do |rdv|
+      rdv.should_send_webhook = bdr_rdv_ids.exclude?(rdv.id)
+    end
+
+    useless_rdvs.destroy_all
 
     MattermostClient.send_to_notif_channel(
       "🚮 Les rdvs suivants ont été supprimés automatiquement : " \
@@ -58,5 +68,11 @@ class DestroyOldRessourcesJob < ApplicationJob
 
   def date_limit
     2.years.ago
+  end
+
+  def disable_webhook_for_bdr
+    Department.find_by(number: "13").rdvs.where.missing(:participations).where(
+      "rdvs.created_at < ?", date_limit
+    )
   end
 end
