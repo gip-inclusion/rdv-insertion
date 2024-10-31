@@ -1,6 +1,6 @@
 <%= render "common/remote_modal", title: "Filtrer par date de convocation" do %>
   <%= form_with method: :get, local: true, url: structure_users_path, data: { "turbo-frame" => "_top" } do |form| %>
-    <% url_params.except(:convocation_date_before, :convocation_date_after, :department_id, :organisation_id, :invitation_type).each do |key, value| %>
+    <% url_params.except(:convocation_date_before, :convocation_date_after, :department_id, :organisation_id).each do |key, value| %>
       <%= form.hidden_field key, value: value %>
     <% end %>
 

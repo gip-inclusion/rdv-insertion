@@ -6,7 +6,7 @@ export default class extends Controller {
     const url = selectedRadio.value
 
     if (url) {
-      window.Turbo.visit(url)
+      document.querySelector("turbo-frame#remote_modal").setAttribute("src", url)
     }
   }
 }
