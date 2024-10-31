@@ -45,8 +45,10 @@ class DestroyOldRessourcesJob < ApplicationJob
                               .where(departments: { number: "13" })
                               .pluck(:id)
     useless_rdvs.each do |rdv|
-      rdv.should_send_webhook = bdr_rdv_ids.exclude?(rdv.id)
-    end
+      next unless rdv.id.in?(bdr_rdv_ids)
+      
+      rdv.should_send_webhook = false
+   end
 
     useless_rdvs.destroy_all
 
