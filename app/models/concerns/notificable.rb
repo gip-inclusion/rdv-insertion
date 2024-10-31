@@ -9,6 +9,11 @@ module Notificable
     notifications.max_by(&:created_at)
   end
 
+  def last_convocation_by(format)
+    # Pour afficher les infos de delivrance des convocations pour les rdv créés uniquement
+    notifications.where(format: format, event: "participation_created").max_by(&:created_at)
+  end
+
   def last_notification_created_at
     last_notification&.created_at
   end

@@ -1,6 +1,6 @@
 <div>
   <span class="small">
-    <% if delivery.delivery_failed? %>
+    <% if deliverable.delivery_failed? %>
       <span class="text-danger">
         Non délivrée
         <i
@@ -11,7 +11,7 @@
         </i>
       </span>
     <% else %>
-      <%= delivery.human_delivery_status_and_date %>
+      <%= deliverable.human_delivery_status_and_date %>
     <% end %>
   </span>
 </div>

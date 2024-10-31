@@ -2,17 +2,17 @@
 <% convocable_participations.each_with_index do |participation, index| %>
   <tr class="<%= index == 0 ? "motif-category-#{motif_category.id}-last-convocable_participations" : "d-none motif-category-#{motif_category.id}-other-convocable_participations" %>">
     <% ["sms", "email", "postal"].each do |format| %>
-      <% notification = notification_for_participation(participation, format) %>
+      <% convocation = participation.last_convocation_by(format) %>
       <td class="px-4 py-3">
-        <% if notification.present? %>
-          <%= format_date(notification.created_at) %>
+        <% if convocation.present? %>
+          <%= format_date(convocation.created_at) %>
           <% if format != "postal" %>
-            <%= render "follow_ups/delivery_status", delivery: notification, format: format %>
+            <%= render "follow_ups/delivery_status", deliverable: convocation, format: format %>
           <% else %>
             <%= render "follow_ups/convocation_postal_link", participation: participation %>
           <% end %>
         <% elsif index == 0 && format == "postal" %>
-          <%# Dans le cas ou il n'y a pas encore de notification on affiche le bouton pour télécharger la lettre et en créer une %>
+          <%# Dans le cas ou il n'y a pas encore de convocation on affiche le bouton pour télécharger la lettre et en créer une %>
           <%= render "follow_ups/convocation_postal_link", participation: last_convocable_participation %>
         <% else %>
         -
