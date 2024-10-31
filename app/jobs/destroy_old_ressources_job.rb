@@ -69,10 +69,4 @@ class DestroyOldRessourcesJob < ApplicationJob
   def date_limit
     2.years.ago
   end
-
-  def disable_webhook_for_bdr
-    Department.find_by(number: "13").rdvs.where.missing(:participations).where(
-      "rdvs.created_at < ?", date_limit
-    )
-  end
 end
