@@ -46,9 +46,9 @@ class DestroyOldRessourcesJob < ApplicationJob
                               .pluck(:id)
     useless_rdvs.each do |rdv|
       next unless rdv.id.in?(bdr_rdv_ids)
-      
+
       rdv.should_send_webhook = false
-   end
+    end
 
     useless_rdvs.destroy_all
 
