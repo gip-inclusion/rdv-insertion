@@ -8,6 +8,10 @@ class ConfirmModal {
   }
 
   checkForExternalConfirmLinks() {
+    // Turbo automatically handles confirmation of internal links (those handled by Rails)
+    // but by default there's no way to handle confirmation of external links.
+    // This code automatically detects external links with a data-turbo-confirm attribute
+    // and shows the confirmation modal when they are clicked.
     document.querySelectorAll("[data-turbo-confirm]").forEach((element) => {
       if (element.target !== "_blank") return;
 
