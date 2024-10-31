@@ -1,4 +1,4 @@
-<header>
+<header data-turbo-prefetch="false">
   <% if current_agent && (current_agent.super_admin? || agent_impersonated?) %>
     <div class="sub-header d-flex <%= agent_impersonated? ? "dark-blue-style" : "" %>" data-controller="super-admin-header">
       <div class="container d-flex position-relative sub-header-content">
