@@ -9,6 +9,10 @@ module OmniAuth
         :token_url => "#{ENV['RDV_SOLIDARITES_URL']}/oauth/token"
       }
 
+      def self.sign_out_url
+        "#{ENV['RDV_SOLIDARITES_URL']}/agents/sign_out"
+      end
+
       info do
         # Envoie une requête sur l'endpoint d'api qui donne les infos de l'agent courant
         access_token.get("/api/v1/agents/me.json").parsed

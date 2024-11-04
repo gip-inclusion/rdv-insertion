@@ -7,7 +7,7 @@ module SignOutHelper
     elsif logged_with_agent_connect?
       { url: agent_connect_logout_path, options: { data: { turbo: false } } }
     else
-      { url: sign_out_path, options: { method: :delete } }
+      { url: sign_out_path, options: { data: { turbo: false } } }
     end
   end
 
