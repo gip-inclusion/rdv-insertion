@@ -45,7 +45,7 @@ module Agents::SignInWithRdvSolidarites
       end
 
       format.html do
-        flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion"
+        flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion. Déconnectez-vous de RDV Solidarités puis essayez avec un autre compte."
         redirect_to @agent_return_to_url || sign_in_path
       end
     end
