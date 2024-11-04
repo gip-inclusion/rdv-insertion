@@ -434,6 +434,7 @@ tables:
       - updated_at
       - department_id
       - last_webhook_update_received_at
+      - archived_at
 
   - table_name: users_organisations
     non_anonymized_column_names:
