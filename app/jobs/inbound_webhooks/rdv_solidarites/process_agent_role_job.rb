@@ -9,7 +9,7 @@ module InboundWebhooks
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
 
-        return if organisation.blank? || @data[:access_level] == "intervenant"
+        return if organisation.blank? || organisation.archived? || @data[:access_level] == "intervenant"
 
         # This is necessary when the agent role has been created through rdv-i without the rdv-s record
         # when importing an organisation

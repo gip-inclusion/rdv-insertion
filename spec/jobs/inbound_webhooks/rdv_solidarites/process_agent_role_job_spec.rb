@@ -179,5 +179,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
         subject
       end
     end
+
+    context "when the organisation is archived" do
+      let!(:organisation) { create(:organisation, archived_at: Time.current) }
+
+      it "does not process the upsert" do
+        expect(UpsertRecordJob).not_to receive(:perform_later)
+        subject
+      end
+    end
   end
 end

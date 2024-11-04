@@ -2,8 +2,9 @@ class Organisation < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
   SEARCH_ATTRIBUTES = [:name, :slug].freeze
 
-  include Searchable
   include HasLogo
+  include Searchable
+  include Organisation::Archivable
 
   before_create { build_messages_configuration }
 
