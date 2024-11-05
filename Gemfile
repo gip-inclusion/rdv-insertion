@@ -13,7 +13,7 @@ gem "omniauth-rdv-service-public", git: "https://github.com/betagouv/rdv-service
 # Http client
 gem "faraday"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "~> 7.1.3.4"
+gem "rails", ">= 6.0.4.1"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
