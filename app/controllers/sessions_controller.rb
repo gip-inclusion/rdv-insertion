@@ -25,13 +25,13 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    flash[:notice] = "Déconnexion réussie"
     if session[:rdv_solidarites_oauth_token]
       redirect_to OmniAuth::Strategies::RdvSolidarites.sign_out_url, allow_other_host: true
     else
       redirect_to root_path
     end
     clear_session
+    flash[:notice] = "Déconnexion réussie"
   end
 
   private
