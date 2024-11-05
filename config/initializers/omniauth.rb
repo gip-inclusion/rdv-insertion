@@ -1,7 +1,5 @@
-require "omniauth/strategies/rdv_solidarites"
-
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :rdv_solidarites, ENV["RDV_SOLIDARITES_OAUTH_APP_ID"], ENV["RDV_SOLIDARITES_OAUTH_APP_SECRET"],
+  provider :rdv_service_public, ENV["RDV_SOLIDARITES_OAUTH_APP_ID"], ENV["RDV_SOLIDARITES_OAUTH_APP_SECRET"],
            scope: "write", base_url: ENV["RDV_SOLIDARITES_URL"]
 
   on_failure do |env|
