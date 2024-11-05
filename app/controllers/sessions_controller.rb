@@ -36,11 +36,11 @@ class SessionsController < ApplicationController
 
   private
 
-  def set_session_credentials
+  def set_session_credentials # rubocop:disable Metrics/AbcSize
     clear_session
 
-    if request.env['omniauth.auth']
-      session[:rdv_solidarites_oauth_token] = request.env['omniauth.auth']['credentials']['token']
+    if request.env["omniauth.auth"]
+      session[:rdv_solidarites_oauth_token] = request.env["omniauth.auth"]["credentials"]["token"]
     end
 
     timestamp = Time.zone.now.to_i

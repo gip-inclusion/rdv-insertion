@@ -10,10 +10,10 @@ module Agents::SignInWithRdvSolidarites
   private
 
   def validate_rdv_solidarites_credentials!
-    if request.env['omniauth.auth']
+    if request.env["omniauth.auth"]
       @rdv_solidarites_credentials = OpenStruct.new(
-        uid: request.env['omniauth.auth']["info"]["agent"]["email"],
-        "valid?": true
+        uid: request.env["omniauth.auth"]["info"]["agent"]["email"],
+        valid?: true
       )
     end
 
@@ -41,11 +41,12 @@ module Agents::SignInWithRdvSolidarites
     respond_to do |format|
       format.json do
         render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
-           status: :forbidden
+               status: :forbidden
       end
 
       format.html do
-        flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion. Déconnectez-vous de RDV Solidarités puis essayez avec un autre compte."
+        flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion. \
+                        Déconnectez-vous de RDV Solidarités puis essayez avec un autre compte."
         redirect_to @agent_return_to_url || sign_in_path
       end
     end
