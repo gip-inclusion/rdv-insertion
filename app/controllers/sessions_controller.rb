@@ -35,7 +35,7 @@ class SessionsController < ApplicationController
       redirect_to root_path
     end
     clear_session
-    flash[:notice] = "Déconnexion réussie"
+    flash[:notice] = "Déconnexion réussie" # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 
   private
