@@ -29,6 +29,18 @@ describe Users::RemoveFromOrganisation, type: :service do
       expect(user.deleted?).to eq(true)
     end
 
+    context "when user does not have a rdv_solidarites_user_id" do
+      before do
+        user.update(rdv_solidarites_user_id: nil)
+      end
+
+      it "remove the user from organisation but does not call rdvs api" do
+        expect(RdvSolidaritesApi::DeleteUserProfile).not_to receive(:call)
+        subject
+        expect(user.reload.organisations).not_to include(organisation)
+      end
+    end
+
     context "when the user is attached to more than one org" do
       let!(:other_organisation) { create(:organisation) }
       let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
