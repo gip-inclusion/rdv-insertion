@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Filtrer par date d'invitation ou de convocation" do %>
-  <%= form_with method: :get, local: true, data: { "turbo-frame" => "_top" }, data: { controller: "dates-filtering" } do |form| %>
+  <%= form_with method: :get, local: true, data: { controller: "dates-filtering" } do |form| %>
     <div class="d-flex flex-column mb-3 rdv-insertion-form">
       <div class="mt-2 input radio_button">
         <span class="radio w-100">
