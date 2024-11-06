@@ -34,5 +34,17 @@ describe RemoveOrganisationUserForExpiredArchiveJob do
         subject
       end
     end
+
+    context "when user does not have a rdv_solidarites_user_id" do
+      before do
+        archived_user.update(rdv_solidarites_user_id: nil)
+      end
+
+      it "remove the user from organisation1 after 2 years of archiving" do
+        expect(RdvSolidaritesApi::DeleteUserProfile).not_to receive(:call)
+        subject
+        expect(archived_user.reload.organisations).to eq([organisation2])
+      end
+    end
   end
 end
