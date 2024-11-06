@@ -1,0 +1,17 @@
+<div>
+  <span class="small">
+    <% if deliverable.delivery_failed? %>
+      <span class="text-danger">
+        Non délivrée
+        <i
+          class="fas fa-exclamation-circle"
+          data-controller="tooltip"
+          data-action="mouseover->tooltip#notDelivered"
+          data-delivery-format="<%= format %>">
+        </i>
+      </span>
+    <% else %>
+      <%= deliverable.human_delivery_status_and_date %>
+    <% end %>
+  </span>
+</div>
