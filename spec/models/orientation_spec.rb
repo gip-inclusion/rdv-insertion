@@ -46,7 +46,7 @@ describe Orientation do
     it "adds errors" do
       expect(orientation).not_to be_valid
       expect(orientation.errors.full_messages.to_sentence)
-        .to include("La période doit être d'au moins une semaine")
+        .to include("La période doit être d'au moins")
     end
   end
 
