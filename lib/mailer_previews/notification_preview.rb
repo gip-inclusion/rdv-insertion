@@ -12,28 +12,33 @@ class NotificationPreview < ActionMailer::Preview
   # from current_category_configuration.***_override attributes. These methods are implemented in the Templatable concern
   notification.define_singleton_method(:current_category_configuration) { nil }
 
-  MotifCategory.find_each do |motif_category|
+  MotifCategory.where.not(template_id: nil).find_each do |motif_category|
     define_method "#{motif_category.short_name}_presential_participation_created" do
+      notification.define_singleton_method(:motif_category) { motif_category }
       NotificationMailer.with(notification: notification)
                         .send("presential_participation_created")
     end
 
     define_method "#{motif_category.short_name}_presential_participation_updated" do
+      notification.define_singleton_method(:motif_category) { motif_category }
       NotificationMailer.with(notification: notification)
                         .send("presential_participation_updated")
     end
 
     define_method "#{motif_category.short_name}_by_phone_participation_created" do
+      notification.define_singleton_method(:motif_category) { motif_category }
       NotificationMailer.with(notification: notification)
                         .send("by_phone_participation_created")
     end
 
     define_method "#{motif_category.short_name}_by_phone_participation_updated" do
+      notification.define_singleton_method(:motif_category) { motif_category }
       NotificationMailer.with(notification: notification)
                         .send("by_phone_participation_updated")
     end
 
     define_method "#{motif_category.short_name}_participation_cancelled" do
+      notification.define_singleton_method(:motif_category) { motif_category }
       NotificationMailer.with(notification: notification)
                         .send("participation_cancelled")
     end
