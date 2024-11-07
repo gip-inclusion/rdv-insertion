@@ -14,12 +14,13 @@ class Orientation < ApplicationRecord
 
   scope :active, -> { where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)", Time.zone.today, Time.zone.today) }
 
-  scope :overlapping, lambda { |orientation|
+  scope :shrinkeable_to_fit, lambda { |orientation|
     where(user_id: orientation.user_id)
       .where.not(id: orientation.id)
       .where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)",
              orientation.ends_at || Float::INFINITY,
              orientation.starts_at)
+      .where("starts_at <= ?", orientation.starts_at - Orientation::MINIMUM_DURATION_IN_DAYS.days)
   }
 
   def time_range
@@ -53,6 +54,6 @@ class Orientation < ApplicationRecord
     return if ends_at.nil?
     return if (ends_at - starts_at).to_i >= MINIMUM_DURATION_IN_DAYS
 
-    errors.add(:base, "La période doit être d'au moins une semaine")
+    errors.add(:base, "La période doit être d'au moins #{MINIMUM_DURATION_IN_DAYS} jours")
   end
 end

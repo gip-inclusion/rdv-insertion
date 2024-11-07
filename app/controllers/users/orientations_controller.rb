@@ -34,7 +34,7 @@ module Users
     private
 
     def orientation_params
-      @orientation_params ||= params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id,
+      params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id,
                                                                   :organisation_id, :agent_id)
     end
 
@@ -75,8 +75,8 @@ module Users
     def save_orientation_and_redirect
       if save_orientation.success?
         turbo_stream_redirect structure_user_parcours_path(@user.id)
-      elsif requires_overlap_override_confirmation?
-        turbo_stream_confirm_override_overlap_modal
+      elsif save_orientation.shrinkeable_orientation.present?
+        turbo_stream_confirm_update_anterior_ends_at_modal
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -85,21 +85,20 @@ module Users
     def save_orientation
       @save_orientation ||= Orientations::Save.call(
         orientation: @orientation,
-        should_override_overlap: params[:override_overlap]
+        update_anterior_ends_at: params[:update_anterior_ends_at]
       )
     end
 
-    def requires_overlap_override_confirmation?
-      save_orientation.errors.one? &&
-        save_orientation.errors.first.is_a?(Hash) &&
-        save_orientation.errors.first[:overrideable_overlap]
-    end
-
-    def turbo_stream_confirm_override_overlap_modal
+    def turbo_stream_confirm_update_anterior_ends_at_modal
       render turbo_stream: turbo_stream.replace(
         "remote_modal",
-        partial: "users/orientations/confirm_override_overlap",
-        locals: { overlapping_orientation: save_orientation.errors.first[:overlapping_orientation] }
+        partial: "users/orientations/confirm_update_anterior_ends_at",
+        locals: {
+          shrinkeable_orientation: save_orientation.shrinkeable_orientation,
+          orientation: @orientation,
+          orientation_params:,
+          user: @user
+        }
       )
     end
   end

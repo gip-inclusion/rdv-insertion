@@ -54,13 +54,13 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.errors.first[:overrideable_overlap]).to eq(true)
+            expect(subject.shrinkeable_orientation).not_to be(nil)
           end
         end
 
         context "when we force overlap override" do
           subject do
-            described_class.call(orientation:, should_override_overlap: true)
+            described_class.call(orientation:, update_anterior_ends_at: true)
           end
 
           it "is a success" do
@@ -93,13 +93,13 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.errors.first[:overrideable_overlap]).to eq(true)
+            expect(subject.shrinkeable_orientation).not_to be(nil)
           end
         end
 
         context "when we force overlap override" do
           subject do
-            described_class.call(orientation:, should_override_overlap: true)
+            described_class.call(orientation:, update_anterior_ends_at: true)
           end
 
           it "is a success" do
@@ -123,7 +123,7 @@ describe Orientations::Save, type: :service do
 
         context "when it starts after all the other orientations" do
           subject do
-            described_class.call(orientation:, should_override_overlap: true)
+            described_class.call(orientation:, update_anterior_ends_at: true)
           end
 
           it "stays at nil and set the previous ends_at" do
@@ -181,7 +181,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors.first).to include("Cette orientation chevauche plusieurs autres orientations")
+          expect(subject.errors.first).to include("Cette orientation chevauche")
         end
 
         it "does not set the previous ends_at" do
@@ -198,7 +198,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors.first).to include("Cette orientation chevauche plusieurs autres orientations")
+          expect(subject.errors.first).to include("Cette orientation chevauche")
         end
 
         it "does not set the previous ends_at" do
