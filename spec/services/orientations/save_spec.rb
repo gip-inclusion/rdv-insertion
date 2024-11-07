@@ -54,7 +54,7 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.shrinkeable_orientation).not_to be(nil)
+            expect(subject.shrinkeable_orientation).not_to be_nil
           end
         end
 
@@ -93,7 +93,7 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.shrinkeable_orientation).not_to be(nil)
+            expect(subject.shrinkeable_orientation).not_to be_nil
           end
         end
 

@@ -61,7 +61,7 @@ module Orientations
           shrinkeable_orientations.first.update!(ends_at: @orientation.starts_at - 1.day)
         else
           result.shrinkeable_orientation = shrinkeable_orientations.first
-          return fail!
+          fail!
         end
       else
         validate_no_orientations_overlap
