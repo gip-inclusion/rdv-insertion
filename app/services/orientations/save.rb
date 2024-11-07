@@ -56,15 +56,16 @@ module Orientations
     end
 
     def shrink_or_ensure_no_overlapping
-      if shrinkeable_orientations.one? && non_shrinkable_overlapping_orientations.empty?
+      if shrinkeable_orientations.any? && non_shrinkable_overlapping_orientations.empty?
         if @update_anterior_ends_at
           shrinkeable_orientations.first.update!(ends_at: @orientation.starts_at - 1.day)
         else
           result.shrinkeable_orientation = shrinkeable_orientations.first
           fail!
         end
-      else
-        validate_no_orientations_overlap
+      elsif non_shrinkable_overlapping_orientations.any?
+        fail!("Cette orientation chevauche une autre orientation qui ne peut être raccourcie automatiquement,
+          veuillez modifier l'orientation en question ou changer les dates renseignées ci-dessous")
       end
     end
 
@@ -76,13 +77,6 @@ module Orientations
       @non_shrinkable_overlapping_orientations ||= other_user_orientations.select do |other_orientation|
         other_orientation.time_range.to_a.intersect?(@orientation.time_range.to_a)
       end - shrinkeable_orientations
-    end
-
-    def validate_no_orientations_overlap
-      return if non_shrinkable_overlapping_orientations.empty?
-
-      fail!("Cette orientation chevauche une autre orientation qui ne peut être raccourcie automatiquement,
-                    veuillez modifier l'orientation en question ou changer les dates renseignées ci-dessous")
     end
   end
 end
