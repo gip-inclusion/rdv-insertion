@@ -10,13 +10,7 @@ module Agents::SignInWithRdvSolidarites
   private
 
   def validate_rdv_solidarites_credentials!
-    if request.env["omniauth.auth"]
-      @rdv_solidarites_credentials = OpenStruct.new(
-        uid: request.env["omniauth.auth"]["info"]["agent"]["email"],
-        valid?: true
-      )
-    end
-
+    return if request.env["omniauth.auth"]
     raise RdvSolidarites::InvalidCredentialsError unless rdv_solidarites_credentials.valid?
   end
 
@@ -59,6 +53,12 @@ module Agents::SignInWithRdvSolidarites
   end
 
   def authenticated_agent
-    @authenticated_agent ||= Agent.find_by(email: rdv_solidarites_credentials.uid)
+    email = if request.env["omniauth.auth"]
+              request.env["omniauth.auth"]["info"]["agent"]["email"]
+            else
+              rdv_solidarites_credentials.uid
+            end
+
+    @authenticated_agent ||= Agent.find_by(email:)
   end
 end
