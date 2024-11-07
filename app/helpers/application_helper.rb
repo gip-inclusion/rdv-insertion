@@ -31,6 +31,8 @@ module ApplicationHelper
   end
 
   def show_organisation_navigation_button?
+    return false if current_structure_type_in_params.blank?
+
     current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 

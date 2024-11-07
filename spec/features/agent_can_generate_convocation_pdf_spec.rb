@@ -37,9 +37,9 @@ describe "Agents can generate convocation pdf", :js do
   it "can generate a pdf" do
     visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
-    expect(page).to have_button "Courrier"
+    expect(page).to have_button "Télécharger le courrier"
 
-    click_button "Courrier"
+    click_button "Télécharger le courrier"
 
     wait_for_download
     expect(downloads.length).to eq(1)
@@ -58,9 +58,9 @@ describe "Agents can generate convocation pdf", :js do
     it "generates the matching pdf" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).to have_button "Courrier"
+      expect(page).to have_button "Télécharger le courrier"
 
-      click_button "Courrier"
+      click_button "Télécharger le courrier"
 
       wait_for_download
       expect(downloads.length).to eq(1)
@@ -81,7 +81,7 @@ describe "Agents can generate convocation pdf", :js do
     it "cannot generate a pdf" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).to have_no_button "Courrier"
+      expect(page).to have_no_button "Télécharger le courrier"
     end
   end
 
@@ -91,7 +91,7 @@ describe "Agents can generate convocation pdf", :js do
     it "cannot generate a pdf" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).to have_no_button "Courrier"
+      expect(page).to have_no_button "Télécharger le courrier"
     end
   end
 
@@ -101,7 +101,7 @@ describe "Agents can generate convocation pdf", :js do
     it "cannot generate a pdf" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).to have_no_button "Courrier"
+      expect(page).to have_no_button "Télécharger le courrier"
     end
   end
 
@@ -111,9 +111,9 @@ describe "Agents can generate convocation pdf", :js do
     it "can generate a revoked participation pdf" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).to have_button "Courrier"
+      expect(page).to have_button "Télécharger le courrier"
 
-      click_button "Courrier"
+      click_button "Télécharger le courrier"
 
       wait_for_download
       expect(downloads.length).to eq(1)
@@ -131,15 +131,15 @@ describe "Agents can generate convocation pdf", :js do
     it "returns an error" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).to have_button "Courrier"
+      expect(page).to have_button "Télécharger le courrier"
 
-      click_button "Courrier"
+      click_button "Télécharger le courrier"
 
       expect(page).to have_content(
         "Le format de l'adresse est invalide. Le format attendu est le suivant: 10 rue de l'envoi 12345 - La Ville"
       )
 
-      expect(page).to have_button "Courrier"
+      expect(page).to have_button "Télécharger le courrier"
     end
   end
 end

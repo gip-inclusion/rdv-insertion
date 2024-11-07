@@ -16,7 +16,7 @@ module UsersHelper
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
       params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
       params[:referent_id], params[:creation_date_after], params[:creation_date_before], params[:tag_ids],
-      params[:orientation_type]
+      params[:convocation_date_before], params[:convocation_date_after], params[:orientation_type]
     ].any?(&:present?)
   end
 

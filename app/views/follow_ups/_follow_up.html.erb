@@ -37,9 +37,6 @@
                   <th class="px-4 py-2"><h4>RDV pris le</h4></th>
                   <th class="px-4 py-2"><h4>Date du RDV</h4></th>
                   <th class="px-5 py-2"><h4>Motif</h4></th>
-                  <% if convocable_participations.present? %>
-                    <th class="px-4 py-2"><h4>Convoqué par</h4></th>
-                  <% end %>
                   <th class="px-4 py-2"><h4>Statut RDV</h4></th>
                   <th class="px-4 py-2"><h4>Lien</h4></th>
                 </tr>
@@ -50,15 +47,6 @@
                     <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
                     <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
                     <td class="px-2 py-3"><%= participation.motif_name %></td>
-                    <% if convocable_participations.present? %>
-                      <td class="px-4 py-2">
-                        <% if participation.convocable? %>
-                          <%= render("follow_ups/convocations", user: user, participation: participation, sms_convocations: participation.sms_convocations, email_convocations: participation.email_convocations, postal_convocations: participation.postal_convocations, user_is_archived:) %>
-                        <% else %>
-                          -
-                        <% end %>
-                      </td>
-                    <% end %>
                     <td class="px-4 py-3 participation_status" >
                       <% if participation.rdv.rdv_solidarites_rdv_id && policy(participation).edit?  %>
                         <%= render "participations/participation_status", participation: participation, category_configuration: category_configuration %>
@@ -68,7 +56,7 @@
                     </td>
                     <td class="px-4 py-3">
                       <% if participation.rdv.rdv_solidarites_rdv_id && policy(participation).edit? %>
-                        <%= link_to participation.rdv_solidarites_url, target: "_blank" do %>
+                        <%= link_to participation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(participation.rdv_solidarites_url) do %>
                           <button class="btn btn-blue">
                             Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
                           </button>
@@ -82,7 +70,10 @@
           </div>
         <% end %>
         <% if category_configuration.invitation_formats.any? %>
-         <%= render "follow_ups/invitation_block", user:, organisation:, department:, invitations:, category_configuration:, follow_up:, motif_category: follow_up.motif_category, invitation_formats: category_configuration.invitation_formats, user_is_archived: %>
+          <%= render "follow_ups/invitation_block", user:, organisation:, department:, invitations:, category_configuration:, follow_up:, motif_category: follow_up.motif_category, invitation_formats: category_configuration.invitation_formats, user_is_archived: %>
+        <% end %>
+        <% if convocable_participations.present? %>
+          <%= render "follow_ups/convocation_block", convocable_participations:, motif_category: follow_up.motif_category %>
         <% end %>
       </div>
     </div>
