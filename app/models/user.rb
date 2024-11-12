@@ -184,10 +184,6 @@ class User < ApplicationRecord
     archives.map(&:organisation)
   end
 
-  def archives_organisations_in_department(department)
-    archives_organisations.select { |organisation| organisation.department_id == department.id }
-  end
-
   private
 
   def opposite_role

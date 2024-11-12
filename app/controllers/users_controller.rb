@@ -22,7 +22,6 @@ class UsersController < ApplicationController
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
                 :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
-                :set_user_is_archived,
                 for: :show
   before_action :set_organisation, :set_department,
                 for: :new
@@ -112,12 +111,6 @@ class UsersController < ApplicationController
       current_agent.id,
       request.query_parameters
     )
-  end
-
-  def set_user_is_archived
-    archive_status = UserArchivedStatus.new(@user, current_organisations)
-    @user_is_archived = archive_status.archived?
-    @archived_banner_content = archive_status.banner_content
   end
 
   def set_filterable_tags
