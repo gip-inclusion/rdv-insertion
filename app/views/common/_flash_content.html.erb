@@ -6,7 +6,7 @@
         <span class="me-3"><strong><%= flash_message.title %></strong></span>
         <span><%= flash_message.description %></span>
         <% if flash_message.link %>
-          <span><a href="<%= flash_message.link[:url] %>"><%= flash_message.link[:text] %></a></span>
+          <span><a href="<%= flash_message.link_url %>"><%= flash_message.link_text %></a></span>
         <% end %>
       </div>
       <button type="button" class="btn-close me-3" data-action="flash#remove" aria-label="Close"></button>

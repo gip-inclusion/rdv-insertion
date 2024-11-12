@@ -1,11 +1,11 @@
 class FlashMessage
-  attr_accessor :title, :description, :link, :persist
+  attr_reader :type, :title, :description, :link, :persist
 
   def self.from_type_and_value(value, type:)
     if value.is_a?(String)
       new(description: value, type:)
     elsif value.is_a?(Hash)
-      new(**value, type:)
+      new(**value.deep_symbolize_keys.merge(type:))
     end
   end
 
@@ -19,5 +19,13 @@ class FlashMessage
 
   def persist?
     @persist || @type == :error
+  end
+
+  def link_url
+    @link[:url]
+  end
+
+  def link_text
+    @link[:text]
   end
 end
