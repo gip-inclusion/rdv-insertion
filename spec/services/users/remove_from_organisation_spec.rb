@@ -31,7 +31,7 @@ describe Users::RemoveFromOrganisation, type: :service do
 
     context "when user does not have a rdv_solidarites_user_id" do
       before do
-        user.update(rdv_solidarites_user_id: nil)
+        user.update!(rdv_solidarites_user_id: nil)
       end
 
       it "remove the user from organisation but does not call rdvs api" do
