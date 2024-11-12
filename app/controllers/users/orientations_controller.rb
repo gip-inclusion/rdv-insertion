@@ -52,6 +52,7 @@ module Users
     def set_organisations
       @organisations = current_department
                        .organisations
+                       .active
                        .where(organisation_type: Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
                        .includes(:agents)
     end
