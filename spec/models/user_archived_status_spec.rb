@@ -1,8 +1,5 @@
-describe Users::ArchivedStatus, type: :service do
-  subject do
-    described_class.call(user:, organisations:)
-  end
-
+describe UserArchivedStatus do
+  let!(:user_archived_status) { described_class.new(user, organisations) }
   let(:user) { create(:user, organisations:) }
   let(:organisation1) { create(:organisation) }
   let(:organisation2) { create(:organisation) }
@@ -10,21 +7,21 @@ describe Users::ArchivedStatus, type: :service do
   let!(:archive1) { create(:archive, organisation: organisation1, user:) }
   let!(:archive2) { create(:archive, organisation: organisation2, user:) }
 
-  describe "#is_archived" do
+  describe "#archived?" do
     it "returns true if the user is archived in all given organisations" do
-      expect(subject.is_archived).to be true
+      expect(user_archived_status).to be_archived
     end
 
     it "returns false if the user is not archived in all given organisations" do
       archive1.destroy
-      expect(subject.is_archived).to be false
+      expect(user_archived_status).not_to be_archived
     end
   end
 
-  describe "#archived_banner_content" do
+  describe "#banner_content" do
     it "returns banner content if the user is archived" do
-      expect(subject.archived_banner_content[:title]).to eq("Dossier archivé")
-      expect(subject.archived_banner_content[:description]).to include(
+      expect(user_archived_status.banner_content[:title]).to eq("Dossier archivé")
+      expect(user_archived_status.banner_content[:description]).to include(
         "Ce bénéficiaire est archivé sur les organisations #{organisations.map(&:name).join(', ')}"
       )
     end
