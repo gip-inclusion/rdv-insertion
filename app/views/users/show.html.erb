@@ -47,7 +47,7 @@
       </div>
       <div class="row d-flex justify-content-start flex-wrap mt-5">
         <%= render "user_tags", tags: @user_tags, user: @user %>
-        <%= render "user_organisations_list", user: @user, archives: @user_archives, department: @department %>
+        <%= render "user_organisations_list", user: @user, archives: @user.archives, department: @department %>
         <%= render "user_referents_list", referents: @user_referents, user: @user %>
       </div>
     </div>

@@ -1,0 +1,8 @@
+<%= render(
+  "common/flash_content",
+  type: "notice",
+  flash_message: FlashMessage.from_hash(
+    title: "Dossier archivé",
+    description: archived_banner_message(@user.archives_organisations_in_department(current_department))
+  )
+%>
