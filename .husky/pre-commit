@@ -1,4 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn lint
+if [[ $(git status --porcelain | grep app/javascript/) ]]; then # only run the linter if the javascript files have changed
+  yarn lint
+fi

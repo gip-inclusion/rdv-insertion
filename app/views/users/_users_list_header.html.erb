@@ -46,7 +46,7 @@
     </div>
     <%= render "filter_by_orientation_type_button" if @structure_orientations.any? %>
     <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
-    <%= render "filter_by_invitations_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
+    <%= render "filter_by_invitation_or_convocation_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
     <%= render "search_form", url: structure_users_path %>
 
     <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
@@ -81,6 +81,11 @@
           <i class="fas fa-arrow-down"></i> Voir plus de filtres
         </button>
       </div>
+      <div class="collapse-button-container">
+        <button data-action="index-filters#collapse">
+          <i class="fas fa-arrow-up"></i> Voir moins de filtres
+        </button>
+      </div>
       <% if display_back_to_list_button? %>
         <div>
           <%= link_to structure_users_path(motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
@@ -101,7 +106,7 @@
     </h4>
     <% unless department_level? %>
       <div class="mt-2">
-        <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
+        <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(@organisation.rdv_solidarites_url) do %>
           <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
         <% end %>
       </div>
@@ -135,23 +140,6 @@
             Configurer l'organisation
           <% end %>
         <% end %>
-      <% end %>
-      <% if authorized_all?(current_organisations, :export_csv) %>
-        <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fas fa-download"></i> Exporter au format CSV
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton" data-turbo-prefetch="false">
-          <li>
-            <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
-              Export des usagers
-            <% end %>
-          </li>
-          <li>
-            <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
-              Export des rendez-vous des usagers
-            <% end %>
-          </li>
-        </ul>
       <% end %>
     </div>
     <% if @current_category_configuration.present? %>

@@ -7,7 +7,6 @@ module MotifCategoriesHelper
         name: "RSA orientation",
         short_name: "rsa_orientation",
         motif_category_type: "rsa_orientation",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -62,7 +61,6 @@ module MotifCategoriesHelper
         name: "RSA accompagnement",
         short_name: "rsa_accompagnement",
         motif_category_type: "rsa_accompagnement",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -120,7 +118,6 @@ module MotifCategoriesHelper
         name: "RSA signature CER",
         short_name: "rsa_cer_signature",
         motif_category_type: "rsa_accompagnement",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -139,7 +136,6 @@ module MotifCategoriesHelper
         name: "RSA suivi",
         short_name: "rsa_follow_up",
         motif_category_type: "rsa_accompagnement",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -158,7 +154,6 @@ module MotifCategoriesHelper
         name: "RSA offre insertion pro",
         short_name: "rsa_insertion_offer",
         motif_category_type: "rsa_orientation",
-        optional_rdv_subscription: true,
         template: create(
           :template,
           model: "atelier",
@@ -212,7 +207,6 @@ module MotifCategoriesHelper
         name: "RSA Atelier rencontres professionnelles",
         short_name: "rsa_atelier_rencontres_pro",
         motif_category_type: "rsa_accompagnement",
-        optional_rdv_subscription: true,
         template: create(
           :template,
           model: "atelier",
@@ -230,7 +224,6 @@ module MotifCategoriesHelper
         name: "RSA Atelier compétences",
         short_name: "rsa_atelier_competences",
         motif_category_type: "rsa_accompagnement",
-        optional_rdv_subscription: true,
         template: create(
           :template,
           model: "atelier",
@@ -318,7 +311,6 @@ module MotifCategoriesHelper
         name: "RSA orientation France Travail",
         short_name: "rsa_orientation_france_travail",
         motif_category_type: "rsa_orientation",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -356,7 +348,6 @@ module MotifCategoriesHelper
         name: "Entretien SIAE",
         short_name: "siae_interview",
         motif_category_type: "siae",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -375,7 +366,6 @@ module MotifCategoriesHelper
         name: "Info coll. SIAE",
         short_name: "siae_collective_information",
         motif_category_type: "siae",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -394,7 +384,6 @@ module MotifCategoriesHelper
         name: "Suivi SIAE",
         short_name: "siae_follow_up",
         motif_category_type: "siae",
-        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",

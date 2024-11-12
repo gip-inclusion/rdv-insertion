@@ -6,7 +6,7 @@
       <%= link_to(@back_to_users_list_url || structure_users_path) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
-      <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
+      <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(@organisation.rdv_solidarites_url) do %>
         <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
       <% end %>
     </div>

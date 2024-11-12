@@ -32,4 +32,11 @@ module TurboStreamConcern
       status: :unprocessable_entity
     )
   end
+
+  def turbo_stream_display_custom_error_modal(errors)
+    render(
+      turbo_stream: turbo_stream.replace("remote_modal", partial: "common/custom_errors_modal", locals: { errors: }),
+      status: :unprocessable_entity
+    )
+  end
 end

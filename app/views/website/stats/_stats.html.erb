@@ -2,19 +2,19 @@
   <%= render 'header' %>
   <div class="row d-flex justify-content-center mt-4 flex-wrap">
     <div class="col-12 col-md-6 px-5 pb-5">
-      <p class="highlight-stat big margin-left"><%= @stat.users_count %></p>
+      <p class="highlight-stat big margin-left"><%= number_with_delimiter(@stat.users_count, locale: :fr) %></p>
       <p class="highlight-stat margin-left">usagers gérés dans rdv-insertion</p>
       <%= line_chart sanitize_monthly_data(@stat.users_count_grouped_by_month), title: "Nouveaux usagers par mois", colors: ["#083b66"] %>
     </div>
     <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
-      <p class="highlight-stat big margin-left"><%= @stat.rdvs_count %></p>
+      <p class="highlight-stat big margin-left"><%= number_with_delimiter(@stat.rdvs_count, locale: :fr) %></p>
       <p class="highlight-stat margin-left">rendez-vous pris</p>
       <%= line_chart sanitize_monthly_data(@stat.rdvs_count_grouped_by_month), title: "Nouveaux rdvs par mois", colors: ["#083b66"] %>
     </div>
   </div>
   <div class="row d-flex justify-content-center flex-wrap-reverse">
     <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
-      <p class="highlight-stat big margin-left"><%= @stat.sent_invitations_count %></p>
+      <p class="highlight-stat big margin-left"><%= number_with_delimiter(@stat.sent_invitations_count, locale: :fr) %></p>
       <p class="highlight-stat margin-left">invitations envoyées par mail, SMS, et courrier</p>
       <%= line_chart sanitize_monthly_data(@stat.sent_invitations_count_grouped_by_month), title: "Invitations envoyées par mois", colors: ["#083b66"] %>
     </div>
@@ -62,14 +62,14 @@
   </div>
   <div class="row d-flex justify-content-center flex-wrap-reverse">
     <div class="col-12 col-md-6 px-5 pb-5">
-      <p class="highlight-stat big margin-left"><%= @stat.users_with_rdv_count&.round %></p>
+      <p class="highlight-stat big margin-left"><%= number_with_delimiter(@stat.users_with_rdv_count&.round, locale: :fr) %></p>
       <p class="highlight-stat margin-left">usagers <strong>ont été mis en relation via rdv-insertion</strong></p>
       <%= line_chart sanitize_monthly_data(@stat.users_with_rdv_count_grouped_by_month), title: "Nombre d'usagers ayant eu un rendez-vous par mois", colors: ["#083b66"] %>
     </div>
   </div>
   <div class="row d-flex justify-content-center flex-wrap">
     <div class="col-12 col-md-6 px-5 pb-5 d-flex flex-column justify-content-center align-items-center">
-      <p class="highlight-stat big margin-left"><%= @stat.agents_count %> agents</p>
+      <p class="highlight-stat big margin-left"><%= number_with_delimiter(@stat.agents_count, locale: :fr) %> agents</p>
       <% if current_page?(action: 'index') %>
         <p class="highlight-stat margin-left">travaillant dans <strong><%= @department_count %> territoires départementaux</strong>  utilisent rdv-insertion</p>
       <% else %>

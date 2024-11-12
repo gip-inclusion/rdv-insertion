@@ -23,7 +23,7 @@
 @import "./components/table";
 @import "./components/banner";
 @import "./components/icon";
-@import "./components/periodic_invites_form";
+@import "./components/form_group_toggle";
 @import "./components/qr_code_scanner";
 @import "./vendor/inclusion_connect_button";
 @import "./components/rdv_insertion_instance_name";
@@ -50,6 +50,7 @@ html {
 a {
   text-decoration: none;
   color: black;
+
   &:hover {
     color: black;
   }
@@ -57,17 +58,21 @@ a {
 
 body {
   background-color: $light;
-  display:flex;
-  flex-direction:column;
-  min-height:100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   font-family: 'Marianne', Arial, Helvetica, sans-serif;
 }
 
 .wrapper {
-  flex:1
+  flex: 1
 }
 
 .container {
   width: 95%;
   max-width: 1500px;
+}
+
+.align-self-end {
+  align-self: flex-end;
 }
