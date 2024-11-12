@@ -5,7 +5,7 @@ module CurrentStructure
     helper_method :current_structure_type, :department_level?,
                   :current_structure, :current_structure_name, :current_structure_id,
                   :current_department, :current_department_name, :current_department_id,
-                  :current_organisation, :current_organisation_id,
+                  :current_organisations, :current_organisation, :current_organisation_id,
                   :current_agent_department_organisations
 
     delegate :name, to: :current_structure, prefix: true
@@ -79,9 +79,12 @@ module CurrentStructure
     @current_agent_department_organisations ||= current_agent.department_organisations(current_department_id)
   end
 
+  def current_organisations
+    @current_organisations ||= department_level? ? current_agent_department_organisations : [current_organisation]
+  end
+
   def current_organisation_ids
-    @current_organisation_ids ||=
-      department_level? ? current_department.organisation_ids : [current_organisation_id]
+    current_organisations.map(&:id)
   end
 
   def current_organisations_filter

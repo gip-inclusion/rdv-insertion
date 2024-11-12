@@ -1,7 +1,7 @@
 module Users
   class ParcoursController < ApplicationController
     before_action :set_user, :set_department, :set_user_tags, :set_back_to_users_list_url,
-                  :set_current_organisations, :set_user_archives, :set_user_is_archived, only: [:show]
+                  :set_user_archives, :set_user_is_archived, only: [:show]
 
     include BackToListConcern
     include Users::Taggable
@@ -30,12 +30,8 @@ module Users
       @user_archives = @user.archives
     end
 
-    def set_current_organisations
-      @current_organisations = department_level? ? current_agent_department_organisations : [current_organisation]
-    end
-
     def set_user_is_archived
-      archive_status = UserArchivedStatus.new(@user, @current_organisations)
+      archive_status = UserArchivedStatus.new(@user, current_organisations)
       @user_is_archived = archive_status.archived?
       @archived_banner_content = archive_status.banner_content
     end

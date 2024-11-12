@@ -5,7 +5,7 @@ module Users
     include Users::Archivable
 
     before_action :set_organisation, :set_department, :set_all_configurations, :set_current_category_configuration,
-                  :set_current_motif_category, :set_organisations, :set_motif_category_name, :set_current_organisations,
+                  :set_current_motif_category, :set_organisations, :set_motif_category_name,
                   :set_users, :set_follow_ups, :set_back_to_users_list_url, :filter_users_by_non_invited_status,
                   :order_by_follow_ups, only: :new
 
@@ -81,10 +81,6 @@ module Users
                .joins(:follow_ups)
                .where(follow_ups: { motif_category: @current_motif_category })
                .where.not(follow_ups: { status: "closed" })
-    end
-
-    def set_current_organisations
-      @current_organisations = department_level? ? @organisations : [@organisation]
     end
   end
 end

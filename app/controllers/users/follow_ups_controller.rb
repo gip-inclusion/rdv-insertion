@@ -1,7 +1,7 @@
 module Users
   class FollowUpsController < ApplicationController
     before_action :set_user, :set_department, :set_organisation, :set_user_department_organisations,
-                  :set_all_configurations, :set_user_tags, :set_current_organisations, :set_user_archives,
+                  :set_all_configurations, :set_user_tags, :set_user_archives,
                   :set_user_is_archived, :set_back_to_users_list_url, only: [:index]
 
     include BackToListConcern
@@ -24,7 +24,7 @@ module Users
     private
 
     def set_user_is_archived
-      archive_status = UserArchivedStatus.new(@user, @current_organisations)
+      archive_status = UserArchivedStatus.new(@user, current_organisations)
       @user_is_archived = archive_status.archived?
       @archived_banner_content = archive_status.banner_content
     end
@@ -68,10 +68,6 @@ module Users
 
     def set_user_archives
       @user_archives = @user.archives
-    end
-
-    def set_current_organisations
-      @current_organisations = department_level? ? current_agent_department_organisations : [@organisation]
     end
   end
 end
