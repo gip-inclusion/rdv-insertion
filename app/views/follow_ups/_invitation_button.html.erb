@@ -1,6 +1,6 @@
 <% if show_invitation?(invitation_format, invitation_formats) %>
   <td class="px-4 py-3">
-    <%= form_for :invitation, url: structure_user_invitations_path(user.id), data: { controller: "invitation-button" }, html: { method: :post } do |f| %>
+    <%= form_for :invitation, url: structure_user_invitations_path(user_id: user.id), data: { controller: "invitation-button" }, html: { method: :post } do |f| %>
       <%= f.hidden_field :format, value: invitation_format %>
       <%= f.fields_for :motif_category do |ff| %>
         <%= ff.hidden_field :id, value: motif_category.id %>

@@ -12,6 +12,7 @@ export default class extends Controller {
 
     if (file && file.size < maxSize) {
       window.Turbo.navigator.submitForm(this.element)
+      this.clearFileInput();
     } else if (file) {
       Swal.fire({
         title: "Ce fichier est trop lourd",
@@ -21,11 +22,15 @@ export default class extends Controller {
     }
   }
 
+  clearFileInput() {
+    this.element.querySelector("input[type=file]").value = null;
+  }
+
   spin() {
     this.element.querySelector("button .spinner-border").classList.remove("d-none")
     this.element.querySelector("button i").classList.add("d-none")
   }
-  
+
   stopSpin() {
     this.element.querySelector("button .spinner-border").classList.add("d-none")
     this.element.querySelector("button i").classList.remove("d-none")

@@ -9,21 +9,22 @@ module Users
     end
 
     def create
-      @parcours_document = ParcoursDocument.create(parcours_document_params)
+      @parcours_document = ParcoursDocument.new(parcours_document_params)
+      authorize @parcours_document
 
-      if @parcours_document.errors.any?
-        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
+      if @parcours_document.save
+        redirect_to structure_user_parcours_path(user_id: @user.id)
       else
-        redirect_to structure_user_parcours_path(@user.id)
+        turbo_stream_display_error_modal(@parcours_document.errors.full_messages)
       end
     end
 
     def update
       authorize @parcours_document
       if @parcours_document.update(parcours_document_params)
-        redirect_to structure_user_parcours_path(@user.id)
+        redirect_to structure_user_parcours_path(user_id: @user.id)
       else
-        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
+        turbo_stream_display_error_modal(@parcours_document.errors.full_messages)
       end
     end
 
@@ -31,9 +32,9 @@ module Users
       authorize @parcours_document
 
       if @parcours_document.destroy
-        redirect_to structure_user_parcours_path(@user.id)
+        redirect_to structure_user_parcours_path(user_id: @user.id)
       else
-        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
+        turbo_stream_display_error_modal(@parcours_document.errors.full_messages)
       end
     end
 

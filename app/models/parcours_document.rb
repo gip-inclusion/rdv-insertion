@@ -21,7 +21,7 @@ class ParcoursDocument < ApplicationRecord
   ].freeze
 
   belongs_to :department
-  belongs_to :agent
+  belongs_to :agent, optional: true
   belongs_to :user
 
   has_one_attached :file

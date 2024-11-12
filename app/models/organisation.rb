@@ -57,6 +57,10 @@ class Organisation < ApplicationRecord
 
   def france_travail? = safir_code?
 
+  def with_parcours_access?
+    organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+  end
+
   private
 
   def validate_organisation_phone_number
