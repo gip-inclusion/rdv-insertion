@@ -84,7 +84,7 @@ class ArchivesController < ApplicationController
   def flash_success_for_create(archive)
     flash[:success] = {
       title: "Dossier archivé",
-      description: "Le bénéficiaire a bien été archivé sur l'organisation #{archive.organisation.name}"
+      description: "L'usager a bien été archivé sur l'organisation #{archive.organisation.name}"
     }
   end
 
@@ -96,14 +96,14 @@ class ArchivesController < ApplicationController
 
     flash[:success] = {
       title: "Dossier archivé",
-      description: "Le bénéficiaire a bien été archivé sur #{organisation_wording} #{archived_organisations_names}"
+      description: "L'usager a bien été archivé sur #{organisation_wording} #{archived_organisations_names}"
     }
   end
 
   def flash_success_for_destroy
     flash[:success] = {
       title: "Dossier désarchivé",
-      description: "Le dossier du bénéficiaire a bien été ouvert sur cette organisation"
+      description: "Le dossier de l'usager a bien été rouvert sur cette organisation"
     }
   end
   # rubocop:enable Rails/ActionControllerFlashBeforeRender
