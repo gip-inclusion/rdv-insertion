@@ -14,6 +14,8 @@ class NotificationPreview < ActionMailer::Preview
 
   MotifCategory.where.not(template_id: nil).find_each do |motif_category|
     define_method "#{motif_category.short_name}_presential_participation_created" do
+      # we need to set the motif_category on the notification instance to be able to use it in the mailer preview
+      # we have to do this here otherwise it will reference the last motif_category set in the loop
       notification.define_singleton_method(:motif_category) { motif_category }
       NotificationMailer.with(notification: notification)
                         .send("presential_participation_created")
