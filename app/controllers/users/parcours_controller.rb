@@ -1,11 +1,10 @@
 module Users
   class ParcoursController < ApplicationController
     before_action :set_user, :set_department, :set_user_tags, :set_back_to_users_list_url,
-                  :set_user_archives, :set_user_is_archived, only: [:show]
+                  only: [:show]
 
     include BackToListConcern
     include Users::Taggable
-    include Users::Archivable
 
     def show
       @orientations = policy_scope(@user.orientations)
@@ -24,16 +23,6 @@ module Users
 
     def set_user
       @user = policy_scope(User).preload(:archives).find(params[:user_id])
-    end
-
-    def set_user_archives
-      @user_archives = @user.archives
-    end
-
-    def set_user_is_archived
-      archive_status = UserArchivedStatus.new(@user, current_organisations)
-      @user_is_archived = archive_status.archived?
-      @archived_banner_content = archive_status.banner_content
     end
   end
 end

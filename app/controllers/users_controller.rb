@@ -21,7 +21,7 @@ class UsersController < ApplicationController
                 :set_referents_list, :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_tags, :set_user_referents, :set_back_to_users_list_url, :set_user_archives,
+                :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
                 :set_user_is_archived,
                 for: :show
   before_action :set_organisation, :set_department,
@@ -280,10 +280,6 @@ class UsersController < ApplicationController
              .preload(:invitations, :participations)
              .where(id: archived_user_ids_in_organisations(current_organisations))
              .active.distinct
-  end
-
-  def set_user_archives
-    @user_archives = @user.archives
   end
 
   def set_follow_ups

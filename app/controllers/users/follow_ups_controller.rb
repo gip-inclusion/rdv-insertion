@@ -1,12 +1,11 @@
 module Users
   class FollowUpsController < ApplicationController
     before_action :set_user, :set_department, :set_organisation, :set_user_department_organisations,
-                  :set_all_configurations, :set_user_tags, :set_user_archives,
-                  :set_user_is_archived, :set_back_to_users_list_url, only: [:index]
+                  :set_all_configurations, :set_user_tags,
+                  :set_back_to_users_list_url, only: [:index]
 
     include BackToListConcern
     include Users::Taggable
-    include Users::Archivable
 
     def index
       @follow_ups =
@@ -22,12 +21,6 @@ module Users
     end
 
     private
-
-    def set_user_is_archived
-      archive_status = UserArchivedStatus.new(@user, current_organisations)
-      @user_is_archived = archive_status.archived?
-      @archived_banner_content = archive_status.banner_content
-    end
 
     def set_user
       @user = policy_scope(User).preload(
@@ -64,10 +57,6 @@ module Users
     def set_user_department_organisations
       @user_department_organisations =
         policy_scope(Organisation).where(id: @user.organisation_ids, department: @department)
-    end
-
-    def set_user_archives
-      @user_archives = @user.archives
     end
   end
 end
