@@ -17,7 +17,7 @@
             follow_up: follow_up, organisation: @organisation, user: @user, department: @department,
             participations: follow_up.participations, user_department_organisations: @user_department_organisations,
             convocable_participations: convocable_participations, category_configuration:,
-            user_is_archived: @user_is_archived,
+            user_is_archived: user_archived_in?(@user, current_organisations),
             invitations: follow_up.invitations
           )
         %>
