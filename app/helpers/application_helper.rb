@@ -42,6 +42,6 @@ module ApplicationHelper
   end
 
   def render_turbo_stream_flash_messages
-    turbo_stream.prepend "flashes", partial: "common/flash"
+    turbo_stream.prepend "flashes", partial: "common/flashes"
   end
 end

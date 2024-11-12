@@ -12,7 +12,7 @@ module Users
       @parcours_document = ParcoursDocument.create(parcours_document_params)
 
       if @parcours_document.errors.any?
-        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
+        turbo_stream_prepend_flash_messages(error: @parcours_document.errors.full_messages.join(". "))
       else
         redirect_to structure_user_parcours_path(@user.id)
       end
@@ -23,7 +23,7 @@ module Users
       if @parcours_document.update(parcours_document_params)
         redirect_to structure_user_parcours_path(@user.id)
       else
-        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
+        turbo_stream_prepend_flash_messages(error: @parcours_document.errors.full_messages.join(". "))
       end
     end
 
@@ -33,7 +33,7 @@ module Users
       if @parcours_document.destroy
         redirect_to structure_user_parcours_path(@user.id)
       else
-        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
+        turbo_stream_prepend_flash_messages(error: @parcours_document.errors.full_messages.join(". "))
       end
     end
 
