@@ -1,4 +1,4 @@
-module Users::Archivable
+module Users::ArchivedList
   private
 
   def archived_user_ids_in_organisations(organisations)

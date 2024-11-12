@@ -37,8 +37,7 @@ module Users
     def set_organisation
       return if department_level?
 
-      @organisation = policy_scope(Organisation).includes(:department, :motif_categories)
-                                                .find_by(id: current_organisation_ids & @user.organisation_ids)
+      @organisation = policy_scope(Organisation).preload(:department, :motif_categories).find(current_organisation_id)
     end
 
     def set_all_configurations

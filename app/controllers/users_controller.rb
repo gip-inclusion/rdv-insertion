@@ -12,11 +12,10 @@ class UsersController < ApplicationController
   include Users::Filterable
   include Users::Sortable
   include Users::Taggable
-  include Users::Archivable
+  include Users::ArchivedList
 
   before_action :set_organisation, :set_department, :set_all_configurations,
-                :set_users_scope,
-                :set_current_category_configuration, :set_current_motif_category,
+                :set_users_scope, :set_current_category_configuration, :set_current_motif_category,
                 :set_users, :set_follow_ups, :set_structure_orientations, :set_orientation_types, :set_filterable_tags,
                 :set_referents_list, :filter_users, :order_users,
                 for: :index
@@ -131,7 +130,7 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
-      format.turbo_stream { turbo_stream_replace_flash_message(error: errors.join(", ")) }
+      format.turbo_stream { turbo_stream_replace_flash_messages(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)

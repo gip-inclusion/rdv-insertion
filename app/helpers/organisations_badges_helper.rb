@@ -6,7 +6,7 @@ module OrganisationsBadgesHelper
     )
   end
 
-  def tooltip_for_organisation_badge(archive)
+  def tooltip_for_archived_organisation_badge(archive)
     return if archive.nil?
 
     attributes = {

@@ -6,6 +6,8 @@ class FlashMessage
       new(description: value, type:)
     elsif value.is_a?(Hash)
       new(**value.deep_symbolize_keys.merge(type:))
+    else
+      raise ArgumentError, "Invalid flash message value: #{value}"
     end
   end
 
