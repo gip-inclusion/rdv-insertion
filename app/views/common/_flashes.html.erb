@@ -1,5 +1,5 @@
 <div id="flashes">
-  <% flash.each do |type, content| %>
-    <%= render "common/flash_content", type: type, content: content %>
+  <% flash.each do |type, value| %>
+    <%= render "common/flash_content", type: type, flash_message: FlashMessage.from_string_or_hash(value) %>
   <% end %>
 </div>
