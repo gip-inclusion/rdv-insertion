@@ -129,6 +129,11 @@ class User < ApplicationRecord
     PhoneNumberHelper.format_phone_number(phone_number)
   end
 
+  def phone_number_is_mobile?
+    types = PhoneNumberHelper.parsed_number(phone_number)&.types
+    types&.include?(:mobile)
+  end
+
   def carnet_de_bord_carnet_url
     "#{ENV['CARNET_DE_BORD_URL']}/manager/carnets/#{carnet_de_bord_carnet_id}"
   end
@@ -202,11 +207,6 @@ class User < ApplicationRecord
 
   def format_phone_number
     self.phone_number = phone_number_formatted
-  end
-
-  def phone_number_is_mobile?
-    types = PhoneNumberHelper.parsed_number(phone_number)&.types
-    types&.include?(:mobile)
   end
 
   def birth_date_validity
