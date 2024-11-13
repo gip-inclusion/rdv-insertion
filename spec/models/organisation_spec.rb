@@ -68,4 +68,15 @@ describe Organisation do
       end
     end
   end
+
+  describe "archivable" do
+    let(:organisation) { create(:organisation, agents: [create(:agent)]) }
+
+    it "cannot be archived if agents are present" do
+      organisation.update(archived_at: Time.current)
+      expect(organisation).not_to be_valid
+      expect(organisation.errors.full_messages.to_sentence)
+        .to include("Ne peut pas être archivée si des agents sont présents")
+    end
+  end
 end

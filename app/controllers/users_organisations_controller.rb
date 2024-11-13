@@ -58,7 +58,7 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def set_organisations
-    @organisations = @department.organisations.includes(:motif_categories)
+    @organisations = @department.organisations.active.includes(:motif_categories)
   end
 
   def set_user_organisations
