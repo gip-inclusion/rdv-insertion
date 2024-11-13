@@ -15,7 +15,7 @@ header {
   margin-left: 15px;
 }
 
-.sub-header-links {
+.sub-header {
   height: 40px;
   display: flex;
   align-items: center;
@@ -30,7 +30,7 @@ header {
 }
 
 
-.sub-header {
+.top-bar {
   height: 50px;
   display: flex;
   align-items: center;
@@ -41,7 +41,7 @@ header {
 
   &.hidden {
     height: 0px;
-    .sub-header-content {
+    .top-bar-content {
       display: none !important;
     }
     #toggle-navbar {
