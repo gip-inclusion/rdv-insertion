@@ -7,6 +7,9 @@ class ApplicationJob < ActiveJob::Base
     set(wait: wait_time).perform_later(*)
   end
 
+  # InboundWebhooks::RdvSolidarites::ProcessRdvJob => lock:inbound_webhooks:rdv_solidarites:process_rdv_job
+  def self.base_lock_key = "lock:#{name.split('::').map(&:underscore).join(':')}"
+
   private
 
   class FailedServiceError < StandardError; end
