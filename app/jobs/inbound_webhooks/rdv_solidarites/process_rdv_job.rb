@@ -3,11 +3,9 @@ class WebhookProcessingJobError < StandardError; end
 module InboundWebhooks
   module RdvSolidarites
     # rubocop:disable Metrics/ClassLength
-    class ProcessRdvJob < ApplicationJob
-      include LockedJobs
-
+    class ProcessRdvJob < LockedAndOrderedJobBase
       def self.lock_key(data, _meta)
-        "#{name}:#{data[:id]}"
+        "Lock::#{name}:#{data[:id]}"
       end
 
       def perform(data, meta)
