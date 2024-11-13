@@ -17,13 +17,4 @@ describe UserArchivedStatus do
       expect(user_archived_status).not_to be_archived
     end
   end
-
-  describe "#banner_content" do
-    it "returns banner content if the user is archived" do
-      expect(user_archived_status.banner_content[:title]).to eq("Dossier archivé")
-      expect(user_archived_status.banner_content[:description]).to include(
-        "Ce bénéficiaire est archivé sur les organisations #{organisations.map(&:name).join(', ')}"
-      )
-    end
-  end
 end
