@@ -11,7 +11,7 @@ class Organisation < ApplicationRecord
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, :organisation_type, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validates :phone_number, phone_number: { allow_short_numbers: true }
+  validates :phone_number, phone_number: { allow_4_digits_numbers: true }
 
   belongs_to :department
   has_one :stat, as: :statable, dependent: :destroy
