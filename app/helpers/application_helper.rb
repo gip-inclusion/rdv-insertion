@@ -5,7 +5,7 @@ module ApplicationHelper
       error: "alert-danger",
       alert: "alert-warning",
       notice: "alert-info"
-    }[type.to_sym] || type.to_s
+    }[type] || type.to_s
   end
 
   def icon_class_for(type)
@@ -14,7 +14,7 @@ module ApplicationHelper
       error: "far fa-times-circle fa-lg",
       alert: "fas fa-exclamation-circle fa-lg",
       notice: "fas fa-info-circle fa-lg"
-    }[type.to_sym] || "fas fa-info-circle fa-lg"
+    }[type] || "fas fa-info-circle fa-lg"
   end
 
   def display_attribute(attribute)

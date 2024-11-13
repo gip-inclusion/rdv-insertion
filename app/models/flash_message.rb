@@ -12,7 +12,7 @@ class FlashMessage
   end
 
   def initialize(type:, description:, title: nil, link: nil, persist: false)
-    @type = type
+    @type = type.to_sym
     @title = title
     @description = description
     @link = link
