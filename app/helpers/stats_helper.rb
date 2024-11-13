@@ -5,9 +5,16 @@ module StatsHelper
   end
 
   def options_for_organisation_select(department)
-    department.organisations
-              .map { |o| [o.name.to_s, o.id] }
-              .unshift(["Toutes les organisations", "0"])
+    default_option = [["Sélection", [["Toutes les organisations", "0"]]]]
+    grouped_organisations = department.organisations
+                                      .group_by(&:organisation_type)
+                                      .map do |type, orgs|
+      [
+        type.humanize,
+        orgs.map { |o| [o.name.to_s, o.id] }
+      ]
+    end
+    default_option + grouped_organisations
   end
 
   def sanitize_monthly_data(stat)

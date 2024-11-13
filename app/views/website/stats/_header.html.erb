@@ -28,7 +28,11 @@
       <div>
         <%=
           select(
-            "organisation", "id", options_for_organisation_select(@department),
+            "organisation", "id",
+            grouped_options_for_select(
+              options_for_organisation_select(@department),
+              selected: params[:organisation_id] || "0"
+            ),
             { },
             class: "text-center form-select js-organisation-selector"
           )
