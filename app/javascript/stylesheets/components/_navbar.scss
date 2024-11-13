@@ -15,8 +15,22 @@ header {
   margin-left: 15px;
 }
 
-
 .sub-header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  border-top: 1px solid $dark-grey;
+  position: relative;
+  z-index: 2;
+  p, a {
+    font-size: 12px;
+    color: black;
+  }
+}
+
+
+.top-bar {
   height: 50px;
   display: flex;
   align-items: center;
@@ -27,7 +41,7 @@ header {
 
   &.hidden {
     height: 0px;
-    .sub-header-content {
+    .top-bar-content {
       display: none !important;
     }
     #toggle-navbar {
