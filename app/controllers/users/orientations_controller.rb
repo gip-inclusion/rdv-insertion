@@ -33,7 +33,7 @@ module Users
       if @orientation.destroy
         redirect_to structure_user_parcours_path(@user.id)
       else
-        turbo_stream_prepend_flash_message(
+        turbo_stream_prepend_flash_messages(
           error: "Impossible de supprimer l'orientation: #{@orientation.errors.full_messages}"
         )
       end

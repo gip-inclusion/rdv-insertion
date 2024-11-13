@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "user_page", data: { turbo_action: "advance" } do %>
   <%= render "users/page_title", user: @user %>
 
-  <%= render "users/archive_banner" if @user_is_archived %>
+  <%= render "users/archived_banner" if user_archived_in?(@user, current_organisations) %>
 
   <div class="container text-dark-blue h4-as-labels mt-4">
     <%= render "users/user_page_header" %>
@@ -17,7 +17,7 @@
             follow_up: follow_up, organisation: @organisation, user: @user, department: @department,
             participations: follow_up.participations, user_department_organisations: @user_department_organisations,
             convocable_participations: convocable_participations, category_configuration:,
-            user_is_archived: @user_is_archived,
+            user_is_archived: user_archived_in?(@user, current_organisations),
             invitations: follow_up.invitations
           )
         %>

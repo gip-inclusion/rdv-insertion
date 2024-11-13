@@ -11,6 +11,7 @@ class ArchivesController < ApplicationController
     @archive = Archive.new(**archive_params)
     authorize @archive
     if @archive.save
+      flash_success_for_create(@archive)
       redirect_to structure_user_path(@archive.user_id)
     else
       turbo_stream_display_error_modal(@archive.errors.full_messages)
@@ -21,6 +22,8 @@ class ArchivesController < ApplicationController
     @archives = Archive.new_batch(**create_many_params)
     authorize_all @archives, :create
     Archive.transaction { @archives.each(&:save!) }
+
+    flash_success_for_create_many(@archives)
     redirect_to structure_user_path(params[:user_id])
   rescue ActiveRecord::RecordInvalid => e
     turbo_stream_display_error_modal(e.record.errors.full_messages)
@@ -31,7 +34,8 @@ class ArchivesController < ApplicationController
     authorize @archive
     respond_to do |format|
       if @archive.destroy
-        format.html { redirect_to structure_user_path(@archive.user_id) }
+        flash_success_for_destroy
+        format.turbo_stream { turbo_stream_redirect(structure_user_path(@archive.user_id)) }
         format.json { render json: { success: true, archive: @archive, redirect_path: request.referer } }
       else
         format.html { turbo_stream_display_error_modal(@archive.errors.full_messages) }
@@ -75,4 +79,32 @@ class ArchivesController < ApplicationController
   def user_department_organisations
     policy_scope(Organisation).where(id: @user.organisation_ids, department: @department)
   end
+
+  # rubocop:disable Rails/ActionControllerFlashBeforeRender
+  def flash_success_for_create(archive)
+    flash[:success] = {
+      title: "Dossier archivé",
+      description: "L'usager a bien été archivé sur l'organisation #{archive.organisation.name}"
+    }
+  end
+
+  def flash_success_for_create_many(archives)
+    archived_organisations = archives.map(&:organisation)
+    archived_organisations_names = archived_organisations.map(&:name).join(", ")
+    organisation_count = archived_organisations.size
+    organisation_wording = organisation_count > 1 ? "les organisations" : "l'organisation"
+
+    flash[:success] = {
+      title: "Dossier archivé",
+      description: "L'usager a bien été archivé sur #{organisation_wording} #{archived_organisations_names}"
+    }
+  end
+
+  def flash_success_for_destroy
+    flash[:success] = {
+      title: "Dossier désarchivé",
+      description: "Le dossier de l'usager a bien été rouvert sur cette organisation"
+    }
+  end
+  # rubocop:enable Rails/ActionControllerFlashBeforeRender
 end

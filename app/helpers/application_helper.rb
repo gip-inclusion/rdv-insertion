@@ -1,17 +1,20 @@
 module ApplicationHelper
   def alert_class_for(type)
-    case type
-    when :success
-      "alert-success"
-    when :alert
-      "alert-warning"
-    when :error
-      "alert-danger"
-    when :notice
-      "alert-info"
-    else
-      alert.to_s
-    end
+    {
+      success: "alert-success",
+      error: "alert-danger",
+      alert: "alert-warning",
+      notice: "alert-info"
+    }[type] || type.to_s
+  end
+
+  def icon_class_for(type)
+    {
+      success: "far fa-check-circle fa-lg",
+      error: "far fa-times-circle fa-lg",
+      alert: "fas fa-exclamation-circle fa-lg",
+      notice: "fas fa-info-circle fa-lg"
+    }[type] || "fas fa-info-circle fa-lg"
   end
 
   def display_attribute(attribute)
@@ -41,6 +44,6 @@ module ApplicationHelper
   end
 
   def render_turbo_stream_flash_messages
-    turbo_stream.prepend "flashes", partial: "common/flash"
+    turbo_stream.prepend "flashes", partial: "common/flashes"
   end
 end
