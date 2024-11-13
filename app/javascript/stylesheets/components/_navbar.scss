@@ -15,6 +15,20 @@ header {
   margin-left: 15px;
 }
 
+.sub-header-links {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  border-top: 1px solid $dark-grey;
+  position: relative;
+  z-index: 2;
+  p, a {
+    font-size: 12px;
+    color: black;
+  }
+}
+
 
 .sub-header {
   height: 50px;
