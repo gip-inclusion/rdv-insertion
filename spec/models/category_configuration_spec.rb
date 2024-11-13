@@ -1,4 +1,14 @@
 describe CategoryConfiguration do
+  describe "phone number validation" do
+    context "4 digits is ok" do
+      let(:category_configuration) do
+        build(:category_configuration, organisation: create(:organisation), phone_number: "3630")
+      end
+
+      it { expect(category_configuration).to be_valid }
+    end
+  end
+
   describe "delays validation" do
     context "number_of_days_before_invitations_expire is superior to 3" do
       let(:category_configuration) do
