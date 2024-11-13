@@ -144,7 +144,7 @@ describe User do
     end
 
     context "wrong phone format" do
-      let(:user) { build(:user, phone_number: "01234") }
+      let(:user) { build(:user, phone_number: "3630") }
 
       it "add errors" do
         expect(user).not_to be_valid
