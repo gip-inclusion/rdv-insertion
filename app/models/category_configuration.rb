@@ -1,6 +1,4 @@
 class CategoryConfiguration < ApplicationRecord
-  include PhoneNumberValidation
-
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation
@@ -16,6 +14,8 @@ class CategoryConfiguration < ApplicationRecord
             }
   validates :number_of_days_between_periodic_invites, numericality: { only_integer: true, greater_than: 13 },
                                                       allow_nil: true
+
+  validates :phone_number, phone_number: { allow_short_numbers: true }
 
   delegate :name, :short_name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration

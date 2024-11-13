@@ -12,7 +12,6 @@ class User < ApplicationRecord
 
   include Searchable
   include Notificable
-  include PhoneNumberValidation
   include Invitable
   include HasParticipationsToRdvs
   include User::TextHelper
@@ -57,6 +56,8 @@ class User < ApplicationRecord
   validate :birth_date_validity
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
+
+  validates :phone_number, phone_number: true
 
   delegate :name, :number, to: :department, prefix: true
 
@@ -201,6 +202,11 @@ class User < ApplicationRecord
 
   def format_phone_number
     self.phone_number = phone_number_formatted
+  end
+
+  def phone_number_is_mobile?
+    types = PhoneNumberHelper.parsed_number(phone_number)&.types
+    types&.include?(:mobile)
   end
 
   def birth_date_validity
