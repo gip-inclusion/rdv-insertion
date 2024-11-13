@@ -24,10 +24,13 @@ class InvitationsController < ApplicationController
             #   window.Turbo.renderStreamMessage.
             # Discussion ici : https://github.com/gip-inclusion/rdv-insertion/pull/2361#discussion_r1784538358
             turbo_stream_html: turbo_stream.replace("remote_modal", partial: "common/custom_errors_modal",
-                                                                    locals: { errors: invite_user.errors })
+                                                                    locals: { errors: invite_user.errors,
+                                                                              title: "Impossible d'inviter l'usager" })
           }, status: :unprocessable_entity
         end
-        format.turbo_stream { turbo_stream_display_custom_error_modal(invite_user.errors) }
+        format.turbo_stream do
+          turbo_stream_display_custom_error_modal(errors: invite_user.errors, title: "Impossible d'inviter l'usager")
+        end
       end
     end
   end
