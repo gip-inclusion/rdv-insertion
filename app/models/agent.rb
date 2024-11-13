@@ -44,10 +44,6 @@ class Agent < ApplicationRecord
     "#{first_name} #{last_name&.upcase}".strip
   end
 
-  def department_organisations(department_id)
-    organisations.select { |organisation| organisation.department_id == department_id }
-  end
-
   def with_rdv_solidarites_session(&)
     # This ensure Current.rdv_solidarites_client would call the agent rdv_solidarites_client
     Current.agent = self

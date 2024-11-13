@@ -181,7 +181,7 @@ class User < ApplicationRecord
   end
 
   def archives_organisations
-    archives.map(&:organisation)
+    Organisation.where(id: archives.map(&:organisation_id))
   end
 
   private
