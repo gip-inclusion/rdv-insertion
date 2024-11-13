@@ -1,5 +1,5 @@
 class PhoneNumberValidator < ActiveModel::EachValidator
-  def validate_each(record, attribute, value)
+  def validate_each(record, _attribute, value)
     return if value.blank?
 
     is_valid_regular_phone_number = PhoneNumberHelper.parsed_number(value).present?
