@@ -3,7 +3,7 @@ module LockedAndOrderedJobs
   # This will wrap the hook inside the perform_with_lock method
   prepend LockedJobs
 
-  CACHED_TIMESTAMP_EXPIRATION_TIME = 30.minutes
+  CACHED_TIMESTAMP_EXPIRATION_TIME = 1.day
 
   included do
     around_perform :perform_in_order
