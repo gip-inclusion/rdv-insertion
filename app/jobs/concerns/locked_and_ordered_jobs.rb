@@ -3,7 +3,7 @@ module LockedAndOrderedJobs
   # This will wrap the hook inside the perform_with_lock method
   prepend LockedJobs
 
-  CACHED_TIMESTAMP_EXPIRATION_TIME = 1.day
+  CACHED_TIMESTAMP_EXPIRATION_TIME_IN_SECONDS = 1.day.to_i
 
   included do
     around_perform :perform_in_order
@@ -21,7 +21,7 @@ module LockedAndOrderedJobs
 
       yield
 
-      redis.set(cache_key, job_timestamp.to_s, ex: CACHED_TIMESTAMP_EXPIRATION_TIME)
+      redis.set(cache_key, job_timestamp.to_s, ex: CACHED_TIMESTAMP_EXPIRATION_TIME_IN_SECONDS)
     end
   end
 

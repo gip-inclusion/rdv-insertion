@@ -5,7 +5,7 @@ module InboundWebhooks
     # rubocop:disable Metrics/ClassLength
     class ProcessRdvJob < LockedAndOrderedJobBase
       def self.lock_key(data, _meta)
-        "Lock::#{name}:#{data[:id]}"
+        "#{base_lock_key}:#{data[:id]}"
       end
 
       def perform(data, meta)
