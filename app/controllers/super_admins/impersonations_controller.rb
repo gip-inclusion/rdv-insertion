@@ -14,7 +14,7 @@ module SuperAdmins
     def destroy
       unimpersonate_agent
       flash[:alert] = "Vous avez bien été reconnecté.e à votre compte"
-      redirect_to root_path
+      redirect_to params[:redirect_url] || root_path
     end
 
     private

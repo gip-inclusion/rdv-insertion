@@ -9,7 +9,7 @@ module Users
       validate_uid_uniqueness_inside_department if @user.affiliation_number? && @user.role?
       validate_department_internal_id_uniqueness if @user.department_internal_id?
       validate_email_and_first_name_uniquess if @user.email?
-      validate_phone_number_and_first_name_uniqueness if @user.phone_number?
+      validate_phone_number_and_first_name_uniqueness if @user.phone_number_formatted.present?
     end
 
     private

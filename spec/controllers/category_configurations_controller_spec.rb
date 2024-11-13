@@ -405,7 +405,7 @@ describe CategoryConfigurationsController do
 
   describe "#destroy" do
     let!(:destroy_params) do
-      { organisation_id: organisation.id, id: category_configuration.id, format: "text/html" }
+      { organisation_id: organisation.id, id: category_configuration.id, format: "turbo_stream" }
     end
 
     it "destroys the category_configuration" do
@@ -433,7 +433,7 @@ describe CategoryConfigurationsController do
       it "redirects to the homepage" do
         delete :destroy, params: destroy_params
 
-        expect(response).to redirect_to(root_path)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -446,8 +446,8 @@ describe CategoryConfigurationsController do
 
       it "redirects the agent" do
         delete :destroy, params: destroy_params
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body.to_s).to include("Vous n'avez pas les droits")
       end
     end
   end

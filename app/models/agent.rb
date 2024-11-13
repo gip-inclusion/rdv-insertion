@@ -9,6 +9,7 @@ class Agent < ApplicationRecord
   has_many :agents_rdvs, dependent: :destroy
   has_many :orientations, dependent: :nullify
   has_many :csv_exports, dependent: :destroy
+  has_many :parcours_documents, dependent: :nullify
 
   has_many :organisations, through: :agent_roles
   has_many :departments, -> { distinct }, through: :organisations
@@ -34,6 +35,10 @@ class Agent < ApplicationRecord
 
   def admin_organisations_ids
     agent_roles.select(&:admin?).map(&:organisation_id)
+  end
+
+  def admin_organisations
+    Organisation.where(id: admin_organisations_ids)
   end
 
   def export_organisations_ids
