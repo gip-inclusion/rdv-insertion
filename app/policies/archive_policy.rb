@@ -6,8 +6,4 @@ class ArchivePolicy < ApplicationPolicy
   def show? = create?
 
   def destroy? = create?
-
-  def resolve
-    Archive.where(organisation_id: pundit_user.organisations.pluck(:id))
-  end
 end
