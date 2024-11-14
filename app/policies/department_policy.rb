@@ -20,7 +20,7 @@ class DepartmentPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      Department.where(id: pundit_user.organisations.pluck(:department_id))
+      scope.where(id: pundit_user.organisations.pluck(:department_id))
     end
   end
 end
