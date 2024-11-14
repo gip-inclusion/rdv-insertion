@@ -73,10 +73,14 @@ module Orientations
       @shrinkeable_orientations ||= @orientation.user.orientations.shrinkeable_to_fit(@orientation)
     end
 
-    def non_shrinkable_overlapping_orientations
-      @non_shrinkable_overlapping_orientations ||= other_user_orientations.select do |other_orientation|
+    def overlapping_orientations
+      other_user_orientations.select do |other_orientation|
         other_orientation.time_range.to_a.intersect?(@orientation.time_range.to_a)
-      end - shrinkeable_orientations
+      end
+    end
+
+    def non_shrinkable_overlapping_orientations
+      @non_shrinkable_overlapping_orientations ||= overlapping_orientations - shrinkeable_orientations
     end
   end
 end

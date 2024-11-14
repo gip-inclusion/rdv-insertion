@@ -26,10 +26,11 @@
       <%= 
         form_for(
           orientation, 
-          url: orientation.persisted? ? user_orientation_path(id: orientation.id, user_id: user.id, update_anterior_ends_at: true) : user_orientations_path(user_id: user.id, update_anterior_ends_at: true), 
+          url: orientation.persisted? ? user_orientation_path(id: orientation.id, user_id: user.id) : user_orientations_path(user_id: user.id), 
           method: orientation.persisted? ? :put : :post
         ) do |form|
       %>
+        <%= form.hidden_field :update_anterior_ends_at, value: true %>
         <% orientation_params.each do |key, value| %>
           <%= form.hidden_field key, value: %>
         <% end %>

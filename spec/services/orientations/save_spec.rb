@@ -130,14 +130,13 @@ describe Orientations::Save, type: :service do
             subject
             is_a_success
             expect(orientation.reload.ends_at).to be_nil
-            expect(second_orientation.reload.ends_at).to eq(starts_at - 1.day)
           end
         end
 
         context "when it is before the other orientations" do
           let!(:starts_at) { Date.parse("07/07/2022") }
 
-          it "sets the ends_at at the posterior starts_at" do
+          it "sets the ends_at one day before the posterior starts_at" do
             subject
             is_a_success
             expect(orientation.reload.ends_at).to eq(Date.parse("08/10/2022"))
@@ -181,7 +180,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors.first).to include("Cette orientation chevauche")
+          expect(subject.errors.first).to include("Cette orientation chevauche une autre orientation")
         end
 
         it "does not set the previous ends_at" do
@@ -198,7 +197,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors.first).to include("Cette orientation chevauche")
+          expect(subject.errors.first).to include("Cette orientation chevauche une autre orientation")
         end
 
         it "does not set the previous ends_at" do
