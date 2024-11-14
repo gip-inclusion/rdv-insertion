@@ -17,10 +17,9 @@ class Orientation < ApplicationRecord
   scope :shrinkeable_to_fit, lambda { |orientation|
     where(user_id: orientation.user_id)
       .where.not(id: orientation.id)
-      .where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)",
-             orientation.ends_at || Float::INFINITY,
+      .where("starts_at <= ? AND (ends_at IS NULL OR ends_at > ?)",
+             orientation.starts_at.yesterday - Orientation::MINIMUM_DURATION_IN_DAYS.days,
              orientation.starts_at)
-      .where("starts_at <= ?", orientation.starts_at - Orientation::MINIMUM_DURATION_IN_DAYS.days)
   }
 
   def time_range
