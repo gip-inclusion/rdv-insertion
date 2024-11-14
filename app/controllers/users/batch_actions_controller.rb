@@ -2,7 +2,7 @@ module Users
   class BatchActionsController < ApplicationController
     include BackToListConcern
     include Users::Sortable
-    include Users::Archivable
+    include Users::ArchivedList
 
     before_action :set_organisation, :set_department, :set_all_configurations, :set_current_category_configuration,
                   :set_current_motif_category, :set_organisations, :set_motif_category_name, :set_current_organisations,

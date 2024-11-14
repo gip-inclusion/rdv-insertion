@@ -12,17 +12,15 @@ class UsersController < ApplicationController
   include Users::Filterable
   include Users::Sortable
   include Users::Taggable
-  include Users::Archivable
+  include Users::ArchivedList
 
   before_action :set_organisation, :set_department, :set_all_configurations,
-                :set_current_organisations, :set_users_scope,
-                :set_current_category_configuration, :set_current_motif_category,
+                :set_users_scope, :set_current_category_configuration, :set_current_motif_category,
                 :set_users, :set_follow_ups, :set_structure_orientations, :set_orientation_types, :set_filterable_tags,
                 :set_referents_list, :filter_users, :order_users,
                 for: :index
-  before_action :set_user, :set_organisation, :set_department, :set_current_organisations, :set_all_configurations,
-                :set_user_tags, :set_user_referents, :set_back_to_users_list_url, :set_user_archives,
-                :set_user_is_archived,
+  before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
+                :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department,
                 for: :new
@@ -41,7 +39,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html
       format.csv do
-        authorize_all @current_organisations, :export_csv
+        authorize_all current_organisations, :export_csv
         generate_csv
         flash[:success] = "Le fichier CSV est en train d'être généré." \
                           " Il sera envoyé à l'adresse email #{current_agent.email}." \
@@ -132,7 +130,7 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
-      format.turbo_stream { turbo_stream_replace_flash_message(error: errors.join(", ")) }
+      format.turbo_stream { turbo_stream_replace_flash_messages(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
@@ -210,10 +208,6 @@ class UsersController < ApplicationController
     )
   end
 
-  def set_current_organisations
-    @current_organisations = department_level? ? current_agent_department_organisations : [@organisation]
-  end
-
   def set_department
     @department = current_department
   end
@@ -255,7 +249,7 @@ class UsersController < ApplicationController
   def set_all_users
     @users = policy_scope(User)
              .active.distinct
-             .preload(:organisations).where(organisations: @current_organisations)
+             .preload(:organisations).where(organisations: current_organisations)
     return if request.format == "csv"
 
     @users = @users.preload(:archives, follow_ups: [:invitations])
@@ -265,8 +259,8 @@ class UsersController < ApplicationController
     @users = policy_scope(User)
              .preload(:organisations, follow_ups: [:notifications, :invitations, { participations: :rdv }])
              .active.distinct
-             .where(organisations: @current_organisations)
-             .where.not(id: archived_user_ids_in_organisations(@current_organisations))
+             .where(organisations: current_organisations)
+             .where.not(id: archived_user_ids_in_organisations(current_organisations))
              .joins(:follow_ups)
              .where(follow_ups: { motif_category: @current_motif_category })
              .where.not(follow_ups: { status: "closed" })
@@ -276,22 +270,8 @@ class UsersController < ApplicationController
     @users = policy_scope(User)
              .includes(:archives)
              .preload(:invitations, :participations)
-             .where(id: archived_user_ids_in_organisations(@current_organisations))
+             .where(id: archived_user_ids_in_organisations(current_organisations))
              .active.distinct
-  end
-
-  def set_user_archives
-    @user_archives = @user.archives
-  end
-
-  def set_user_is_archived
-    @user_is_archived =
-      @user.archives.where(organisation: user_agent_department_organisations).count ==
-      user_agent_department_organisations.count
-  end
-
-  def user_agent_department_organisations
-    @user_agent_department_organisations ||= @user.organisations & @current_organisations
   end
 
   def set_follow_ups

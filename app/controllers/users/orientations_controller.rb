@@ -25,7 +25,7 @@ module Users
       if @orientation.destroy
         redirect_to structure_user_parcours_path(@user.id)
       else
-        turbo_stream_prepend_flash_message(
+        turbo_stream_prepend_flash_messages(
           error: "Impossible de supprimer l'orientation: #{@orientation.errors.full_messages}"
         )
       end
@@ -45,6 +45,7 @@ module Users
     def set_organisations
       @organisations = current_department
                        .organisations
+                       .active
                        .where(organisation_type: Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
                        .includes(:agents)
     end
@@ -74,7 +75,7 @@ module Users
 
     def save_orientation_and_redirect
       if save_orientation.success?
-        turbo_stream_redirect structure_user_parcours_path(@user.id)
+        turbo_stream_redirect structure_user_parcours_path(user_id: @user.id)
       elsif save_orientation.shrinkeable_orientation.present?
         turbo_stream_confirm_update_anterior_ends_at_modal
       else
@@ -85,13 +86,12 @@ module Users
     def save_orientation
       @save_orientation ||= Orientations::Save.call(
         orientation: @orientation,
-        update_anterior_ends_at: params[:update_anterior_ends_at]
+        update_anterior_ends_at: params[:orientation][:update_anterior_ends_at]
       )
     end
 
     def turbo_stream_confirm_update_anterior_ends_at_modal
-      render turbo_stream: turbo_stream.replace(
-        "remote_modal",
+      turbo_stream_display_modal(
         partial: "users/orientations/confirm_update_anterior_ends_at",
         locals: {
           shrinkeable_orientation: save_orientation.shrinkeable_orientation,

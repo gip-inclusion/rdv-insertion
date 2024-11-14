@@ -138,8 +138,8 @@ module Exporters
        user.organisations.to_a.count,
        display_organisation_names(user.organisations),
        scoped_user_tags(user.tags).pluck(:value).join(", "),
-       *(display_date(user.organisation_archive(@structure)&.created_at) unless department_level?),
-       *(user.organisation_archive(@structure)&.archiving_reason unless department_level?)]
+       *(display_date(user.archive_in_organisation(@structure)&.created_at) unless department_level?),
+       *(user.archive_in_organisation(@structure)&.archiving_reason unless department_level?)]
     end
 
     def human_last_participation_status(user)

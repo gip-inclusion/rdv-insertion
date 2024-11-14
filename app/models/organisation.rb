@@ -2,8 +2,9 @@ class Organisation < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
   SEARCH_ATTRIBUTES = [:name, :slug].freeze
 
-  include Searchable
   include HasLogo
+  include Searchable
+  include Organisation::Archivable
 
   before_create { build_messages_configuration }
 
@@ -55,6 +56,10 @@ class Organisation < ApplicationRecord
   end
 
   def france_travail? = safir_code?
+
+  def with_parcours_access?
+    organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+  end
 
   private
 

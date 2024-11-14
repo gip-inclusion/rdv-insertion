@@ -8,7 +8,7 @@ module Users
     def call
       User.transaction do
         @user.organisations.delete(@organisation)
-        delete_rdv_solidarites_user_profile
+        delete_rdv_solidarites_user_profile if @user.rdv_solidarites_user_id.present?
         @user.soft_delete if @user.organisations.empty?
       end
 

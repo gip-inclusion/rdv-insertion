@@ -155,7 +155,7 @@ describe "Agents can upload documents for users", :js do
 
       context "agent is not the owner" do
         let!(:document) do
-          create(:parcours_document, user:, agent: other_organisation_agents.first, type: "Diagnostic")
+          create(:parcours_document, user:, department:, agent: other_organisation_agents.first, type: "Diagnostic")
         end
 
         it "cannot update the date" do
@@ -164,6 +164,20 @@ describe "Agents can upload documents for users", :js do
 
           click_link("Parcours")
           expect(page).to have_no_css(".edit-date-button")
+        end
+
+        context "when the agent is an admin in the org" do
+          before do
+            agent.agent_roles.find { _1.organisation_id == organisation.id }.update!(access_level: "admin")
+          end
+
+          it "can edit the document" do
+            visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+            expect(page).to have_content("Parcours")
+
+            click_link("Parcours")
+            expect(page).to have_css(".edit-date-button")
+          end
         end
       end
     end

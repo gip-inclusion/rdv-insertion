@@ -1,0 +1,16 @@
+<%= render "common/remote_modal" do %>
+  <div>
+    <div class="text-center mb-3">
+      <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
+    </div>
+    <h4 class="text-center">Vous n'avez pas les droits 🔑</h4>
+    <div class="p-3">
+      <p class="text-center">Nous sommes désolés, votre compte ne vous permet pas d'effectuer cette action.</p>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center px-3">
+    <button type="button" id="confirm-button" class="btn btn-primary me-2" data-bs-dismiss="modal">
+      OK
+    </button>
+  </div>
+<% end %>

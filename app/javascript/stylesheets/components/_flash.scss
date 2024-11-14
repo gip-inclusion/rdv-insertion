@@ -1,9 +1,37 @@
-.flash_message {
+.flash_message_fade {
   animation: appear-then-fade 10s both;
 }
 
 .alert {
   margin-bottom: 0;
+}
+
+.alert-success {
+  background-color: #E9FAE9;
+  span > i {
+    color: #2BA42F;
+  }
+}
+
+.alert-info {
+  background-color: #E9F2FA;
+  span > i {
+    color: #2580CD;
+  }
+}
+
+.alert-danger {
+  background-color: #FDEDED;
+  span > i {
+    color: #C23131;
+  }
+}
+
+.alert-warning {
+  background-color: #FAF4E9;
+  span > i {
+    color: #CD8A25;
+  }
 }
 
 @keyframes appear-then-fade {

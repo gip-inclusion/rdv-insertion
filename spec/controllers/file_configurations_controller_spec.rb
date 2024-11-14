@@ -198,10 +198,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "redirects to the homepage" do
+      it "is forbidden" do
         post :create, params: create_params, format: :turbo_stream
 
-        expect(response).to redirect_to(root_path)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -210,10 +210,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "redirects the agent" do
+      it "is forbidden" do
         post :create, params: create_params, format: :turbo_stream
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body.to_s).to include("Vous n'avez pas les droits")
       end
     end
   end
@@ -279,7 +279,7 @@ describe FileConfigurationsController do
       it "redirects to the homepage" do
         patch :update, params: update_params, format: :turbo_stream
 
-        expect(response).to redirect_to(root_path)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -290,10 +290,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "redirects the agent" do
+      it "is forbidden" do
         patch :update, params: update_params, format: :turbo_stream
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
+        expect(response).to have_http_status(:forbidden)
+        expect(response.body.to_s).to include("Vous n'avez pas les droits")
       end
     end
   end

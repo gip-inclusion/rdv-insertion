@@ -130,7 +130,7 @@
           <% end %>
         </li>
       </ul>
-      <% if authorized_any?(@current_organisations, :configure) %>
+      <% if authorized_any?(current_organisations, :configure) %>
         <% if department_level? %>
           <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "mb-2") do %>
             <button class="btn btn-blue-out">Configurer une organisation</button>

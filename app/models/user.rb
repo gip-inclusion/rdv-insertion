@@ -176,8 +176,12 @@ class User < ApplicationRecord
     organisations.where(department: department)
   end
 
-  def organisation_archive(organisation)
+  def archive_in_organisation(organisation)
     archives.find { |a| a.organisation_id == organisation.id }
+  end
+
+  def archives_organisations
+    Organisation.where(id: archives.map(&:organisation_id))
   end
 
   private

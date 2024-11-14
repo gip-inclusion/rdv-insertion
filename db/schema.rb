@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_07_132950) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_31_161416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -319,6 +319,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_07_132950) do
     t.string "slug"
     t.string "safir_code"
     t.string "organisation_type"
+    t.datetime "archived_at"
+    t.index ["archived_at"], name: "index_organisations_on_archived_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end

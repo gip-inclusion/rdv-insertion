@@ -28,9 +28,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
                    email: "josiane.balasko@gmail.com",
                    inclusion_connect_open_id_sub: "1234")
   end
-  let!(:agent_role) do
-    create(:agent_role, organisation: organisation, agent: agent, rdv_solidarites_agent_role_id: nil)
-  end
+
   let!(:meta) do
     {
       "model" => "AgentRole",
@@ -50,12 +48,22 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       subject
     end
 
-    it "assigns the rdv solidarites agent role id" do
-      subject
-      expect(agent_role.reload.rdv_solidarites_agent_role_id).to eq(rdv_solidarites_agent_role_id)
+    context "when the agent role is created" do
+      let!(:agent_role) do
+        create(:agent_role, organisation: organisation, agent: agent, rdv_solidarites_agent_role_id: nil)
+      end
+
+      it "assigns the rdv solidarites agent role id" do
+        subject
+        expect(agent_role.reload.rdv_solidarites_agent_role_id).to eq(rdv_solidarites_agent_role_id)
+      end
     end
 
     context "for destroyed event" do
+      let!(:agent_role) do
+        create(:agent_role, organisation: organisation, agent: agent, rdv_solidarites_agent_role_id: nil)
+      end
+
       let!(:meta) do
         {
           "model" => "AgentRole",
@@ -173,6 +181,15 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
           "organisation" => { id: rdv_solidarites_organisation_id }
         }.deep_symbolize_keys
       end
+
+      it "does not process the upsert" do
+        expect(UpsertRecordJob).not_to receive(:perform_later)
+        subject
+      end
+    end
+
+    context "when the organisation is archived" do
+      let!(:organisation) { create(:organisation, archived_at: Time.current) }
 
       it "does not process the upsert" do
         expect(UpsertRecordJob).not_to receive(:perform_later)
