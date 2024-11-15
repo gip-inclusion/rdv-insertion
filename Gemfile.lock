@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/betagouv/rdv-service-public.git
-  revision: 3725a457da38910b2cc603a861d228480bf60573
+  revision: 0346b227d360d633af11362a31a45396f066dc6e
   branch: oauth-provider
   glob: lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec
   specs:

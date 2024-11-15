@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
 
   def destroy
     if session[:rdv_solidarites_oauth_token]
-      redirect_to "#{ENV["RDV_SOLIDARITES_URL"]}#{OmniAuth::Strategies::RdvServicePublic.sign_out_path}", allow_other_host: true
+      redirect_to "#{ENV["RDV_SOLIDARITES_URL"]}#{OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV['RDV_SOLIDARITES_OAUTH_APP_ID'])}", allow_other_host: true
     else
       redirect_to root_path
     end
