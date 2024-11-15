@@ -376,6 +376,8 @@ tables:
       - rate_of_no_show_for_convocations_grouped_by_month
       - rate_of_no_show_for_invitations
       - rate_of_no_show_for_invitations_grouped_by_month
+      - rate_of_no_show
+      - rate_of_no_show_grouped_by_month
       - rate_of_users_oriented
       - rate_of_users_oriented_grouped_by_month
       - users_with_rdv_count
