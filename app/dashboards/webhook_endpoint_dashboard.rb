@@ -15,7 +15,6 @@ class WebhookEndpointDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = [
     :organisation,
     :url,
-    :subscriptions,
-    :created_at
+    :subscriptions
   ].freeze
 end
