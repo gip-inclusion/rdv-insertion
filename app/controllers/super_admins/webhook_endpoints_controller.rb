@@ -2,7 +2,7 @@ module SuperAdmins
   class WebhookEndpointsController < SuperAdmins::ApplicationController
     def duplicate
       webhook_endpoint = WebhookEndpoint.find(params[:id])
-      
+
       new_webhook_endpoint = webhook_endpoint.dup
       organisation = Organisation.find_by(id: webhook_endpoint_params[:target_id])
       new_webhook_endpoint.organisation = organisation
