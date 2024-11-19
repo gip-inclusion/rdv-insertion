@@ -32,6 +32,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react_ujs": "^2.6.1",
+    "remixicon": "^4.5.0",
     "sass": "^1.70.0",
     "sass-loader": "^14.0.0",
     "sortablejs": "^1.15.0",

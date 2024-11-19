@@ -13,7 +13,7 @@
         <div class="col-md-6"></div>
         <div class="col-md-6 text-end">
           <%= link_to edit_structure_user_path(id: @user.id), class: "px-4" do %>
-            <button class="btn btn-blue mx-2"><i class="fas fa-pencil-alt me-3"></i>Modifier</button>
+            <button class="btn btn-blue mx-2"><i class="ri-pencil-fill me-3"></i>Modifier</button>
           <% end %>
         </div>
       </div>
@@ -25,7 +25,7 @@
           <% if @user.partner && @user.partner.belongs_to_org?(@organisation.id) %>
             <div class="mb-3 mt-1">
               <%= link_to structure_user_path(@user.partner.id), target: "_blank", class: "text-dark-blue text-underline small" do %>
-                <p>Voir le <%= @user.partner.role %> <i class="fas ms-2 fa-external-link-alt"></i></p>
+                <p>Voir le <%= @user.partner.role %> <i class="fas ms-2 ri-external-link-line"></i></p>
               <% end %>
             </div>
           <% end %>

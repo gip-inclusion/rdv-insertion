@@ -10,11 +10,11 @@ module ApplicationHelper
 
   def icon_class_for(type)
     {
-      success: "far fa-check-circle fa-lg",
-      error: "far fa-times-circle fa-lg",
-      alert: "fas fa-exclamation-circle fa-lg",
-      notice: "fas fa-info-circle fa-lg"
-    }[type] || "fas fa-info-circle fa-lg"
+      success: "ri-checkbox-circle-fill",
+      error: "ri-close-circle-fill",
+      alert: "ri-error-warning-fill",
+      notice: "ri-error-warning-fill"
+    }[type] || "ri-error-warning-fill"
   end
 
   def display_attribute(attribute)

@@ -15,7 +15,7 @@ export default observer(({ user }) => {
         target="_blank"
         rel="noreferrer"
       >
-        <i className="fas fa-link" />
+        <i className="ri-links-line" />
       </a>
     ) : (
       <button

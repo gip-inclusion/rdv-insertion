@@ -203,7 +203,7 @@ class Users {
         if (c.sortable) {
           return (
             <button type="button" onClick={() => users.sort(c.key)} >
-              {c.name} <i className={`fas fa-sort fa-sort-${users.sortBy === c.key && users.sortDirection} />`} />
+              {c.name} <i className={`ri-sort-${users.sortBy === c.key && users.sortDirection} />`} />
             </button>
           )
         }
@@ -248,12 +248,12 @@ class Users {
     if (this.sortBy === column) {
       // Everytime we click on the same column,
       // we go to the next sorting (asc, then desc, then back to no sorting)
-      const sortings = ["up", "down", null]
+      const sortings = ["asc", "desc", null]
       const index = sortings.indexOf(this.sortDirection)
       this.sortDirection = sortings[(index + 1) % sortings.length]
     } else {
       this.sortBy = column;
-      this.sortDirection = "up";
+      this.sortDirection = "asc";
     }
   }
 
@@ -261,10 +261,10 @@ class Users {
     if (this.sortBy && this.sortDirection) {
       return this.list.slice().sort((a, b) => {
         if (a[this.sortBy] < b[this.sortBy]) {
-          return this.sortDirection === "up" ? -1 : 1;
+          return this.sortDirection === "asc" ? -1 : 1;
         }
         if (a[this.sortBy] > b[this.sortBy]) {
-          return this.sortDirection === "up" ? 1 : -1;
+          return this.sortDirection === "asc" ? 1 : -1;
         }
 
         return 0;

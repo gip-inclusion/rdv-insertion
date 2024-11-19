@@ -1,9 +1,9 @@
 <div class="d-flex mb-1 align-items-center" data-controller="parcours-documents">
   <div style="width: 350px" class="me-5 mb-1">
     <%= link_to user_parcours_document_path(user_id: document.user_id, id: document.signed_id(expires_in: 1.hour)), target: "_blank", class: "text-decoration-underline document-link" do %>
-      <i class="fas fa-file-pdf mx-1"></i>
+      <i class="ri-file-pdf-line mx-1"></i>
       <span class="text-truncate d-table-cell" style="max-width: 300px"><%= document.file.filename %></span>
-      <i class="fas mx-1 fa-external-link-alt text-dark-blue"></i>
+      <i class="fas mx-1 ri-external-link-line text-dark-blue"></i>
     <% end %>
   </div>
 
@@ -22,7 +22,7 @@
         id: "delete-button-#{document.id}"
     ) do
     %>
-      <i class="fas fa-trash text-dark-blue"></i>
+      <i class="ri-delete-bin-line text-dark-blue"></i>
     <% end if policy(document).destroy? %>
   </div>
 </div>

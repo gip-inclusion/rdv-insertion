@@ -43,8 +43,8 @@ export default class extends Controller {
   changeSortingArrow() {
     const element = document.querySelector(`#js_${this.sortBy}_header`);
     if (element && this.sortDirection) {
-      const initialArrows = element.querySelector("i.fa-sort");
-      const html = ` <i class="fas fa-sort-${this.sortDirection === "asc" ? "up mt-2" : "down mb-2"}"></i>`;
+      const initialArrows = element.querySelector("i.ri");
+      const html = ` <i class="ri ri-expand-up-down-fill-${this.sortDirection === "asc" ? "up mt-2" : "down mb-2"}"></i>`;
       initialArrows.remove();
       element.insertAdjacentHTML("beforeend", html);
     }

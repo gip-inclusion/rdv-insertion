@@ -24,7 +24,7 @@ export default observer(({ user, cell, values, setIsEditingTags }) => {
               type="button"
               onClick={() => setIsEditingTags(false)}
             >
-              <i className="fas fa-times" />
+              <i className="ri-close-line"></i>
             </button>
           </div>
           <div className="modal-body d-flex flex-column">
