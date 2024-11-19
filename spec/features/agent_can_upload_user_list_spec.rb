@@ -808,7 +808,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             click_button("Actions pour toute la sélection")
-            expect(page).to have_no_css("td i.fas.fa-check")
+            expect(page).to have_no_css("td i.ri-check-line")
 
             click_button("Inviter par sms")
             expect(page).to have_css("tr.table-danger")

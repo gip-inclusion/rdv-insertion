@@ -117,7 +117,7 @@ describe "Agents can see convocation history", :js do
         within ".text-danger" do
           expect(page).to have_content("Non délivrée")
         end
-        expect(page).to have_css("i.fas.fa-exclamation-circle")
+        expect(page).to have_css("i.ri-error-warning-fill")
       end
     end
 
@@ -127,7 +127,7 @@ describe "Agents can see convocation history", :js do
         within ".text-danger" do
           expect(page).to have_content("Non délivrée")
         end
-        expect(page).to have_css("i.fas.fa-exclamation-circle")
+        expect(page).to have_css("i.ri-error-warning-fill")
       end
 
       within all("td")[1] do
