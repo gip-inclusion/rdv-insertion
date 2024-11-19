@@ -25,7 +25,7 @@
           <% if @user.partner && @user.partner.belongs_to_org?(@organisation.id) %>
             <div class="mb-3 mt-1">
               <%= link_to structure_user_path(@user.partner.id), target: "_blank", class: "text-dark-blue text-underline small" do %>
-                <p>Voir le <%= @user.partner.role %> <i class="fas ms-2 ri-external-link-line"></i></p>
+                <p>Voir le <%= @user.partner.role %> <i class="ms-2 ri-external-link-line"></i></p>
               <% end %>
             </div>
           <% end %>

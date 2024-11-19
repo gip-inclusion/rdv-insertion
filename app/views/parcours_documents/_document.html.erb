@@ -3,7 +3,7 @@
     <%= link_to user_parcours_document_path(user_id: document.user_id, id: document.signed_id(expires_in: 1.hour)), target: "_blank", class: "text-decoration-underline document-link" do %>
       <i class="ri-file-pdf-line mx-1"></i>
       <span class="text-truncate d-table-cell" style="max-width: 300px"><%= document.file.filename %></span>
-      <i class="fas mx-1 ri-external-link-line text-dark-blue"></i>
+      <i class="mx-1 ri-external-link-line text-dark-blue"></i>
     <% end %>
   </div>
 
