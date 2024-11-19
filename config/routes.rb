@@ -22,6 +22,9 @@ Rails.application.routes.draw do
     resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
     resources :orientation_types, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :webhook_endpoints, only: [:index] do
+      post :duplicate, on: :member
+    end
 
     root to: "agents#index"
   end

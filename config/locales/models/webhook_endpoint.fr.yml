@@ -1,0 +1,7 @@
+fr:
+  activerecord:
+    models:
+      webhook_endpoint: Webhooks
+    attributes:
+      webhook_endpoint:
+        subscriptions: Ressources écoutées
