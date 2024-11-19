@@ -19,7 +19,7 @@
 
     form.addEventListener("submit", function(event) {
       event.preventDefault();
-      const targetId = prompt("Entrez l'id de l'organisation pour laquelle vous souhaitez appliquer ce webhook");
+      const targetId = prompt("Entrez l'id RDV-I de l'organisation pour laquelle vous souhaitez appliquer ce webhook");
 
       form.querySelector("input[name='webhook_endpoint[target_id]']").value = targetId
       form.submit()
