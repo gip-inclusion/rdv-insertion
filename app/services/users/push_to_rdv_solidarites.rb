@@ -51,7 +51,7 @@ module Users
       else
         @rdv_solidarites_user_id = user_id_from_email_taken_error
         # since we are importing an existing user in RDV-S, we need to import its associations
-        @user.import_associatons_from_rdv_solidarites_on_create = true
+        @user.import_associations_from_rdv_solidarites_on_create = true
         update_user_and_associations
       end
     end
