@@ -267,7 +267,7 @@ describe Users::PushToRdvSolidarites, type: :service do
 
             it "marks the user to import associations from rdv-s" do
               subject
-              expect(user.import_associatons_from_rdv_solidarites_on_create).to be(true)
+              expect(user.import_associations_from_rdv_solidarites_on_create).to be(true)
             end
           end
         end
