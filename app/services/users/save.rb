@@ -18,7 +18,7 @@ module Users
           assign_organisation if @organisation.present?
           validate_user!
           save_record!(@user)
-          sync_with_rdv_solidarites
+          push_user_to_rdv_solidarites
         end
       end
     end
@@ -31,18 +31,12 @@ module Users
       @user.organisations = (@user.organisations.to_a + [@organisation]).uniq
     end
 
-    def sync_with_rdv_solidarites
-      call_service!(
-        Users::SyncWithRdvSolidarites,
-        user: @user
-      )
+    def push_user_to_rdv_solidarites
+      call_service!(Users::PushToRdvSolidarites, user: @user)
     end
 
     def validate_user!
-      call_service!(
-        Users::Validate,
-        user: @user
-      )
+      call_service!(Users::Validate, user: @user)
     end
   end
 end

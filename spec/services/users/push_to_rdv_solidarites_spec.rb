@@ -1,4 +1,4 @@
-describe Users::SyncWithRdvSolidarites, type: :service do
+describe Users::PushToRdvSolidarites, type: :service do
   subject do
     described_class.call(user:)
   end
@@ -228,7 +228,7 @@ describe Users::SyncWithRdvSolidarites, type: :service do
               )
           end
 
-          context "when there is no user linked to this user" do
+          context "when there is no other rdv-i user linked to this rdv-s user" do
             it "assigns the user to the department organisations by creating user profiles on rdvs" do
               expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
                 .with(
@@ -263,6 +263,11 @@ describe Users::SyncWithRdvSolidarites, type: :service do
             it "assign the rdv solidarites user id" do
               subject
               expect(user.rdv_solidarites_user_id).to eq(42)
+            end
+
+            it "marks the user to import associations from rdv-s" do
+              subject
+              expect(user.import_associatons_from_rdv_solidarites_on_create).to be(true)
             end
           end
         end

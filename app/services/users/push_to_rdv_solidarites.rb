@@ -1,7 +1,5 @@
 module Users
-  class SyncWithRdvSolidarites < BaseService
-    attr_reader :rdv_solidarites_user_id
-
+  class PushToRdvSolidarites < BaseService
     def initialize(user:)
       @user = user.reload # we need to be sure the associations are correctly loaded
       @rdv_solidarites_user_id = @user.rdv_solidarites_user_id
@@ -9,9 +7,7 @@ module Users
 
     def call
       upsert_rdv_solidarites_user
-      return if @user.rdv_solidarites_user_id.present?
-
-      assign_rdv_solidarites_user_id!
+      assign_rdv_solidarites_user_id! if @user.rdv_solidarites_user_id.nil?
     end
 
     private
@@ -22,16 +18,16 @@ module Users
     end
 
     def upsert_rdv_solidarites_user
-      @rdv_solidarites_user_id.present? ? sync_with_rdv_solidarites : create_or_update_rdv_solidarites_user
+      @rdv_solidarites_user_id.present? ? update_user_and_associations : create_rdv_solidarites_user!
     end
 
-    def sync_with_rdv_solidarites
-      sync_organisations
-      sync_referents if @user.referents.present?
+    def update_user_and_associations
+      upsert_user_profiles
+      upsert_referents if @user.referents.any?
       update_rdv_solidarites_user
     end
 
-    def create_or_update_rdv_solidarites_user
+    def create_rdv_solidarites_user!
       if create_rdv_solidarites_user.success?
         @rdv_solidarites_user_id = create_rdv_solidarites_user.user.id
         return
@@ -54,7 +50,9 @@ module Users
         )
       else
         @rdv_solidarites_user_id = user_id_from_email_taken_error
-        sync_with_rdv_solidarites
+        # since we are importing an existing user in RDV-S, we need to import its associations
+        @user.import_associatons_from_rdv_solidarites_on_create = true
+        update_user_and_associations
       end
     end
 
@@ -75,18 +73,18 @@ module Users
       )
     end
 
-    def sync_organisations
-      @sync_organisations ||= call_service!(
+    def upsert_user_profiles
+      @upsert_user_profiles ||= call_service!(
         RdvSolidaritesApi::CreateUserProfiles,
-        rdv_solidarites_user_id: rdv_solidarites_user_id,
+        rdv_solidarites_user_id: @rdv_solidarites_user_id,
         rdv_solidarites_organisation_ids: rdv_solidarites_organisation_ids
       )
     end
 
-    def sync_referents
-      @sync_referents ||= call_service!(
+    def upsert_referents
+      @upsert_referents ||= call_service!(
         RdvSolidaritesApi::CreateReferentAssignations,
-        rdv_solidarites_user_id: rdv_solidarites_user_id,
+        rdv_solidarites_user_id: @rdv_solidarites_user_id,
         rdv_solidarites_agent_ids: referent_rdv_solidarites_ids
       )
     end
@@ -95,7 +93,7 @@ module Users
       @update_rdv_solidarites_user ||= call_service!(
         RdvSolidaritesApi::UpdateUser,
         user_attributes: rdv_solidarites_user_attributes,
-        rdv_solidarites_user_id: rdv_solidarites_user_id
+        rdv_solidarites_user_id: @rdv_solidarites_user_id
       )
     end
 
