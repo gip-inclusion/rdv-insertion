@@ -110,7 +110,6 @@ module InboundWebhooks
         rdv_solidarites_rdv.user_ids
       end
 
-      # rubocop:disable Metrics/AbcSize
       def find_or_create_users
         existing_users = User.where(rdv_solidarites_user_id: rdv_solidarites_user_ids).to_a
 
@@ -123,20 +122,13 @@ module InboundWebhooks
             rdv_solidarites_user_id: rdv_solidarites_user.id,
             created_through: "rdv_solidarites_webhook",
             created_from_structure: organisation,
-            organisation_ids: retrieve_user_organisation_ids(rdv_solidarites_user.id),
+            organisations: [organisation],
+            import_associatons_from_rdv_solidarites_on_create: true,
             **rdv_solidarites_user.attributes.slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES).compact_blank
           )
         end
 
         @users = existing_users + new_users
-      end
-      # rubocop:enable Metrics/AbcSize
-
-      def retrieve_user_organisation_ids(rdv_solidarites_user_id)
-        rdv_solidarites_organisation_ids = agents.first.with_rdv_solidarites_session do
-          call_service!(RdvSolidaritesApi::RetrieveUser, rdv_solidarites_user_id:).user.organisation_ids
-        end
-        Organisation.where(rdv_solidarites_organisation_id: rdv_solidarites_organisation_ids).ids
       end
 
       def participations_attributes_destroyed
