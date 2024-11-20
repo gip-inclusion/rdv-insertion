@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_31_161416) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_20_092726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -86,6 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_31_161416) do
     t.datetime "last_sign_in_at"
     t.string "inclusion_connect_open_id_sub"
     t.datetime "connected_with_agent_connect_at"
+    t.datetime "cgu_accepted_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["inclusion_connect_open_id_sub"], name: "index_agents_on_inclusion_connect_open_id_sub", unique: true, where: "(inclusion_connect_open_id_sub IS NOT NULL)"
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true

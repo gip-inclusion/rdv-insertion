@@ -57,6 +57,10 @@ class Agent < ApplicationRecord
     Current.agent = nil
   end
 
+  def cgu_accepted?
+    cgu_accepted_at.present?
+  end
+
   private
 
   # This is to make sure an agent can't be set as super_admin through an agent creation or update in the app.
