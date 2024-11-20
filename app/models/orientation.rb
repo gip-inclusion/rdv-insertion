@@ -15,13 +15,13 @@ class Orientation < ApplicationRecord
   scope :active, -> { where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)", Time.zone.today, Time.zone.today) }
 
   # The end date of these orientations might be shrinked to the day before the start of the next one.
-  # To ensure the duration of the orientation we shrink remains valid, we need to verify that its start date is at least :
+  # To ensure the duration of the orientation we shrink remains valid, we verify that its start date is at least:
   #  MINIMUM_DURATION_IN_DAYS + 1 days before its potentially adjusted end date.
   scope :shrinkeable_to_fit, lambda { |orientation|
     where(user_id: orientation.user_id)
       .where.not(id: orientation.id)
       .where("starts_at <= ? AND (ends_at IS NULL OR ends_at > ?)",
-             orientation.starts_at - 1.day - Orientation::MINIMUM_DURATION_IN_DAYS.days, 
+             orientation.starts_at - 1.day - Orientation::MINIMUM_DURATION_IN_DAYS.days,
              orientation.starts_at)
   }
 
