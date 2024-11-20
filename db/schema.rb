@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_31_161416) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_19_145500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -420,8 +420,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_31_161416) do
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "rate_of_users_oriented_in_less_than_30_days"
-    t.json "rate_of_users_oriented_in_less_than_30_days_by_month"
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -437,8 +435,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_31_161416) do
     t.json "rate_of_users_oriented_grouped_by_month"
     t.integer "users_with_rdv_count"
     t.json "users_with_rdv_count_grouped_by_month"
-    t.float "rate_of_users_oriented_in_less_than_15_days"
-    t.json "rate_of_users_oriented_in_less_than_15_days_by_month"
+    t.float "rate_of_users_oriented_in_less_than_45_days"
+    t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
+    t.float "rate_of_users_accompanied_in_less_than_15_days"
+    t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
