@@ -7,7 +7,8 @@ describe Stats::ComputeFollowUpSeenRate, type: :service do
 
     let!(:follow_ups) { FollowUp.where(id: [follow_up1, follow_up2, follow_up3, follow_up4]) }
 
-    # First case : created > 1 month ago, has a days_between_follow_up_creation_and_first_seen_rdv present and the delay is less than 30 days
+    # First case : created > 1 month ago, has a days_between_follow_up_creation_and_first_seen_rdv present
+    # and the delay is less than 30 days
     # => considered as oriented in less than 30 days
     let!(:follow_up1) { create(:follow_up, created_at:) }
     let!(:rdv1) { create(:rdv, created_at:, starts_at: (created_at + 2.days), status: "seen") }
@@ -15,7 +16,8 @@ describe Stats::ComputeFollowUpSeenRate, type: :service do
       create(:participation, follow_up: follow_up1, rdv: rdv1, created_at:, status: "seen")
     end
 
-    # Second case : created > 1 month ago, has a days_between_follow_up_creation_and_first_seen_rdv present and the delay is more than 30 days
+    # Second case : created > 1 month ago, has a days_between_follow_up_creation_and_first_seen_rdv present
+    # and the delay is more than 30 days
     # => not considered as oriented in less than 30 days
     let!(:follow_up2) { create(:follow_up, created_at:) }
     let!(:rdv2) { create(:rdv, created_at:, starts_at: (created_at + 33.days), status: "seen") }
@@ -64,7 +66,8 @@ describe Stats::ComputeFollowUpSeenRate, type: :service do
 
     let!(:follow_ups) { FollowUp.where(id: [follow_up1, follow_up2, follow_up3, follow_up4]) }
 
-    # First case : created > 15 days ago, has a days_between_follow_up_creation_and_first_seen_rdv present and the delay is less than 30 days
+    # First case : created > 15 days ago, has a days_between_follow_up_creation_and_first_seen_rdv present
+    # and the delay is less than 30 days
     # => considered as oriented in less than 15 days
     let!(:follow_up1) { create(:follow_up, created_at:) }
     let!(:rdv1) { create(:rdv, created_at:, starts_at: (created_at + 2.days), status: "seen") }
@@ -72,7 +75,8 @@ describe Stats::ComputeFollowUpSeenRate, type: :service do
       create(:participation, follow_up: follow_up1, rdv: rdv1, created_at:, status: "seen")
     end
 
-    # Second case : created > 15 days ago, has a days_between_follow_up_creation_and_first_seen_rdv present and the delay is more than 15 days
+    # Second case : created > 15 days ago, has a days_between_follow_up_creation_and_first_seen_rdv present
+    # and the delay is more than 15 days
     # => not considered as oriented in less than 15 days
     let!(:follow_up2) { create(:follow_up, created_at:) }
     let!(:rdv2) { create(:rdv, created_at:, starts_at: (created_at + 16.days), status: "seen") }
