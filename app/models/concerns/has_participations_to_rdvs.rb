@@ -9,6 +9,10 @@ module HasParticipationsToRdvs
     participations.to_a.select(&:seen?)
   end
 
+  def last_seen_participation
+    seen_participations.max_by(&:starts_at)
+  end
+
   def seen_rdvs
     seen_participations.map(&:rdv).uniq
   end
