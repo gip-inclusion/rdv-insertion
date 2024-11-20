@@ -30,5 +30,7 @@ FactoryBot.define do
         create(:agent_role, :admin, agent: agent, organisation: organisation)
       end
     end
+
+    cgu_accepted_at { Time.zone.now }
   end
 end
