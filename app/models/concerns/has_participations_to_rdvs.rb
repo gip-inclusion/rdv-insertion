@@ -41,9 +41,25 @@ module HasParticipationsToRdvs
     !rdvs.empty?
   end
 
-  def rdv_seen_delay_in_days
+  def days_between_follow_up_creation_and_first_seen_rdv
     return if first_seen_rdv_starts_at.blank?
 
     first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
+  end
+
+  def days_between_first_orientation_seen_rdv_and_first_seen_rdv
+    return unless first_orientation_seen_rdv_date && first_seen_rdv_starts_at
+
+    (first_seen_rdv_starts_at.to_datetime.mjd - first_orientation_seen_rdv_date.to_datetime.mjd)
+  end
+
+  private
+
+  def first_orientation_seen_rdv_date
+    @first_orientation_seen_rdv_date ||= user
+                                         .follow_ups
+                                         .orientation
+                                         .min_by(&:id)
+                                         &.first_seen_rdv_starts_at
   end
 end

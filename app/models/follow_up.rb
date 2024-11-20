@@ -35,6 +35,9 @@ class FollowUp < ApplicationRecord
   scope :with_all_invitations_expired, -> { joins(:invitations).where.not(invitations: Invitation.valid) }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
   scope :orientation, -> { joins(:motif_category).where(motif_category: { motif_category_type: "rsa_orientation" }) }
+  scope :accompaniment, lambda {
+                          joins(:motif_category).where(motif_category: { motif_category_type: "rsa_accompagnement" })
+                        }
 
   def action_required_status?
     status.in?(STATUSES_WITH_ACTION_REQUIRED)
