@@ -12,20 +12,12 @@ module Users
 
     def create
       @orientation = Orientation.new(user: @user, **orientation_params)
-      if save_orientation.success?
-        redirect_to structure_user_parcours_path(user_id: @user.id)
-      else
-        turbo_stream_replace_error_list_with(save_orientation.errors)
-      end
+      save_orientation_and_redirect
     end
 
     def update
       @orientation.assign_attributes(**orientation_params)
-      if save_orientation.success?
-        redirect_to structure_user_parcours_path(user_id: @user.id)
-      else
-        turbo_stream_replace_error_list_with(save_orientation.errors)
-      end
+      save_orientation_and_redirect
     end
 
     def destroy
@@ -42,7 +34,8 @@ module Users
     private
 
     def orientation_params
-      params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id, :organisation_id, :agent_id)
+      params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id,
+                                          :organisation_id, :agent_id)
     end
 
     def set_user
@@ -80,8 +73,33 @@ module Users
       @user.reload.orientations.includes(:organisation, :agent)
     end
 
+    def save_orientation_and_redirect
+      if save_orientation.success?
+        turbo_stream_redirect structure_user_parcours_path(user_id: @user.id)
+      elsif save_orientation.shrinkeable_orientation.present?
+        turbo_stream_confirm_update_anterior_ends_at_modal
+      else
+        turbo_stream_replace_error_list_with(save_orientation.errors)
+      end
+    end
+
     def save_orientation
-      @save_orientation ||= Orientations::Save.call(orientation: @orientation)
+      @save_orientation ||= Orientations::Save.call(
+        orientation: @orientation,
+        update_anterior_ends_at: params[:orientation][:update_anterior_ends_at]
+      )
+    end
+
+    def turbo_stream_confirm_update_anterior_ends_at_modal
+      turbo_stream_display_modal(
+        partial: "users/orientations/confirm_update_anterior_ends_at",
+        locals: {
+          shrinkeable_orientation: save_orientation.shrinkeable_orientation,
+          orientation: @orientation,
+          orientation_params:,
+          user: @user
+        }
+      )
     end
   end
 end
