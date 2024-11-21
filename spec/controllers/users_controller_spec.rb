@@ -1065,7 +1065,7 @@ describe UsersController do
 
         before do
           allow(Users::Save).to receive(:call).and_call_original
-          allow_any_instance_of(Users::Save).to receive(:sync_with_rdv_solidarites)
+          allow_any_instance_of(Users::Save).to receive(:push_user_to_rdv_solidarites)
             .and_return true
           organisation.tags << tag
           organisation.tags << existing_tag

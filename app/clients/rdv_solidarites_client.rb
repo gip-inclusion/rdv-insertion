@@ -37,6 +37,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_user_referent_assignations(user_id)
+    Faraday.get(
+      "#{@url}/api/rdvinsertion/users/#{user_id}/referent_assignations",
+      {},
+      request_headers
+    )
+  end
+
   def update_user(user_id, request_body = {})
     Faraday.patch(
       "#{@url}/api/v1/users/#{user_id}",

@@ -1,5 +1,5 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_user, :verify_user_is_sync_with_rdv_solidarites, only: [:create]
+  before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
@@ -86,8 +86,8 @@ class InvitationsController < ApplicationController
     @user = policy_scope(User).includes(:invitations).find(params[:user_id])
   end
 
-  def verify_user_is_sync_with_rdv_solidarites
-    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
+  def ensure_rdv_solidarites_user_exists
+    recreate_rdv_solidarites_user(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
   def set_invitation
