@@ -15,9 +15,7 @@ module Stats
     attr_reader :follow_ups, :target_delay_days, :consider_orientation_rdv
 
     def compute_percentage_seen_within_delay
-      return 0.0 if mature_follow_ups.empty?
-
-      (follow_ups_seen_within_delay.count / mature_follow_ups.count.to_f) * 100
+      (follow_ups_seen_within_delay.count / (mature_follow_ups.count.nonzero? || 1).to_f) * 100
     end
 
     def follow_ups_seen_within_delay
