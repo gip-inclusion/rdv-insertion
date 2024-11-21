@@ -4,7 +4,7 @@
   data-link-path="<%= structure_user_follow_ups_path(user_id: follow_up.user_id, anchor: "follow_up_#{follow_up.id}") %>"
 >
   <%= display_follow_up_status(follow_up) %>
-  <!-- We need to check the participations presence on top of the statuses since the follow_up status is updated asynchronously, so for a brief period of time the follow_up can be in status rdv_pending whereas the rdv status has been updated and is not pending anymore -->
+  <%# We need to check the participations presence on top of the statuses since the follow_up status is updated asynchronously, so for a brief period of time the follow_up can be in status rdv_pending whereas the rdv status has been updated and is not pending anymore %>
   <% if follow_up.rdv_pending? && follow_up.pending_rdv %>
     <span class="text-darker-grey"><em><%= " (le #{format_date(follow_up.pending_rdv.starts_at)})" %></em></span>
   <% elsif follow_up.rdv_seen? && follow_up.last_seen_participation %>
