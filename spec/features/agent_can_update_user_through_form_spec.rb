@@ -49,6 +49,8 @@ describe "Agents can update user through form", :js do
       page.fill_in "user_first_name", with: "Milo"
       click_button "Enregistrer"
 
+      expect(page).to have_current_path(organisation_user_path(organisation, user))
+      expect(page).to have_no_content("Milla")
       expect(page).to have_content("Milo")
       expect(user.reload.first_name).to eq("Milo")
     end
