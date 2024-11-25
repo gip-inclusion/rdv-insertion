@@ -13,8 +13,8 @@ module ApplicationHelper
       success: "ri-checkbox-circle-fill",
       error: "ri-close-circle-fill",
       alert: "ri-error-warning-fill",
-      notice: "ri-error-warning-fill"
-    }[type] || "ri-error-warning-fill"
+      notice: "ri-information-fill"
+    }[type] || "ri-information-fill"
   end
 
   def display_attribute(attribute)
