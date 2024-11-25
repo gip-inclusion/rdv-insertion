@@ -44,7 +44,7 @@
         <i class="fas fa-angle-down"></i>
       </span>
     </div>
-    <%= render "filter_by_orientation_type_button" if @structure_orientations.any? %>
+    <%= render "filter_by_orientation_type_button" if show_orientations_filter? %>
     <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
     <%= render "filter_by_invitation_or_convocation_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
     <%= render "search_form", url: structure_users_path %>
