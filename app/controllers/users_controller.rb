@@ -186,7 +186,6 @@ class UsersController < ApplicationController
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
   end
 
-
   def set_orientation_types
     @orientation_types = OrientationType.for_department(current_department)
   end
