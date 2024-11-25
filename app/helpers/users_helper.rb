@@ -7,6 +7,10 @@ module UsersHelper
     category_configuration.invitation_formats.present?
   end
 
+  def show_orientations_filter?
+    current_structure.orientations.any?
+  end
+
   def no_search_results?(users)
     users.empty? && params[:search_query].present?
   end
