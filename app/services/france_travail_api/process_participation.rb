@@ -1,7 +1,7 @@
 module FranceTravailApi
   class ProcessParticipation < BaseService
     # https://francetravail.io/data/api/rechercher-usager/rdv-partenaire/documentation#/api-reference/
-    include FranceTravail::WebhookReceiptHandler
+    include Webhook::ReceiptHandler
 
     def initialize(participation_id:, timestamp:, event:)
       @participation = Participation.find(participation_id)
