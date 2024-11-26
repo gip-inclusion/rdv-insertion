@@ -5,13 +5,15 @@ module Participation::FranceTravailWebhooks
 
   included do
     after_commit on: :create, if: -> { organisation.france_travail? } do
-      OutgoingWebhooks::FranceTravail::ProcessParticipationJob.perform_later(participation_id: id, timestamp: created_at,
-                                                                             event: :create)
+      OutgoingWebhooks::FranceTravail::ProcessParticipationJob.perform_later(
+        participation_id: id, timestamp: created_at, event: :create
+      )
     end
 
     after_commit on: :update, if: -> { organisation.france_travail? } do
-      OutgoingWebhooks::FranceTravail::ProcessParticipationJob.perform_later(participation_id: id, timestamp: updated_at,
-                                                                             event: :update)
+      OutgoingWebhooks::FranceTravail::ProcessParticipationJob.perform_later(
+        participation_id: id, timestamp: updated_at, event: :update
+      )
     end
 
     around_destroy lambda { |participation, block|
