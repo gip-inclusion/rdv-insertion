@@ -10,14 +10,12 @@ module FranceTravailApi
     end
 
     def call
-      Rdv.with_advisory_lock("france_travail_webhook#{@participation.id}") do
-        with_webhook_receipt(
-          resource_model: "Participation",
-          resource_id: @participation.id,
-          timestamp: @timestamp
-        ) do
-          send_request!
-        end
+      with_webhook_receipt(
+        resource_model: "Participation",
+        resource_id: @participation.id,
+        timestamp: @timestamp
+      ) do
+        send_request!
       end
     end
 
