@@ -112,8 +112,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_170810) do
   create_table "category_configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "convene_user", default: true
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
+    t.boolean "convene_user", default: true
     t.integer "number_of_days_before_invitations_expire", default: 10
     t.boolean "invite_to_user_organisations_only", default: true
     t.boolean "rdv_with_referents", default: false
@@ -252,10 +252,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_170810) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "letter_sender_name"
-    t.string "sms_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
     t.boolean "display_europe_logos", default: false
+    t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_france_travail_logo", default: false
@@ -389,10 +389,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_170810) do
     t.string "address"
     t.string "created_by"
     t.string "status"
-    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
+    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
     t.bigint "lieu_id"
@@ -421,6 +421,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_170810) do
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
+    t.float "rate_of_users_oriented_in_less_than_30_days"
+    t.json "rate_of_users_oriented_in_less_than_30_days_by_month"
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -436,10 +438,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_170810) do
     t.json "rate_of_users_oriented_grouped_by_month"
     t.integer "users_with_rdv_count"
     t.json "users_with_rdv_count_grouped_by_month"
-    t.float "rate_of_users_oriented_in_less_than_45_days"
-    t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
-    t.float "rate_of_users_accompanied_in_less_than_15_days"
-    t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
+    t.float "rate_of_users_oriented_in_less_than_15_days"
+    t.json "rate_of_users_oriented_in_less_than_15_days_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -474,10 +474,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_21_170810) do
     t.string "rdv_purpose"
     t.string "user_designation"
     t.string "rdv_subject"
-    t.boolean "display_mandatory_warning", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
+    t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
   end
 
