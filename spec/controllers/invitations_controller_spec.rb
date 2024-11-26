@@ -8,13 +8,12 @@ describe InvitationsController do
     let!(:other_org) { create(:organisation, department: department) }
     let!(:other_category_configuration) { create(:category_configuration, organisation: other_org, motif_category:) }
 
-    let!(:organisations) { Organisation.where(id: organisation.id) }
-    let!(:agent) { create(:agent, organisations: organisations) }
+    let!(:agent) { create(:agent, organisations: [organisation]) }
     let!(:user) do
       create(
         :user,
         first_name: "JANE", last_name: "DOE", title: "madame",
-        id: user_id, organisations: organisations
+        id: user_id, organisations: [organisation]
       )
     end
     let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
@@ -42,20 +41,19 @@ describe InvitationsController do
       sign_in(agent)
       travel_to(Time.zone.parse("2022-05-04 12:30"))
       allow(InviteUser).to receive(:call)
-        .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         .and_return(OpenStruct.new(success?: true, invitation:))
     end
 
     context "organisation level" do
       it "calls the invite user service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
+          .with(user:, organisations: [organisation], invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
     end
 
     context "department level" do
-      let!(:organisations) { Organisation.where(id: [organisation.id, other_org.id]) }
+      let!(:agent) { create(:agent, organisations: [organisation, other_org]) }
       let!(:create_params) do
         {
           department_id: department.id,
@@ -74,7 +72,7 @@ describe InvitationsController do
 
       it "calls the service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
+          .with(user:, organisations: [organisation, other_org], invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
 
@@ -82,11 +80,10 @@ describe InvitationsController do
         let!(:other_category_configuration) do
           create(:category_configuration, organisation: other_org, motif_category: create(:motif_category))
         end
-        let!(:organisations) { Organisation.where(id: [organisation.id]) }
 
         it "calls the service with only the orgs handling the category" do
           expect(InviteUser).to receive(:call)
-            .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
+            .with(user:, organisations: [organisation], invitation_attributes:, motif_category_attributes:)
           post :create, params: create_params
         end
       end

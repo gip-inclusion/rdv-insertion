@@ -2,6 +2,7 @@ module CarnetDeBord
   class CarnetsController < ApplicationController
     before_action :set_user, :set_department
 
+    # rubocop:disable Metrics/AbcSize
     def create
       @success, @errors = [create_carnet.success?, create_carnet.errors]
       if @success
@@ -12,10 +13,11 @@ module CarnetDeBord
       else
         respond_to do |format|
           format.json { render json: { success: false, errors: @errors }, status: :unprocessable_entity }
-          format.turbo_stream { flash.now[:error] = @errors }
+          format.turbo_stream { flash.now[:error] = @errors.join(", ") }
         end
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     private
 

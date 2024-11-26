@@ -1,0 +1,31 @@
+<% if existing_action?(collection_presenter.resource_name, :edit) %>
+  <td><%= link_to(
+    t("administrate.actions.edit"),
+    [:edit, namespace, resource],
+    class: "action-edit",
+  ) if accessible_action?(resource, :edit) %></td>
+<% end %>
+
+<td>
+  <%= form_for(:webhook_endpoint, url: duplicate_super_admins_webhook_endpoint_path(resource), method: :post) do |f| %>
+    <%= f.hidden_field :target_id, value: nil %>
+    <button type="button" id="duplicate_webhook_endpoint_<%= resource.id %>">Dupliquer</button>
+  <% end %>
+</td>
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+    const button = document.querySelector("#duplicate_webhook_endpoint_<%= resource.id %>")
+
+    button.addEventListener("click", function(event) {
+      event.preventDefault()
+      const targetId = prompt("Entrez l'id RDV-I de l'organisation pour laquelle vous souhaitez appliquer ce webhook")
+      const form = button.closest("form")
+
+      if (!targetId) return
+
+      form.querySelector("input[name='webhook_endpoint[target_id]']").value = targetId
+      form.submit()
+    })
+  })
+</script>
