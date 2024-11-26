@@ -276,6 +276,8 @@ tables:
       - document_date
 
   - table_name: participations
+    anonymized_column_names:
+      - france_travail_id
     non_anonymized_column_names:
       - user_id
       - rdv_id
