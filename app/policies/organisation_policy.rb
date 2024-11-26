@@ -42,7 +42,7 @@ class OrganisationPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      pundit_user.organisations
+      scope.where(id: pundit_user.organisation_ids)
     end
   end
 end

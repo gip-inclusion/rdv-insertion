@@ -35,9 +35,19 @@ describe Orientation do
   end
 
   describe "starts_at is today" do
-    let(:orientation) { build(:orientation, starts_at: Time.zone.today) }
+    let(:orientation) { build(:orientation, starts_at: Time.zone.today, ends_at: nil) }
 
     it { expect(orientation).to be_valid }
+  end
+
+  describe "time_range is not sufficient" do
+    let(:orientation) { build(:orientation, starts_at: Time.zone.today, ends_at: Time.zone.tomorrow) }
+
+    it "adds errors" do
+      expect(orientation).not_to be_valid
+      expect(orientation.errors.full_messages.to_sentence)
+        .to include("La période doit être d'au moins")
+    end
   end
 
   describe "ends_at after starts_at" do

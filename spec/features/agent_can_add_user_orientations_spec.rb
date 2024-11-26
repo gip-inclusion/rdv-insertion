@@ -77,7 +77,10 @@ describe "Agents can add user orientation", :js do
 
     click_button "Enregistrer"
 
-    expect(page).to have_content("Du 03/07/2023 au 03/10/2023")
+    expect(page).to have_content("Cette orientation chevauche")
+    click_button "Confirmer"
+
+    expect(page).to have_content("Du 03/07/2023 au 02/10/2023")
     expect(page).to have_content("Sociale")
     expect(page).to have_content("CD 26")
     expect(page).to have_content("Kad MERAD")

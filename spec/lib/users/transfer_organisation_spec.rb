@@ -22,7 +22,7 @@ describe Users::TransferOrganisation do
   before do
     source_organisation.users << user
     source_organisation.agents << agent
-    allow(Users::SyncWithRdvSolidarites).to receive(:call)
+    allow(Users::PushToRdvSolidarites).to receive(:call)
       .with(user: user).and_return(OpenStruct.new(success?: true))
     allow(RdvSolidaritesApi::DeleteUserProfile).to receive(:call)
       .with(
