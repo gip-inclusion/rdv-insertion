@@ -1,4 +1,4 @@
-describe RetrieveFranceTravailAccessToken, type: :service do
+describe FranceTravailApi::RetrieveAccessToken, type: :service do
   subject do
     described_class.call
   end
