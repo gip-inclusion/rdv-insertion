@@ -6,7 +6,7 @@
       <div>
         <% if checked %>
           <%= f.label "#{invitation_format}_invite_for_user_#{user.id}" do %>
-            <i class="fas fa-redo-alt small-wheel"></i>
+            <i class="ri-refresh-line small-wheel"></i>
           <% end %>
         <% end %>
         <%= f.check_box "#{invitation_format}_invite_for_user_#{user.id}", { class: checked ? "d-none" : "invitation-checkbox", data: { controller: "invitations-checkbox-form", action: "change->invitations-checkbox-form#submit" } }, false %>

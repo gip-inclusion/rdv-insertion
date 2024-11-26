@@ -6,18 +6,18 @@
     <div class="container d-flex justify-content-end px-4">
       <p class="mb-0">
         <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id, redirect_url: super_admins_root_url), method: :delete, class: "me-5" do %>
-          <i class="fas fa-shield-alt me-1"></i>
+          <i class="ri-shield-user-line me-1"></i>
           Revenir au Super admin
         <% end %>
 
         <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
-          <i class="fas fa-user me-1"></i>
+          <i class="ri-user-line me-1"></i>
           Revenir à ma session
         <% end %>
       </p>
     </div>
   </div>
   <button type="button" id="toggle-navbar" class="position-absolute" data-action="click->super-admin-header#toggle">
-    <i class="fas fa-shield-alt"></i>
+    <i class="ri-shield-user-line"></i>
   </button>
 </div>

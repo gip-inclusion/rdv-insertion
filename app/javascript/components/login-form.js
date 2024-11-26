@@ -117,12 +117,12 @@ class LoginForm {
   togglePasswordVisibility() {
       if (this.passwordInput.type === "password") {
         this.passwordInput.type = "text";
-        this.passwordVisibilityIcon.classList.remove("fa-eye");
-        this.passwordVisibilityIcon.classList.add("fa-eye-slash");
+        this.passwordVisibilityIcon.classList.remove("ri-eye-fill");
+        this.passwordVisibilityIcon.classList.add("ri-eye-off-fill");
       } else {
         this.passwordInput.type = "password";
-        this.passwordVisibilityIcon.classList.remove("fa-eye-slash");
-        this.passwordVisibilityIcon.classList.add("fa-eye");
+        this.passwordVisibilityIcon.classList.remove("ri-eye-off-fill");
+        this.passwordVisibilityIcon.classList.add("ri-eye-fill");
       }
   }
 }

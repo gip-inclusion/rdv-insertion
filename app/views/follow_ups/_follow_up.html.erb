@@ -58,7 +58,7 @@
                       <% if participation.rdv.rdv_solidarites_rdv_id && policy(participation).edit? %>
                         <%= link_to participation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(participation.rdv_solidarites_url) do %>
                           <button class="btn btn-blue">
-                            Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
+                            Voir sur RDV-S<i class="ri-external-link-line ms-1"></i>
                           </button>
                         <% end %>
                       <% end %>

@@ -7,7 +7,7 @@
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(@organisation.rdv_solidarites_url) do %>
-        <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+        <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i></button>
       <% end %>
     </div>
   </div>
@@ -15,7 +15,7 @@
   <h4>
     Détails de l'organisation
     <i
-      class="fas fa-question-circle"
+      class="ri-question-line"
       data-controller="tooltip"
       data-action="mouseover->tooltip#organisationDetails">
     </i>

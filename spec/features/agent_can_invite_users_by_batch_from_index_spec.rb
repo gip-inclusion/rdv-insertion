@@ -82,15 +82,15 @@ describe "Agent can invite users by batch from index" do
       expect(page).to have_button("Actions pour toute la sélection", disabled: false)
       expect(page).to have_content("Inviter par SMS").exactly(2).times
       expect(page).to have_content("Inviter par Email").exactly(2).times
-      expect(page).to have_no_css("i.fas.fa-check")
-      expect(page).to have_no_css("i.fas.fa-redo-alt")
+      expect(page).to have_no_css("i.ri-check-line")
+      expect(page).to have_no_css("i.ri-repeat-2-line")
 
       click_button("Actions pour toute la sélection", wait: 10)
       click_button("Inviter par sms", wait: 10)
 
       expect(page).to have_no_content("Inviter par SMS")
-      expect(page).to have_css("i.fas.fa-check").exactly(2).times
-      expect(page).to have_css("i.fas.fa-redo-alt").exactly(2).times
+      expect(page).to have_css("i.ri-check-line").exactly(2).times
+      expect(page).to have_css("i.ri-repeat-2-line").exactly(2).times
     end
 
     it "can return to index page with the same arguments" do
@@ -142,15 +142,15 @@ describe "Agent can invite users by batch from index" do
       expect(page).to have_button("Actions pour toute la sélection", disabled: false)
       expect(page).to have_content("Inviter par SMS").exactly(2).times
       expect(page).to have_content("Inviter par Email").exactly(2).times
-      expect(page).to have_no_css("i.fas.fa-check")
-      expect(page).to have_no_css("i.fas.fa-redo-alt")
+      expect(page).to have_no_css("i.ri-check-line")
+      expect(page).to have_no_css("i.ri-repeat-2-line")
 
       click_button("Actions pour toute la sélection", wait: 10)
       click_button("Inviter par sms", wait: 10)
 
       expect(page).to have_no_content("Inviter par SMS")
-      expect(page).to have_css("i.fas.fa-check").exactly(2).times
-      expect(page).to have_css("i.fas.fa-redo-alt").exactly(2).times
+      expect(page).to have_css("i.ri-check-line").exactly(2).times
+      expect(page).to have_css("i.ri-repeat-2-line").exactly(2).times
     end
 
     it "can return to index page with the same arguments" do
