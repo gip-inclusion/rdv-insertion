@@ -1,4 +1,4 @@
-module Webhook
+module Webhooks
   module ReceiptHandler
     def with_webhook_receipt(resource_model:, resource_id:, timestamp:, webhook_endpoint_id: nil)
       # france travail webhooks are not linked to a webhook_endpoint

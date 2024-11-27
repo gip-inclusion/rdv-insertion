@@ -1,4 +1,4 @@
-describe Rdv::FranceTravailWebhooks, type: :concern do
+describe Participation::FranceTravailWebhooks, type: :concern do
   let!(:organisation) do
     create(:organisation, safir_code: "123245", name: "CD de DIE")
   end

@@ -39,7 +39,7 @@ module FranceTravail
 
     # Liste des modalités FT (on ne prend en compte que le physique et le telephone): PHYSIQUE, TELEPHONE, VISIO
     def france_travail_modalite
-      @participation.by_phone? ? "PHYSIQUE" : "TELEPHONE"
+      @participation.by_phone? ? "TELEPHONE" : "PHYSIQUE"
     end
 
     # Liste des initiateurs FT : USAGER, PARTENAIRE
@@ -84,7 +84,7 @@ module FranceTravail
       case @participation.status
       when "seen"
         "EFFECTUE"
-      when "excused" || "revoked"
+      when "excused", "revoked"
         "ANNULE"
       when "noshow"
         "ABSENT"

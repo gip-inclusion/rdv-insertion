@@ -1,6 +1,6 @@
 module OutgoingWebhooks
   class SendWebhook < BaseService
-    include Webhook::ReceiptHandler
+    include Webhooks::ReceiptHandler
 
     def initialize(webhook_endpoint:, webhook_payload:, webhook_signature:)
       @webhook_endpoint = webhook_endpoint
