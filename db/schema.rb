@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -481,6 +481,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
     t.text "punishable_warning", default: "", null: false
   end
 
+  create_table "unavailable_creneau_logs", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.integer "number_of_invitations_affected"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_unavailable_creneau_logs_on_organisation_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "uid"
     t.bigint "rdv_solidarites_user_id"
@@ -585,5 +593,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
+  add_foreign_key "unavailable_creneau_logs", "organisations"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end
