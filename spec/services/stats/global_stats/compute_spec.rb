@@ -43,7 +43,9 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeFollowUpSeenRate).to receive(:call)
         .with(
-          follow_ups: stat.users_first_accompagnement_follow_up, target_delay_days: 15, consider_orientation_rdv_as_start: true
+          follow_ups: stat.users_first_accompagnement_follow_up,
+          target_delay_days: 15,
+          consider_orientation_rdv_as_start: true
         )
         .and_return(OpenStruct.new(success?: true, value: 25.0))
       allow(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
