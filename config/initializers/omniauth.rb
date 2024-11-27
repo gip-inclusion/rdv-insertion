@@ -5,6 +5,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   on_failure do |env|
     Sentry.capture_exception(env["omniauth.error"])
 
-    SessionsController.action(:new).call(env)
+    # On n'est pas dans un controller, donc on ne peut pas directement
+    # manipuler le flash et faire des redirection
+    Website::StaticPagesController.action(:welcome).call(env)
   end
 end

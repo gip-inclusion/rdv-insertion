@@ -8,11 +8,7 @@ class SessionsController < ApplicationController
                 :set_agent_return_to_url,
                 only: [:create]
 
-  def new
-    if request.env["omniauth.error"]
-      flash[:error] = "Echec de la connexion"
-    end
-  end
+  def new; end
 
   def create
     set_session_credentials
