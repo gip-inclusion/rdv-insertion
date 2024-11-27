@@ -1,7 +1,7 @@
 module OutgoingWebhooks
   module FranceTravail
     class ProcessParticipationJob < LockedAndOrderedJobBase
-      def self.lock_key(participation_id:)
+      def self.lock_key(participation_id:, timestamp:, event:)
         "#{base_lock_key}:#{participation_id}"
       end
 

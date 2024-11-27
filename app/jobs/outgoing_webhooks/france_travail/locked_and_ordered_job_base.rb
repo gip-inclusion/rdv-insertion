@@ -3,7 +3,7 @@ module OutgoingWebhooks
     class LockedAndOrderedJobBase < ApplicationJob
       include LockedAndOrderedJobs
 
-      def self.job_timestamp(timestamp:)
+      def self.job_timestamp(timestamp:, **)
         timestamp
       end
     end
