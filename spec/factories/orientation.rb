@@ -4,7 +4,7 @@ FactoryBot.define do
     organisation
     agent
     orientation_type
-    starts_at { Time.zone.now.yesterday }
+    starts_at { Time.zone.now.last_month }
     ends_at { Time.zone.now.tomorrow }
   end
 end

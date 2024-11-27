@@ -1,17 +1,17 @@
 module Orientations
   class Save < BaseService
-    def initialize(orientation:)
+    def initialize(orientation:, update_anterior_ends_at: false)
       @orientation = orientation
+      @update_anterior_ends_at = update_anterior_ends_at
     end
 
     def call
       ActiveRecord::Base.transaction do
         validate_starts_at_presence
-        update_previous_orientation_ends_at if previous_orientation_without_end_date.present?
         fill_current_orientation_ends_at if @orientation.ends_at.nil? && posterior_orientations.any?
-        validate_no_orientations_overlap
         add_user_to_organisation unless @orientation.user.belongs_to_org?(@orientation.organisation_id)
         save_record!(@orientation)
+        shrink_or_ensure_no_overlapping
       end
     end
 
@@ -45,18 +45,8 @@ module Orientations
       end
     end
 
-    def update_previous_orientation_ends_at
-      previous_orientation_without_end_date.ends_at = @orientation.starts_at
-      return if previous_orientation_without_end_date.save
-
-      fail!(
-        "La date de fin n'a pas pu être mise automatiquement sur l'orientation précédente: " \
-        "#{previous_orientation_without_end_date}"
-      )
-    end
-
     def fill_current_orientation_ends_at
-      @orientation.ends_at = posterior_orientations.min_by(&:starts_at).starts_at
+      @orientation.ends_at = posterior_orientations.min_by(&:starts_at).starts_at - 1.day
     end
 
     # We want to validate this before saving the record.
@@ -65,12 +55,32 @@ module Orientations
       fail!("Une date de début doit être indiquée") unless @orientation.starts_at?
     end
 
-    def validate_no_orientations_overlap
-      return if other_user_orientations.none? do |other_orientation|
+    def shrink_or_ensure_no_overlapping
+      if shrinkeable_orientations.any? && non_shrinkable_overlapping_orientations.empty?
+        if @update_anterior_ends_at
+          shrinkeable_orientations.first.update!(ends_at: @orientation.starts_at - 1.day)
+        else
+          result.shrinkeable_orientation = shrinkeable_orientations.first
+          fail!
+        end
+      elsif non_shrinkable_overlapping_orientations.any?
+        fail!("Cette orientation chevauche une autre orientation qui ne peut être raccourcie automatiquement,
+          veuillez modifier l'orientation en question ou changer les dates renseignées ci-dessous")
+      end
+    end
+
+    def shrinkeable_orientations
+      @shrinkeable_orientations ||= @orientation.user.orientations.shrinkeable_to_fit(@orientation)
+    end
+
+    def overlapping_orientations
+      other_user_orientations.select do |other_orientation|
         other_orientation.time_range.to_a.intersect?(@orientation.time_range.to_a)
       end
+    end
 
-      fail!("Les dates se chevauchent avec une autre orientation")
+    def non_shrinkable_overlapping_orientations
+      @non_shrinkable_overlapping_orientations ||= overlapping_orientations - shrinkeable_orientations
     end
   end
 end
