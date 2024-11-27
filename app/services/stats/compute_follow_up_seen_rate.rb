@@ -1,5 +1,5 @@
 module Stats
-  class ComputeFollowUpSeenRateWithinDelays < BaseService
+  class ComputeFollowUpSeenRate < BaseService
     def initialize(follow_ups:, target_delay_days:, consider_orientation_rdv_as_start: false)
       @follow_ups = follow_ups
       @target_delay_days = target_delay_days
