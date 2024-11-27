@@ -10,16 +10,11 @@ module Agents::SignInWithRdvSolidarites
   private
 
   def validate_rdv_solidarites_credentials!
-    return if request.env["omniauth.auth"]
     raise RdvSolidarites::InvalidCredentialsError unless rdv_solidarites_credentials.valid?
   end
 
   def rdv_solidarites_credentials
-    @rdv_solidarites_credentials ||= RdvSolidaritesCredentials.new(
-      uid: request.headers["uid"],
-      client: request.headers["client"],
-      access_token: request.headers["access-token"]
-    )
+    @rdv_solidarites_credentials ||= RdvSolidaritesCredentials.new(request)
   end
 
   def invalid_credentials
@@ -53,12 +48,6 @@ module Agents::SignInWithRdvSolidarites
   end
 
   def authenticated_agent
-    email = if request.env["omniauth.auth"]
-              request.env["omniauth.auth"]["info"]["agent"]["email"]
-            else
-              rdv_solidarites_credentials.uid
-            end
-
-    @authenticated_agent ||= Agent.find_by(email:)
+    @authenticated_agent ||= Agent.find_by(email: rdv_solidarites_credentials.email)
   end
 end
