@@ -17,7 +17,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     deliver_general_email
     deliver_per_category_email_to_notify_no_available_slots
     notify_on_mattermost
-    store_unavailable_creneau_in_db
+    store_unavailable_creneau_log_in_db
   end
 
   private
@@ -72,9 +72,9 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     string
   end
 
-  def store_unavailable_creneau_in_db
+  def store_unavailable_creneau_log_in_db
     counters = grouped_invitation_params_by_category.pluck(:invitations_counter)
 
-    UnableCreneauLog.create!(organisation:, number_of_invitations_affected: counters.sum)
+    UnavailableCreneauLog.create!(organisation:, number_of_invitations_affected: counters.sum)
   end
 end
