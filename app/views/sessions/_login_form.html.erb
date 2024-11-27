@@ -4,46 +4,34 @@
   <div class="mb-3">
     <h1 class="login-title">Connexion agent</h1>
   </div>
-  <%- if ENV['RDV_SOLIDARITES_OAUTH_APP_ID'] && (!ENV['RDV_SOLIDARITES_OAUTH_DISABLED'] || params[:force_oauth]) %>
-    <%= form_tag('/auth/rdvservicepublic', method: 'post', data: {turbo: false}) do %>
-      <div class="d-flex mb-4 justify-content-center align-items-center">
-        <button class="btn btn-blue" type='submit'>Se connecter avec RDV Solidarités</button>
-      </div>
-      <%= render 'common/inclusion_connect_button' %>
-      <div class="d-flex mt-4 justify-content-center align-items-center">
-        <%= render 'agent_connect/connect_button' %>
-      </div>
-    <% end %>
-  <% else %>
-    <%= form_with action:"#", id: "js-login-form" do |form| %>
-      <h5 class="text-center mb-4 mx-1">Identifiez-vous avec votre email et mot de passe RDV-Solidarités</h5>
-      <div class="login-form-group">
-        <%= form.label :email, "Adresse email" %>
-        <%= form.email_field :email , class: "form-control", placeholder: "prénom.nom@email.com" %>
-      </div>
-      <div class="login-form-group">
-        <%= form.label :password, "Mot de Passe" %>
-        <div class="input-group">
-          <%= form.password_field :password, class: "form-control", placeholder: "*************" %>
-          <div class="input-group-append">
-            <span class="input-group-text">
-              <i class="fas fa-eye"></i>
-            </span>
-          </div>
-        </div>
-        <div class="mt-3 text-decoration-underline">
-          <%= link_to "Mot de passe oublié ?", "#{ENV["RDV_SOLIDARITES_URL"]}/users/password/new", target: :blank %>
+  <%= form_with action:"#", id: "js-login-form" do |form| %>
+    <h5 class="text-center mb-4 mx-1">Identifiez-vous avec votre email et mot de passe RDV-Solidarités</h5>
+    <div class="login-form-group">
+      <%= form.label :email, "Adresse email" %>
+      <%= form.email_field :email , class: "form-control", placeholder: "prénom.nom@email.com" %>
+    </div>
+    <div class="login-form-group">
+      <%= form.label :password, "Mot de Passe" %>
+      <div class="input-group">
+        <%= form.password_field :password, class: "form-control", placeholder: "*************" %>
+        <div class="input-group-append">
+          <span class="input-group-text">
+            <i class="fas fa-eye"></i>
+          </span>
         </div>
       </div>
-      <div class=text-center>
-        <%= form.submit "Se connecter", class: "btn btn-blue p-3 px-4" %>
+      <div class="mt-3 text-decoration-underline">
+        <%= link_to "Mot de passe oublié ?", "#{ENV["RDV_SOLIDARITES_URL"]}/users/password/new", target: :blank %>
       </div>
-      <div class="d-flex justify-content-center align-items-center">
-        <hr class="flex-fill">
-        <h4 class="text-center my-4 font-weight-bold px-3">OU</h4>
-        <hr class="flex-fill">
-      </div>
-    <% end %>
+    </div>
+    <div class=text-center>
+      <%= form.submit "Se connecter", class: "btn btn-blue p-3 px-4" %>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <hr class="flex-fill">
+      <h4 class="text-center my-4 font-weight-bold px-3">OU</h4>
+      <hr class="flex-fill">
+    </div>
     <%= render 'common/inclusion_connect_button' %>
     <div class="d-flex mt-4 justify-content-center align-items-center">
       <%= render 'agent_connect/connect_button' %>
