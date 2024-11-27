@@ -73,9 +73,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
   end
 
   def store_unavailable_creneau_in_db
-    counters = grouped_invitation_params_by_category.map do |grouped_invitation_params|
-      grouped_invitation_params[:invitations_counter]
-    end
+    counters = grouped_invitation_params_by_category.pluck(:invitations_counter)
 
     UnableCreneauLog.create!(organisation:, number_of_invitations_affected: counters.sum)
   end

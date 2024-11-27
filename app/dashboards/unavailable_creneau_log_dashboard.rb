@@ -15,9 +15,9 @@ class UnavailableCreneauLogDashboard < Administrate::BaseDashboard
     created_at
   ].freeze
 
-  SHOW_PAGE_ATTRIBUTES = %i[number_of_invitations_affected organisation created_at]
+  SHOW_PAGE_ATTRIBUTES = %i[number_of_invitations_affected organisation created_at].freeze
 
-  FORM_ATTRIBUTES = %i[]
+  FORM_ATTRIBUTES = %i[].freeze
 
   COLLECTION_FILTERS = {}.freeze
 
@@ -25,4 +25,3 @@ class UnavailableCreneauLogDashboard < Administrate::BaseDashboard
     "de créneau indisponibles pour l'organisation #{unavailable_creneau_log.organisation}"
   end
 end
-
