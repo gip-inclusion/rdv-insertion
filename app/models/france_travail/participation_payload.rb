@@ -49,7 +49,6 @@ module FranceTravail
 
     # Liste des motifs FT : AUT, ACC, ORI
     def france_travail_motif
-      # A confirmer avec FT et Amaury, on se base sur la catégorie de motif ou on met AUT tout le temps ?
       case @participation.motif.motif_category&.motif_category_type
       when "rsa_orientation"
         "ORI"
