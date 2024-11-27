@@ -45,7 +45,7 @@ module Stats
     end
 
     def within_orientation_rdv_delay?(follow_up)
-      return false if follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv.negative?
+      return false if follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv&.negative?
 
       follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv&.< target_delay_days
     end
