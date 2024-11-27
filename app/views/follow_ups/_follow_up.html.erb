@@ -44,7 +44,16 @@
               <tbody>
                 <% participations.sort_by(&:created_at).reverse.each do |participation| %>
                   <tr>
-                    <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
+                    <td class="px-4 py-3">
+                      <%= format_date(participation.created_at) %>
+                      <i
+                        class="ri-information-line"
+                        data-controller="tooltip"
+                        data-created-by="<%= participation.created_by %>"
+                        data-created-at="<%= participation.created_at.strftime("%d/%m/%Y à %H:%M") %>"
+                        data-action="mouseover->tooltip#participationCreatedByDetails">
+                      </i>
+                    </td>
                     <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
                     <td class="px-2 py-3"><%= participation.motif_name %></td>
                     <td class="px-4 py-3 participation_status" >
