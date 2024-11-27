@@ -59,7 +59,7 @@ describe Stats::ComputeFollowUpSeenRate, type: :service do
   end
 
   describe "for 15 days considering orientation rdv" do
-    subject { described_class.call(follow_ups:, target_delay_days: 15, consider_orientation_rdv: true) }
+    subject { described_class.call(follow_ups:, target_delay_days: 15, consider_orientation_rdv_as_start: true) }
 
     let!(:category_orientation) { create(:motif_category, motif_category_type: "rsa_orientation") }
     let!(:category_accompagnement) { create(:motif_category, motif_category_type: "rsa_accompagnement") }

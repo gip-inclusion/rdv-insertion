@@ -35,9 +35,9 @@ class FollowUp < ApplicationRecord
   scope :with_all_invitations_expired, -> { joins(:invitations).where.not(invitations: Invitation.valid) }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
   scope :orientation, -> { joins(:motif_category).where(motif_category: { motif_category_type: "rsa_orientation" }) }
-  scope :accompaniment, lambda {
-                          joins(:motif_category).where(motif_category: { motif_category_type: "rsa_accompagnement" })
-                        }
+  scope :accompagnement, lambda {
+                           joins(:motif_category).where(motif_category: { motif_category_type: "rsa_accompagnement" })
+                         }
 
   def action_required_status?
     status.in?(STATUSES_WITH_ACTION_REQUIRED)
@@ -70,5 +70,28 @@ class FollowUp < ApplicationRecord
   def current_pending_rdv
     # if rdv is the same day, it is not in the future therefore not considered "pending", but the follow-up is still
     participations.select(&:pending?).min_by(&:starts_at) || participations.select(&:unknown?).max_by(&:starts_at)
+  end
+
+  def days_between_follow_up_creation_and_first_seen_rdv
+    return unless seen_rdvs?
+
+    first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
+  end
+
+  def days_between_first_orientation_seen_rdv_and_first_seen_rdv
+    return unless seen_rdvs?
+    return unless first_orientation_seen_rdv_date
+
+    (first_seen_rdv_starts_at.to_datetime.mjd - first_orientation_seen_rdv_date.to_datetime.mjd)
+  end
+
+  private
+
+  def first_orientation_seen_rdv_date
+    @first_orientation_seen_rdv_date ||= user
+                                         .follow_ups
+                                         .orientation
+                                         .min_by(&:created_at)
+                                         &.first_seen_rdv_starts_at
   end
 end
