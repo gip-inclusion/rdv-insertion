@@ -5,14 +5,14 @@ class UnavailableCreneauLogDashboard < Administrate::BaseDashboard
     id: Field::Number,
     number_of_invitations_affected: Field::Number,
     organisation: Field::BelongsTo,
-    created_at: Field::DateTime,
+    created_at: Field::Date,
     updated_at: Field::DateTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
-    number_of_invitations_affected
-    organisation
     created_at
+    organisation
+    number_of_invitations_affected
   ].freeze
 
   SHOW_PAGE_ATTRIBUTES = %i[number_of_invitations_affected organisation created_at].freeze
