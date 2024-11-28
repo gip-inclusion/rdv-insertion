@@ -38,10 +38,10 @@ module HasParticipationsToRdvs
   end
 
   def rdvs?
-    !rdvs.empty?
+    rdvs.any?
   end
 
   def seen_rdvs?
-    !seen_rdvs.empty?
+    seen_rdvs.any?
   end
 end

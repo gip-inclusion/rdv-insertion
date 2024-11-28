@@ -7,14 +7,14 @@ module Stats
     end
 
     def call
-      result.value = compute_percentage_seen_within_delay
+      result.value = compute_seen_within_delay_percentage
     end
 
     private
 
     attr_reader :follow_ups, :target_delay_days, :consider_orientation_rdv_as_start
 
-    def compute_percentage_seen_within_delay
+    def compute_seen_within_delay_percentage
       (follow_ups_seen_within_delay.count / (mature_follow_ups.count.nonzero? || 1).to_f) * 100
     end
 

@@ -34,7 +34,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         participations_with_notifications_set: Participation.where(id: [participation2]),
         users_set: User.where(id: [user1, user2]),
         users_first_orientation_follow_up: FollowUp.where(id: [follow_up2]),
-        users_first_accompagnement_follow_up: FollowUp.where(id: [follow_up2]),
+        users_first_accompaniement_follow_up: FollowUp.where(id: [follow_up2]),
         orientation_follow_ups_with_invitations: FollowUp.where(id: [follow_up1, follow_up2]),
         invited_users_set: User.where(id: [user1, user2]),
         user_ids_with_rdv_set: Participation.where(id: [participation1, participation2]).select(:user_id)
@@ -115,7 +115,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the percentage of users with accompanied follow up and rdv seen in less than 15 days" do
-      expect(stat).to receive(:users_first_accompagnement_follow_up)
+      expect(stat).to receive(:users_first_accompaniement_follow_up)
       expect(Stats::ComputeFollowUpSeenRateWithinDelays).to receive(:call)
         .with(follow_ups: [], target_delay_days: 15, consider_orientation_rdv_as_start: true)
       expect(subject.rate_of_users_accompanied_in_less_than_15_days_by_month).to eq(0)

@@ -126,7 +126,7 @@ class Stat < ApplicationRecord
             .distinct
   end
 
-  def users_first_accompagnement_follow_up
+  def users_first_accompaniement_follow_up
     # we consider minimum(:id) being the same as minimum(:created_at) as the id increases with created_at
     FollowUp.where(user: users_set)
             .where(id: FollowUp.accompagnement.group(:user_id).minimum(:id).values)

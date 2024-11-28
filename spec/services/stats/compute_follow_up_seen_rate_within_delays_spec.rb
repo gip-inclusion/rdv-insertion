@@ -145,7 +145,7 @@ describe Stats::ComputeFollowUpSeenRateWithinDelays, type: :service do
       end
 
       it "computes the percentage of follow_ups with rdv seen in less than 15 days" do
-        expect(result.value).to eq(40) # 2 on 5 follow_ups are considered as accompanied in less than 15 days
+        expect(result.value).to eq(40) # 2 out of 5 follow_ups are considered as accompanied in less than 15 days
       end
     end
   end
