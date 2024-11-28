@@ -17,7 +17,7 @@
     <%= record.class.human_attribute_name(attribute) %>
     <% if local_assigns[:tooltip] %>
       <i
-        class="fas fa-question-circle"
+        class="ri-question-line"
         data-controller="tooltip"
         data-action="mouseover->tooltip#<%= attribute.to_s.camelize(:lower) %>Attribute"
       >

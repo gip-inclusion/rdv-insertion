@@ -11,7 +11,7 @@
   ) %>
   <% if policy(ParcoursDocument.new(user:)).create? %>
     <%= button_tag type: 'button', class: "btn btn-primary", data: { action: "click->parcours-documents#fetchFile" } do %>
-      <i class="fas fa-plus"></i>
+      <i class="ri-add-line"></i>
       <div class="spinner-border spinner-border-sm text-white d-none" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>

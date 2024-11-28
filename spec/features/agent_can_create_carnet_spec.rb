@@ -79,7 +79,7 @@ describe "Agents can create a carnet", :js do
 
       click_button("Créer carnet")
       expect(page).to have_no_content("Créer carnet")
-      expect(page).to have_css("i.fas.fa-link")
+      expect(page).to have_css("i.ri-links-line")
       expect(page).to have_css(
         "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnets/12312ZD9A\"]"
       )

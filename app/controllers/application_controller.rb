@@ -31,15 +31,17 @@ class ApplicationController < ActionController::Base
     params[:page] || 1
   end
 
-  def sync_user_with_rdv_solidarites(user)
-    sync = Users::SyncWithRdvSolidarites.call(user: user)
-    return if sync.success?
+  # A user can be unlinked from its rdv-solidarites record when the latter is deleted for RGPD reasons.
+  # This method pushes the user to rdv-solidarites to recreate a new one.
+  def recreate_rdv_solidarites_user(user)
+    push = Users::PushToRdvSolidarites.call(user: user)
+    return if push.success?
 
     respond_to do |format|
       format.turbo_stream do
-        flash.now[:error] = "L'usager n'est plus lié à rdv-solidarités: #{sync.errors.map(&:to_s)}"
+        flash.now[:error] = "L'usager n'est plus lié à rdv-solidarités: #{push.errors.map(&:to_s)}"
       end
-      format.json { render json: { errors: sync.errors.map(&:to_s) }, status: :unprocessable_entity }
+      format.json { render json: { errors: push.errors.map(&:to_s) }, status: :unprocessable_entity }
     end
   end
 end

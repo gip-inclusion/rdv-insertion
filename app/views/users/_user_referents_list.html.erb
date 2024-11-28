@@ -21,13 +21,13 @@
               class: 'text-dark-grey-alt ms-2'
             ) do
           %>
-            <i class="fas fa-times"></i>
+            <i class="ri-close-line"></i>
           <% end %>
         </span>
       <% end %>
     <% end %>
   </p>
   <%= link_to(user_referent_assignations_path(user_id: @user.id), data: { turbo_frame: 'remote_modal' }) do %>
-    <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter un référent </button>
+    <button class="btn btn-blue mb-3"><i class="ri-add-line"></i> Ajouter un référent </button>
   <% end %>
 </div>

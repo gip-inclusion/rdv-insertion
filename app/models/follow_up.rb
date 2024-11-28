@@ -67,8 +67,15 @@ class FollowUp < ApplicationRecord
     I18n.t("activerecord.attributes.follow_up.statuses.#{status}")
   end
 
-  def current_pending_rdv
-    # if rdv is the same day, it is not in the future therefore not considered "pending", but the follow-up is still
+  def pending_rdv
+    return unless rdv_pending?
+
+    # normally there should always be pending participations for this follow_up status,
+    # but if a participation happened today and its status has not been filled by the agent,
+    # the participation would not be considered as pending anymore.
+    # Also in that case the follow_up does not transition to rdv_needs_status_update until the CRON job
+    # RefreshOutdatedFollowUpsStatusesJob runs.
+    # So for this edge case we select the latest participation with an unknown status.
     participations.select(&:pending?).min_by(&:starts_at) || participations.select(&:unknown?).max_by(&:starts_at)
   end
 

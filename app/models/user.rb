@@ -22,7 +22,7 @@ class User < ApplicationRecord
   include User::CreationOrigin
   include User::Geocodable
 
-  attr_accessor :skip_uniqueness_validations
+  attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create
 
   before_validation :generate_uid
   before_save :format_phone_number
@@ -60,6 +60,9 @@ class User < ApplicationRecord
   validates :phone_number, phone_number: true
 
   delegate :name, :number, to: :department, prefix: true
+
+  after_commit :import_associations_from_rdv_solidarites, on: :create,
+                                                          if: :import_associations_from_rdv_solidarites_on_create
 
   enum role: { demandeur: "demandeur", conjoint: "conjoint" }
   enum title: { monsieur: "monsieur", madame: "madame" }
@@ -191,6 +194,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def import_associations_from_rdv_solidarites
+    ImportUserAssociationsFromRdvSolidaritesJob.perform_later(id)
+  end
 
   def opposite_role
     return if role.blank?

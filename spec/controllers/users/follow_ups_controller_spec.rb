@@ -134,7 +134,7 @@ describe Users::FollowUpsController do
           it "shows the courrier generation button" do
             get :index, params: index_params
 
-            expect(response.body).to include("<i class=\"fas fa-file-pdf\"></i> Télécharger le courrier")
+            expect(response.body).to include("<i class=\"ri-file-pdf-line\"></i> Télécharger le courrier")
           end
         end
 
@@ -142,7 +142,7 @@ describe Users::FollowUpsController do
           it "does not show the courrier generation button" do
             get :index, params: index_params
 
-            expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Télécharger le courrier")
+            expect(response.body).not_to include("<i class=\"ri-file-pdf-line\"></i> Télécharger le courrier")
           end
         end
 
@@ -152,7 +152,7 @@ describe Users::FollowUpsController do
           it "does not show the courrier generation button" do
             get :index, params: index_params
 
-            expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Télécharger le courrier")
+            expect(response.body).not_to include("<i class=\"ri-file-pdf-line\"></i> Télécharger le courrier")
           end
         end
       end

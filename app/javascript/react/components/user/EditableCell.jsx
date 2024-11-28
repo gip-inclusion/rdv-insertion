@@ -69,7 +69,7 @@ function EditableCell({ user, cell, type, values, labelClassName = "", labelStyl
         {newTags.length ? (
           <div className="px-1 w-100 text-warning position-relative">
             {newTags.join(", ")}
-            <i className="fas fa-exclamation-triangle icon-sm position-absolute mt-1 mx-1" />
+            <i className="ri-alert-line icon-sm position-absolute mt-1 mx-1" />
           </div>
         ) : null}
         {existingTags.length ? <div className="px-1 w-100">{existingTags.join(", ")}</div> : null}
