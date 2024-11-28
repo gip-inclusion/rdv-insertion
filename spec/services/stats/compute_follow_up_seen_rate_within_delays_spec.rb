@@ -1,4 +1,4 @@
-describe Stats::ComputeFollowUpSeenRate, type: :service do
+describe Stats::ComputeFollowUpSeenRateWithinDelays, type: :service do
   describe "for 45 days" do
     subject { described_class.call(follow_ups: follow_ups, target_delay_days: 45) }
 

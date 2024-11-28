@@ -43,9 +43,9 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
-      allow(Stats::ComputeFollowUpSeenRate).to receive(:call)
+      allow(Stats::ComputeFollowUpSeenRateWithinDelays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 0))
-      allow(Stats::ComputeFollowUpSeenRate).to receive(:call)
+      allow(Stats::ComputeFollowUpSeenRateWithinDelays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 0))
       allow(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
@@ -109,14 +109,14 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
 
     it "computes the percentage of users with oriented follow up and rdv seen in less than 45 days" do
       expect(stat).to receive(:users_first_orientation_follow_up)
-      expect(Stats::ComputeFollowUpSeenRate).to receive(:call)
+      expect(Stats::ComputeFollowUpSeenRateWithinDelays).to receive(:call)
         .with(follow_ups: [], target_delay_days: 45)
       expect(subject.rate_of_users_oriented_in_less_than_45_days_by_month).to eq(0)
     end
 
     it "computes the percentage of users with accompanied follow up and rdv seen in less than 15 days" do
       expect(stat).to receive(:users_first_accompagnement_follow_up)
-      expect(Stats::ComputeFollowUpSeenRate).to receive(:call)
+      expect(Stats::ComputeFollowUpSeenRateWithinDelays).to receive(:call)
         .with(follow_ups: [], target_delay_days: 15, consider_orientation_rdv_as_start: true)
       expect(subject.rate_of_users_accompanied_in_less_than_15_days_by_month).to eq(0)
     end

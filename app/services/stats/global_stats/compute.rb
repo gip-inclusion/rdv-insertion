@@ -36,7 +36,7 @@ module Stats
       def rate_of_users_oriented_in_less_than_45_days
         # Percentage of users with less than 45 days between orientation follow-up creation
         # and their first seen orientation RDV
-        ComputeFollowUpSeenRate.call(
+        ComputeFollowUpSeenRateWithinDelays.call(
           follow_ups: @stat.users_first_orientation_follow_up,
           target_delay_days: 45
         ).value
@@ -46,7 +46,7 @@ module Stats
         # Percentage of users with either:
         # - less than 15 days between accompagnement follow-up creation and their first seen RDV
         # - less than 15 days between their seen orientation RDV and their first seen accompagnement RDV
-        ComputeFollowUpSeenRate.call(
+        ComputeFollowUpSeenRateWithinDelays.call(
           follow_ups: @stat.users_first_accompagnement_follow_up,
           target_delay_days: 15,
           consider_orientation_rdv_as_start: true
