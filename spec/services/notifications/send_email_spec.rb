@@ -163,8 +163,9 @@ describe Notifications::SendEmail, type: :service do
 
       it "sends a message to mattermost" do
         expect(MattermostClient).to receive(:send_to_private_channel).with(
-          "Une convocation a été envoyée par l' #{organisation.name} sans numéro de téléphone de l'organisation, " \
-          "du lieu ou de la catégorie pour le rendez-vous avec l'ID #{rdv.id} et l'usager avec l'ID #{user.id}."
+          "Une convocation a été envoyée par l'organisation #{organisation.name} sans numéro de téléphone de " \
+          "l'organisation, du lieu ou de la catégorie pour le rendez-vous avec l'ID #{rdv.id} " \
+          "et l'usager avec l'ID #{user.id}."
         )
         subject
       end
