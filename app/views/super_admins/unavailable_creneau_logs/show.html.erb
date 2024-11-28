@@ -23,7 +23,7 @@ as well as a link to its edit page.
     <h1 class="main-content__page-title">
       Historique des indisponibilités de l'organisation "<%= page.resource.organisation %>" :
     </h1>
-    <%= line_chart UnavailableCreneauLog.where(organisation: page.resource.organisation).grouped_by_day, colors: ["#083b66"] %>
+    <%= render "chart", scope: UnavailableCreneauLog.where(organisation: page.resource.organisation) %>
   </div>
   <h2>Historique du <%= page.resource.created_at.strftime("%d/%m/%Y") %> pour l'organisation <%= page.resource.organisation %> :</h2>
   <dl>

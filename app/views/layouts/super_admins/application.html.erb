@@ -22,8 +22,16 @@ By default, it renders:
     <%= content_for(:title) %> - <%= application_title %>
   </title>
   <%= csrf_meta_tags %>
+<%# 
+  #
+  # We override this layout to add specific SCSS and JS files for the super admin.
+  # These files represent a new JS and SCSS entry point.
+  # It does not include the rest of the main application's JS and CSS.
+  #
+  %>
   <%= javascript_include_tag "super_admin", "data-turbo-track": "reload", defer: true %>
   <%= stylesheet_link_tag "super_admin", media: 'all', 'data-turbo-track': 'reload' %>
+
   <%= render "stylesheet" %>
   <%= csp_meta_tag if defined?(csp_meta_tag) %>
 </head>
