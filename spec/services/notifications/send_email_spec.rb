@@ -165,7 +165,7 @@ describe Notifications::SendEmail, type: :service do
         expect(MattermostClient).to receive(:send_to_private_channel).with(
           "Une convocation a été envoyée par l'organisation #{organisation.name} sans numéro de téléphone de " \
           "l'organisation, du lieu ou de la catégorie pour le rendez-vous avec l'ID #{rdv.id} " \
-          "et l'usager avec l'ID #{user.id}."
+          "et l'usager avec l'ID #{user.id}.", once_a_day: true
         )
         subject
       end
