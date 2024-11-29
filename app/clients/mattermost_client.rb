@@ -40,11 +40,15 @@ class MattermostClient
     end
 
     def should_send_daily_message?(text)
-      !REDIS.exists?(redis_key(text))
+      !redis.exists?(redis_key(text))
     end
 
     def update_last_sent_timestamp(text)
-      REDIS.set(redis_key(text), Time.current.to_i, ex: EXPIRATION)
+      redis.set(redis_key(text), Time.current.to_i, ex: EXPIRATION)
+    end
+
+    def redis
+      @redis ||= Redis.new
     end
   end
 end
