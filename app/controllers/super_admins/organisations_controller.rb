@@ -1,8 +1,6 @@
 module SuperAdmins
   class OrganisationsController < SuperAdmins::ApplicationController
-    # Overwrite any of the RESTful controller actions to implement custom behavior
-    # For example, you may want to send an email after a foo is updated.
-    #
+    before_action :set_unavailable_creneau_logs, only: :show
 
     def create
       if create_organisation.success?
@@ -41,6 +39,10 @@ module SuperAdmins
 
     def default_sorting_attribute
       :department
+    end
+
+    def set_unavailable_creneau_logs
+      @unavailable_creneau_logs = UnavailableCreneauLog.where(organisation: requested_resource)
     end
 
     # Override this method to specify custom lookup behavior.
