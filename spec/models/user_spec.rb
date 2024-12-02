@@ -395,6 +395,38 @@ describe User do
     end
   end
 
+  describe "#import_associations_from_rdv_solidarites" do
+    let!(:user) { build(:user, import_associations_from_rdv_solidarites_on_create: true) }
+
+    before do
+      allow(ImportUserAssociationsFromRdvSolidaritesJob).to receive(:perform_later)
+    end
+
+    it "enqueues a job to import associations from rdv_solidarites on creation" do
+      expect(ImportUserAssociationsFromRdvSolidaritesJob).to receive(:perform_later)
+      user.save
+    end
+
+    context "when the option import_associations_from_rdv_solidarites_on_create is not set" do
+      let!(:user) { build(:user) }
+
+      it "does not enqueue a job to import associations from rdv_solidarites" do
+        expect(ImportUserAssociationsFromRdvSolidaritesJob).not_to receive(:perform_later)
+        user.save
+      end
+    end
+
+    context "when the user is being updated" do
+      let!(:user) { create(:user) }
+
+      it "does not enqueue a job to import associations from rdv_solidarites" do
+        user.import_associations_from_rdv_solidarites_on_create = true
+        expect(ImportUserAssociationsFromRdvSolidaritesJob).not_to receive(:perform_later)
+        user.save
+      end
+    end
+  end
+
   describe "#as_json" do
     subject { user.as_json }
 

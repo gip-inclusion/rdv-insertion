@@ -201,7 +201,7 @@ const UsersUploads = observer(
               >
                 <button type="button" className="btn btn-blue-out">
                   Guide d&apos;utilisation
-                  <i className="fas fa-external-link-alt icon-sm" />
+                  <i className="ri-external-link-line ms-1" />
                 </button>
               </a>
             </div>

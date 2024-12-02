@@ -12,14 +12,14 @@
       <div class="date-update d-flex d-none">
         <%= f.date_field :document_date, class: "form-control me-1" %>
         <%= button_tag type: "submit", class: "btn btn-link validate-date-button text-dark-blue" do %>
-          <i class="fas fa-check"></i>
+          <i class="ri-check-line"></i>
         <% end %>
         <%= button_tag type: "button", class: "btn btn-link text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
-          <i class="fas fa-times"></i>
+          <i class="ri-close-line"></i>
         <% end %>
       </div>
       <%= button_tag type: "button", class: "btn btn-link edit-date-button text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
-        <i class="fas fa-pencil-alt"></i>
+        <i class="ri-pencil-fill"></i>
       <% end %>
     <% end %>
   <% end %>

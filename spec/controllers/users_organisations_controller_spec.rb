@@ -96,7 +96,7 @@ describe UsersOrganisationsController do
       let!(:user) { create(:user, id: user_id, organisations: [organisation1], rdv_solidarites_user_id: nil) }
 
       before do
-        allow(Users::SyncWithRdvSolidarites).to receive(:call)
+        allow(Users::PushToRdvSolidarites).to receive(:call)
           .with(user: user)
           .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
       end

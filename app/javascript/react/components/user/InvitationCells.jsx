@@ -19,7 +19,7 @@ export default function InvitationCells({ user }) {
               </>
             }
           >
-            <i className="ms-2 fas fa-info-circle" />
+            <i className="ms-2 ri-information-fill" />
           </Tippy>
         )}
       </td>
@@ -34,7 +34,7 @@ export default function InvitationCells({ user }) {
             </>
           }
         >
-          <i className="fas fa-question-circle" />
+          <i className="ri-question-line" />
         </Tippy>
       </td>
     ) : user.currentFollowUpStatus === "rdv_pending" ? (

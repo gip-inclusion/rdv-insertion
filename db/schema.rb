@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_20_092726) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -347,6 +347,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_092726) do
     t.index ["agent_id"], name: "index_orientations_on_agent_id"
     t.index ["organisation_id"], name: "index_orientations_on_organisation_id"
     t.index ["orientation_type_id"], name: "index_orientations_on_orientation_type_id"
+    t.index ["starts_at", "ends_at"], name: "index_orientations_on_starts_at_and_ends_at"
     t.index ["user_id"], name: "index_orientations_on_user_id"
   end
 

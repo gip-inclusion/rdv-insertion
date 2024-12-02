@@ -83,7 +83,7 @@ describe "Agents can upload user list", :js do
       expect(page).to have_no_button("Créer compte")
 
       user = User.last
-      expect(page).to have_css("i.fas.fa-link")
+      expect(page).to have_css("i.ri-links-line")
       expect(page).to have_css("a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
 
       expect(user.first_name).to eq("Hernan")
@@ -106,8 +106,8 @@ describe "Agents can upload user list", :js do
       click_button("Inviter par SMS")
 
       expect(page).to have_no_button("Inviter par SMS")
-      expect(page).to have_css("i.fas.fa-check")
-      expect(page).to have_css("i.fas.fa-redo-alt")
+      expect(page).to have_css("i.ri-check-line")
+      expect(page).to have_css("i.ri-repeat-2-line")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
@@ -140,11 +140,11 @@ describe "Agents can upload user list", :js do
 
       attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
-      expect(page).to have_css("i.fas.fa-link")
+      expect(page).to have_css("i.ri-links-line")
       expect(page).to have_no_button("Créer compte")
       expect(page).to have_no_button("Inviter par SMS")
-      expect(page).to have_css("i.fas.fa-check")
-      expect(page).to have_css("i.fas.fa-redo-alt")
+      expect(page).to have_css("i.ri-check-line")
+      expect(page).to have_css("i.ri-repeat-2-line")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -185,7 +185,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             user = User.last
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
@@ -220,7 +220,7 @@ describe "Agents can upload user list", :js do
 
         click_button("Créer compte")
 
-        expect(page).to have_css("i.fas.fa-link")
+        expect(page).to have_css("i.ri-links-line")
 
         user = User.last
 
@@ -263,7 +263,7 @@ describe "Agents can upload user list", :js do
             expect(page).to have_content("+33782605941")
             expect(page).to have_content("hernan@crespa.com")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -289,7 +289,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -325,7 +325,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -363,7 +363,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Ajouter à cette organisation")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -411,7 +411,7 @@ describe "Agents can upload user list", :js do
 
               # it did not add the user
               expect(page).to have_content("Ajouter à cette organisation")
-              expect(page).to have_no_css("i.fas.fa-link")
+              expect(page).to have_no_css("i.ri-links-line")
               expect(page).to have_content(
                 "Le bénéficiaire #{user.id} a les mêmes attributs mais un nir différent"
               )
@@ -457,7 +457,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -484,7 +484,7 @@ describe "Agents can upload user list", :js do
 
               click_button("Créer compte")
 
-              expect(page).to have_css("i.fas.fa-link")
+              expect(page).to have_css("i.ri-links-line")
               expect(page).to have_css(
                 "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
               )
@@ -539,7 +539,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -565,7 +565,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -600,7 +600,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -626,7 +626,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
@@ -699,7 +699,7 @@ describe "Agents can upload user list", :js do
       expect(page).to have_no_button("Créer compte")
 
       user = User.last
-      expect(page).to have_css("i.fas.fa-link")
+      expect(page).to have_css("i.ri-links-line")
       expect(page).to have_css("a[href=\"/departments/#{department.id}/users/#{user.id}\"]")
 
       expect(user.first_name).to eq("Hernan")
@@ -717,8 +717,8 @@ describe "Agents can upload user list", :js do
       click_button("Inviter par SMS")
 
       expect(page).to have_no_button("Inviter par SMS")
-      expect(page).to have_css("i.fas.fa-check")
-      expect(page).to have_css("i.fas.fa-redo-alt")
+      expect(page).to have_css("i.ri-check-line")
+      expect(page).to have_css("i.ri-repeat-2-line")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
@@ -751,11 +751,11 @@ describe "Agents can upload user list", :js do
 
       attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
-      expect(page).to have_css("i.fas.fa-link")
+      expect(page).to have_css("i.ri-links-line")
       expect(page).to have_no_button("Créer compte")
       expect(page).to have_no_button("Inviter par SMS")
-      expect(page).to have_css("i.fas.fa-check")
-      expect(page).to have_css("i.fas.fa-redo-alt")
+      expect(page).to have_css("i.ri-check-line")
+      expect(page).to have_css("i.ri-repeat-2-line")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -770,11 +770,11 @@ describe "Agents can upload user list", :js do
                       make_visible: true)
 
           click_button("Actions pour toute la sélection")
-          expect(page).to have_no_css("td i.fas.fa-link")
+          expect(page).to have_no_css("td i.ri-links-line")
 
           expect do
             click_button("Créer comptes")
-            expect(page).to have_css("td i.fas.fa-link")
+            expect(page).to have_css("td i.ri-links-line")
           end.to change(User, :count).by(1)
         end
 
@@ -788,8 +788,7 @@ describe "Agents can upload user list", :js do
           expect(page).to have_no_button("Réinviter par SMS")
 
           click_button("Inviter par sms")
-          expect(page).to have_css("i.fas.fa-check")
-          expect(page).to have_css("i.fas.fa-redo-alt")
+          expect(page).to have_css("i.ri-check-line")
         end
       end
 
@@ -809,7 +808,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             click_button("Actions pour toute la sélection")
-            expect(page).to have_no_css("td i.fas.fa-check")
+            expect(page).to have_no_css("td i.ri-check-line")
 
             click_button("Inviter par sms")
             expect(page).to have_css("tr.table-danger")
@@ -868,7 +867,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             user = User.last
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
@@ -909,7 +908,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -935,7 +934,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -971,7 +970,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -1009,7 +1008,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Ajouter à cette organisation")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -1057,7 +1056,7 @@ describe "Agents can upload user list", :js do
 
               # it did not add the user
               expect(page).to have_content("Ajouter à cette organisation")
-              expect(page).to have_no_css("i.fas.fa-link")
+              expect(page).to have_no_css("i.ri-links-line")
               expect(page).to have_content(
                 "Le bénéficiaire #{user.id} a les mêmes attributs mais un nir différent"
               )
@@ -1103,7 +1102,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -1130,7 +1129,7 @@ describe "Agents can upload user list", :js do
 
               click_button("Créer compte")
 
-              expect(page).to have_css("i.fas.fa-link")
+              expect(page).to have_css("i.ri-links-line")
               expect(page).to have_css(
                 "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
               )
@@ -1185,7 +1184,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -1211,7 +1210,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -1264,7 +1263,7 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             expect(page).to have_no_content("Créer compte")
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
@@ -1290,7 +1289,7 @@ describe "Agents can upload user list", :js do
 
             click_button("Créer compte")
 
-            expect(page).to have_css("i.fas.fa-link")
+            expect(page).to have_css("i.ri-links-line")
             expect(page).to have_css(
               "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )

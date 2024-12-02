@@ -13,7 +13,7 @@
       <%= render "orientations/orientations_list", orientations: @orientations %>
 
       <%= link_to(new_user_orientation_path(user_id: @user.id), data: { turbo_frame: 'remote_modal' }) do %>
-        <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter une orientation</button>
+        <button class="btn btn-blue mb-3"><i class="ri-add-line"></i> Ajouter une orientation</button>
       <% end %>
     </div>
 
