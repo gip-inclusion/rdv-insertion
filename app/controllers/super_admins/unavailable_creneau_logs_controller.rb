@@ -1,7 +1,6 @@
 module SuperAdmins
   class UnavailableCreneauLogsController < SuperAdmins::ApplicationController
-    before_action :set_unavailable_creneau_logs_for_index, only: :index
-    before_action :set_unavailable_creneau_logs_for_show, only: :show
+    before_action :set_unavailable_creneau_logs, only: :index
 
     def scoped_resource
       super.order(created_at: :desc)
@@ -9,12 +8,8 @@ module SuperAdmins
 
     private
 
-    def set_unavailable_creneau_logs_for_index
+    def set_unavailable_creneau_logs
       @unavailable_creneau_logs = UnavailableCreneauLog.all
-    end
-
-    def set_unavailable_creneau_logs_for_show
-      @unavailable_creneau_logs = UnavailableCreneauLog.where(organisation: requested_resource.organisation)
     end
   end
 end

@@ -15,7 +15,7 @@ class UnavailableCreneauLogDashboard < Administrate::BaseDashboard
     number_of_invitations_affected
   ].freeze
 
-  SHOW_PAGE_ATTRIBUTES = %i[number_of_invitations_affected organisation created_at].freeze
+  SHOW_PAGE_ATTRIBUTES = [].freeze
 
   FORM_ATTRIBUTES = %i[].freeze
 
