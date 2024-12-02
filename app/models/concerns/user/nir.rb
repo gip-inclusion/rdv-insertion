@@ -41,9 +41,10 @@ module User::Nir
   def nir_is_coherent_with_birth_date
     return if birth_date.blank?
 
-    if nir[1..2] != birth_date.strftime("%y")
-      errors.add(:nir, :invalid, message: "L'année de naissance inclue dans le NIR ne correspond pas à la date de naissance")
-    end
+    return unless nir[1..2] != birth_date.strftime("%y")
+
+    errors.add(:nir, :invalid,
+               message: "L'année de naissance inclue dans le NIR ne correspond pas à la date de naissance")
   end
 
   def nir_sum_checked?
