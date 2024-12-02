@@ -1,0 +1,44 @@
+<div class="col-md-10 user-list-upload-table-container">
+  <table class="user-list-after-invitations-table">
+    <thead class="bg-white text-dark-blue sticky-header" data-controller="sort-list">
+      <tr>
+        <th scope="col">Civilité</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
+          Prénom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
+          Nom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col">Numéro CAF</th>
+        <th scope="col">Téléphone</th>
+        <th scope="col">Email</th>
+        <th scope="col">Code postal</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="after_invitation_status">
+          Statut du dossier <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% user_rows.each do |user_row| %>
+        <tr>
+          <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :post_code].each do |attribute| %>
+            <td>
+              <span><%= display_attribute(user_row.send(attribute)) %></span>
+            </td>
+          <% end %>
+
+          <td>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="badge rounded-pill <%= user_row_status_after_invitation_badge_class(user_row.after_invitation_status) %>"
+                    <%= tooltip_for_invitation_errors(user_row) %>
+              >
+                <%= user_row_status_after_invitation_text(user_row.after_invitation_status) %>
+                <%= user_row_status_after_invitation_icon_for_status(user_row.after_invitation_status) %>
+              </span>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

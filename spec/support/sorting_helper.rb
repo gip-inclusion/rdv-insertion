@@ -11,17 +11,17 @@ module SortingHelper
   def test_ordering_for(column_name:, column_index:, default_order:) # rubocop:disable Metrics/AbcSize
     check_sorted_table(column_index, default_order)
 
-    find_by_id("js_#{column_name}_header").click
+    find("[data-sort-by='#{column_name}']").click
     expect(page).to have_current_path(/sort_by=#{column_name}/)
     expect(page).to have_current_path(/sort_direction=asc/)
     check_sorted_table(column_index, default_order.sort)
 
-    find_by_id("js_#{column_name}_header").click
+    find("[data-sort-by='#{column_name}']").click
     expect(page).to have_current_path(/sort_by=#{column_name}/)
     expect(page).to have_current_path(/sort_direction=desc/)
     check_sorted_table(column_index, default_order.sort.reverse)
 
-    find_by_id("js_#{column_name}_header").click
+    find("[data-sort-by='#{column_name}']").click
     expect(page).to have_no_current_path(/sort_by/)
     check_sorted_table(column_index, default_order)
   end

@@ -10,6 +10,22 @@
   background-color: $warning;
 }
 
+.background-green-light {
+  background-color: $green-light;
+}
+
+.background-very-light-grey {
+  background-color: $very-light-grey;
+}
+
+.background-light {
+  background-color: $light;
+}
+
+.background-white {
+  background-color: white !important;
+}
+
 .text-dark-blue, .bg-success, .bg-warning {
   color: $dark-blue;
 }
@@ -20,6 +36,10 @@
 
 .text-white {
   color: white;
+}
+
+.text-dark-green {
+  color: $dark-green;
 }
 
 .navigation-selected-item {
@@ -34,6 +54,10 @@
   color: $dark-grey-alt;
 }
 
+.text-very-dark-grey {
+  color: $very-dark-grey;
+}
+
 .text-dark-grey {
   color: $dark-grey-alt;
 }
@@ -44,6 +68,10 @@
 
 .text-light-blue {
   color: $light-blue;
+}
+
+.text-mid-blue {
+  color: $mid-blue;
 }
 
 .link-blue-light {

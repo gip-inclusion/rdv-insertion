@@ -1,0 +1,56 @@
+<% content_for :title, "Envoyer de invitations - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
+<%# The body is different from the others because it has a light blue background, but it will soon be the norm in the whole app.
+When it will be the norm, we will remove the content_for :body_class declaration. %>
+<% content_for :body_class, "bg-white" %>
+
+<div class="container px-5 py-3" data-controller="submit-selected-uids">
+  <div class="row text-dark-blue ">
+    <div class="col text-center align-items-center my-1">
+      <div>
+        <h1 class="h1-title">Envoyer de invitations</h1>
+        <p class="text-muted mb-4">
+          au niveau de « <%= structure_name_with_context(@user_list_upload.structure) %> »
+          <%= ", sur « #{@category_configuration.motif_category.name} »" if @category_configuration %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <%= turbo_frame_tag "user_collection", data: { turbo_action: "advance" } do %>
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <div class="mb-4">
+          <h2 class="h2-title">Inviter les usagers à prendre rendez-vous</h2>
+          <p class="text-muted">
+            Vous pouvez envoyer des invitations par SMS, Email ou télécharger les courriers d'invitations (.pdf)
+          </p>
+        </div>
+      </div>
+       <%= render "user_rows_before_invitation", user_rows: @user_rows %>
+    </div>
+  <% end %>
+
+  <div class="d-flex justify-content-between col-md-10 mx-auto my-5">
+    <div>
+    </div>
+    <div>
+      <%= form_tag create_many_user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id),
+             method: :post,
+             data: { action: "submit->submit-selected-uids#submit", turbo: false } do %>
+        <div class="d-flex justify-content-around align-items-center">
+          <div class="align-middle">Inviter la sélection par:</div>
+          <div class="form-check mx-3">
+            <%= check_box_tag "email", "Email", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_uids_target: "formatOption", action: "change->submit-selected-uids#disableUninvitableUsers", format: "email" } %>
+            <%= label_tag "email", "Email", class: "form-check-label" %>
+          </div>
+          <div class="form-check mx-3">
+            <%= check_box_tag "sms", "SMS", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_uids_target: "formatOption", action: "change->submit-selected-uids#disableUninvitableUsers", format: "sms" } %>
+            <%= label_tag "sms", "SMS", class: "form-check-label" %>
+          </div>
+          <%= hidden_field_tag "selected_uids[]" %>
+          <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", data: { submit_selected_uids_target: "submit" } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="col-md-10 user-list-upload-table-container">
+  <table class="user-list-upload-table">
+    <thead class="bg-white text-dark-blue sticky-header" data-controller="sort-list">
+      <tr>
+        <th scope="col">
+          <input type="checkbox" class="form-check-input" data-action="click->submit-selected-uids#toggleAll" checked>
+        </th>
+        <th scope="col">Civilité</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
+          Prénom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
+          Nom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col">Numéro CAF</th>
+        <th scope="col">Téléphone</th>
+        <th scope="col">Email</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="before_user_save_status">
+          Statut du dossier <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody data-controller="expandable-rows">
+      <% user_rows.each do |user_row| %>
+        <tr class="background-light">
+          <td>
+            <input type="checkbox"
+                   class="form-check-input user-checkbox"
+                   data-submit-selected-uids-target="checkbox"
+                   data-action="click->submit-selected-uids#toggleSubmit"
+                   value="<%= user_row.uid %>"
+                   <%= user_row.valid? ? "checked" : "disabled" %>>
+          </td>
+
+          <%= render "user_row_attributes", user_row: user_row %>
+
+          <td>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="badge rounded-pill <%= user_row_status_badge_class(user_row) %>"
+                <%= tooltip_for_user_row_errors(user_row.errors) %>
+              >
+                <%= user_row_status_text(user_row.before_user_save_status) %>
+                <%= user_row_icon_for_status(user_row.errors) %>
+              </span>
+            </div>
+          </td>
+          <td class="border-light bg-white"
+              role="button"
+              data-action="click->expandable-rows#toggle"
+              data-expandable-rows-uid-param="<%= user_row.uid %>">
+            <i class="ri-arrow-down-s-line text-dark-blue"></i>
+          </td>
+        </tr>
+
+        <tr class="d-none" data-expandable-rows-target="rowToExpand" data-expandable-rows-uid="<%= user_row.uid %>">
+          <%= render "user_row_details", user_row: user_row %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

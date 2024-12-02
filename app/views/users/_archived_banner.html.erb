@@ -1,11 +1,8 @@
 <%=
   render(
-    "common/flash_content",
-    flash_message: FlashMessage.new(
-      type: :notice,
-      title: "Dossier archivé",
-      description: archived_banner_message(@user.archives_organisations),
-      persist: true
-    )
+    "common/flash_banner",
+    type: :notice,
+    title: "Dossier archivé",
+    description: archived_banner_message(@user.archives_organisations)
   )
 %>

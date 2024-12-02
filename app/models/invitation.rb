@@ -21,7 +21,7 @@ class Invitation < ApplicationRecord
   validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
-  delegate :motif_category, :motif_category_name, to: :follow_up
+  delegate :motif_category, :motif_category_name, :motif_category_id, to: :follow_up
   delegate :model, to: :template, prefix: true
 
   enum format: { sms: "sms", email: "email", postal: "postal" }, _prefix: :format

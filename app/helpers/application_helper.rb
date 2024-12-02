@@ -21,6 +21,10 @@ module ApplicationHelper
     attribute.presence || " - "
   end
 
+  def display_date(date)
+    display_attribute(format_date(date))
+  end
+
   def format_date(date)
     date&.strftime("%d/%m/%Y")
   end
@@ -43,7 +47,37 @@ module ApplicationHelper
     Rack::Utils.parse_nested_query(request.query_string).deep_symbolize_keys
   end
 
+  def tooltip_attributes(stimulus_action:, **dataset)
+    attributes = {
+      data: {
+        controller: "tooltip",
+        action: stimulus_action
+      }.merge(dataset || {})
+    }
+
+    tag.attributes(attributes)
+  end
+
+  def display_tooltip_errors(title:, errors:)
+    tag.attributes(
+      data: {
+        controller: "tooltip",
+        action: "mouseover->tooltip#showErrors",
+        title: title,
+        errors: errors.to_json
+      }
+    )
+  end
+
   def render_turbo_stream_flash_messages
     turbo_stream.prepend "flashes", partial: "common/flashes"
+  end
+
+  def structure_name_with_context(structure)
+    if structure.is_a?(Department)
+      "#{structure.name} - Toutes les organisations"
+    else
+      structure.name
+    end
   end
 end

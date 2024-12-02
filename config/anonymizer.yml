@@ -462,3 +462,15 @@ tables:
       - created_at
       - updated_at
       - resource_model
+
+  - table_name: user_list_uploads
+    anonymized_column_names:
+      - user_list
+      - file_name
+    non_anonymized_column_names:
+      - category_configuration_id
+      - created_at
+      - updated_at
+      - structure_id
+      - structure_type
+      - agent_id

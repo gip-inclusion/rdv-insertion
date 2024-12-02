@@ -48,6 +48,12 @@ Rails.application.routes.draw do
     get :geolocated, on: :collection
     get :search, on: :collection
     resources :convocations, only: [:new]
+    scope module: :user_list_uploads do
+      resources :user_list_uploads, only: [:new, :create]
+    end
+    namespace :user_list_uploads do
+      resources :category_selections, only: [:new]
+    end
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         get :default_list
@@ -93,6 +99,19 @@ Rails.application.routes.draw do
 
   resources :stats, only: [:index], controller: 'website/stats' do
     get :deployment_map, on: :collection
+  end
+
+  resources :user_list_uploads, module: :user_list_uploads, only: [:show] do
+    post :enrich_with_cnaf_data
+
+    resources :user_rows, param: :uid, only: [:update]
+    resources :user_save_attempts, only: [:index, :create] do
+      post :create_many, on: :collection
+    end
+    resources :invitation_attempts, only: [:index, :create] do
+      get :select_rows, on: :collection
+      post :create_many, on: :collection
+    end
   end
 
   resources :users, module: :users, only: [] do
@@ -141,6 +160,12 @@ Rails.application.routes.draw do
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :convocations, only: [:new]
+    scope module: :user_list_uploads do
+      resources :user_list_uploads, only: [:new, :create]
+    end
+    namespace :user_list_uploads do
+      resources :category_selections, only: [:new]
+    end
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
         scope module: :users do

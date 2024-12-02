@@ -1,0 +1,23 @@
+<div class="mb-4">
+  <h2 class="h2-title">Création et mise à jour des dossiers en cours...</h2>
+  <p class="text-muted">
+    Pour les gros volumes, le chargement peut prendre plusieurs minutes.
+  </p>
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="progress col-md-9">
+      <div
+        class="progress-bar background-dark-blue"
+        style="width: <%= (current_count.to_f / total_count * 100).round %>%"
+        role="progressbar"
+        aria-valuenow="<%= (current_count.to_f / total_count * 100).round %>"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+      </div>
+    </div>
+    <small class="col-md-3 text-muted ms-3">
+      <%= current_count %> sur <%= total_count %> usagers
+      (<%= text_for_time_remaining_for_saves(current_count, total_count) %>)
+    </small>
+  </div>
+</div>

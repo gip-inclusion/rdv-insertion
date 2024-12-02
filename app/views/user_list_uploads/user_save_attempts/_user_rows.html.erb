@@ -1,0 +1,60 @@
+<div class="col-md-10 user-list-upload-table-container">
+  <table class="user-list-save-attempts-table">
+    <thead class="bg-white text-dark-blue sticky-header" data-controller="sort-list">
+      <tr>
+        <th scope="col">Civilité</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
+          Prénom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
+          Nom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col">Numéro CAF</th>
+        <th scope="col">Téléphone</th>
+        <th scope="col">Email</th>
+        <th scope="col">Code postal</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="after_user_save_status">
+          Statut du dossier <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% user_rows.each do |user_row| %>
+        <tr>
+          <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :post_code].each do |attribute| %>
+            <td>
+              <span><%= display_attribute(user_row.send(attribute)) %></span>
+            </td>
+          <% end %>
+
+          <td>
+            <div class="d-flex justify-content-between align-items-center">
+              <% if user_row.no_organisation_to_assign? %>
+                <span class="badge rounded-pill alert-info"
+                      role="button"
+                      tabindex="0"
+                      data-controller="assign-row-organisation"
+                      data-action="click->assign-row-organisation#selectOrganisationAndSaveUser"
+                      data-user-list-upload-id="<%= user_row.user_list_upload.id %>"
+                      data-department-number="<%= user_row.department_number %>"
+                      data-user-address="<%= user_row.address %>"
+                      data-uid="<%= user_row.uid %>"
+                >
+                  Assigner une organisation
+                  <i class="ri-cursor-line text-end"></i>
+                </span>
+              <% else %>
+                <span class="badge rounded-pill <%= user_save_status_badge_class(user_row.after_user_save_status) %>"
+                      <%= tooltip_for_user_save_attempt_errors(user_row.last_user_save_attempt&.errors) %>
+                >
+                  <%= user_save_status_text(user_row.after_user_save_status) %>
+                  <%= user_save_icon_for_status(user_row.after_user_save_status) %>
+                </span>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

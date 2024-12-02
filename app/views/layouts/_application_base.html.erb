@@ -19,7 +19,7 @@
     <%= content_for :head %>
   </head>
 
-  <body data-matomo-mask>
+  <body data-matomo-mask class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>">
     <%= render 'common/confirm_modal' %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>

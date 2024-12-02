@@ -1,5 +1,7 @@
 module RdvSolidaritesApi
   class RetrieveOrganisations < Base
+    EXPECTED_GEO_ATTRIBUTES = %i[department_number city_code street_ban_id].freeze
+
     def initialize(geo_attributes: {})
       @geo_attributes = geo_attributes
     end
@@ -14,7 +16,9 @@ module RdvSolidaritesApi
     private
 
     def rdv_solidarites_response
-      @rdv_solidarites_response ||= rdv_solidarites_client.get_organisations(@geo_attributes)
+      @rdv_solidarites_response ||= rdv_solidarites_client.get_organisations(
+        @geo_attributes.slice(*EXPECTED_GEO_ATTRIBUTES)
+      )
     end
   end
 end

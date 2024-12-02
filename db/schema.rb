@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_02_165719) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -474,11 +474,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
     t.string "rdv_purpose"
     t.string "user_designation"
     t.string "rdv_subject"
+    t.boolean "display_mandatory_warning", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
-    t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
+  end
+
+  create_table "user_list_uploads", force: :cascade do |t|
+    t.jsonb "user_list"
+    t.string "file_name"
+    t.bigint "category_configuration_id"
+    t.string "structure_type", null: false
+    t.bigint "structure_id", null: false
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_user_list_uploads_on_agent_id"
+    t.index ["category_configuration_id"], name: "index_user_list_uploads_on_category_configuration_id"
+    t.index ["structure_type", "structure_id"], name: "index_user_list_uploads_on_structure"
   end
 
   create_table "users", force: :cascade do |t|
@@ -585,5 +599,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
+  add_foreign_key "user_list_uploads", "agents"
+  add_foreign_key "user_list_uploads", "category_configurations"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

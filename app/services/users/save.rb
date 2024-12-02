@@ -36,7 +36,7 @@ module Users
     end
 
     def validate_user!
-      call_service!(Users::Validate, user: @user)
+      call_service!(Users::Validate, user: @user, organisation: @organisation)
     end
   end
 end

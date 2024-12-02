@@ -28,6 +28,8 @@ module Users
     end
 
     def create_rdv_solidarites_user!
+      fail!("Aucune organisation assignée à l'usager") if @user.organisations.empty?
+
       if create_rdv_solidarites_user.success?
         @rdv_solidarites_user_id = create_rdv_solidarites_user.user.id
         return

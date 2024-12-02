@@ -1,0 +1,67 @@
+<% content_for :title, "Données usagers chargées - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
+<%# The body is different from the others because it has a light blue background, but it will soon be the norm in the whole app.
+When it will be the norm, we will remove the content_for :body_class declaration. %>
+<% content_for :body_class, "bg-white" %>
+
+<%= turbo_stream_from @user_list_upload %>
+
+<div class="container px-5 py-3" data-controller="submit-selected-uids">
+  <div class="row text-dark-blue ">
+    <div class="col text-center align-items-center my-1">
+      <div>
+        <h1 class="h1-title">Données usagers chargées</h1>
+        <p class="text-muted mb-4">
+          au niveau de « <%= structure_name_with_context(@user_list_upload.structure) %> »
+          <%= ", sur « #{@category_configuration.motif_category.name} »" if @category_configuration %>
+          <%= render "user_list_uploads/sectorisation_disabled_info", organisation_name: @user_list_upload.structure.name if @user_list_upload.structure_type == "Organisation" %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <%= turbo_frame_tag "user_collection", data: { turbo_action: "advance" } do %>
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <% if @user_rows_with_user_save_attempted.count == @user_rows.count %>
+          <%= render "all_saves_attempted_status", user_rows_with_user_save_errors: @user_rows_with_user_save_errors %>
+        <% else %>
+          <%= render "saves_in_progress_status", current_count: @user_rows_with_user_save_attempted.count, total_count: @user_rows.count %>
+        <% end %>
+
+        <div class="d-flex border-bottom align-items-center">
+          <ul class="nav nav-tabs flex-grow-1 border-bottom-0 align-self-end">
+            <li class="nav-item">
+              <%= link_to user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload.id), class: "nav-link #{rows_with_errors? ? 'text-light-blue' : 'active text-dark-blue fw-bold' }", data: { turbo_frame: "user_collection" } do %>
+                Tous les dossiers
+                <%= render "user_list_uploads/user_count_badge", user_count: @user_rows.count, active: !rows_with_errors? %>
+              <% end %>
+            </li>
+            <li class="nav-item">
+              <%= link_to user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload.id, rows_with_errors: true), class: "nav-link #{rows_with_errors? ? 'active text-dark-blue fw-bold' : 'text-light-blue' }", data: { turbo_frame: "user_collection" } do %>
+                Dossiers avec erreurs
+                <%= render "user_list_uploads/user_count_badge", user_count: @user_rows_with_user_save_errors.count, active: rows_with_errors? %>
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <%= render "user_rows", user_rows: rows_with_errors? ? @user_rows_with_user_save_errors : @user_rows %>
+
+      <div class="d-flex justify-content-between col-md-10 mx-auto px-3 my-5">
+          <div>
+            <i class="ri-arrow-left-s-line"></i>
+            <%= link_to "Terminer et revenir à l'accueil", @user_list_upload.structure_users_path, class: "btn btn-link", data: { turbo_frame: "_top" } %>
+          </div>
+          <div>
+            <% if @user_list_upload.invitations_enabled? %>
+              <% if @user_rows_with_user_save_attempted.count == @user_rows.count %>
+                <%= link_to @user_rows_with_user_save_errors.any? ? "Ignorer et passer aux invitations" : "Passer aux invitations", select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id), class: "btn btn-primary d-block mx-auto", data: { turbo_frame: "_top" } %>
+              <% else %>
+                <%= link_to "Passer aux invitations", "#", class: "btn btn-primary d-block mx-auto disabled" %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+    </div>
+  <% end %>
+</div>
