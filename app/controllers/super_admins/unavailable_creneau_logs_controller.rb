@@ -1,6 +1,6 @@
 module SuperAdmins
   class UnavailableCreneauLogsController < SuperAdmins::ApplicationController
-    before_action :set_unavailable_creneau_logs, only: :index
+    before_action :set_unavailable_creneau_logs
 
     def scoped_resource
       super.order(created_at: :desc)

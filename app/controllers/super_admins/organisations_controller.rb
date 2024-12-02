@@ -1,3 +1,4 @@
+# rubocop:disable Rails/LexicallyScopedActionFilter
 module SuperAdmins
   class OrganisationsController < SuperAdmins::ApplicationController
     before_action :set_unavailable_creneau_logs, only: :show
@@ -78,3 +79,4 @@ module SuperAdmins
     # end
   end
 end
+# rubocop:enable Rails/LexicallyScopedActionFilter
