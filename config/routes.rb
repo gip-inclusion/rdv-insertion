@@ -95,6 +95,8 @@ Rails.application.routes.draw do
     get :deployment_map, on: :collection
   end
 
+  resources :accept_cgus, only: [:create]
+
   resources :users, module: :users, only: [] do
     resources :rdvs, only: [:new]
     resources :parcours_documents, only: [:show, :update, :create, :destroy]

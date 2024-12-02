@@ -29,6 +29,7 @@ tables:
     non_anonymized_column_names:
       - super_admin
       - last_sign_in_at
+      - cgu_accepted_at
       - created_at
       - updated_at
       - last_webhook_update_received_at
