@@ -60,4 +60,8 @@ class Organisation < ApplicationRecord
   def with_parcours_access?
     organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
   end
+
+  def category_configurations_sorted
+    category_configurations.order(:position)
+  end
 end

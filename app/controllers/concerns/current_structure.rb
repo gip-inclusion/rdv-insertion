@@ -7,7 +7,8 @@ module CurrentStructure
                   :current_department, :current_department_name, :current_department_id,
                   :current_organisations, :current_organisation, :current_organisation_id,
                   :current_agent_department_organisations,
-                  :current_structure_type_in_params
+                  :current_structure_type_in_params,
+                  :current_structure_name_with_context
 
     delegate :name, to: :current_structure, prefix: true
     delegate :name, to: :current_department, prefix: true
@@ -101,6 +102,14 @@ module CurrentStructure
       { organisation: { department_id: current_department_id } }
     else
       { organisation_id: current_organisation_id }
+    end
+  end
+
+  def current_structure_name_with_context
+    if department_level?
+      "#{current_structure_name} - Toutes les organisations"
+    else
+      current_structure_name
     end
   end
 end

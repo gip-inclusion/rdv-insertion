@@ -1,20 +1,15 @@
-module User::Nir
+module User::NirValidation
   extend ActiveSupport::Concern
 
   included do
-    before_validation :format_nir, if: :nir?
-    validate :nir_is_valid, if: :nir?
-
-    encrypts :nir, deterministic: true
+    validate :nir_is_valid
   end
 
   private
 
-  def format_nir
-    self.nir = NirHelper.format_nir(nir)
-  end
-
   def nir_is_valid
+    return if nir.blank?
+
     # nir should be only digits, except for people born in Corsica who have "2A" or "2B" in their nirs
     if nir.length != 15 || nir !~ /\A\d+(2A|2B){0,1}\d+\z/
       errors.add(:nir, :invalid, message: "Le NIR doit être une série de 13 ou 15 chiffres")

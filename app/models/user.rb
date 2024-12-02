@@ -16,7 +16,8 @@ class User < ApplicationRecord
   include HasParticipationsToRdvs
   include User::TextHelper
   include User::Address
-  include User::Nir
+  include User::NirValidation
+  include User::BirthDateValidation
   include User::AffiliationNumber
   include User::Referents
   include User::CreationOrigin
@@ -24,7 +25,11 @@ class User < ApplicationRecord
 
   attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create
 
+  encrypts :nir, deterministic: true
+
   before_validation :generate_uid
+  before_validation :format_nir, if: :nir?
+
   before_save :format_phone_number
 
   has_many :follow_ups, dependent: :destroy
@@ -53,7 +58,6 @@ class User < ApplicationRecord
   validates :last_name, :first_name, presence: true
   validates :email, allow_blank: true,
                     format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/ }
-  validate :birth_date_validity
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
@@ -220,10 +224,8 @@ class User < ApplicationRecord
     self.phone_number = phone_number_formatted
   end
 
-  def birth_date_validity
-    return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
-
-    errors.add(:birth_date, "n'est pas valide")
+  def format_nir
+    self.nir = NirHelper.format_nir(nir)
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -21,13 +21,3 @@ export const todaysDateString = () => {
 };
 
 export const excelDateToString = (serial) => getFrenchFormatDateString(excelDateToJsDate(serial));
-
-export const formatDateInput = (dateInput) => {
-  if (!dateInput) return undefined;
-
-  if (typeof dateInput === "number") return excelDateToString(dateInput);
-
-  if (dateInput.search("/") === 2) return dateInput; // in this case, we consider it is a french formatted date
-
-  return getFrenchFormatDateString(dateInput);
-};
