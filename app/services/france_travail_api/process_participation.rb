@@ -52,7 +52,7 @@ module FranceTravailApi
     end
 
     def payload
-      FranceTravail::ParticipationPayload.new(@participation).to_h
+      @participation.to_ft_payload
     end
 
     def france_travail_client
