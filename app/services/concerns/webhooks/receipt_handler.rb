@@ -5,7 +5,7 @@ module Webhooks
       return if old_update?(resource_model: resource_model, resource_id: resource_id, timestamp: timestamp,
                             webhook_endpoint_id: webhook_endpoint_id)
 
-      yield if block_given?
+      yield
 
       create_webhook_receipt(resource_model: resource_model, resource_id: resource_id, timestamp: timestamp,
                              webhook_endpoint_id: webhook_endpoint_id)

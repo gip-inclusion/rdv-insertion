@@ -63,7 +63,7 @@ describe FranceTravailClient do
     end
 
     it "sends a POST request to France Travail API" do
-      response = client.user_token(payload: payload)
+      response = client.retrieve_user_token(payload: payload)
       expect(response.status).to eq(200)
     end
   end

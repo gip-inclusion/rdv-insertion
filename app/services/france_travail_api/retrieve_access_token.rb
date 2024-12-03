@@ -5,26 +5,24 @@ module FranceTravailApi
     PATH = "/connexion/oauth2/access_token".freeze
 
     def call
-      @redis = Redis.new
+      RedisConnection.with_redis do |redis|
+        if redis.exists?("france_travail_access_token")
+          assign_access_token_from_redis(redis)
+          next
+        end
 
-      if @redis.exists?("france_travail_access_token")
-        set_access_token_in_result
-        return
+        retrieve_france_travail_token(redis)
       end
-
-      retrieve_france_travail_token
-    ensure
-      @redis.close
     end
 
     private
 
-    def set_access_token_in_result
-      result.access_token = @redis.get("france_travail_access_token")
+    def assign_access_token_from_redis(redis)
+      result.access_token = redis.get("france_travail_access_token")
     end
 
-    def store_token_in_redis
-      @redis.set("france_travail_access_token", @france_travail_access_token, ex: redis_key_duration)
+    def store_token_in_redis(redis)
+      redis.set("france_travail_access_token", @france_travail_access_token, ex: redis_key_duration)
     end
 
     def redis_key_duration
@@ -33,14 +31,14 @@ module FranceTravailApi
       @expires_in - 60
     end
 
-    def retrieve_france_travail_token
+    def retrieve_france_travail_token(redis)
       ActiveRecord::Base.with_advisory_lock("france_travail_token") do
         # we check again in case a token has been retrieved while waiting for the lock to open
-        return set_access_token_in_result if @redis.exists?("france_travail_token")
+        next assign_access_token_from_redis(redis) if redis.exists?("france_travail_token")
 
         request_token
-        store_token_in_redis
-        set_access_token_in_result
+        store_token_in_redis(redis)
+        assign_access_token_from_redis(redis)
       end
     end
 
