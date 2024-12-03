@@ -8,9 +8,12 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
   end
 
   describe "callbacks" do
-    context "when the organisation is france_travail" do
+    context "when the organisation is france_travail and user is valid" do
+      let!(:user) { create(:user, :with_valid_nir) }
+      let!(:rdv) { build(:rdv) }
+
       context "on creation" do
-        let!(:participation) { build(:participation, organisation: organisation) }
+        let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
 
         it "notifies the creation" do
           expect(described_class).to receive(:perform_later)
@@ -19,7 +22,7 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
       end
 
       context "on update" do
-        let!(:participation) { create(:participation, organisation: organisation) }
+        let!(:participation) { create(:participation, rdv: rdv, user: user, organisation: organisation) }
 
         it "notifies on update" do
           expect(described_class).to receive(:perform_later)
@@ -33,7 +36,7 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
       end
 
       context "on deletion" do
-        let!(:participation) { create(:participation, organisation: organisation) }
+        let!(:participation) { create(:participation, rdv: rdv, user: user, organisation: organisation) }
 
         it "notifies on deletion" do
           participation_id = participation.id
@@ -75,6 +78,19 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
         it "does not send webhook on deletion" do
           expect(described_class).not_to receive(:perform_later)
           participation.destroy
+        end
+      end
+    end
+
+    context "when organisation is france_travail but user has no nir" do
+      let!(:user) { create(:user) }
+      let!(:rdv) { build(:rdv) }
+      let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
+
+      context "on creation" do
+        it "does not send webhook" do
+          expect(described_class).not_to receive(:perform_later)
+          participation.save
         end
       end
     end

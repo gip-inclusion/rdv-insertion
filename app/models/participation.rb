@@ -3,6 +3,7 @@ class Participation < ApplicationRecord
   include HasCurrentCategoryConfiguration
   include RdvParticipationStatus
   include Participation::FranceTravailWebhooks
+  include Participation::FranceTravailPayload
 
   belongs_to :rdv
   belongs_to :follow_up

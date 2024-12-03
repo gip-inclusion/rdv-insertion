@@ -1,5 +1,5 @@
-describe FranceTravail::ParticipationPayload do
-  let(:payload) { described_class.new(participation).to_h }
+describe Participation::FranceTravailPayload, type: :concern do
+  let(:payload) { participation.to_ft_payload }
   let(:organisation) { create(:organisation, organisation_type: "conseil_departemental") }
   let(:user) { create(:user, organisations: [organisation]) }
   let(:follow_up) { create(:follow_up, user: user) }
@@ -8,7 +8,7 @@ describe FranceTravail::ParticipationPayload do
   let(:rdv) { create(:rdv, organisation: organisation, motif: motif) }
   let(:participation) { create(:participation, follow_up:, user:, rdv:, status: "unknown") }
 
-  describe "#to_h" do
+  describe "#to_ft_payload" do
     it "returns the correct payload structure" do
       expect(payload).to include(
         id: participation.france_travail_id,
