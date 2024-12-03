@@ -6,6 +6,7 @@ class Stat < ApplicationRecord
     sent_invitations_count
     rate_of_no_show_for_invitations
     rate_of_no_show_for_convocations
+    rate_of_no_show
     average_time_between_invitation_and_rdv_in_days
     rate_of_users_oriented_in_less_than_30_days
     rate_of_users_oriented_in_less_than_15_days
@@ -21,6 +22,7 @@ class Stat < ApplicationRecord
     sent_invitations_count_grouped_by_month
     rate_of_no_show_for_invitations_grouped_by_month
     rate_of_no_show_for_convocations_grouped_by_month
+    rate_of_no_show_grouped_by_month
     average_time_between_invitation_and_rdv_in_days_by_month
     rate_of_users_oriented_in_less_than_30_days_by_month
     rate_of_users_oriented_in_less_than_15_days_by_month
@@ -52,8 +54,7 @@ class Stat < ApplicationRecord
       participations = participations.joins(user: :organisations)
                                      .where(users: { organisations: all_organisations })
     end
-
-    participations
+    participations.distinct
   end
 
   def user_ids_with_rdv_set
