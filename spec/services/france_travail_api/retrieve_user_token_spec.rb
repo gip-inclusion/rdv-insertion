@@ -24,7 +24,7 @@ describe FranceTravailApi::RetrieveUserToken do
       let(:response_body) { { "jetonUsager" => user_token }.to_json }
 
       before do
-        allow(france_travail_client).to receive(:user_token)
+        allow(france_travail_client).to receive(:retrieve_user_token)
           .with(payload: expected_payload)
           .and_return(OpenStruct.new(success?: true, body: response_body))
       end
@@ -37,7 +37,7 @@ describe FranceTravailApi::RetrieveUserToken do
 
     context "when the API call fails" do
       before do
-        allow(france_travail_client).to receive(:user_token)
+        allow(france_travail_client).to receive(:retrieve_user_token)
           .with(payload: expected_payload)
           .and_return(OpenStruct.new(success?: false, status: 400, body: "Error"))
       end

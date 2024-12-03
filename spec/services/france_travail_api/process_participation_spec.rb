@@ -39,7 +39,10 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
 
         it "returns the error" do
           expect(subject.errors).to eq(
-            ["Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT.\nStatus: 400\n Body: Error"]
+            [
+              "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Endpoint : create)." \
+              "\nStatus: 400\n Body: Error"
+            ]
           )
         end
       end
@@ -63,7 +66,10 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
 
         it "returns the error" do
           expect(subject.errors).to eq(
-            ["Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT.\nStatus: 400\n Body: Error"]
+            [
+              "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Endpoint : update)." \
+              "\nStatus: 400\n Body: Error"
+            ]
           )
         end
       end
@@ -87,7 +93,10 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
 
         it "returns the error" do
           expect(subject.errors).to eq(
-            ["Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT.\nStatus: 400\n Body: Error"]
+            [
+              "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Endpoint : delete)." \
+              "\nStatus: 400\n Body: Error"
+            ]
           )
         end
       end

@@ -27,8 +27,6 @@ module Participation::FranceTravailWebhooks
     }
   end
 
-  private
-
   def eligible_for_france_travail_webhook?
     organisation.france_travail? && user.birth_date? && user.nir?
   end

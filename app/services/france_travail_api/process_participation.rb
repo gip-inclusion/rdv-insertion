@@ -46,7 +46,7 @@ module FranceTravailApi
 
     def handle_failure!(response)
       fail!(
-        "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT.\n" \
+        "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Endpoint : #{@event}).\n" \
         "Status: #{response.status}\n Body: #{response.body}"
       )
     end
