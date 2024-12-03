@@ -19,7 +19,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let!(:other_category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: other_motif_category)
   end
-  let!(:nir) { generate_random_nir }
+  let!(:nir) { generate_random_nir(sex: :female) }
   let!(:user1) do
     create(
       :user,
@@ -33,7 +33,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       email: "jane@doe.com",
       address: "20 avenue de Ségur paris",
       phone_number: "+33610101010",
-      birth_date: "20/12/1977",
+      birth_date: "20/12/1980",
       rights_opening_date: "18/05/2022",
       created_at: "20/05/2022",
       role: "demandeur",
@@ -176,7 +176,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(csv).to include("Paris")
           expect(csv).to include("jane@doe.com")
           expect(csv).to include("+33610101010")
-          expect(csv).to include("20/12/1977") # birth_date
+          expect(csv).to include("20/12/1980") # birth_date
           expect(csv).to include("20/05/2022") # created_at
           expect(csv).to include("18/05/2022") # rights_opening_date
           expect(csv).to include("demandeur") # role

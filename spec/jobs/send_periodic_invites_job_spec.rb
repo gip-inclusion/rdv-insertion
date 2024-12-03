@@ -94,6 +94,24 @@ describe SendPeriodicInvitesJob do
             subject
           end
         end
+
+        context "when the last invitation was sent less than 10 days ago" do
+          let!(:invitation) do
+            create(:invitation,
+                   follow_up: follow_up,
+                   created_at: 9.days.ago,
+                   expires_at: nil,
+                   organisations: [organisation])
+          end
+
+          it "does not send periodic invites" do
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
+                                                                              "email")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
+                                                                              "sms")
+            subject
+          end
+        end
       end
 
       context "when no invitations have been sent" do

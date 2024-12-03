@@ -160,6 +160,16 @@ describe Notifications::SendEmail, type: :service do
           ["Le numéro de téléphone de l'organisation, du lieu ou de la catégorie doit être renseigné"]
         )
       end
+
+      it "sends a message to mattermost" do
+        expect(MattermostClient).to receive(:send_unique_message).with(
+          channel_type: :private,
+          text: "Une convocation a été envoyée par l'organisation #{organisation.name} sans numéro de téléphone de " \
+                "l'organisation, du lieu ou de la catégorie pour le rendez-vous avec l'ID #{rdv.id} " \
+                "et l'usager avec l'ID #{user.id}."
+        )
+        subject
+      end
     end
 
     context "when the email is blank" do

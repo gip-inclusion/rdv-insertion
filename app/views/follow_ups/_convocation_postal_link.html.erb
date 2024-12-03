@@ -3,7 +3,7 @@
     <%= f.hidden_field :format, value: "postal" %>
     <%= f.hidden_field :event, value: participation.revoked? ? "participation_cancelled" : "participation_created" %>
     <%= button_tag type: 'submit', class: "text-decoration-underline" do %>
-      <span><i class="fas fa-file-pdf"></i> Télécharger le courrier</span>
+      <span><i class="ri-file-pdf-line"></i> Télécharger le courrier</span>
     <% end  %>
   <% end %>
 <% end %>

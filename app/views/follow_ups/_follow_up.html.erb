@@ -44,7 +44,16 @@
               <tbody>
                 <% participations.sort_by(&:created_at).reverse.each do |participation| %>
                   <tr>
-                    <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
+                    <td class="px-4 py-3">
+                      <%= format_date(participation.created_at) %>
+                      <i
+                        class="ri-information-line"
+                        data-controller="tooltip"
+                        data-created-by="<%= participation.created_by %>"
+                        data-created-at="<%= participation.created_at.strftime("%d/%m/%Y à %H:%M") %>"
+                        data-action="mouseover->tooltip#participationCreatedByDetails">
+                      </i>
+                    </td>
                     <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
                     <td class="px-2 py-3"><%= participation.motif.name %></td>
                     <td class="px-4 py-3 participation_status" >
@@ -58,7 +67,7 @@
                       <% if participation.rdv.rdv_solidarites_rdv_id && policy(participation).edit? %>
                         <%= link_to participation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(participation.rdv_solidarites_url) do %>
                           <button class="btn btn-blue">
-                            Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
+                            Voir sur RDV-S<i class="ri-external-link-line ms-1"></i>
                           </button>
                         <% end %>
                       <% end %>

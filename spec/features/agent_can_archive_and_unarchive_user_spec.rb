@@ -180,7 +180,6 @@ describe "Agents can archive and unarchive user", :js do
 
         it "displays the user as archived but with no reopen button" do
           expect(page).to have_no_button "Rouvrir le dossier"
-          expect(page).to have_css(".fa-link")
           expect(page).to have_content "Dossier archivé"
         end
       end

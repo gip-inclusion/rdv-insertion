@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :webhook_endpoints, only: [:index] do
       post :duplicate, on: :member
     end
+    resources :unavailable_creneau_logs, only: [:index]
 
     root to: "agents#index"
   end
@@ -94,6 +95,8 @@ Rails.application.routes.draw do
   resources :stats, only: [:index], controller: 'website/stats' do
     get :deployment_map, on: :collection
   end
+
+  resources :accept_cgus, only: [:create]
 
   resources :users, module: :users, only: [] do
     resources :rdvs, only: [:new]

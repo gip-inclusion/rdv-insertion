@@ -70,7 +70,7 @@ describe "Agents can update contact info with caf file", :js do
       expect(page).to have_content("hernan@crespo.com")
       expect(page).to have_content("+33620022002")
 
-      expect(page).to have_css("i.fas.fa-link")
+      expect(page).to have_css("i.ri-links-line")
       expect(page).to have_css("a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
 
       click_button("Enrichir avec des données de contacts CNAF")
