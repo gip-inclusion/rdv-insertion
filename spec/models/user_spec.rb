@@ -226,7 +226,7 @@ describe User do
 
     context "when nir is a valid 15 characters string" do
       let!(:nir) { generate_random_nir }
-      let(:user) { build(:user, nir: nir) }
+      let(:user) { build(:user, nir: nir, title: "monsieur", birth_date: "01-01-1980") }
 
       it { expect(user).to be_valid }
     end
@@ -287,6 +287,36 @@ describe User do
         expect(user.errors.details).to eq({ nir: [{ error: :invalid }] })
         expect(user.errors.full_messages.to_sentence)
           .to include("Le NIR n'est pas valide")
+      end
+    end
+
+    context "when nir belongs to a man but user is a woman" do
+      let(:user) { build(:user, nir: "119050235559522", title: "madame") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Le NIR ne peut commencer par 1 pour une femme")
+      end
+    end
+
+    context "when nir belongs to a woman but user is a man" do
+      let(:user) { build(:user, nir: "219050220275537", title: "monsieur") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Le NIR ne peut commencer par 2 pour un homme")
+      end
+    end
+
+    context "when nir year of birth does not match birth date" do
+      let(:user) { build(:user, nir: "219050220275537", birth_date: "2000-01-01") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.full_messages.to_sentence)
+          .to include("L'année de naissance inclue dans le NIR ne correspond pas à la date de naissance")
       end
     end
   end
