@@ -1,31 +1,42 @@
 class MattermostClient
+  CHANNEL_URLS_BY_TYPE = {
+    main: ENV["MATTERMOST_MAIN_CHANNEL_URL"],
+    notification: ENV["MATTERMOST_NOTIFICATIONS_CHANNEL_URL"],
+    private: ENV["MATTERMOST_PRIVATE_CHANNEL_URL"]
+  }.freeze
+
   class << self
-    EXPIRATION = 24.hours.to_i
-
-    def send_to_notif_channel(text, once_a_day: false)
-      return if once_a_day && !should_send_daily_message?(text)
-
-      send_message(ENV["MATTERMOST_NOTIFICATIONS_CHANNEL_URL"], text)
-      update_last_sent_timestamp(text) if once_a_day
+    def send_to_notif_channel(text)
+      send_message(:notification, text)
     end
 
-    def send_to_main_channel(text, once_a_day: false)
-      return if once_a_day && !should_send_daily_message?(text)
-
-      send_message(ENV["MATTERMOST_MAIN_CHANNEL_URL"], text)
-      update_last_sent_timestamp(text) if once_a_day
+    def send_to_main_channel(text)
+      send_message(:main, text)
     end
 
-    def send_to_private_channel(text, once_a_day: false)
-      return if once_a_day && !should_send_daily_message?(text)
+    def send_to_private_channel(text)
+      send_message(:private, text)
+    end
 
-      send_message(ENV["MATTERMOST_PRIVATE_CHANNEL_URL"], text)
-      update_last_sent_timestamp(text) if once_a_day
+    def send_unique_message(channel_type:, text:, expiration: 24.hours)
+      message_key = "mattermost_message:#{channel_type}:#{Digest::MD5.hexdigest(text)}"
+
+      RedisConnection.with_redis do |redis|
+        next if redis.exists?(message_key)
+
+        send_message(channel_type, text)
+        redis.set(message_key, Time.current.to_s, ex: expiration.to_i)
+      end
+    end
+
+    def send_message(channel_type, text)
+      url = CHANNEL_URLS_BY_TYPE.fetch(channel_type)
+      send_http_request(url, text)
     end
 
     private
 
-    def send_message(url, text)
+    def send_http_request(url, text)
       return unless ENV["ENVIRONMENT_NAME"] == "production"
 
       Faraday.post(
@@ -33,22 +44,6 @@ class MattermostClient
         { text: text }.to_json,
         { "Content-Type" => "application/json" }
       )
-    end
-
-    def redis_key(text)
-      "mattermost_daily_message:#{Digest::MD5.hexdigest(text)}"
-    end
-
-    def should_send_daily_message?(text)
-      !redis.exists?(redis_key(text))
-    end
-
-    def update_last_sent_timestamp(text)
-      redis.set(redis_key(text), Time.current.to_i, ex: EXPIRATION)
-    end
-
-    def redis
-      @redis ||= Redis.new
     end
   end
 end
