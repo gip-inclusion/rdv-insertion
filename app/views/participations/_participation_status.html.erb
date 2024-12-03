@@ -10,7 +10,7 @@
           <% participation.possible_new_statuses.map do |status| %>
             <%= link_to "#", class: "dropdown-item", data: { value: status } do %>
               <span class="bold">
-                <i class="fa fa-circle me-1 <%= text_class_for_participation_status(status) %>"></i>
+                <i class="ri-circle-line me-1 <%= text_class_for_participation_status(status) %>"></i>
                 <%= human_new_status(status) %>
               </span><br>
               <span><%= human_new_status_detailed(status) %>.</span>

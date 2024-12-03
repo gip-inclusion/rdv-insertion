@@ -1,8 +1,8 @@
 <%= render "common/remote_modal", title: "Contenu des messages de notification", size: :large do %>
   <div class="scrollable-list fully-scrollable-modal">
     <div class="mb-4">
-      <h5 class="text-center my-2"><i class="fas fa-sms"></i> SMS</h5>
-      <p class="text-center mt-2"><i class="fas fa-plus"></i> Rdv créé</p>
+      <h5 class="text-center my-2"><i class="ri-chat-1-line"></i> SMS</h5>
+      <p class="text-center mt-2"><i class="ri-add-line"></i> Rdv créé</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= simple_format(@sms_contents[:presential_participation_created]) %>
@@ -12,7 +12,7 @@
           <%= simple_format(@sms_contents[:by_phone_participation_created]) %>
         </div>
       </div>
-      <p class="text-center mt-2"><i class="fas fa-pen"></i> Rdv mis à jour<p>
+      <p class="text-center mt-2"><i class="ri-pencil-fill"></i> Rdv mis à jour<p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= simple_format(@sms_contents[:presential_participation_updated]) %>
@@ -22,7 +22,7 @@
           <%= simple_format(@sms_contents[:by_phone_participation_updated]) %>
         </div>
       </div>
-      <p class="text-center mt-2"><i class="fas fa-bell"></i> Rappel 2 jours avant le rdv</p>
+      <p class="text-center mt-2"><i class="ri-notification-fill"></i> Rappel 2 jours avant le rdv</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= simple_format(@sms_contents[:presential_participation_reminder]) %>
@@ -32,7 +32,7 @@
           <%= simple_format(@sms_contents[:by_phone_participation_reminder]) %>
         </div>
       </div>
-      <p class="text-center mt-2"><i class="fas fa-ban"></i> Rdv annulé</p>
+      <p class="text-center mt-2"><i class="ri-prohibited-line"></i> Rdv annulé</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= simple_format(@sms_contents[:participation_cancelled]) %>
@@ -41,8 +41,8 @@
     </div>
 
     <div class="mb-4">
-      <h5 class="text-center my-2"><i class="fas fa-inbox"></i> Email</h5>
-      <p class="text-center mt-2"><i class="fas fa-plus"></i> Rdv créé</p>
+      <h5 class="text-center my-2"><i class="ri-mail-line"></i> Email</h5>
+      <p class="text-center mt-2"><i class="ri-add-line"></i> Rdv créé</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= sanitize(@mail_contents[:presential_participation_created]) %>
@@ -52,7 +52,7 @@
           <%= sanitize(@mail_contents[:by_phone_participation_created]) %>
         </div>
       </div>
-      <p class="text-center mt-2"><i class="fas fa-pen"></i> Rdv mis à jour<p>
+      <p class="text-center mt-2"><i class="ri-pencil-fill"></i> Rdv mis à jour<p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= sanitize(@mail_contents[:presential_participation_updated]) %>
@@ -62,7 +62,7 @@
           <%= sanitize(@mail_contents[:by_phone_participation_updated]) %>
         </div>
       </div>
-      <p class="text-center mt-2"><i class="fas fa-bell"></i> Rappel 2 jours avant le rdv</p>
+      <p class="text-center mt-2"><i class="ri-notification-fill"></i> Rappel 2 jours avant le rdv</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= sanitize(@mail_contents[:presential_participation_reminder]) %>
@@ -72,7 +72,7 @@
           <%= sanitize(@mail_contents[:by_phone_participation_reminder]) %>
         </div>
       </div>
-      <p class="text-center mt-2"><i class="fas fa-ban"></i> Rdv annulé</p>
+      <p class="text-center mt-2"><i class="ri-prohibited-line"></i> Rdv annulé</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
@@ -82,8 +82,8 @@
     </div>
 
     <div class="mb-4">
-      <h5 class="text-center"><i class="fas fa-envelope"></i> Courrier</h5>
-      <p class="text-center mt-2"><i class="fas fa-plus"></i> Rdv créé</p>
+      <h5 class="text-center"><i class="ri-mail-open-line"></i> Courrier</h5>
+      <p class="text-center mt-2"><i class="ri-add-line"></i> Rdv créé</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= sanitize(@letter_contents[:presential_participation_created]) %>
@@ -93,7 +93,7 @@
           <%= sanitize(@letter_contents[:by_phone_participation_created]) %>
         </div>
       </div>
-      <p class="text-center mt-2"><i class="fas fa-ban"></i> Rdv annulé</p>
+      <p class="text-center mt-2"><i class="ri-prohibited-line"></i> Rdv annulé</p>
       <div class="d-flex justify-content-center">
         <div class="border bg-light bg-gradient col-5 p-2 m-2">
           <%= sanitize(@letter_contents[:participation_cancelled]) %>

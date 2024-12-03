@@ -16,7 +16,7 @@
         <%= form.password_field :password, class: "form-control", placeholder: "*************" %>
         <div class="input-group-append">
           <span class="input-group-text">
-            <i class="fas fa-eye"></i>
+            <i class="ri-eye-fill"></i>
           </span>
         </div>
       </div>
@@ -32,9 +32,15 @@
       <h4 class="text-center my-4 font-weight-bold px-3">OU</h4>
       <hr class="flex-fill">
     </div>
-    <%= render 'common/inclusion_connect_button' %>
     <div class="d-flex mt-4 justify-content-center align-items-center">
       <%= render 'agent_connect/connect_button' %>
+    </div>
+    <div class="alert alert-info d-flex" role="alert">
+      <i class="fas fa-info ms-2 me-3 mt-2"></i>
+      <div>
+        <p> Privilégiez maintenant la connexion avec ProConnect qui remplace Inclusion connect. </p>
+        <p> Si nécessaire, <%= link_to inclusion_connect_auth_path, class: "alert-link text-decoration-underline" do %>cliquez ici<% end %> pour continuer d'utiliser Inclusion Connect. </p>
+      </div>
     </div>
   <% end %>
 </div>

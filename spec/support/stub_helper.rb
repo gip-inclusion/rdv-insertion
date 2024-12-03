@@ -77,7 +77,7 @@ module StubHelper
     stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
   end
 
-  def stub_sync_with_rdv_solidarites_user(rdv_solidarites_user_id)
+  def stub_rdv_solidarites_update_user_and_associations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_organisations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_many_referents(rdv_solidarites_user_id)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)

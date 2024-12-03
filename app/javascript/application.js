@@ -5,6 +5,7 @@
 // Vanilla components
 import "bootstrap";
 import "./stylesheets/application.scss";
+import "remixicon/fonts/remixicon.css";
 import "@hotwired/turbo-rails";
 import { Application } from "@hotwired/stimulus";
 import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers";

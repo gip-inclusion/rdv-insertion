@@ -19,12 +19,12 @@ export default observer(({ user, format }) => {
 
   const inviteButtonContent = () => {
     if (user.triggers[actionType]) {
-      if (user.lastInvitationDate(format)) return <i className="fas fa-spinner fa-spin" />;
+      if (user.lastInvitationDate(format)) return <i className="ri-refresh-line" />;
       return "Invitation...";
     }
 
     if (user.lastInvitationDate(format)) return (
-      <i className="fas fa-redo-alt small-wheel d-block p-1" />
+      <i className="ri-repeat-2-line small-wheel d-block p-1" />
     )
 
     return CTA_BY_FORMAT[format];
@@ -59,7 +59,7 @@ export default observer(({ user, format }) => {
             >
               <div className="d-flex justify-content-center">
                 {user.lastInvitationDate(format) !== undefined && (
-                  <i className="fas fa-check d-block p-1" />
+                  <i className="ri-check-line d-block p-1" />
                 )}
                 <button
                   type="submit"

@@ -29,6 +29,7 @@ tables:
     non_anonymized_column_names:
       - super_admin
       - last_sign_in_at
+      - cgu_accepted_at
       - created_at
       - updated_at
       - last_webhook_update_received_at
@@ -437,6 +438,14 @@ tables:
       - department_id
       - last_webhook_update_received_at
       - archived_at
+
+  - table_name: unavailable_creneau_logs
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - number_of_invitations_affected
+      - organisation_id
+      - created_at
+      - updated_at
 
   - table_name: users_organisations
     non_anonymized_column_names:

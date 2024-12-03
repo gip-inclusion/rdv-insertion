@@ -1,7 +1,7 @@
 module Users
   class ReferentAssignationsController < ApplicationController
     before_action :set_department, :set_user, :set_agents, only: [:index, :create, :destroy]
-    before_action :verify_user_is_sync_with_rdv_solidarites, :set_agent, only: [:create, :destroy]
+    before_action :ensure_rdv_solidarites_user_exists, :set_agent, only: [:create, :destroy]
     before_action :set_user_referents, only: [:index]
 
     def index; end
@@ -50,8 +50,8 @@ module Users
       @user_referents = policy_scope(@user.referents).distinct
     end
 
-    def verify_user_is_sync_with_rdv_solidarites
-      sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
+    def ensure_rdv_solidarites_user_exists
+      recreate_rdv_solidarites_user(@user) if @user.rdv_solidarites_user_id.nil?
     end
 
     def set_department
