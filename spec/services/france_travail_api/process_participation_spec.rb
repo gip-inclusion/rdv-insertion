@@ -7,21 +7,25 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
     let(:participation) { create(:participation) }
     let(:timestamp) { Time.current }
     let(:event) { :create }
-    let(:france_travail_client) { instance_double(FranceTravailClient) }
+    let(:headers) do
+      { "Authorization" => "Bearer token", "Content-Type" => "application/json", "Accept" => "application/json",
+        "ft-jeton-usager" => "jeton-usager" }
+    end
 
     before do
-      allow(FranceTravailClient).to receive(:new).and_return(france_travail_client)
-      allow(france_travail_client).to receive_messages(
+      allow(FranceTravailClient).to receive_messages(
         create_participation: OpenStruct.new(success?: true, body: { id: "ft-123" }.to_json),
         update_participation: OpenStruct.new(success?: true),
         delete_participation: OpenStruct.new(success?: true)
       )
+      allow(FranceTravailApi::BuildUserAuthenticatedHeaders).to receive(:call)
+        .and_return(OpenStruct.new(headers: headers))
     end
 
     context "when creating a participation" do
       it "sends creation request to France Travail API" do
         subject
-        expect(france_travail_client).to have_received(:create_participation)
+        expect(FranceTravailClient).to have_received(:create_participation)
       end
 
       it "updates participation with France Travail ID" do
@@ -31,7 +35,7 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
 
       context "when API call fails" do
         before do
-          allow(france_travail_client).to receive(:create_participation)
+          allow(FranceTravailClient).to receive(:create_participation)
             .and_return(OpenStruct.new(success?: false, status: 400, body: "Error"))
         end
 
@@ -53,12 +57,12 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
 
       it "sends update request to France Travail API" do
         subject
-        expect(france_travail_client).to have_received(:update_participation)
+        expect(FranceTravailClient).to have_received(:update_participation)
       end
 
       context "when API call fails" do
         before do
-          allow(france_travail_client).to receive(:update_participation)
+          allow(FranceTravailClient).to receive(:update_participation)
             .and_return(OpenStruct.new(success?: false, status: 400, body: "Error"))
         end
 
@@ -80,12 +84,12 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
 
       it "sends delete request to France Travail API" do
         subject
-        expect(france_travail_client).to have_received(:delete_participation)
+        expect(FranceTravailClient).to have_received(:delete_participation)
       end
 
       context "when API call fails" do
         before do
-          allow(france_travail_client).to receive(:delete_participation)
+          allow(FranceTravailClient).to receive(:delete_participation)
             .and_return(OpenStruct.new(success?: false, status: 400, body: "Error"))
         end
 

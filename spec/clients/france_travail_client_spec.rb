@@ -1,5 +1,4 @@
 describe FranceTravailClient do
-  let(:client) { described_class.new(user: user) }
   let(:user) { create(:user) }
   let(:payload) { { some: "data" } }
   let(:france_travail_id) { "ft-123" }
@@ -21,7 +20,7 @@ describe FranceTravailClient do
     end
 
     it "sends a POST request to France Travail API" do
-      response = client.create_participation(payload: payload)
+      response = described_class.create_participation(payload: payload, headers: headers)
       expect(response.status).to eq(200)
     end
   end
@@ -34,7 +33,7 @@ describe FranceTravailClient do
     end
 
     it "sends a PUT request to France Travail API" do
-      response = client.update_participation(payload: payload)
+      response = described_class.update_participation(payload: payload, headers: headers)
       expect(response.status).to eq(200)
     end
   end
@@ -50,7 +49,7 @@ describe FranceTravailClient do
     end
 
     it "sends a DELETE request to France Travail API" do
-      response = client.delete_participation(france_travail_id: france_travail_id)
+      response = described_class.delete_participation(france_travail_id: france_travail_id, headers: headers)
       expect(response.status).to eq(200)
     end
   end
@@ -63,33 +62,8 @@ describe FranceTravailClient do
     end
 
     it "sends a POST request to France Travail API" do
-      response = client.retrieve_user_token(payload: payload)
+      response = described_class.retrieve_user_token(payload: payload, headers: headers)
       expect(response.status).to eq(200)
-    end
-  end
-
-  describe "#request_headers" do
-    context "when user is present" do
-      it "returns user authenticated headers" do
-        expect(client.request_headers).to eq(headers)
-      end
-    end
-
-    context "when user is not present" do
-      let(:client) { described_class.new }
-      let(:access_token) { "client-token" }
-
-      before do
-        allow(FranceTravailApi::RetrieveAccessToken).to receive(:call)
-          .and_return(OpenStruct.new(access_token: access_token))
-      end
-
-      it "returns client headers" do
-        expect(client.request_headers).to eq({
-                                               "Authorization" => "Bearer #{access_token}",
-                                               "Content-Type" => "application/json"
-                                             })
-      end
     end
   end
 end

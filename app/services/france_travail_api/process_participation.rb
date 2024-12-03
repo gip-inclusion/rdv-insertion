@@ -26,17 +26,20 @@ module FranceTravailApi
                  when :create
                    handle_create_request
                  when :update
-                   france_travail_client.update_participation(payload: payload)
+                   FranceTravailClient.update_participation(payload: payload, headers: ft_user_headers)
                  when :delete
                    # Qui des delete pour raison RGPD dans 2 ans ?
-                   france_travail_client.delete_participation(france_travail_id: @participation.france_travail_id)
+                   FranceTravailClient.delete_participation(
+                     france_travail_id: @participation.france_travail_id,
+                     headers: ft_user_headers
+                   )
                  end
 
       handle_failure!(response) unless response.success?
     end
 
     def handle_create_request
-      response = france_travail_client.create_participation(payload: payload)
+      response = FranceTravailClient.create_participation(payload: payload, headers: ft_user_headers)
       if response.success? && JSON.parse(response.body)["id"].present?
         # Update column to not trigger the webhook again
         @participation.update_column(:france_travail_id, JSON.parse(response.body)["id"])
@@ -55,8 +58,8 @@ module FranceTravailApi
       @participation.to_ft_payload
     end
 
-    def france_travail_client
-      FranceTravailClient.new(user: @participation.user)
+    def ft_user_headers
+      FranceTravailHeaders.for_user(@participation.user)
     end
   end
 end

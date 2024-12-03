@@ -15,8 +15,8 @@ module FranceTravailApi
     private
 
     def send_request!
-      france_travail_client = FranceTravailClient.new
-      response = france_travail_client.retrieve_user_token(payload: user_payload)
+      headers = FranceTravailHeaders.for_client
+      response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers:)
 
       if response.success?
         response_body = JSON.parse(response.body)
