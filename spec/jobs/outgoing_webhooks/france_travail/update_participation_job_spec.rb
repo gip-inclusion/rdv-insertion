@@ -1,4 +1,4 @@
-describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
+describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
   let!(:organisation) { create(:organisation, safir_code: "123456") }
   let!(:now) { Time.zone.parse("21/01/2023 23:42:11") }
 
@@ -12,15 +12,6 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
       let!(:user) { create(:user, :with_valid_nir) }
       let!(:rdv) { build(:rdv) }
 
-      context "on creation" do
-        let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
-
-        it "notifies the creation" do
-          expect(described_class).to receive(:perform_later)
-          participation.save
-        end
-      end
-
       context "on update" do
         let!(:participation) { create(:participation, rdv: rdv, user: user, organisation: organisation) }
 
@@ -28,25 +19,9 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
           expect(described_class).to receive(:perform_later)
             .with(
               participation_id: participation.id,
-              timestamp: participation.updated_at,
-              event: :update
+              timestamp: participation.updated_at
             )
           participation.save
-        end
-      end
-
-      context "on deletion" do
-        let!(:participation) { create(:participation, rdv: rdv, user: user, organisation: organisation) }
-
-        it "notifies on deletion" do
-          participation_id = participation.id
-          expect(described_class).to receive(:perform_later)
-            .with(
-              participation_id: participation_id,
-              timestamp: now,
-              event: :delete
-            )
-          participation.destroy
         end
       end
     end
@@ -54,30 +29,12 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
     context "when organisation is not france_travail" do
       let!(:organisation) { create(:organisation, safir_code: nil) }
 
-      context "on creation" do
-        let!(:participation) { build(:participation, organisation: organisation) }
-
-        it "does not send webhook" do
-          expect(described_class).not_to receive(:perform_later)
-          participation.save
-        end
-      end
-
       context "on update" do
         let!(:participation) { create(:participation, organisation: organisation) }
 
         it "does not send webhook" do
           expect(described_class).not_to receive(:perform_later)
           participation.save
-        end
-      end
-
-      context "on deletion" do
-        let!(:participation) { create(:participation, organisation: organisation) }
-
-        it "does not send webhook on deletion" do
-          expect(described_class).not_to receive(:perform_later)
-          participation.destroy
         end
       end
     end
@@ -87,7 +44,7 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
       let!(:rdv) { build(:rdv) }
       let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
 
-      context "on creation" do
+      context "on update" do
         it "does not send webhook" do
           expect(described_class).not_to receive(:perform_later)
           participation.save
@@ -97,20 +54,19 @@ describe OutgoingWebhooks::FranceTravail::ProcessParticipationJob do
   end
 
   describe "#perform" do
-    let(:service) { instance_double(FranceTravailApi::ProcessParticipation, result: OpenStruct.new) }
+    let(:service) { instance_double(FranceTravailApi::UpdateParticipation, result: OpenStruct.new) }
     let(:participation) { create(:participation) }
     let(:timestamp) { Time.current }
 
     before do
-      allow(FranceTravailApi::ProcessParticipation).to receive(:new).and_return(service)
+      allow(FranceTravailApi::UpdateParticipation).to receive(:new).and_return(service)
       allow(service).to receive(:call)
     end
 
-    it "calls the process participation service" do
+    it "calls the update participation service" do
       described_class.perform_now(
         participation_id: participation.id,
-        timestamp: timestamp,
-        event: :create
+        timestamp: timestamp
       )
 
       expect(service).to have_received(:call)
