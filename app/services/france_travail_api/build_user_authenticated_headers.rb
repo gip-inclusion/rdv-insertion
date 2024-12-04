@@ -5,8 +5,8 @@ module FranceTravailApi
     end
 
     def call
-      access_token = RetrieveAccessToken.call.access_token
-      user_token = RetrieveUserToken.call(user: @user, access_token: access_token).user_token
+      access_token = call_service!(RetrieveAccessToken).access_token
+      user_token = call_service!(RetrieveUserToken, user: @user, access_token: access_token).user_token
 
       result.headers = {
         "ft-jeton-usager" => user_token,

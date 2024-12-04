@@ -6,6 +6,12 @@ describe FranceTravailApi::RetrieveUserToken do
   let(:user) { create(:user, birth_date: "1990-01-01", nir: "1900167890123") }
   let(:access_token) { "access-token" }
   let(:france_travail_client) { FranceTravailClient }
+  let(:headers) do
+    {
+      "Authorization" => "Bearer #{access_token}",
+      "Content-Type" => "application/json"
+    }
+  end
 
   before do
     allow(FranceTravailApi::RetrieveAccessToken).to receive(:call)
@@ -26,7 +32,7 @@ describe FranceTravailApi::RetrieveUserToken do
 
       before do
         allow(france_travail_client).to receive(:retrieve_user_token)
-          .with(payload: expected_payload, headers: FranceTravailHeaders.for_client)
+          .with(payload: expected_payload, headers: headers)
           .and_return(OpenStruct.new(success?: true, body: response_body))
       end
 
@@ -39,7 +45,7 @@ describe FranceTravailApi::RetrieveUserToken do
     context "when the API call fails" do
       before do
         allow(france_travail_client).to receive(:retrieve_user_token)
-          .with(payload: expected_payload, headers: FranceTravailHeaders.for_client)
+          .with(payload: expected_payload, headers: headers)
           .and_return(OpenStruct.new(success?: false, status: 400, body: "Error"))
       end
 

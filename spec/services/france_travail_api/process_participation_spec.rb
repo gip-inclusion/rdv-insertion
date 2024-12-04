@@ -19,7 +19,7 @@ describe FranceTravailApi::ProcessParticipation, type: :service do
         delete_participation: OpenStruct.new(success?: true)
       )
       allow(FranceTravailApi::BuildUserAuthenticatedHeaders).to receive(:call)
-        .and_return(OpenStruct.new(headers: headers))
+        .and_return(OpenStruct.new(headers: headers, success?: true))
     end
 
     context "when creating a participation" do

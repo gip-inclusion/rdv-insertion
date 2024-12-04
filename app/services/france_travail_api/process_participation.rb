@@ -59,7 +59,7 @@ module FranceTravailApi
     end
 
     def ft_user_headers
-      FranceTravailHeaders.for_user(@participation.user)
+      call_service!(BuildUserAuthenticatedHeaders, user: @participation.user).headers
     end
   end
 end

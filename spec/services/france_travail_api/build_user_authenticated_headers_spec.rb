@@ -9,9 +9,9 @@ describe FranceTravailApi::BuildUserAuthenticatedHeaders, type: :service do
 
   before do
     allow(FranceTravailApi::RetrieveAccessToken).to receive(:call)
-      .and_return(OpenStruct.new(access_token: access_token))
+      .and_return(OpenStruct.new(access_token: access_token, success?: true))
     allow(FranceTravailApi::RetrieveUserToken).to receive(:call)
-      .and_return(OpenStruct.new(user_token: user_token))
+      .and_return(OpenStruct.new(user_token: user_token, success?: true))
   end
 
   describe "#call" do

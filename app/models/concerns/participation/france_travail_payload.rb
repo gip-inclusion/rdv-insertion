@@ -33,6 +33,8 @@ module Participation::FranceTravailPayload
   end
   # rubocop:enable Metrics/AbcSize
 
+  private
+
   # Liste des modalités FT (on ne prend en compte que le physique et le telephone): PHYSIQUE, TELEPHONE, VISIO
   def france_travail_modalite
     by_phone? ? "TELEPHONE" : "PHYSIQUE"

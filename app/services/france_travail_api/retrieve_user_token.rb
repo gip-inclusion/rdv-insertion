@@ -15,8 +15,7 @@ module FranceTravailApi
     private
 
     def send_request!
-      headers = FranceTravailHeaders.for_client
-      response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers:)
+      response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers: headers)
 
       if response.success?
         response_body = JSON.parse(response.body)
@@ -33,6 +32,13 @@ module FranceTravailApi
       {
         dateNaissance: @user.birth_date.to_s,
         nir: @user.nir
+      }
+    end
+
+    def headers
+      {
+        "Authorization" => "Bearer #{@access_token}",
+        "Content-Type" => "application/json"
       }
     end
   end
