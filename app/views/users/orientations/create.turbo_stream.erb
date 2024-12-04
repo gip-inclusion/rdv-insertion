@@ -1,0 +1,19 @@
+<% if @should_notify_organisation %>
+  <% if @orientation.organisation.email? %>
+    <%= turbo_stream.replace "remote_modal" do %>
+      <%= render partial: "organisations/user_added_notifications/form",
+        locals: { emails: [@orientation.organisation.email],
+                  user: @user,
+                  organisation: @orientation.organisation } %>
+    <% end %>
+  <% else %>
+    <%= turbo_stream.replace "remote_modal" do %>
+      <%= render partial: "organisations/user_added_notifications/no_email",
+        locals: { organisation: @orientation.organisation } %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace "orientations_list" do %>
+  <%= render partial: "orientations/orientations_list", locals: { orientations: @orientations } %>
+<% end %>
