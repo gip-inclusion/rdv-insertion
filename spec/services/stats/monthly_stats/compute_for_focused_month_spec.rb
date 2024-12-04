@@ -30,6 +30,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         all_users: User.where(id: [user1, user2]),
         all_participations: Participation.where(id: [participation1, participation2]),
         invitations_set: Invitation.where(id: [invitation1, invitation2]),
+        participations_set: Participation.where(id: [participation1, participation2]),
         participations_after_invitations_set: Participation.where(id: [participation1]),
         participations_with_notifications_set: Participation.where(id: [participation2]),
         users_set: User.where(id: [user1, user2]),
@@ -60,6 +61,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.sent_invitations_count_grouped_by_month).to be_a(Integer)
       expect(subject.rate_of_no_show_for_invitations_grouped_by_month).to be_a(Integer)
       expect(subject.rate_of_no_show_for_convocations_grouped_by_month).to be_a(Integer)
+      expect(subject.rate_of_no_show_grouped_by_month).to be_a(Integer)
       expect(subject.average_time_between_invitation_and_rdv_in_days_by_month).to be_a(Integer)
       expect(subject.rate_of_users_oriented_in_less_than_45_days_by_month).to be_a(Integer)
       expect(subject.rate_of_users_oriented_grouped_by_month).to be_a(Integer)
@@ -99,6 +101,12 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(stat).to receive(:participations_with_notifications_set)
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
       subject.rate_of_no_show_for_convocations_grouped_by_month
+    end
+
+    it "computes the percentage of no show" do
+      expect(stat).to receive(:participations_set)
+      expect(Stats::ComputeRateOfNoShow).to receive(:call)
+      subject.rate_of_no_show_grouped_by_month
     end
 
     it "computes the average time between first invitation and first rdv in days" do

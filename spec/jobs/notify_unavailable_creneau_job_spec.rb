@@ -60,4 +60,10 @@ describe NotifyUnavailableCreneauJob do
       )
     subject
   end
+
+  it "stores the log in the db" do
+    expect { subject }.to change(UnavailableCreneauLog, :count).by(1)
+    expect(UnavailableCreneauLog.last.number_of_invitations_affected).to eq(4)
+    expect(UnavailableCreneauLog.last.organisation).to eq(organisation)
+  end
 end

@@ -12,7 +12,7 @@ describe "Agents can create a carnet", :js do
         externalId: "8383",
         firstname: "Hernan",
         lastname: "Crespo",
-        dateOfBirth: "1987-11-21",
+        dateOfBirth: "1980-11-21",
         mobileNumber: "+33620022002",
         email: "hernan@crespo.com",
         cafNumber: "ISQCJQO",
@@ -96,7 +96,7 @@ describe "Agents can create a carnet", :js do
       create(
         :user,
         organisations: [organisation], nir: "180333147687266", department_internal_id: "8383",
-        first_name: "Hernan", last_name: "Crespo", birth_date: Time.zone.parse("1987-11-21"),
+        first_name: "Hernan", last_name: "Crespo", birth_date: Time.zone.parse("1980-11-21"),
         phone_number: "+33620022002", email: "hernan@crespo.com", affiliation_number: "ISQCJQO",
         address: "127 RUE DE GRENELLE 75007 PARIS"
       )

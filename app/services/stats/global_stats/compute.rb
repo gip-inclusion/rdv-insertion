@@ -29,6 +29,10 @@ module Stats
         ComputeRateOfNoShow.call(participations: @stat.participations_with_notifications_set).value
       end
 
+      def rate_of_no_show
+        ComputeRateOfNoShow.call(participations: @stat.participations_set).value
+      end
+
       def average_time_between_invitation_and_rdv_in_days
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(structure: @stat.statable).value
       end

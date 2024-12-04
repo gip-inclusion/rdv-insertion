@@ -5,6 +5,10 @@ module User::Nir
     before_validation :format_nir, if: :nir?
     validate :nir_is_valid, if: :nir?
 
+    # We add this validation only upon create to avoid blocking the updates of existing users
+    validate :nir_is_coherent_with_title, on: :create, if: :nir?
+    validate :nir_is_coherent_with_birth_date, on: :create, if: :nir?
+
     encrypts :nir, deterministic: true
   end
 
@@ -24,6 +28,22 @@ module User::Nir
     return if nir_sum_checked?
 
     errors.add(:nir, :invalid, message: "Le NIR n'est pas valide")
+  end
+
+  def nir_is_coherent_with_title
+    if monsieur? && nir.starts_with?("2")
+      errors.add(:nir, :invalid, message: "Le NIR ne peut commencer par 2 pour un homme")
+    elsif madame? && nir.starts_with?("1")
+      errors.add(:nir, :invalid, message: "Le NIR ne peut commencer par 1 pour une femme")
+    end
+  end
+
+  def nir_is_coherent_with_birth_date
+    return if birth_date.blank?
+    return if nir[1..2] == birth_date.strftime("%y")
+
+    errors.add(:nir, :invalid,
+               message: "L'année de naissance inclue dans le NIR ne correspond pas à la date de naissance")
   end
 
   def nir_sum_checked?

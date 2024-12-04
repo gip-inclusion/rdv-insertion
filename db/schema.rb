@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -86,6 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
     t.datetime "last_sign_in_at"
     t.string "inclusion_connect_open_id_sub"
     t.datetime "connected_with_agent_connect_at"
+    t.datetime "cgu_accepted_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["inclusion_connect_open_id_sub"], name: "index_agents_on_inclusion_connect_open_id_sub", unique: true, where: "(inclusion_connect_open_id_sub IS NOT NULL)"
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
@@ -112,8 +113,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
   create_table "category_configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_user", default: true
+    t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.integer "number_of_days_before_invitations_expire", default: 10
     t.boolean "invite_to_user_organisations_only", default: true
     t.boolean "rdv_with_referents", default: false
@@ -252,10 +253,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "letter_sender_name"
+    t.string "sms_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
     t.boolean "display_europe_logos", default: false
-    t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_france_travail_logo", default: false
@@ -389,10 +390,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
     t.string "address"
     t.string "created_by"
     t.string "status"
+    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
-    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
     t.bigint "lieu_id"
@@ -440,6 +441,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
     t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
     t.float "rate_of_users_accompanied_in_less_than_15_days"
     t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
+    t.float "rate_of_no_show"
+    t.json "rate_of_no_show_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -474,11 +477,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
     t.string "rdv_purpose"
     t.string "user_designation"
     t.string "rdv_subject"
+    t.boolean "display_mandatory_warning", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
-    t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
+  end
+
+  create_table "unavailable_creneau_logs", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.integer "number_of_invitations_affected"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_unavailable_creneau_logs_on_organisation_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -585,5 +596,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_140423) do
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
+  add_foreign_key "unavailable_creneau_logs", "organisations"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

@@ -1,0 +1,19 @@
+<%= render "common/remote_modal", title: "Vous devez accepter les conditions d'utilisations", size: :large, dismissable: false do %>
+  <p>Nous avons mis à jour nos Conditions Générales d'Utilisation (CGU).</p>
+  <p>Pour avoir accès à rdv-insertion, vous devez accepter les présentes CGU mises à jour :</p>
+  <div class="cgu-modal-wrapper mt-3 mb-3">
+    <%= render "website/static_pages/cgu_content" %>
+  </div>
+  <div class="d-flex align-items-center justify-content-end">
+    <p class="w-75 text-end mb-1">En cochant la case ci-dessous, je déclare avoir pris connaissance des conditions générales d’utilisation du site internet et les accepter :</p>
+  </div>
+  <%= form_with url: accept_cgus_path, method: :post, data: { turbo_frame: "remote_modal" } do |f| %>
+    <div class="d-flex mb-2 align-items-center justify-content-end">
+      <%= f.check_box :cgu_accepted, class: "form-check-input me-2", required: true %>
+      <%= f.label :cgu_accepted, "J'accepte les conditions d'utilisation", class: "form-check-label" %>
+    </div>
+    <div class="d-flex mb-2 align-items-center justify-content-end">
+      <%= f.submit "Valider et continuer à utiliser rdv-insertion", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% end %>
