@@ -9,7 +9,10 @@ describe FranceTravailApi::RetrieveUserToken do
   let(:headers) do
     {
       "Authorization" => "Bearer #{access_token}",
-      "Content-Type" => "application/json"
+      "Content-Type" => "application/json",
+      "pa-identifiant-agent" => "BATCH",
+      "pa-nom-agent" => "Webhooks Participation RDV-Insertion",
+      "pa-prenom-agent" => "Webhooks Participation RDV-Insertion"
     }
   end
 

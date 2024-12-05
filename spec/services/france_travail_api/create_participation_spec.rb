@@ -10,7 +10,10 @@ describe FranceTravailApi::CreateParticipation, type: :service do
       "Authorization" => "Bearer token",
       "Content-Type" => "application/json",
       "Accept" => "application/json",
-      "ft-jeton-usager" => "jeton-usager"
+      "ft-jeton-usager" => "jeton-usager",
+      "pa-identifiant-agent" => "BATCH",
+      "pa-nom-agent" => "Webhooks Participation RDV-Insertion",
+      "pa-prenom-agent" => "Webhooks Participation RDV-Insertion"
     }
   end
 

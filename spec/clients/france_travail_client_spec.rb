@@ -56,7 +56,10 @@ describe FranceTravailClient do
 
   describe "#user_token" do
     before do
-      stub_request(:post, "#{ENV['FRANCE_TRAVAIL_API_URL']}/partenaire/rechercher-usager/v1/usagers/recherche")
+      stub_request(
+        :post,
+        "#{ENV['FRANCE_TRAVAIL_API_URL']}/partenaire/rechercher-usager/v2/usagers/par-datenaissance-et-nir"
+      )
         .with(body: payload.to_json, headers: headers)
         .to_return(status: 200, body: "", headers: {})
     end

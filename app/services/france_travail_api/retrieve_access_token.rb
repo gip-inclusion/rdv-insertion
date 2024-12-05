@@ -1,7 +1,9 @@
 module FranceTravailApi
   class RetrieveAccessToken < BaseService
     # https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/generer-access-token
-    API_SCOPES = ["api_rechercher-usagerv1 api_rendez-vous-partenairev1 gererRDV"].freeze
+    API_SCOPES = [
+      "api_rechercher-usagerv2 rechercheusager profil_accedant api_rendez-vous-partenairev1 gererRDV"
+    ].freeze
     PATH = "/connexion/oauth2/access_token".freeze
 
     def call
@@ -74,7 +76,7 @@ module FranceTravailApi
     end
 
     def request_url_params
-      { realm: "/partenaire" }
+      { realm: "/agent" }
     end
 
     def request_body_params

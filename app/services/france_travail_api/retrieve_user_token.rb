@@ -1,6 +1,6 @@
 module FranceTravailApi
   class RetrieveUserToken < BaseService
-    # https://francetravail.io/produits-partages/catalogue/rechercher-usager/documentation#/api-reference/
+    # https://francetravail.io/produits-partages/catalogue/rechercher-usager-v2/documentation#/api-reference/
 
     def initialize(user:, access_token:)
       @user = user
@@ -36,9 +36,16 @@ module FranceTravailApi
     end
 
     def headers
+      # Doc FT : Dans le cadre d'un appel depuis un traitement de type batch,
+      #   renseigner "BATCH" pour pa-identifiant-agent.
+      # Dans le cadre d'un appel depuis un traitement de type batch,
+      #   renseigner un nom logique de batch pour pa-nom-agent et pa-prenom-agent.
       {
         "Authorization" => "Bearer #{@access_token}",
-        "Content-Type" => "application/json"
+        "Content-Type" => "application/json",
+        "pa-identifiant-agent" => "BATCH",
+        "pa-nom-agent" => "Webhooks Participation RDV-Insertion",
+        "pa-prenom-agent" => "Webhooks Participation RDV-Insertion"
       }
     end
   end

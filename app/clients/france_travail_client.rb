@@ -25,7 +25,7 @@ class FranceTravailClient
 
   def self.retrieve_user_token(payload:, headers:)
     Faraday.post(
-      "#{ENV['FRANCE_TRAVAIL_API_URL']}/partenaire/rechercher-usager/v1/usagers/recherche",
+      "#{ENV['FRANCE_TRAVAIL_API_URL']}/partenaire/rechercher-usager/v2/usagers/par-datenaissance-et-nir",
       payload.to_json,
       headers
     )

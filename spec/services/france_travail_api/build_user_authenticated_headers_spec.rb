@@ -21,7 +21,10 @@ describe FranceTravailApi::BuildUserAuthenticatedHeaders, type: :service do
                                       "ft-jeton-usager" => user_token,
                                       "Authorization" => "Bearer #{access_token}",
                                       "Content-Type" => "application/json",
-                                      "Accept" => "application/json"
+                                      "Accept" => "application/json",
+                                      "pa-identifiant-agent" => "BATCH",
+                                      "pa-nom-agent" => "Webhooks Participation RDV-Insertion",
+                                      "pa-prenom-agent" => "Webhooks Participation RDV-Insertion"
                                     })
     end
   end
