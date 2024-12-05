@@ -34,7 +34,11 @@ module Stats
       return false unless follow_up.seen_rdvs?
 
       if consider_orientation_rdv_as_start
-        within_target_delay?(follow_up) || within_orientation_rdv_delay?(follow_up)
+        if follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv.present?
+          within_orientation_rdv_delay?(follow_up)
+        else
+          within_target_delay?(follow_up)
+        end
       else
         within_target_delay?(follow_up)
       end
@@ -45,9 +49,9 @@ module Stats
     end
 
     def within_orientation_rdv_delay?(follow_up)
-      return false if follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv&.negative?
+      return false if follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv.negative?
 
-      follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv&.< target_delay_days
+      follow_up.days_between_first_orientation_seen_rdv_and_first_seen_rdv < target_delay_days
     end
 
     def mature_seen_follow_ups
