@@ -1,11 +1,11 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  connect() {
+  initialize() {
     if (localStorage.getItem("super-admin-header-closed") === "true")
       this.hide()
     else
-      this.show();    
+      this.show();
   }
 
   toggle() {
