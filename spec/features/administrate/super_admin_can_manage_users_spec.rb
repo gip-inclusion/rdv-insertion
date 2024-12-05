@@ -107,7 +107,7 @@ describe "Super admin can manage users" do
 
   context "from user admin edit page" do
     before do
-      stub_sync_with_rdv_solidarites_user(rdv_solidarites_user_id)
+      stub_rdv_solidarites_update_user_and_associations(rdv_solidarites_user_id)
       # Somehow the tests fail on CI if we do not put this line, the before_save :set_status callback is not
       # triggered on the follow-ups when we create them (in Users::Save) and so there is an error when redirected
       # to show page after update

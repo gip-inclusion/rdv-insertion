@@ -13,7 +13,7 @@ export default observer(({ user }) => {
         <Tippy
           content={`Référent: ${user.referentFullName()}`}
         >
-          <i className="fas fa-check" />
+          <i className="ri-check-line" />
         </Tippy>
       ) : (
         <button

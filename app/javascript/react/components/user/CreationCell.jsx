@@ -68,7 +68,7 @@ export default observer(({ user }) => {
             </span>
           }
         >
-          <i className="fas fa-link" />
+          <i className="ri-links-line" />
         </Tippy>
       </a>
     )

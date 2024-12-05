@@ -1,6 +1,6 @@
 module Users
   class RdvsController < ApplicationController
-    before_action :set_user, :verify_user_is_sync_with_rdv_solidarites, :set_organisation, only: [:new]
+    before_action :set_user, :ensure_rdv_solidarites_user_exists, :set_organisation, only: [:new]
 
     def new
       redirect_to rdv_solidarites_find_rdv_url, allow_other_host: true
@@ -17,8 +17,8 @@ module Users
       @user = policy_scope(User).preload(:organisations).find(params[:user_id])
     end
 
-    def verify_user_is_sync_with_rdv_solidarites
-      sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
+    def ensure_rdv_solidarites_user_exists
+      recreate_rdv_solidarites_user(@user) if @user.rdv_solidarites_user_id.nil?
     end
 
     def set_organisation

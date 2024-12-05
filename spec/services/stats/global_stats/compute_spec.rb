@@ -24,6 +24,7 @@ describe Stats::GlobalStats::Compute, type: :service do
         all_users: User.where(id: [user1, user2]),
         all_participations: Participation.where(id: [participation1, participation2]),
         invitations_set: Invitation.where(id: [invitation1, invitation2]),
+        participations_set: Participation.where(id: [participation1, participation2]),
         participations_after_invitations_set: Participation.where(id: [participation1]),
         participations_with_notifications_set: Participation.where(id: [participation2]),
         users_set: User.where(id: [user1, user2]),
@@ -61,6 +62,7 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.sent_invitations_count).to be_a(Integer)
       expect(subject.rate_of_no_show_for_invitations).to be_a(Float)
       expect(subject.rate_of_no_show_for_convocations).to be_a(Float)
+      expect(subject.rate_of_no_show).to be_a(Float)
       expect(subject.average_time_between_invitation_and_rdv_in_days).to be_a(Float)
       expect(subject.rate_of_users_oriented_in_less_than_45_days).to be_a(Float)
       expect(subject.rate_of_users_accompanied_in_less_than_15_days).to be_a(Float)
@@ -101,6 +103,13 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
         .with(participations: [participation2])
       subject.rate_of_no_show_for_convocations
+    end
+
+    it "computes the percentage of no show" do
+      expect(stat).to receive(:participations_set)
+      expect(Stats::ComputeRateOfNoShow).to receive(:call)
+        .with(participations: [participation1, participation2])
+      subject.rate_of_no_show
     end
 
     it "computes the average time between first invitation and first rdv in days" do

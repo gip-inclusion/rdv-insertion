@@ -34,6 +34,12 @@ module Stats
         ).value.round
       end
 
+      def rate_of_no_show_grouped_by_month
+        ComputeRateOfNoShow.call(
+          participations: created_during_focused_month(@stat.participations_set)
+        ).value.round
+      end
+
       def average_time_between_invitation_and_rdv_in_days_by_month
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
           structure: @stat.statable,

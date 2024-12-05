@@ -3,7 +3,7 @@ class UsersOrganisationsController < ApplicationController
                 only: [:index, :create, :destroy]
   before_action :set_user_organisations, only: [:index]
   before_action :set_organisation_to_add, :assign_motif_category, only: [:create]
-  before_action :set_organisation_to_remove, :verify_user_is_sync_with_rdv_solidarites, only: [:destroy]
+  before_action :set_organisation_to_remove, :ensure_rdv_solidarites_user_exists, only: [:destroy]
 
   def index
     @assignable_organisations = @organisations.where.not(id: @user.organisations.ids)
@@ -15,6 +15,7 @@ class UsersOrganisationsController < ApplicationController
     else
       flash.now[:error] = "Une erreur s'est produite lors de l'ajout de l'organisation: #{save_user.errors}"
     end
+    respond_to :turbo_stream
   end
 
   def destroy
@@ -82,8 +83,8 @@ class UsersOrganisationsController < ApplicationController
     @user.assign_motif_category(params[:users_organisation]["motif_category_id_#{@organisation_to_add.id}"])
   end
 
-  def verify_user_is_sync_with_rdv_solidarites
-    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
+  def ensure_rdv_solidarites_user_exists
+    recreate_rdv_solidarites_user(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
   def save_user

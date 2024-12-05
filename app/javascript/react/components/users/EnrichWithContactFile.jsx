@@ -19,7 +19,7 @@ export default function EnrichWithContactFile({ handleContactsFile, fileSize }) 
               }
             >
               <small className="d-inline-block mx-2">
-                <i className="fas fa-exclamation-triangle" />
+                <i className="ri-alert-line" />
               </small>
             </Tippy>
           </div>

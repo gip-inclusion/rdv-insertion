@@ -65,7 +65,7 @@ export default observer(({ users }) => {
             onClick={createAccounts}
           >
             <span>Créer comptes</span>
-            <i className="fas fa-user" />
+            <i className="ri-user-line" />
           </button>
         )}
         {users.showReferentColumn && (
@@ -75,7 +75,7 @@ export default observer(({ users }) => {
             onClick={() => batchActions("assignReferent")}
           >
             <span>Assigner référent</span>
-            <i className="fas fa-user-friends" />
+            <i className="ri-group-line" />
           </button>
         )}
         {users.canBeInvitedBy("sms") && (
@@ -85,7 +85,7 @@ export default observer(({ users }) => {
             onClick={() => batchActions("inviteBy", ["sms"])}
           >
             <span>Inviter par sms</span>
-            <i className="fas fa-comment" />
+            <i className="ri-question-answer-line" />
           </button>
         )}
         {users.canBeInvitedBy("email") && (
@@ -95,7 +95,7 @@ export default observer(({ users }) => {
             onClick={() => batchActions("inviteBy", ["email"])}
           >
             <span>Inviter par mail</span>
-            <i className="fas fa-inbox" />
+            <i className="ri-mail-line" />
           </button>
         )}
         {users.canBeInvitedBy("postal") && (
@@ -105,7 +105,7 @@ export default observer(({ users }) => {
             onClick={() => batchActions("inviteBy", ["postal"])}
           >
             <span>Inviter par courrier &nbsp;</span>
-            <i className="fas fa-envelope" />
+            <i className="ri-mail-open-line" />
           </button>
         )}
         <button
@@ -114,7 +114,7 @@ export default observer(({ users }) => {
           onClick={deleteAll}
         >
           <span>Cacher la sélection</span>
-          <i className="fas fa-eye-slash" />
+          <i className="ri-eye-off-fill" />
         </button>
       </div>
     </div>

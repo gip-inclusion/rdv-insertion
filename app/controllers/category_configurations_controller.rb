@@ -56,6 +56,7 @@ class CategoryConfigurationsController < ApplicationController
   def destroy
     @category_configuration.destroy!
     flash.now[:success] = "La configuration a été supprimée avec succès"
+    respond_to :turbo_stream
   end
 
   private

@@ -32,7 +32,9 @@ class SendPeriodicInvitesJob < ApplicationJob
 
   def should_send_periodic_invite?(last_invitation, category_configuration)
     if category_configuration.day_of_the_month_periodic_invites.present?
-      Time.zone.today.day == category_configuration.day_of_the_month_periodic_invites
+      Time.zone.today.day == category_configuration.day_of_the_month_periodic_invites &&
+        # We don't send an invite the first month if the invitation was sent less than 10 days ago
+        last_invitation.sent_before?(10.days.ago)
     elsif category_configuration.number_of_days_between_periodic_invites.present?
       (Time.zone.today - last_invitation.created_at.to_date).to_i ==
         category_configuration.number_of_days_between_periodic_invites
