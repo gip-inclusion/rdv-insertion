@@ -38,20 +38,23 @@ header {
   background-color: #C0DAF4;
   position: relative;
   z-index: 2;
+  transition: 0.3s;
 
   &.hidden {
+    transform: scaleY(100px);
     height: 0px;
     .top-bar-content {
       display: none !important;
     }
     #toggle-navbar {
-      top: 0px;
+      transform: translateY(-45px);
     }
   }
 
   #toggle-navbar {
     right: 50px;
     top: 45px;
+    transition: 0.3s;
     width: 45px;
     height: 30px;
     justify-content: center;
