@@ -17,5 +17,10 @@ FactoryBot.define do
     trait :skip_validate do
       to_create { |instance| instance.save(validate: false) }
     end
+    trait :with_valid_nir do
+      birth_date { "1985-01-01" }
+      nir { "185027800608443" }
+      title { "monsieur" }
+    end
   end
 end

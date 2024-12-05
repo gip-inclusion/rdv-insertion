@@ -7,7 +7,6 @@ class Rdv < ApplicationRecord
   include Notificable
   include RdvParticipationStatus
   include WebhookDeliverable
-  include Rdv::FranceTravailWebhooks
   include HasCurrentCategoryConfiguration
 
   after_commit :notify_participations_to_users, on: :update, if: :should_notify_users?
