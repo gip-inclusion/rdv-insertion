@@ -1,7 +1,7 @@
 <% if @should_notify_organisation %>
   <% if @orientation.organisation.email? %>
     <%= turbo_stream.replace "remote_modal" do %>
-      <%= render partial: "organisations/user_added_notifications/form",
+      <%= render partial: "users/orientations/user_added_notifications/form",
         locals: { emails: [@orientation.organisation.email],
                   user: @user,
                   organisation: @orientation.organisation } %>
