@@ -42,12 +42,10 @@ module HasParticipationsToRdvs
   end
 
   def rdvs?
-    !rdvs.empty?
+    rdvs.any?
   end
 
-  def rdv_seen_delay_in_days
-    return if first_seen_rdv_starts_at.blank?
-
-    first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
+  def seen_rdvs?
+    seen_rdvs.any?
   end
 end

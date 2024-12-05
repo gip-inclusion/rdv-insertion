@@ -422,8 +422,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "rate_of_users_oriented_in_less_than_30_days"
-    t.json "rate_of_users_oriented_in_less_than_30_days_by_month"
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -439,8 +437,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.json "rate_of_users_oriented_grouped_by_month"
     t.integer "users_with_rdv_count"
     t.json "users_with_rdv_count_grouped_by_month"
-    t.float "rate_of_users_oriented_in_less_than_15_days"
-    t.json "rate_of_users_oriented_in_less_than_15_days_by_month"
+    t.float "rate_of_users_oriented_in_less_than_45_days"
+    t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
+    t.float "rate_of_users_accompanied_in_less_than_15_days"
+    t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
     t.float "rate_of_no_show"
     t.json "rate_of_no_show_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
