@@ -6,7 +6,8 @@ module StatsHelper
 
   def options_for_organisation_select(department)
     default_option = [["Sélection", [["Toutes les organisations", "0"]]]]
-    grouped_organisations = department.organisations
+    grouped_organisations = department.organisations.where.not(id: ENV.fetch("ORGANISATION_IDS_WHERE_STATS_DISABLED",
+                                                                             "").split(","))
                                       .group_by(&:organisation_type)
                                       .map do |type, orgs|
       [
