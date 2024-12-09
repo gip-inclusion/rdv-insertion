@@ -16,7 +16,7 @@
   <%= form_with url: organisation_dpa_agreements_path(organisation_id: current_organisation), method: :post, data: { turbo_frame: "remote_modal" } do |f| %>
     <div class="d-flex mb-2 align-items-center justify-content-end">
       <%= f.check_box :dpa_accepted, class: "form-check-input me-2", required: true %>
-      <%= f.label :dpa_accepted, "J'accepte les conditions d'utilisation", class: "form-check-label" %>
+      <%= f.label :dpa_accepted, "J'accepte le contrat de sous-traitance", class: "form-check-label" %>
     </div>
     <div class="d-flex mb-2 align-items-center justify-content-end">
       <%= f.submit "Valider", class: "btn btn-primary" %>
