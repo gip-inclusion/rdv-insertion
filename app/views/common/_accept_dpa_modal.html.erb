@@ -1,10 +1,10 @@
 <%= render "common/remote_modal", title: "Contrat de sous-traitance", size: :large, dismissable: false do %>
   <p>
-    Dans le cadre de la mise en conformité RGPD de rdv-insertion, nous faire signer à chaque organisation un contrat de sous-traitance. 
-    Ce contrat de sous-traitance, également connu sous le nom de Data Processing Agreement (DPA), est obligatoire pour pouvoir utiliser rdv-insertion
+    Dans le cadre de la mise en conformité RGPD de rdv-insertion, nous devons faire signer à chaque organisation un contrat de sous-traitance. 
+    Ce contrat de sous-traitance, également connu sous le nom de Data Processing Agreement (DPA), est obligatoire pour pouvoir utiliser rdv-insertion.
   </p>
-  <div class="cgu-modal-wrapper mt-3 mb-3">
-    Bonjour
+  <div class="agreement-content-wrapper mt-3 mb-3">
+    <%= render "common/dpa_content" %>
   </div>
   <div class="d-flex align-items-center justify-content-end">
     <p class="w-75 text-end mb-1">
