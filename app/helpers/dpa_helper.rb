@@ -3,6 +3,6 @@ module DpaHelper
     return false if current_agent.nil? || current_organisation.nil?
     return false if agent_impersonated?
 
-    current_organisation.dpa_agreement.nil? && current_agent_role.admin?
+    current_organisation.dpa_agreement.nil? && policy(current_organisation).send(:configure?)
   end
 end

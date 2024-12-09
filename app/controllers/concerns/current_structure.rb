@@ -6,7 +6,7 @@ module CurrentStructure
                   :current_structure, :current_structure_name, :current_structure_id,
                   :current_department, :current_department_name, :current_department_id,
                   :current_organisations, :current_organisation, :current_organisation_id,
-                  :current_agent_department_organisations, :current_agent_role,
+                  :current_agent_department_organisations,
                   :current_structure_type_in_params
 
     delegate :name, to: :current_structure, prefix: true
@@ -78,12 +78,6 @@ module CurrentStructure
     return unless current_agent && current_department
 
     @current_agent_department_organisations ||= policy_scope(current_department.organisations)
-  end
-
-  def current_agent_role
-    return if current_agent.nil? || current_organisation.nil?
-
-    current_organisation.agent_roles.find_by(agent_id: current_agent.id)
   end
 
   def current_organisations
