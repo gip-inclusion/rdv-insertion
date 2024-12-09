@@ -12,19 +12,38 @@ class SessionsController < ApplicationController
 
   def create
     set_session_credentials
-    render json: { success: true, redirect_path: @agent_return_to_url || root_path }
+    respond_to do |format|
+      format.json do
+        render json: { success: true, redirect_path: @agent_return_to_url || root_path }
+      end
+
+      format.html do
+        flash[:success] = "Connexion réussie"
+        redirect_to @agent_return_to_url || root_path
+      end
+    end
   end
 
   def destroy
+    # On lit la valeur de la session et on prépare la redirection ici parce qu'il y a un `clear_session` ensuite
+    if session[:rdv_solidarites_oauth_token]
+      redirect_to "#{ENV["RDV_SOLIDARITES_URL"]}#{OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV['RDV_SOLIDARITES_OAUTH_APP_ID'])}", allow_other_host: true
+    else
+      redirect_to root_path
+    end
     clear_session
-    flash[:notice] = "Déconnexion réussie"
-    redirect_to root_path
+    flash[:notice] = "Déconnexion réussie" # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 
   private
 
-  def set_session_credentials
+  def set_session_credentials # rubocop:disable Metrics/AbcSize
     clear_session
+
+    if request.env["omniauth.auth"]
+      session[:rdv_solidarites_oauth_token] = request.env["omniauth.auth"]["credentials"]["token"]
+    end
+
     timestamp = Time.zone.now.to_i
     session[:agent_auth] = {
       id: authenticated_agent.id,
