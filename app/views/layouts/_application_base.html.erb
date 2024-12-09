@@ -28,6 +28,7 @@
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
       <%= yield %>
       <%= render 'common/accept_cgu_modal' if should_accept_cgu? %>
+      <%= render 'common/accept_dpa_modal' if should_accept_dpa? %>
     </div>
     <%= render 'common/footer' %>
   </body>
