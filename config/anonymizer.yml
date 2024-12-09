@@ -124,6 +124,7 @@ tables:
       - agent_id
       - organisation_id
       - created_at
+      - updated_at
 
   - table_name: file_configurations
     anonymized_column_names:
