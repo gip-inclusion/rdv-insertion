@@ -1,0 +1,25 @@
+<%= render "common/remote_modal", title: "Contrat de sous-traitance", size: :large, dismissable: false do %>
+  <p>
+    Dans le cadre de la mise en conformité RGPD de rdv-insertion, nous faire signer à chaque organisation un contrat de sous-traitance. 
+    Ce contrat de sous-traitance, également connu sous le nom de Data Processing Agreement (DPA), est obligatoire pour pouvoir utiliser rdv-insertion
+  </p>
+  <div class="cgu-modal-wrapper mt-3 mb-3">
+    Bonjour
+  </div>
+  <div class="d-flex align-items-center justify-content-end">
+    <p class="w-75 text-end mb-1">
+      En cochant cette case, je déclare être administrateur sur l'outil rdv-insertion pour ma structure, 
+      avoir la capacité d'engager ma structure dans la signature d'un tel document, 
+      avoir pris connaissance du présent contrat de sous-traitance et l'accepter :
+    </p>
+  </div>
+  <%= form_with url: organisation_dpa_agreements_path(organisation_id: current_organisation), method: :post, data: { turbo_frame: "remote_modal" } do |f| %>
+    <div class="d-flex mb-2 align-items-center justify-content-end">
+      <%= f.check_box :dpa_accepted, class: "form-check-input me-2", required: true %>
+      <%= f.label :dpa_accepted, "J'accepte les conditions d'utilisation", class: "form-check-label" %>
+    </div>
+    <div class="d-flex mb-2 align-items-center justify-content-end">
+      <%= f.submit "Valider", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% end %>

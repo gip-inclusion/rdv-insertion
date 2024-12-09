@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_09_100354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -113,8 +113,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
   create_table "category_configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "convene_user", default: true
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
+    t.boolean "convene_user", default: true
     t.integer "number_of_days_before_invitations_expire", default: 10
     t.boolean "invite_to_user_organisations_only", default: true
     t.boolean "rdv_with_referents", default: false
@@ -162,6 +162,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
     t.string "carnet_de_bord_deploiement_id"
+  end
+
+  create_table "dpa_agreements", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_dpa_agreements_on_agent_id"
+    t.index ["organisation_id"], name: "index_dpa_agreements_on_organisation_id"
   end
 
   create_table "file_configurations", force: :cascade do |t|
@@ -253,10 +262,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "letter_sender_name"
-    t.string "sms_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
     t.boolean "display_europe_logos", default: false
+    t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_france_travail_logo", default: false
@@ -390,10 +399,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.string "address"
     t.string "created_by"
     t.string "status"
-    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
+    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
     t.bigint "lieu_id"
@@ -437,12 +446,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.json "rate_of_users_oriented_grouped_by_month"
     t.integer "users_with_rdv_count"
     t.json "users_with_rdv_count_grouped_by_month"
+    t.float "rate_of_no_show"
+    t.json "rate_of_no_show_grouped_by_month"
     t.float "rate_of_users_oriented_in_less_than_45_days"
     t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
     t.float "rate_of_users_accompanied_in_less_than_15_days"
     t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
-    t.float "rate_of_no_show"
-    t.json "rate_of_no_show_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -477,10 +486,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.string "rdv_purpose"
     t.string "user_designation"
     t.string "rdv_subject"
-    t.boolean "display_mandatory_warning", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
+    t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
   end
 
@@ -568,6 +577,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
   add_foreign_key "csv_exports", "agents"
+  add_foreign_key "dpa_agreements", "agents"
+  add_foreign_key "dpa_agreements", "organisations"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
   add_foreign_key "invitations", "departments"
