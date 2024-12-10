@@ -1,4 +1,9 @@
 <header>
+  <% if agent_impersonated? %>
+      <%= render "common/header_super_admin_bar_impersonated" %>
+  <% elsif current_agent&.super_admin? %>
+    <%= render "common/header_super_admin_bar" %>
+  <% end %>
   <nav class="container navbar px-3 navbar-expand-lg">
     <div class="d-flex justify-content-start">
       <%= link_to root_path do %>
@@ -8,16 +13,7 @@
     </div>
     <div class="nav col justify-content-end align-items-center">
       <% if current_agent %>
-        <% if current_agent.super_admin? %>
-          <%= link_to super_admins_root_path do %>
-            <button class="btn btn-header border-light-grey w-100">
-              <span class="d-none d-sm-inline">Super admin</span>
-              <span class="d-inline d-sm-none"><i class="ri-logout-circle-line"></i></span>
-            </button>
-          <% end %>
-        <% else %>
-          <%= render "common/header_help_menu" %>
-        <% end %>
+        <%= render "common/header_help_menu" %>
         <div class="mx-3">
         <%= render "common/sign_out_button" %>
         </div>
