@@ -3,19 +3,26 @@ module Organisations
     before_action :set_organisation
 
     def create
-      if params[:dpa_accepted]
-        DpaAgreement.create(organisation: @organisation, agent: current_agent)
+      if save_dpa_agreement.success?
+        head :no_content
       else
-        flash[:alert] = "Vous devez accepter le DPA pour continuer"
-        redirect_to root_path
+        turbo_stream_display_error_modal(@save_dpa_agreement.errors)
       end
     end
 
     private
 
+    def save_dpa_agreement
+      @save_dpa_agreement ||= DpaAgreements::Save.call(
+        dpa_accepted: params[:dpa_accepted],
+        agent: current_agent,
+        organisation: @organisation
+      )
+    end
+
     def set_organisation
       @organisation = current_organisation
-      authorize @organisation, :configure?
+      authorize @organisation, :can_accept_dpa?
     end
   end
 end

@@ -62,4 +62,8 @@ class Organisation < ApplicationRecord
   def with_parcours_access?
     organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
   end
+
+  def requires_dpa_acceptance?
+    dpa_agreement.nil?
+  end
 end

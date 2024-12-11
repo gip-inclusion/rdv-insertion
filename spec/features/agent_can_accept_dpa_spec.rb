@@ -41,4 +41,18 @@ describe "Agents can accept dpa", :js do
       end
     end
   end
+
+  context "on a non organisation page with session set to a specific org" do
+    before do
+      visit organisation_users_path(organisation)
+    end
+
+    it "does not require the agent to accept the dpa" do
+      visit department_users_path(organisation.department)
+      expect(page).to have_no_content("Contrat de sous-traitance")
+
+      visit organisation_users_path(organisation)
+      expect(page).to have_content("Contrat de sous-traitance")
+    end
+  end
 end
