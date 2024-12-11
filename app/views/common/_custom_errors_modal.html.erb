@@ -19,6 +19,9 @@
           <hr class="mx-auto w-50">
         <% end %>
       <% end %>
+      <% if local_assigns[:description] %>
+        <p><%= local_assigns[:description] %></p>
+      <% end %>
     </div>
   </div>
   <div class="d-flex justify-content-center px-3">

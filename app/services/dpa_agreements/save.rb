@@ -1,6 +1,5 @@
 module DpaAgreements
   class Save < BaseService
-
     def initialize(dpa_accepted:, agent:, organisation:)
       @dpa_accepted = dpa_accepted
       @agent = agent
@@ -17,7 +16,7 @@ module DpaAgreements
     def ensure_dpa_is_accepted
       return if @dpa_accepted
 
-      fail!("Vous devez accepter le DPA")
+      fail!("Vous devez accepter le DPA pour pouvoir continuer à utiliser rdv-insertion.")
     end
   end
 end

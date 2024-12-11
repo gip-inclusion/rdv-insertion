@@ -6,7 +6,11 @@ module Organisations
       if save_dpa_agreement.success?
         head :no_content
       else
-        turbo_stream_display_error_modal(@save_dpa_agreement.errors)
+        turbo_stream_display_custom_error_modal(
+          title: "L'acceptation n'a pas fonctionné",
+          description: "Veuillez contacter le support si le problème persiste.",
+          errors: save_dpa_agreement.errors
+        )
       end
     end
 
@@ -14,7 +18,7 @@ module Organisations
 
     def save_dpa_agreement
       @save_dpa_agreement ||= DpaAgreements::Save.call(
-        dpa_accepted: params[:dpa_accepted],
+        dpa_accepted: params[:dpa_accepted] == "1",
         agent: current_agent,
         organisation: @organisation
       )

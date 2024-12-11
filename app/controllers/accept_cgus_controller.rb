@@ -3,7 +3,11 @@ class AcceptCgusController < ApplicationController
     if accept_cgu.success?
       head :no_content
     else
-      turbo_stream_display_error_modal(@accept_cgu.errors)
+      turbo_stream_display_custom_error_modal(
+        title: "L'acceptation n'a pas fonctionné",
+        description: "Veuillez contacter le support si le problème persiste.",
+        errors: accept_cgu.errors
+      )
     end
   end
 
@@ -11,7 +15,7 @@ class AcceptCgusController < ApplicationController
 
   def accept_cgu
     @accept_cgu ||= Agents::AcceptCgus.call(
-      cgu_accepted: params[:cgu_accepted],
+      cgu_accepted: params[:cgu_accepted] == "1",
       agent: current_agent
     )
   end
