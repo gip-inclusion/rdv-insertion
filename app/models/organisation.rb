@@ -16,6 +16,8 @@ class Organisation < ApplicationRecord
   belongs_to :department
   has_one :stat, as: :statable, dependent: :destroy
   has_one :messages_configuration, dependent: :destroy
+  has_one :dpa_agreement, dependent: :destroy
+
   has_many :category_configurations, dependent: :destroy
   has_many :rdvs, dependent: :nullify
   has_many :participations, through: :rdvs
@@ -59,5 +61,9 @@ class Organisation < ApplicationRecord
 
   def with_parcours_access?
     organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+  end
+
+  def requires_dpa_acceptance?
+    dpa_agreement.nil?
   end
 end

@@ -1,10 +1,22 @@
 class AcceptCgusController < ApplicationController
   def create
-    if params[:cgu_accepted]
-      current_agent.update!(cgu_accepted_at: Time.zone.now)
+    if accept_cgu.success?
+      head :no_content
     else
-      flash[:alert] = "Vous devez accepter les CGU pour continuer"
-      redirect_to root_path
+      turbo_stream_display_custom_error_modal(
+        title: "L'acceptation n'a pas fonctionné",
+        description: "Veuillez contacter le support si le problème persiste.",
+        errors: accept_cgu.errors
+      )
     end
+  end
+
+  private
+
+  def accept_cgu
+    @accept_cgu ||= Agents::AcceptCgus.call(
+      cgu_accepted: params[:cgu_accepted] == "1",
+      agent: current_agent
+    )
   end
 end

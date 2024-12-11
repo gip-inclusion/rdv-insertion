@@ -118,6 +118,14 @@ tables:
       - display_in_stats
       - carnet_de_bord_deploiement_id
 
+  - table_name: dpa_agreements
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - agent_id
+      - organisation_id
+      - created_at
+      - updated_at
+
   - table_name: file_configurations
     anonymized_column_names:
       - sheet_name
