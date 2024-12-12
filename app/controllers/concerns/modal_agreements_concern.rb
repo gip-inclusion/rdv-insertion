@@ -2,8 +2,8 @@ module ModalAgreementsConcern
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_should_display_accept_cgu_modal
-    before_action :set_should_display_accept_dpa_modal
+    before_action :set_should_display_accept_cgu_modal, if: -> { request.get? }
+    before_action :set_should_display_accept_dpa_modal, if: -> { request.get? }
   end
 
   def set_should_display_accept_cgu_modal
