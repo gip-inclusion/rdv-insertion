@@ -6,7 +6,7 @@ module StatsHelper
 
   def options_for_organisation_select(department)
     default_option = [["Sélection", [["Toutes les organisations", "0"]]]]
-    grouped_organisations = department.organisations
+    grouped_organisations = department.organisations.reject { |o| disable_stats_for_organisation?(o) }
                                       .group_by(&:organisation_type)
                                       .map do |type, orgs|
       [
@@ -37,5 +37,15 @@ module StatsHelper
 
   def exclude_months(stat, months)
     stat&.delete_if { |key, _value| months.include?(key) }
+  end
+
+  private
+
+  def organisation_ids_where_stats_disabled
+    ENV.fetch("ORGANISATION_IDS_WHERE_STATS_DISABLED", "").split(",")
+  end
+
+  def disable_stats_for_organisation?(organisation)
+    organisation_ids_where_stats_disabled.include?(organisation.id.to_s)
   end
 end
