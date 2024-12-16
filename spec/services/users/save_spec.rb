@@ -46,6 +46,7 @@ describe Users::Save, type: :service do
 
     context "with duplicated tag_users nested attributes" do
       let(:tag) { create(:tag) }
+      let(:other_tag) { create(:tag) }
 
       before do
         allow(user).to receive(:save).and_call_original
@@ -53,14 +54,16 @@ describe Users::Save, type: :service do
           { tag_id: tag.id },
           { tag_id: tag.id },
           { tag_id: tag.id },
-          { tag_id: tag.id }
+          { tag_id: tag.id },
+          { tag_id: other_tag.id },
+          { tag_id: other_tag.id }
         ]
       end
 
       it "deduplicates before saving the user" do
         subject
 
-        expect(user.reload.tag_users.count).to eq(1)
+        expect(user.reload.tag_users.count).to eq(2)
       end
     end
 
