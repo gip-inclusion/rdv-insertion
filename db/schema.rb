@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_16_135605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -113,8 +113,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
   create_table "category_configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "convene_user", default: true
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
+    t.boolean "convene_user", default: true
     t.integer "number_of_days_before_invitations_expire", default: 10
     t.boolean "invite_to_user_organisations_only", default: true
     t.boolean "rdv_with_referents", default: false
@@ -135,6 +135,31 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.index ["file_configuration_id"], name: "index_category_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_category_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
+  end
+
+  create_table "configurations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
+    t.boolean "convene_user", default: true
+    t.integer "number_of_days_before_action_required", default: 10
+    t.boolean "invite_to_user_organisations_only", default: true
+    t.boolean "rdv_with_referents", default: false
+    t.bigint "motif_category_id"
+    t.bigint "file_configuration_id"
+    t.bigint "organisation_id"
+    t.string "template_rdv_title_override"
+    t.string "template_rdv_title_by_phone_override"
+    t.string "template_user_designation_override"
+    t.string "template_rdv_purpose_override"
+    t.integer "number_of_days_between_periodic_invites"
+    t.integer "day_of_the_month_periodic_invites"
+    t.integer "position", default: 0
+    t.integer "department_position", default: 0
+    t.string "phone_number"
+    t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
+    t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
+    t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
   end
 
   create_table "csv_exports", force: :cascade do |t|
@@ -253,10 +278,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "letter_sender_name"
-    t.string "sms_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
     t.boolean "display_europe_logos", default: false
+    t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_france_travail_logo", default: false
@@ -381,6 +406,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true
   end
 
+  create_table "rdv_contexts", force: :cascade do |t|
+    t.integer "status"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "motif_category_id"
+    t.datetime "closed_at"
+    t.index ["motif_category_id"], name: "index_rdv_contexts_on_motif_category_id"
+    t.index ["status"], name: "index_rdv_contexts_on_status"
+    t.index ["user_id"], name: "index_rdv_contexts_on_user_id"
+  end
+
   create_table "rdvs", force: :cascade do |t|
     t.bigint "rdv_solidarites_rdv_id"
     t.datetime "starts_at", precision: nil
@@ -390,10 +427,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.string "address"
     t.string "created_by"
     t.string "status"
-    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
+    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
     t.bigint "lieu_id"
@@ -437,12 +474,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.json "rate_of_users_oriented_grouped_by_month"
     t.integer "users_with_rdv_count"
     t.json "users_with_rdv_count_grouped_by_month"
+    t.float "rate_of_no_show"
+    t.json "rate_of_no_show_grouped_by_month"
     t.float "rate_of_users_oriented_in_less_than_45_days"
     t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
     t.float "rate_of_users_accompanied_in_less_than_15_days"
     t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
-    t.float "rate_of_no_show"
-    t.json "rate_of_no_show_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -460,6 +497,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["tag_id", "user_id"], name: "index_tag_users_on_tag_id_and_user_id", unique: true
     t.index ["tag_id"], name: "index_tag_users_on_tag_id"
     t.index ["user_id"], name: "index_tag_users_on_user_id"
   end
@@ -477,10 +515,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_103601) do
     t.string "rdv_purpose"
     t.string "user_designation"
     t.string "rdv_subject"
-    t.boolean "display_mandatory_warning", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
+    t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
   end
 
