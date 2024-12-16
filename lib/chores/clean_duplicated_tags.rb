@@ -11,7 +11,7 @@ module Chores
         records = TagUser.where(tag_id: tag_id, user_id: user_id).order(:created_at)
 
         # Keep the first record and delete the others
-        records[1..-1].each(&:destroy)
+        records[1..-1].each(&:destroy!)
       end
     end
   end
