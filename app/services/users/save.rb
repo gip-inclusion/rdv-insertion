@@ -17,7 +17,6 @@ module Users
         User.transaction do
           assign_organisation if @organisation.present?
           validate_user!
-          deduplicate_tag_users_attributes
           save_record!(@user)
           push_user_to_rdv_solidarites
         end
@@ -38,10 +37,6 @@ module Users
 
     def validate_user!
       call_service!(Users::Validate, user: @user)
-    end
-
-    def deduplicate_tag_users_attributes
-      @user.tag_users = @user.tag_users.uniq(&:tag_id)
     end
   end
 end
