@@ -44,6 +44,26 @@ describe Users::Save, type: :service do
       is_a_success
     end
 
+    context "with duplicated tag_users nested attributes" do
+      let(:tag) { create(:tag) }
+
+      before do
+        allow(user).to receive(:save).and_call_original
+        user.tag_users_attributes = [
+          { tag_id: tag.id },
+          { tag_id: tag.id },
+          { tag_id: tag.id },
+          { tag_id: tag.id }
+        ]
+      end
+
+      it "deduplicates before saving the user" do
+        subject
+
+        expect(user.reload.tag_users.count).to eq(1)
+      end
+    end
+
     context "when organisation is nil" do
       subject { described_class.call(user: user) }
 
