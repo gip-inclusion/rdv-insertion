@@ -1,22 +1,23 @@
 class AcceptCgusController < ApplicationController
+  before_action :ensure_cgus_are_accepted
+
   def create
-    if accept_cgu.success?
+    if current_agent.update(cgu_accepted_at: Time.zone.now)
       head :no_content
     else
       turbo_stream_display_custom_error_modal(
         title: "L'acceptation n'a pas fonctionné",
         description: "Veuillez contacter le support si le problème persiste.",
-        errors: accept_cgu.errors
+        errors: current_agent.errors
       )
     end
   end
 
   private
 
-  def accept_cgu
-    @accept_cgu ||= Agents::AcceptCgus.call(
-      cgu_accepted: params[:cgu_accepted] == "1",
-      agent: current_agent
-    )
+  def ensure_cgus_are_accepted
+    return if params[:cgu_accepted] == "1"
+
+    turbo_stream_display_error_modal(["Vous devez accepter les CGUs"])
   end
 end

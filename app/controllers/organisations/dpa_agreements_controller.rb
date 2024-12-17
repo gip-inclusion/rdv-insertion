@@ -1,27 +1,26 @@
 module Organisations
   class DpaAgreementsController < ApplicationController
-    before_action :set_organisation
+    before_action :set_organisation, :ensure_dpa_accepted
 
     def create
-      if save_dpa_agreement.success?
+      dpa_agreement = DpaAgreement.new(agent: current_agent, organisation: @organisation)
+      if dpa_agreement.save
         head :no_content
       else
         turbo_stream_display_custom_error_modal(
           title: "L'acceptation n'a pas fonctionné",
           description: "Veuillez contacter le support si le problème persiste.",
-          errors: save_dpa_agreement.errors
+          errors: dpa_agreement.errors
         )
       end
     end
 
     private
 
-    def save_dpa_agreement
-      @save_dpa_agreement ||= DpaAgreements::Save.call(
-        dpa_accepted: params[:dpa_accepted] == "1",
-        agent: current_agent,
-        organisation: @organisation
-      )
+    def ensure_dpa_accepted
+      return if params[:dpa_accepted] == "1"
+
+      turbo_stream_display_error_modal(["Vous devez accepter le DPA pour pouvoir continuer"])
     end
 
     def set_organisation
