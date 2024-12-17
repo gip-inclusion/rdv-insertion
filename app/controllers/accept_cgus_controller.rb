@@ -7,8 +7,8 @@ class AcceptCgusController < ApplicationController
     else
       turbo_stream_display_custom_error_modal(
         title: "L'acceptation n'a pas fonctionné",
-        description: "Veuillez contacter le support si le problème persiste.",
-        errors: current_agent.errors
+        errors: current_agent.errors.full_messages,
+        with_help_instruction: true
       )
     end
   end

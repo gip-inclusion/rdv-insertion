@@ -19,8 +19,8 @@
           <hr class="mx-auto w-50">
         <% end %>
       <% end %>
-      <% if local_assigns[:description] %>
-        <p><%= local_assigns[:description] %></p>
+      <% if local_assigns[:with_help_instruction] %>
+        <p>Veuillez contacter le support à l'adresse <%= link_to "support@rdv-insertion.fr", "mailto:support@rdv-insertion.fr", class: "btn-link" %> si le problème persiste.</p>
       <% end %>
     </div>
   </div>
