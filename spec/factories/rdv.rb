@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :rdv do
     sequence(:uuid) { SecureRandom.uuid }
-    sequence(:rdv_solidarites_rdv_id)
+    sequence(:rdv_solidarites_rdv_id) { |n| n + Process.pid }
     starts_at { 3.days.from_now }
     duration_in_min { 30 }
     organisation
