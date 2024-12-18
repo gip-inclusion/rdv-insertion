@@ -110,11 +110,17 @@ module InboundWebhooks
         rdv_solidarites_rdv.user_ids
       end
 
+      # rubocop:disable Metrics/AbcSize
       def find_or_create_users
+        # rdv users that already exist in db
         existing_users = User.where(rdv_solidarites_user_id: rdv_solidarites_user_ids).to_a
+        # rdv users that have been previously deleted
+        previously_deleted_users = User.where(old_rdv_solidarites_user_id: rdv_solidarites_user_ids).to_a
 
-        new_rdv_solidarites_users = rdv_solidarites_rdv.users.reject do |user|
-          user.id.in?(existing_users.map(&:rdv_solidarites_user_id))
+        new_rdv_solidarites_users = rdv_solidarites_rdv.users.select do |user|
+          !user.id.in?(existing_users.map(&:rdv_solidarites_user_id)) &&
+            # if we process this webhook after a user has been deleted, we should not re-create it
+            !user.id.in?(previously_deleted_users.map(&:old_rdv_solidarites_user_id))
         end
 
         new_users = new_rdv_solidarites_users.map do |rdv_solidarites_user|
@@ -130,6 +136,7 @@ module InboundWebhooks
 
         @users = existing_users + new_users
       end
+      # rubocop:enable Metrics/AbcSize
 
       def participations_attributes_destroyed
         return [] if rdv.nil?

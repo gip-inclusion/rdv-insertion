@@ -16,28 +16,22 @@ Les paramètres des requêtes `GET` doivent être envoyés via les query string 
 
 Les paramètres des requêtes `POST` doivent être transmis dans le corps de la requête sous un format JSON valide, et doivent contenir le header `Content-Type: application/json`.
 
-# Versionnage
-
-L'API est versionnée. La version actuelle est 1.0 (référencée comme v1 dans les points de terminaison).
-
 # Routes
 
-Les points de terminaison de l'API sont accessibles par une route de la forme : `https://<domain>/api/<version>/<endpoint>`.
+Les endpoints de l'API sont accessibles par une route de la forme : `https://<domain>/api/<version>/<endpoint>`.
 
 Avec :
 
 - `version` est la version de l'API
-- `endpoint` est le nom du point de terminaison
-
-Par exemple, on aura : `https://<domain>/api/v1/rdvs/:id`
+- `endpoint` est le nom de l'endpoint
 
 Pour la version production, les requêtes doivent être adressées à **https://www.rdv-insertion.fr**.
 
-Pour la version démo, les requêtes doivent être adressées à **https://www.rdv-insertion-demo.fr**.
+Pour la version démo, les requêtes doivent être adressées à **https://demo.rdv-insertion.fr**.
 
 # Authentification
 
-Les points de terminaison sont réservés aux agents authentifiés, dans la limite de leur rôle au sein de l'application.
+Les endpoints sont réservés aux agents authentifiés, dans la limite de leur rôle au sein de l'application.
 
 Comme sur l'interface web, l'authentification se fait via les identifiants rdv-solidarités. **Il est donc nécessaire pour l'authentification d'appeler un endpoint sur rdv-solidarités et non pas sur rdv-insertion**. Les modalités de cet endpoint sont décrits ci-dessous.
 
