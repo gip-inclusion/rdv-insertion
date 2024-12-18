@@ -1,5 +1,3 @@
-require Rails.root.join("lib/users/transfer_organisation")
-
 namespace :users do
   desc <<-DESC
     https://github.com/gip-inclusion/rdv-insertion/issues/2515
