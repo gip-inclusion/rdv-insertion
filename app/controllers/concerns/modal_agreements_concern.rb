@@ -15,7 +15,7 @@ module ModalAgreementsConcern
   def should_accept_cgu?
     return false if current_agent.nil?
     return false if agent_impersonated?
-      
+
     current_agent.cgu_accepted_at.nil?
   end
 
@@ -32,7 +32,7 @@ module ModalAgreementsConcern
     # in which case we don't want to display the DPA modal
     # to avoid any confusion
     return false if params[:organisation_id].nil?
-    
+
     current_organisation.requires_dpa_acceptance? && policy(current_organisation).can_accept_dpa?
   end
 end
