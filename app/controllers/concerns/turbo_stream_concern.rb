@@ -37,10 +37,10 @@ module TurboStreamConcern
     turbo_stream_display_modal(partial: "common/error_modal", locals: { errors: }, status: :unprocessable_entity)
   end
 
-  def turbo_stream_display_custom_error_modal(errors:, title:, with_help_instruction: false)
+  def turbo_stream_display_custom_error_modal(errors:, title:, with_support_contact: false)
     turbo_stream_display_modal(
       partial: "common/custom_errors_modal",
-      locals: { errors:, title:, with_help_instruction: },
+      locals: { errors:, title:, with_support_contact: },
       status: :unprocessable_entity
     )
   end

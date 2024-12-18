@@ -10,7 +10,7 @@ module Organisations
         turbo_stream_display_custom_error_modal(
           title: "L'acceptation n'a pas fonctionné",
           errors: dpa_agreement.errors.full_messages,
-          with_help_instruction: true
+          with_support_contact: true
         )
       end
     end
