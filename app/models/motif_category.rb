@@ -25,7 +25,7 @@ class MotifCategory < ApplicationRecord
     if organisation.rsa_related?
       where(motif_category_type: RSA_RELATED_TYPES)
     else
-      where.not(motif_category_type: organisation.organisation_type)
+      where(motif_category_type: organisation.organisation_type)
     end
   }
 end

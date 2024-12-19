@@ -5,7 +5,10 @@ class CategoryConfiguration < ApplicationRecord
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
-  validate :minimum_invitation_duration, :invitation_formats_validity, :periodic_invites_can_be_activated
+  validate :minimum_invitation_duration,
+           :invitation_formats_validity,
+           :periodic_invites_can_be_activated,
+           :motif_is_authorized_for_organisation
 
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
@@ -73,5 +76,11 @@ class CategoryConfiguration < ApplicationRecord
 
       errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
     end
+  end
+
+  def motif_is_authorized_for_organisation
+    return if MotifCategory.authorized_for_organisation(organisation).include?(motif_category)
+
+    errors.add(:base, "La catégorie de motif n'est pas autorisée pour cette organisation")
   end
 end
