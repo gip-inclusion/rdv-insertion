@@ -28,4 +28,12 @@ class MotifCategory < ApplicationRecord
       where(motif_category_type: organisation.organisation_type)
     end
   }
+
+  # We need a dedicated method on top of the scope because we may be validating on a new object
+  # which the scope is not yet aware of
+  def authorized_for_organisation?(organisation)
+    return RSA_RELATED_TYPES.include?(motif_category_type) if organisation.rsa_related?
+
+    organisation.organisation_type == motif_category_type
+  end
 end

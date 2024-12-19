@@ -79,7 +79,7 @@ class CategoryConfiguration < ApplicationRecord
   end
 
   def motif_is_authorized_for_organisation
-    return if MotifCategory.authorized_for_organisation(organisation).include?(motif_category)
+    return if motif_category.authorized_for_organisation?(organisation)
 
     errors.add(:base, "La catégorie de motif n'est pas autorisée pour cette organisation")
   end
