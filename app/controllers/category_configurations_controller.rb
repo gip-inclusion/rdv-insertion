@@ -14,7 +14,8 @@ class CategoryConfigurationsController < ApplicationController
                 only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_category_configuration, :set_file_configuration, :set_template,
                 only: [:show, :edit, :update, :destroy]
-  before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
+  before_action :set_department, :set_file_configurations, :set_authorized_motif_categories,
+                only: [:new, :create, :edit, :update]
   before_action :set_back_to_users_list_url, :set_messages_configuration, :set_category_configurations, only: [:index]
 
   def index
@@ -105,6 +106,10 @@ class CategoryConfigurationsController < ApplicationController
 
   def set_organisation
     @organisation = current_organisation
+  end
+
+  def set_authorized_motif_categories
+    @authorized_motif_categories = MotifCategory.authorized_for_organisation(@organisation)
   end
 
   def user_count_by_tag_id

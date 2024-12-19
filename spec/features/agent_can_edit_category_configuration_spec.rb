@@ -13,7 +13,6 @@ describe "Agents can edit category configuration", :js do
       visit edit_organisation_category_configuration_path(organisation, organisation.category_configurations.first)
 
       fill_in "category_configuration_phone_number", with: "3234"
-      fill_in "category_configuration_phone_number", with: "3234"
       fill_in "category_configuration_email_to_notify_rdv_changes", with: "test@test.com"
       fill_in "category_configuration_email_to_notify_no_available_slots", with: "test@test.com"
 

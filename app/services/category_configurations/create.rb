@@ -6,8 +6,8 @@ module CategoryConfigurations
 
     def call
       CategoryConfiguration.transaction do
-        activate_motif_category_on_rdvs_territory
         save_record!(@category_configuration)
+        activate_motif_category_on_rdvs_territory
       end
     end
 
