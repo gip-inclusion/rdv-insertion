@@ -18,4 +18,14 @@ class MotifCategory < ApplicationRecord
 
   enum motif_category_type: { autre: "autre", siae: "siae", rsa_orientation: "rsa_orientation",
                               rsa_accompagnement: "rsa_accompagnement" }
+
+  RSA_RELATED_TYPES = %w[rsa_orientation rsa_accompagnement].freeze
+
+  scope :authorized_for_organisation, lambda { |organisation|
+    if organisation.rsa_related?
+      where(motif_category_type: RSA_RELATED_TYPES)
+    else
+      where.not(motif_category_type: organisation.organisation_type)
+    end
+  }
 end
