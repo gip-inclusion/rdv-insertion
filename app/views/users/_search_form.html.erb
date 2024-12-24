@@ -1,6 +1,6 @@
 <%= form_with method: :get, url: url, local: true do |form| %>
   <div class="d-flex">
-    <% url_params.except(:search_query).each do |key, value| %>
+    <% url_params.except(:search_query, :motif_category_id).each do |key, value| %>
       <%= form.hidden_field key, value: value %>
     <% end %>
 
