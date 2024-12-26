@@ -11,6 +11,9 @@
         <% @filtered_tags.each do |tag| %>
           <span class="d-flex me-2 active-filter-badge">
             <%= tag.value %>
+            <%= link_to structure_users_path(url_params.merge(tag_ids: params[:tag_ids] - [tag.id.to_s])) do %>
+              <i class="ri-close-line"></i>
+            <% end %>
           </span>
         <% end %>
       <% else %>
@@ -47,6 +50,9 @@
           <% end %>
           <% if filter == :action_required %>
             Intervention nécessaire
+          <% end %>
+          <%= link_to structure_users_path(url_params.except(filter)) do %>
+            <i class="ri-close-line"></i>
           <% end %>
         </span>
       <% end %>

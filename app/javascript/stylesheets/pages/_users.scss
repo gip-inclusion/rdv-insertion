@@ -64,7 +64,7 @@
 
 .active-filters-recap {
   > div:first-child {
-    min-width: 110px;
+    min-width: 85px;
   }
   .active-filter-badge {
     background-color: $light-blue-alt-2;
@@ -73,5 +73,21 @@
     margin-right: 5px;
     margin-bottom: 5px;
     font-size: 14px;
+
+    a {
+      margin-left: 5px;
+    }
   }
+}
+
+.filter-active {
+  position: relative;
+  display: inline-block;
+  background-color: $light-blue-alt-2;
+  width: 23px;
+  height: 23px;
+  border-radius: 100%;
+  font-size: 12px;
+  line-height: 21px;
+  left: 5px;
 }
