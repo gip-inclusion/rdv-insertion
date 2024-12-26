@@ -61,3 +61,17 @@
     width: 80%;
   }
 }
+
+.active-filters-recap {
+  > div:first-child {
+    min-width: 110px;
+  }
+  .active-filter-badge {
+    background-color: $light-blue-alt-2;
+    border-radius: 20px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+}

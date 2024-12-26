@@ -1,17 +1,7 @@
 <div class="container mt-5 mb-5">
   <%= render "users_list_header" %>
   <div class="row card-white justify-content-center">
-    <% if params[:search_query].present? %>
-      <div class="d-flex mb-2">
-        <div class="me-2">
-          <%= @users.total_count %> dossier(s) correspondant à votre recherche "<strong><%= params[:search_query] %></strong>"
-        </div>
-        <%= link_to structure_users_path(url_params.except(:search_query)) do %>
-          <i class="ri-arrow-go-back-line"></i>
-          <span class="btn-link">Réinitialiser</span>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "active_filters_recap" if active_filter_list.any? %>
     <% if @all_configurations.empty? %>
       Merci de configurer votre organisation avant de pouvoir inviter des usagers
     <% else %>
