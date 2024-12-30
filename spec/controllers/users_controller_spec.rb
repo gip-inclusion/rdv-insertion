@@ -621,7 +621,7 @@ describe UsersController do
 
       context "when a single tag is given as string" do
         let!(:index_params) do
-          { organisation_id: organisation.id, tag_ids: tags[2].id }
+          { organisation_id: organisation.id, tag_ids: [tags[2].id] }
         end
 
         it "filters by this tag" do
