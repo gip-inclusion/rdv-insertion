@@ -19,37 +19,31 @@
       <% else %>
         <span class="d-flex me-2 active-filter-badge">
           <% if filter == :referent_id %>
-            suivi par <%= @referent %>
-          <% end %>
-          <% if filter == :orientation_type %>
+            Suivi par <%= @referent %>
+          <% elsif filter == :orientation_type %>
             Orientation : <%= params[filter] %>
-          <% end %>
-          <% if filter == :creation_date_before %>
+          <% elsif filter == :creation_date_before %>
             Créé avant le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :creation_date_after %>
+          <% elsif filter == :creation_date_after %>
             Créé après le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :convocation_date_before %>
+          <% elsif filter == :convocation_date_before %>
             Convoqué avant le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :convocation_date_after %>
+          <% elsif filter == :convocation_date_after %>
             Convoqué après le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :first_invitation_date_before %>
+          <% elsif filter == :first_invitation_date_before %>
             Première invitation avant le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :first_invitation_date_after %>
+          <% elsif filter == :first_invitation_date_after %>
             Première invitation après le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :last_invitation_date_before %>
+          <% elsif filter == :last_invitation_date_before %>
             Dernière invitation avant le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :last_invitation_date_after %>
+          <% elsif filter == :last_invitation_date_after %>
             Dernière invitation après le : <%= format_date(params[filter].to_date) %>
-          <% end %>
-          <% if filter == :action_required %>
+          <% elsif filter == :action_required %>
             Intervention nécessaire
+          <% elsif filter == :status %>
+            Statut : <%= I18n.t("activerecord.attributes.follow_up.statuses.#{params[filter]}") %>
+          <% else %>
+            <%= params[filter] %>
           <% end %>
           <%= link_to structure_users_path(url_params.except(filter)) do %>
             <i class="ri-close-line"></i>
