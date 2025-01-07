@@ -16,7 +16,7 @@ module ArchivesHelper
   end
 
   def archived_banner_message(archives)
-    names = archives.map(&:organisation).map(&:name).join(", ")
+    names = archives.map(&:organisation).sort.map(&:name).join(", ")
     wording = archives.size > 1 ? "les organisations" : "l'organisation"
     "Cet usager est archivé sur #{wording} #{names} (#{format_archives_reason(archives)})"
   end
