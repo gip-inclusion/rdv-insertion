@@ -1,6 +1,6 @@
 describe "Agents can accept dpa", :js do
   let(:agent) { create(:agent) }
-  let(:organisation) { create(:organisation, :without_dpa_agreement) }
+  let(:organisation) { create(:organisation, :without_dpa_agreement, created_at: 2.months.ago) }
   let!(:agent_role) { create(:agent_role, agent:, access_level: "admin", organisation:) }
 
   before do
@@ -35,6 +35,14 @@ describe "Agents can accept dpa", :js do
 
     context "when the agent has already accepted the dpa" do
       let(:organisation) { create(:organisation) }
+
+      it "does not require the agent to accept the dpa" do
+        expect(page).to have_no_content("Contrat de sous-traitance")
+      end
+    end
+
+    context "when the organisation has been created too recently" do
+      let(:organisation) { create(:organisation, :without_dpa_agreement, created_at: 2.days.ago) }
 
       it "does not require the agent to accept the dpa" do
         expect(page).to have_no_content("Contrat de sous-traitance")
