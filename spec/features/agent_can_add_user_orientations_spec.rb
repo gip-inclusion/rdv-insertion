@@ -115,7 +115,7 @@ describe "Agents can add user orientation", :js do
           "L'usager #{user} a été ajouté à votre organisation Asso 26.\nVous pouvez consulter son historique" \
           " d'accompagnement ainsi que les éventuels documents de parcours téléchargés (diagnostic, contrat) sur le" \
           " lien suivant :\n " \
-          "http://localhost:#{Capybara.current_session.server.port}/organisations/#{other_organisation.id}/users/#{user.id}/parcours",
+          "#{ENV['HOST']}:#{Capybara.current_session.server.port}/organisations/#{other_organisation.id}/users/#{user.id}/parcours",
         user_attachements: [],
         reply_to: agent.email
       ).and_return(OpenStruct.new(deliver_now: nil))
