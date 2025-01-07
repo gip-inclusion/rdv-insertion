@@ -90,4 +90,8 @@
   font-size: 12px;
   line-height: 21px;
   left: 5px;
+
+  &.convocation-date-filter-active {
+    left: -2px;
+  }
 }
