@@ -32,6 +32,7 @@ module ModalAgreementsConcern
     # in which case we don't want to display the DPA modal
     # to avoid any confusion
     return false if params[:organisation_id].nil?
+    return false if current_organisation.created_at > 1.month.ago
 
     current_organisation.requires_dpa_acceptance? && policy(current_organisation).can_accept_dpa?
   end
