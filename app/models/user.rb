@@ -48,7 +48,7 @@ class User < ApplicationRecord
   broadcasts_refreshes
 
   accepts_nested_attributes_for :follow_ups, reject_if: :follow_up_category_handled_already?
-  accepts_nested_attributes_for :tag_users
+  accepts_nested_attributes_for :tag_users, reject_if: :duplicated_tag_id?
 
   validates :last_name, :first_name, presence: true
   validates :email, allow_blank: true,
@@ -229,6 +229,10 @@ class User < ApplicationRecord
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
+  end
+
+  def duplicated_tag_id?(attributes)
+    tag_users.exists?(tag_id: attributes["tag_id"])
   end
 end
 # rubocop:enable Metrics/ClassLength
