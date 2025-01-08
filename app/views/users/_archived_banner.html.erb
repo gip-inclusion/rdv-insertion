@@ -4,7 +4,7 @@
     flash_message: FlashMessage.new(
       type: :notice,
       title: "Dossier archivé",
-      description: archived_banner_message(@user.archives_organisations),
+      description: archived_banner_message(@user.archives.includes(:organisation)),
       persist: true
     )
   )
