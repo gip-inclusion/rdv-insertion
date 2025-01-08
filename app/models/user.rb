@@ -189,10 +189,6 @@ class User < ApplicationRecord
     archives.find { |a| a.organisation_id == organisation.id }
   end
 
-  def archives_organisations
-    Organisation.where(id: archives.map(&:organisation_id))
-  end
-
   private
 
   def import_associations_from_rdv_solidarites

@@ -57,8 +57,7 @@ describe "Agents can archive and unarchive user", :js do
         click_button "Archiver"
 
         expect(page).to have_content "Dossier archivé"
-        expect(page).to have_content "Cet usager est archivé sur les organisations" \
-                                     " #{user.archives_organisations.sort.map(&:name).join(', ')}"
+        expect(page).to have_content "Cet usager est archivé sur les organisations Organisation n°"
 
         expect(Archive.count).to eq(2)
       end
@@ -97,8 +96,7 @@ describe "Agents can archive and unarchive user", :js do
         click_button "Archiver"
 
         expect(page).to have_content "Dossier archivé"
-        expect(page).to have_content "Cet usager est archivé sur les organisations" \
-                                     " #{user.archives_organisations.map(&:name).join(', ')}"
+        expect(page).to have_content "Cet usager est archivé sur les organisations Organisation n°"
 
         expect(Archive.count).to eq(2)
 

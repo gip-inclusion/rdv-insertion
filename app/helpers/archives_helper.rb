@@ -12,7 +12,9 @@ module ArchivesHelper
   end
 
   def user_archives(user, organisations)
-    UserArchivedStatus.new(user, organisations).user_archives_in_organisations
+    user.archives.select do |archive|
+      organisations.map(&:id).include?(archive.organisation_id)
+    end
   end
 
   def archived_banner_message(archives)
@@ -22,7 +24,7 @@ module ArchivesHelper
   end
 
   def format_archives_reason(archives)
-    reason = archives.map(&:archiving_reason).join(", ")
+    reason = archives.map(&:archiving_reason).uniq.join(", ")
     "#{'motif'.pluralize(archives.size)} d'archivage : #{reason}"
   end
 end
