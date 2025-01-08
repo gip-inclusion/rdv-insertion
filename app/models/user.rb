@@ -193,6 +193,11 @@ class User < ApplicationRecord
     Organisation.where(id: archives.map(&:organisation_id))
   end
 
+  def tag_users_attributes=(attributes)
+    unique_attributes = attributes.uniq { |attr| attr["tag_id"] }
+    super(unique_attributes)
+  end
+
   private
 
   def import_associations_from_rdv_solidarites
