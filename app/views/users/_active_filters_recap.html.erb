@@ -42,8 +42,6 @@
             Intervention nécessaire
           <% elsif filter == :status %>
             Statut : <%= I18n.t("activerecord.attributes.follow_up.statuses.#{params[filter]}") %>
-          <% else %>
-            <%= params[filter] %>
           <% end %>
           <%= link_to structure_users_path(url_params.except(filter)) do %>
             <i class="ri-close-line"></i>
