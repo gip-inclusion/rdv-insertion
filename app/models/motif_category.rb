@@ -18,6 +18,4 @@ class MotifCategory < ApplicationRecord
 
   enum motif_category_type: { autre: "autre", siae: "siae", rsa_orientation: "rsa_orientation",
                               rsa_accompagnement: "rsa_accompagnement" }
-
-  RSA_RELATED_TYPES = %w[rsa_orientation rsa_accompagnement].freeze
 end
