@@ -109,7 +109,7 @@ class CategoryConfigurationsController < ApplicationController
   end
 
   def set_authorized_motif_categories
-    @authorized_motif_categories = MotifCategory.authorized_for_organisation(@organisation)
+    @authorized_motif_categories = MotifCategoryPolicy::Scope.new(MotifCategory, @organisation).resolve
   end
 
   def user_count_by_tag_id
