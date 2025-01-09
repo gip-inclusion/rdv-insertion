@@ -65,5 +65,28 @@ describe CategoryConfigurations::Create, type: :service do
         expect(category_configuration).not_to be_persisted
       end
     end
+
+    describe "motif validatity" do
+      let(:organisation) { create(:organisation, organisation_type: "delegataire_rsa") }
+      let(:category_configuration) do
+        build(:category_configuration, organisation: create(:organisation), motif_category:)
+      end
+
+      context "when motif is not authorized" do
+        let(:motif_category) { create(:motif_category, name: "SIAE", short_name: "siae", motif_category_type: "siae") }
+
+        it "stores the error" do
+          expect(subject.errors[0]).to include("La catégorie de motif n'est pas autorisée")
+        end
+      end
+
+      context "when motif is authorized" do
+        let(:motif_category) { create(:motif_category) }
+
+        it "is a success" do
+          is_a_success
+        end
+      end
+    end
   end
 end

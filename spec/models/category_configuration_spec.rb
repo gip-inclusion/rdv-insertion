@@ -67,27 +67,6 @@ describe CategoryConfiguration do
     end
   end
 
-  describe "motif validatity" do
-    let(:organisation) { create(:organisation, organisation_type: "delegataire_rsa") }
-    let(:category_configuration) do
-      build(:category_configuration, organisation: create(:organisation), motif_category:)
-    end
-
-    context "when motif is not authorized" do
-      let(:motif_category) { create(:motif_category, name: "SIAE", short_name: "siae", motif_category_type: "siae") }
-
-      it "adds error" do
-        expect(category_configuration).not_to be_valid
-      end
-    end
-
-    context "when motif is authorized" do
-      let(:motif_category) { create(:motif_category) }
-
-      it { expect(category_configuration).to be_valid }
-    end
-  end
-
   describe "organisation already attached to motif_category" do
     context "a category_configuration with the given motif_category already exists for the organisation" do
       let!(:organisation) { create(:organisation) }
