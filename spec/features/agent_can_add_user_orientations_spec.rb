@@ -91,6 +91,78 @@ describe "Agents can add user orientation", :js do
     expect(page).to have_content("non renseigné")
   end
 
+  it "open organisation email notification modal when adding an orientation to another organisation" do
+    visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+
+    click_link("Parcours")
+    click_button("Ajouter une orientation")
+
+    page.select orientation_type_social.name, from: "orientation[orientation_type_id]"
+    page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-07-03'")
+    page.select "Asso 26", from: "orientation_organisation_id"
+    click_button "Enregistrer"
+
+    expect(page).to have_content("Informer l’organisation par email")
+    expect(page).to have_content("Prévenir l’organisation que l’usager a été ajouté à leur liste")
+    click_button "Envoyer"
+
+    expect(OrganisationMailer).to receive(:user_added)
+      .once
+      .with(
+        to: other_organisation.email,
+        subject: "[RDV-Insertion] Un usager a été ajouté à votre organisation",
+        content:
+          "L'usager #{user} a été ajouté à votre organisation Asso 26.\nVous pouvez consulter son historique" \
+          " d'accompagnement ainsi que les éventuels documents de parcours téléchargés (diagnostic, contrat) sur le" \
+          " lien suivant :\n " \
+          "http://www.rdv-insertion-test.fake:#{Capybara.current_session.server.port}" \
+          "/organisations/#{other_organisation.id}/users/#{user.id}/parcours",
+        user_attachements: [],
+        reply_to: agent.email
+      ).and_return(OpenStruct.new(deliver_now: nil))
+
+    expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
+    expect(page).to have_content("Asso 26")
+  end
+
+  it "open organisation no email warning modal when adding an orientation to another organisation with no email" do
+    other_organisation.update(email: nil)
+    visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+
+    click_link("Parcours")
+    click_button("Ajouter une orientation")
+
+    page.select orientation_type_social.name, from: "orientation[orientation_type_id]"
+    page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-07-03'")
+    page.select "Asso 26", from: "orientation_organisation_id"
+    click_button "Enregistrer"
+
+    expect(page).to have_no_content("Informer l’organisation par email")
+    expect(page).to have_content("L'organisation Asso 26 n'a pas d'adresse email renseignée.")
+    click_button "J'ai compris"
+
+    expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
+    expect(page).to have_content("Asso 26")
+  end
+
+  it "does not open email notification modal when user is already in the organisation" do
+    user.organisations << other_organisation
+    visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+
+    click_link("Parcours")
+    click_button("Ajouter une orientation")
+
+    page.select orientation_type_social.name, from: "orientation[orientation_type_id]"
+    page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-07-03'")
+    page.select "Asso 26", from: "orientation_organisation_id"
+    click_button "Enregistrer"
+
+    expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
+    expect(page).to have_content("Asso 26")
+    expect(page).to have_no_content("Informer l’organisation par email")
+    expect(page).to have_no_content("L'organisation Asso 26 n'a pas d'adresse email renseignée.")
+  end
+
   describe "department scoped orientations" do
     let!(:other_department) { create(:department, number: "13") }
     let!(:other_department_agent) { create(:agent) }
