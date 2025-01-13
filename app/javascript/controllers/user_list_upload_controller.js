@@ -144,6 +144,8 @@ export default class extends Controller {
     if (validateFileFormat(file, acceptedFormats)) {
       if (await this.#readFile(file)) {
         this.#setFileSelected(file)
+      } else {
+        this.inputTarget.value = ""
       }
     }
   }

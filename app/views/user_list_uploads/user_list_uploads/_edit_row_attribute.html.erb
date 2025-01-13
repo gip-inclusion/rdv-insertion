@@ -5,9 +5,9 @@
   ),
   method: :patch
 ) do |form| %>
-  <div class="input-group input-group-sm">
-    <% if attribute == :title %>
-      <%= form.select "user_row[title]", User.titles.keys, { selected: user_row.title }, { class: "form-select" } %>
+  <div class="input-group input-group-sm" data-turbo-prefetch="false">
+    <% if attribute == "title" %>
+      <%= form.select "user_row[title]", User.titles.keys, { selected: user_row.title }, { class: "form-control" } %>
     <% else %>
       <%= form.text_field "user_row[#{attribute}]",
                           value: user_row.send(attribute),
@@ -16,9 +16,11 @@
     <button type="submit">
       <i class="ri-check-line text-success"></i>
     </button>
-    <button type="button"
-            data-action="user-row-cell#show">
-      <i class="ri-close-line text-danger"></i>
+
+    <button type="submit">
+      <%= link_to user_list_upload_user_row_path(user_list_upload_id: @user_list_upload.id, uid: user_row.uid) do %>
+        <i class="ri-close-line text-danger"></i>
+      <% end %>
     </button>
   </div>
 <% end %>

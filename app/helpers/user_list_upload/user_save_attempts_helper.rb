@@ -1,7 +1,7 @@
 module UserListUpload::UserSaveAttemptsHelper
   def time_remaining_for_saves(current_count, total_count)
-    # we assume that each save takes 10 seconds
-    ((total_count - current_count) * 10).seconds
+    # we assume that each save takes 1 seconds
+    ((total_count - current_count) * 1).seconds
   end
 
   def text_for_time_remaining_for_saves(current_count, total_count)

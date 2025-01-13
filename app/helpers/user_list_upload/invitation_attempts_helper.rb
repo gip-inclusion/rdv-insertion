@@ -44,8 +44,8 @@ module UserListUpload::InvitationAttemptsHelper
   end
 
   def time_remaining_for_invitations(current_count, total_count)
-    # we assume that each invitations takes 10 seconds
-    ((total_count - current_count) * 10).seconds
+    # we assume that each invitations takes 2 seconds
+    ((total_count - current_count) * 2).seconds
   end
 
   def text_for_time_remaining_for_invitations(current_count, total_count)

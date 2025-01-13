@@ -19,42 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <% user_rows.each do |user_row| %>
-        <tr>
-          <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :post_code].each do |attribute| %>
-            <td>
-              <span><%= display_attribute(user_row.send(attribute)) %></span>
-            </td>
-          <% end %>
-
-          <td>
-            <div class="d-flex justify-content-between align-items-center">
-              <% if user_row.no_organisation_to_assign? %>
-                <span class="badge rounded-pill alert-info"
-                      role="button"
-                      tabindex="0"
-                      data-controller="assign-row-organisation"
-                      data-action="click->assign-row-organisation#selectOrganisationAndSaveUser"
-                      data-user-list-upload-id="<%= user_row.user_list_upload.id %>"
-                      data-department-number="<%= user_row.department_number %>"
-                      data-user-address="<%= user_row.address %>"
-                      data-uid="<%= user_row.uid %>"
-                >
-                  Assigner une organisation
-                  <i class="ri-cursor-line text-end"></i>
-                </span>
-              <% else %>
-                <span class="badge rounded-pill <%= user_save_status_badge_class(user_row.after_user_save_status) %>"
-                      <%= tooltip_for_user_save_attempt_errors(user_row.last_user_save_attempt&.errors) %>
-                >
-                  <%= user_save_status_text(user_row.after_user_save_status) %>
-                  <%= user_save_icon_for_status(user_row.after_user_save_status) %>
-                </span>
-              <% end %>
-            </div>
-          </td>
-        </tr>
-      <% end %>
+      <%= render partial: "user_row", collection: user_rows, as: :user_row, cached: ->(user_row) { user_row.cache_args } %>
     </tbody>
   </table>
 </div>

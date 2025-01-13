@@ -4,7 +4,9 @@ export default class extends Controller {
   static targets = ["checkbox", "submit", "formatOption"]
 
   connect() {
-    this.toggleSubmit()
+    if (this.hasSubmitTarget) {
+      this.toggleSubmit()
+    }
   }
 
   submit(event) {

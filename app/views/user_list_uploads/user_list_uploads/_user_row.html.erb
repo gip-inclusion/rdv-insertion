@@ -1,0 +1,43 @@
+<tr class="background-light" id="user-row-<%= user_row.uid %>">
+  <td>
+    <input type="checkbox"
+            class="form-check-input user-checkbox"
+            data-submit-selected-uids-target="checkbox"
+            data-action="click->submit-selected-uids#toggleSubmit"
+            value="<%= user_row.uid %>"
+            <%= user_row.valid? ? "checked" : "disabled" %>>
+  </td>
+
+  <% UserListUpload::Row::EDITABLE_ATTRIBUTES.each do |attribute| %>
+    <td class="border-light <%= user_row_background_color_for_attribute(user_row, attribute) %>"
+        data-controller="user-row-cell"
+        data-user-list-upload-id="<%= @user_list_upload.id %>"
+        data-user-row-uid="<%= user_row.uid %>"
+        data-user-row-attribute="<%= attribute %>"
+        >
+      <div class="d-flex justify-content-between align-items-center"
+            id="user-row-cell-<%= user_row.uid %>-<%= attribute %>"
+            data-action="dblclick->user-row-cell#edit">
+        <span><%= display_attribute(user_row.send(attribute)) %></span>
+        <%= user_row_icon_for_attribute(user_row, attribute) %>
+      </div>
+    </td>
+  <% end %>
+
+  <td>
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="badge rounded-pill <%= user_row_status_badge_class(user_row) %>"
+        <%= tooltip_for_user_row_errors(user_row.errors) %>
+      >
+        <%= user_row_status_text(user_row.before_user_save_status) %>
+        <%= user_row_icon_for_status(user_row.errors) %>
+      </span>
+    </div>
+  </td>
+
+  <td class="border-light bg-white  d-flex justify-content-center align-items-center" data-turbo-prefetch="false" id="user-row-<%= user_row.uid %>-details-link">
+    <%= link_to user_list_upload_user_row_show_details_path(user_list_upload_id: @user_list_upload.id, user_row_uid: user_row.uid), data: { turbo_stream: true } do %>
+      <i class="ri-arrow-down-s-line text-dark-blue"></i>
+    <% end %>
+  </td>
+</tr>

@@ -2,11 +2,20 @@ module UserListUploads
   class UserRowsController < BaseController
     before_action :set_user_list_upload
 
+    def show
+      @user_row = @user_list_upload.user_collection.find(params[:uid])
+      render turbo_stream: turbo_stream.replace("user-row-#{params[:uid]}",
+                                                partial: "user_list_uploads/user_list_uploads/user_row",
+                                                locals: { user_row: @user_row })
+    end
+
     # rubocop:disable Metrics/AbcSize
     def update
       if @user_list_upload.update_row(params[:uid], row_params.to_h.symbolize_keys)
         respond_to do |format|
-          format.turbo_stream { redirect_to user_list_upload_path(id: @user_list_upload.id) }
+          format.turbo_stream do
+            redirect_to user_list_upload_path(@user_list_upload, user_with_errors: params[:user_with_errors])
+          end
           format.json { render json: { success: true } }
         end
       else
@@ -20,6 +29,16 @@ module UserListUploads
       end
     end
     # rubocop:enable Metrics/AbcSize
+
+    def show_details
+      @user_row = @user_list_upload.user_collection.find(params[:user_row_uid])
+      respond_to :turbo_stream
+    end
+
+    def hide_details
+      @user_row = @user_list_upload.user_collection.find(params[:user_row_uid])
+      respond_to :turbo_stream
+    end
 
     private
 

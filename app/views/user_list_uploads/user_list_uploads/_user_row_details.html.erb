@@ -1,77 +1,79 @@
-<td colspan="9" class="border-light bg-white user-row-details">
-  <div class="d-flex justify-content-between px-3 py-2">
-    <div>
-      <p class="fw-bold text-dark-blue"><%= user_row.full_name_stripped %></p>
-    </div>
-    <div>
-      <% if user_row.matching_user_id %>
-        <%= link_to @user_list_upload.structure_user_path(user_row.matching_user_id), target: "_blank", class: "text-dark-blue" do %>
-          <span class="text-underline">Ouvrir le dossier usager</span> <i class="ri-external-link-line"></i>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-  <div class="px-5">
-    <div class="row">
-      <div class="col-md-6">
-        <p><span class="attribute-label">Rôle :</span> <span class="text-dark-green"><%= display_attribute(user_row.role) %></span></p>
-        <p><span class="attribute-label">Numéro CAF :</span> <%= display_attribute(user_row.affiliation_number) %></p>
-        <% if show_row_attribute?(:nir, @user_list_upload) %>
-          <p><span class="attribute-label">Numéro de sécurité sociale :</span> <%= display_attribute(user_row.nir) %></p>
-        <% end %>
-        <p><span class="attribute-label">Date de naissance :</span> <%= display_date(user_row.birth_date) %></p>
-        <p><span class="attribute-label">Email :</span> <span><%= display_attribute(user_row.email) %></span></p>
-        <p><span class="attribute-label">Adresse :</span> <span class="text-wrap"><%= display_attribute(user_row.address) %></span></p>
-        <p>
-          <span class="attribute-label">Tags :</span>
-          <% if user_row.tags.any? %>
-            <% user_row.tags.each do |tag| %>
-              <span class="badge badge-tag <%= user_row.association_already_persisted?(tag, :tags) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= tag.value %></span>
-            <% end %>
-          <% else %>
-            <span>Aucun tag assigné</span>
-          <% end %>
-        </p>
+<tr id="user-row-details-<%= user_row.uid %>">
+  <td colspan="9" class="border-light bg-white user-row-details">
+    <div class="d-flex justify-content-between px-3 py-2">
+      <div>
+        <p class="fw-bold text-dark-blue"><%= user_row.full_name_stripped %></p>
       </div>
-      <div class="col-md-6">
-        <% if show_row_attribute?(:department_internal_id, @user_list_upload) %>
-          <p><span class="attribute-label">ID interne au département:</span> <%= display_attribute(user_row.department_internal_id) %></p>
+      <div>
+        <% if user_row.matching_user_id %>
+          <%= link_to @user_list_upload.structure_user_path(user_row.matching_user_id), target: "_blank", class: "text-dark-blue" do %>
+            <span class="text-underline">Ouvrir le dossier usager</span> <i class="ri-external-link-line"></i>
+          <% end %>
         <% end %>
-        <% if show_row_attribute?(:france_travail_id, @user_list_upload) %>
-          <p><span class="attribute-label">ID France Travail:</span> <%= display_attribute(user_row.france_travail_id) %></p>
-        <% end %>
-        <p><span class="attribute-label">Téléphone :</span> <%= display_attribute(user_row.phone_number) %></p>
-        <p>
-          <span class="attribute-label">Organisations :</span>
-          <% if user_row.organisations.any? %>
-            <% user_row.organisations.each do |organisation| %>
-              <span class="badge badge-tag <%= user_row.association_already_persisted?(organisation, :organisations) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= organisation.name %></span>
-            <% end %>
-          <% else %>
-            <span>Aucune organisation assignée <i class="ri-information-line" data-controller="tooltip" data-action="mouseover->tooltip#organisationUnassignedOnUserListUpload"></i></span>
-          <% end %>
-        </p>
-        <p>
-          <span class="attribute-label">Suivi sur :</span>
-          <% if user_row.motif_categories.any? %>
-            <% user_row.motif_categories.each do |motif_category| %>
-              <span class="badge badge-tag <%= user_row.association_already_persisted?(motif_category, :motif_categories) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= motif_category.name %></span>
-            <% end %>
-          <% else %>
-            <span> - </span>
-          <% end %>
-        </p>
-        <p>
-          <span class="attribute-label">Référents :</span>
-          <% if user_row.referents.any? %>
-            <% user_row.referents.each do |referent| %>
-              <span class="badge badge-tag <%= user_row.association_already_persisted?(referent, :referents) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= referent %></span>
-            <% end %>
-          <% else %>
-            <span>Aucun référent assigné</span>
-          <% end %>
-        </p>
       </div>
     </div>
-  </div>
-</td>
+    <div class="px-5">
+      <div class="row">
+        <div class="col-md-6">
+          <p><span class="attribute-label">Rôle :</span> <span class="text-dark-green"><%= display_attribute(user_row.role) %></span></p>
+          <p><span class="attribute-label">Numéro CAF :</span> <%= display_attribute(user_row.affiliation_number) %></p>
+          <% if show_row_attribute?(:nir, @user_list_upload) %>
+            <p><span class="attribute-label">Numéro de sécurité sociale :</span> <%= display_attribute(user_row.nir) %></p>
+          <% end %>
+          <p><span class="attribute-label">Date de naissance :</span> <%= display_date(user_row.birth_date) %></p>
+          <p><span class="attribute-label">Email :</span> <span><%= display_attribute(user_row.email) %></span></p>
+          <p><span class="attribute-label">Adresse :</span> <span class="text-wrap"><%= display_attribute(user_row.address) %></span></p>
+          <p>
+            <span class="attribute-label">Tags :</span>
+            <% if user_row.tags.any? %>
+              <% user_row.tags.each do |tag| %>
+                <span class="badge badge-tag <%= user_row.association_already_persisted?(tag, :tags) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= tag.value %></span>
+              <% end %>
+            <% else %>
+              <span>Aucun tag assigné</span>
+            <% end %>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <% if show_row_attribute?(:department_internal_id, @user_list_upload) %>
+            <p><span class="attribute-label">ID interne au département:</span> <%= display_attribute(user_row.department_internal_id) %></p>
+          <% end %>
+          <% if show_row_attribute?(:france_travail_id, @user_list_upload) %>
+            <p><span class="attribute-label">ID France Travail:</span> <%= display_attribute(user_row.france_travail_id) %></p>
+          <% end %>
+          <p><span class="attribute-label">Téléphone :</span> <%= display_attribute(user_row.phone_number) %></p>
+          <p>
+            <span class="attribute-label">Organisations :</span>
+            <% if user_row.organisations.any? %>
+              <% user_row.organisations.each do |organisation| %>
+                <span class="badge badge-tag <%= user_row.association_already_persisted?(organisation, :organisations) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= organisation.name %></span>
+              <% end %>
+            <% else %>
+              <span>Aucune organisation assignée <i class="ri-information-line" data-controller="tooltip" data-action="mouseover->tooltip#organisationUnassignedOnUserListUpload"></i></span>
+            <% end %>
+          </p>
+          <p>
+            <span class="attribute-label">Suivi sur :</span>
+            <% if user_row.motif_categories.any? %>
+              <% user_row.motif_categories.each do |motif_category| %>
+                <span class="badge badge-tag <%= user_row.association_already_persisted?(motif_category, :motif_categories) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= motif_category.name %></span>
+              <% end %>
+            <% else %>
+              <span> - </span>
+            <% end %>
+          </p>
+          <p>
+            <span class="attribute-label">Référents :</span>
+            <% if user_row.referents.any? %>
+              <% user_row.referents.each do |referent| %>
+                <span class="badge badge-tag <%= user_row.association_already_persisted?(referent, :referents) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= referent %></span>
+              <% end %>
+            <% else %>
+              <span>Aucun référent assigné</span>
+            <% end %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </td>
+</tr>

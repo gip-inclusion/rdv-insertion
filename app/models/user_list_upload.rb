@@ -16,8 +16,6 @@ class UserListUpload < ApplicationRecord
   delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
   delegate :number, to: :department, prefix: true
 
-  broadcasts_refreshes
-
   PERMITTED_ROW_ATTRIBUTES = %w[
     first_name last_name email phone_number role title nir department_internal_id
     france_travail_id rights_opening_date affiliation_number birth_date birth_name address
@@ -56,7 +54,7 @@ class UserListUpload < ApplicationRecord
   end
 
   def user_collection
-    @user_collection ||= UserListUpload::Collection.new(user_list_upload: self)
+    UserListUpload::Collection.new(user_list_upload: self)
   end
 
   def organisations

@@ -22,47 +22,7 @@
       </tr>
     </thead>
     <tbody>
-      <% user_rows.each do |user_row| %>
-        <tr class="background-light">
-          <td class="border-light">
-            <input type="checkbox"
-                   class="form-check-input user-checkbox"
-                   data-submit-selected-uids-target="checkbox"
-                   data-action="click->submit-selected-uids#toggleSubmit"
-                   data-user-email="<%= user_row.email %>"
-                   data-user-phone="<%= user_row.phone_number %>"
-                   data-user-invitable="<%= user_row.invitable? %>"
-                   value="<%= user_row.uid %>"
-                   <%= user_row.invitable? ? "checked" : "disabled" %>>
-          </td>
-
-          <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email].each do |attribute| %>
-            <td class="border-light">
-              <span><%= display_attribute(user_row.send(attribute)) %></span>
-            </td>
-          <% end %>
-
-
-          <td class="border-light">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="badge rounded-pill <%= user_row_before_invitation_badge_class(user_row) %>">
-                <%= user_row_before_invitation_status_text(user_row) %>
-              </span>
-            </div>
-          </td>
-          <td class="text-center">
-            <%= form_for(:invitation, url: @user_list_upload.user_invitations_path(user_row.saved_user_id, format: "pdf"), method: :post) do |f| %>
-              <%= f.hidden_field :format, value: "postal" %>
-              <%= f.fields_for :motif_category do |motif_category_fields| %>
-                <%= motif_category_fields.hidden_field :id, value: @user_list_upload.motif_category_id %>
-              <% end %>
-              <button type="submit">
-                <i class="ri-download-line"></i>
-              </button>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
+      <%= render partial: "user_row_before_invitation", collection: user_rows, as: :user_row, cached: ->(user_row) { user_row.cache_args } %>
     </tbody>
   </table>
 </div>

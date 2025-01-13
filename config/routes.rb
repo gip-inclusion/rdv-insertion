@@ -104,7 +104,11 @@ Rails.application.routes.draw do
   resources :user_list_uploads, module: :user_list_uploads, only: [:show] do
     post :enrich_with_cnaf_data
 
-    resources :user_rows, param: :uid, only: [:update]
+    resources :user_rows, param: :uid, only: [:update, :show] do
+      get :show_details, :hide_details
+      resource :user_row_cells, only: [:edit]
+    end
+
     resources :user_save_attempts, only: [:index, :create] do
       post :create_many, on: :collection
     end

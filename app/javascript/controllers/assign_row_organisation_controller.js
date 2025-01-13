@@ -30,6 +30,8 @@ export default class extends Controller {
           timer: 3000
         });
         event.stopPropagation();
+        window.Turbo.visit(window.location.href, { action: "replace" });
+
       } else {
         Swal.fire("Impossible de sauvegarder l'usager", saveAttemptResponse.errors[0], "error");
         this.resetButtonText();

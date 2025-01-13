@@ -13,6 +13,8 @@ class UserListUpload::Row
   delegate :fetch, to: :row_data
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
+  EDITABLE_ATTRIBUTES = %i[title first_name last_name affiliation_number phone_number email].freeze
+
   def initialize(row_data:, user_list_upload:, matching_user: nil, resources_to_assign: {})
     @uid = row_data[:user_list_uid]
     @row_data = row_data
@@ -207,6 +209,15 @@ class UserListUpload::Row
 
   def all_invitations_failed?
     invitation_attempts.none?(&:success?)
+  end
+
+  def cache_args
+    [
+      uid,
+      *UserListUpload::Row::EDITABLE_ATTRIBUTES.map { |attribute| send(attribute) },
+      *user_save_attempts.map(&:created_at),
+      *invitation_attempts.map(&:created_at)
+    ]
   end
 
   private
