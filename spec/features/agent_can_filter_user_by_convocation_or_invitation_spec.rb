@@ -20,11 +20,11 @@ describe "Agents can filter users by convocation or invitation on index page", :
     create(:users_organisation, user: user3, organisation: organisation, created_at: 2.days.ago)
   end
 
-  let(:follow_up) { create(:follow_up, user: user3, motif_category:) }
+  let(:follow_up) { create(:follow_up, user: user3, motif_category:, status: "rdv_seen") }
   let(:participation) { create(:participation, user: user3, follow_up:, convocable: true) }
   let!(:notification) { create(:notification, participation:, created_at: 3.days.ago) }
 
-  let(:follow_up2) { create(:follow_up, user: user1, motif_category:) }
+  let(:follow_up2) { create(:follow_up, user: user1, motif_category:, status: "rdv_seen") }
   let(:participation2) { create(:participation, user: user1, follow_up: follow_up2, convocable: true) }
   let!(:notification2) { create(:notification, participation: participation2, created_at: 1.day.ago) }
 
