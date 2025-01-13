@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :user do
     sequence(:uid) { |n| "uid#{n}" }
     sequence(:rdv_solidarites_user_id) { |n| n + Process.pid }
-    sequence(:affiliation_number) { |n| "numero_#{n}" }
+    sequence(:affiliation_number) { |n| "numero_#{n + Process.pid}" }
     department_internal_id { rand(4000..5000).to_s }
     role { "demandeur" }
     title { "monsieur" }

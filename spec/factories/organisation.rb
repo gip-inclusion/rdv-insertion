@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :organisation do
     sequence(:name) { |n| "Organisation n°#{n}" }
-    sequence(:email) { |n| "organisation#{n}@rdv-insertion.fr" }
+    sequence(:email) { |n| "organisation#{n + Process.pid}@rdv-insertion.fr" }
     rdv_solidarites_organisation_id { rand(1..10_000_000_000) }
     department
     phone_number { "0101010101" }
