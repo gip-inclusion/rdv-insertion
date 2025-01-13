@@ -10,7 +10,7 @@ describe "Agents can invite user from user follow up page", :js do
   end
   let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }
   let!(:rdv_solidarites_token) { "123456" }
-  let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category) }
+  let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category, status: "rdv_seen") }
   let!(:category_configuration) do
     create(
       :category_configuration,
