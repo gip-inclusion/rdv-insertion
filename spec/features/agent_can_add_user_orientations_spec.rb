@@ -104,7 +104,6 @@ describe "Agents can add user orientation", :js do
 
     expect(page).to have_content("Informer l’organisation par email")
     expect(page).to have_content("Prévenir l’organisation que l’usager a été ajouté à leur liste")
-    click_button "Envoyer"
 
     expect(OrganisationMailer).to receive(:user_added)
       .once
@@ -112,15 +111,17 @@ describe "Agents can add user orientation", :js do
         to: other_organisation.email,
         subject: "[RDV-Insertion] Un usager a été ajouté à votre organisation",
         content:
-          "L'usager #{user} a été ajouté à votre organisation Asso 26.\nVous pouvez consulter son historique" \
-          " d'accompagnement ainsi que les éventuels documents de parcours téléchargés (diagnostic, contrat) sur le" \
-          " lien suivant :\n " \
-          "http://www.rdv-insertion-test.fake:#{Capybara.current_session.server.port}" \
-          "/organisations/#{other_organisation.id}/users/#{user.id}/parcours",
+        "L'usager #{user} a été ajouté à votre organisation Asso 26.\nVous pouvez consulter son historique" \
+        " d'accompagnement ainsi que les éventuels documents de parcours téléchargés (diagnostic, contrat) sur le" \
+        " lien suivant :\n " \
+        "http://www.rdv-insertion-test.fake:#{Capybara.current_session.server.port}" \
+        "/organisations/#{other_organisation.id}/users/#{user.id}/parcours",
         user_attachements: [],
         reply_to: agent.email
-      ).and_return(OpenStruct.new(deliver_now: nil))
+      )
+      .and_return(OpenStruct.new(deliver_now: nil))
 
+    click_button "Envoyer"
     expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
     expect(page).to have_content("Asso 26")
   end
