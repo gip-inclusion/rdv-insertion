@@ -5,9 +5,9 @@ module Notifications
 
       MattermostClient.send_unique_message(
         channel_type: :private,
-        text: "Une convocation a été envoyée par l'organisation #{notification.organisation.name} sans numéro" \
-              " de téléphone de l'organisation, du lieu ou de la catégorie pour le rendez-vous" \
-              " avec l'ID #{notification.rdv.id} et l'usager avec l'ID #{notification.participation.user.id}."
+        text: "Un rendez-vous de convocation (#{notification.rdv.id}) a été placé pour cet usager" \
+              " (#{notification.participation.user.id}) mais la convocation n'a pas été envoyée car l'organisation" \
+              " #{notification.organisation.name} n'a pas de numéro de téléphone."
       )
 
       fail!("Le numéro de téléphone de l'organisation, du lieu ou de la catégorie doit être renseigné")
