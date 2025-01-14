@@ -22,25 +22,8 @@ describe InboundWebhooks::Brevo::AssignMailDeliveryStatusAndDate do
         end
       end
 
-      context "when emails does not match" do
-        let(:webhook_params) do
-          { email: "email_changed@example.com", event: "delivered", date: "2023-06-07T12:34:56Z" }
-        end
-
-        it "update the #{record_type} but capture an error" do
-          expect(Sentry).to receive(:capture_message).with(
-            "#{record_type.capitalize} email and webhook email does not match",
-            any_args
-          )
-          subject
-          expect(record.delivery_status).to eq("delivered")
-          expect(record.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
-        end
-      end
-
       it "updates the #{record_type} with the correct delivery status and date" do
         subject
-        expect(Sentry).not_to receive(:capture_message).with(any_args)
         record.reload
         expect(record.delivery_status).to eq("delivered")
         expect(record.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))

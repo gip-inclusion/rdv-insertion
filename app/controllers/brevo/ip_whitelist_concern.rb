@@ -20,7 +20,11 @@ module Brevo::IpWhitelistConcern
 
     return if IPAddr.new(IP_WHITELIST_RANGE).include?(request.remote_ip)
 
-    Sentry.capture_message("Brevo Webhook received with following non whitelisted IP #{request.remote_ip}")
+    Sentry.capture_message("Brevo Webhook received with following non whitelisted IP", {
+                             extra: {
+                               ip: request.remote_ip
+                             }
+                           })
     head :forbidden
   end
 end

@@ -41,7 +41,9 @@ RSpec.shared_examples "returns 403 for non-whitelisted IP" do |ip|
 
     it "skips whitelisting" do
       expect(Sentry).not_to(
-        receive(:capture_message).with("Brevo Webhook received with following non whitelisted IP #{remote_ip}")
+        receive(:capture_message).with("Brevo Webhook received with following non whitelisted IP", {
+                                         extra: { ip: remote_ip }
+                                       })
       )
       post :create, params: {}, as: :json
       expect(response).not_to have_http_status(:forbidden)
