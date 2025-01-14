@@ -1,4 +1,8 @@
+require_relative "ip_whitelist_shared"
+
 describe Brevo::MailWebhooksController do
+  include_context "with ip whitelist"
+
   describe "#create" do
     before do
       allow(InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob).to receive(:perform_later)
@@ -11,6 +15,10 @@ describe Brevo::MailWebhooksController do
         date: "2023-06-07T12:34:56Z",
         :"X-Mailin-custom" => '{"record_identifier": "invitation_1"}'
       }
+    end
+
+    context "when called with non-matching IP" do
+      include_examples "returns 403 for non-whitelisted IP", "18.12.12.12"
     end
 
     context "when X-Mailin-custom header is present and environment matches" do

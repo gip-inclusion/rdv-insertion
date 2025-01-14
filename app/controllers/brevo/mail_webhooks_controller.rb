@@ -1,5 +1,6 @@
 module Brevo
   class MailWebhooksController < ApplicationController
+    include Brevo::IpWhitelistConcern
     skip_before_action :authenticate_agent!, :verify_authenticity_token
 
     PERMITTED_PARAMS = %i[
