@@ -81,7 +81,7 @@ describe CategoryConfigurations::Create, type: :service do
       end
 
       context "when motif is authorized" do
-        let(:motif_category) { create(:motif_category) }
+        let(:motif_category) { create(:motif_category, motif_category_type: "rsa_orientation") }
 
         it "is a success" do
           is_a_success

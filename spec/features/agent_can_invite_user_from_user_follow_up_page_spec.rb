@@ -10,7 +10,7 @@ describe "Agents can invite user from user follow up page", :js do
   end
   let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }
   let!(:rdv_solidarites_token) { "123456" }
-  let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category, status: "rdv_seen") }
+  let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category) }
   let!(:category_configuration) do
     create(
       :category_configuration,
@@ -25,6 +25,7 @@ describe "Agents can invite user from user follow up page", :js do
     stub_geo_api_request(user.address)
     stub_brevo
     stub_creneau_availability(true)
+    follow_up.set_status
   end
 
   shared_examples "agent can invite user" do
