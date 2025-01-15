@@ -22,9 +22,10 @@ module Users::Filterable
   def filter_users_by_tags
     return if params[:tag_ids].blank?
 
+    @filtered_tags = Tag.where(id: params[:tag_ids])
     user_ids = TagUser
                .select(:user_id)
-               .where(tag_id: params[:tag_ids])
+               .where(tag_id: @filtered_tags)
                .group(:user_id)
                .having("COUNT(DISTINCT tag_id) = ?", [params[:tag_ids]].flatten.count)
                .pluck(:user_id)
@@ -58,7 +59,8 @@ module Users::Filterable
   def filter_users_by_referent
     return if params[:referent_id].blank?
 
-    @users = @users.joins(:referents).where(referents: { id: params[:referent_id] })
+    @referent = Agent.find(params[:referent_id])
+    @users = @users.joins(:referents).where(referents: { id: @referent.id })
   end
 
   def filter_users_by_search_query

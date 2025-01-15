@@ -155,6 +155,32 @@ describe User do
     end
   end
 
+  describe "tag_users validation" do
+    context "duplicated tag_id in the attrs" do
+      let(:tag) { create(:tag) }
+      let(:tag_users_attributes) { [{ tag_id: tag.id }, { tag_id: tag.id }] }
+
+      it "cleans the attributes" do
+        user = create(:user, tag_users_attributes:)
+        expect(user.tag_users.size).to eq(1)
+        expect(user.tag_users.first.tag_id).to eq(tag.id)
+      end
+    end
+
+    context "duplicated tag_id in DB" do
+      let(:tag) { create(:tag) }
+      let(:user) { create(:user) }
+      let!(:tag_user) { create(:tag_user, user:, tag:) }
+      let(:tag_users_attributes) { [{ tag_id: tag.id }] }
+
+      it "skips the duplicated tag" do
+        user.update!(tag_users_attributes:)
+        expect(user.tag_users.size).to eq(1)
+        expect(user.tag_users.first.tag_id).to eq(tag.id)
+      end
+    end
+  end
+
   describe "affiliation number format validation" do
     context "valid affiliation number" do
       let(:user) { create(:user, affiliation_number: "1234567") }
