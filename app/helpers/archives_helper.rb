@@ -11,9 +11,20 @@ module ArchivesHelper
     UserArchivedStatus.new(user, organisations).archived?
   end
 
-  def archived_banner_message(archived_organisations)
-    names = archived_organisations.map(&:name).join(", ")
-    wording = archived_organisations.size > 1 ? "les organisations" : "l'organisation"
-    "Cet usager est archivé sur #{wording} #{names}"
+  def user_archives(user, organisations)
+    user.archives.select do |archive|
+      organisations.map(&:id).include?(archive.organisation_id)
+    end
+  end
+
+  def archived_banner_message(archives)
+    names = archives.map(&:organisation).sort.map(&:name).join(", ")
+    wording = archives.size > 1 ? "les organisations" : "l'organisation"
+    "Cet usager est archivé sur #{wording} #{names} (#{format_archives_reason(archives)})"
+  end
+
+  def format_archives_reason(archives)
+    reason = archives.map(&:archiving_reason).uniq.join(", ")
+    "#{'motif'.pluralize(archives.size)} d'archivage : #{reason}"
   end
 end
