@@ -1,6 +1,6 @@
 <tr>
   <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :post_code].each do |attribute| %>
-    <td>
+    <td class="<%= "text-truncate-150" if attribute.in?([:email, :affiliation_number]) %>">
       <span><%= display_attribute(user_row.send(attribute)) %></span>
     </td>
   <% end %>

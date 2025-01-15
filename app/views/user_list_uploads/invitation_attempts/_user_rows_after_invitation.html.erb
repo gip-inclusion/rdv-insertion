@@ -19,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <%= render partial: "user_row_after_invitation", collection: user_rows, as: :user_row, cached: ->(user_row) { user_row.cache_args } %>
+      <%= render partial: "user_row_after_invitation", collection: user_rows, as: :user_row %>
     </tbody>
   </table>
 </div>

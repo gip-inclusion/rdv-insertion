@@ -3,26 +3,26 @@ module UserListUpload::Augmenter
 
   private
 
-  def augment_user_list!
-    self.user_list = user_list.map do |user_attributes|
-      matching_user = find_matching_user(user_attributes)
+  def augment_user_list!(attributes)
+    attributes.map do |user_attributes|
+      matching_user = find_matching_user(user_attributes, attributes)
       user_attributes.merge(matching_user ? { matching_user_id: matching_user.id } : {})
     end
   end
 
-  def potential_matching_users
+  def potential_matching_users(user_list)
     @potential_matching_users ||= User.where(
-      id: potential_matching_users_in_all_app.ids + potential_matching_users_in_department.ids
+      id: potential_matching_users_in_all_app(user_list).ids + potential_matching_users_in_department(user_list).ids
     ).distinct
   end
 
-  def potential_matching_users_in_all_app
+  def potential_matching_users_in_all_app(user_list)
     User.where(email: user_list.pluck("email").compact)
         .or(User.where(phone_number: user_list.pluck("phone_number").compact))
         .or(User.where(nir: user_list.pluck("nir").compact)).select(:id)
   end
 
-  def potential_matching_users_in_department
+  def potential_matching_users_in_department(user_list)
     User.joins(:organisations).where(
       affiliation_number: user_list.pluck("affiliation_number").compact,
       organisations: { department_id: department.id }
@@ -34,8 +34,8 @@ module UserListUpload::Augmenter
     ).select(:id)
   end
 
-  def find_matching_user(user_attributes)
-    potential_matching_users.find do |matching_user|
+  def find_matching_user(user_attributes, user_list)
+    potential_matching_users(user_list).find do |matching_user|
       user_matches_nir?(user_attributes["nir"], matching_user.nir) ||
         user_matches_phone_number?(user_attributes, matching_user) ||
         user_matches_department_internal_id?(

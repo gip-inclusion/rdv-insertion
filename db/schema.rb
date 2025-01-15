@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_02_165719) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -200,6 +200,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_165719) do
     t.index ["motif_category_id"], name: "index_follow_ups_on_motif_category_id"
     t.index ["status"], name: "index_follow_ups_on_status"
     t.index ["user_id"], name: "index_follow_ups_on_user_id"
+  end
+
+  create_table "invitation_attempts", force: :cascade do |t|
+    t.boolean "success"
+    t.bigint "user_row_id", null: false
+    t.bigint "invitation_id"
+    t.string "service_errors", default: [], array: true
+    t.string "format"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invitation_id"], name: "index_invitation_attempts_on_invitation_id"
+    t.index ["user_row_id"], name: "index_invitation_attempts_on_user_row_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -495,6 +507,51 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_165719) do
     t.index ["structure_type", "structure_id"], name: "index_user_list_uploads_on_structure"
   end
 
+  create_table "user_rows", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone_number"
+    t.string "role"
+    t.string "title"
+    t.string "nir"
+    t.string "department_internal_id"
+    t.string "france_travail_id"
+    t.date "rights_opening_date"
+    t.string "affiliation_number"
+    t.date "birth_date"
+    t.string "birth_name"
+    t.string "address"
+    t.string "organisation_search_terms"
+    t.string "referent_email"
+    t.string "tags", default: [], array: true
+    t.bigint "matching_user_id"
+    t.bigint "user_list_upload_id", null: false
+    t.integer "assigned_organisation_id"
+    t.string "uid"
+    t.json "cnaf_data", default: {}
+    t.boolean "marked_for_invitation", default: false
+    t.boolean "marked_for_user_save", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_organisation_id"], name: "index_user_rows_on_assigned_organisation_id"
+    t.index ["matching_user_id"], name: "index_user_rows_on_matching_user_id"
+    t.index ["uid"], name: "index_user_rows_on_uid"
+    t.index ["user_list_upload_id"], name: "index_user_rows_on_user_list_upload_id"
+  end
+
+  create_table "user_save_attempts", force: :cascade do |t|
+    t.boolean "success"
+    t.bigint "user_row_id", null: false
+    t.bigint "user_id"
+    t.string "error_type"
+    t.string "service_errors", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_save_attempts_on_user_id"
+    t.index ["user_row_id"], name: "index_user_save_attempts_on_user_row_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "uid"
     t.bigint "rdv_solidarites_user_id"
@@ -573,6 +630,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_165719) do
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
+  add_foreign_key "invitation_attempts", "invitations"
+  add_foreign_key "invitation_attempts", "user_rows"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "follow_ups"
   add_foreign_key "invitations", "users"
@@ -601,5 +660,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_02_165719) do
   add_foreign_key "tag_users", "users"
   add_foreign_key "user_list_uploads", "agents"
   add_foreign_key "user_list_uploads", "category_configurations"
+  add_foreign_key "user_rows", "user_list_uploads"
+  add_foreign_key "user_rows", "users", column: "matching_user_id"
+  add_foreign_key "user_save_attempts", "user_rows"
+  add_foreign_key "user_save_attempts", "users"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

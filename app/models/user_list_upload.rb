@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class UserListUpload < ApplicationRecord
   include UserListUpload::Augmenter
 
@@ -5,52 +6,35 @@ class UserListUpload < ApplicationRecord
   belongs_to :structure, polymorphic: true
   belongs_to :agent
 
-  encrypts :user_list
+  has_many :user_rows, class_name: "::NewUserListUpload::UserRow", dependent: :destroy
+  has_many :user_save_attempts, class_name: "::NewUserListUpload::UserSaveAttempt", through: :user_rows
 
-  before_save :format_user_list!
+  accepts_nested_attributes_for :user_rows
 
-  before_create :remove_duplicates!, :add_user_list_uid_to_users!, :augment_user_list!
-
-  delegate :user_rows, :user_rows_enriched_with_cnaf_data, :update_rows, :update_row, :save_row_user,
+  delegate :user_rows_enriched_with_cnaf_data, :update_rows, :update_row, :save_row_user,
            to: :user_collection
   delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
   delegate :number, to: :department, prefix: true
-
-  PERMITTED_ROW_ATTRIBUTES = %w[
-    first_name last_name email phone_number role title nir department_internal_id
-    france_travail_id rights_opening_date affiliation_number birth_date birth_name address
-    organisation_search_terms referent_email tags user_list_uid matching_user_id cnaf_data
-    saved_user_id marked_for_user_save marked_for_invitation assigned_organisation_id
-    user_save_attempts invitation_attempts
-  ].freeze
 
   def department
     structure_type == "Department" ? structure : structure.department
   end
 
   def matching_users
-    @matching_users ||= User.active.where(id: user_list.pluck("matching_user_id"))
+    @matching_users ||= User.active.where(id: user_rows.pluck("matching_user_id"))
                             .preload(:organisations, :referents, :tags, :motif_categories, :address_geocoding)
                             .distinct
   end
 
   def referents_from_list
-    @referents_from_list ||= Agent.where(email: user_list.pluck("referent_email")).distinct
+    @referents_from_list ||= Agent.where(email: user_rows.pluck("referent_email")).distinct
   end
 
   def tags_from_list
     @tags_from_list ||= Tag.joins(:organisations)
                            .where(organisations:)
-                           .where(value: user_list.pluck("tags").flatten)
+                           .where(value: user_rows.pluck("tags").flatten)
                            .distinct
-  end
-
-  def saved_users
-    @saved_users ||= User.joins(:organisations)
-                         .where(organisations:)
-                         .where(id: saved_user_ids)
-                         .preload(:invitations, :address_geocoding, :invitations, :follow_ups)
-                         .distinct
   end
 
   def user_collection
@@ -97,23 +81,26 @@ class UserListUpload < ApplicationRecord
     UserPolicy.restricted_user_attributes_for_organisations(organisations:).to_a
   end
 
-  private
-
-  def saved_user_ids
-    @saved_user_ids ||= user_list.pluck("user_save_attempts").flatten.compact
-                                 .pluck("user_id").compact
+  def user_rows_attributes=(attributes)
+    attributes = format_user_list!(attributes)
+    attributes = remove_duplicates!(attributes)
+    attributes = add_user_list_uid_to_users!(attributes)
+    attributes = augment_user_list!(attributes)
+    super(attributes)
   end
 
-  def add_user_list_uid_to_users!
-    self.user_list = user_list.map do |user_attributes|
-      user_attributes["user_list_uid"] = SecureRandom.uuid
+  private
+
+  def add_user_list_uid_to_users!(attributes)
+    attributes.map do |user_attributes|
+      user_attributes["uid"] = SecureRandom.uuid
       user_attributes
     end
   end
 
   # rubocop:disable Metrics/AbcSize
-  def format_user_list!
-    self.user_list = user_list.map do |user_attributes|
+  def format_user_list!(attributes)
+    attributes.map do |user_attributes|
       # formatting attributes
       user_attributes["phone_number"] = PhoneNumberHelper.format_phone_number(user_attributes["phone_number"])
       user_attributes["nir"] = NirHelper.format_nir(user_attributes["nir"])
@@ -123,7 +110,6 @@ class UserListUpload < ApplicationRecord
       # formatting cnaf data
       user_attributes["cnaf_data"] = format_cnaf_data(user_attributes["cnaf_data"].presence || {})
       # we allow only the permitted attributes
-      user_attributes.slice!(*PERMITTED_ROW_ATTRIBUTES)
       user_attributes.except!(*restricted_user_attributes.map(&:to_s))
       # we remove blank attributes
       user_attributes.compact_blank!
@@ -141,7 +127,8 @@ class UserListUpload < ApplicationRecord
     }.compact_blank.transform_values(&:squish)
   end
 
-  def remove_duplicates!
-    self.user_list = user_list.uniq
+  def remove_duplicates!(attributes)
+    attributes.uniq
   end
 end
+# rubocop:enable Metrics/ClassLength

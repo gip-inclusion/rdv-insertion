@@ -27,7 +27,7 @@ module UserListUploads
     private
 
     def set_user_list_upload
-      @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
+      @user_list_upload = UserListUpload.preload(user_rows: [user_save_attempts: [user: :address_geocoding]]).find(params[:user_list_upload_id])
       authorize @user_list_upload, :edit?
     end
 

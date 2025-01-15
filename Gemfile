@@ -3,6 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.3.3"
 
+gem "activerecord-import"
+
 # Environment variables management
 gem "dotenv-rails"
 # Policies management

@@ -29,8 +29,10 @@ module UserListUploads
 
     def create
       @user_list_upload = UserListUpload.new(
-        user_list_upload_params.merge(agent: current_agent, structure: current_structure)
+        agent: current_agent, structure: current_structure
       )
+      @user_list_upload.assign_attributes(user_list_upload_params)
+
       authorize @user_list_upload
 
       if @user_list_upload.save
@@ -63,7 +65,7 @@ module UserListUploads
     def user_list_upload_params
       params.permit(
         :category_configuration_id, :file_name,
-        user_list: [
+        user_rows_attributes: [
           :first_name, :last_name, :email, :phone_number, :role, :title, :nir, :department_internal_id,
           :france_travail_id, :rights_opening_date, :affiliation_number, :birth_date, :birth_name, :address,
           :organisation_search_terms, :referent_email, { tags: [] }

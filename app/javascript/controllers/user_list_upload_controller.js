@@ -60,7 +60,7 @@ export default class extends Controller {
     form.querySelector("input[name='file_name']").value = this.fileNameTarget.textContent
 
     // First, remove any existing hidden inputs from previous submissions
-    const existingInputs = form.querySelectorAll("input[name^='user_list[']")
+    const existingInputs = form.querySelectorAll("input[name^='user_rows_attributes[']")
     existingInputs.forEach(input => input.remove())
 
     this.#addInputsToForm(form)
@@ -81,14 +81,14 @@ export default class extends Controller {
             value.forEach((item) => {
               const input = document.createElement("input")
               input.type = "hidden"
-              input.name = `user_list[][${attribute}][]`
+              input.name = `user_rows_attributes[][${attribute}][]`
               input.value = item
               form.appendChild(input)
             })
           } else {
             const input = document.createElement("input")
             input.type = "hidden"
-            input.name = `user_list[][${attribute}]`
+            input.name = `user_rows_attributes[][${attribute}]`
             input.value = value
             form.appendChild(input)
           }
