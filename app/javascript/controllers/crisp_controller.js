@@ -2,15 +2,15 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static values = {
-    active: Boolean,
+    displayCrisp: Boolean,
     userEmail: String,
     userNickname: String,
     userCrispToken: String,
   };
 
   connect() {
-    if (!this.activeValue) {
-      // If the crisp chat is disabled (activeValue is false) and the user is still logged in, we logout the user
+    if (!this.displayCrispValue) {
+      // If the crisp chat is disabled and the user is still logged in, we logout the user
       if (window.$crisp) { this.logout(); };
       return;
     }
