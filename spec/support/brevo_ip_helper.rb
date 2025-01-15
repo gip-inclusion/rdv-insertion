@@ -52,4 +52,3 @@ RSpec.shared_examples "returns 403 for non-whitelisted IP" do |ip|
     end
   end
 end
-
