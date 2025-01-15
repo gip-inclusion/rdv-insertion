@@ -1,13 +1,5 @@
-RSpec.shared_context "with ip whitelist", shared_context: :metadata do
-  let(:remote_ip) { "1.179.112.1" }
-
-  before do
-    stub_brevo_webhook_ip(remote_ip)
-  end
-
-  private
-
-  def stub_brevo_webhook_ip(remote_ip)
+module BrevoIpHelper
+  def stub_brevo_webhook_ip(remote_ip = "1.179.112.1")
     [
       Brevo::MailWebhooksController,
       Brevo::SmsWebhooksController
@@ -21,15 +13,25 @@ RSpec.shared_context "with ip whitelist", shared_context: :metadata do
   end
 end
 
+RSpec.shared_context "with ip whitelist", shared_context: :metadata do
+  let(:remote_ip) { "1.179.112.1" }
+
+  before do
+    stub_brevo_webhook_ip(remote_ip)
+  end
+end
+
 RSpec.shared_examples "returns 403 for non-whitelisted IP" do |ip|
   let(:remote_ip) { ip }
 
   context "when called with non-matching IP" do
     it "returns 403" do
       expect(Sentry).to(
-        receive(:capture_message).with("Brevo Webhook received with following non whitelisted IP #{remote_ip}")
+        receive(:capture_message).with("Brevo Webhook received with following non whitelisted IP", {
+                                         extra: { ip: remote_ip }
+                                       })
       )
-      post :create, params: {}, as: :json
+      post :create, params:, as: :json
       expect(response).to have_http_status(:forbidden)
     end
   end
@@ -45,8 +47,9 @@ RSpec.shared_examples "returns 403 for non-whitelisted IP" do |ip|
                                          extra: { ip: remote_ip }
                                        })
       )
-      post :create, params: {}, as: :json
+      post :create, params:, as: :json
       expect(response).not_to have_http_status(:forbidden)
     end
   end
 end
+

@@ -1,5 +1,3 @@
-require_relative "ip_whitelist_shared"
-
 describe Brevo::SmsWebhooksController do
   include_context "with ip whitelist"
 
@@ -13,6 +11,8 @@ describe Brevo::SmsWebhooksController do
     end
 
     context "when called with non-matching IP" do
+      let(:params) { valid_sms_params }
+
       include_examples "returns 403 for non-whitelisted IP", "18.12.12.12"
     end
 
