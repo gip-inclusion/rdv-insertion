@@ -1,0 +1,58 @@
+<div class="mb-2 active-filters-recap align-items-start d-flex">
+  <div class="me-2">
+    <%= @users.total_count %> dossier(s) 
+    <% if params[:search_query].present? %>
+    correspondant à votre recherche "<strong><%= params[:search_query] %></strong>"
+    <% end %>
+  </div>
+  <div class="active-filters-container d-flex flex-wrap">
+    <% (active_filter_list - [:search_query]).each do |filter| %>
+      <% if filter == :tag_ids %>
+        <% @filtered_tags.each do |tag| %>
+          <span class="d-flex me-2 active-filter-badge">
+            <%= tag.value %>
+            <%= link_to structure_users_path(url_params.merge(tag_ids: params[:tag_ids] - [tag.id.to_s])) do %>
+              <i class="ri-close-line"></i>
+            <% end %>
+          </span>
+        <% end %>
+      <% else %>
+        <span class="d-flex me-2 active-filter-badge">
+          <% if filter == :referent_id %>
+            Suivi par <%= @referent %>
+          <% elsif filter == :orientation_type %>
+            Orientation : <%= params[filter] %>
+          <% elsif filter == :creation_date_before %>
+            Créé avant le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :creation_date_after %>
+            Créé après le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :convocation_date_before %>
+            Convoqué avant le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :convocation_date_after %>
+            Convoqué après le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :first_invitation_date_before %>
+            Première invitation avant le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :first_invitation_date_after %>
+            Première invitation après le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :last_invitation_date_before %>
+            Dernière invitation avant le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :last_invitation_date_after %>
+            Dernière invitation après le : <%= format_date(params[filter].to_date) %>
+          <% elsif filter == :action_required %>
+            Intervention nécessaire
+          <% elsif filter == :status %>
+            Statut : <%= I18n.t("activerecord.attributes.follow_up.statuses.#{params[filter]}") %>
+          <% end %>
+          <%= link_to structure_users_path(url_params.except(filter)) do %>
+            <i class="ri-close-line"></i>
+          <% end %>
+        </span>
+      <% end %>
+    <% end %>
+    <%= link_to structure_users_path(url_params.except(*active_filter_list)) do %>
+      <i class="ri-arrow-go-back-line"></i>
+      <span class="btn-link">Réinitialiser</span>
+    <% end %>
+  </div>
+
+</div>
