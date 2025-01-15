@@ -29,7 +29,7 @@
       <%= yield %>
       <%= render 'common/accept_cgu_modal' if @should_display_accept_cgu %>
       <%= render 'common/accept_dpa_modal' if @should_display_accept_dpa %>
-      <%= render 'common/crisp' if current_agent && ENV["ENABLE_CRISP"] == "true" %>
+      <%= render 'common/crisp' %>
     </div>
     <%= render 'common/footer' %>
   </body>

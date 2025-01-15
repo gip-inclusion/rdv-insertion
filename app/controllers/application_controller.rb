@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include EnvironmentsHelper
   include TurboStreamConcern
   include ModalAgreementsConcern
+  include FeaturesConcern
 
   protect_from_forgery with: :exception
   before_action :set_sentry_context
