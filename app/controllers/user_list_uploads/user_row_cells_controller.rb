@@ -15,7 +15,7 @@ module UserListUploads
     end
 
     def set_user_row
-      @user_row = @user_list_upload.user_collection.find(params[:user_row_uid])
+      @user_row = @user_list_upload.user_rows.find_by!(uid: params[:user_row_uid])
     end
   end
 end

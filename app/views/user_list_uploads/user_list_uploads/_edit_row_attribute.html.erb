@@ -3,6 +3,10 @@
     user_list_upload_id: @user_list_upload.id,
     uid: user_row.uid
   ),
+  data: {
+    controller: "user-row-cell",
+    action: "turbo:submit-start->user-row-cell#setLoading"
+  },
   method: :patch
 ) do |form| %>
   <div class="input-group input-group-sm" data-turbo-prefetch="false">

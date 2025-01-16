@@ -17,7 +17,7 @@ class CreateUserRows < ActiveRecord::Migration[7.1]
       t.string :address
       t.string :organisation_search_terms
       t.string :referent_email
-      t.string :tags, array: true, default: []
+      t.string :tag_values, array: true, default: []
       t.references :matching_user, foreign_key: { to_table: :users }
       t.references :user_list_upload, null: false, foreign_key: true
       t.integer :assigned_organisation_id

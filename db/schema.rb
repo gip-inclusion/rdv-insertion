@@ -524,7 +524,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.string "address"
     t.string "organisation_search_terms"
     t.string "referent_email"
-    t.string "tags", default: [], array: true
+    t.string "tag_values", default: [], array: true
     t.bigint "matching_user_id"
     t.bigint "user_list_upload_id", null: false
     t.integer "assigned_organisation_id"

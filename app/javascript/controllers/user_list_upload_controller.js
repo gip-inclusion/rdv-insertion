@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import * as XLSX from "xlsx"
 import { retrieveSheetColumnNames, retrieveMissingColumnNames, displayMissingColumnsWarning, validateFileFormat } from "../lib/fileParser"
 import { parameterizeObjectKeys, parameterizeObjectValues } from "../lib/parameterize"
-import { formatInput, formatAffiliationNumber, formatDateInput, formatAddress, formatRole, formatTitle, formatPhoneNumber, formatTags } from "../lib/inputFormatters"
+import { formatInput, formatAffiliationNumber, formatDateInput, formatAddress, formatRole, formatTitle, formatTags } from "../lib/inputFormatters"
 
 export default class extends Controller {
   static targets = ["dropZone", "input", "uploadedFileInfo", "fileName", "fileInputInstruction", "userCount", "submitButton"]
@@ -120,10 +120,10 @@ export default class extends Controller {
         nir: formatInput(row[parameterizedColumnAttributes.nir_column]),
         department_internal_id: formatInput(row[parameterizedColumnAttributes.department_internal_id_column]),
         france_travail_id: formatInput(row[parameterizedColumnAttributes.france_travail_id_column]),
-        tags: formatTags(row[parameterizedColumnAttributes.tags_column]),
+        tag_values: formatTags(row[parameterizedColumnAttributes.tags_column]),
         birth_date: formatDateInput(row[parameterizedColumnAttributes.birth_date_column]),
         birth_name: formatInput(row[parameterizedColumnAttributes.birth_name_column]),
-        phone_number: formatPhoneNumber(formatInput(row[parameterizedColumnAttributes.phone_number_column])),
+        phone_number: formatInput(row[parameterizedColumnAttributes.phone_number_column]),
         email: formatInput(row[parameterizedColumnAttributes.email_column]),
         address: formatAddress(
           row[parameterizedColumnAttributes.address_first_field_column],

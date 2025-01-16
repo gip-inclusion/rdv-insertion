@@ -43,7 +43,7 @@ When it will be the norm, we will remove the content_for :body_class declaration
             </li>
           </ul>
           <div class="d-flex me-2">
-            <%= render "enrich_with_cnaf_button" %>
+            <%= render "enrich_with_cnaf_button", user_rows: @user_rows %>
             <%= render "search_form" %>
           </div>
         </div>

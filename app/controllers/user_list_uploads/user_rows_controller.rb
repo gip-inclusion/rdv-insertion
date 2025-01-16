@@ -1,17 +1,15 @@
 module UserListUploads
   class UserRowsController < BaseController
-    before_action :set_user_list_upload
+    before_action :set_user_list_upload, :set_user_row
 
     def show
-      @user_row = @user_list_upload.user_collection.find(params[:uid])
       render turbo_stream: turbo_stream.replace("user-row-#{params[:uid]}",
                                                 partial: "user_list_uploads/user_list_uploads/user_row",
                                                 locals: { user_row: @user_row })
     end
 
-    # rubocop:disable Metrics/AbcSize
     def update
-      if @user_list_upload.update_row(params[:uid], row_params.to_h.symbolize_keys)
+      if @user_row.update(row_params.to_h.symbolize_keys)
         respond_to do |format|
           format.turbo_stream do
             redirect_to user_list_upload_path(@user_list_upload, user_with_errors: params[:user_with_errors])
@@ -20,23 +18,20 @@ module UserListUploads
         end
       else
         respond_to do |format|
-          format.turbo_stream { turbo_stream_display_error_modal(@user_list_upload.errors.full_messages) }
+          format.turbo_stream { render :update_error }
           format.json do
-            render json: { success: false, errors: @user_list_upload.errors.full_messages },
+            render json: { success: false, errors: @user_row.errors.full_messages },
                    status: :unprocessable_entity
           end
         end
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     def show_details
-      @user_row = @user_list_upload.user_collection.find(params[:user_row_uid])
       respond_to :turbo_stream
     end
 
     def hide_details
-      @user_row = @user_list_upload.user_collection.find(params[:user_row_uid])
       respond_to :turbo_stream
     end
 
@@ -44,6 +39,11 @@ module UserListUploads
 
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
+      authorize @user_list_upload, :edit?
+    end
+
+    def set_user_row
+      @user_row = @user_list_upload.user_rows.find_by!(uid: params[:uid] || params[:user_row_uid])
     end
 
     def row_params

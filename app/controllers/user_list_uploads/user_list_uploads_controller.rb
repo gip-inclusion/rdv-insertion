@@ -18,7 +18,7 @@ module UserListUploads
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
       authorize @user_list_upload
 
-      if @user_list_upload.update_rows(JSON.parse(params[:rows_data_by_uid]))
+      if @user_list_upload.update_rows(enrich_with_cnaf_data_params[:rows_cnaf_data].map(&:to_h))
         flash[:success] = "Les données de #{@user_list_upload.user_rows_enriched_with_cnaf_data.count} usagers" \
                           " ont été mises à jour avec les données du fichier importé"
         turbo_stream_redirect(user_list_upload_path(@user_list_upload))
@@ -29,10 +29,8 @@ module UserListUploads
 
     def create
       @user_list_upload = UserListUpload.new(
-        agent: current_agent, structure: current_structure
+        agent: current_agent, structure: current_structure, **user_list_upload_params
       )
-      @user_list_upload.assign_attributes(user_list_upload_params)
-
       authorize @user_list_upload
 
       if @user_list_upload.save
@@ -68,9 +66,13 @@ module UserListUploads
         user_rows_attributes: [
           :first_name, :last_name, :email, :phone_number, :role, :title, :nir, :department_internal_id,
           :france_travail_id, :rights_opening_date, :affiliation_number, :birth_date, :birth_name, :address,
-          :organisation_search_terms, :referent_email, { tags: [] }
+          :organisation_search_terms, :referent_email, { tag_values: [] }
         ]
       )
+    end
+
+    def enrich_with_cnaf_data_params
+      params.permit(rows_cnaf_data: [:uid, { cnaf_data: [:email, :phone_number, :rights_opening_date] }])
     end
 
     def set_file_configuration

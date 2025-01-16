@@ -6,6 +6,8 @@ import appFetch from "../lib/appFetch";
 export default class extends Controller {
   async selectOrganisationAndSaveUser(event) {
     event.preventDefault();
+
+    this.originalHtml = this.element.innerHTML;
     this.setAssigningOrgText()
 
     const { departmentNumber, userAddress } = this.element.dataset;
@@ -52,11 +54,11 @@ export default class extends Controller {
   }
 
   resetButtonText() {
-    this.element.textContent = "Assigner l'organisation";
+    this.element.innerHTML = this.originalHtml;
   }
 
   async updateRow(organisationId) {
-    const response = await appFetch(`/user_list_uploads/${this.element.dataset.userListUploadId}/user_rows/${this.element.dataset.uid}`,
+    const response = await appFetch(`/user_list_uploads/${this.element.dataset.userListUploadId}/user_rows/${this.element.dataset.userRowUid}`,
       "PATCH",
       { assigned_organisation_id: organisationId },
     );
@@ -66,7 +68,7 @@ export default class extends Controller {
   async saveRowUser() {
     const response = await appFetch(`/user_list_uploads/${this.element.dataset.userListUploadId}/user_save_attempts`,
       "POST",
-      { row_uid: this.element.dataset.uid },
+      { user_row_uid: this.element.dataset.userRowUid },
     );
     return response;
   }

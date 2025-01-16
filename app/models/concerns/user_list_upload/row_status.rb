@@ -11,6 +11,7 @@ module UserListUpload::RowStatus
 
   def after_user_save_status
     return :pending unless attempted_user_save?
+    return :organisation_needs_to_be_assigned if last_user_save_attempt.no_organisation_to_assign?
     return :error unless last_user_save_attempt.success?
 
     {

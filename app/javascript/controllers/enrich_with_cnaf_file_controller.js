@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { retrieveMissingColumnNames, retrieveSheetColumnNames, displayMissingColumnsWarning, validateFileFormat } from "../lib/fileParser";
 import parseContactsData from "../lib/parseContactsData";
@@ -7,7 +8,7 @@ export default class extends Controller {
   static targets = ["input", "form"]
 
   connect() {
-    this.userList = JSON.parse(this.element.dataset.userList)
+    this.userRows = JSON.parse(this.element.dataset.userRows)
   }
 
   async submit(event) {
@@ -16,17 +17,59 @@ export default class extends Controller {
 
     if (file) {
       if(!validateFileFormat(file, this.#acceptedFileFormats())) {
+        this.inputTarget.value = ""
         return
       }
       if (!await this.#readFile(file)) {
+        this.inputTarget.value = ""
         return
       }
 
-      this.rowsDataByUid = {}
+      this.rowsCnafData = []
 
       this.#retrieveRowsCnafData()
 
-      this.formTarget.querySelector("input[name='rows_data_by_uid']").value = JSON.stringify(this.rowsDataByUid)
+      const existingInputs = this.formTarget.querySelectorAll("input[name^='rows_cnaf_data']")
+      existingInputs.forEach(input => input.remove())
+
+      if (this.rowsCnafData.length === 0) {
+        Swal.fire({
+          title: "Aucun usager trouvé",
+          text: "Aucun usager trouvé dans le fichier CNAF",
+          icon: "warning",
+          confirmButtonText: "OK"
+        })
+        this.inputTarget.value = ""
+        return
+      }
+
+      this.rowsCnafData.forEach((row) => {
+        const uidInput = document.createElement("input")
+        uidInput.type = "hidden"
+        uidInput.name = "rows_cnaf_data[][uid]"
+        uidInput.value = row.uid
+
+        // Create separate inputs for each cnaf_data field
+        const emailInput = document.createElement("input")
+        emailInput.type = "hidden"
+        emailInput.name = "rows_cnaf_data[][cnaf_data][email]"
+        emailInput.value = row.cnaf_data.email
+
+        const phoneInput = document.createElement("input")
+        phoneInput.type = "hidden"
+        phoneInput.name = "rows_cnaf_data[][cnaf_data][phone_number]"
+        phoneInput.value = row.cnaf_data.phone_number
+
+        const dateInput = document.createElement("input")
+        dateInput.type = "hidden"
+        dateInput.name = "rows_cnaf_data[][cnaf_data][rights_opening_date]"
+        dateInput.value = row.cnaf_data.rights_opening_date
+
+        this.formTarget.appendChild(uidInput)
+        this.formTarget.appendChild(emailInput)
+        this.formTarget.appendChild(phoneInput)
+        this.formTarget.appendChild(dateInput)
+      })
 
       await this.formTarget.requestSubmit()
     }
@@ -37,25 +80,26 @@ export default class extends Controller {
   }
 
   #retrieveRowsCnafData() {
-    this.userList.forEach((user) => {
-      if (!user.affiliation_number && !user.nir) {
+    this.userRows.forEach((userRow) => {
+      if (!userRow.affiliation_number && !userRow.nir) {
         return
       }
       const matchingCnafDataRow = this.cnafDataRows.find((cnafDataRow) =>
         // for affiliation number that have less than 7 digits, we fill the missing digits with 0 at the beginning
-        (user.affiliation_number && cnafDataRow.MATRICULE && user.affiliation_number.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0"))
-          || (user.nir && cnafDataRow.NIR && user.nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13))
+        (userRow.affiliation_number && cnafDataRow.MATRICULE && userRow.affiliation_number.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0"))
+          || (userRow.nir && cnafDataRow.NIR && userRow.nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13))
       )
 
       if (matchingCnafDataRow) {
         const parsedCnafData = parseContactsData(matchingCnafDataRow)
-        this.rowsDataByUid[user.user_list_uid] = {
+        this.rowsCnafData.push({
+          uid: userRow.uid,
           cnaf_data: {
             email: parsedCnafData.email,
             phone_number: parsedCnafData.phoneNumber,
             rights_opening_date: parsedCnafData.rightsOpeningDate
           }
-        }
+        })
       }
     })
   }

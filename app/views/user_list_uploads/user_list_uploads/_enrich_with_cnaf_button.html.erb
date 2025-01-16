@@ -1,16 +1,15 @@
-<div data-controller="enrich-with-cnaf-file" data-user-list="<%= @user_list_upload.user_list.to_json %>">
+<div data-controller="enrich-with-cnaf-file" data-user-rows="<%= @user_rows.map { |user_row| { uid: user_row.uid, affiliation_number: user_row.affiliation_number, nir: user_row.nir } }.to_json %>">
   <%= file_field_tag :file,
     class: "d-none",
     data: {
       action: "change->enrich-with-cnaf-file#submit",
-      enrich_with_cnaf_file_target: "input",
-      user_list: @user_list_upload.user_list.to_json
+      enrich_with_cnaf_file_target: "input"
     },
     accept: ".csv, .txt"
   %>
   <%= label_tag :file, "Enrichir avec les données CNAF", class: "btn btn-blue-out mb-2" %>
 
   <%= form_with(url: user_list_upload_enrich_with_cnaf_data_path(user_list_upload_id: @user_list_upload.id), local: true, data: { enrich_with_cnaf_file_target: "form", target: "_top" }) do |f| %>
-    <%= f.hidden_field :rows_data_by_uid %>
+    <%= f.hidden_field :rows_cnaf_data %>
   <% end %>
 </div>

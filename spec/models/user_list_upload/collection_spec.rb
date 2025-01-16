@@ -145,8 +145,8 @@ RSpec.describe UserListUpload::Collection do
 
     before do
       allow(user_list_upload).to receive(:matching_users).and_return([matching_user])
-      allow(user_list_upload).to receive(:referents_from_list).and_return([referent])
-      allow(user_list_upload).to receive(:tags_from_list).and_return([tag1, tag2])
+      allow(user_list_upload).to receive(:referents_from_rows).and_return([referent])
+      allow(user_list_upload).to receive(:tags_from_rows).and_return([tag1, tag2])
       allow(user_list_upload).to receive(:organisations).and_return([organisation, other_organisation])
     end
 
