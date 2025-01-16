@@ -4,7 +4,7 @@ module UserListUploads
     before_action :set_user_row, only: [:create]
 
     def create_many
-      @user_list_upload.user_collection.mark_selected_rows_for_user_save!(selected_uids)
+      @user_list_upload.user_collection.mark_selected_rows_for_user_save!(selected_ids)
       UserListUpload::SaveUsersJob.perform_later(@user_list_upload.id)
       redirect_to user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload)
     end
@@ -33,11 +33,11 @@ module UserListUploads
     end
 
     def set_user_row
-      @user_row = @user_list_upload.user_rows.find_by!(uid: params[:user_row_uid])
+      @user_row = @user_list_upload.user_rows.find_by!(id: params[:user_row_id])
     end
 
-    def selected_uids
-      params.permit(selected_uids: []).fetch(:selected_uids, [])
+    def selected_ids
+      params.permit(selected_ids: []).fetch(:selected_ids, [])
     end
   end
 end

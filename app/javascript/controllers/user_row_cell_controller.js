@@ -6,9 +6,9 @@ export default class extends Controller {
   }
 
   async edit() {
-    const { userListUploadId, userRowUid, userRowAttribute } = this.element.dataset;
+    const { userListUploadId, userRowId, userRowAttribute } = this.element.dataset;
 
-    const response = await fetch(`/user_list_uploads/${userListUploadId}/user_rows/${userRowUid}/user_row_cells/edit?attribute=${userRowAttribute}`);
+    const response = await fetch(`/user_list_uploads/${userListUploadId}/user_rows/${userRowId}/user_row_cells/edit?attribute=${userRowAttribute}`);
     const html = await response.text();
     if (response.ok) {
       window.Turbo.renderStreamMessage(html);

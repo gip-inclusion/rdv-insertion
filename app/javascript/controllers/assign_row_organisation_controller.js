@@ -58,7 +58,7 @@ export default class extends Controller {
   }
 
   async updateRow(organisationId) {
-    const response = await appFetch(`/user_list_uploads/${this.element.dataset.userListUploadId}/user_rows/${this.element.dataset.userRowUid}`,
+    const response = await appFetch(`/user_list_uploads/${this.element.dataset.userListUploadId}/user_rows/${this.element.dataset.userRowId}`,
       "PATCH",
       { assigned_organisation_id: organisationId },
     );
@@ -68,7 +68,7 @@ export default class extends Controller {
   async saveRowUser() {
     const response = await appFetch(`/user_list_uploads/${this.element.dataset.userListUploadId}/user_save_attempts`,
       "POST",
-      { user_row_uid: this.element.dataset.userRowUid },
+      { user_row_id: this.element.dataset.userRowId },
     );
     return response;
   }

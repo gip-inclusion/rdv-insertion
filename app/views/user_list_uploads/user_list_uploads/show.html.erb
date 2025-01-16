@@ -3,7 +3,7 @@
 When it will be the norm, we will remove the content_for :body_class declaration. %>
 <% content_for :body_class, "bg-white" %>
 
-<div class="container px-5 py-3" data-controller="submit-selected-uids">
+<div class="container px-5 py-3" data-controller="submit-selected-ids">
   <div class="row text-dark-blue ">
     <div class="col text-center align-items-center my-1">
       <div>
@@ -59,9 +59,9 @@ When it will be the norm, we will remove the content_for :body_class declaration
     <div>
       <%= form_tag create_many_user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload.id),
              method: :post,
-             data: { action: "submit->submit-selected-uids#submit", turbo: false } do %>
-        <%= hidden_field_tag "selected_uids[]" %>
-        <%= submit_tag "Créer et mettre à jour les dossiers", class: "btn btn-primary d-block mx-auto", data: { submit_selected_uids_target: "submit" } %>
+             data: { action: "submit->submit-selected-ids#submit", turbo: false } do %>
+        <%= hidden_field_tag "selected_ids[]" %>
+        <%= submit_tag "Créer et mettre à jour les dossiers", class: "btn btn-primary d-block mx-auto", data: { submit_selected_ids_target: "submit" } %>
       <% end %>
     </div>
   </div>

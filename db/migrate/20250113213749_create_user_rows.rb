@@ -1,6 +1,8 @@
 class CreateUserRows < ActiveRecord::Migration[7.1]
   def change
-    create_table :user_rows do |t|
+    enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
+
+    create_table :user_rows, id: :uuid do |t|
       t.string :first_name
       t.string :last_name
       t.string :email
@@ -19,9 +21,8 @@ class CreateUserRows < ActiveRecord::Migration[7.1]
       t.string :referent_email
       t.string :tag_values, array: true, default: []
       t.references :matching_user, foreign_key: { to_table: :users }
-      t.references :user_list_upload, null: false, foreign_key: true
+      t.references :user_list_upload, null: false, foreign_key: true, type: :uuid
       t.integer :assigned_organisation_id
-      t.string :uid
       t.json :cnaf_data, default: {}
       t.boolean :marked_for_invitation, default: false
       t.boolean :marked_for_user_save, default: false
@@ -30,6 +31,5 @@ class CreateUserRows < ActiveRecord::Migration[7.1]
     end
 
     add_index :user_rows, :assigned_organisation_id
-    add_index :user_rows, :uid
   end
 end

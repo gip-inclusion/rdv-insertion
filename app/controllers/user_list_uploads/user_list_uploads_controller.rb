@@ -72,7 +72,7 @@ module UserListUploads
     end
 
     def enrich_with_cnaf_data_params
-      params.permit(rows_cnaf_data: [:uid, { cnaf_data: [:email, :phone_number, :rights_opening_date] }])
+      params.permit(rows_cnaf_data: [:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }])
     end
 
     def set_file_configuration

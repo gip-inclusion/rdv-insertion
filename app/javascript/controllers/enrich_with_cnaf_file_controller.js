@@ -44,10 +44,10 @@ export default class extends Controller {
       }
 
       this.rowsCnafData.forEach((row) => {
-        const uidInput = document.createElement("input")
-        uidInput.type = "hidden"
-        uidInput.name = "rows_cnaf_data[][uid]"
-        uidInput.value = row.uid
+        const idInput = document.createElement("input")
+        idInput.type = "hidden"
+        idInput.name = "rows_cnaf_data[][id]"
+        idInput.value = row.id
 
         // Create separate inputs for each cnaf_data field
         const emailInput = document.createElement("input")
@@ -65,7 +65,7 @@ export default class extends Controller {
         dateInput.name = "rows_cnaf_data[][cnaf_data][rights_opening_date]"
         dateInput.value = row.cnaf_data.rights_opening_date
 
-        this.formTarget.appendChild(uidInput)
+        this.formTarget.appendChild(idInput)
         this.formTarget.appendChild(emailInput)
         this.formTarget.appendChild(phoneInput)
         this.formTarget.appendChild(dateInput)
@@ -93,7 +93,7 @@ export default class extends Controller {
       if (matchingCnafDataRow) {
         const parsedCnafData = parseContactsData(matchingCnafDataRow)
         this.rowsCnafData.push({
-          uid: userRow.uid,
+          id: userRow.id,
           cnaf_data: {
             email: parsedCnafData.email,
             phone_number: parsedCnafData.phoneNumber,

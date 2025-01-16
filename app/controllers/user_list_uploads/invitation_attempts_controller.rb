@@ -9,7 +9,7 @@ module UserListUploads
 
     def create_many
       @user_collection = @user_list_upload.user_collection
-      @user_collection.mark_selected_rows_for_invitation!(selected_uids)
+      @user_collection.mark_selected_rows_for_invitation!(selected_ids)
       UserListUpload::InviteUsersJob.perform_later(@user_list_upload.id, invitation_formats)
       redirect_to user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id)
     end
@@ -29,8 +29,8 @@ module UserListUploads
       authorize @user_list_upload, :edit?
     end
 
-    def selected_uids
-      params.permit(selected_uids: []).fetch(:selected_uids, [])
+    def selected_ids
+      params.permit(selected_ids: []).fetch(:selected_ids, [])
     end
 
     def invitation_formats

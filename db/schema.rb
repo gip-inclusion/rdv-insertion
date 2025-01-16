@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -204,7 +205,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
 
   create_table "invitation_attempts", force: :cascade do |t|
     t.boolean "success"
-    t.bigint "user_row_id", null: false
+    t.uuid "user_row_id", null: false
     t.bigint "invitation_id"
     t.string "service_errors", default: [], array: true
     t.string "format"
@@ -493,8 +494,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.text "punishable_warning", default: "", null: false
   end
 
-  create_table "user_list_uploads", force: :cascade do |t|
-    t.jsonb "user_list"
+  create_table "user_list_uploads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "file_name"
     t.bigint "category_configuration_id"
     t.string "structure_type", null: false
@@ -507,7 +507,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.index ["structure_type", "structure_id"], name: "index_user_list_uploads_on_structure"
   end
 
-  create_table "user_rows", force: :cascade do |t|
+  create_table "user_rows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "email"
@@ -526,9 +526,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.string "referent_email"
     t.string "tag_values", default: [], array: true
     t.bigint "matching_user_id"
-    t.bigint "user_list_upload_id", null: false
+    t.uuid "user_list_upload_id", null: false
     t.integer "assigned_organisation_id"
-    t.string "uid"
     t.json "cnaf_data", default: {}
     t.boolean "marked_for_invitation", default: false
     t.boolean "marked_for_user_save", default: false
@@ -536,13 +535,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.datetime "updated_at", null: false
     t.index ["assigned_organisation_id"], name: "index_user_rows_on_assigned_organisation_id"
     t.index ["matching_user_id"], name: "index_user_rows_on_matching_user_id"
-    t.index ["uid"], name: "index_user_rows_on_uid"
     t.index ["user_list_upload_id"], name: "index_user_rows_on_user_list_upload_id"
   end
 
   create_table "user_save_attempts", force: :cascade do |t|
     t.boolean "success"
-    t.bigint "user_row_id", null: false
+    t.uuid "user_row_id", null: false
     t.bigint "user_id"
     t.string "error_type"
     t.string "service_errors", default: [], array: true

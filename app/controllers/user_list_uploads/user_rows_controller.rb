@@ -3,7 +3,7 @@ module UserListUploads
     before_action :set_user_list_upload, :set_user_row
 
     def show
-      render turbo_stream: turbo_stream.replace("user-row-#{params[:uid]}",
+      render turbo_stream: turbo_stream.replace("user-row-#{params[:id]}",
                                                 partial: "user_list_uploads/user_list_uploads/user_row",
                                                 locals: { user_row: @user_row })
     end
@@ -43,7 +43,7 @@ module UserListUploads
     end
 
     def set_user_row
-      @user_row = @user_list_upload.user_rows.find_by!(uid: params[:uid] || params[:user_row_uid])
+      @user_row = @user_list_upload.user_rows.find(params[:id] || params[:user_row_id])
     end
 
     def row_params

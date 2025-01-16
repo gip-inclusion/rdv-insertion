@@ -19,8 +19,6 @@ class UserListUpload::UserRow < ApplicationRecord
 
   before_save :format_attributes, :augment
 
-  before_create :add_uid
-
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
   delegate :department, :department_number, :restricted_user_attributes, to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
@@ -232,10 +230,6 @@ class UserListUpload::UserRow < ApplicationRecord
       "email" => cnaf_data["email"],
       "rights_opening_date" => cnaf_data["rights_opening_date"]
     }.compact_blank.transform_values(&:squish)
-  end
-
-  def add_uid
-    self.uid = SecureRandom.uuid
   end
 
   def retrieve_organisation_by_id(organisation_id)

@@ -29,7 +29,7 @@ class UserListUpload::RetrieveOrganisationToAssign < BaseService
 
     fail!(
       "Aucune organisation correspondant à l'adresse de cet usager:\n" \
-      "uid: #{@user_row.uid}\n" \
+      "uid: #{@user_row.id}\n" \
       "user_list_upload_id: #{@user_row.user_list_upload.id}\n" \
       "address: #{@user_row.address}\n" \
       "department_number: #{@user_row.department_number}"
@@ -41,7 +41,7 @@ class UserListUpload::RetrieveOrganisationToAssign < BaseService
 
     fail!(
       "Aucune organisation assignable pour cet usager:\n" \
-      "uid: #{@user_row.uid}\n" \
+      "uid: #{@user_row.id}\n" \
       "user_list_upload_id: #{@user_row.user_list_upload.id}\n" \
       "address: #{@user_row.address}\n" \
       "department_number: #{@user_row.department_number}"
@@ -53,7 +53,7 @@ class UserListUpload::RetrieveOrganisationToAssign < BaseService
 
     fail!(
       "Plusieurs organisations possibles pour cet usager:\n" \
-      "uid: #{@user_row.uid}\n" \
+      "uid: #{@user_row.id}\n" \
       "user_list_upload_id: #{@user_row.user_list_upload.id}\n" \
       "address: #{@user_row.address}\n" \
       "department_number: #{@user_row.department_number}"

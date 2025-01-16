@@ -4,10 +4,10 @@ export default class extends Controller {
   static targets = ["rowToExpand"];
 
   toggle(event) {
-    const rowUid = event.params.uid
+    const RowId = event.params.id
 
     const rowToExpand = this.rowToExpandTargets.find(
-      target => target.dataset.expandableRowsUid === rowUid
+      target => target.dataset.expandableRowsId === RowId
     )
 
     const icon = event.currentTarget.querySelector("i")

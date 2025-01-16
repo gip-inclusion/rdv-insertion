@@ -10,28 +10,28 @@ export default class extends Controller {
   }
 
   submit(event) {
-    const selectedUids = this.checkboxTargets
+    const selectedIds = this.checkboxTargets
       .filter(checkbox => checkbox.checked)
       .map(checkbox => checkbox.value)
 
     const form = event.currentTarget
 
     // Remove any existing hidden fields first
-    form.querySelectorAll("input[name='selected_uids[]']").forEach(el => el.remove())
+    form.querySelectorAll("input[name='selected_ids[]']").forEach(el => el.remove())
 
     // Create a new hidden field for each UID
-    selectedUids.forEach(uid => {
+    selectedIds.forEach(id => {
       const hiddenField = document.createElement("input")
       hiddenField.type = "hidden"
-      hiddenField.name = "selected_uids[]"
-      hiddenField.value = uid
+      hiddenField.name = "selected_ids[]"
+      hiddenField.value = id
       form.appendChild(hiddenField)
     })
   }
 
   toggleAll(event) {
     this.checkboxTargets.forEach(checkbox => {
-      checkbox.checked = event.target.checked && !checkbox.disabled
+      checkbox.checked = checkbox.disabled ? false : event.target.checked
     })
     this.toggleSubmit()
   }

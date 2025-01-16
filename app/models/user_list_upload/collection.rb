@@ -17,8 +17,8 @@ class UserListUpload::Collection
   def update_rows(rows_data)
     rows_to_update = []
     rows_data.each do |row_data|
-      user_row = find(row_data[:uid])
-      user_row.assign_attributes(row_data.except(:uid))
+      user_row = find(row_data[:id])
+      user_row.assign_attributes(row_data.except(:id))
       rows_to_update << user_row
     end
     save!(rows_to_update)
@@ -82,17 +82,17 @@ class UserListUpload::Collection
     user_rows_marked_for_user_save.all?(&:attempted_user_save?)
   end
 
-  def mark_selected_rows_for_invitation!(selected_uids)
+  def mark_selected_rows_for_invitation!(selected_ids)
     user_rows.each do |user_row|
-      user_row.mark_for_invitation! if selected_uids.include?(user_row.uid)
+      user_row.mark_for_invitation! if selected_ids.include?(user_row.id)
     end
 
     save!(user_rows.select(&:marked_for_invitation?))
   end
 
-  def mark_selected_rows_for_user_save!(selected_uids)
+  def mark_selected_rows_for_user_save!(selected_ids)
     user_rows.each do |user_row|
-      user_row.mark_for_user_save! if selected_uids.include?(user_row.uid)
+      user_row.mark_for_user_save! if selected_ids.include?(user_row.id)
     end
 
     save!(user_rows.select(&:marked_for_user_save?))
@@ -118,8 +118,8 @@ class UserListUpload::Collection
     @user_rows.length
   end
 
-  def find(user_list_uid)
-    user_rows.find { |user_row| user_row.uid == user_list_uid }
+  def find(user_list_id)
+    user_rows.find { |user_row| user_row.id == user_list_id }
   end
 
   private
@@ -132,8 +132,8 @@ class UserListUpload::Collection
     ).order(created_at: :asc).to_a
   end
 
-  def assign_row_attributes(user_list_uid, data)
-    user_row = find(user_list_uid)
+  def assign_row_attributes(user_list_id, data)
+    user_row = find(user_list_id)
     user_row&.assign_attributes(data)
   end
 end
