@@ -208,6 +208,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.uuid "user_row_id", null: false
     t.bigint "invitation_id"
     t.string "service_errors", default: [], array: true
+    t.string "internal_error_message"
     t.string "format"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -543,6 +544,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.uuid "user_row_id", null: false
     t.bigint "user_id"
     t.string "error_type"
+    t.string "internal_error_message"
     t.string "service_errors", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

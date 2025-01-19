@@ -12,6 +12,7 @@ module UserListUploads
 
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
+      authorize @user_list_upload, :edit?
     end
 
     def set_user_row

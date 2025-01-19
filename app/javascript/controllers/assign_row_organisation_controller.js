@@ -29,7 +29,7 @@ export default class extends Controller {
           icon: "success",
           title: "Organisation assignée avec succès",
           showConfirmButton: false,
-          timer: 3000
+          timer: 5000
         });
         event.stopPropagation();
         window.Turbo.visit(window.location.href, { action: "replace" });

@@ -5,6 +5,7 @@ class CreateInvitationAttempts < ActiveRecord::Migration[7.1]
       t.references :user_row, null: false, foreign_key: true, type: :uuid
       t.references :invitation, foreign_key: true
       t.string :service_errors, array: true, default: []
+      t.string :internal_error_message
       t.string :format
 
       t.timestamps

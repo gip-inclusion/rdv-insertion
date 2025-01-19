@@ -40,7 +40,7 @@ export default class extends Controller {
   }
 
   handleFileRemove() {
-    this.inputTarget.value = ""
+    this.#removeFileInput()
     this.#updateFileName("")
     this.#updateUserCount("")
     this.fileInputInstructionTarget.classList.remove("d-none")
@@ -53,7 +53,7 @@ export default class extends Controller {
     const button = this.submitButtonTarget
     const { form } = event.target
 
-    this.#setLoading(button)
+    await this.#setLoadingButton(button)
 
     this.userList = this.#transformRowsInUserList(this.rows)
 
@@ -66,8 +66,8 @@ export default class extends Controller {
     this.#addInputsToForm(form)
 
 
-    form.addEventListener("turbo:submit-end", () => {
-      this.#resetLoading(button)
+    form.addEventListener("turbo:submit-end", (e) => {
+      this.#onSubmitEnd(e)
     })
 
     form.requestSubmit()
@@ -97,15 +97,33 @@ export default class extends Controller {
     })
   }
 
-  #setLoading(button) {
-    button.value = "Chargement des données usagers..."
-    button.classList.add("disabled")
+  async #setLoadingButton(button) {
+    this.originalButton = button
+
+    // Create a new button element to replace the input
+    const newButton = document.createElement("button")
+    newButton.type = "submit"
+    newButton.className = `${button.className} disabled`
+    newButton.innerHTML = `
+      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      Chargement des données usagers...
+    `
+    this.loadingButton = newButton
+
+    button.insertAdjacentElement("afterend", newButton)
+    button.remove()
   }
 
-  #resetLoading(button) {
-    button.value = "Charger les données usagers"
-    button.classList.remove("disabled")
-    button.removeAttribute("disabled")
+  #onSubmitEnd(event) {
+    const { success } = event.detail
+    if (!success) {
+      this.handleFileRemove()
+      if (this.loadingButton) {
+        this.loadingButton.parentElement.appendChild(this.originalButton)
+        this.originalButton.classList.add("disabled")
+        this.loadingButton.remove()
+      }
+    }
   }
 
   #transformRowsInUserList(rows) {
@@ -145,9 +163,13 @@ export default class extends Controller {
       if (await this.#readFile(file)) {
         this.#setFileSelected(file)
       } else {
-        this.inputTarget.value = ""
+        this.#removeFileInput()
       }
     }
+  }
+
+  #removeFileInput() {
+    this.inputTarget.value = ""
   }
 
   async #readFile(file) {

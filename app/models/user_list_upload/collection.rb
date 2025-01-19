@@ -2,8 +2,6 @@ class UserListUpload::Collection
   attr_reader :user_rows, :user_list_upload
 
   delegate :each, to: :user_rows
-  delegate :motif_category, :matching_users, :referents_from_rows, :tags_from_rows, :organisations,
-           to: :user_list_upload
 
   SEARCHABLE_ATTRIBUTES = %i[
     first_name last_name email phone_number affiliation_number
@@ -11,7 +9,7 @@ class UserListUpload::Collection
 
   def initialize(user_list_upload:)
     @user_list_upload = user_list_upload
-    @user_rows = build_user_rows
+    @user_rows = load_user_rows
   end
 
   def update_rows(rows_data)
@@ -66,8 +64,16 @@ class UserListUpload::Collection
     end
   end
 
+  def all_saves_attempted?
+    user_rows_marked_for_user_save.all?(&:attempted_user_save?)
+  end
+
   def user_rows_marked_for_invitation
     user_rows.select(&:marked_for_invitation?)
+  end
+
+  def all_invitations_attempted?
+    user_rows_marked_for_invitation.all?(&:invitation_attempted?)
   end
 
   def user_rows_with_invitation_attempted
@@ -76,10 +82,6 @@ class UserListUpload::Collection
 
   def user_rows_with_invitation_errors
     user_rows_with_invitation_attempted.select(&:all_invitations_failed?)
-  end
-
-  def all_saves_attempted?
-    user_rows_marked_for_user_save.all?(&:attempted_user_save?)
   end
 
   def mark_selected_rows_for_invitation!(selected_ids)
@@ -118,22 +120,17 @@ class UserListUpload::Collection
     @user_rows.length
   end
 
-  def find(user_list_id)
-    user_rows.find { |user_row| user_row.id == user_list_id }
+  def find(user_row_id)
+    user_rows.find { |user_row| user_row.id == user_row_id }
   end
 
   private
 
-  def build_user_rows
+  def load_user_rows
     @user_list_upload.user_rows.preload(
       matching_user: [:organisations, :motif_categories, :referents, :tags, :address_geocoding],
       invitation_attempts: :invitation,
       user_save_attempts: [user: [:address_geocoding, { invitations: [:follow_up] }]]
     ).order(created_at: :asc).to_a
-  end
-
-  def assign_row_attributes(user_list_id, data)
-    user_row = find(user_list_id)
-    user_row&.assign_attributes(data)
   end
 end

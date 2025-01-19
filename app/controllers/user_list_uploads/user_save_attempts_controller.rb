@@ -33,7 +33,7 @@ module UserListUploads
     end
 
     def set_user_row
-      @user_row = @user_list_upload.user_rows.find_by!(id: params[:user_row_id])
+      @user_row = @user_list_upload.user_rows.find(params[:user_row_id])
     end
 
     def selected_ids
