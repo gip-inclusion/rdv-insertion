@@ -4,7 +4,6 @@ FactoryBot.define do
     invitation
     success { true }
     service_errors { [] }
-    error_type { nil }
     internal_error_message { nil }
     format { "email" }
   end

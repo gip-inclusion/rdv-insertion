@@ -111,7 +111,7 @@ class UserListUpload::Collection
   def search!(query)
     @user_rows.select! do |user_row|
       SEARCHABLE_ATTRIBUTES.any? do |attribute|
-        user_row.send(attribute).to_s.downcase.include?(query.downcase)
+        user_row.user.send(attribute).to_s.downcase.include?(query.downcase)
       end
     end
   end

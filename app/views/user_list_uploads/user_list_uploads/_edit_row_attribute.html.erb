@@ -14,7 +14,7 @@
       <%= form.select "user_row[title]", User.titles.keys, { selected: user_row.title }, { class: "form-control" } %>
     <% else %>
       <%= form.text_field "user_row[#{attribute}]",
-                          value: user_row.send(attribute),
+                          value: user_row.user.send(attribute),
                           class: "form-control" %>
     <% end %>
     <button type="submit">

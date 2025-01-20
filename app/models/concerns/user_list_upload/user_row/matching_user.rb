@@ -1,19 +1,9 @@
-module UserListUpload::UserRowAugmenter
-  def augment_on_create
-    # we load the user_list_upload potential matching users in all app and in department
-    # to avoid trigger a new query in each user_row creation when creating the user_list_uploadd
-    @potential_matching_users_in_all_app = user_list_upload.potential_matching_users_in_all_app
-    @potential_matching_users_in_department = user_list_upload.potential_matching_users_in_department
-    set_matching_user
-  end
-
-  def augment_on_update
-    set_matching_user
-  end
-
+module UserListUpload::UserRow::MatchingUser
   private
 
   def set_matching_user
+    return if matching_user_id.present?
+
     matching_user = find_matching_user
     self.matching_user_id = matching_user.id if matching_user
   end
@@ -68,20 +58,40 @@ module UserListUpload::UserRowAugmenter
   end
 
   def potential_matching_users_in_all_app
-    @potential_matching_users_in_all_app ||=
-      User.where(email: email).or(User.where(phone_number: phone_number)).or(User.where(nir: nir))
+    if persisted?
+      retrieve_potential_matching_users_in_all_app
+    else
+      # user_row is always created with the other user_list_upload user_rows
+      # so on creation we retrieve the user_list_upload potential matching users to not
+      # trigger a new query in each user_row creation when creating the user_list_upload
+      user_list_upload.potential_matching_users_in_all_app
+    end
   end
 
   def potential_matching_users_in_department
-    @potential_matching_users_in_department ||=
+    if persisted?
+      retrieve_potential_matching_users_in_department
+    else
+      # user_row is always created with the other user_list_upload user_rows
+      # so on creation we retrieve the user_list_upload potential matching users to not
+      # trigger a new query in each user_row creation when creating the user_list_upload
+      user_list_upload.potential_matching_users_in_department
+    end
+  end
+
+  def retrieve_potential_matching_users_in_all_app
+    User.where(email: email).or(User.where(phone_number: phone_number)).or(User.where(nir: nir))
+  end
+
+  def retrieve_potential_matching_users_in_department
+    User.joins(:organisations).where(
+      affiliation_number: affiliation_number,
+      organisations: { department_id: department.id }
+     ).or(
       User.joins(:organisations).where(
-        affiliation_number: affiliation_number,
+        department_internal_id: department_internal_id,
         organisations: { department_id: department.id }
-      ).or(
-        User.joins(:organisations).where(
-          department_internal_id: department_internal_id,
-          organisations: { department_id: department.id }
-        )
       )
+    )
   end
 end

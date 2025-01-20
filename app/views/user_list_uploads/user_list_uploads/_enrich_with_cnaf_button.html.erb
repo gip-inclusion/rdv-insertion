@@ -1,6 +1,7 @@
 <div data-controller="enrich-with-cnaf-file" data-user-rows="<%= @user_rows.map { |user_row| { id: user_row.id, affiliation_number: user_row.affiliation_number, nir: user_row.nir } }.to_json %>">
   <%= file_field_tag :file,
     class: "d-none",
+    id: "enrich_with_cnaf_data_file_input",
     data: {
       action: "change->enrich-with-cnaf-file#submit",
       enrich_with_cnaf_file_target: "input"

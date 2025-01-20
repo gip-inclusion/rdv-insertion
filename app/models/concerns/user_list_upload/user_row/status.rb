@@ -1,4 +1,4 @@
-module UserListUpload::RowStatus
+module UserListUpload::UserRow::Status
   def before_user_save_status
     return :to_create unless matching_user
 

@@ -2,8 +2,8 @@
 class UserListUpload::UserRow < ApplicationRecord
   self.table_name = "user_rows"
 
-  include UserListUpload::RowStatus
-  include UserListUpload::UserRowAugmenter
+  include UserListUpload::UserRow::Status
+  include UserListUpload::UserRow::MatchingUser
 
   USER_ATTRIBUTES = %i[
     email phone_number title first_name last_name affiliation_number nir birth_date department_internal_id
@@ -17,14 +17,11 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", dependent: :destroy
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
-  before_save :format_attributes
-  before_create :augment_on_create
-  before_update :augment_on_update
+  before_save :format_attributes, :set_matching_user
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
   delegate :department, :department_number, :department_id, :restricted_user_attributes, to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
-  # delegate(*USER_ATTRIBUTES, to: :user)
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
@@ -136,10 +133,6 @@ class UserListUpload::UserRow < ApplicationRecord
       matching_user.organisations != organisations ||
       matching_user.motif_categories != motif_categories ||
       matching_user.referents != referents || matching_user.tags != tags
-  end
-
-  def post_code
-    user.geocoded_post_code
   end
 
   def mark_for_user_save!
