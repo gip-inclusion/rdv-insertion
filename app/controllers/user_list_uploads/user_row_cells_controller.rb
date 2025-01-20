@@ -20,4 +20,3 @@ module UserListUploads
     end
   end
 end
-
