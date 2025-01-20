@@ -8,16 +8,6 @@ GIT
       activerecord (>= 7.0)
 
 GIT
-  remote: https://github.com/betagouv/rdv-service-public.git
-  revision: 09de71bd59fe8b98be703103c228ccc416ac013f
-  branch: production
-  glob: lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec
-  specs:
-    omniauth-rdv-service-public (0.1.0)
-      omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.8)
-
-GIT
   remote: https://github.com/gip-inclusion/agent_connect_engine.git
   revision: 7dae451ec39dbd62c2a20ec61b15a4d53b0cd166
   specs:
@@ -331,6 +321,9 @@ GEM
     omniauth-rails_csrf_protection (1.0.2)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
+    omniauth-rdv-service-public (0.1.0)
+      omniauth (~> 2.0)
+      omniauth-oauth2 (~> 1.8)
     openid_connect (2.3.0)
       activemodel
       attr_required (>= 1.0.0)
@@ -664,7 +657,7 @@ DEPENDENCIES
   letter_opener_web
   listen (~> 3.2)
   omniauth-rails_csrf_protection
-  omniauth-rdv-service-public!
+  omniauth-rdv-service-public
   parallel_tests
   pdf-reader
   pg (>= 0.18, < 2.0)
