@@ -321,4 +321,131 @@ describe UserListUpload::UserRow do
       )
     end
   end
+
+  describe "status methods" do
+    let(:user_list_upload) { create(:user_list_upload) }
+    let(:user_row) { create(:user_row, user_list_upload: user_list_upload) }
+
+    describe "#before_user_save_status" do
+      it "returns :to_create when there is no matching user" do
+        expect(user_row.before_user_save_status).to eq(:to_create)
+      end
+
+      context "when there is a matching user" do
+        let(:user_row) { create(:user_row, user_list_upload: user_list_upload, matching_user:) }
+        let(:matching_user) { create(:user) }
+
+        context "when no changes will be made to the matching user" do
+          before do
+            allow(user_row).to receive(:will_change_matching_user?).and_return(false)
+          end
+
+          it "returns :up_to_date" do
+            expect(user_row.before_user_save_status).to eq(:up_to_date)
+          end
+        end
+
+        context "when changes will be made to the matching user" do
+          before do
+            allow(user_row).to receive(:will_change_matching_user?).and_return(true)
+          end
+
+          it "returns :to_update" do
+            expect(user_row.before_user_save_status).to eq(:to_update)
+          end
+        end
+      end
+    end
+
+    describe "#after_user_save_status" do
+      it "returns :pending when no save attempt has been made" do
+        expect(user_row.after_user_save_status).to eq(:pending)
+      end
+
+      context "when save attempt exists" do
+        let!(:user_save_attempt) { create(:user_save_attempt, user_row: user_row) }
+
+        context "when no organisation can be assigned" do
+          before do
+            user_save_attempt.update!(error_type: "no_organisation_to_assign")
+          end
+
+          it "returns :organisation_needs_to_be_assigned" do
+            expect(user_row.after_user_save_status).to eq(:organisation_needs_to_be_assigned)
+          end
+        end
+
+        context "when save attempt failed" do
+          before do
+            user_save_attempt.update!(success: false)
+          end
+
+          it "returns :error" do
+            expect(user_row.after_user_save_status).to eq(:error)
+          end
+        end
+
+        context "when save attempt succeeded" do
+          before do
+            user_save_attempt.update!(success: true)
+          end
+
+          it "returns :created for new users" do
+            allow(user_row).to receive(:before_user_save_status).and_return(:to_create)
+            expect(user_row.after_user_save_status).to eq(:created)
+          end
+
+          it "returns :updated for existing users" do
+            allow(user_row).to receive(:before_user_save_status).and_return(:to_update)
+            expect(user_row.after_user_save_status).to eq(:updated)
+          end
+
+          it "returns :updated for up_to_date users" do
+            allow(user_row).to receive(:before_user_save_status).and_return(:up_to_date)
+            expect(user_row.after_user_save_status).to eq(:updated)
+          end
+        end
+      end
+    end
+
+    describe "#before_invitation_status" do
+      it "returns :already_invited when previously invited" do
+        allow(user_row).to receive(:previously_invited?).and_return(true)
+        expect(user_row.before_invitation_status).to eq(:already_invited)
+      end
+
+      it "returns :not_invited when not previously invited" do
+        allow(user_row).to receive(:previously_invited?).and_return(false)
+        expect(user_row.before_invitation_status).to eq(:not_invited)
+      end
+    end
+
+    describe "#after_invitation_status" do
+      it "returns :pending when no invitation attempt has been made" do
+        expect(user_row.after_invitation_status).to eq(:pending)
+      end
+
+      context "when invitation attempts exist" do
+        context "when all invitations failed" do
+          let!(:invitation_attempt) do
+            create(:invitation_attempt, user_row: user_row, success: false)
+          end
+
+          it "returns :error" do
+            expect(user_row.after_invitation_status).to eq(:error)
+          end
+        end
+
+        context "when at least one invitation succeeded" do
+          let!(:invitation_attempt) do
+            create(:invitation_attempt, user_row: user_row, success: true)
+          end
+
+          it "returns :invited" do
+            expect(user_row.after_invitation_status).to eq(:invited)
+          end
+        end
+      end
+    end
+  end
 end

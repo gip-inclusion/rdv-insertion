@@ -1,217 +1,156 @@
 RSpec.describe UserListUpload::Collection do
-  let(:user_list_upload) do
-    create(
-      :user_list_upload,
-      user_list: [
-        { first_name: "John", last_name: "Doe", email: "john@example.com" },
-        { first_name: "Jane", last_name: "Smith", email: "jane@example.com" }
-      ]
-    )
-  end
-  let(:uid1) { user_list_upload.user_list.first["user_list_uid"] }
-  let(:uid2) { user_list_upload.user_list.last["user_list_uid"] }
+  let(:user_list_upload) { create(:user_list_upload) }
   let(:collection) { described_class.new(user_list_upload: user_list_upload) }
 
+  let!(:user_row1) do
+    create(
+      :user_row,
+      user_list_upload: user_list_upload,
+      matching_user:
+    )
+  end
+
+  let!(:user_row2) do
+    create(
+      :user_row,
+      user_list_upload: user_list_upload,
+      first_name: "Jane",
+      last_name: "Smith",
+      email: "jane@example.com",
+      phone_number: "9876543210",
+      affiliation_number: "XYZ789"
+    )
+  end
+
+  let!(:matching_user) do
+    create(
+      :user,
+      first_name: "John",
+      last_name: "Doe",
+      email: "john@example.com",
+      phone_number: "+33102020101",
+      affiliation_number: "ABC123"
+    )
+  end
+
   describe "#update_rows" do
-    it "updates multiple rows and saves the changes" do
-      rows_data = {
-        uid1 => { first_name: "Johnny" },
-        uid2 => { first_name: "Janet" }
-      }
+    it "updates existing rows without creating new ones" do
+      rows_data = [
+        { id: user_row1.id, first_name: "Updated Name 1" },
+        { id: user_row2.id, first_name: "Updated Name 2" }
+      ]
 
-      collection.update_rows(rows_data)
+      expect {
+        collection.update_rows(rows_data)
+      }.not_to change(UserListUpload::UserRow, :count)
 
-      expect(user_list_upload.reload.user_list).to include(
-        hash_including("first_name" => "Johnny"),
-        hash_including("first_name" => "Janet")
-      )
+      user_row1.reload
+      user_row2.reload
+      expect(user_row1.first_name).to eq("Updated Name 1")
+      expect(user_row2.first_name).to eq("Updated Name 2")
     end
   end
 
-  describe "#user_rows_with_errors" do
-    it "returns rows with invalid users" do
-      allow(collection.user_rows.first.user).to receive(:valid?).and_return(false)
-      allow(collection.user_rows.last.user).to receive(:valid?).and_return(true)
+  describe "#save" do
+    it "updates existing rows without creating new ones" do
+      user_row1.first_name = "Modified Name 1"
+      user_row2.first_name = "Modified Name 2"
 
-      expect(collection.user_rows_with_errors).to contain_exactly(collection.user_rows.first)
-    end
-  end
+      expect {
+        collection.save([user_row1, user_row2])
+      }.not_to change(UserListUpload::UserRow, :count)
 
-  describe "#sort_by!" do
-    it "sorts rows by the given attribute in ascending order" do
-      collection.sort_by!(sort_by: :first_name, sort_direction: "asc")
-
-      expect(collection.user_rows.map(&:first_name)).to eq(%w[Jane John])
-    end
-
-    it "sorts rows by the given attribute in descending order" do
-      collection.sort_by!(sort_by: :first_name, sort_direction: "desc")
-
-      expect(collection.user_rows.map(&:first_name)).to eq(%w[John Jane])
+      user_row1.reload
+      user_row2.reload
+      expect(user_row1.first_name).to eq("Modified Name 1")
+      expect(user_row2.first_name).to eq("Modified Name 2")
     end
 
-    it "places nil values at the end" do
-      user_list_upload.user_list.first["first_name"] = nil
-      collection.sort_by!(sort_by: :first_name, sort_direction: "asc")
+    it "formats attributes before saving" do
+      expect(user_row1).to receive(:format_attributes)
+      expect(user_row2).to receive(:format_attributes)
 
-      expect(collection.user_rows.map(&:first_name)).to eq(["Jane", nil])
-    end
-  end
-
-  describe "#search!" do
-    it "filters rows by searchable attributes" do
-      collection.search!("john")
-
-      expect(collection.count).to eq(1)
-      expect(collection.user_rows.first.email).to eq("john@example.com")
-    end
-
-    it "searches case-insensitively" do
-      collection.search!("JOHN")
-
-      expect(collection.count).to eq(1)
-      expect(collection.user_rows.first.email).to eq("john@example.com")
-    end
-
-    it "searches across all searchable attributes" do
-      collection.search!("smith")
-
-      expect(collection.count).to eq(1)
-      expect(collection.user_rows.first.email).to eq("jane@example.com")
+      collection.save([user_row1, user_row2])
     end
   end
 
   describe "#mark_selected_rows_for_user_save!" do
-    it "marks selected rows for user save" do
-      collection.mark_selected_rows_for_user_save!([uid1])
+    it "marks only selected rows for user save" do
+      collection.mark_selected_rows_for_user_save!([user_row1.id])
 
-      expect(user_list_upload.user_list.first["marked_for_user_save"]).to be true
-      expect(user_list_upload.user_list.last["marked_for_user_save"]).to be_nil
+      user_row1.reload
+      user_row2.reload
+      expect(user_row1).to be_marked_for_user_save
+      expect(user_row2).not_to be_marked_for_user_save
     end
   end
 
   describe "#mark_selected_rows_for_invitation!" do
-    it "marks selected rows for invitation" do
-      collection.mark_selected_rows_for_invitation!([uid1])
+    it "marks only selected rows for invitation" do
+      collection.mark_selected_rows_for_invitation!([user_row2.id])
 
-      expect(user_list_upload.user_list.first["marked_for_invitation"]).to be true
-      expect(user_list_upload.user_list.last["marked_for_invitation"]).to be_nil
+      user_row1.reload
+      user_row2.reload
+      expect(user_row1).not_to be_marked_for_invitation
+      expect(user_row2).to be_marked_for_invitation
     end
   end
 
-  describe "#update_row" do
-    it "updates a single row and saves the changes" do
-      collection.update_row(uid1, { first_name: "Johnny" })
-
-      expect(user_list_upload.reload.user_list).to include(
-        hash_including("first_name" => "Johnny"),
-        hash_including("first_name" => "Jane")
-      )
+  describe "#search!" do
+    it "finds users by first name" do
+      collection.search!("john")
+      expect(collection.count).to eq(1)
+      expect(collection.user_rows).to include(user_row1)
     end
 
-    it "does nothing when row uid is not found" do
-      collection.update_row("non_existent_uid", { first_name: "Johnny" })
+    it "finds users by last name" do
+      collection.search!("smith")
+      expect(collection.count).to eq(1)
+      expect(collection.user_rows).to include(user_row2)
+    end
 
-      expect(user_list_upload.reload.user_list.first["first_name"]).to eq("John")
+    it "finds users by email" do
+      collection.search!("jane@example")
+      expect(collection.count).to eq(1)
+      expect(collection.user_rows).to include(user_row2)
+    end
+
+    it "finds users by phone number" do
+      collection.search!("020201")
+      expect(collection.count).to eq(1)
+      expect(collection.user_rows).to include(user_row1)
+    end
+
+    it "finds users by affiliation number" do
+      collection.search!("xyz")
+      expect(collection.count).to eq(1)
+      expect(collection.user_rows).to include(user_row2)
+    end
+
+    it "is case insensitive" do
+      collection.search!("JOHN")
+      expect(collection.count).to eq(1)
+      expect(collection.user_rows).to include(user_row1)
+    end
+
+    it "returns empty collection when no matches found" do
+      collection.search!("nonexistent")
+      expect(collection.count).to eq(0)
+      expect(collection.user_rows).to be_empty
     end
   end
 
-  describe "#build_user_rows" do
-    let(:matching_user) { create(:user) }
-    let(:referent) { create(:agent) }
-    let(:tag1) { create(:tag, value: "tag1") }
-    let(:tag2) { create(:tag, value: "tag2") }
-    let(:organisation) { create(:organisation) }
-
-    let!(:user_list_upload) do
-      create(
-        :user_list_upload,
-        user_list: [row_data]
-      )
+  describe "#sort_by!" do
+    it "sorts by first_name asc" do
+      collection.sort_by!(sort_by: "first_name", sort_direction: "asc")
+      expect(collection.user_rows.first).to eq(user_row2) # Jane
+      expect(collection.user_rows.last).to eq(user_row1)  # John
     end
 
-    let!(:row_data) do
-      {
-        first_name: "John",
-        matching_user_id: matching_user.id,
-        saved_user_id: matching_user.id,
-        referent_email: referent.email,
-        tags: [tag1.value, tag2.value],
-        assigned_organisation_id: organisation.id
-      }
-    end
-
-    let(:other_organisation) { create(:organisation) }
-
-    before do
-      allow(user_list_upload).to receive(:matching_users).and_return([matching_user])
-      allow(user_list_upload).to receive(:referents_from_rows).and_return([referent])
-      allow(user_list_upload).to receive(:tags_from_rows).and_return([tag1, tag2])
-      allow(user_list_upload).to receive(:organisations).and_return([organisation, other_organisation])
-    end
-
-    it "assigns matching user" do
-      expect(collection.user_rows.first.matching_user).to eq(matching_user)
-    end
-
-    it "assigns referent" do
-      expect(collection.user_rows.first.referent_to_assign).to eq(referent)
-    end
-
-    it "assigns tags" do
-      expect(collection.user_rows.first.tags_to_assign).to contain_exactly(tag1, tag2)
-    end
-
-    describe "organisation assignment" do
-      it "assigns organisation by ID" do
-        expect(collection.user_rows.first.organisation_to_assign).to eq(organisation)
-      end
-
-      context "when organisation search terms are provided" do
-        before do
-          user_list_upload.update!(
-            user_list: [
-              {
-                first_name: "John",
-                assigned_organisation_id: nil,
-                organisation_search_terms: other_organisation.name.downcase
-              }
-            ]
-          )
-        end
-
-        it "assigns organisation by search terms" do
-          expect(collection.user_rows.first.organisation_to_assign).to eq(other_organisation)
-        end
-      end
-
-      context "when no organisation matches" do
-        before do
-          user_list_upload.update!(
-            user_list: [
-              {
-                first_name: "John",
-                assigned_organisation_id: nil,
-                organisation_search_terms: "non_existent"
-              }
-            ]
-          )
-        end
-
-        it "returns nil" do
-          expect(collection.user_rows.first.organisation_to_assign).to be_nil
-        end
-      end
-
-      context "when there is only one organisation" do
-        before do
-          allow(user_list_upload).to receive(:organisations).and_return([organisation])
-        end
-
-        it "assigns organisation" do
-          expect(collection.user_rows.first.organisation_to_assign).to eq(organisation)
-        end
-      end
+    it "sorts by first_name desc" do
+      collection.sort_by!(sort_by: "first_name", sort_direction: "desc")
+      expect(collection.user_rows.first).to eq(user_row1) # John
+      expect(collection.user_rows.last).to eq(user_row2)  # Jane
     end
   end
 end
