@@ -7,6 +7,9 @@ ruby "3.3.3"
 gem "dotenv-rails"
 # Policies management
 gem "pundit"
+# Authentication
+gem "omniauth-rails_csrf_protection"
+gem "omniauth-rdv-service-public"
 # Http client
 gem "faraday"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
