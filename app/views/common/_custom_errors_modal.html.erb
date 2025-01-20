@@ -3,7 +3,11 @@
     <div class="text-center mb-3">
       <%= image_tag "illustrations/error-line.svg", alt: "Illustration d'un message d'erreur", class: "mb-3" %>
     </div>
-    <h4 class="text-center"><b>Impossible d'inviter l'usager</b></h4>
+      <% if local_assigns[:title] %>
+        <h4 class="text-center"><b><%= local_assigns[:title] %></b></h4>
+      <% else %>
+        <h4 class="text-center"><b>Oups! Une erreur est survenue 👷‍</b></h4>
+      <% end %>
     <div class="p-3">
       <% errors.each_with_index do |error, index| %>
         <% if error.is_a?(TemplatedErrorPresenter) %>
@@ -14,6 +18,9 @@
         <% if index < errors.size - 1 %>
           <hr class="mx-auto w-50">
         <% end %>
+      <% end %>
+      <% if local_assigns[:with_support_contact] %>
+        <p>Veuillez contacter le support à l'adresse <%= link_to "support@rdv-insertion.fr", "mailto:support@rdv-insertion.fr", class: "btn-link" %> si le problème persiste.</p>
       <% end %>
     </div>
   </div>

@@ -13,12 +13,12 @@
         <span class="label-alt position-absolute bg-white pe-none">
           <span class="status-label-alt">
             <% if selected_status.present? %>
-              Statut : <%= selected_status[0] %>
+              Statut : <%= selected_status[0] %> <span class="filter-active">1</span>
             <% else %>
               Filtrer par statut
             <% end %>
           </span>
-          <i class="fas fa-angle-down"></i>
+          <i class="ri-arrow-down-s-line"></i>
         </span>
       </div>
     <% end %>
@@ -36,30 +36,30 @@
       <span class="label-alt position-absolute bg-white pe-none">
         <span class="referent-label-alt">
           <% if selected_referent.present? %>
-            Suivis par : <%= selected_referent %>
+            Suivis par : <%= selected_referent %> <span class="filter-active">1</span>
           <% else %>
             Filtrer par référent
           <% end %>
         </span>
-        <i class="fas fa-angle-down"></i>
+        <i class="ri-arrow-down-s-line"></i>
       </span>
     </div>
-    <%= render "filter_by_orientation_type_button" if @structure_orientations.any? %>
+    <%= render "filter_by_orientation_type_button" if show_orientations_filter? %>
     <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
-    <%= render "filter_by_invitations_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
+    <%= render "filter_by_invitation_or_convocation_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
     <%= render "search_form", url: structure_users_path %>
 
     <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
       <div class="text-left mt-2">
         <% if @tags.any? || @current_category_configuration.present? %>
-          <i class="fas fa-filter"></i> Filtrer par :
+          <i class="ri-filter-line"></i> Filtrer par :
         <% end %>
         <% if @current_category_configuration.present? %>
           <div class="mt-1">
             <input type="checkbox" name="action_required" class="form-check-input"></input> Usagers avec intervention nécessaire
             <small>
               <i
-                class="fas fa-question-circle"
+                class="ri-question-line"
                 data-controller="tooltip"
                 data-action="mouseover->tooltip#actionRequired"
                 data-invitation-duration-in-days="<%= @current_category_configuration&.number_of_days_before_invitations_expire %>"
@@ -78,13 +78,18 @@
 
       <div class="expand-button-container">
         <button data-action="index-filters#expand">
-          <i class="fas fa-arrow-down"></i> Voir plus de filtres
+          <i class="ri-arrow-down-line"></i> Voir plus de filtres
+        </button>
+      </div>
+      <div class="collapse-button-container">
+        <button data-action="index-filters#collapse">
+          <i class="ri-arrow-up-line"></i> Voir moins de filtres
         </button>
       </div>
       <% if display_back_to_list_button? %>
         <div>
           <%= link_to structure_users_path(motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
-            <i class="fas fa-undo"></i> Réinitialiser les filtres
+            <i class="ri-arrow-go-back-line"></i> Réinitialiser les filtres
           <% end %>
         </div>
       <% end %>
@@ -101,8 +106,8 @@
     </h4>
     <% unless department_level? %>
       <div class="mt-2">
-        <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
-          <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+        <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(@organisation.rdv_solidarites_url) do %>
+          <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i></button>
         <% end %>
       </div>
     <% end %>
@@ -125,7 +130,7 @@
           <% end %>
         </li>
       </ul>
-      <% if authorized_any?(@current_organisations, :configure) %>
+      <% if authorized_any?(current_organisations, :configure) %>
         <% if department_level? %>
           <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "mb-2") do %>
             <button class="btn btn-blue-out">Configurer une organisation</button>

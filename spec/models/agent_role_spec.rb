@@ -101,4 +101,13 @@ describe AgentRole do
       end
     end
   end
+
+  describe "organisation cannot be archived" do
+    let(:organisation) { create(:organisation, archived_at: Time.current) }
+    let(:agent_role) { build(:agent_role, organisation: organisation) }
+
+    it "adds an error" do
+      expect(agent_role).not_to be_valid
+    end
+  end
 end

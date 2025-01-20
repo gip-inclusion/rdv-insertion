@@ -11,7 +11,7 @@ describe CarnetDeBord::CreateCarnet, type: :service do
       birth_date:
     )
   end
-  let!(:birth_date) { Time.zone.parse("20/11/2000").to_date }
+  let!(:birth_date) { Time.zone.parse("20/11/1980").to_date }
   let!(:nir) { generate_random_nir }
   let!(:department) { create(:department, carnet_de_bord_deploiement_id:, number: "93") }
   let!(:carnet_de_bord_deploiement_id) { "382A2" }

@@ -19,6 +19,7 @@ describe "Agents can archive and unarchive user", :js do
       click_button "Archiver"
 
       expect(page).to have_content "Dossier archivé"
+      expect(page).to have_content "Cet usager est archivé sur l'organisation #{organisation.name}"
 
       expect(Archive.count).to eq(1)
       expect(Archive.first.user).to eq(user)
@@ -56,6 +57,7 @@ describe "Agents can archive and unarchive user", :js do
         click_button "Archiver"
 
         expect(page).to have_content "Dossier archivé"
+        expect(page).to have_content "Cet usager est archivé sur les organisations Organisation n°"
 
         expect(Archive.count).to eq(2)
       end
@@ -94,6 +96,7 @@ describe "Agents can archive and unarchive user", :js do
         click_button "Archiver"
 
         expect(page).to have_content "Dossier archivé"
+        expect(page).to have_content "Cet usager est archivé sur les organisations Organisation n°"
 
         expect(Archive.count).to eq(2)
 
@@ -175,7 +178,6 @@ describe "Agents can archive and unarchive user", :js do
 
         it "displays the user as archived but with no reopen button" do
           expect(page).to have_no_button "Rouvrir le dossier"
-          expect(page).to have_css(".fa-link")
           expect(page).to have_content "Dossier archivé"
         end
       end

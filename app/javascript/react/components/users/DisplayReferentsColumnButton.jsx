@@ -10,8 +10,8 @@ export default observer(({ users }) => (
       style={{ cursor: "pointer" }}
       onClick={() => { users.showReferentColumn = !users.showReferentColumn } }
     >
-      <i className="fas fa-user" />
-      <i className={users.showReferentColumn ? "fas fa-minus" : "fas fa-plus"} />
+      <i className="ri-user-line" />
+      <i className={users.showReferentColumn ? "ri-subtract-line" : "ri-add-line"} />
     </button>
   </Tippy>
 ));

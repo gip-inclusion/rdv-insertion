@@ -281,7 +281,7 @@ drome1_organisation = Organisation.create!(
 
 CategoryConfiguration.create!(
   file_configuration: file_config_drome,
-  convene_user: false,
+  convene_user: true,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
   number_of_days_before_invitations_expire: 10,
@@ -346,7 +346,7 @@ yonne_organisation = Organisation.create!(
   rdv_solidarites_organisation_id: 3,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
-  organisation_type: "siae"
+  organisation_type: "france_travail"
 )
 
 CategoryConfiguration.create!(
@@ -390,15 +390,40 @@ AgentRole.create!(agent:, organisation: drome1_organisation, access_level: "admi
 AgentRole.create!(agent:, organisation: drome2_organisation, access_level: "admin")
 AgentRole.create!(agent:, organisation: yonne_organisation, access_level: "admin")
 
-User.create!(
+user_to_convoc = User.create!(
   rdv_solidarites_user_id: 1,
   email: "jean.rsavalence@testinvitation.fr",
   first_name: "Jean",
   last_name: "RSAValence",
+  title: "monsieur",
+  address: "60 avenue de Chabeuil 26000 Valence",
   phone_number: "0601020304",
   created_from_structure: drome1_organisation,
   created_through: "rdv_insertion_api"
 )
+
+follow_up_for_jean = FollowUp.create!(user: user_to_convoc, motif_category: orientation_category)
+
+Invitation.create!(
+  user: user_to_convoc,
+  department: drome,
+  organisations: [drome1_organisation],
+  expires_at: Time.zone.now - 10.days,
+  created_at: Time.zone.now - 15.days,
+  updated_at: Time.zone.now - 15.days,
+  format: "email",
+  link: "https://expired.rdv-insertion/link",
+  rdv_solidarites_token: "EXPIRED",
+  clicked: false,
+  help_phone_number: "0123456789",
+  rdv_solidarites_lieu_id: nil,
+  follow_up: follow_up_for_jean,
+  rdv_with_referents: false,
+  trigger: "manual",
+  delivery_status: nil,
+  last_brevo_webhook_received_at: nil
+)
+
 
 User.create!(
   rdv_solidarites_user_id: 2,
@@ -406,6 +431,7 @@ User.create!(
   address: "12 Rue Joubert, Auxerre, 89000",
   first_name: "Jean",
   last_name: "RSAAuxerre",
+  title: "monsieur",
   created_from_structure: yonne_organisation,
   created_through: "rdv_insertion_api"
 )
@@ -442,6 +468,30 @@ Motif.create!(
 )
 
 Motif.create!(
+  rdv_solidarites_motif_id: 4,
+  # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
+  name: "Convocation RSA - Orientation : rdv sur site",
+  reservable_online: false,
+  deleted_at: nil,
+  rdv_solidarites_service_id: 1,
+  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
+  collectif: false,
+  location_type: "public_office",
+  motif_category: orientation_category,
+  last_webhook_update_received_at: Time.zone.now,
+  organisation_id: drome1_organisation.id,
+  follow_up: false
+)
+
+Lieu.create!( # Nécessaire pour la convoc
+  rdv_solidarites_lieu_id: 2,
+  name: "Le 114 - Plate -forme mutualisée d'orientation - Département de la Drôme",
+  address: "114 Rue de la Forêt, Valence, 26000",
+  phone_number: "04.75.79.69.91",
+  organisation: drome1_organisation
+)
+
+Motif.create!(
   rdv_solidarites_motif_id: 3,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Orientation : rdv sur site",
@@ -458,7 +508,7 @@ Motif.create!(
 )
 
 Motif.create!(
-  rdv_solidarites_motif_id: 4,
+  rdv_solidarites_motif_id: 5,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Codiagnostic d'orientation",
   reservable_online: false,
@@ -474,7 +524,7 @@ Motif.create!(
 )
 
 Motif.create!(
-  rdv_solidarites_motif_id: 5,
+  rdv_solidarites_motif_id: 6,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Orientation : rdv téléphonique",
   reservable_online: false,

@@ -125,14 +125,6 @@ describe Users::FollowUpsController do
           )
         end
 
-        it "shows the convocation formats" do
-          get :index, params: index_params
-
-          expect(response.body).to match(/Convoqué par/)
-          expect(response.body).to include("SMS 📱")
-          expect(response.body).not_to include("Email 📧")
-        end
-
         context "when the rdv is pending" do
           before do
             rdv_orientation1.update! starts_at: 2.days.from_now
@@ -142,7 +134,7 @@ describe Users::FollowUpsController do
           it "shows the courrier generation button" do
             get :index, params: index_params
 
-            expect(response.body).to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
+            expect(response.body).to include("<i class=\"ri-file-pdf-line\"></i> Télécharger le courrier")
           end
         end
 
@@ -150,7 +142,7 @@ describe Users::FollowUpsController do
           it "does not show the courrier generation button" do
             get :index, params: index_params
 
-            expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
+            expect(response.body).not_to include("<i class=\"ri-file-pdf-line\"></i> Télécharger le courrier")
           end
         end
 
@@ -160,7 +152,7 @@ describe Users::FollowUpsController do
           it "does not show the courrier generation button" do
             get :index, params: index_params
 
-            expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
+            expect(response.body).not_to include("<i class=\"ri-file-pdf-line\"></i> Télécharger le courrier")
           end
         end
       end

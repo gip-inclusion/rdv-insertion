@@ -35,7 +35,7 @@ export default observer(({ user }) => {
   return (
     <tr className="table-success">
       <td colSpan={user.list.numberOfColumnsBeforeContactListUpdate} className="text-align-right">
-        <i className="fas fa-level-up-alt" />
+        <i className="ri-corner-right-up-fill" />
         Nouvelles données trouvées pour {user.firstName} {user.lastName}
       </td>
       {user.list.columnsAfterFirstContactListUpdate.map(

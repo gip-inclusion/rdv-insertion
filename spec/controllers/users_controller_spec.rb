@@ -621,7 +621,7 @@ describe UsersController do
 
       context "when a single tag is given as string" do
         let!(:index_params) do
-          { organisation_id: organisation.id, tag_ids: tags[2].id }
+          { organisation_id: organisation.id, tag_ids: [tags[2].id] }
         end
 
         it "filters by this tag" do
@@ -1065,7 +1065,7 @@ describe UsersController do
 
         before do
           allow(Users::Save).to receive(:call).and_call_original
-          allow_any_instance_of(Users::Save).to receive(:sync_with_rdv_solidarites)
+          allow_any_instance_of(Users::Save).to receive(:push_user_to_rdv_solidarites)
             .and_return true
           organisation.tags << tag
           organisation.tags << existing_tag
@@ -1238,6 +1238,21 @@ describe UsersController do
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
         end
+      end
+    end
+  end
+
+  describe "active filters view" do
+    include UsersHelper
+
+    # This test ensures that the active_filters_recap handles every possible filter
+    # It might turn red if we add a new filter and forget to handle its associated
+    # view in the active_filters_recap.
+    # To fix it, you just need to add an if statement to the view
+    it "handles and single filter possibilities" do
+      view_content = Rails.root.join("app/views/users/_active_filters_recap.html.erb").read
+      (filter_list - [:search_query]).each do |filter|
+        expect(view_content).to include("filter == :#{filter}")
       end
     end
   end

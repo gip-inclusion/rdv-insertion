@@ -3,15 +3,15 @@
     <button class="btn btn-blue dropdown-toggle accessible" type="button" data-action="click->dropdown-menu#toggle" data-dropdown-menu-target="button" aria-haspopup="true" aria-expanded="false">Trouver un RDV</button>
     <div data-dropdown-menu-target="dropdown" class="dropdown-menu">
       <% mutual_department_organisations(@user, current_agent, @department).each do |organisation| %>
-        <%= link_to new_user_rdv_path(@user, organisation_id: organisation.id), target: "_blank", class: "dropdown-item py-3 d-flex justify-content-between" do %>
+        <%= link_to new_user_rdv_path(@user, organisation_id: organisation.id), target: "_blank", class: "dropdown-item py-3 d-flex justify-content-between", **with_rdv_solidarites_impersonation_warning(new_user_rdv_path(@user, organisation_id: organisation.id)) do %>
           Sur l'organisation <%= organisation.name %>
-          <i class="fas ms-5 me-1 fa-external-link-alt text-dark-blue"></i>
+          <i class="ri-external-link-line ms-1 text-dark-blue"></i>
         <% end %>
       <% end %>
     </div>
   </div>
 <% else %>
   <%= link_to new_user_rdv_path(@user, organisation_id: current_or_mutual_organisation_id(@user, current_agent, @department)), target: "_blank" do %>
-    <button class="btn btn-blue me-2">Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i></button>
+    <button class="btn btn-blue me-2">Trouver un RDV<i class="ri-external-link-line ms-1"></i></button>
   <% end %>
 <% end %>

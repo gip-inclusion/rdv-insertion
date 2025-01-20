@@ -1,4 +1,4 @@
-<span class="<%= css_classes_for_organisation_badge(archive) %>" <%= tooltip_for_organisation_badge(archive) %>>
+<span class="<%= css_classes_for_organisation_badge(archive) %>" <%= tooltip_for_archived_organisation_badge(archive) %>>
   <span class="text-truncate">
     <%= organisation.name %>
     <% if department.id != organisation.department_id %>
@@ -25,7 +25,7 @@
       end
     %>
     <%= link_to(users_organisations_path(user: user.id, users_organisation: { user_id: user.id, organisation_id: organisation.id }), data:, class: 'text-dark-grey-alt ms-2' ) do %>
-      <i class="fas fa-times"></i>
+      <i class="ri-close-line"></i>
     <% end %>
   <% end %>
 </span>

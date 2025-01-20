@@ -18,6 +18,7 @@ module.exports = {
   },
   entry: {
     application: "./app/javascript/application.js",
+    super_admin: "./app/javascript/super_admin.js",
     mail: "./app/javascript/mail.js",
     pdf: "./app/javascript/pdf.js",
   },

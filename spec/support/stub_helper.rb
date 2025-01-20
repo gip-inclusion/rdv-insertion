@@ -15,6 +15,14 @@ module StubHelper
     )
   end
 
+  def stub_rdv_solidarites_activate_motif_category_territories(rdv_solidarites_organisation_id, motif_name)
+    stub_request(
+      :post, "http://www.rdv-solidarites-test.localhost/api/rdvinsertion/motif_category_territories"
+    ).with(
+      body: "{\"motif_category_short_name\":\"#{motif_name}\",\"organisation_id\":#{rdv_solidarites_organisation_id}}"
+    ).to_return(status: 200, body: "", headers: {})
+  end
+
   def stub_rdv_solidarites_assign_many_referents(rdv_solidarites_user_id)
     stub_request(
       :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/referent_assignations/create_many"
@@ -77,7 +85,7 @@ module StubHelper
     stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
   end
 
-  def stub_sync_with_rdv_solidarites_user(rdv_solidarites_user_id)
+  def stub_rdv_solidarites_update_user_and_associations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_organisations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_many_referents(rdv_solidarites_user_id)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)

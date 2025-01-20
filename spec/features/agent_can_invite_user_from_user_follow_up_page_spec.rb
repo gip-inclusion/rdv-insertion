@@ -25,6 +25,8 @@ describe "Agents can invite user from user follow up page", :js do
     stub_geo_api_request(user.address)
     stub_brevo
     stub_creneau_availability(true)
+    follow_up.set_status
+    follow_up.save
   end
 
   shared_examples "agent can invite user" do

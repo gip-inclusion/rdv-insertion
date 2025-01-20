@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :agent do
-    sequence(:email) { |n| "agent#{n}@gouv.fr" }
+    sequence(:email) { |n| "agent#{n + Process.pid}@gouv.fr" }
     sequence(:first_name) { |n| "jane#{n}" }
     sequence(:last_name) { |n| "doe#{n}" }
 
@@ -30,5 +30,7 @@ FactoryBot.define do
         create(:agent_role, :admin, agent: agent, organisation: organisation)
       end
     end
+
+    cgu_accepted_at { Time.zone.now }
   end
 end

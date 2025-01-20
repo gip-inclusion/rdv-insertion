@@ -138,8 +138,8 @@ module Exporters
        user.organisations.to_a.count,
        display_organisation_names(user.organisations),
        scoped_user_tags(user.tags).pluck(:value).join(", "),
-       *(display_date(user.organisation_archive(@structure)&.created_at) unless department_level?),
-       *(user.organisation_archive(@structure)&.archiving_reason unless department_level?)]
+       *(display_date(user.archive_in_organisation(@structure)&.created_at) unless department_level?),
+       *(user.archive_in_organisation(@structure)&.archiving_reason unless department_level?)]
     end
 
     def human_last_participation_status(user)
@@ -282,8 +282,8 @@ module Exporters
       return "Non calculable" if user.in_many_departments?
 
       follow_up = user.first_orientation_follow_up
-      result = follow_up.present? && follow_up.rdv_seen_delay_in_days.present? &&
-               follow_up.rdv_seen_delay_in_days < number_of_days
+      result = follow_up.present? && follow_up.days_between_follow_up_creation_and_first_seen_rdv.present? &&
+               follow_up.days_between_follow_up_creation_and_first_seen_rdv < number_of_days
       I18n.t("boolean.#{result}")
     end
 

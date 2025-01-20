@@ -1,0 +1,32 @@
+<div class="d-flex justify-content-center">
+  <table class="card-white text-center align-middle m-3 shadow-sm">
+    <thead>
+      <tr>
+          <th class="px-4 pt-3 pb-1">
+            <h4>Convocation SMS</h4>
+          </th>
+          <th class="px-4 pt-3 pb-1">
+            <h4>Convocation mail</h4>
+          </th>
+          <th class="px-4 pt-3 pb-1">
+            <h4>Convocation courrier</h4>
+          </th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render "follow_ups/convocation_dates_rows", convocable_participations:, motif_category: %>
+      <% if convocable_participations.count > 1 %>
+        <tr>
+          <td class="px-4 py-2" colspan="3" style="cursor='pointer'" data-controller="convocable-participation-dates" data-action="click->convocable-participation-dates#toggleHistory" data-motif-category-id="<%= motif_category.id %>">
+              <button type="button">
+                <i class="ri-arrow-down-s-line"></i> Voir l'historique <i class="ri-arrow-down-s-line"></i>
+              </button>
+              <button type="button" class="d-none">
+                <i class="ri-arrow-up-s-line"></i> Voir moins <i class="ri-arrow-up-s-line"></i>
+              </button>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

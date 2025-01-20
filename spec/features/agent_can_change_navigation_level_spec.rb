@@ -2,8 +2,11 @@ describe "Agents can sort users on index page", :js do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:organisation2) { create(:organisation, department: department) }
-  let!(:agent) { create(:agent, organisations: [organisation2]) }
-  let!(:admin_agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: "admin") }
+  let!(:other_department) { create(:department) }
+  let!(:other_department_organisation) { create(:organisation, department: other_department) }
+  let!(:agent) do
+    create(:agent, admin_role_in_organisations: [organisation, organisation2, other_department_organisation])
+  end
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:motif_category2) { create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement") }
   let!(:category_configuration) do
@@ -31,6 +34,8 @@ describe "Agents can sort users on index page", :js do
           )
           expect(page).to have_link(organisation.name, href: organisation_users_path(organisation))
           expect(page).to have_link(organisation2.name, href: organisation_users_path(organisation2))
+          expect(page).to have_no_link(other_department_organisation.name,
+                                       href: organisation_users_path(other_department_organisation))
         end
       end
     end

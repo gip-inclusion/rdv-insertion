@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 import EditableTags from "./EditableTags";
 
-function EditableCell({ user, cell, type, values }) {
+function EditableCell({ user, cell, type, values, labelClassName = "", labelStyle = {} }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingTags, setIsEditingTags] = useState(false);
 
@@ -58,7 +58,7 @@ function EditableCell({ user, cell, type, values }) {
         ))}
       </select>
     );
-    label = values.find((el) => el.value === user[cell])?.key || " - ";
+    label = <span>{values.find((el) => el.value === user[cell])?.key || " - "}</span>;
   } else if (type === "tags") {
     const userTags = user[cell].map(tag => tag.toLowerCase())
     const existingTags = values.filter((tag) => userTags.includes(tag.toLowerCase()));
@@ -69,7 +69,7 @@ function EditableCell({ user, cell, type, values }) {
         {newTags.length ? (
           <div className="px-1 w-100 text-warning position-relative">
             {newTags.join(", ")}
-            <i className="fas fa-exclamation-triangle icon-sm position-absolute mt-1 mx-1" />
+            <i className="ri-alert-line icon-sm position-absolute mt-1 mx-1" />
           </div>
         ) : null}
         {existingTags.length ? <div className="px-1 w-100">{existingTags.join(", ")}</div> : null}
@@ -77,6 +77,11 @@ function EditableCell({ user, cell, type, values }) {
       </div>
     );
   } else {
+    label = (
+      <div className={labelClassName} style={labelStyle} >
+        {user[cell] || " - "}
+      </div >
+    );
     input = (
       <input
         type="text"
@@ -101,8 +106,13 @@ function EditableCell({ user, cell, type, values }) {
         user.triggers[`${cell}Update`] ? "En cours..." : "Double-cliquez pour modifier",
       ].join("")}
     >
-      <div onDoubleClick={handleDoubleClick} onBlur={handleBlur} style={{ cursor: "pointer" }}>
-        {isEditing ? input : <span>{label}</span>}
+      <div
+        onDoubleClick={handleDoubleClick}
+        onBlur={handleBlur}
+        className="d-flex justify-content-center align-items-center"
+        style={{ cursor: "pointer" }}
+      >
+        {isEditing ? input : label}
         {isEditingTags ? (
           <EditableTags
             user={user}

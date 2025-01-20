@@ -1,9 +1,16 @@
-require_relative "../middlewares/sidekiq/capture_current_agent"
-require_relative "../middlewares/sidekiq/set_current_agent"
+require "sidekiq"
+
+Dir[Rails.root.join("app/lib/sidekiq/**/*.rb")].each do |file|
+  require file
+end
 
 Sidekiq.configure_server do |config|
-  config.redis = { url: Rails.configuration.x.redis_url }
+  config.logger = Sidekiq::Logger.new($stdout)
   config.logger.level = Rails.env.development? ? Logger::DEBUG : Logger::INFO
+  config.logger.formatter = Sidekiq::Logger::Formatters::CustomLogFormatter.new
+
+  config.redis = { url: Rails.configuration.x.redis_url }
+
   # when jobs are pushing other jobs to Sidekiq they are acting as clients, so we need to add the middleware here
   config.client_middleware do |chain|
     chain.prepend Sidekiq::Middleware::CaptureCurrentAgent
@@ -11,9 +18,6 @@ Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
     chain.prepend Sidekiq::Middleware::SetCurrentAgent
   end
-
-  Rails.logger = Sidekiq.logger
-  ActiveRecord::Base.logger = Sidekiq.logger
 end
 
 Sidekiq.logger.level = Logger::WARN if Rails.env.test?

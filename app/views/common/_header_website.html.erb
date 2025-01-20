@@ -1,4 +1,9 @@
 <header>
+  <% if agent_impersonated? %>
+      <%= render "common/header_super_admin_bar_impersonated" %>
+  <% elsif current_agent&.super_admin? %>
+    <%= render "common/header_super_admin_bar" %>
+  <% end %>
   <nav class="container navbar px-3 navbar-expand-lg">
     <div class="d-flex justify-content-start">
       <%= link_to root_path do %>
@@ -8,16 +13,7 @@
     </div>
     <div class="nav col justify-content-end align-items-center">
       <% if current_agent %>
-        <% if current_agent.super_admin? %>
-          <%= link_to super_admins_root_path do %>
-            <button class="btn btn-header border-light-grey w-100">
-              <span class="d-none d-sm-inline">Super admin</span>
-              <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
-            </button>
-          <% end %>
-        <% else %>
-          <%= render "common/header_help_menu" %>
-        <% end %>
+        <%= render "common/header_help_menu" %>
         <div class="mx-3">
         <%= render "common/sign_out_button" %>
         </div>
@@ -48,7 +44,7 @@
     <div class="sub-header d-none d-md-flex">
       <div class="container d-none d-md-flex ">
         <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
-          <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
+          <p class="mb-0">Guide d'utilisation&nbsp;<i class="ri-external-link-line"></i></p>
         <% end %>
         <%= link_to stats_path, class: "nav-link optional-link " do %>
           <p class="mb-0">Statistiques d'utilisation</p>

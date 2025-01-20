@@ -1,0 +1,18 @@
+<div class="top-bar d-flex hidden" data-controller="super-admin-header">
+  <div class="container d-flex position-relative top-bar-content">
+    <div class="container d-flex justify-content-start px-3">
+      <p class="mb-0">Bonjour <%= current_agent.first_name %>, voulez-vous accéder au SuperAdmin ?</p>
+    </div>
+    <div class="container d-flex justify-content-end px-4">
+      <p class="mb-0">
+        <%= link_to super_admins_root_path do %>
+          <i class="ri-shield-user-line me-1"></i>
+          Accéder au Super admin
+        <% end %>
+      </p>
+    </div>
+  </div>
+  <button type="button" id="toggle-navbar" class="position-absolute" data-action="click->super-admin-header#toggle">
+    <i class="ri-shield-user-line"></i>
+  </button>
+</div>

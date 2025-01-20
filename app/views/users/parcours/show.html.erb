@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "user_page", data: { turbo_action: "advance" } do %>
   <%= render "users/page_title", user: @user %>
 
-  <%= render 'users/archive_banner' if @user_is_archived %>
+  <%= render "users/archived_banner" if user_archived_in?(@user, current_organisations) %>
 
   <div class="container text-dark-blue h4-as-labels mt-4">
     <%= render "users/user_page_header" %>
@@ -13,7 +13,7 @@
       <%= render "orientations/orientations_list", orientations: @orientations %>
 
       <%= link_to(new_user_orientation_path(user_id: @user.id), data: { turbo_frame: 'remote_modal' }) do %>
-        <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter une orientation</button>
+        <button class="btn btn-blue mb-3"><i class="ri-add-line"></i> Ajouter une orientation</button>
       <% end %>
     </div>
 

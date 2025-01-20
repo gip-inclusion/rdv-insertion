@@ -13,6 +13,8 @@ module Users::Filterable
     filter_users_by_creation_date_before
     filter_users_by_first_invitations
     filter_users_by_last_invitations
+    filter_users_by_convocation_date_before
+    filter_users_by_convocation_date_after
     filter_users_by_page
     filter_users_by_tags
   end
@@ -20,9 +22,10 @@ module Users::Filterable
   def filter_users_by_tags
     return if params[:tag_ids].blank?
 
+    @filtered_tags = Tag.where(id: params[:tag_ids])
     user_ids = TagUser
                .select(:user_id)
-               .where(tag_id: params[:tag_ids])
+               .where(tag_id: @filtered_tags)
                .group(:user_id)
                .having("COUNT(DISTINCT tag_id) = ?", [params[:tag_ids]].flatten.count)
                .pluck(:user_id)
@@ -56,7 +59,8 @@ module Users::Filterable
   def filter_users_by_referent
     return if params[:referent_id].blank?
 
-    @users = @users.joins(:referents).where(referents: { id: params[:referent_id] })
+    @referent = Agent.find(params[:referent_id])
+    @users = @users.joins(:referents).where(referents: { id: @referent.id })
   end
 
   def filter_users_by_search_query
@@ -82,6 +86,22 @@ module Users::Filterable
     return if params[:creation_date_before].blank?
 
     @users = @users.where("users.created_at < ?", params[:creation_date_before].to_date.end_of_day)
+  end
+
+  def filter_users_by_convocation_date_before
+    return if params[:convocation_date_before].blank?
+
+    @users = @users.joins(participations: :notifications)
+                   .where(participations: { convocable: true, follow_up: @follow_ups })
+                   .where("notifications.created_at < ?", params[:convocation_date_before].to_date.end_of_day)
+  end
+
+  def filter_users_by_convocation_date_after
+    return if params[:convocation_date_after].blank?
+
+    @users = @users.joins(participations: :notifications)
+                   .where(participations: { convocable: true, follow_up: @follow_ups })
+                   .where("notifications.created_at > ?", params[:convocation_date_after].to_date.beginning_of_day)
   end
 
   def filter_users_by_first_invitations

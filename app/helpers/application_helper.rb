@@ -1,17 +1,20 @@
 module ApplicationHelper
   def alert_class_for(type)
-    case type
-    when :success
-      "alert-success"
-    when :alert
-      "alert-warning"
-    when :error
-      "alert-danger"
-    when :notice
-      "alert-info"
-    else
-      alert.to_s
-    end
+    {
+      success: "alert-success",
+      error: "alert-danger",
+      alert: "alert-warning",
+      notice: "alert-info"
+    }[type] || type.to_s
+  end
+
+  def icon_class_for(type)
+    {
+      success: "ri-checkbox-circle-fill",
+      error: "ri-close-circle-fill",
+      alert: "ri-error-warning-fill",
+      notice: "ri-information-fill"
+    }[type] || "ri-information-fill"
   end
 
   def display_attribute(attribute)
@@ -31,6 +34,8 @@ module ApplicationHelper
   end
 
   def show_organisation_navigation_button?
+    return false if current_structure_type_in_params.blank?
+
     current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 
@@ -39,6 +44,6 @@ module ApplicationHelper
   end
 
   def render_turbo_stream_flash_messages
-    turbo_stream.prepend "flashes", partial: "common/flash"
+    turbo_stream.prepend "flashes", partial: "common/flashes"
   end
 end

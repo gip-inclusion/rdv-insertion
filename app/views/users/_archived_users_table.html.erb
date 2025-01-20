@@ -4,11 +4,11 @@
   <thead class="text-dark-blue" data-controller="index-table-sorting">
     <th scope="col" class="sortable-table-header" id="js_last_name_header">
       Nom
-      <i class="fas fa-sort"></i>
+      <i class="ri-expand-up-down-fill"></i>
     </th>
     <th scope="col" class="sortable-table-header" id="js_first_name_header">
       Prénom
-      <i class="fas fa-sort"></i>
+      <i class="ri-expand-up-down-fill"></i>
     </th>
     <th scope="col">Date de création</th>
     <th scope="col">Première invitation</th>
@@ -33,8 +33,8 @@
         <td><%= display_attribute format_date(user.first_invitation_created_at) %></td>
         <td><%= display_attribute(format_date(user.last_invitation_created_at)) %></td>
         <% if !department_level? %>
-          <td><%= display_attribute format_date(user.organisation_archive(@organisation)&.created_at) %></td>
-          <td><%= display_attribute user.organisation_archive(@organisation)&.archiving_reason %></td>
+          <td><%= display_attribute format_date(user.archive_in_organisation(@organisation)&.created_at) %></td>
+          <td><%= display_attribute user.archive_in_organisation(@organisation)&.archiving_reason %></td>
         <% end %>
         <td class="padding-left-15">
           <%= link_to structure_user_path(user.id) do %>

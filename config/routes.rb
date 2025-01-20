@@ -22,6 +22,10 @@ Rails.application.routes.draw do
     resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
     resources :orientation_types, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :webhook_endpoints, only: [:index] do
+      post :duplicate, on: :member
+    end
+    resources :unavailable_creneau_logs, only: [:index]
 
     root to: "agents#index"
   end
@@ -47,6 +51,7 @@ Rails.application.routes.draw do
     get :geolocated, on: :collection
     get :search, on: :collection
     resources :convocations, only: [:new]
+    resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         get :default_list
@@ -77,7 +82,12 @@ Rails.application.routes.draw do
         patch "csv_export_authorizations/batch_update", to: "csv_export_authorizations#batch_update"
       end
     end
-    resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
+    scope module: :dates_filterings do
+      resources :choose_date_kind,
+                :invitation_dates_filterings,
+                :convocation_dates_filterings,
+                :creation_dates_filterings, only: [:new]
+    end
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
     end
@@ -88,6 +98,8 @@ Rails.application.routes.draw do
   resources :stats, only: [:index], controller: 'website/stats' do
     get :deployment_map, on: :collection
   end
+
+  resources :accept_cgus, only: [:create]
 
   resources :users, module: :users, only: [] do
     resources :rdvs, only: [:new]
@@ -160,7 +172,12 @@ Rails.application.routes.draw do
     resource :stats, only: [:show], controller: 'website/stats'
     resources :users_organisations, only: [:index, :create]
     resource :users_organisations, only: [:destroy]
-    resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
+    scope module: :dates_filterings do
+      resources :choose_date_kind,
+                :invitation_dates_filterings,
+                :convocation_dates_filterings,
+                :creation_dates_filterings, only: [:new]
+    end
   end
 
   namespace :api do

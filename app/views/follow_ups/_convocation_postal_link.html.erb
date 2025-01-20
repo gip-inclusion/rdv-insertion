@@ -1,0 +1,9 @@
+<% if participation.notifiable? && participation.user.notifiable? %>
+  <%= form_for(:notification, url: participation_notifications_path(participation, format: "pdf"), method: :post) do |f| %>
+    <%= f.hidden_field :format, value: "postal" %>
+    <%= f.hidden_field :event, value: participation.revoked? ? "participation_cancelled" : "participation_created" %>
+    <%= button_tag type: 'submit', class: "text-decoration-underline" do %>
+      <span><i class="ri-file-pdf-line"></i> Télécharger le courrier</span>
+    <% end  %>
+  <% end %>
+<% end %>

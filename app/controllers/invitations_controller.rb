@@ -1,5 +1,5 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_user, :verify_user_is_sync_with_rdv_solidarites, only: [:create]
+  before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
@@ -8,11 +8,11 @@ class InvitationsController < ApplicationController
       respond_to do |format|
         format.json { render json: { success: true, invitation: invitation } }
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
-        format.turbo_stream { redirect_to structure_user_follow_ups_path(@user.id) }
+        format.turbo_stream { redirect_to structure_user_follow_ups_path(user_id: @user.id) }
       end
     else
       respond_to do |format|
-        format.any(:pdf) do
+        format.pdf do
           render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
         end
         format.json do
@@ -24,10 +24,13 @@ class InvitationsController < ApplicationController
             #   window.Turbo.renderStreamMessage.
             # Discussion ici : https://github.com/gip-inclusion/rdv-insertion/pull/2361#discussion_r1784538358
             turbo_stream_html: turbo_stream.replace("remote_modal", partial: "common/custom_errors_modal",
-                                                                    locals: { errors: invite_user.errors })
+                                                                    locals: { errors: invite_user.errors,
+                                                                              title: "Impossible d'inviter l'usager" })
           }, status: :unprocessable_entity
         end
-        format.turbo_stream { turbo_stream_display_custom_error_modal(invite_user.errors) }
+        format.turbo_stream do
+          turbo_stream_display_custom_error_modal(errors: invite_user.errors, title: "Impossible d'inviter l'usager")
+        end
       end
     end
   end
@@ -83,8 +86,8 @@ class InvitationsController < ApplicationController
     @user = policy_scope(User).includes(:invitations).find(params[:user_id])
   end
 
-  def verify_user_is_sync_with_rdv_solidarites
-    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
+  def ensure_rdv_solidarites_user_exists
+    recreate_rdv_solidarites_user(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
   def set_invitation

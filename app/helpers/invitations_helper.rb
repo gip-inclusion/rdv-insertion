@@ -24,7 +24,7 @@ module InvitationsHelper
     )
   end
 
-  def max_number_of_invitations_for_a_format(invitations_by_format)
+  def max_number_of_invitations_in_any_format(invitations_by_format)
     invitations_by_format.values.map(&:count).max
   end
 end

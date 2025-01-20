@@ -1,13 +1,13 @@
 class CategoryConfiguration < ApplicationRecord
-  include PhoneNumberValidation
-
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
-  validate :minimum_invitation_duration, :invitation_formats_validity, :periodic_invites_can_be_activated
+  validate :minimum_invitation_duration,
+           :invitation_formats_validity,
+           :periodic_invites_can_be_activated
 
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
@@ -16,6 +16,8 @@ class CategoryConfiguration < ApplicationRecord
             }
   validates :number_of_days_between_periodic_invites, numericality: { only_integer: true, greater_than: 13 },
                                                       allow_nil: true
+
+  validates :phone_number, phone_number: { allow_4_digits_numbers: true }
 
   delegate :name, :short_name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration

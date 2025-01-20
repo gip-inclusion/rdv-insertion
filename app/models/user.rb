@@ -12,7 +12,6 @@ class User < ApplicationRecord
 
   include Searchable
   include Notificable
-  include PhoneNumberValidation
   include Invitable
   include HasParticipationsToRdvs
   include User::TextHelper
@@ -23,7 +22,7 @@ class User < ApplicationRecord
   include User::CreationOrigin
   include User::Geocodable
 
-  attr_accessor :skip_uniqueness_validations
+  attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create
 
   before_validation :generate_uid
   before_save :format_phone_number
@@ -58,7 +57,12 @@ class User < ApplicationRecord
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
+  validates :phone_number, phone_number: true
+
   delegate :name, :number, to: :department, prefix: true
+
+  after_commit :import_associations_from_rdv_solidarites, on: :create,
+                                                          if: :import_associations_from_rdv_solidarites_on_create
 
   enum role: { demandeur: "demandeur", conjoint: "conjoint" }
   enum title: { monsieur: "monsieur", madame: "madame" }
@@ -128,6 +132,11 @@ class User < ApplicationRecord
     PhoneNumberHelper.format_phone_number(phone_number)
   end
 
+  def phone_number_is_mobile?
+    types = PhoneNumberHelper.parsed_number(phone_number)&.types
+    types&.include?(:mobile)
+  end
+
   def carnet_de_bord_carnet_url
     "#{ENV['CARNET_DE_BORD_URL']}/manager/carnets/#{carnet_de_bord_carnet_id}"
   end
@@ -176,11 +185,23 @@ class User < ApplicationRecord
     organisations.where(department: department)
   end
 
-  def organisation_archive(organisation)
+  def archive_in_organisation(organisation)
     archives.find { |a| a.organisation_id == organisation.id }
   end
 
+  def tag_users_attributes=(attributes)
+    attributes.map!(&:with_indifferent_access)
+    attributes.uniq! { |attr| attr["tag_id"] }
+    attributes.reject! { |attr| tag_users.any? { |tu| tu.tag_id == attr["tag_id"] } }
+
+    super(attributes)
+  end
+
   private
+
+  def import_associations_from_rdv_solidarites
+    ImportUserAssociationsFromRdvSolidaritesJob.perform_later(id)
+  end
 
   def opposite_role
     return if role.blank?

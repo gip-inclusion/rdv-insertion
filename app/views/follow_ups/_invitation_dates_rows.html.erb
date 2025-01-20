@@ -1,34 +1,18 @@
-<% if max_number_of_invitations_for_a_format == 0 %>
+<% if max_number_of_invitations_in_any_format == 0 %>
   <tr>
     <% invitation_formats.each do |format| %>
       <td class="px-4 py-3">-</td>
     <% end %>
   </tr>
 <% else %>
-  <% max_number_of_invitations_for_a_format.times do |idx| %>
+  <% max_number_of_invitations_in_any_format.times do |idx| %>
     <tr class="<%= idx == 0 ? "motif-category-#{motif_category.id}-last-invitations" : "d-none motif-category-#{motif_category.id}-other-invitations" %>">
       <% invitation_formats.each do |format| %>
         <td class="px-4 py-3">
           <% if invitations_by_format[format]&.fetch(idx, nil).present? %>
             <% invitation = invitations_by_format[format].fetch(idx, nil) %>
             <%= format_date(invitation.created_at) %>
-            <div>
-              <span class="small">
-                <% if invitation.delivery_failed? %>
-                  <span class="text-danger">
-                    Non délivrée
-                    <i
-                      class="fas fa-exclamation-circle"
-                      data-controller="tooltip"
-                      data-action="mouseover->tooltip#invitationNotDelivered"
-                      data-invitation-format="<%= format %>">
-                    </i>
-                  </span>
-                <% else %>
-                  <%= invitation.human_delivery_status_and_date %>
-                <% end %>
-              </span>
-            </div>
+            <%= render "follow_ups/delivery_status", deliverable: invitation, format: format %>
           <% elsif idx == 0 %>
             -
           <% end %>

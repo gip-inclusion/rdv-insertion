@@ -17,6 +17,25 @@ export default class extends Controller {
     });
   }
 
+  participationCreatedByDetails() {
+    tippy(this.element, {
+      content(reference) {
+        const { createdBy, createdAt } = reference.dataset;
+        let author = "l'usager";
+        if (createdBy === "agent") {
+          author = "un agent";
+        } else if (createdBy === "prescripteur") {
+          author = "un prescripteur";
+        }
+
+        return (
+          `Rendez-vous pris par ${author} le ${createdAt}`
+        )
+      },
+      allowHTML: true,
+    });
+  }
+
   organisationArchiveInformations() {
     tippy(this.element, {
       content(reference) {
@@ -190,11 +209,11 @@ export default class extends Controller {
     });
   }
 
-  invitationNotDelivered() {
+  notDelivered() {
     tippy(this.element, {
       content(reference) {
-        const { invitationFormat } = reference.dataset;
-        if (invitationFormat === "sms") {
+        const { deliveryFormat } = reference.dataset;
+        if (deliveryFormat === "sms") {
           return "Le SMS n'a pas pu être délivré. Causes possibles : numéro incorrect, problème de l'opérateur, etc. Nous vous invitons à vérifier le format du numéro et à le modifier si nécessaire.";
         }
         return "L’email n'a pas pu être remis. Causes possibles : boîte de réception pleine ou indisponible, adresse email incorrecte ou inexistante, filtre anti-spams, etc. Nous vous invitons à vérifier le format de l’adresse email et de réessayer d'envoyer l'invitation.";

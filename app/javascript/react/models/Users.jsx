@@ -10,7 +10,7 @@ class Users {
   constructor() {
     this.list = [];
     this.sortBy = null;
-    this.sortDirection = "asc";
+    this.sortDirection = "up";
     this.loading = false;
     this.fileColumnNames = [];
     this.showCarnetColumn = false
@@ -42,14 +42,14 @@ class Users {
           </>
         ),
         content: ({ user }) => (
-            <input
-              type="checkbox"
-              className="form-check-input"
-              checked={Boolean(user.selected)}
-              onChange={(event) => {
-                user.selected = event.target.checked;
-              }}
-            />
+          <input
+            type="checkbox"
+            className="form-check-input"
+            checked={Boolean(user.selected)}
+            onChange={(event) => {
+              user.selected = event.target.checked;
+            }}
+          />
         )
       },
       {
@@ -81,15 +81,22 @@ class Users {
         content: ({ user }) => <EditableCell type="text" user={user} cell="lastName" />
       },
       {
+        name: "Ville",
+        sortable: true,
+        key: "city",
+        visible: this.sourcePage === "batchActions",
+        content: ({ user }) => user.addressGeocoding?.city ?? " - "
+      },
+      {
         name: "Numéro CAF",
-        visible: this.sourcePage === "upload" && this.fileColumnNames?.affiliation_number_column,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.affiliation_number_column) || this.sourcePage === "batchActions",
         content: ({ user }) => <EditableCell type="text" user={user} cell="affiliationNumber" />
       },
       {
         name: "Rôle",
         sortable: true,
         key: "role",
-        visible: (this.sourcePage === "upload" && this.fileColumnNames?.role_column) || this.sourcePage === "batchActions",
+        visible: this.sourcePage === "upload" && this.fileColumnNames?.role_column,
         content: ({ user }) => (
           <EditableCell
             user={user}
@@ -122,7 +129,14 @@ class Users {
         key: "email",
         isInContactFile: true,
         visible: (this.sourcePage === "upload" && this.fileColumnNames?.email_column) || this.sourcePage === "batchActions",
-        content: ({ user }) => <EditableCell user={user} cell="email" />
+        content: ({ user }) => (
+          <EditableCell
+            user={user}
+            cell="email"
+            labelClassName={this.sourcePage === "batchActions" ? "text-truncate" : ""}
+            labelStyle={this.sourcePage === "batchActions" ? { maxWidth: "100px" } : {}}
+          />
+        )
       },
       {
         name: "Téléphone",
@@ -189,7 +203,8 @@ class Users {
         if (c.sortable) {
           return (
             <button type="button" onClick={() => users.sort(c.key)} >
-              {c.name} <i className={`fas fa-sort fa-sort-${users.sortBy === c.key && users.sortDirection} />`} />
+              {c.name} 
+              <i className={users.sortBy === c.key && users.sortDirection ? `ri-arrow-${users.sortDirection}-s-fill` :  "ri-expand-up-down-fill"} />
             </button>
           )
         }
@@ -233,7 +248,7 @@ class Users {
   sort(column) {
     if (this.sortBy === column) {
       // Everytime we click on the same column,
-      // we go to the next sorting (asc, then desc, then back to no sorting)
+      // we go to the next sorting (up, then down, then back to no sorting)
       const sortings = ["up", "down", null]
       const index = sortings.indexOf(this.sortDirection)
       this.sortDirection = sortings[(index + 1) % sortings.length]

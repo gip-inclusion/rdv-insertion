@@ -7,19 +7,24 @@ module ArchivesHelper
     archives.find { |archive| archive.organisation_id == organisation.id }
   end
 
-  def user_archived_in?(user, structure)
-    return user.organisation_archive(structure).present? if structure.is_a?(Organisation)
-
-    user_department_archives(user).length == user_agent_department_organisations(user).length
+  def user_archived_in?(user, organisations)
+    UserArchivedStatus.new(user, organisations).archived?
   end
 
-  def user_agent_department_organisations(user)
-    user.organisations & current_agent_department_organisations
-  end
-
-  def user_department_archives(user)
+  def user_archives(user, organisations)
     user.archives.select do |archive|
-      current_agent_department_organisations.map(&:id).include?(archive.organisation_id)
+      organisations.map(&:id).include?(archive.organisation_id)
     end
+  end
+
+  def archived_banner_message(archives)
+    names = archives.map(&:organisation).sort.map(&:name).join(", ")
+    wording = archives.size > 1 ? "les organisations" : "l'organisation"
+    "Cet usager est archivé sur #{wording} #{names} (#{format_archives_reason(archives)})"
+  end
+
+  def format_archives_reason(archives)
+    reason = archives.map(&:archiving_reason).uniq.join(", ")
+    "#{'motif'.pluralize(archives.size)} d'archivage : #{reason}"
   end
 end

@@ -2,19 +2,22 @@ class Organisation < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
   SEARCH_ATTRIBUTES = [:name, :slug].freeze
 
-  include Searchable
   include HasLogo
+  include Searchable
+  include Organisation::Archivable
 
   before_create { build_messages_configuration }
 
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, :organisation_type, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validate :validate_organisation_phone_number
+  validates :phone_number, phone_number: { allow_4_digits_numbers: true }
 
   belongs_to :department
   has_one :stat, as: :statable, dependent: :destroy
   has_one :messages_configuration, dependent: :destroy
+  has_one :dpa_agreement, dependent: :destroy
+
   has_many :category_configurations, dependent: :destroy
   has_many :rdvs, dependent: :nullify
   has_many :participations, through: :rdvs
@@ -56,16 +59,12 @@ class Organisation < ApplicationRecord
 
   def france_travail? = safir_code?
 
-  private
-
-  def validate_organisation_phone_number
-    return if phone_number_is_valid?
-
-    errors.add(:phone_number, :invalid)
+  def with_parcours_access?
+    organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
   end
+  alias_method :rsa_related?, :with_parcours_access?
 
-  def phone_number_is_valid?
-    # Blank, Valid Phone, 4 digits phone (organisations only)
-    phone_number.blank? || Phonelib.parse(phone_number).valid? || phone_number.match(/^\d{4}$/)
+  def requires_dpa_acceptance?
+    dpa_agreement.nil?
   end
 end
