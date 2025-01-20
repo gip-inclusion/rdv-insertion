@@ -17,6 +17,25 @@ export default class extends Controller {
     });
   }
 
+  participationCreatedByDetails() {
+    tippy(this.element, {
+      content(reference) {
+        const { createdBy, createdAt } = reference.dataset;
+        let author = "l'usager";
+        if (createdBy === "agent") {
+          author = "un agent";
+        } else if (createdBy === "prescripteur") {
+          author = "un prescripteur";
+        }
+
+        return (
+          `Rendez-vous pris par ${author} le ${createdAt}`
+        )
+      },
+      allowHTML: true,
+    });
+  }
+
   organisationArchiveInformations() {
     tippy(this.element, {
       content(reference) {

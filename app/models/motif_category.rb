@@ -3,6 +3,8 @@ class MotifCategory < ApplicationRecord
     :name, :short_name
   ].freeze
 
+  RSA_RELATED_TYPES = %w[rsa_orientation rsa_accompagnement].freeze
+
   has_many :category_configurations, dependent: :restrict_with_exception
   has_many :follow_ups, dependent: :restrict_with_exception
   has_many :motifs, dependent: :restrict_with_exception

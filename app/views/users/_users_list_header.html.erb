@@ -13,7 +13,7 @@
         <span class="label-alt position-absolute bg-white pe-none">
           <span class="status-label-alt">
             <% if selected_status.present? %>
-              Statut : <%= selected_status[0] %>
+              Statut : <%= selected_status[0] %> <span class="filter-active">1</span>
             <% else %>
               Filtrer par statut
             <% end %>
@@ -36,7 +36,7 @@
       <span class="label-alt position-absolute bg-white pe-none">
         <span class="referent-label-alt">
           <% if selected_referent.present? %>
-            Suivis par : <%= selected_referent %>
+            Suivis par : <%= selected_referent %> <span class="filter-active">1</span>
           <% else %>
             Filtrer par référent
           <% end %>

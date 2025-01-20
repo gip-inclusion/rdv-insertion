@@ -31,13 +31,16 @@ class SendInvitationRemindersJob < ApplicationJob
 
   def valid_invitations_sent_3_days_ago
     @valid_invitations_sent_3_days_ago ||=
-      # we want the invitation to be valid for at least two days to give time to the user to accept the invitation
-      Invitation.where("expires_at > ?", 2.days.from_now)
+      # We want the invitation to be valid for at least two days to give time to the user to accept the invitation.
+      # We don't send reminders for invitations that never expire since we consider those as invitations
+      # to optional rdvs.
+      # We only send reminders for invitations that have been triggered manually and not by the system.
+      Invitation.manual
+                .where("expires_at > ?", 2.days.from_now)
                 .where(
                   format: %w[email sms],
                   created_at: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.all_day
                 )
-                .not_reminder
   end
 
   def invitation_sent_3_days_ago?(invitation)

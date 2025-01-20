@@ -28,6 +28,13 @@ describe "Agents can filter users by convocation or invitation on index page", :
   let(:participation2) { create(:participation, user: user1, follow_up: follow_up2, convocable: true) }
   let!(:notification2) { create(:notification, participation: participation2, created_at: 1.day.ago) }
 
+  before do
+    follow_up.set_status
+    follow_up.save
+    follow_up2.set_status
+    follow_up2.save
+  end
+
   context "with convocation date before" do
     before do
       setup_agent_session(agent)

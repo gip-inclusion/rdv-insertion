@@ -28,7 +28,7 @@
         <td><%= display_attribute user.first_name %></td>
         <td><%= display_attribute format_date(user.created_at) %></td>
         <% if user_archived_in?(user, current_organisations) %>
-          <td colspan=<%= @all_configurations.count %>>Archivé</td>
+          <td colspan=<%= @all_configurations.count %>>Archivé (<%= format_archives_reason(user_archives(user, current_organisations)) %>)</td>
         <% else %>
           <% @all_configurations.each do |category_configuration| %>
             <% if follow_up = user.follow_up_for(category_configuration.motif_category) %>

@@ -15,6 +15,14 @@ module StubHelper
     )
   end
 
+  def stub_rdv_solidarites_activate_motif_category_territories(rdv_solidarites_organisation_id, motif_name)
+    stub_request(
+      :post, "http://www.rdv-solidarites-test.localhost/api/rdvinsertion/motif_category_territories"
+    ).with(
+      body: "{\"motif_category_short_name\":\"#{motif_name}\",\"organisation_id\":#{rdv_solidarites_organisation_id}}"
+    ).to_return(status: 200, body: "", headers: {})
+  end
+
   def stub_rdv_solidarites_assign_many_referents(rdv_solidarites_user_id)
     stub_request(
       :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/referent_assignations/create_many"

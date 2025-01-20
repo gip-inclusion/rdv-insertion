@@ -282,8 +282,8 @@ module Exporters
       return "Non calculable" if user.in_many_departments?
 
       follow_up = user.first_orientation_follow_up
-      result = follow_up.present? && follow_up.rdv_seen_delay_in_days.present? &&
-               follow_up.rdv_seen_delay_in_days < number_of_days
+      result = follow_up.present? && follow_up.days_between_follow_up_creation_and_first_seen_rdv.present? &&
+               follow_up.days_between_follow_up_creation_and_first_seen_rdv < number_of_days
       I18n.t("boolean.#{result}")
     end
 

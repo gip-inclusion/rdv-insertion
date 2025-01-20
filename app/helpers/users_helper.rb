@@ -1,4 +1,27 @@
 module UsersHelper
+  def filter_list
+    [
+      :search_query,
+      :tag_ids,
+      :status,
+      :orientation_type,
+      :action_required,
+      :referent_id,
+      :creation_date_after,
+      :creation_date_before,
+      :convocation_date_before,
+      :convocation_date_after,
+      :first_invitation_date_before,
+      :first_invitation_date_after,
+      :last_invitation_date_before,
+      :last_invitation_date_after
+    ]
+  end
+
+  def active_filter_list
+    filter_list.select { |filter| params[filter].present? }
+  end
+
   def show_convocation?(category_configuration)
     category_configuration.convene_user?
   end
@@ -15,13 +38,8 @@ module UsersHelper
     users.empty? && params[:search_query].present?
   end
 
-  def display_back_to_list_button? # rubocop:disable Metrics/AbcSize
-    [
-      params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
-      params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
-      params[:referent_id], params[:creation_date_after], params[:creation_date_before], params[:tag_ids],
-      params[:convocation_date_before], params[:convocation_date_after], params[:orientation_type]
-    ].any?(&:present?)
+  def display_back_to_list_button?
+    active_filter_list.any?
   end
 
   def options_for_select_status(statuses_count)

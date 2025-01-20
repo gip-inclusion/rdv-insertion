@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :webhook_endpoints, only: [:index] do
       post :duplicate, on: :member
     end
+    resources :unavailable_creneau_logs, only: [:index]
 
     root to: "agents#index"
   end
@@ -54,6 +55,7 @@ Rails.application.routes.draw do
     namespace :user_list_uploads do
       resources :category_selections, only: [:new]
     end
+    resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         get :default_list
@@ -117,6 +119,7 @@ Rails.application.routes.draw do
       post :create_many, on: :collection
     end
   end
+  resources :accept_cgus, only: [:create]
 
   resources :users, module: :users, only: [] do
     resources :rdvs, only: [:new]

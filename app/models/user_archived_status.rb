@@ -10,13 +10,13 @@ class UserArchivedStatus
 
   private
 
-  def intersection_of_organisations
-    @intersection_of_organisations ||= @user.organisations & @organisations
-  end
-
   def user_archives_in_organisations
     @user_archives_in_organisations ||= @user.archives.select do |archive|
       @organisations.map(&:id).include?(archive.organisation_id)
     end
+  end
+
+  def intersection_of_organisations
+    @intersection_of_organisations ||= @user.organisations & @organisations
   end
 end

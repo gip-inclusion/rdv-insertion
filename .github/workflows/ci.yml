@@ -3,7 +3,7 @@ on: push
 jobs:
   linters:
     name: Linters
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
@@ -24,7 +24,7 @@ jobs:
         run: yarn lint
   test_unit:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
         image: postgres:13.2
@@ -78,7 +78,7 @@ jobs:
         run: |
           RAILS_ENV=test bundle exec rake parallel:drop parallel:create parallel:load_schema parallel:spec['spec/(?!features)']
         env:
-          HOST: http://example.com
+          HOST: http://www.rdv-insertion-test.fake
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_USER: rdv_insertion_test
@@ -87,7 +87,7 @@ jobs:
 
   test_features:
     name: Feature Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -154,7 +154,7 @@ jobs:
 
           RAILS_ENV=test bundle exec rspec $(cat node_spec_files.txt)
         env:
-          HOST: http://example.com
+          HOST: http://www.rdv-insertion-test.fake
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_USER: rdv_insertion_test

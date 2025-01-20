@@ -3,6 +3,6 @@
     "common/flash_banner",
     type: :notice,
     title: "Dossier archivé",
-    description: archived_banner_message(@user.archives_organisations)
+    description: archived_banner_message(@user.archives.includes(:organisation))
   )
 %>

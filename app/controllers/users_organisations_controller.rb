@@ -15,6 +15,7 @@ class UsersOrganisationsController < ApplicationController
     else
       flash.now[:error] = "Une erreur s'est produite lors de l'ajout de l'organisation: #{save_user.errors}"
     end
+    respond_to :turbo_stream
   end
 
   def destroy

@@ -14,7 +14,7 @@
   </div>
   <div class="col-sm-4 d-flex justify-content-center align-items-center flex-column">
     <h4 class="text-center">
-      <%= render "users/user_icon", user: @user %> <%= "#{@user.first_name} #{@user.last_name.upcase}" %>
+      <%= "#{@user.first_name} #{@user.last_name.upcase}" %>
     </h4>
     <% if @user_tags.any? %>
       <div class="mb-3 mt-3 flex-wrap d-flex justify-content-center w-100" id="header_tags_list">

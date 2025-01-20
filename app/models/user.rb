@@ -197,8 +197,12 @@ class User < ApplicationRecord
     archives.find { |a| a.organisation_id == organisation.id }
   end
 
-  def archives_organisations
-    Organisation.where(id: archives.map(&:organisation_id))
+  def tag_users_attributes=(attributes)
+    attributes.map!(&:with_indifferent_access)
+    attributes.uniq! { |attr| attr["tag_id"] }
+    attributes.reject! { |attr| tag_users.any? { |tu| tu.tag_id == attr["tag_id"] } }
+
+    super(attributes)
   end
 
   private

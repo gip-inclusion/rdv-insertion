@@ -87,6 +87,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.datetime "last_sign_in_at"
     t.string "inclusion_connect_open_id_sub"
     t.datetime "connected_with_agent_connect_at"
+    t.datetime "cgu_accepted_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["inclusion_connect_open_id_sub"], name: "index_agents_on_inclusion_connect_open_id_sub", unique: true, where: "(inclusion_connect_open_id_sub IS NOT NULL)"
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
@@ -162,6 +163,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
     t.string "carnet_de_bord_deploiement_id"
+  end
+
+  create_table "dpa_agreements", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_dpa_agreements_on_agent_id"
+    t.index ["organisation_id"], name: "index_dpa_agreements_on_organisation_id"
   end
 
   create_table "file_configurations", force: :cascade do |t|
@@ -367,7 +377,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
   create_table "parcours_documents", force: :cascade do |t|
     t.bigint "department_id", null: false
     t.bigint "user_id", null: false
-    t.bigint "agent_id", null: false
+    t.bigint "agent_id"
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -435,8 +445,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "rate_of_users_oriented_in_less_than_30_days"
-    t.json "rate_of_users_oriented_in_less_than_30_days_by_month"
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -452,8 +460,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.json "rate_of_users_oriented_grouped_by_month"
     t.integer "users_with_rdv_count"
     t.json "users_with_rdv_count_grouped_by_month"
-    t.float "rate_of_users_oriented_in_less_than_15_days"
-    t.json "rate_of_users_oriented_in_less_than_15_days_by_month"
+    t.float "rate_of_no_show"
+    t.json "rate_of_no_show_grouped_by_month"
+    t.float "rate_of_users_oriented_in_less_than_45_days"
+    t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
+    t.float "rate_of_users_accompanied_in_less_than_15_days"
+    t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -471,6 +483,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["tag_id", "user_id"], name: "index_tag_users_on_tag_id_and_user_id", unique: true
     t.index ["tag_id"], name: "index_tag_users_on_tag_id"
     t.index ["user_id"], name: "index_tag_users_on_user_id"
   end
@@ -493,6 +506,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
     t.text "punishable_warning", default: "", null: false
+  end
+
+  create_table "unavailable_creneau_logs", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.integer "number_of_invitations_affected"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_unavailable_creneau_logs_on_organisation_id"
   end
 
   create_table "user_list_uploads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -628,6 +649,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
   add_foreign_key "csv_exports", "agents"
+  add_foreign_key "dpa_agreements", "agents"
+  add_foreign_key "dpa_agreements", "organisations"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
   add_foreign_key "invitation_attempts", "invitations"
@@ -658,6 +681,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_13_215536) do
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
+  add_foreign_key "unavailable_creneau_logs", "organisations"
   add_foreign_key "user_list_uploads", "agents"
   add_foreign_key "user_list_uploads", "category_configurations"
   add_foreign_key "user_rows", "user_list_uploads"
