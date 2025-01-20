@@ -40,9 +40,9 @@ RSpec.describe UserListUpload::Collection do
         { id: user_row2.id, first_name: "Updated Name 2" }
       ]
 
-      expect {
+      expect do
         collection.update_rows(rows_data)
-      }.not_to change(UserListUpload::UserRow, :count)
+      endd.not_to change(UserListUpload::UserRow, :count)
 
       user_row1.reload
       user_row2.reload
@@ -56,9 +56,9 @@ RSpec.describe UserListUpload::Collection do
       user_row1.first_name = "Modified Name 1"
       user_row2.first_name = "Modified Name 2"
 
-      expect {
+      expect do
         collection.save([user_row1, user_row2])
-      }.not_to change(UserListUpload::UserRow, :count)
+      end.not_to change(UserListUpload::UserRow, :count)
 
       user_row1.reload
       user_row2.reload

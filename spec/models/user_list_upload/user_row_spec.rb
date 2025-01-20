@@ -310,7 +310,7 @@ describe UserListUpload::UserRow do
     end
 
     it "formats tag values" do
-      expect(user_row.reload.tag_values).to eq(["tag1", "tag2"])
+      expect(user_row.reload.tag_values).to eq(%w[tag1 tag2])
     end
 
     it "formats cnaf data" do

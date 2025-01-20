@@ -264,7 +264,9 @@ describe "Agents can upload user list", :js do
       click_link "Passer aux invitations"
 
       ## Invitation
-      expect(page).to have_current_path(select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id))
+      expect(page).to have_current_path(
+        select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+      )
       expect(page).to have_content("Hernan")
       expect(page).to have_content("Non invité")
 
@@ -279,11 +281,10 @@ describe "Agents can upload user list", :js do
       expect(page).to have_content("Toutes les invitations ont été envoyées.")
       expect(page).to have_content("Invitations envoyées")
 
-
       expect(UserListUpload::InvitationAttempt.count).to eq(2)
 
-      expect(UserListUpload::InvitationAttempt.pluck(:success).uniq).to eq([true])
-      expect(UserListUpload::InvitationAttempt.pluck(:user_row_id).uniq).to eq([hernan_row.id])
+      expect(UserListUpload::InvitationAttempt.distinct.pluck(:success)).to eq([true])
+      expect(UserListUpload::InvitationAttempt.distinct.pluck(:user_row_id)).to eq([hernan_row.id])
 
       expect(Invitation.count).to eq(2)
       expect(hernan_user.reload.invitations.count).to eq(2)

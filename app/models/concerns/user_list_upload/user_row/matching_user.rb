@@ -87,7 +87,7 @@ module UserListUpload::UserRow::MatchingUser
     User.joins(:organisations).where(
       affiliation_number: affiliation_number,
       organisations: { department_id: department.id }
-     ).or(
+    ).or(
       User.joins(:organisations).where(
         department_internal_id: department_internal_id,
         organisations: { department_id: department.id }

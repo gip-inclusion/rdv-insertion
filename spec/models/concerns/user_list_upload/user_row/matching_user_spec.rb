@@ -19,7 +19,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
       allow(user_list_upload).to receive(:department).and_return(department)
     end
 
-    shared_examples "matches user correctly" do |action|
+    shared_examples "matches user correctly" do
       subject { user_row.save! }
 
       context "when matching by NIR" do

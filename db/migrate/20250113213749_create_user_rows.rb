@@ -1,4 +1,5 @@
 class CreateUserRows < ActiveRecord::Migration[7.1]
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def change
     enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
 
@@ -32,4 +33,5 @@ class CreateUserRows < ActiveRecord::Migration[7.1]
 
     add_index :user_rows, :assigned_organisation_id
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 end
