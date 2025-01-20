@@ -57,6 +57,10 @@ class Agent < ApplicationRecord
     Current.agent = nil
   end
 
+  def crisp_token
+    Digest::SHA256.hexdigest(email + Rails.application.secrets.secret_key_base)
+  end
+
   private
 
   # This is to make sure an agent can't be set as super_admin through an agent creation or update in the app.
