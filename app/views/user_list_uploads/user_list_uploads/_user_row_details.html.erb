@@ -15,14 +15,14 @@
     <div class="px-5">
       <div class="row">
         <div class="col-md-6">
-          <p><span class="attribute-label">Rôle :</span> <span class="text-dark-green"><%= display_attribute(user_row.role) %></span></p>
-          <p><span class="attribute-label">Numéro CAF :</span> <%= display_attribute(user_row.affiliation_number) %></p>
+          <p><span class="attribute-label">Rôle :</span> <span class="text-dark-green"><%= display_attribute(user_row.user.role) %></span></p>
+          <p><span class="attribute-label">Numéro CAF :</span> <%= display_attribute(user_row.user.affiliation_number) %></p>
           <% if show_row_attribute?(:nir, @user_list_upload) %>
-            <p><span class="attribute-label">Numéro de sécurité sociale :</span> <%= display_attribute(user_row.nir) %></p>
+            <p><span class="attribute-label">Numéro de sécurité sociale :</span> <%= display_attribute(user_row.user.nir) %></p>
           <% end %>
-          <p><span class="attribute-label">Date de naissance :</span> <%= display_date(user_row.birth_date) %></p>
-          <p><span class="attribute-label">Email :</span> <span><%= display_attribute(user_row.email) %></span></p>
-          <p><span class="attribute-label">Adresse :</span> <span class="text-wrap"><%= display_attribute(user_row.address) %></span></p>
+          <p><span class="attribute-label">Date de naissance :</span> <%= display_date(user_row.user.birth_date) %></p>
+          <p><span class="attribute-label">Email :</span> <span><%= display_attribute(user_row.user.email) %></span></p>
+          <p><span class="attribute-label">Adresse :</span> <span class="text-wrap"><%= display_attribute(user_row.user.address) %></span></p>
           <p>
             <span class="attribute-label">Tags :</span>
             <% if user_row.tags.any? %>
@@ -36,12 +36,12 @@
         </div>
         <div class="col-md-6">
           <% if show_row_attribute?(:department_internal_id, @user_list_upload) %>
-            <p><span class="attribute-label">ID interne au département:</span> <%= display_attribute(user_row.department_internal_id) %></p>
+            <p><span class="attribute-label">ID interne au département:</span> <%= display_attribute(user_row.user.department_internal_id) %></p>
           <% end %>
           <% if show_row_attribute?(:france_travail_id, @user_list_upload) %>
-            <p><span class="attribute-label">ID France Travail:</span> <%= display_attribute(user_row.france_travail_id) %></p>
+            <p><span class="attribute-label">ID France Travail:</span> <%= display_attribute(user_row.user.france_travail_id) %></p>
           <% end %>
-          <p><span class="attribute-label">Téléphone :</span> <%= display_attribute(user_row.phone_number) %></p>
+          <p><span class="attribute-label">Téléphone :</span> <%= display_attribute(user_row.user.phone_number) %></p>
           <p>
             <span class="attribute-label">Organisations :</span>
             <% if user_row.organisations.any? %>

@@ -80,7 +80,8 @@ class UserListUpload < ApplicationRecord
     @potential_matching_users_in_all_app ||=
       User.where(email: user_row_attributes.pluck("email").compact)
           .or(User.where(phone_number: user_row_attributes.pluck("phone_number").compact))
-          .or(User.where(nir: user_row_attributes.pluck("nir").compact)).select(:id, :nir, :phone_number, :email, :first_name)
+          .or(User.where(nir: user_row_attributes.pluck("nir").compact))
+          .select(:id, :nir, :phone_number, :email, :first_name)
   end
 
   def potential_matching_users_in_department

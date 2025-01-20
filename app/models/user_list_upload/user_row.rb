@@ -17,12 +17,14 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", dependent: :destroy
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
-  before_save :format_attributes, :augment
+  before_save :format_attributes
+  before_create :augment_on_create
+  before_update :augment_on_update
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
-  delegate :department, :department_number, :restricted_user_attributes, to: :user_list_upload
+  delegate :department, :department_number, :department_id, :restricted_user_attributes, to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
-  delegate(*USER_ATTRIBUTES, to: :user)
+  # delegate(*USER_ATTRIBUTES, to: :user)
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
@@ -31,11 +33,11 @@ class UserListUpload::UserRow < ApplicationRecord
   EDITABLE_ATTRIBUTES = %i[title first_name last_name affiliation_number phone_number email].freeze
 
   def self.updatable_attributes
-    column_names.map(&:to_sym) - %i[id uid created_at updated_at user_list_upload_id]
+    column_names.map(&:to_sym) - %i[id created_at updated_at user_list_upload_id]
   end
 
   def user
-    @user ||= (saved_user || matching_user || User.new(creation_origin_attributes)).tap do |user|
+    @user ||= (saved_user || matching_user || User.new(user_creation_origin_attributes)).tap do |user|
       user.assign_attributes(user_attributes)
     end
   end
@@ -49,6 +51,15 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def attribute_changed_by_cnaf_data?(attribute)
+    matching_user ? cnaf_data_changed_matching_user_attribute?(attribute) : cnaf_data_changed_row_attribute?(attribute)
+  end
+
+  def cnaf_data_changed_matching_user_attribute?(attribute)
+    cnaf_data[attribute.to_s] && matching_user &&
+      cnaf_data[attribute.to_s] != matching_user.attribute_in_database(attribute.to_s)
+  end
+
+  def cnaf_data_changed_row_attribute?(attribute)
     cnaf_data[attribute.to_s] && cnaf_data[attribute.to_s] != attributes[attribute.to_s]
   end
 
@@ -198,7 +209,7 @@ class UserListUpload::UserRow < ApplicationRecord
   # rubocop:disable Metrics/AbcSize
   def format_attributes
     # formatting attributes
-    self.phone_number = PhoneNumberHelper.format_phone_number(attributes[:phone_number])
+    self.phone_number = PhoneNumberHelper.format_phone_number(phone_number)
     self.nir = NirHelper.format_nir(nir)
     self.title = User.titles.fetch(title.to_s.downcase, nil)
     self.role = User.roles.fetch(role.to_s.downcase, nil)
@@ -216,7 +227,7 @@ class UserListUpload::UserRow < ApplicationRecord
     symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES)
   end
 
-  def creation_origin_attributes
+  def user_creation_origin_attributes
     {
       created_through: "rdv_insertion_upload_page",
       created_from_structure_type: user_list_upload.structure_type,

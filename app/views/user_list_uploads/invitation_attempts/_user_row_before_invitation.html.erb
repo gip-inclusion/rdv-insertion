@@ -13,7 +13,7 @@
 
   <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email].each do |attribute| %>
     <td class="border-light <%= "text-truncate-150" if attribute.in?([:email, :affiliation_number]) %>">
-      <span><%= display_attribute(user_row.send(attribute)) %></span>
+      <span><%= display_attribute(user_row.user.send(attribute)) %></span>
     </td>
   <% end %>
 
