@@ -484,7 +484,6 @@ tables:
 
   - table_name: user_list_uploads
     anonymized_column_names:
-      - user_list
       - file_name
     non_anonymized_column_names:
       - category_configuration_id
@@ -493,3 +492,55 @@ tables:
       - structure_id
       - structure_type
       - agent_id
+
+  - table_name: user_rows
+    anonymized_column_names:
+      - first_name
+      - last_name
+      - email
+      - phone_number
+      - affiliation_number
+      - nir
+      - france_travail_id
+      - department_internal_id
+      - role
+      - title
+      - birth_date
+      - birth_name
+      - address
+      - organisation_search_terms
+      - referent_email
+      - tag_values
+      - cnaf_data
+      - rights_opening_date
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - user_list_upload_id
+      - matching_user_id
+      - assigned_organisation_id
+      - marked_for_invitation
+      - marked_for_user_save
+
+  - table_name: user_save_attempts
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - success
+      - user_row_id
+      - user_id
+      - error_type
+      - internal_error_message
+      - service_errors
+      - created_at
+      - updated_at
+
+  - table_name: invitation_attempts
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - created_at
+      - updated_at
+      - invitation_id
+      - success
+      - format
+      - internal_error_message
+      - service_errors
