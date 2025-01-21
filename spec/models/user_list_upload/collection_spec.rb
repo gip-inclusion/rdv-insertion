@@ -42,7 +42,7 @@ RSpec.describe UserListUpload::Collection do
 
       expect do
         collection.update_rows(rows_data)
-      endd.not_to change(UserListUpload::UserRow, :count)
+      end.not_to change(UserListUpload::UserRow, :count)
 
       user_row1.reload
       user_row2.reload
