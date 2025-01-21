@@ -44,6 +44,7 @@ describe "Agents can upload user list", :js do
       :get,
       /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
     ).to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
+    allow_any_instance_of(FollowUp).to receive(:status).and_return("invitation_pending")
   end
 
   context "at organisation level" do
