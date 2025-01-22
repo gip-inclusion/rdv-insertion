@@ -28,6 +28,8 @@ class Agent < ApplicationRecord
   scope :super_admins, -> { where(super_admin: true) }
   scope :with_last_name, -> { where.not(last_name: nil) }
 
+  before_create :generate_crisp_token
+
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!
@@ -57,11 +59,11 @@ class Agent < ApplicationRecord
     Current.agent = nil
   end
 
-  def crisp_token
-    Digest::SHA256.hexdigest(email + Rails.application.secrets.secret_key_base)
-  end
-
   private
+
+  def generate_crisp_token
+    self.crisp_token ||= SecureRandom.uuid
+  end
 
   # This is to make sure an agent can't be set as super_admin through an agent creation or update in the app.
   # To set an agent as superadmin a developer should use agent#update_column.

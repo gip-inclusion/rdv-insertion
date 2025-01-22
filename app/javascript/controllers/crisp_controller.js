@@ -10,7 +10,7 @@ export default class extends Controller {
 
   connect() {
     if (!this.displayCrispValue) {
-      // If the crisp chat is disabled and the user is still logged in, we logout the user
+      // If the user is logged out from the app but crisp is still loaded, we loggout the user from crisp
       if (window.$crisp) { this.logout(); };
       return;
     }

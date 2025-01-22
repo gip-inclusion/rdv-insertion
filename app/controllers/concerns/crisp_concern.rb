@@ -1,4 +1,4 @@
-module FeaturesConcern
+module CrispConcern
   extend ActiveSupport::Concern
 
   included do
