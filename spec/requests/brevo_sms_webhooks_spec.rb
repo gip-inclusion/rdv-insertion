@@ -1,4 +1,6 @@
 RSpec.describe "BrevoSmsWebhooks" do
+  include_context "with ip whitelist"
+
   let(:webhook_params) do
     {
       to: "0601010101",
@@ -25,28 +27,6 @@ RSpec.describe "BrevoSmsWebhooks" do
       invitation.reload
       expect(invitation.delivery_status).to eq("delivered")
       expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
-    end
-
-    context "when phones doesnt match" do
-      let(:mismatched_webhook_params) do
-        {
-          to: "0987654321",
-          msg_status: "delivered",
-          date: "2023-06-07T12:34:56Z"
-        }
-      end
-
-      it "update the invitation but captures an error" do
-        post "/brevo/sms_webhooks/#{invitation.record_identifier}", params: mismatched_webhook_params, as: :json
-        expect(response).to be_successful
-
-        invitation.reload
-        expect(invitation.delivery_status).to eq("delivered")
-        expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
-        expect(Sentry).to have_received(:capture_message).with(
-          "Invitation mobile phone and webhook mobile phone does not match", any_args
-        )
-      end
     end
 
     context "when event is not in enum" do

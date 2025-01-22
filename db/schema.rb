@@ -364,7 +364,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
   create_table "parcours_documents", force: :cascade do |t|
     t.bigint "department_id", null: false
     t.bigint "user_id", null: false
-    t.bigint "agent_id", null: false
+    t.bigint "agent_id"
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

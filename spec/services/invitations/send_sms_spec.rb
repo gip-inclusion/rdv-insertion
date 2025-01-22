@@ -456,6 +456,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for siae_interview" do
+      let!(:organisation) { create(:organisation, department: department, organisation_type: "siae") }
       let!(:follow_up) { build(:follow_up, motif_category: category_siae_interview) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_siae_interview)
@@ -506,6 +507,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for siae_collective_information" do
+      let!(:organisation) { create(:organisation, department: department, organisation_type: "siae") }
       let!(:follow_up) { build(:follow_up, motif_category: category_siae_collective_information) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation,
@@ -557,6 +559,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for siae_follow_up" do
+      let!(:organisation) { create(:organisation, department: department, organisation_type: "siae") }
       let!(:follow_up) { build(:follow_up, motif_category: category_siae_follow_up) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_siae_follow_up)
@@ -607,6 +610,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for psychologue" do
+      let!(:organisation) { create(:organisation, department: department, organisation_type: "autre") }
       let!(:follow_up) { build(:follow_up, motif_category: category_psychologue) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_psychologue)
@@ -659,6 +663,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for atelier_enfants_ados" do
+      let!(:organisation) { create(:organisation, department: department, organisation_type: "autre") }
       let!(:follow_up) { build(:follow_up, motif_category: category_atelier_enfants_ados) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_atelier_enfants_ados)

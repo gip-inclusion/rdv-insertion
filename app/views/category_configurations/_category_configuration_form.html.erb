@@ -22,7 +22,7 @@
               required="true"
             >
               <option value=""> - </option>
-              <% MotifCategory.all.each do |motif_category| %>
+              <% @authorized_motif_categories.each do |motif_category| %>
                 <option value="<%= motif_category.id %>"><%= motif_category.name %></option>
               <% end %>
             </select>

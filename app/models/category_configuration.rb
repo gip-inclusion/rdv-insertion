@@ -5,7 +5,9 @@ class CategoryConfiguration < ApplicationRecord
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
-  validate :minimum_invitation_duration, :invitation_formats_validity, :periodic_invites_can_be_activated
+  validate :minimum_invitation_duration,
+           :invitation_formats_validity,
+           :periodic_invites_can_be_activated
 
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
