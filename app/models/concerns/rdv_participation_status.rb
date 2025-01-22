@@ -6,7 +6,7 @@ module RdvParticipationStatus
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
   included do
-    enum status: { unknown: "unknown", seen: "seen", excused: "excused", revoked: "revoked", noshow: "noshow" }
+    enum :status, { unknown: "unknown", seen: "seen", excused: "excused", revoked: "revoked", noshow: "noshow" }
 
     scope :cancelled_by_user, -> { where(status: CANCELLED_BY_USER_STATUSES) }
     scope :not_cancelled, -> { where.not(status: CANCELLED_STATUSES) }

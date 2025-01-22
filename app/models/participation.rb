@@ -26,7 +26,7 @@ class Participation < ApplicationRecord
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
   after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
 
-  enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
+  enum :created_by, { agent: "agent", user: "user", prescripteur: "prescripteur" }, prefix: :created_by
 
   delegate :starts_at, :motif_name,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,

@@ -15,7 +15,7 @@ RSpec.describe LockedJobs, type: :concern do
 
   after do
     # Ensure all connections are returned to the pool and locks are released
-    ActiveRecord::Base.clear_all_connections!
+    ActiveRecord::Base.connection_pool.clear_reloadable_connections!
   end
 
   describe "locking behavior with same lock_key", :no_transaction do

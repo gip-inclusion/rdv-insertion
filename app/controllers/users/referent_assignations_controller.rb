@@ -62,7 +62,7 @@ module Users
       @agents = Agent.joins(:organisations).where(
         organisations: @user.organisations.where(department: @department)
       ).with_last_name.distinct.order(:email)
-      @agents = @agents.not_betagouv if production_env?
+      @agents = @agents.not_betagouv if EnvironmentsHelper.production_env?
     end
 
     def assign_referent
