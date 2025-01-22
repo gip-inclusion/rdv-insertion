@@ -512,6 +512,8 @@ GEM
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.37.0)
       parser (>= 3.3.1.0)
+    rubocop-capybara (2.21.0)
+      rubocop (~> 1.41)
     rubocop-rails (2.29.0)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
@@ -696,6 +698,7 @@ DEPENDENCIES
   rspec-rails
   rswag
   rubocop
+  rubocop-capybara
   rubocop-rails
   rubocop-rspec
   rubyzip
