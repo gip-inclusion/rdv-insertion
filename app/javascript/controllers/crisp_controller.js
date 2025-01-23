@@ -51,8 +51,8 @@ export default class extends Controller {
   }
 
   handleFirstVisit() {
-    const hasVisited = localStorage.getItem("crispFirstVisit");
-    if (!hasVisited) {
+    const firstVisit = localStorage.getItem("crispFirstVisit");
+    if (!firstVisit) {
       window.$crisp.push(["on", "session:loaded", () => {
         window.$crisp.push(["do", "chat:open"]);
         localStorage.setItem("crispFirstVisit", "true");
