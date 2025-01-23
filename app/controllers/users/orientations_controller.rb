@@ -83,7 +83,7 @@ module Users
     def save_orientation_and_redirect
       @should_notify_organisation = new_organisation?
       if save_orientation.success?
-        render :create
+        render :after_save
       elsif save_orientation.shrinkeable_orientation.present?
         turbo_stream_confirm_update_anterior_ends_at_modal
       else
