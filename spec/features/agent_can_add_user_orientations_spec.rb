@@ -91,6 +91,34 @@ describe "Agents can add user orientation", :js do
     expect(page).to have_content("non renseigné")
   end
 
+  it "can update existing orientation and open organisation email notification if needed" do
+    orientation = create(:orientation,
+                         user: user,
+                         starts_at: "2023-07-03",
+                         orientation_type: orientation_type_social,
+                         organisation: organisation,
+                         agent: organisation_agents.first)
+
+    visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+    click_link("Parcours")
+
+    within("#orientation_#{orientation.id}") do
+      find("i.ri-pencil-fill").click
+    end
+
+    page.select orientation_type_pro.name, from: "orientation[orientation_type_id]"
+    page.select "Asso 26", from: "orientation_organisation_id"
+    page.select "Jean-Paul ROUVE", from: "orientation_agent_id"
+
+    click_button "Enregistrer"
+    expect(page).to have_no_content("Informer l’organisation par email")
+    click_button "Envoyer"
+
+    expect(page).to have_content("Professionnelle")
+    expect(page).to have_content("Asso 26")
+    expect(page).to have_content("Jean-Paul ROUVE")
+  end
+
   it "open organisation email notification modal when adding an orientation to another organisation" do
     visit organisation_user_path(organisation_id: organisation.id, id: user.id)
 
