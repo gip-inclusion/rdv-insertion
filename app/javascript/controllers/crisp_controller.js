@@ -27,6 +27,7 @@ export default class extends Controller {
     };
 
     this.initCrisp(user);
+    this.handleFirstVisit();
   }
 
   initCrisp(user) {
@@ -46,6 +47,16 @@ export default class extends Controller {
 
       const firstScriptTag = document.getElementsByTagName("head")[0];
       firstScriptTag.appendChild(crispScriptTag);
+    }
+  }
+
+  handleFirstVisit() {
+    const firstVisit = localStorage.getItem("crispFirstVisit");
+    if (!firstVisit) {
+      window.$crisp.push(["on", "session:loaded", () => {
+        window.$crisp.push(["do", "chat:open"]);
+        localStorage.setItem("crispFirstVisit", "true");
+      }]);
     }
   }
 
