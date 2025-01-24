@@ -24,7 +24,9 @@ class Agent < ApplicationRecord
 
   validate :cannot_save_as_super_admin
 
-  scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
+  scope :not_betagouv, lambda {
+    where.not("agents.email LIKE ? OR agents.email LIKE ?", "%beta.gouv.fr", "%inclusion.gouv.fr")
+  }
   scope :super_admins, -> { where(super_admin: true) }
   scope :with_last_name, -> { where.not(last_name: nil) }
 
