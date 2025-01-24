@@ -32,7 +32,7 @@ class Participation < ApplicationRecord
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
   delegate :starts_at, :motif, :lieu, :collectif?, :by_phone?, :duration_in_min,
-           :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
+           :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv, :address,
            to: :rdv
   delegate :department, :department_id, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :user

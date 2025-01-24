@@ -5,7 +5,7 @@ module Participation::FranceTravailPayload
   def to_ft_payload
     {
       id: france_travail_id,
-      adresse: lieu&.address,
+      adresse: address,
       date: starts_at.to_datetime,
       duree: duration_in_min,
       information: motif.instruction_for_rdv,

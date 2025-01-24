@@ -10,7 +10,7 @@ module Participation::FranceTravailWebhooks
       )
     end
 
-    after_commit on: :update, if: -> { eligible_for_france_travail_webhook? } do
+    after_commit on: :update, if: -> { eligible_for_france_travail_webhook_update? } do
       OutgoingWebhooks::FranceTravail::UpdateParticipationJob.perform_later(
         participation_id: id, timestamp: updated_at
       )
@@ -32,5 +32,9 @@ module Participation::FranceTravailWebhooks
 
   def eligible_for_france_travail_webhook?
     organisation.france_travail? && user.birth_date? && user.nir?
+  end
+
+  def eligible_for_france_travail_webhook_update?
+    eligible_for_france_travail_webhook? && france_travail_id?
   end
 end
