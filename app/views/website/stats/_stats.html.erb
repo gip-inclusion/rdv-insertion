@@ -43,14 +43,14 @@
   </div>
   <div class="row d-flex justify-content-center flex-wrap-reverse">
     <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
-      <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented_in_less_than_30_days&.round %> %</p>
-      <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA en - de 30 jours</strong></p>
-      <%= line_chart sanitize_monthly_data(@stat.rate_of_users_oriented_in_less_than_30_days_by_month), title: "Taux rdv en - de 30 jours par mois", suffix: "%", colors: ["#083b66"] %>
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented_in_less_than_45_days&.round %> %</p>
+      <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA d’orientation en - de 45 jours</strong></p>
+      <%= line_chart exclude_current_and_previous_month(@stat.rate_of_users_oriented_in_less_than_45_days_by_month), title: "Taux rdv d'orientation honoré en - de 45 jours par mois", suffix: "%", colors: ["#083b66"] %>
     </div>
     <div class="col-12 col-md-6 px-5 pb-5">
-      <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented_in_less_than_15_days&.round %> %</p>
-      <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA en - de 15 jours</strong></p>
-      <%= line_chart sanitize_monthly_data(@stat.rate_of_users_oriented_in_less_than_15_days_by_month), title: "Taux rdv en - de 15 jours par mois", suffix: "%", colors: ["#083b66"] %>
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_accompanied_in_less_than_15_days&.round %> %</p>
+      <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA d'accompagnement en - de 15 jours</strong></p>
+      <%= line_chart exclude_current_month(@stat.rate_of_users_accompanied_in_less_than_15_days_by_month), title: "Taux rdv d'accompagnement honoré en - de 15 jours par mois", suffix: "%", colors: ["#083b66"] %>
     </div>
   </div>
   <div class="row d-flex justify-content-center flex-wrap-reverse">

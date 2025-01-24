@@ -49,6 +49,7 @@ Rails.application.routes.draw do
     get :geolocated, on: :collection
     get :search, on: :collection
     resources :convocations, only: [:new]
+    resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         get :default_list

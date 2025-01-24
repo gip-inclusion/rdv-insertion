@@ -1,14 +1,14 @@
 FactoryBot.define do
   factory :user do
-    sequence(:uid) { |n| "uid#{n}" }
-    sequence(:rdv_solidarites_user_id)
-    sequence(:affiliation_number) { |n| "numero_#{n}" }
+    sequence(:uid) { |n| "uid#{n + Process.pid}" }
+    sequence(:rdv_solidarites_user_id) { |n| n + Process.pid }
+    sequence(:affiliation_number) { |n| "numero_#{n + Process.pid}" }
     department_internal_id { rand(4000..5000).to_s }
     role { "demandeur" }
     title { "monsieur" }
-    sequence(:first_name) { |n| "john#{n}" }
-    sequence(:last_name) { |n| "doe#{n}" }
-    sequence(:email) { |n| "johndoe#{n}@yahoo.fr" }
+    sequence(:first_name) { |n| "john#{n + Process.pid}" }
+    sequence(:last_name) { |n| "doe#{n + Process.pid}" }
+    sequence(:email) { |n| "johndoe#{n + Process.pid}@yahoo.fr" }
     address { "27 avenue de Ségur 75007 Paris" }
     phone_number { "+33782605941" }
     created_at { Time.zone.parse("24/12/2O22 22:22") }

@@ -36,6 +36,10 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.admin_organisations_ids.include?(record.id)
   end
 
+  def can_accept_dpa?
+    configure?
+  end
+
   def export_csv?
     pundit_user.export_organisations_ids.include?(record.id)
   end

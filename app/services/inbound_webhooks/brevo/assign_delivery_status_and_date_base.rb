@@ -10,7 +10,6 @@ module InboundWebhooks
         return if old_update?
         return if @record.delivered?
 
-        alert_sentry_if_webhook_mismatch
         set_last_brevo_webhook_received_at
         return unless delivery_status.in?(record_class.delivery_statuses.keys)
 
@@ -27,10 +26,6 @@ module InboundWebhooks
 
       def record_class
         @record_class ||= @record.class
-      end
-
-      def alert_sentry_if_webhook_mismatch
-        raise NoMethodError
       end
 
       def delivery_status

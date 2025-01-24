@@ -37,6 +37,7 @@ class FileConfigurationsController < ApplicationController
     else
       render_errors("Créer fichier d'import", :post, organisation_file_configurations_path(@organisation))
     end
+    respond_to :turbo_stream
   end
 
   def update
@@ -46,6 +47,7 @@ class FileConfigurationsController < ApplicationController
     else
       render_errors("Modifier fichier d'import", @edit_form_html_method, @edit_form_url)
     end
+    respond_to :turbo_stream
   end
 
   private

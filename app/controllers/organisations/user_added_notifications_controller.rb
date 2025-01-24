@@ -6,6 +6,7 @@ module Organisations
         user_attachements:, reply_to: current_agent.email
       ).deliver_now
       flash.now[:success] = "L'email a bien été envoyé à l'organisation"
+      respond_to :turbo_stream
     end
 
     private

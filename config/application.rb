@@ -44,10 +44,6 @@ module RdvInsertion
     config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_KEY_DERIVATION_SALT"]
     config.active_record.encryption.extend_queries = true
 
-    # Temporary support for unencrypted data during the migration process
-    # Must be disabled once the migration is complete
-    config.active_record.encryption.support_unencrypted_data = true
-
     config.active_storage.variant_processor = :image_processing
   end
 end

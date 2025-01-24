@@ -1,6 +1,7 @@
 module Users
   class OrientationsController < ApplicationController
     before_action :set_user, :set_organisations, :set_agents, only: [:new, :edit, :create, :update]
+    before_action :set_orientations, only: [:create, :update]
     before_action :set_orientation, only: [:edit, :update, :destroy]
     before_action :set_agent_ids_by_organisation_id, :set_orientation_types, only: [:new, :edit]
 
@@ -65,6 +66,12 @@ module Users
       authorize @orientation
     end
 
+    def set_orientations
+      @orientations = policy_scope(@user.orientations)
+                      .where(organisation: { department_id: current_department_id })
+                      .includes(:agent, :organisation, :orientation_type).order(starts_at: :asc)
+    end
+
     def set_orientation_types
       @orientation_types = OrientationType.for_department(@current_department)
     end
@@ -74,8 +81,9 @@ module Users
     end
 
     def save_orientation_and_redirect
+      @should_notify_organisation = new_organisation?
       if save_orientation.success?
-        turbo_stream_redirect structure_user_parcours_path(user_id: @user.id)
+        render :after_save
       elsif save_orientation.shrinkeable_orientation.present?
         turbo_stream_confirm_update_anterior_ends_at_modal
       else
@@ -100,6 +108,10 @@ module Users
           user: @user
         }
       )
+    end
+
+    def new_organisation?
+      @user.organisations.exclude?(@orientation.organisation)
     end
   end
 end
