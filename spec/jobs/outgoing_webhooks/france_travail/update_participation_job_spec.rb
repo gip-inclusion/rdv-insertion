@@ -13,7 +13,9 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
       let!(:rdv) { build(:rdv) }
 
       context "on update" do
-        let!(:participation) { create(:participation, rdv: rdv, user: user, organisation: organisation) }
+        let!(:participation) do
+          create(:participation, rdv: rdv, user: user, organisation: organisation, france_travail_id: "12345")
+        end
 
         it "notifies on update" do
           expect(described_class).to receive(:perform_later)
