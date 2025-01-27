@@ -1,7 +1,7 @@
 module Users
   class OrientationsController < ApplicationController
     before_action :set_user, :set_organisations, :set_agents, only: [:new, :edit, :create, :update]
-    before_action :set_orientations, only: [:create]
+    before_action :set_orientations, only: [:create, :update]
     before_action :set_orientation, only: [:edit, :update, :destroy]
     before_action :set_agent_ids_by_organisation_id, :set_orientation_types, only: [:new, :edit]
 
@@ -83,7 +83,7 @@ module Users
     def save_orientation_and_redirect
       @should_notify_organisation = new_organisation?
       if save_orientation.success?
-        render :create
+        render :after_save
       elsif save_orientation.shrinkeable_orientation.present?
         turbo_stream_confirm_update_anterior_ends_at_modal
       else
