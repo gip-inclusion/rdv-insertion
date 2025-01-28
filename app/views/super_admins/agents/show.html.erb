@@ -16,30 +16,25 @@ original file : https://github.com/thoughtbot/administrate/blob/main/app/views/a
     <%= content_for(:title) %>
   </h1>
 
-  <div>
-    <% if current_agent != page.resource %>
-      <%= link_to(
-        "Se logger en tant que",
-        super_admins_agent_impersonation_path(agent_id: page.resource.id),
-        method: :post,
-        class: "button",
-      ) %>
+  <% if current_agent != page.resource %>
+    <%= form_with(url: super_admins_agent_impersonation_path(agent_id: page.resource.id), method: :post) do |form| %>
+      <%= form.submit "Se logger en tant que", class: "button" %>
     <% end %>
-    <%= link_to 'Voir sur le Super admin rdv-sp', "#{ENV["RDV_SOLIDARITES_URL"]}/super_admins/agents/#{page.resource.rdv_solidarites_agent_id }", class: "button button--alt", target: "_blank" %>
-    <%= link_to(
-      t("administrate.actions.edit_resource", name: page.page_title),
-      [:edit, namespace, page.resource],
-      class: "button",
-    ) if accessible_action?(page.resource, :edit) %>
+  <% end %>
+  <%= link_to 'Voir sur le Super admin rdv-sp', "#{ENV["RDV_SOLIDARITES_URL"]}/super_admins/agents/#{page.resource.rdv_solidarites_agent_id }", class: "button button--alt", target: "_blank" %>
+  <%= link_to(
+    t("administrate.actions.edit_resource", name: page.page_title),
+    [:edit, namespace, page.resource],
+    class: "button",
+  ) if accessible_action?(page.resource, :edit) %>
 
-    <%= button_to(
-      t("administrate.actions.destroy"),
-      [namespace, page.resource],
-      class: "button button--danger",
-      method: :delete,
-      data: { turbo_confirm: t("administrate.actions.confirm") }
-    ) if accessible_action?(page.resource, :destroy) %>
-  </div>
+  <%= button_to(
+    t("administrate.actions.destroy"),
+    [namespace, page.resource],
+    class: "button button--danger",
+    method: :delete,
+    data: { turbo_confirm: t("administrate.actions.confirm") }
+  ) if accessible_action?(page.resource, :destroy) %>
 </header>
 
 <%= content_for(:before_main) %>
