@@ -34,6 +34,8 @@ original file : https://github.com/thoughtbot/administrate/blob/main/app/views/a
   </div>
 </header>
 
+<%= content_for(:before_main) %>
+
 <% if content_for?(:main) %>
   <%= content_for(:main) %>
 <% else %>
