@@ -47,6 +47,9 @@ Style/StringConcatenation:
 Style/SymbolArray:
   Enabled: false
 
+Style/SafeNavigationChainLength:
+  Max: 3
+
 Rails/SkipsModelValidations:
   Enabled: false
 

@@ -194,7 +194,7 @@ class User < ApplicationRecord
     attributes.uniq! { |attr| attr["tag_id"] }
     attributes.reject! { |attr| tag_users.any? { |tu| tu.tag_id == attr["tag_id"] } }
 
-    super(attributes)
+    super
   end
 
   private

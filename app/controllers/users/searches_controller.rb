@@ -52,8 +52,8 @@ module Users
     end
 
     def users_params
-      params.require(:users).permit(
-        nirs: [], department_internal_ids: [], uids: [], emails: [], phone_numbers: []
+      params.expect(
+        users: [nirs: [], department_internal_ids: [], uids: [], emails: [], phone_numbers: []]
       ).to_h.deep_symbolize_keys
     end
 

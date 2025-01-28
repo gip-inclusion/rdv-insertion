@@ -31,7 +31,7 @@ module Users
     private
 
     def referent_assignation_params
-      params.require(:referent_assignation).permit(:agent_email, :agent_id)
+      params.expect(referent_assignation: [:agent_email, :agent_id])
     end
 
     def agent_id

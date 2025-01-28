@@ -1,10 +1,6 @@
 class FollowUpsController < ApplicationController
-  PERMITTED_PARAMS = [:user_id, :motif_category_id].freeze
-
-  before_action :set_user, only: [:create]
-
   def create
-    @follow_up = FollowUp.new(**follow_up_params)
+    @follow_up = FollowUp.new(follow_up_params)
     authorize @follow_up
     if save_follow_up.success?
       redirect_to request.referer
@@ -16,11 +12,7 @@ class FollowUpsController < ApplicationController
   private
 
   def follow_up_params
-    params.require(:follow_up).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
-  end
-
-  def set_user
-    @user = policy_scope(User).preload(:archives).find(follow_up_params[:user_id])
+    params.expect(follow_up: [:user_id, :motif_category_id])
   end
 
   def save_follow_up
