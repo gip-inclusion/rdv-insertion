@@ -8,9 +8,7 @@ ALLOWED_PARAMETERS_IN_LOGS_REGEX = /
 
 SANITIZED_VALUE = "[FILTERED]".freeze
 
-require_relative "../../app/lib/environments_helper"
-
-if EnvironmentsHelper.production_env?
+unless Rails.env.development?
   Rails.application.config.filter_parameters << lambda do |key, value|
     value.replace(SANITIZED_VALUE) if !key.match(ALLOWED_PARAMETERS_IN_LOGS_REGEX) && value.is_a?(String)
   end
