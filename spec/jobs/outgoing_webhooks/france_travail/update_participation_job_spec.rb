@@ -56,22 +56,60 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
   end
 
   describe "#perform" do
-    let(:service) { instance_double(FranceTravailApi::UpdateParticipation, result: OpenStruct.new) }
+    let(:service) { instance_double(FranceTravailApi::UpdateParticipation, result: service_result) }
     let(:participation) { create(:participation) }
     let(:timestamp) { Time.current }
+    let(:service_result) { OpenStruct.new(errors: [], non_retryable_error: false) }
 
     before do
       allow(FranceTravailApi::UpdateParticipation).to receive(:new).and_return(service)
-      allow(service).to receive(:call)
+      allow(service).to receive(:call).and_return(service_result)
     end
 
-    it "calls the update participation service" do
-      described_class.perform_now(
-        participation_id: participation.id,
-        timestamp: timestamp
-      )
+    context "when service succeeds" do
+      it "calls the update participation service" do
+        described_class.perform_now(
+          participation_id: participation.id,
+          timestamp: timestamp
+        )
 
-      expect(service).to have_received(:call)
+        expect(service).to have_received(:call)
+      end
+    end
+
+    context "when service fails with retryable error" do
+      let(:service_result) { OpenStruct.new(errors: ["Some error"], non_retryable_error: false) }
+
+      before do
+        allow(service).to receive(:call).and_return(service_result)
+      end
+
+      it "raises a FailedServiceError" do
+        expect do
+          described_class.perform_now(
+            participation_id: participation.id,
+            timestamp: timestamp
+          )
+        end.to raise_error(ApplicationJob::FailedServiceError)
+      end
+    end
+
+    context "when service fails with non retryable error" do
+      let(:service_result) { OpenStruct.new(errors: ["User not found"], non_retryable_error: true) }
+
+      before do
+        allow(service).to receive(:call).and_return(service_result)
+      end
+
+      it "discards the job without raising an error" do
+        expect do
+          described_class.perform_now(
+            participation_id: participation.id,
+            timestamp: timestamp
+          )
+        end.not_to raise_error
+        expect(Sidekiq::RetrySet.new.size).to eq(0)
+      end
     end
   end
 end

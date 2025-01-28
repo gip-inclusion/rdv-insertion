@@ -31,7 +31,7 @@ describe FranceTravailApi::RetrieveUserToken do
 
     context "when the API call is successful" do
       let(:user_token) { "user-token-123" }
-      let(:response_body) { { "jetonUsager" => user_token }.to_json }
+      let(:response_body) { { "jetonUsager" => user_token, "codeRetour" => "S001" }.to_json }
 
       before do
         allow(france_travail_client).to receive(:retrieve_user_token)
@@ -46,17 +46,19 @@ describe FranceTravailApi::RetrieveUserToken do
     end
 
     context "when the API call fails" do
+      let(:response_body) { { "jetonUsager" => nil, "codeRetour" => "R001" }.to_json }
+
       before do
         allow(france_travail_client).to receive(:retrieve_user_token)
           .with(payload: expected_payload, headers: headers)
-          .and_return(OpenStruct.new(success?: false, status: 400, body: "Error"))
+          .and_return(OpenStruct.new(success?: false, status: 400, body: response_body))
       end
 
       it("is a failure") { is_a_failure }
 
       it "returns the error" do
         expect(subject.errors).to eq(
-          ["Erreur lors de l'appel à l'api recherche-usager FT.\nStatus: 400\n Body: Error"]
+          ["Erreur lors de l'appel à l'api recherche-usager FT.\nStatus: 400\n Body: #{response_body}"]
         )
       end
     end

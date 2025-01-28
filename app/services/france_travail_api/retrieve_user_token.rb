@@ -16,11 +16,12 @@ module FranceTravailApi
 
     def send_request!
       response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers: headers)
+      @response_body = JSON.parse(response.body)
 
-      if response.success?
-        response_body = JSON.parse(response.body)
-        @france_travail_user_token = response_body["jetonUsager"]
+      if response.success? && !user_not_found?
+        @france_travail_user_token = @response_body["jetonUsager"]
       else
+        result.non_retryable_error = non_retryable_error?(response)
         fail!(
           "Erreur lors de l'appel à l'api recherche-usager FT.\n" \
           "Status: #{response.status}\n Body: #{response.body}"
@@ -47,6 +48,16 @@ module FranceTravailApi
         "pa-nom-agent" => "Webhooks Participation RDV-Insertion",
         "pa-prenom-agent" => "Webhooks Participation RDV-Insertion"
       }
+    end
+
+    def user_not_found?
+      # Actuellement le code retour S002 est "Aucun approchant n'a été trouvé" mais c'est une 200
+      # Ca devrait être un 404, FT est au courant et va corriger, il faudra enlever cette condition.
+      @response_body["codeRetour"].include?("S002")
+    end
+
+    def non_retryable_error?(response)
+      user_not_found? || response.status == 404
     end
   end
 end
