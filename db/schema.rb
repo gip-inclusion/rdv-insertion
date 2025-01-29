@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_20_125249) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -87,6 +87,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_20_125249) do
     t.string "inclusion_connect_open_id_sub"
     t.datetime "connected_with_agent_connect_at"
     t.datetime "cgu_accepted_at"
+    t.string "crisp_token"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["inclusion_connect_open_id_sub"], name: "index_agents_on_inclusion_connect_open_id_sub", unique: true, where: "(inclusion_connect_open_id_sub IS NOT NULL)"
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
@@ -385,6 +386,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_20_125249) do
     t.string "created_by", null: false
     t.boolean "convocable", default: false, null: false
     t.bigint "rdv_solidarites_agent_prescripteur_id"
+    t.string "france_travail_id"
     t.index ["follow_up_id"], name: "index_participations_on_follow_up_id"
     t.index ["status"], name: "index_participations_on_status"
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true

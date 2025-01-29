@@ -54,6 +54,7 @@ RSpec.configure do |config|
   config.extend ApiSpecHelper
   config.include ApiSpecSharedExamples
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include ActiveJob::TestHelper
 
   ## Clear downloads
   config.before(:each, :js) do

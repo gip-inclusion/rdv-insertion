@@ -26,6 +26,7 @@ tables:
       - email
       - first_name
       - last_name
+      - crisp_token
     non_anonymized_column_names:
       - super_admin
       - last_sign_in_at
@@ -285,6 +286,8 @@ tables:
       - document_date
 
   - table_name: participations
+    anonymized_column_names:
+      - france_travail_id
     non_anonymized_column_names:
       - user_id
       - rdv_id

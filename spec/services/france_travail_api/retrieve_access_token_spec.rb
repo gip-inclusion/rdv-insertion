@@ -1,18 +1,18 @@
-describe RetrieveFranceTravailAccessToken, type: :service do
+describe FranceTravailApi::RetrieveAccessToken, type: :service do
   subject do
     described_class.call
   end
 
-  let!(:redis) { instance_double("redis") }
+  let!(:redis) { Redis.new }
+
   let!(:access_token) { SecureRandom.uuid }
 
   describe "#call" do
     before do
-      allow(Redis).to receive(:new).and_return(redis)
+      allow(RedisConnection).to receive(:with_redis).and_yield(redis)
       allow(redis).to receive(:exists?)
       allow(redis).to receive(:get)
       allow(redis).to receive(:set)
-      allow(redis).to receive(:close)
     end
 
     context "when the token is already in redis" do
