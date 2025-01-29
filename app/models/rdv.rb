@@ -37,7 +37,7 @@ class Rdv < ApplicationRecord
   validate :follow_ups_motif_categories_are_uniq
 
   enum :created_by, { agent: "agent", user: "user", file_attente: "file_attente", prescripteur: "prescripteur" },
-       prefix: :created_by
+       prefix: true
 
   delegate :presential?, :by_phone?, :collectif?, to: :motif
   delegate :department, :rdv_solidarites_organisation_id, to: :organisation

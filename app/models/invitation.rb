@@ -24,7 +24,7 @@ class Invitation < ApplicationRecord
   delegate :motif_category, :motif_category_name, to: :follow_up
   delegate :model, to: :template, prefix: true
 
-  enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: :format
+  enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
   enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid

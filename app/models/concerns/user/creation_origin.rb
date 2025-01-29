@@ -9,7 +9,7 @@ module User::CreationOrigin
       rdv_insertion_user_form: "rdv_insertion_user_form",
       rdv_insertion_api: "rdv_insertion_api",
       rdv_solidarites_webhook: "rdv_solidarites_webhook"
-    }, prefix: :created_through
+    }, prefix: true
 
     belongs_to :created_from_structure, polymorphic: true, optional: true
 
