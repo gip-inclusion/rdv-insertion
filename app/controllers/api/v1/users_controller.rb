@@ -75,9 +75,8 @@ module Api
       end
 
       def users_attributes
-        users_params.to_h.deep_symbolize_keys[:users].map do |user_attributes|
-          user_attributes[:invitation] ||= {}
-          user_attributes
+        users_params.map do |user_attributes|
+          user_attributes.to_h.deep_symbolize_keys.tap { |attrs| attrs[:invitation] ||= {} }
         end
       end
 
