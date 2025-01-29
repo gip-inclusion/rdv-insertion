@@ -9,7 +9,8 @@ gem "dotenv-rails"
 gem "pundit"
 # Authentication
 gem "omniauth-rails_csrf_protection"
-gem "omniauth-rdv-service-public"
+gem "omniauth-rdv-service-public", git: "https://github.com/betagouv/rdv-service-public.git", branch: "production",
+                                   glob: "lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec"
 # Http client
 gem "faraday"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
