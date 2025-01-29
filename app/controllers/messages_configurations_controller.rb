@@ -41,13 +41,13 @@ class MessagesConfigurationsController < ApplicationController
   private
 
   def messages_configuration_params
-    params.expect(messages_configuration: PERMITTED_PARAMS)
+    params.expect(messages_configuration: PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
   def formatted_params
     # we nullify some blank params
     messages_configuration_params.to_h do |k, v|
-      [k, k.to_sym.in?([:sms_sender_name, :letter_sender_name, :sender_city]) ? v.presence : v]
+      [k, k.in?([:sms_sender_name, :letter_sender_name, :sender_city]) ? v.presence : v]
     end
   end
 

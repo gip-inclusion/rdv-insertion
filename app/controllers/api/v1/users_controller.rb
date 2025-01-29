@@ -102,7 +102,7 @@ module Api
       end
 
       def user_params
-        params.expect(user: [*PERMITTED_USER_PARAMS]).to_h.deep_symbolize_keys
+        params.expect(user: PERMITTED_USER_PARAMS).to_h.deep_symbolize_keys
       end
 
       def set_organisation
@@ -111,8 +111,7 @@ module Api
       end
 
       def users_params
-        params.require(:users)
-        params.permit(users: PERMITTED_USER_PARAMS)
+        params.expect(users: [PERMITTED_USER_PARAMS])
       end
 
       def set_users_params
