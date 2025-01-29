@@ -1,6 +1,8 @@
 module OutgoingWebhooks
   module FranceTravail
     class CreateParticipationJob < LockedAndOrderedJobBase
+      discard_on FranceTravailApi::RetrieveUserToken::UserNotFound
+
       def self.lock_key(participation_id:, **)
         "#{base_lock_key}:#{participation_id}"
       end

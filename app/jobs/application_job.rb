@@ -1,10 +1,6 @@
 class ApplicationJob < ActiveJob::Base
   include EnvironmentsHelper
 
-  class FailedServiceError < StandardError; end
-  class NonRetryableError < StandardError; end
-
-  discard_on NonRetryableError
   queue_as :default
 
   def self.perform_in(wait_time, *)
@@ -16,6 +12,8 @@ class ApplicationJob < ActiveJob::Base
 
   private
 
+  class FailedServiceError < StandardError; end
+
   def call_service!(service_class, **kwargs)
     service_result = service_class.call(**kwargs)
     return service_result if service_result.success?
@@ -24,11 +22,10 @@ class ApplicationJob < ActiveJob::Base
       scope.set_context(:service, { class: service_class, kwargs: })
     end
 
-    error_message = "Calling service #{service_class} failed in #{self.class}:\n" \
-                    "Errors: #{service_result.errors.map(&:to_s)}"
-
-    raise(NonRetryableError, error_message) if service_result.non_retryable_error
-
-    raise(FailedServiceError, error_message)
+    raise(
+      ApplicationJob::FailedServiceError,
+      "Calling service #{service_class} failed in #{self.class}:\n" \
+      "Errors: #{service_result.errors.map(&:to_s)}"
+    )
   end
 end

@@ -59,7 +59,7 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
     let(:service) { instance_double(FranceTravailApi::UpdateParticipation, result: service_result) }
     let(:participation) { create(:participation) }
     let(:timestamp) { Time.current }
-    let(:service_result) { OpenStruct.new(errors: [], non_retryable_error: false) }
+    let(:service_result) { OpenStruct.new(errors: []) }
 
     before do
       allow(FranceTravailApi::UpdateParticipation).to receive(:new).and_return(service)
@@ -77,11 +77,10 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
       end
     end
 
-    context "when service fails with retryable error" do
-      let(:service_result) { OpenStruct.new(errors: ["Some error"], non_retryable_error: false) }
-
+    context "when service fails with regular error" do
       before do
-        allow(service).to receive(:call).and_return(service_result)
+        allow(service).to receive(:call)
+          .and_raise(ApplicationJob::FailedServiceError, "Some error")
       end
 
       it "raises a FailedServiceError" do
@@ -94,21 +93,23 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
       end
     end
 
-    context "when service fails with non retryable error" do
-      let(:service_result) { OpenStruct.new(errors: ["User not found"], non_retryable_error: true) }
-
+    context "when service fails with UserNotFound error" do
       before do
-        allow(service).to receive(:call).and_return(service_result)
+        allow(service).to receive(:call)
+          .and_raise(FranceTravailApi::RetrieveUserToken::UserNotFound, "Aucun usager trouvé")
       end
 
       it "discards the job without raising an error" do
         expect do
-          described_class.perform_now(
-            participation_id: participation.id,
-            timestamp: timestamp
-          )
-        end.not_to raise_error
-        expect(Sidekiq::RetrySet.new.size).to eq(0)
+          perform_enqueued_jobs do
+            described_class.perform_now(
+              participation_id: participation.id,
+              timestamp: timestamp
+            )
+          end
+        end.not_to raise_error # Le job est discard quand il y a une erreur UserNotFound
+
+        assert_no_enqueued_jobs
       end
     end
   end

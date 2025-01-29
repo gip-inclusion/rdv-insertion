@@ -1,5 +1,6 @@
 module FranceTravailApi
   class RetrieveUserToken < BaseService
+    class UserNotFound < StandardError; end
     # https://francetravail.io/produits-partages/catalogue/rechercher-usager-v2/documentation#/api-reference/
 
     def initialize(user:, access_token:)
@@ -18,10 +19,11 @@ module FranceTravailApi
       response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers: headers)
       @response_body = JSON.parse(response.body)
 
-      if response.success? && !user_not_found?
+      if response.success? && !user_not_found?(response)
         @france_travail_user_token = @response_body["jetonUsager"]
+      elsif user_not_found?(response)
+        raise UserNotFound, "Aucun usager trouvé avec l'id #{@user.id}"
       else
-        result.non_retryable_error = non_retryable_error?(response)
         fail!(
           "Erreur lors de l'appel à l'api recherche-usager FT.\n" \
           "Status: #{response.status}\n Body: #{response.body}"
@@ -50,14 +52,10 @@ module FranceTravailApi
       }
     end
 
-    def user_not_found?
+    def user_not_found?(response)
       # Actuellement le code retour S002 est "Aucun approchant n'a été trouvé" mais c'est une 200
       # Ca devrait être un 404, FT est au courant et va corriger, il faudra enlever cette condition.
-      @response_body["codeRetour"].include?("S002")
-    end
-
-    def non_retryable_error?(response)
-      user_not_found? || response.status == 404
+      @response_body["codeRetour"].include?("S002") || response.status == 404
     end
   end
 end
