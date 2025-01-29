@@ -1,5 +1,7 @@
 module OutgoingWebhooks
   class SendWebhook < BaseService
+    include Webhooks::ReceiptHandler
+
     def initialize(webhook_endpoint:, webhook_payload:, webhook_signature:)
       @webhook_endpoint = webhook_endpoint
       @webhook_payload = webhook_payload.deep_symbolize_keys
@@ -8,11 +10,15 @@ module OutgoingWebhooks
 
     def call
       ActiveRecord::Base
-        .with_advisory_lock("send_#{resource_model}_#{resource_id}_to_endpoint_#{@webhook_endpoint_id}") do
-        return if old_update?
-
-        send_webhook
-        create_webhook_receipt
+        .with_advisory_lock("send_#{resource_model}_#{resource_id}_to_endpoint_#{@webhook_endpoint.id}") do
+        with_webhook_receipt(
+          resource_model: resource_model,
+          resource_id: resource_id,
+          timestamp: timestamp,
+          webhook_endpoint_id: @webhook_endpoint.id
+        ) do
+          send_webhook
+        end
       end
     end
 
@@ -44,25 +50,6 @@ module OutgoingWebhooks
         "Content-Type" => "application/json",
         "Accept" => "application/json"
       }.merge(@webhook_signature)
-    end
-
-    def old_update?
-      last_webhook_receipt_for_resource.present? && timestamp <= last_webhook_receipt_for_resource.timestamp
-    end
-
-    def last_webhook_receipt_for_resource
-      @last_webhook_receipt_for_resource ||= WebhookReceipt.where(
-        webhook_endpoint_id: @webhook_endpoint.id, resource_model:, resource_id:
-      ).order(timestamp: :desc).first
-    end
-
-    def create_webhook_receipt
-      webhook_receipt = WebhookReceipt.new(
-        webhook_endpoint_id: @webhook_endpoint.id, resource_model:, resource_id:, timestamp:
-      )
-      return if webhook_receipt.save
-
-      Sentry.capture_message("Webhook receipt with attributes #{webhook_receipt.attributes} could not be created.")
     end
 
     def error_message_for(response)
