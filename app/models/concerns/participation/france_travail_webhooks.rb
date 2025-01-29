@@ -31,10 +31,16 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_for_france_travail_webhook?
-    organisation.france_travail? && user.birth_date? && user.nir?
+    organisation.france_travail? && user.birth_date? && user.nir? && france_travail_active_department?
   end
 
   def eligible_for_france_travail_webhook_update?
     eligible_for_france_travail_webhook? && france_travail_id?
+  end
+
+  def france_travail_active_department?
+    # C'est une condition temporaire, les autorisations des clés d'api de France Travail sont scopés au niveau des CD
+    # le temps que FT autorise notre clé d'API au niveau national on limitera à un département pour les tests
+    organisation.department.number == ENV["FRANCE_TRAVAIL_CD_NUMBER"]
   end
 end

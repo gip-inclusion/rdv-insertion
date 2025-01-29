@@ -1,5 +1,6 @@
 describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
-  let!(:organisation) { create(:organisation, safir_code: "123456") }
+  let!(:department) { create(:department, :ft_department) }
+  let!(:organisation) { create(:organisation, safir_code: "123456", department: department) }
   let!(:now) { Time.zone.parse("21/01/2023 23:42:11") }
 
   before do
