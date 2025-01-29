@@ -1,12 +1,6 @@
 module OutgoingWebhooks
   module FranceTravail
-    class DeleteParticipationJob < LockedAndOrderedJobBase
-      discard_on FranceTravailApi::RetrieveUserToken::UserNotFound
-
-      def self.lock_key(participation_id:, **)
-        "#{base_lock_key}:#{participation_id}"
-      end
-
+    class DeleteParticipationJob < BaseJob
       def perform(participation_id:, france_travail_id:, user_id:, timestamp:)
         call_service!(FranceTravailApi::DeleteParticipation,
                       participation_id: participation_id,

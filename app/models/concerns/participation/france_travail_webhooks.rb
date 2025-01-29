@@ -41,6 +41,6 @@ module Participation::FranceTravailWebhooks
   def france_travail_active_department?
     # C'est une condition temporaire, les autorisations des clés d'api de France Travail sont scopés au niveau des CD
     # le temps que FT autorise notre clé d'API au niveau national on limitera à un département pour les tests
-    organisation.department.number == ENV["FRANCE_TRAVAIL_CD_NUMBER"]
+    organisation.department.number.in?(ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS", "").split(","))
   end
 end
