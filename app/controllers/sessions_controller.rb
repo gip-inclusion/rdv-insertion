@@ -8,8 +8,6 @@ class SessionsController < ApplicationController
                 :set_agent_return_to_url,
                 only: [:create]
 
-  def new; end
-
   def create
     set_session_credentials
     respond_to do |format|

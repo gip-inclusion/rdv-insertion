@@ -7,15 +7,6 @@ describe SessionsController do
   let!(:rdv_solidarites_credentials) { instance_double(RdvSolidaritesCredentials) }
   let!(:timestamp) { Time.zone.now }
 
-  describe "GET /sign_in" do
-    it "renders the login form" do
-      get :new
-      expect(response).to be_successful
-      expect(response.body).to match(/Identifiez-vous avec votre email et mot de passe RDV-Solidarités/)
-      expect(response.body).to match(/Mot de passe oublié ?/)
-    end
-  end
-
   describe "POST #create" do
     context "JSON" do
       let(:request_headers) do

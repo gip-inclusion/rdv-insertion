@@ -207,7 +207,6 @@ Rails.application.routes.draw do
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]
-  get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
   get '/sign_out', to: "sessions#destroy"
 
