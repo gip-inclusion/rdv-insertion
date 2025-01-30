@@ -26,4 +26,8 @@ class Department < ApplicationRecord
   def name_with_region
     "#{name}, #{region}"
   end
+
+  def rdv_solidarites_url
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations"
+  end
 end

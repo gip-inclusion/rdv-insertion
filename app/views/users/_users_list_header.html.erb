@@ -102,15 +102,14 @@
       <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
     <% end %>
     <h4 class="text-center department-map-title mb-0">
-      <%= department_level? ? @department.name : @organisation.name %>
+      <%= current_structure.name %>
     </h4>
-    <% unless department_level? %>
-      <div class="mt-2">
-        <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(@organisation.rdv_solidarites_url) do %>
-          <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i></button>
-        <% end %>
-      </div>
-    <% end %>
+
+    <div class="mt-2">
+      <%= link_to(current_structure.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(current_structure.rdv_solidarites_url)) do %>
+        <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i></button>
+      <% end %>
+    </div>
   </div>
 
   <div class="col-4 d-flex flex-column justify-content-around align-items-end">
