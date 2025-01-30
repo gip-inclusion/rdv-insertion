@@ -22,12 +22,8 @@ describe SessionsController do
       before do
         request.headers.merge(request_headers)
         allow(RdvSolidaritesCredentials).to receive(:new)
-          .with(
-            uid: request_headers["uid"], access_token: request_headers["access-token"],
-            client: request_headers["client"]
-          )
           .and_return(rdv_solidarites_credentials)
-        allow(rdv_solidarites_credentials).to receive_messages(valid?: true, uid: agent_email)
+        allow(rdv_solidarites_credentials).to receive_messages(valid?: true, uid: agent_email, email: agent_email)
       end
 
       it "is a success" do
