@@ -16,7 +16,7 @@ export default class extends Controller {
     const file = event.target.files[0]
 
     if (file) {
-      if(!validateFileFormat(file, this.#acceptedFileFormats())) {
+      if (!validateFileFormat(file, this.#acceptedFileFormats())) {
         this.inputTarget.value = ""
         return
       }
@@ -87,7 +87,7 @@ export default class extends Controller {
       const matchingCnafDataRow = this.cnafDataRows.find((cnafDataRow) =>
         // for affiliation number that have less than 7 digits, we fill the missing digits with 0 at the beginning
         (userRow.affiliation_number && cnafDataRow.MATRICULE && userRow.affiliation_number.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0"))
-          || (userRow.nir && cnafDataRow.NIR && userRow.nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13))
+        || (userRow.nir && cnafDataRow.NIR && userRow.nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13))
       )
 
       if (matchingCnafDataRow) {
@@ -95,9 +95,9 @@ export default class extends Controller {
         this.rowsCnafData.push({
           id: userRow.id,
           cnaf_data: {
-            email: parsedCnafData.email,
-            phone_number: parsedCnafData.phoneNumber,
-            rights_opening_date: parsedCnafData.rightsOpeningDate
+            email: parsedCnafData.email || "",
+            phone_number: parsedCnafData.phoneNumber || "",
+            rights_opening_date: parsedCnafData.rightsOpeningDate || ""
           }
         })
       }

@@ -202,8 +202,8 @@ class UserListUpload::UserRow < ApplicationRecord
   # rubocop:disable Metrics/AbcSize
   def format_attributes
     # formatting attributes
-    self.phone_number = PhoneNumberHelper.format_phone_number(phone_number)
-    self.nir = NirHelper.format_nir(nir)
+    self.phone_number = PhoneNumberHelper.format_phone_number(phone_number) || phone_number
+    self.nir = NirHelper.format_nir(nir) || nir
     self.title = User.titles.fetch(title.to_s.downcase, nil)
     self.role = User.roles.fetch(role.to_s.downcase, nil)
     self.tag_values = (tag_values.presence || []).map(&:squish)

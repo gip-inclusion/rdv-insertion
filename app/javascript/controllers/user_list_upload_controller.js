@@ -76,22 +76,20 @@ export default class extends Controller {
   #addInputsToForm(form) {
     this.userList.forEach((user) => {
       Object.entries(user).forEach(([attribute, value]) => {
-        if (value !== null && value !== undefined) {
-          if (Array.isArray(value)) {
-            value.forEach((item) => {
-              const input = document.createElement("input")
-              input.type = "hidden"
-              input.name = `user_rows_attributes[][${attribute}][]`
-              input.value = item
-              form.appendChild(input)
-            })
-          } else {
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
             const input = document.createElement("input")
             input.type = "hidden"
-            input.name = `user_rows_attributes[][${attribute}]`
-            input.value = value
+            input.name = `user_rows_attributes[][${attribute}][]`
+            input.value = item || ""
             form.appendChild(input)
-          }
+          })
+        } else {
+          const input = document.createElement("input")
+          input.type = "hidden"
+          input.name = `user_rows_attributes[][${attribute}]`
+          input.value = value || ""
+          form.appendChild(input)
         }
       })
     })

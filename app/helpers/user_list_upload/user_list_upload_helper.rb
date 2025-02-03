@@ -44,7 +44,7 @@ module UserListUpload::UserListUploadHelper
   def tooltip_for_user_row_errors(errors)
     return if errors.empty?
 
-    display_tooltip_errors(
+    tooltip_errors_tag_attributes(
       title: "Erreurs des données du dossier",
       errors: errors.full_messages
     )
@@ -52,7 +52,12 @@ module UserListUpload::UserListUploadHelper
 
   def user_row_icon_for_attribute(user_row, attribute)
     if user_row.user_errors.attribute_names.include?(attribute)
-      content_tag(:i, nil, class: "ri-alert-line text-end")
+      content_tag(
+        :i, nil, class: "ri-alert-line text-end", **tooltip_errors_attributes(
+          title: "Erreur sur cette donnée",
+          errors: user_row.user_errors.full_messages_for(attribute)
+        )
+      )
     elsif attribute_to_highlight?(user_row, attribute)
       content_tag(:i, nil, class: "ri-checkbox-circle-line text-end")
     else

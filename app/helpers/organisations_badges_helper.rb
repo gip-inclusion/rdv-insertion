@@ -9,7 +9,7 @@ module OrganisationsBadgesHelper
   def tooltip_for_archived_organisation_badge(archive)
     return if archive.nil?
 
-    tooltip_attributes(
+    tooltip_tag_attributes(
       stimulus_action: "mouseover->tooltip#organisationArchiveInformations",
       archive_creation_date: format_date(archive.created_at),
       archive_reason: archive.archiving_reason,

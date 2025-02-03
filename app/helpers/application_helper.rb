@@ -47,7 +47,7 @@ module ApplicationHelper
     Rack::Utils.parse_nested_query(request.query_string).deep_symbolize_keys
   end
 
-  def tooltip_attributes(stimulus_action:, **dataset)
+  def tooltip_tag_attributes(stimulus_action:, **dataset)
     attributes = {
       data: {
         controller: "tooltip",
@@ -58,15 +58,19 @@ module ApplicationHelper
     tag.attributes(attributes)
   end
 
-  def display_tooltip_errors(title:, errors:)
-    tag.attributes(
+  def tooltip_errors_tag_attributes(title:, errors:)
+    tag.attributes(tooltip_errors_attributes(title: title, errors: errors))
+  end
+
+  def tooltip_errors_attributes(title:, errors:)
+    {
       data: {
         controller: "tooltip",
         action: "mouseover->tooltip#showErrors",
         title: title,
         errors: errors.to_json
       }
-    )
+    }
   end
 
   def render_turbo_stream_flash_messages
