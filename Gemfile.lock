@@ -18,16 +18,6 @@ GIT
       omniauth-oauth2 (~> 1.8)
 
 GIT
-  remote: https://github.com/gip-inclusion/agent_connect_engine.git
-  revision: 7dae451ec39dbd62c2a20ec61b15a4d53b0cd166
-  specs:
-    agent_connect (0.1.0)
-      jwt (= 2.7.1)
-      openid_connect (>= 2)
-      rails (>= 7.0.8.4)
-      typhoeus (>= 1.4.0)
-
-GIT
   remote: https://github.com/thoughtbot/administrate.git
   revision: 024296f1a4e010229b8f5353beaa7648e593a1de
   specs:
@@ -125,10 +115,8 @@ GEM
     administrate-field-active_storage (1.0.1)
       administrate (>= 0.2.2)
       rails (>= 7.0)
-    aes_key_wrap (1.1.0)
     afm (0.2.2)
     ast (2.4.2)
-    attr_required (1.0.2)
     aws-eventstream (1.3.0)
     aws-partitions (1.880.0)
     aws-sdk-core (3.190.2)
@@ -151,7 +139,6 @@ GEM
       execjs (~> 2.0)
     base64 (0.2.0)
     bigdecimal (3.1.8)
-    bindata (2.5.0)
     bindex (0.8.1)
     blueprinter (0.30.0)
     bootsnap (1.17.0)
@@ -190,8 +177,6 @@ GEM
       dotenv (= 2.8.1)
       railties (>= 3.2)
     drb (2.2.1)
-    email_validator (2.2.4)
-      activemodel
     erubi (1.12.0)
     et-orbi (1.2.11)
       tzinfo
@@ -205,8 +190,6 @@ GEM
       railties (>= 5.0.0)
     faraday (2.9.0)
       faraday-net_http (>= 2.0, < 3.2)
-    faraday-follow_redirects (0.3.0)
-      faraday (>= 1, < 3)
     faraday-net_http (3.1.0)
       net-http
     ffi (1.16.3)
@@ -244,13 +227,6 @@ GEM
     jsbundling-rails (1.2.1)
       railties (>= 6.0.0)
     json (2.7.1)
-    json-jwt (1.16.6)
-      activesupport (>= 4.2)
-      aes_key_wrap
-      base64
-      bindata
-      faraday (~> 2.0)
-      faraday-follow_redirects
     json-schema (4.1.1)
       addressable (>= 2.8)
     jwt (2.7.1)
@@ -331,19 +307,6 @@ GEM
     omniauth-rails_csrf_protection (1.0.2)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
-    openid_connect (2.3.0)
-      activemodel
-      attr_required (>= 1.0.0)
-      email_validator
-      faraday (~> 2.0)
-      faraday-follow_redirects
-      json-jwt (>= 1.16)
-      mail
-      rack-oauth2 (~> 2.2)
-      swd (~> 2.0)
-      tzinfo
-      validate_url
-      webfinger (~> 2.0)
     parallel (1.24.0)
     parallel_tests (4.5.1)
       parallel
@@ -384,13 +347,6 @@ GEM
     rack (3.0.11)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
-    rack-oauth2 (2.2.1)
-      activesupport
-      attr_required
-      faraday (~> 2.0)
-      faraday-follow_redirects
-      json-jwt (>= 1.11.0)
-      rack (>= 2.1.0)
     rack-protection (4.0.0)
       base64 (>= 0.1.0)
       rack (>= 3.0.0, < 4)
@@ -582,11 +538,6 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     stringio (3.1.1)
-    swd (2.0.3)
-      activesupport (>= 3)
-      attr_required (>= 0.0.5)
-      faraday (~> 2.0)
-      faraday-follow_redirects
     thor (1.3.1)
     tilt (2.3.0)
     timeout (0.4.1)
@@ -601,19 +552,12 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     uri (0.13.0)
-    validate_url (1.0.15)
-      activemodel (>= 3.0.0)
-      public_suffix
     version_gem (1.1.4)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webfinger (2.1.3)
-      activesupport
-      faraday (~> 2.0)
-      faraday-follow_redirects
     webmock (3.19.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -643,7 +587,6 @@ DEPENDENCIES
   addressable
   administrate!
   administrate-field-active_storage
-  agent_connect!
   anonymizer!
   aws-sdk-s3
   blueprinter

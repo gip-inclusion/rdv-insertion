@@ -31,7 +31,6 @@ Rails.application.routes.draw do
   end
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
-  agent_connect controller: AgentConnectController
 
   get 'auth/:provider/callback', to: 'sessions#create'
 
