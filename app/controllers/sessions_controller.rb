@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:create, :new]
+  skip_before_action :authenticate_agent!, only: [:create]
   wrap_parameters false
   respond_to :json, only: :create
 
