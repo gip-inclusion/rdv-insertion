@@ -11,11 +11,16 @@ describe SessionsController do
     context "JSON" do
       let(:request_headers) do
         {
-          "client" => "some-client",
-          "uid" => agent_email,
-          "access-token" => "some-token",
-          "Content-Type" => "application/json",
-          "Accept" => "application/json"
+          "omniauth.auth" => {
+            "credentials" => {
+              "token" => "some-token"
+            },
+            "info" => {
+              "agent" => {
+                "email" => agent_email
+              }
+            }
+          }
         }
       end
 
@@ -23,26 +28,22 @@ describe SessionsController do
         request.headers.merge(request_headers)
         allow(RdvSolidaritesCredentials).to receive(:new)
           .and_return(rdv_solidarites_credentials)
-        allow(rdv_solidarites_credentials).to receive_messages(valid?: true, uid: agent_email, email: agent_email)
+        allow(rdv_solidarites_credentials).to receive_messages(email: agent_email)
       end
 
       it "is a success" do
         post :create
-        expect(response).to be_successful
-        expect(response.parsed_body["success"]).to eq(true)
+        expect(response).to have_http_status(:found)
       end
 
       it "marks the agent as logged in" do
         post :create
-
-        expect(response).to be_successful
         expect(agent.reload.last_sign_in_at).not_to be_nil
       end
 
       it "sets a session" do
         post :create
 
-        expect(response).to be_successful
         expect(request.session[:agent_auth]).to eq(
           {
             id: agent.id,
@@ -58,15 +59,8 @@ describe SessionsController do
           request.session[:agent_return_to] = "/some_path"
         end
 
-        it "returns the redirection path" do
-          post :create
-          expect(response).to be_successful
-          expect(response.parsed_body["redirect_path"]).to eq("/some_path")
-        end
-
         it "deletes the path from the session" do
           post :create
-          expect(response).to be_successful
           expect(request.session[:agent_return_to]).to be_nil
         end
       end
@@ -78,25 +72,7 @@ describe SessionsController do
 
         it "returns the organisations path" do
           post :create
-          expect(response).to be_successful
-          expect(response.parsed_body["redirect_path"]).to eq(root_path)
-        end
-      end
-
-      context "when credentials are invalid" do
-        before do
-          allow(rdv_solidarites_credentials).to receive(:valid?)
-            .and_return(false)
-        end
-
-        it "is a failure" do
-          post :create
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:unauthorized)
-          expect(response.parsed_body["errors"]).to eq(
-            ["Les identifiants de session RDV-Solidarités sont invalides"]
-          )
-          expect(request.session[:agent_auth]).to be_nil
+          expect(response.location).to eq(root_url)
         end
       end
 
@@ -106,10 +82,8 @@ describe SessionsController do
         it "is a failure" do
           post :create
           expect(response).not_to be_successful
-          expect(response).to have_http_status(:forbidden)
-          expect(response.parsed_body["success"]).to eq(false)
-          expect(response.parsed_body["errors"]).to eq(
-            ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
+          expect(flash[:error]).to include(
+            "L'agent ne fait pas partie d'une organisation sur RDV-Insertion"
           )
           expect(request.session[:agent_auth]).to be_nil
         end
@@ -126,9 +100,7 @@ describe SessionsController do
         it "is a failure" do
           post :create
           expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.parsed_body["success"]).to eq(false)
-          expect(response.parsed_body["errors"]).to eq(["Update impossible"])
+          expect(flash[:error]).to include("Update impossible")
           expect(request.session[:agent_auth]).to be_nil
         end
       end

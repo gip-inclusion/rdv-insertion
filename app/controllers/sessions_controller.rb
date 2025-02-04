@@ -10,16 +10,8 @@ class SessionsController < ApplicationController
 
   def create
     set_session_credentials
-    respond_to do |format|
-      format.json do
-        render json: { success: true, redirect_path: @agent_return_to_url || root_path }
-      end
-
-      format.html do
-        flash[:success] = "Connexion réussie"
-        redirect_to @agent_return_to_url || root_path
-      end
-    end
+    flash[:success] = "Connexion réussie"
+    redirect_to @agent_return_to_url || root_path
   end
 
   def destroy
