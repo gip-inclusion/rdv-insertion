@@ -496,7 +496,7 @@ tables:
       - structure_type
       - agent_id
 
-  - table_name: user_rows
+  - table_name: user_list_upload_user_rows
     anonymized_column_names:
       - first_name
       - last_name
@@ -525,7 +525,7 @@ tables:
       - marked_for_invitation
       - marked_for_user_save
 
-  - table_name: user_save_attempts
+  - table_name: user_list_upload_user_save_attempts
     anonymized_column_names: []
     non_anonymized_column_names:
       - success
@@ -537,7 +537,7 @@ tables:
       - created_at
       - updated_at
 
-  - table_name: invitation_attempts
+  - table_name: user_list_upload_invitation_attempts
     anonymized_column_names: []
     non_anonymized_column_names:
       - created_at
