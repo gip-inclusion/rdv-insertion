@@ -1,5 +1,4 @@
 class UserListUpload::InvitationAttempt < ApplicationRecord
-  self.table_name = "invitation_attempts"
   belongs_to :user_row, class_name: "UserListUpload::UserRow"
   belongs_to :invitation, optional: true
 

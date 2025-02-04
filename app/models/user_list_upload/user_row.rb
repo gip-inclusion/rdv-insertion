@@ -1,7 +1,5 @@
 # rubocop:disable Metrics/ClassLength
 class UserListUpload::UserRow < ApplicationRecord
-  self.table_name = "user_rows"
-
   include UserListUpload::UserRow::Status
   include UserListUpload::UserRow::MatchingUser
 

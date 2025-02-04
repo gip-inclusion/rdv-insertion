@@ -24,6 +24,6 @@ module SortParams
   end
 
   def sortable_attributes
-    raise NotImplementedError
+    raise NoMethodError
   end
 end

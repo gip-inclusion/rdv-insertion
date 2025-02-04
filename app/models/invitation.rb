@@ -15,6 +15,7 @@ class Invitation < ApplicationRecord
 
   has_many :category_configurations, through: :organisations
   has_many :webhook_endpoints, through: :organisations
+  has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   attr_accessor :content
 

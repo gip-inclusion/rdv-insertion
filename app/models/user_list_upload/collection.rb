@@ -1,8 +1,6 @@
 class UserListUpload::Collection
   attr_reader :user_rows, :user_list_upload
 
-  delegate :each, to: :user_rows
-
   SEARCHABLE_ATTRIBUTES = %i[
     first_name last_name email phone_number affiliation_number
   ].freeze
@@ -101,15 +99,15 @@ class UserListUpload::Collection
   end
 
   def sort_by!(sort_by:, sort_direction:)
-    @user_rows.sort_by! do |user_row|
+    user_rows.sort_by! do |user_row|
       # we place nil values at the end
       [user_row.send(sort_by).nil? ? 1 : 0, user_row.send(sort_by)]
     end
-    @user_rows.reverse! if sort_direction == "desc"
+    user_rows.reverse! if sort_direction == "desc"
   end
 
   def search!(query)
-    @user_rows.select! do |user_row|
+    user_rows.select! do |user_row|
       SEARCHABLE_ATTRIBUTES.any? do |attribute|
         user_row.user.send(attribute).to_s.downcase.include?(query.downcase)
       end
@@ -117,7 +115,7 @@ class UserListUpload::Collection
   end
 
   def count
-    @user_rows.length
+    user_rows.length
   end
 
   def find(user_row_id)

@@ -15,64 +15,77 @@ export default class extends Controller {
     event.preventDefault()
     const file = event.target.files[0]
 
-    if (file) {
-      if (!validateFileFormat(file, this.#acceptedFileFormats())) {
-        this.inputTarget.value = ""
-        return
-      }
-      if (!await this.#readFile(file)) {
-        this.inputTarget.value = ""
-        return
-      }
-
-      this.rowsCnafData = []
-
-      this.#retrieveRowsCnafData()
-
-      const existingInputs = this.formTarget.querySelectorAll("input[name^='rows_cnaf_data']")
-      existingInputs.forEach(input => input.remove())
-
-      if (this.rowsCnafData.length === 0) {
-        Swal.fire({
-          title: "Aucun usager trouvé",
-          text: "Aucun usager trouvé dans le fichier CNAF",
-          icon: "warning",
-          confirmButtonText: "OK"
-        })
-        this.inputTarget.value = ""
-        return
-      }
-
-      this.rowsCnafData.forEach((row) => {
-        const idInput = document.createElement("input")
-        idInput.type = "hidden"
-        idInput.name = "rows_cnaf_data[][id]"
-        idInput.value = row.id
-
-        // Create separate inputs for each cnaf_data field
-        const emailInput = document.createElement("input")
-        emailInput.type = "hidden"
-        emailInput.name = "rows_cnaf_data[][cnaf_data][email]"
-        emailInput.value = row.cnaf_data.email
-
-        const phoneInput = document.createElement("input")
-        phoneInput.type = "hidden"
-        phoneInput.name = "rows_cnaf_data[][cnaf_data][phone_number]"
-        phoneInput.value = row.cnaf_data.phone_number
-
-        const dateInput = document.createElement("input")
-        dateInput.type = "hidden"
-        dateInput.name = "rows_cnaf_data[][cnaf_data][rights_opening_date]"
-        dateInput.value = row.cnaf_data.rights_opening_date
-
-        this.formTarget.appendChild(idInput)
-        this.formTarget.appendChild(emailInput)
-        this.formTarget.appendChild(phoneInput)
-        this.formTarget.appendChild(dateInput)
-      })
-
-      await this.formTarget.requestSubmit()
+    if (!file) {
+      return
     }
+
+    if (!validateFileFormat(file, this.#acceptedFileFormats())) {
+      this.inputTarget.value = ""
+      return
+    }
+    if (!await this.#readFile(file)) {
+      this.inputTarget.value = ""
+      return
+    }
+
+    this.rowsCnafData = []
+
+    this.#retrieveRowsCnafData()
+
+    if (this.rowsCnafData.length === 0) {
+      Swal.fire({
+        title: "Aucun usager trouvé",
+        text: "Aucun usager trouvé dans le fichier CNAF",
+        icon: "warning",
+        confirmButtonText: "OK"
+      })
+      this.inputTarget.value = ""
+      return
+    }
+
+    this.#insertFormInputs()
+
+    await this.formTarget.requestSubmit()
+  }
+
+
+  #insertFormInputs() {
+    // we make sure to remove existing inputs from previous submissions
+    this.#removeExistingInputs()
+
+    this.rowsCnafData.forEach((row) => {
+      const idInput = document.createElement("input")
+      idInput.type = "hidden"
+      idInput.name = "rows_cnaf_data[][id]"
+      idInput.value = row.id
+
+      // Create separate inputs for each cnaf_data field
+      const emailInput = document.createElement("input")
+      emailInput.type = "hidden"
+      emailInput.name = "rows_cnaf_data[][cnaf_data][email]"
+      emailInput.value = row.cnaf_data.email
+
+      const phoneInput = document.createElement("input")
+      phoneInput.type = "hidden"
+      phoneInput.name = "rows_cnaf_data[][cnaf_data][phone_number]"
+      phoneInput.value = row.cnaf_data.phone_number
+
+      const dateInput = document.createElement("input")
+      dateInput.type = "hidden"
+      dateInput.name = "rows_cnaf_data[][cnaf_data][rights_opening_date]"
+      dateInput.value = row.cnaf_data.rights_opening_date
+
+      this.formTarget.appendChild(idInput)
+      this.formTarget.appendChild(emailInput)
+      this.formTarget.appendChild(phoneInput)
+      this.formTarget.appendChild(dateInput)
+    })
+
+  }
+
+  #removeExistingInputs() {
+    const existingInputs = this.formTarget.querySelectorAll("input[name^='rows_cnaf_data']")
+    existingInputs.forEach(input => input.remove())
   }
 
   #acceptedFileFormats() {

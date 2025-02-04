@@ -1,9 +1,9 @@
-class CreateUserRows < ActiveRecord::Migration[7.1]
+class CreateUserListUploadUserRows < ActiveRecord::Migration[7.1]
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def change
     enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
 
-    create_table :user_rows, id: :uuid do |t|
+    create_table :user_list_upload_user_rows, id: :uuid do |t|
       t.string :first_name
       t.string :last_name
       t.string :email
@@ -31,7 +31,7 @@ class CreateUserRows < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :user_rows, :assigned_organisation_id
+    add_index :user_list_upload_user_rows, :assigned_organisation_id
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 end

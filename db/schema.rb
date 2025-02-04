@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_22_135459) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -212,19 +212,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
     t.index ["motif_category_id"], name: "index_follow_ups_on_motif_category_id"
     t.index ["status"], name: "index_follow_ups_on_status"
     t.index ["user_id"], name: "index_follow_ups_on_user_id"
-  end
-
-  create_table "invitation_attempts", force: :cascade do |t|
-    t.boolean "success"
-    t.uuid "user_row_id", null: false
-    t.bigint "invitation_id"
-    t.string "service_errors", default: [], array: true
-    t.string "internal_error_message"
-    t.string "format"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["invitation_id"], name: "index_invitation_attempts_on_invitation_id"
-    t.index ["user_row_id"], name: "index_invitation_attempts_on_user_row_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -518,20 +505,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
     t.index ["organisation_id"], name: "index_unavailable_creneau_logs_on_organisation_id"
   end
 
-  create_table "user_list_uploads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "file_name"
-    t.bigint "category_configuration_id"
-    t.string "structure_type", null: false
-    t.bigint "structure_id", null: false
-    t.bigint "agent_id", null: false
+  create_table "user_list_upload_invitation_attempts", force: :cascade do |t|
+    t.boolean "success"
+    t.bigint "invitation_id"
+    t.uuid "user_row_id", null: false
+    t.string "service_errors", default: [], array: true
+    t.string "internal_error_message"
+    t.string "format"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["agent_id"], name: "index_user_list_uploads_on_agent_id"
-    t.index ["category_configuration_id"], name: "index_user_list_uploads_on_category_configuration_id"
-    t.index ["structure_type", "structure_id"], name: "index_user_list_uploads_on_structure"
+    t.index ["invitation_id"], name: "index_user_list_upload_invitation_attempts_on_invitation_id"
+    t.index ["user_row_id"], name: "index_user_list_upload_invitation_attempts_on_user_row_id"
   end
 
-  create_table "user_rows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "user_list_upload_user_rows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "email"
@@ -557,22 +544,35 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
     t.boolean "marked_for_user_save", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["assigned_organisation_id"], name: "index_user_rows_on_assigned_organisation_id"
-    t.index ["matching_user_id"], name: "index_user_rows_on_matching_user_id"
-    t.index ["user_list_upload_id"], name: "index_user_rows_on_user_list_upload_id"
+    t.index ["assigned_organisation_id"], name: "index_user_list_upload_user_rows_on_assigned_organisation_id"
+    t.index ["matching_user_id"], name: "index_user_list_upload_user_rows_on_matching_user_id"
+    t.index ["user_list_upload_id"], name: "index_user_list_upload_user_rows_on_user_list_upload_id"
   end
 
-  create_table "user_save_attempts", force: :cascade do |t|
+  create_table "user_list_upload_user_save_attempts", force: :cascade do |t|
     t.boolean "success"
-    t.uuid "user_row_id", null: false
     t.bigint "user_id"
+    t.uuid "user_row_id", null: false
     t.string "error_type"
     t.string "internal_error_message"
     t.string "service_errors", default: [], array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_user_save_attempts_on_user_id"
-    t.index ["user_row_id"], name: "index_user_save_attempts_on_user_row_id"
+    t.index ["user_id"], name: "index_user_list_upload_user_save_attempts_on_user_id"
+    t.index ["user_row_id"], name: "index_user_list_upload_user_save_attempts_on_user_row_id"
+  end
+
+  create_table "user_list_uploads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "file_name"
+    t.bigint "category_configuration_id"
+    t.string "structure_type", null: false
+    t.bigint "structure_id", null: false
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_user_list_uploads_on_agent_id"
+    t.index ["category_configuration_id"], name: "index_user_list_uploads_on_category_configuration_id"
+    t.index ["structure_type", "structure_id"], name: "index_user_list_uploads_on_structure"
   end
 
   create_table "users", force: :cascade do |t|
@@ -655,8 +655,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
   add_foreign_key "dpa_agreements", "organisations"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
-  add_foreign_key "invitation_attempts", "invitations"
-  add_foreign_key "invitation_attempts", "user_rows"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "follow_ups"
   add_foreign_key "invitations", "users"
@@ -684,11 +682,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_22_135459) do
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
   add_foreign_key "unavailable_creneau_logs", "organisations"
+  add_foreign_key "user_list_upload_invitation_attempts", "invitations"
+  add_foreign_key "user_list_upload_invitation_attempts", "user_list_upload_user_rows", column: "user_row_id"
+  add_foreign_key "user_list_upload_user_rows", "user_list_uploads"
+  add_foreign_key "user_list_upload_user_rows", "users", column: "matching_user_id"
+  add_foreign_key "user_list_upload_user_save_attempts", "user_list_upload_user_rows", column: "user_row_id"
+  add_foreign_key "user_list_upload_user_save_attempts", "users"
   add_foreign_key "user_list_uploads", "agents"
   add_foreign_key "user_list_uploads", "category_configurations"
-  add_foreign_key "user_rows", "user_list_uploads"
-  add_foreign_key "user_rows", "users", column: "matching_user_id"
-  add_foreign_key "user_save_attempts", "user_rows"
-  add_foreign_key "user_save_attempts", "users"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

@@ -49,6 +49,9 @@ class User < ApplicationRecord
   has_many :motif_categories, through: :follow_ups
   has_many :departments, -> { distinct }, through: :organisations
   has_many :tags, through: :tag_users
+  has_many :user_rows, class_name: "UserListUpload::UserRow", foreign_key: :matching_user_id, dependent: :destroy,
+                       inverse_of: :matching_user
+  has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", dependent: :destroy
 
   broadcasts_refreshes
 

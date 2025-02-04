@@ -50,7 +50,7 @@
           </div>
           <div>
             <% if @user_list_upload.invitations_enabled? %>
-              <% if @user_rows_with_user_save_attempted.count == @user_rows.count %>
+              <% if @user_rows_with_user_save_attempted.count == @user_rows.count && @user_rows_with_user_save_errors.count != @user_rows.count %>
                 <%= link_to @user_rows_with_user_save_errors.any? ? "Ignorer et passer aux invitations" : "Passer aux invitations", select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id), class: "btn btn-primary d-block mx-auto", data: { turbo_frame: "_top" } %>
               <% else %>
                 <%= link_to "Passer aux invitations", "#", class: "btn btn-primary d-block mx-auto disabled" %>

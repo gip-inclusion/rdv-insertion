@@ -4,8 +4,8 @@
             class="form-check-input user-checkbox"
             data-submit-selected-ids-target="checkbox"
             data-action="click->submit-selected-ids#toggleSubmit"
-            data-user-email="<%= user_row.email %>"
-            data-user-phone="<%= user_row.phone_number %>"
+            data-user-email="<%= user_row.user.email %>"
+            data-user-phone="<%= user_row.user.phone_number %>"
             data-user-invitable="<%= user_row.invitable? %>"
             value="<%= user_row.id %>"
             <%= user_row.invitable? ? "checked" : "disabled" %>>

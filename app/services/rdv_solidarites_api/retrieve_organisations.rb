@@ -3,7 +3,7 @@ module RdvSolidaritesApi
     EXPECTED_GEO_ATTRIBUTES = %i[department_number city_code street_ban_id].freeze
 
     def initialize(geo_attributes: {})
-      @geo_attributes = geo_attributes
+      @geo_attributes = geo_attributes || {}
     end
 
     def call

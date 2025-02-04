@@ -45,7 +45,7 @@ export default class extends Controller {
   }
 
   changeSortingArrow() {
-    const element = document.querySelector(`[data-sort-by="${this.sortBy}"]`);
+    const element = this.element.querySelector(`[data-sort-by="${this.sortBy}"]`);
     if (element && this.sortDirection) {
       const initialArrows = element.querySelector("i");
       const html = ` <i class="${this.sortDirection === "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line"}" role="button"></i>`;

@@ -1,5 +1,4 @@
 class UserListUpload::UserSaveAttempt < ApplicationRecord
-  self.table_name = "user_save_attempts"
   belongs_to :user_row, class_name: "UserListUpload::UserRow"
   belongs_to :user, optional: true
 

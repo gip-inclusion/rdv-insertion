@@ -44,7 +44,7 @@ module Users
     end
 
     # this validation cannot be placed in the model because the record created from rdv-sp webhooks
-    # don't match these rules: https://github.com/gip-inclusion/rdv-insertion/pull/1224
+    # doesn't match these rules: https://github.com/gip-inclusion/rdv-insertion/pull/1224
     def validate_identifier_is_present
       return if @user.nir? || @user.department_internal_id? || @user.email? || @user.phone_number?
       return if @user.affiliation_number? && @user.role?
