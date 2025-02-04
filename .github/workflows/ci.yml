@@ -114,6 +114,9 @@ jobs:
           - 6379:6379
         options: --entrypoint redis-server
     steps:
+      - name: Disable AppArmor
+        # https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md
+        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
       - uses: actions/checkout@v4
       - name: Set up Node.js
         uses: actions/setup-node@v4
