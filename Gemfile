@@ -85,9 +85,8 @@ gem "addressable"
 
 gem "agent_connect", github: "gip-inclusion/agent_connect_engine"
 
-# Easily generate PDF from HTML
-gem "wicked_pdf"
-gem "wkhtmltopdf-binary"
+# Easily generate PDF from HTML with puppeteer and headless chrome
+gem "grover"
 
 # CORS support
 gem "rack-cors"

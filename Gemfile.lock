@@ -210,6 +210,8 @@ GEM
     google-protobuf (3.25.5-x86_64-linux)
     groupdate (6.4.0)
       activesupport (>= 6.1)
+    grover (1.2.3)
+      nokogiri (~> 1)
     hashdiff (1.1.0)
     hashery (2.1.2)
     htmlentities (4.3.4)
@@ -545,7 +547,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    stringio (3.1.1)
+    stringio (3.1.2)
     swd (2.0.3)
       activesupport (>= 3)
       attr_required (>= 0.0.5)
@@ -586,11 +588,8 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    wicked_pdf (2.7.0)
-      activesupport
     with_advisory_lock (5.0.0)
       activerecord (>= 6.1)
-    wkhtmltopdf-binary (0.12.6.6)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.6.14)
@@ -619,6 +618,7 @@ DEPENDENCIES
   factory_bot_rails
   faraday
   groupdate
+  grover
   image_processing
   jbuilder (~> 2.7)
   jsbundling-rails
@@ -666,12 +666,10 @@ DEPENDENCIES
   tzinfo-data
   web-console (>= 3.3.0)
   webmock
-  wicked_pdf
   with_advisory_lock
-  wkhtmltopdf-binary
 
 RUBY VERSION
    ruby 3.3.3p89
 
 BUNDLED WITH
-   2.5.3
+   2.5.22

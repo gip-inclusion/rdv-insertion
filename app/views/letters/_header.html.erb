@@ -1,25 +1,28 @@
-<div>
-  <div class="header-left-col">
-    <div>
-      <div class="header-logo">
-        <%= image_tag(organisation.logo.attached? ? organisation.logo.url : department.logo.url) %>
-      </div>
+<div class="header">
+  <div>
+    <div class="header-logo">
+      <%= image_tag(organisation.logo.attached? ? organisation.logo.url : department.logo.url) %>
     </div>
-    <% if direction_names.blank? %>
-      <p><%= organisation.name.upcase %></p>
-    <% else %>
-      <% direction_names.each do |direction_name| %>
-        <p><%= direction_name.upcase %></p>
-      <% end %>
-    <% end %>
   </div>
-  <div class="header-right-col">
+  <div>
     <p><%= sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
     <br/>
     <p>À l'attention de</p>
-    <br/><br/><br/>
+    <br/><br/>
+  </div>
+  <div class="user-address">
     <p><%= user.title.upcase %> <%= user.first_name.upcase %> <%= user.last_name.upcase %><br/>
     <%= simple_format(user.parsed_street_address.upcase, {}, wrapper_tag: "span") %><br/>
     <%= user.parsed_post_code_and_city.upcase %></p>
   </div>
 </div>
+<br>
+<br>
+<br>
+<% if direction_names.blank? %>
+  <p><%= organisation.name.upcase %></p>
+<% else %>
+  <% direction_names.each do |direction_name| %>
+    <p><%= direction_name.upcase %></p>
+  <% end %>
+<% end %>
