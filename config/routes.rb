@@ -107,7 +107,8 @@ Rails.application.routes.draw do
     post :enrich_with_cnaf_data
 
     resources :user_rows, only: [:update, :show] do
-      get :show_details, :hide_details
+      get :show_details
+      get :hide_details
       resource :user_row_cells, only: [:edit]
     end
 

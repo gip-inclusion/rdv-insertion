@@ -73,7 +73,7 @@ class UserListUpload < ApplicationRecord
 
   def user_rows_attributes=(attributes)
     attributes = remove_duplicates!(attributes)
-    super(attributes)
+    super
   end
 
   def potential_matching_users_in_all_app

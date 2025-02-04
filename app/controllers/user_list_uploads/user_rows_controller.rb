@@ -48,7 +48,8 @@ module UserListUploads
 
     def row_params
       params.expect(
-        user_row: [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :assigned_organisation_id]
+        user_row: [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email,
+                   :assigned_organisation_id]
       )
     end
   end

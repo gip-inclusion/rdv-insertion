@@ -25,7 +25,8 @@ class UserListUpload::UserRow < ApplicationRecord
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
-  nullify_blank :first_name, :last_name, :affiliation_number, :department_internal_id, :address
+  nullify_blank :first_name, :last_name, :affiliation_number, :department_internal_id, :address, :phone_number,
+                :nir, :email
 
   EDITABLE_ATTRIBUTES = %i[title first_name last_name affiliation_number phone_number email].freeze
 
