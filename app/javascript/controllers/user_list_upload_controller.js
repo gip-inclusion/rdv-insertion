@@ -197,7 +197,9 @@ export default class extends Controller {
     this.#updateUserCount(this.rows.length)
     this.fileInputInstructionTarget.classList.add("d-none")
     this.uploadedFileInfoTarget.classList.remove("d-none")
-    this.submitButtonTarget.classList.remove("disabled")
+    if (this.rows.length > 0) {
+      this.submitButtonTarget.classList.remove("disabled")
+    }
   }
 
   #updateFileName(name) {
