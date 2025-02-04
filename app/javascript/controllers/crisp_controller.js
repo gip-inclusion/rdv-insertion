@@ -9,17 +9,18 @@ export default class extends Controller {
   };
 
   connect() {
-    if (!this.displayCrispValue && window.$crisp) {
-      // If the user is logged out from the app but crisp is still loaded, we loggout the user from crisp
-      if (window.$crisp) { this.logout(); };
+    if (!this.displayCrispValue) {
+      // If the user is logged out (displayCrispValue is false) but crisp is still loaded, we logout the user from crisp
+      if (window.$crisp) {
+        this.logout();
+      }
       return;
     }
-    if (!this.displayCrispValue) { return; }
 
-    // Ajout du safe mode pour supprimer l'avertissement dans la console lié aux modifs du MutationObserver
+    // safe mode is enabled to avoid console warnings related to MutationObserver modifications
     window.$crisp = window.$crisp || [];
     window.$crisp.push(["safe", true]);
-    this.setupMutationObserverOverride();
+    this.#setupMutationObserverOverride();
 
     if (window.CRISP_TOKEN_ID === this.userCrispTokenValue) {
       // If the user is already logged in, we don't need to do anything
@@ -34,56 +35,6 @@ export default class extends Controller {
 
     this.initCrisp(user);
     this.handleFirstVisit();
-  }
-
-  setupMutationObserverOverride() {
-    // Fix pour faire fonctionner Crisp avec Turbo : https://github.com/crisp-im/crisp-sdk-web/issues/39
-    if (!window.originalMutationObserver) {  // Changed from this.originalMutationObserver
-      window.originalMutationObserver = window.MutationObserver;  // Store it on window instead of this
-      window.listOfObservers = [];  // Store it on window instead of this
-
-      window.MutationObserver = function(aFunction) {
-        /* eslint new-cap: ["error", { "newIsCap": false }] */
-
-        const observer = new window.originalMutationObserver(aFunction);  // Use window.originalMutationObserver
-        const { stack } = new Error();
-
-        if (stack?.includes("crisp")) {
-          window.listOfObservers.push(observer);  // Use window.listOfObservers
-        }
-
-        return observer;
-      };
-
-      window.CRISP_READY_TRIGGER = () => this.onCrispReady();
-    }
-  }
-
-  disconnectAllObservers() {
-    window.listOfObservers?.forEach((observer) => {  // Use window.listOfObservers
-      observer.disconnect();
-    });
-  }
-
-  reconnectAllObservers() {
-    window.listOfObservers?.forEach((observer) => {  // Use window.listOfObservers
-      observer.reconnect();
-    });
-  }
-
-  moveCrispToPermanentContainer() {
-    const crispWidget = document.querySelector(".crisp-client");
-    const crispWrapper = document.getElementById("crisp-wrapper");
-
-    if (crispWidget && crispWrapper && !crispWrapper.contains(crispWidget)) {
-      this.disconnectAllObservers();
-      crispWrapper.appendChild(crispWidget);
-      this.reconnectAllObservers();
-    }
-  }
-
-  onCrispReady() {
-    this.moveCrispToPermanentContainer();
   }
 
   initCrisp(user) {
@@ -127,5 +78,55 @@ export default class extends Controller {
       window.$crisp.push(["do", "session:destroy"]);
       window.$crisp.push(["do", "chat:hide"]);
     }
+  }
+
+  #setupMutationObserverOverride() {
+    // Fix for solving Crisp/Turbo incompatibility : https://github.com/crisp-im/crisp-sdk-web/issues/39
+    if (!window.originalMutationObserver) {
+      window.originalMutationObserver = window.MutationObserver
+      window.listOfObservers = [];
+
+      window.MutationObserver = function(aFunction) {
+        /* eslint new-cap: ["error", { "newIsCap": false }] */
+
+        const observer = new window.originalMutationObserver(aFunction);
+        const { stack } = new Error();
+
+        if (stack?.includes("crisp")) {
+          window.listOfObservers.push(observer);
+        }
+
+        return observer;
+      };
+
+      window.CRISP_READY_TRIGGER = () => this.#onCrispReady();
+    }
+  }
+
+  #disconnectAllObservers() {
+    window.listOfObservers?.forEach((observer) => {
+      observer.disconnect();
+    });
+  }
+
+  #reconnectAllObservers() {
+    window.listOfObservers?.forEach((observer) => {
+      observer.reconnect();
+    });
+  }
+
+  #moveCrispToPermanentContainer() {
+    const crispWidget = document.querySelector(".crisp-client");
+    const crispWrapper = document.getElementById("crisp-wrapper");
+
+    if (crispWidget && crispWrapper && !crispWrapper.contains(crispWidget)) {
+      this.#disconnectAllObservers();
+      crispWrapper.appendChild(crispWidget);
+      this.#reconnectAllObservers();
+    }
+  }
+
+  #onCrispReady() {
+    this.#moveCrispToPermanentContainer();
   }
 }
