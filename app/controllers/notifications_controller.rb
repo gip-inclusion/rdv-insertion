@@ -24,7 +24,7 @@ class NotificationsController < ApplicationController
   end
 
   def notification_params
-    params.require(:notification).permit(:format, :event)
+    params.expect(notification: [:format, :event])
   end
 
   def notify_participation

@@ -3,7 +3,7 @@ class UserListUpload::InvitationAttempt < ApplicationRecord
   belongs_to :user_row, class_name: "UserListUpload::UserRow"
   belongs_to :invitation, optional: true
 
-  enum format: { sms: "sms", email: "email" }, _prefix: :format
+  enum :format, { sms: "sms", email: "email" }, prefix: true
 
   def self.create_from_row(user_row:, format:)
     invite_user_result = InviteUser.call(

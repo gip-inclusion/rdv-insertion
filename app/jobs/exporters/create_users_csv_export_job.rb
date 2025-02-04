@@ -1,5 +1,3 @@
-require "stringio"
-
 module Exporters
   class CreateUsersCsvExportJob < ApplicationJob
     attr_reader :user_ids, :structure, :agent, :request_params

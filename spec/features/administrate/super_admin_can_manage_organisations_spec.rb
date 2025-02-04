@@ -176,7 +176,7 @@ describe "Super admin can manage organisations" do
         text: "ID de l'organisation dans RDV-Solidarités"
       )
       expect(page).to have_field("organisation[rdv_solidarites_organisation_id]")
-      expect(page).to have_css("label[for=\"organisation_department_id-selectized\"]", text: "Department")
+      expect(page).to have_css("label[for=\"organisation_department_id-selectized\"]", text: "Département")
       expect(page).to have_field("organisation_department_id-selectized")
       expect(page).to have_button("Enregistrer")
 
@@ -186,13 +186,13 @@ describe "Super admin can manage organisations" do
 
       click_button("Enregistrer")
 
+      expect(page).to have_content("Organisation a été correctement créé(e)", wait: 10)
+      expect(page).to have_content("Détails Some name", wait: 10)
+      expect(page).to have_current_path(super_admins_organisation_path(Organisation.last))
       expect(stub_retrieve_rdv_solidarites_organisation).to have_been_requested
       expect(stub_retrieve_webhook_endpoint).to have_been_requested.at_least_once
       expect(stub_create_webhook_endpoint).to have_been_requested
       expect(stub_update_rdv_solidarites_organisation).to have_been_requested
-      expect(page).to have_current_path(super_admins_organisation_path(Organisation.last))
-      expect(page).to have_content("Organisation a été correctement créé(e)")
-      expect(page).to have_content("Détails Some name")
     end
 
     context "when a required attribute is missing" do
@@ -227,13 +227,13 @@ describe "Super admin can manage organisations" do
 
         click_button("Enregistrer")
 
+        expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)", wait: 10)
+        expect(page).to have_content("Département doit exister", wait: 10)
+        expect(page).to have_no_content("Détails Some name", wait: 10)
         expect(stub_retrieve_rdv_solidarites_organisation).to have_been_requested
         expect(stub_retrieve_webhook_endpoint).not_to have_been_requested.at_least_once
         expect(stub_create_webhook_endpoint).not_to have_been_requested
         expect(stub_update_rdv_solidarites_organisation).not_to have_been_requested
-        expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)")
-        expect(page).to have_content("Département doit exister")
-        expect(page).to have_no_content("Détails Some name")
       end
     end
   end
@@ -271,7 +271,7 @@ describe "Super admin can manage organisations" do
       )
       expect(page).to have_css("label[for=\"organisation_slug\"]", text: "Désignation dans le fichier usagers")
       expect(page).to have_field("organisation[slug]", with: organisation1.slug)
-      expect(page).to have_css("label[for=\"organisation_department_id-selectized\"]", text: "Department")
+      expect(page).to have_css("label[for=\"organisation_department_id-selectized\"]", text: "Département")
       within(all("div.selectize-input").first) do
         expect(page).to have_field("organisation_department_id-selectized")
         expect(page).to have_css("div.item", text: department1.name)
@@ -286,10 +286,10 @@ describe "Super admin can manage organisations" do
 
       click_button("Enregistrer")
 
+      expect(page).to have_content("Organisation a été correctement modifié(e)", wait: 10)
+      expect(page).to have_content("Détails Some other name", wait: 10)
       expect(stub_update_rdv_solidarites_organisation).to have_been_requested
       expect(page).to have_current_path(super_admins_organisation_path(organisation1))
-      expect(page).to have_content("Organisation a été correctement modifié(e)")
-      expect(page).to have_content("Détails Some other name")
     end
 
     context "when a required attribute is missing" do

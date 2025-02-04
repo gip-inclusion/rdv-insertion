@@ -49,11 +49,11 @@ class ArchivesController < ApplicationController
   private
 
   def archive_params
-    params.require(:archive).permit(:archiving_reason, :user_id, :organisation_id).to_h.deep_symbolize_keys
+    params.expect(archive: [:archiving_reason, :user_id, :organisation_id]).to_h.deep_symbolize_keys
   end
 
   def create_many_params
-    params.require(:archives).permit(:user_id, :archiving_reason, organisation_ids: []).to_h.deep_symbolize_keys
+    params.expect(archives: [:user_id, :archiving_reason, { organisation_ids: [] }]).to_h.deep_symbolize_keys
   end
 
   def set_user

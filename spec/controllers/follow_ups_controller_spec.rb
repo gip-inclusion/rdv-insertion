@@ -35,10 +35,9 @@ describe FollowUpsController do
       let!(:another_organisation) { create(:organisation) }
       let(:user) { create(:user, organisations: [another_organisation]) }
 
-      it "raises an error" do
-        expect do
-          post :create, params: follow_up_params
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "is forbidden" do
+        post :create, params: follow_up_params.merge(format: "turbo_stream")
+        expect(response).to have_http_status(:forbidden)
       end
     end
 

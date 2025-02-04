@@ -8,9 +8,9 @@ RSpec.configure do |config|
     # We only run this if feature specs are being run
     elsif config.files_to_run.any? { |file| file.include?("/spec/features/") }
 
-      source_files = Dir[Rails.root.join("app/javascript/**/*.{js,jsx,css,scss,sass}")]
+      source_files = Rails.root.glob("app/javascript/**/*.{js,jsx,css,scss,sass}")
 
-      built_assets = Dir[Rails.root.join("app/assets/builds/*.{js,css}")]
+      built_assets = Rails.root.glob("app/assets/builds/*.{js,css}")
 
       source_last_modified = source_files.map { |f| File.mtime(f) }.max
 

@@ -39,7 +39,7 @@ class Organisation < ApplicationRecord
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 
-  enum organisation_type: {
+  enum :organisation_type, {
     conseil_departemental: "conseil_departemental",
     delegataire_rsa: "delegataire_rsa",
     france_travail: "france_travail",

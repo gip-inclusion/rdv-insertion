@@ -47,8 +47,8 @@ module UserListUploads
     end
 
     def row_params
-      params.require(:user_row).permit(
-        :title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :assigned_organisation_id
+      params.expect(
+        user_row: [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :assigned_organisation_id]
       )
     end
   end

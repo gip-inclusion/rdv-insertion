@@ -20,7 +20,7 @@ class OrganisationsController < ApplicationController
   def edit; end
 
   def update
-    @organisation.assign_attributes(**organisation_params)
+    @organisation.assign_attributes(organisation_params)
     authorize @organisation
     if update_organisation.success?
       render :show
@@ -63,7 +63,7 @@ class OrganisationsController < ApplicationController
   private
 
   def organisation_params
-    params.require(:organisation).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+    params.expect(organisation: PERMITTED_PARAMS)
   end
 
   def set_organisation

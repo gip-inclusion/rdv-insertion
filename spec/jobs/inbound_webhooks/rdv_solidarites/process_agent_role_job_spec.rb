@@ -117,7 +117,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: 2131) }
 
       it "does not remove the agent from the org" do
-        subject
         expect { subject }.not_to change(AgentRole, :count)
       end
 

@@ -11,7 +11,7 @@ module Sidekiq
           # rubocop:enable Layout/LineLength
           message = filter_message(message) if message.include?("Job raised exception")
 
-          super(severity, time, program_name, message)
+          super
         end
 
         private

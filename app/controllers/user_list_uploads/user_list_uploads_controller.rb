@@ -18,7 +18,7 @@ module UserListUploads
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
       authorize @user_list_upload
 
-      if @user_list_upload.update_rows(enrich_with_cnaf_data_params[:rows_cnaf_data].map(&:to_h))
+      if @user_list_upload.update_rows(enrich_with_cnaf_data_params)
         flash[:success] = "Les données de #{@user_list_upload.user_rows_enriched_with_cnaf_data.count} usagers" \
                           " ont été mises à jour avec les données du fichier importé"
         turbo_stream_redirect(user_list_upload_path(@user_list_upload))
@@ -72,7 +72,7 @@ module UserListUploads
     end
 
     def enrich_with_cnaf_data_params
-      params.permit(rows_cnaf_data: [:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }])
+      params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }]])
     end
 
     def set_file_configuration

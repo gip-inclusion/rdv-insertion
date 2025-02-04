@@ -3,7 +3,7 @@ inherit_from: .rubocop_todo.yml
 require:
   - rubocop-rails
   - rubocop-rspec
-
+  - rubocop-capybara
 AllCops:
   Exclude:
     - "vendor/bundle/**/*"
@@ -46,6 +46,9 @@ Style/StringConcatenation:
 
 Style/SymbolArray:
   Enabled: false
+
+Style/SafeNavigationChainLength:
+  Max: 3
 
 Rails/SkipsModelValidations:
   Enabled: false
@@ -98,6 +101,10 @@ Naming/BlockForwarding:
 
 Rails/HasAndBelongsToMany:
   Enabled: false
+
+Rails/InverseOf:
+  Exclude:
+    - "app/models/participation.rb"
 
 Rails/BulkChangeTable:
   Enabled: false
@@ -170,7 +177,3 @@ Capybara/SpecificMatcher:
 
 Capybara/ClickLinkOrButtonStyle:
   Enabled: false
-
-Rails/InverseOf:
-  Exclude:
-    - "app/models/participation.rb"

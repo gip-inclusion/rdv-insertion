@@ -35,7 +35,7 @@ class UsersOrganisationsController < ApplicationController
   private
 
   def users_organisation_params
-    params.require(:users_organisation).permit(:organisation_id, :user_id)
+    params.expect(users_organisation: [:organisation_id, :user_id])
   end
 
   def user_id

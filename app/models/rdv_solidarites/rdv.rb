@@ -9,7 +9,7 @@ module RdvSolidarites
     delegate :presential?, :collectif?, :motif_category, to: :motif
 
     def initialize(attributes = {})
-      super(attributes)
+      super
     end
 
     def users

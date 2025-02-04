@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.3.3"
+ruby "3.4.1"
 
 gem "activerecord-import"
 
@@ -121,6 +121,9 @@ gem "skylight"
 # Sets migrations timeouts
 gem "activerecord-safer_migrations"
 
+# CSV is not part of the standard library anymore
+gem "csv"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
@@ -131,6 +134,7 @@ group :development, :test do
   gem "rubocop"
   gem "rubocop-rails"
   gem "rubocop-rspec"
+  gem "rubocop-capybara"
   gem "prosopite"
   gem "pg_query"
   # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
