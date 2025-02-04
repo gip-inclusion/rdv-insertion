@@ -5,7 +5,7 @@ class FlashMessage
     if value.is_a?(String)
       new(description: value, type:)
     elsif value.is_a?(Hash)
-      new(**value.deep_symbolize_keys.merge(type:))
+      new(**value.deep_symbolize_keys, type:)
     else
       raise ArgumentError, "Invalid flash message value: #{value}"
     end

@@ -9,7 +9,7 @@ class AgentRole < ApplicationRecord
 
   validate :organisation_is_not_archived, on: :create
 
-  enum access_level: { basic: "basic", admin: "admin" }
+  enum :access_level, { basic: "basic", admin: "admin" }
 
   scope :authorized_to_export_csv, -> { where(authorized_to_export_csv: true) }
   scope :with_last_name, -> { joins(:agent).where.not(agents: { last_name: nil }) }

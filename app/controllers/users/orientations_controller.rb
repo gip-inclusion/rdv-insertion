@@ -35,8 +35,8 @@ module Users
     private
 
     def orientation_params
-      params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id,
-                                          :organisation_id, :agent_id)
+      params.expect(orientation: [:starts_at, :ends_at, :orientation_type_id,
+                                  :organisation_id, :agent_id])
     end
 
     def set_user

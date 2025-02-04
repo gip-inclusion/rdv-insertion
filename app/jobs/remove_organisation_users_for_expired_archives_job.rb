@@ -9,7 +9,7 @@ class RemoveOrganisationUsersForExpiredArchivesJob < ApplicationJob
   private
 
   def expired_archives
-    Archive.where("created_at < ?", 2.years.ago)
+    Archive.where(created_at: ...2.years.ago)
   end
 
   def notify_on_mattermost

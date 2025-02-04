@@ -31,7 +31,7 @@ module Users
     private
 
     def referent_assignation_params
-      params.require(:referent_assignation).permit(:agent_email, :agent_id)
+      params.expect(referent_assignation: [:agent_email, :agent_id])
     end
 
     def agent_id
@@ -62,7 +62,7 @@ module Users
       @agents = Agent.joins(:organisations).where(
         organisations: @user.organisations.where(department: @department)
       ).with_last_name.distinct.order(:email)
-      @agents = @agents.not_betagouv if production_env?
+      @agents = @agents.not_betagouv if EnvironmentsHelper.production_env?
     end
 
     def assign_referent

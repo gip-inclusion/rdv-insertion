@@ -5,7 +5,7 @@ module Deliverable
   DELIVERED_STATUS = %w[delivered].freeze
 
   included do
-    enum delivery_status: (FAILED_DELIVERY_STATUS + DELIVERED_STATUS).index_by(&:itself)
+    enum :delivery_status, (FAILED_DELIVERY_STATUS + DELIVERED_STATUS).index_by(&:itself)
     validates :last_brevo_webhook_received_at, presence: true, if: -> { delivery_status.present? }
   end
 

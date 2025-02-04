@@ -128,9 +128,9 @@ describe "Super admin can manage departments" do
 
       click_button("Enregistrer")
 
+      expect(page).to have_content("Département a été correctement créé(e)", wait: 10)
+      expect(page).to have_content("Détails Yvelines", wait: 10)
       expect(page).to have_current_path(super_admins_department_path(Department.last))
-      expect(page).to have_content("Département a été correctement créé(e)")
-      expect(page).to have_content("Détails Yvelines")
     end
 
     context "when a required attribute is missing" do

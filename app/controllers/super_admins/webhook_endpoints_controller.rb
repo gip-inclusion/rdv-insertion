@@ -18,7 +18,7 @@ module SuperAdmins
     private
 
     def webhook_endpoint_params
-      params.require(:webhook_endpoint).permit(:target_id)
+      params.expect(webhook_endpoint: [:target_id])
     end
   end
 end

@@ -12,7 +12,7 @@ module ApiSpecHelper
         }
       }
 
-      if request.body.string.present?
+      if request.body&.string.present?
         example.metadata[:operation][:request_examples] ||= []
         request_example = {
           value: JSON.parse(request.body.string, symbolize_names: true),

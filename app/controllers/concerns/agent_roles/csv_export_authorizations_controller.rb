@@ -41,7 +41,7 @@ module AgentRoles
     end
 
     def csv_export_authorizations_params
-      params.require(:csv_export_authorizations).permit(:organisation_id, agent_role_ids: [])
+      params.expect(csv_export_authorizations: [:organisation_id, { agent_role_ids: [] }])
     end
 
     def set_organisation

@@ -32,7 +32,7 @@ module Users
     end
 
     def tag_assignation_params
-      params.require(:tag_assignation).permit(tag_ids: [])
+      params.expect(tag_assignation: [tag_ids: []])
     end
 
     def department

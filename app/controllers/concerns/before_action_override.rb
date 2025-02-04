@@ -32,7 +32,7 @@ module BeforeActionOverride
     end
   end
 
-  def method_missing(method_name, *args)
+  def method_missing(method_name, *)
     return super unless method_name.to_s.end_with?("for_#{action_name}")
 
     splitted_method_name = method_name.to_s.split("_")
@@ -42,7 +42,7 @@ module BeforeActionOverride
     if respond_to?(matching_method, true)
       send(matching_method)
     else
-      super(matching_method, *args)
+      super(matching_method, *)
     end
   end
 
