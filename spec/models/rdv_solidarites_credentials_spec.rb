@@ -1,29 +1,6 @@
 describe RdvSolidaritesCredentials do
   subject do
-    described_class.new(request_with_headers)
-  end
-
-  let(:request_with_env) { OpenStruct.new(env:, headers: {}) }
-  let(:request_with_headers) { OpenStruct.new(env: {}, headers:) }
-
-  let(:env) do
-    {
-      "omniauth.auth" => {
-        "info" => {
-          "agent" => {
-            "email" => uid
-          }
-        }
-      }
-    }
-  end
-
-  let(:headers) do
-    {
-      "uid" => uid,
-      "client" => client,
-      "access-token" => access_token
-    }
+    described_class.new(uid:, client:, access_token:)
   end
 
   let!(:uid) { "aminedhobb@beta.gouv.fr" }
