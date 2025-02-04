@@ -3,7 +3,7 @@ module AuthenticatedControllerConcern
 
   included do
     before_action :authenticate_agent!
-    helper_method :current_agent, :agent_impersonated?, :logged_with_inclusion_connect?, :logged_with_agent_connect?
+    helper_method :current_agent, :agent_impersonated?
   end
 
   private
@@ -38,13 +38,5 @@ module AuthenticatedControllerConcern
 
   def agent_impersonated?
     agent_session&.impersonated?
-  end
-
-  def logged_with_inclusion_connect?
-    agent_session&.inclusion_connect?
-  end
-
-  def logged_with_agent_connect?
-    agent_session&.agent_connect?
   end
 end

@@ -4,6 +4,7 @@ module Api
       skip_before_action :verify_authenticity_token
       respond_to :json
 
+      include Agents::SignInWithRdvSolidarites
       before_action :retrieve_agent!, :mark_agent_as_logged_in!,
                     :set_current_agent
 
