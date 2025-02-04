@@ -100,6 +100,11 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
           .and_raise(FranceTravailApi::RetrieveUserToken::UserNotFound, "Aucun usager trouvé")
       end
 
+      around do |example|
+        ActiveJob::Base.queue_adapter = :test
+        example.run
+      end
+
       it "discards the job without raising an error" do
         expect do
           perform_enqueued_jobs do
