@@ -21,13 +21,14 @@ describe "Super admin can log in as another agent", :js do
       expect(page).to have_content(super_admin.last_name)
       click_link(agent.last_name)
 
-      expect(page).to have_link("Se logger en tant que",
-                                href: super_admins_agent_impersonation_path(agent_id: agent.id))
-      click_link("Se logger en tant que")
+      expect(page).to have_button("Se logger en tant que", wait: 10)
+      click_button("Se logger en tant que")
 
       # Verify that the super admin is now logged in as the agent
+      expect(page).to have_content(
+        "Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}", wait: 10
+      )
       expect(page).to have_current_path(organisations_path)
-      expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}")
       # We check the organisations displayed to check that it is really the agent's account
       expect(page).to have_content(agent_department.name)
       expect(page).to have_content(agent_organisation1.name)
@@ -40,7 +41,7 @@ describe "Super admin can log in as another agent", :js do
       expect(page).to have_link("Revenir à ma session",
                                 href: super_admins_agent_impersonation_path(agent_id: agent.id))
       click_link("Revenir à ma session")
-      expect(page).to have_current_path(organisations_path)
+      expect(page).to have_current_path(organisations_path, wait: 10)
 
       # Verify it's really the super admin account by checking the organisations displayed
       expect(page).to have_content(super_admin_department.name)
@@ -64,16 +65,17 @@ describe "Super admin can log in as another agent", :js do
 
       it "cannot impersonate while impersonating" do
         visit super_admins_agent_path(agent.id)
-        click_link("Se logger en tant que")
+        click_button("Se logger en tant que")
 
+        expect(page).to have_content(
+          "Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}", wait: 10
+        )
         expect(page).to have_current_path(organisations_path)
-        expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}")
 
         visit super_admins_agent_path(other_agent.id)
 
-        expect(page).to have_link("Se logger en tant que",
-                                  href: super_admins_agent_impersonation_path(agent_id: other_agent.id))
-        click_link("Se logger en tant que")
+        expect(page).to have_button("Se logger en tant que", wait: 10)
+        click_button("Se logger en tant que")
         # it disconnects the agent
         expect(page).to have_current_path(sign_in_path)
       end

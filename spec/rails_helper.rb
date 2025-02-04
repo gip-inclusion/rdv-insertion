@@ -20,7 +20,7 @@ require "rspec/rails"
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Rails.root.glob("spec/support/**/*.rb").each { |f| require f }
 
 # Calls Sidekiq::Testing.fake! which fakes pushing jobs to Redis
 require "sidekiq/testing"
@@ -54,6 +54,7 @@ RSpec.configure do |config|
   config.extend ApiSpecHelper
   config.include ApiSpecSharedExamples
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include ActiveJob::TestHelper
 
   ## Clear downloads
   config.before(:each, :js) do

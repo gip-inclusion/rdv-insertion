@@ -20,8 +20,8 @@ class UnavailableCreneauLogDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[].freeze
 
   COLLECTION_FILTERS = {
-    created_before: ->(resources, value) { resources.where("created_at <= ?", value) },
-    created_after: ->(resources, value) { resources.where("created_at >= ?", value) }
+    created_before: ->(resources, value) { resources.where(created_at: ..value) },
+    created_after: ->(resources, value) { resources.where(created_at: value..) }
   }.freeze
 
   def display_resource(unavailable_creneau_log)

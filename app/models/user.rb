@@ -64,8 +64,8 @@ class User < ApplicationRecord
   after_commit :import_associations_from_rdv_solidarites, on: :create,
                                                           if: :import_associations_from_rdv_solidarites_on_create
 
-  enum role: { demandeur: "demandeur", conjoint: "conjoint" }
-  enum title: { monsieur: "monsieur", madame: "madame" }
+  enum :role, { demandeur: "demandeur", conjoint: "conjoint" }
+  enum :title, { monsieur: "monsieur", madame: "madame" }
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
@@ -194,7 +194,7 @@ class User < ApplicationRecord
     attributes.uniq! { |attr| attr["tag_id"] }
     attributes.reject! { |attr| tag_users.any? { |tu| tu.tag_id == attr["tag_id"] } }
 
-    super(attributes)
+    super
   end
 
   private

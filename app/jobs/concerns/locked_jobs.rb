@@ -7,11 +7,11 @@ module LockedJobs
 
   private
 
-  def perform_with_lock(&block)
+  def perform_with_lock(&)
     # if the lock is not available, we raise an WithAdvisoryLock::FailedToAcquireLockError
     # and the job will be retried
     ActiveRecord::Base.with_advisory_lock!(
-      self.class.lock_key(*arguments), timeout_seconds: 0, &block
+      self.class.lock_key(*arguments), timeout_seconds: 0, &
     )
   end
 

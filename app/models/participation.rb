@@ -2,6 +2,8 @@ class Participation < ApplicationRecord
   include Notificable
   include HasCurrentCategoryConfiguration
   include RdvParticipationStatus
+  include Participation::FranceTravailWebhooks
+  include Participation::FranceTravailPayload
 
   belongs_to :rdv
   belongs_to :follow_up
@@ -14,6 +16,7 @@ class Participation < ApplicationRecord
 
   has_many :notifications, dependent: :destroy
   has_many :follow_up_invitations, through: :follow_up, source: :invitations
+  has_many :agents, through: :rdv
 
   has_one :organisation, through: :rdv
 
@@ -26,10 +29,10 @@ class Participation < ApplicationRecord
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
   after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
 
-  enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
+  enum :created_by, { agent: "agent", user: "user", prescripteur: "prescripteur" }, prefix: true
 
-  delegate :starts_at, :motif_name,
-           :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
+  delegate :starts_at, :motif, :lieu, :collectif?, :by_phone?, :duration_in_min,
+           :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv, :address,
            to: :rdv
   delegate :department, :department_id, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :user

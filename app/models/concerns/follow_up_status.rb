@@ -2,7 +2,7 @@ module FollowUpStatus
   extend ActiveSupport::Concern
 
   included do
-    enum status: {
+    enum :status, {
       not_invited: "not_invited",
       invitation_pending: "invitation_pending",
       rdv_pending: "rdv_pending",

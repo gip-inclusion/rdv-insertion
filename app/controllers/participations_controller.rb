@@ -23,6 +23,6 @@ class ParticipationsController < ApplicationController
   end
 
   def participation_params
-    params.require(:participation).permit(:status)
+    params.expect(participation: [:status])
   end
 end

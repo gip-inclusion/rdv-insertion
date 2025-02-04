@@ -30,6 +30,6 @@ class TagsController < ApplicationController
   end
 
   def tag_params
-    params.require(:tag).permit(:value)
+    params.expect(tag: [:value])
   end
 end

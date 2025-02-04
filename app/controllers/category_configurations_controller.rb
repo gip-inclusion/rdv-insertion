@@ -63,7 +63,7 @@ class CategoryConfigurationsController < ApplicationController
   private
 
   def category_configuration_params
-    params.require(:category_configuration).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+    params.expect(category_configuration: PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
   def formatted_configuration_params

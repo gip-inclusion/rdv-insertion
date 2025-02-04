@@ -12,7 +12,7 @@ class DestroyOldRessourcesJob < ApplicationJob
     # we check the orgs because being added to an organisation is a sign that the user is in an active process
     inactive_users =
       User.left_outer_joins(:invitations, :participations, :users_organisations)
-          .where("users.created_at < ?", date_limit)
+          .where(users: { created_at: ...date_limit })
           .where("NOT EXISTS (
                   SELECT 1
                   FROM invitations
@@ -38,7 +38,7 @@ class DestroyOldRessourcesJob < ApplicationJob
   end
 
   def destroy_useless_rdvs
-    useless_rdvs = Rdv.where.missing(:participations).where("rdvs.created_at < ?", date_limit)
+    useless_rdvs = Rdv.where.missing(:participations).where(rdvs: { created_at: ...date_limit })
 
     # On envoit pas de webhook de destroy rgpd pour les rdvs du département 13
     bdr_rdv_ids = useless_rdvs.joins(organisation: :department)
@@ -60,7 +60,7 @@ class DestroyOldRessourcesJob < ApplicationJob
 
   def destroy_useless_notifications
     # notifications with no participation_id are useless code-wise, so we can clean them manually
-    useless_notifications = Notification.where(participation_id: nil).where("created_at < ?", date_limit).destroy_all
+    useless_notifications = Notification.where(participation_id: nil).where(created_at: ...date_limit).destroy_all
 
     MattermostClient.send_to_notif_channel(
       "🚮 Les notifications suivantes ont été supprimées automatiquement : " \

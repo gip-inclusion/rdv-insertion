@@ -1,7 +1,7 @@
 class OrientationType < ApplicationRecord
   belongs_to :department, optional: true
 
-  enum casf_category: { social: "social", pro: "pro", socio_pro: "socio_pro" }
+  enum :casf_category, { social: "social", pro: "pro", socio_pro: "socio_pro" }
 
   scope :for_department, lambda { |department|
     custom_orientation_types = where(department:)

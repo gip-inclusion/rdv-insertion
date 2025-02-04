@@ -3,7 +3,7 @@ module RedisConnection
     Redis.new(url: Rails.configuration.x.redis_url)
   end
 
-  def self.with_redis(&block)
-    CONNECTION_POOL.with(&block)
+  def self.with_redis(&)
+    CONNECTION_POOL.with(&)
   end
 end

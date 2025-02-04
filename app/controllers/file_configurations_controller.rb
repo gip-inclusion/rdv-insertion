@@ -53,7 +53,7 @@ class FileConfigurationsController < ApplicationController
   private
 
   def file_configuration_params
-    params.require(:file_configuration).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+    params.expect(file_configuration: PERMITTED_PARAMS)
   end
 
   def formatted_params

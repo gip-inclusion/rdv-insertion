@@ -41,10 +41,10 @@ module Users
     private
 
     def parcours_document_params
-      params.require(:parcours_document)
-            .permit(:type, :file, :user_id, :document_date)
-            .merge(agent: current_agent, user: @user)
-            .merge(department: current_department)
+      params
+        .expect(parcours_document: [:type, :file, :user_id, :document_date])
+        .merge(agent: current_agent, user: @user)
+        .merge(department: current_department)
     end
 
     def set_parcours_document

@@ -1,6 +1,4 @@
 class ApplicationJob < ActiveJob::Base
-  include EnvironmentsHelper
-
   queue_as :default
 
   def self.perform_in(wait_time, *)

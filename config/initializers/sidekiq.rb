@@ -1,6 +1,6 @@
 require "sidekiq"
 
-Dir[Rails.root.join("app/lib/sidekiq/**/*.rb")].each do |file|
+Rails.root.glob("app/lib/sidekiq/**/*.rb").each do |file|
   require file
 end
 

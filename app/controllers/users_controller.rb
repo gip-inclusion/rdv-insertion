@@ -5,7 +5,7 @@ class UsersController < ApplicationController
     :uid, :role, :first_name, :last_name, :nir, :france_travail_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
     :status, :rights_opening_date, :created_through, :created_from_structure_type, :created_from_structure_id,
-    { follow_ups_attributes: [:motif_category_id], tag_users_attributes: [:tag_id] }
+    { follow_ups_attributes: [[:motif_category_id]], tag_users_attributes: [[:tag_id]] }
   ].freeze
 
   include BackToListConcern
@@ -82,7 +82,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+    params.expect(user: PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
   def restricted_user_attributes = UserPolicy.restricted_user_attributes_for(user: @user, agent: current_agent)
@@ -281,7 +281,7 @@ class UsersController < ApplicationController
 
   def set_referents_list
     @referents_list = current_structure.agents.where.not(last_name: nil).distinct.order(:last_name)
-    @referents_list = @referents_list.where(super_admin: false) if production_env?
+    @referents_list = @referents_list.where(super_admin: false) if EnvironmentsHelper.production_env?
   end
 
   def set_users_scope
