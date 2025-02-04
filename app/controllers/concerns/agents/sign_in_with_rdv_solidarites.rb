@@ -52,7 +52,16 @@ module Agents::SignInWithRdvSolidarites
   def mark_agent_as_logged_in!
     return if authenticated_agent.update(last_sign_in_at: Time.zone.now)
 
-    render json: { success: false, errors: authenticated_agent.errors.full_messages }, status: :unprocessable_entity
+    respond_to do |format|
+      format.json do
+        render json: { success: false, errors: authenticated_agent.errors.full_messages }, status: :unprocessable_entity
+      end
+
+      format.html do
+        flash[:error] = authenticated_agent.errors.full_messages
+        redirect_to @agent_return_to_url || root_path
+      end
+    end
   end
 
   def authenticated_agent
