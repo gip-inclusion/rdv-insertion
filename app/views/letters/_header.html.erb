@@ -16,13 +16,12 @@
     <%= user.parsed_post_code_and_city.upcase %></p>
   </div>
 </div>
-<br>
-<br>
-<br>
-<% if direction_names.blank? %>
-  <p><%= organisation.name.upcase %></p>
-<% else %>
-  <% direction_names.each do |direction_name| %>
-    <p><%= direction_name.upcase %></p>
+<div style="direction-names">
+  <% if direction_names.blank? %>
+    <p><%= organisation.name.upcase %></p>
+  <% else %>
+    <% direction_names.each do |direction_name| %>
+      <p><%= direction_name.upcase %></p>
+    <% end %>
   <% end %>
-<% end %>
+</div>
