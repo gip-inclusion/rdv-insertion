@@ -3,7 +3,7 @@ on: push
 jobs:
   linters:
     name: Linters
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
@@ -24,7 +24,7 @@ jobs:
         run: yarn lint
   test_unit:
     name: Unit Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:13.2
@@ -87,7 +87,7 @@ jobs:
 
   test_features:
     name: Feature Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
