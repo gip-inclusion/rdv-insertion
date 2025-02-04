@@ -3,7 +3,6 @@ class SessionsController < ApplicationController
   wrap_parameters false
   respond_to :json, only: :create
 
-  include Agents::SignInWithRdvSolidarites
   before_action :retrieve_agent!, :mark_agent_as_logged_in!,
                 :set_agent_return_to_url,
                 only: [:create]
