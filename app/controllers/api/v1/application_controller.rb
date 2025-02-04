@@ -5,7 +5,7 @@ module Api
       respond_to :json
 
       include Agents::SignInWithRdvSolidarites
-      before_action :retrieve_agent!, :mark_agent_as_logged_in!,
+      before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
                     :set_current_agent
 
       include AuthorizationConcern
