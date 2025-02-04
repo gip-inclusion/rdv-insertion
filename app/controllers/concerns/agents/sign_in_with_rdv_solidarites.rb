@@ -3,18 +3,10 @@ class RdvSolidarites::InvalidCredentialsError < StandardError; end
 module Agents::SignInWithRdvSolidarites
   extend ActiveSupport::Concern
 
-  included do
-    rescue_from RdvSolidarites::InvalidCredentialsError, with: :invalid_credentials
-  end
-
   private
 
-  def validate_rdv_solidarites_credentials!
-    raise RdvSolidarites::InvalidCredentialsError unless rdv_solidarites_credentials.valid?
-  end
-
   def rdv_solidarites_credentials
-    @rdv_solidarites_credentials ||= RdvSolidaritesCredentials.new(request)
+    OpenStruct.new(request.env["omniauth.auth"]["info"]["agent"])
   end
 
   def invalid_credentials

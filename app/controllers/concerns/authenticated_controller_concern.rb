@@ -13,7 +13,8 @@ module AuthenticatedControllerConcern
 
     clear_session
     session[:agent_return_to] = request.env["PATH_INFO"]
-    redirect_to sign_in_path
+    flash[:notice] = "Veuillez vous connecter"
+    redirect_to root_path
   end
 
   def clear_session

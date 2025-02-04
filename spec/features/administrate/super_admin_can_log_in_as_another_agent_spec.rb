@@ -75,7 +75,7 @@ describe "Super admin can log in as another agent", :js do
                                   href: super_admins_agent_impersonation_path(agent_id: other_agent.id))
         click_link("Se logger en tant que")
         # it disconnects the agent
-        expect(page).to have_current_path(sign_in_path)
+        expect(page).to have_current_path(root_path)
       end
     end
   end

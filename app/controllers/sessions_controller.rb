@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   respond_to :json, only: :create
 
   include Agents::SignInWithRdvSolidarites
-  before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
+  before_action :retrieve_agent!, :mark_agent_as_logged_in!,
                 :set_agent_return_to_url,
                 only: [:create]
 
