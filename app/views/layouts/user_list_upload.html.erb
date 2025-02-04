@@ -1,8 +1,13 @@
+<% content_for :header do %>
+  <%= render 'common/header' %>
+<% end %>
+
 <!DOCTYPE html>
 <html>
   <%= render 'layouts/head' %>
 
-  <body data-matomo-mask>
+  <%# The difference from _application_base.html.erb is that the body has a white background and no footer %>
+  <body data-matomo-mask class="bg-white">
     <%= render 'common/confirm_modal' %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>
@@ -14,6 +19,5 @@
       <%= render 'common/accept_dpa_modal' if @should_display_accept_dpa %>
       <%= render 'common/crisp' %>
     </div>
-    <%= render 'common/footer' %>
   </body>
 </html>

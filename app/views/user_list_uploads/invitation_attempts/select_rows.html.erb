@@ -1,7 +1,4 @@
 <% content_for :title, "Envoyer de invitations - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
-<%# The body is different from the others because it has a light blue background, but it will soon be the norm in the whole app.
-When it will be the norm, we will remove the content_for :body_class declaration. %>
-<% content_for :body_class, "bg-white" %>
 
 <div class="container px-5 py-3" data-controller="submit-selected-ids">
   <div class="row text-dark-blue ">
@@ -26,31 +23,33 @@ When it will be the norm, we will remove the content_for :body_class declaration
           </p>
         </div>
       </div>
-       <%= render "user_rows_before_invitation", user_rows: @user_rows %>
+      <%= render "user_rows_before_invitation", user_rows: @user_rows %>
+
+      <div class="col-md-10 sticky-footer">
+        <div class="py-3 bg-white border-top d-flex justify-content-between">
+          <div>
+          </div>
+          <div>
+            <%= form_tag create_many_user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id),
+                  method: :post,
+                  data: { action: "submit->submit-selected-ids#submit", turbo: false } do %>
+              <div class="d-flex justify-content-around align-items-center">
+                <div class="align-middle">Inviter la sélection par:</div>
+                <div class="form-check mx-3">
+                  <%= check_box_tag "email", "Email", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "email" } %>
+                  <%= label_tag "email", "Email", class: "form-check-label" %>
+                </div>
+                <div class="form-check mx-3">
+                  <%= check_box_tag "sms", "SMS", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "sms" } %>
+                  <%= label_tag "sms", "SMS", class: "form-check-label" %>
+                </div>
+                <%= hidden_field_tag "selected_ids[]" %>
+                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", data: { submit_selected_ids_target: "submit" } %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
   <% end %>
-
-  <div class="d-flex justify-content-between col-md-10 mx-auto my-5">
-    <div>
-    </div>
-    <div>
-      <%= form_tag create_many_user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id),
-             method: :post,
-             data: { action: "submit->submit-selected-ids#submit", turbo: false } do %>
-        <div class="d-flex justify-content-around align-items-center">
-          <div class="align-middle">Inviter la sélection par:</div>
-          <div class="form-check mx-3">
-            <%= check_box_tag "email", "Email", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "email" } %>
-            <%= label_tag "email", "Email", class: "form-check-label" %>
-          </div>
-          <div class="form-check mx-3">
-            <%= check_box_tag "sms", "SMS", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "sms" } %>
-            <%= label_tag "sms", "SMS", class: "form-check-label" %>
-          </div>
-          <%= hidden_field_tag "selected_ids[]" %>
-          <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", data: { submit_selected_ids_target: "submit" } %>
-        </div>
-      <% end %>
-    </div>
-  </div>
 </div>

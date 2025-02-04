@@ -1,4 +1,6 @@
 class UserListUploads::BaseController < ApplicationController
+  layout "user_list_upload"
+
   include SortParams
 
   private
