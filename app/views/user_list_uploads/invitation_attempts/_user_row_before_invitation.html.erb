@@ -25,15 +25,17 @@
       </span>
     </div>
   </td>
-  <td class="text-center">
-    <%= form_for(:invitation, url: @user_list_upload.user_invitations_path(user_row.saved_user_id, format: "pdf"), method: :post) do |f| %>
-      <%= f.hidden_field :format, value: "postal" %>
-      <%= f.fields_for :motif_category do |motif_category_fields| %>
-        <%= motif_category_fields.hidden_field :id, value: @user_list_upload.motif_category_id %>
-      <% end %>
-      <button type="submit">
+  <td class="text-center"
+      data-controller="invitation-button"
+      data-user-id="<%= user_row.user.id %>"
+      data-department-id="<%= @user_list_upload.department.id %>"
+      data-organisation-id="<%= @user_list_upload.organisation&.id %>"
+      data-is-department-level="<%= @user_list_upload.department_level? %>"
+      data-motif-category-id="<%= @user_list_upload.motif_category_id %>"
+  >
+      <button type="submit"
+              data-action="click->invitation-button#generatePostalInvitation">
         <i class="ri-download-line"></i>
       </button>
-    <% end %>
   </td>
 </tr>
