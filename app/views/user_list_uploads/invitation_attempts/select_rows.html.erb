@@ -1,10 +1,10 @@
-<% content_for :title, "Envoyer de invitations - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
+<% content_for :title, "Envoyer des invitations - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
 
 <div class="container px-5 py-3" data-controller="submit-selected-ids">
   <div class="row text-dark-blue ">
     <div class="col text-center align-items-center my-1">
       <div>
-        <h1 class="h1-title">Envoyer de invitations</h1>
+        <h1 class="h1-title">Envoyer des invitations</h1>
         <p class="text-muted mb-4">
           au niveau de « <%= structure_name_with_context(@user_list_upload.structure) %> »
           <%= ", sur « #{@category_configuration.motif_category.name} »" if @category_configuration %>
