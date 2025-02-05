@@ -51,7 +51,20 @@
       <div class="col-md-10 sticky-footer">
         <div class="py-3 bg-white border-top d-flex justify-content-between">
           <div>
-            <i class="ri-arrow-left-s-line"></i><%= link_to "Revenir à l'étape précédente", new_structure_user_list_upload_path(category_configuration_id: @category_configuration&.id || "none"), class: "btn btn-link" %>
+            <i class="ri-arrow-left-s-line"></i>
+            <%=
+                link_to(
+                  "Revenir à l'étape précédente",
+                  new_structure_user_list_upload_path(category_configuration_id: @category_configuration&.id || "none"),
+                  class: "btn btn-link",
+                  data: {
+                    turbo_frame: "_top",
+                    turbo_confirm: true,
+                    turbo_confirm_template: raw(render("user_list_uploads/user_list_uploads/back_to_file_upload_warning")), # rubocop:disable Rails/OutputSafety
+                    turbo_method: :get
+                  }
+                )
+            %>
           </div>
           <div>
             <%= form_tag create_many_user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload.id),
