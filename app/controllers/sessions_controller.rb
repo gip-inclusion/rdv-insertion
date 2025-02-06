@@ -27,9 +27,9 @@ class SessionsController < ApplicationController
   def destroy
     token = session[:rdv_solidarites_oauth_token]
     clear_session
+    flash[:notice] = "Déconnexion réussie"
     if token
       sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
-      flash[:notice] = "Déconnexion réussie"
       redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
     else
       redirect_to root_path
