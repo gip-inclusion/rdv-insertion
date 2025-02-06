@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   include NavigationHelper
   include PolicyHelper
   include BeforeActionOverride
-  include EnvironmentsHelper
   include TurboStreamConcern
   include ModalAgreementsConcern
   include CrispConcern

@@ -89,7 +89,7 @@ describe "Super admin can manage motif categories" do
       ).to_return(status: 200, body: {}.to_json)
 
       expect(page).to have_current_path(new_super_admins_motif_category_path)
-      expect(page).to have_content("Création Catégorie De Motifs")
+      expect(page).to have_content("Création Catégorie de motifs")
       expect(page).to have_css("label[for=\"motif_category_name\"]", text: "Name")
       expect(page).to have_field("motif_category[name]")
       expect(page).to have_css("label[for=\"motif_category_short_name\"]", text: "Short name")
@@ -106,10 +106,10 @@ describe "Super admin can manage motif categories" do
 
       click_button("Enregistrer")
 
+      expect(page).to have_content("Catégorie de motifs a été correctement créé(e)", wait: 10)
+      expect(page).to have_content("Détails MotifCategory ##{MotifCategory.last.id}", wait: 10)
       expect(stub_create_motif_category).to have_been_requested
       expect(page).to have_current_path(super_admins_motif_category_path(MotifCategory.last))
-      expect(page).to have_content("Catégorie de motifs a été correctement créé(e)")
-      expect(page).to have_content("Détails MotifCategory ##{MotifCategory.last.id}")
     end
 
     context "when a required attribute is missing" do

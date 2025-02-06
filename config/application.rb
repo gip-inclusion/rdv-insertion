@@ -11,7 +11,7 @@ module RdvInsertion
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
-    config.autoload_paths += Dir[Rails.root.join("app/models/concerns/validators")]
+    config.autoload_paths += Rails.root.glob("app/models/concerns/validators")
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
@@ -20,7 +20,7 @@ module RdvInsertion
     config.time_zone = "Paris"
     config.i18n.available_locales = [:fr, :en]
     config.i18n.default_locale = :fr
-    config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.{rb,yml}")]
+    config.i18n.load_path += Rails.root.glob("config/locales/**/*.{rb,yml}")
     config.exceptions_app = routes
     config.active_storage.draw_routes = false if Rails.env.production?
 

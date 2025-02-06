@@ -46,7 +46,7 @@ module Users::Filterable
              .joins(orientations: :orientation_type)
              .where(orientation_types: { name: params[:orientation_type] })
              .where(orientations: { organisations: { department_id: current_department_id } })
-             .where("orientations.starts_at <= ?", Time.zone.now)
+             .where(orientations: { starts_at: ..Time.zone.now })
              .where("orientations.ends_at IS NULL OR orientations.ends_at >= ?", Time.zone.now)
   end
 
@@ -85,7 +85,7 @@ module Users::Filterable
   def filter_users_by_creation_date_before
     return if params[:creation_date_before].blank?
 
-    @users = @users.where("users.created_at < ?", params[:creation_date_before].to_date.end_of_day)
+    @users = @users.where(users: { created_at: ...params[:creation_date_before].to_date.end_of_day })
   end
 
   def filter_users_by_convocation_date_before
@@ -93,7 +93,7 @@ module Users::Filterable
 
     @users = @users.joins(participations: :notifications)
                    .where(participations: { convocable: true, follow_up: @follow_ups })
-                   .where("notifications.created_at < ?", params[:convocation_date_before].to_date.end_of_day)
+                   .where(notifications: { created_at: ...params[:convocation_date_before].to_date.end_of_day })
   end
 
   def filter_users_by_convocation_date_after

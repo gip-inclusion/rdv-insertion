@@ -64,7 +64,7 @@ module Stats
     def mature_follow_ups
       # Ignore recent follow-ups as we can't determine if they'll meet the delay criteria yet
       @mature_follow_ups ||= follow_ups
-                             .where("follow_ups.created_at < ?", target_delay_days.days.ago)
+                             .where(follow_ups: { created_at: ...target_delay_days.days.ago })
     end
   end
 end

@@ -8,13 +8,13 @@ class Notification < ApplicationRecord
 
   belongs_to :participation
 
-  enum event: {
+  enum :event, {
     participation_created: "participation_created",
     participation_updated: "participation_updated",
     participation_cancelled: "participation_cancelled",
     participation_reminder: "participation_reminder"
   }
-  enum format: { sms: "sms", email: "email", postal: "postal" }, _prefix: true
+  enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
 
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 

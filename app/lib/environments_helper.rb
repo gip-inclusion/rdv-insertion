@@ -1,19 +1,17 @@
 module EnvironmentsHelper
-  private
-
-  def production_env?
+  def self.production_env?
     ENV["ENVIRONMENT_NAME"] == "production"
   end
 
-  def staging_env?
+  def self.staging_env?
     ENV["ENVIRONMENT_NAME"] == "staging"
   end
 
-  def demo_env?
+  def self.demo_env?
     ENV["ENVIRONMENT_NAME"] == "demo"
   end
 
-  def development_env?
+  def self.development_env?
     Rails.env.development?
   end
 end
