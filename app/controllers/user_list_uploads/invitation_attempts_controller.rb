@@ -4,6 +4,7 @@ module UserListUploads
 
     def select_rows
       @user_collection = @user_list_upload.user_collection
+      @user_collection.sort_by!(**sort_params) if sort_params_valid?
       @user_rows = @user_collection.user_rows_with_user_save_success
     end
 
