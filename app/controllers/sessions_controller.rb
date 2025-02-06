@@ -25,15 +25,15 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    # On lit la valeur de la session et on prépare la redirection ici parce qu'il y a un `clear_session` ensuite
-    if session[:rdv_solidarites_oauth_token]
+    token = session[:rdv_solidarites_oauth_token]
+    clear_session
+    if token
       sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
+      flash[:notice] = "Déconnexion réussie"
       redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
     else
       redirect_to root_path
     end
-    clear_session
-    flash[:notice] = "Déconnexion réussie" # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 
   private
