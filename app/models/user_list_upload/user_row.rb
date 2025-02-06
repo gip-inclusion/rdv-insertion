@@ -24,7 +24,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
   nullify_blank :first_name, :last_name, :affiliation_number, :department_internal_id, :address, :phone_number,
-                :nir, :email
+                :nir, :email, :referent_email, :organisation_search_terms, :tag_values
 
   EDITABLE_ATTRIBUTES = %i[title first_name last_name affiliation_number phone_number email].freeze
 
@@ -114,9 +114,9 @@ class UserListUpload::UserRow < ApplicationRecord
   def organisation_to_assign
     return user_list_upload.organisations.first if user_list_upload.organisations.length == 1
 
-    if assigned_organisation_id
+    if assigned_organisation_id.present?
       retrieve_organisation_by_id(assigned_organisation_id)
-    elsif organisation_search_terms
+    elsif organisation_search_terms.present?
       retrieve_organisation_by_search_terms(organisation_search_terms)
     end
   end

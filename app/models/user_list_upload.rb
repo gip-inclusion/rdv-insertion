@@ -13,7 +13,7 @@ class UserListUpload < ApplicationRecord
   delegate :number, to: :department, prefix: true
 
   def department
-    structure_type == "Department" ? structure : structure.department
+    department_level? ? structure : structure.department
   end
 
   def department_level?
@@ -44,13 +44,13 @@ class UserListUpload < ApplicationRecord
   end
 
   def structure_organisations
-    structure_type == "Department" ? structure.organisations : [structure]
+    department_level? ? structure.organisations : [structure]
   end
 
   def invitations_enabled? = category_configuration.present?
 
   def structure_user_path(user_id)
-    if structure_type == "Department"
+    if department_level?
       Rails.application.routes.url_helpers.department_user_path(id: user_id, department_id: structure_id)
     else
       Rails.application.routes.url_helpers.organisation_user_path(id: user_id, organisation_id: structure_id)
@@ -58,7 +58,7 @@ class UserListUpload < ApplicationRecord
   end
 
   def structure_users_path
-    if structure_type == "Department"
+    if department_level?
       Rails.application.routes.url_helpers.department_users_path(department_id: structure_id)
     else
       Rails.application.routes.url_helpers.organisation_users_path(organisation_id: structure_id)
@@ -66,7 +66,7 @@ class UserListUpload < ApplicationRecord
   end
 
   def user_invitations_path(user_id, **)
-    if structure_type == "Department"
+    if department_level?
       Rails.application.routes.url_helpers.department_user_invitations_path(department_id: structure_id, user_id:, **)
     else
       Rails.application.routes.url_helpers.organisation_user_invitations_path(
