@@ -24,7 +24,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
   nullify_blank :first_name, :last_name, :affiliation_number, :department_internal_id, :address, :phone_number,
-                :nir, :email, :referent_email, :organisation_search_terms, :tag_values
+                :nir, :email, :referent_email, :organisation_search_terms
 
   EDITABLE_ATTRIBUTES = %i[title first_name last_name affiliation_number phone_number email].freeze
 
