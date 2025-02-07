@@ -15,7 +15,7 @@ module Users
       find_user_by_nir ||
         find_user_by_department_internal_id ||
         find_user_by_role_and_affiliation_number ||
-        find_user_by_email ||
+        find_user_by_email_in_department ||
         find_user_by_phone_number
     end
 
@@ -34,12 +34,18 @@ module Users
       ).first
     end
 
-    def find_user_by_email
+    def find_user_by_email_in_department
       return if @attributes[:email].blank? || @attributes[:first_name].blank?
 
-      User.active.where(email: @attributes[:email]).find do |user|
-        user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
-      end
+      User.active
+          .joins(:organisations)
+          .where(
+            email: @attributes[:email],
+            organisations: { department_id: @department_id }
+          )
+          .find do |user|
+            user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
+          end
     end
 
     def find_user_by_phone_number

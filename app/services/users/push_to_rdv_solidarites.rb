@@ -12,6 +12,15 @@ module Users
 
     private
 
+    def check_email_field
+      retrieve_user = call_service!(
+        RdvSolidaritesApi::RetrieveUser,
+        rdv_solidarites_user_id: @rdv_solidarites_user_id
+      )
+
+      retrieve_user.user.notification_email.present? ? :notification_email : :email
+    end
+
     def assign_rdv_solidarites_user_id!
       @user.rdv_solidarites_user_id = @rdv_solidarites_user_id
       save_record!(@user)
@@ -61,6 +70,8 @@ module Users
     end
 
     def email_taken_error?
+      # This error no longer occurs because the email of new users is notification_email
+      # and it does not have a uniqueness constraint
       create_rdv_solidarites_user.error_details&.dig("email")&.any? { _1["error"] == "taken" }
     end
 
@@ -98,13 +109,26 @@ module Users
     end
 
     def rdv_solidarites_user_attributes
-      user_attributes = @user.attributes
-                             .symbolize_keys
-                             .slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
-                             .transform_values(&:presence)
-                             .compact
-      user_attributes.delete(:email) if @user.conjoint?
-      user_attributes
+      attrs = @user.attributes
+                   .symbolize_keys
+                   .slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+                   .transform_values(&:presence)
+                   .compact
+
+      convert_email_to_notification_email(attrs)
+
+      attrs
+    end
+
+    def convert_email_to_notification_email(attrs)
+      if @rdv_solidarites_user_id
+        # Existing users in RDV-S could have either email or notification_email set
+        # Only convert to notification_email if that's the field currently used
+        attrs[:notification_email] = attrs.delete(:email) if check_email_field == :notification_email
+      else
+        # New users are always created with notification_email in RDV-S
+        attrs[:notification_email] = attrs.delete(:email)
+      end
     end
 
     def rdv_solidarites_organisation_ids

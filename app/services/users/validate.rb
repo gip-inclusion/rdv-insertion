@@ -8,7 +8,7 @@ module Users
       validate_identifier_is_present
       validate_uid_uniqueness_inside_department if @user.affiliation_number? && @user.role?
       validate_department_internal_id_uniqueness if @user.department_internal_id?
-      validate_email_and_first_name_uniquess if @user.email?
+      validate_email_and_first_name_uniquess_in_same_department if @user.email?
       validate_phone_number_and_first_name_uniqueness if @user.phone_number_formatted.present?
     end
 
@@ -28,11 +28,11 @@ module Users
                        "#{users_with_same_department_internal_id.pluck(:id)}"
     end
 
-    def validate_email_and_first_name_uniquess
-      return if @user.first_name.blank? || users_with_same_email_and_first_name.empty?
+    def validate_email_and_first_name_uniquess_in_same_department
+      return if @user.first_name.blank? || users_with_same_email_and_first_name_in_department.empty?
 
       result.errors << "Un usager avec le même email et même prénom est déjà enregistré: " \
-                       "#{users_with_same_email_and_first_name.pluck(:id)}"
+                       "#{users_with_same_email_and_first_name_in_department.pluck(:id)}"
     end
 
     def validate_phone_number_and_first_name_uniqueness
@@ -68,12 +68,18 @@ module Users
         users_from_same_departments.where(department_internal_id: @user.department_internal_id) - [@user]
     end
 
-    def users_with_same_email_and_first_name
-      @users_with_same_email_and_first_name ||=
-        User.active.where(email: @user.email).select do |user|
-          user.id != @user.id &&
-            user.first_name.split.first.downcase == @user.first_name.split.first.downcase
-        end
+    def users_with_same_email_and_first_name_in_department
+      @users_with_same_email_and_first_name_in_department ||=
+        User.active
+            .joins(:organisations)
+            .where(
+              email: @user.email,
+              organisations: { department_id: @user.department_ids }
+            )
+            .select do |user|
+              user.id != @user.id &&
+                user.first_name.split.first.downcase == @user.first_name.split.first.downcase
+            end
     end
 
     def users_with_same_phone_number_and_first_name

@@ -2,7 +2,7 @@ module RdvSolidarites
   class User < Base
     RECORD_ATTRIBUTES = [
       :id, :first_name, :last_name, :birth_date, :email, :phone_number,
-      :birth_name, :address, :affiliation_number
+      :birth_name, :address, :affiliation_number, :notification_email
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
 
