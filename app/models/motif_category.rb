@@ -18,6 +18,6 @@ class MotifCategory < ApplicationRecord
   delegate :model, to: :template, prefix: true
   delegate :atelier?, to: :template
 
-  enum motif_category_type: { autre: "autre", siae: "siae", rsa_orientation: "rsa_orientation",
-                              rsa_accompagnement: "rsa_accompagnement" }
+  enum :motif_category_type, { autre: "autre", siae: "siae", rsa_orientation: "rsa_orientation",
+                               rsa_accompagnement: "rsa_accompagnement" }
 end

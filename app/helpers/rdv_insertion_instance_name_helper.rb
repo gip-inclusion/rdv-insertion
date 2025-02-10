@@ -1,10 +1,10 @@
 module RdvInsertionInstanceNameHelper
   def rdv_insertion_instance_name
-    if development_env?
+    if EnvironmentsHelper.development_env?
       "Développement"
-    elsif staging_env?
+    elsif EnvironmentsHelper.staging_env?
       "Staging"
-    elsif demo_env?
+    elsif EnvironmentsHelper.demo_env?
       "Démo"
     end
   end

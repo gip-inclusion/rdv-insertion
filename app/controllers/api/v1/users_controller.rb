@@ -6,7 +6,10 @@ module Api
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
         :nir, :france_travail_id, :birth_date, :birth_name, :rights_opening_date, :address, :department_internal_id,
-        { invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name] }], referents_to_add: [:email] }
+        {
+          invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name] }],
+          referents_to_add: [[:email]]
+        }
       ].freeze
 
       before_action :set_organisation
@@ -72,9 +75,8 @@ module Api
       end
 
       def users_attributes
-        users_params.to_h.deep_symbolize_keys[:users].map do |user_attributes|
-          user_attributes[:invitation] ||= {}
-          user_attributes
+        users_params.map do |user_attributes|
+          user_attributes.to_h.deep_symbolize_keys.tap { |attrs| attrs[:invitation] ||= {} }
         end
       end
 
@@ -99,7 +101,7 @@ module Api
       end
 
       def user_params
-        params.require(:user).permit(*PERMITTED_USER_PARAMS).to_h.deep_symbolize_keys
+        params.expect(user: PERMITTED_USER_PARAMS).to_h.deep_symbolize_keys
       end
 
       def set_organisation
@@ -108,8 +110,7 @@ module Api
       end
 
       def users_params
-        params.require(:users)
-        params.permit(users: PERMITTED_USER_PARAMS)
+        params.expect(users: [PERMITTED_USER_PARAMS])
       end
 
       def set_users_params

@@ -34,6 +34,8 @@ Rails.application.routes.draw do
 
   get 'auth/:provider/callback', to: 'sessions#create'
 
+  get 'auth/:provider/callback', to: 'sessions#create'
+
   scope module: 'website' do
     root "static_pages#welcome"
     get "mentions-legales", to: "static_pages#legal_notice"

@@ -24,14 +24,14 @@ class Invitation < ApplicationRecord
   delegate :motif_category, :motif_category_name, to: :follow_up
   delegate :model, to: :template, prefix: true
 
-  enum format: { sms: "sms", email: "email", postal: "postal" }, _prefix: :format
-  enum trigger: { manual: "manual", reminder: "reminder", periodic: "periodic" }
+  enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
+  enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid
   after_commit :set_follow_up_status
 
   scope :valid, -> { where("expires_at > ?", Time.zone.now).or(never_expire) }
-  scope :expired, -> { where("expires_at <= ?", Time.zone.now) }
+  scope :expired, -> { where(expires_at: ..Time.zone.now) }
   scope :expireable, -> { where.not(expires_at: nil) }
   scope :never_expire, -> { where(expires_at: nil) }
 

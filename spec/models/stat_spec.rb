@@ -132,7 +132,10 @@ describe Stat do
         let!(:agent3) do
           create(:agent, organisations: [organisation], last_sign_in_at: Time.zone.now, email: "a@beta.gouv.fr")
         end
-        let!(:agent4) { create(:agent, organisations: [organisation], last_sign_in_at: nil) }
+        let!(:agent4) do
+          create(:agent, organisations: [organisation], last_sign_in_at: Time.zone.now, email: "a@inclusion.gouv.fr")
+        end
+        let!(:agent5) { create(:agent, organisations: [organisation], last_sign_in_at: nil) }
 
         it "scopes the collection to the department" do
           expect(stat.agents_set).to include(agent1)
@@ -141,10 +144,11 @@ describe Stat do
 
         it "does not include the betagouv agents" do
           expect(stat.agents_set).not_to include(agent3)
+          expect(stat.agents_set).not_to include(agent4)
         end
 
         it "does not include the agents who never logged in" do
-          expect(stat.agents_set).not_to include(agent4)
+          expect(stat.agents_set).not_to include(agent5)
         end
       end
 

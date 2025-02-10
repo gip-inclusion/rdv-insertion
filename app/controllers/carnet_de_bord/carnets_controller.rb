@@ -22,7 +22,7 @@ module CarnetDeBord
     private
 
     def carnet_params
-      params.require(:carnet).permit(:user_id, :department_id)
+      params.expect(carnet: [:user_id, :department_id])
     end
 
     def set_user
