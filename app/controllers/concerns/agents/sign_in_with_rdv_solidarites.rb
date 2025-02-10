@@ -14,11 +14,7 @@ module Agents::SignInWithRdvSolidarites
   end
 
   def rdv_solidarites_credentials
-    @rdv_solidarites_credentials ||= RdvSolidaritesCredentials.new(
-      uid: request.headers["uid"],
-      client: request.headers["client"],
-      access_token: request.headers["access-token"]
-    )
+    @rdv_solidarites_credentials ||= RdvSolidaritesCredentials.new(request)
   end
 
   def invalid_credentials
@@ -31,8 +27,18 @@ module Agents::SignInWithRdvSolidarites
   def retrieve_agent!
     return if authenticated_agent
 
-    render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
-           status: :forbidden
+    respond_to do |format|
+      format.json do
+        render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
+               status: :forbidden
+      end
+
+      format.html do
+        flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion. \
+                        Déconnectez-vous de RDV Solidarités puis essayez avec un autre compte."
+        redirect_to @agent_return_to_url || root_path
+      end
+    end
   end
 
   def mark_agent_as_logged_in!
@@ -42,6 +48,6 @@ module Agents::SignInWithRdvSolidarites
   end
 
   def authenticated_agent
-    @authenticated_agent ||= Agent.find_by(email: rdv_solidarites_credentials.uid)
+    @authenticated_agent ||= Agent.find_by(email: rdv_solidarites_credentials.email)
   end
 end
