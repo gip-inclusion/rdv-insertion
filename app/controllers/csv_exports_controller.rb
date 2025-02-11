@@ -1,6 +1,6 @@
 class CsvExportsController < ApplicationController
   def show
-    csv_export = CsvExport.find_signed(params[:id].to_s) || CsvExport.find(params[:id])
+    csv_export = CsvExport.find_signed(params[:id].to_s)
     authorize csv_export
 
     if csv_export.expired?
