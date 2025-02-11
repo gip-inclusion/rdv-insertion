@@ -1,14 +1,22 @@
 class RdvSolidaritesCredentials
   attr_reader :uid
 
-  def initialize(uid:, client:, access_token:)
-    @uid = uid
-    @client = client
-    @access_token = access_token
+  def initialize(request)
+    if request.env["omniauth.auth"]
+      @email = request.env["omniauth.auth"]["info"]["agent"]["email"]
+    else
+      @uid = request.headers["uid"]
+      @client = request.headers["client"]
+      @access_token = request.headers["access-token"]
+    end
   end
 
   def valid?
-    required_attributes_present? && token_valid?
+    @email.present? || (required_attributes_present? && token_valid?)
+  end
+
+  def email
+    @email || @uid
   end
 
   private

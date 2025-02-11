@@ -33,6 +33,8 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   agent_connect controller: AgentConnectController
 
+  get 'auth/:provider/callback', to: 'sessions#create'
+
   scope module: 'website' do
     root "static_pages#welcome"
     get "mentions-legales", to: "static_pages#legal_notice"
@@ -236,6 +238,7 @@ Rails.application.routes.draw do
   resources :sessions, only: [:create]
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
+  get '/sign_out', to: "sessions#destroy"
 
   get "inclusion_connect/auth", to: "inclusion_connect#auth"
   get "inclusion_connect/callback", to: "inclusion_connect#callback"
