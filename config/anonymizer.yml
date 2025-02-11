@@ -35,7 +35,6 @@ tables:
       - updated_at
       - last_webhook_update_received_at
       - rdv_solidarites_agent_id
-      - inclusion_connect_open_id_sub
       - connected_with_agent_connect_at
 
   - table_name: agent_roles
