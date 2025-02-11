@@ -103,7 +103,7 @@ describe Invitations::AggregateInvitationWithoutCreneauxByCategory, type: :servi
       follow_up: follow_up2_without_creneau
     )
   end
-  let!(:invitation3_with_no_creneau_but_periodic) do
+  let!(:invitation3_with_no_creneau_but_not_expireable) do
     create(
       :invitation,
       user: user2,
@@ -179,7 +179,7 @@ describe Invitations::AggregateInvitationWithoutCreneauxByCategory, type: :servi
         when invitation_with_no_creneau_no_user_address_relevant_params,
           invitation_with_no_creneau_relevant_params,
           invitation2_with_no_creneau_relevant_params,
-          invitation3_with_no_creneau_but_periodic,
+          invitation3_with_no_creneau_but_not_expireable,
           invitation_with_referent_without_creneau_relevant_params
           OpenStruct.new(success?: true, creneau_availability: false)
         when invitation_with_creneau_relevant_params
