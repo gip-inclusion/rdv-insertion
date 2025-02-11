@@ -1,6 +1,6 @@
 <%= render "common/remote_modal", title: "Filtrer par date d'invitation" do %>
   <%= form_with method: :get, local: true, url: structure_users_path, data: { "turbo-frame" => "_top" } do |form| %>
-    <%= render "common/with_clean_users_query_params", form:, omit: [:first_invitation_date_after, :first_invitation_date_before, :last_invitation_date_after, :last_invitation_date_before, :department_id, :organisation_id] %>
+    <%= render "common/url_query_params_as_form_inputs", form:, omit: [:first_invitation_date_after, :first_invitation_date_before, :last_invitation_date_after, :last_invitation_date_before] %>
 
     <p class="mb-2">Première invitation</p>
     <div class="d-flex mb-3">

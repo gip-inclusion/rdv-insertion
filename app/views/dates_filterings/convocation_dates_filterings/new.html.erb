@@ -1,6 +1,6 @@
 <%= render "common/remote_modal", title: "Filtrer par date de convocation" do %>
   <%= form_with method: :get, local: true, url: structure_users_path, data: { "turbo-frame" => "_top" } do |form| %>
-    <%= render "common/with_clean_users_query_params", form:, omit: [:convocation_date_before, :convocation_date_after, :department_id, :organisation_id] %>
+    <%= render "common/url_query_params_as_form_inputs", form:, omit: [:convocation_date_before, :convocation_date_after] %>
 
     <div class="d-flex mb-2">
       <%= form.text_field :convocation_date_after,
