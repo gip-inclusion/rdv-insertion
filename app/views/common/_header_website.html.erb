@@ -21,11 +21,19 @@
       <div class="d-flex align-items-center">
         <% if !current_agent %>
           <div class="mx-3">
-            <%= link_to sign_in_path do %>
-              <button class="btn btn-blue w-100">
-                <span class="d-none d-sm-inline">Connexion agent</span>
-                <span class="d-inline d-sm-none">Connexion</span>
-              </button>
+            <%- if ENV['RDV_SOLIDARITES_OAUTH_APP_ID'] && (!ENV['RDV_SOLIDARITES_OAUTH_DISABLED'] || params[:force_oauth]) %>
+              <%= form_tag('/auth/rdvservicepublic', method: 'post', data: {turbo: false}) do %>
+                <div class="d-flex mb-4 justify-content-center align-items-center">
+                  <button class="btn btn-blue" type='submit'>Connexion agent</button>
+                </div>
+              <% end %>
+            <% else %>
+              <%= link_to sign_in_path do %>
+                <button class="btn btn-blue w-100">
+                  <span class="d-none d-sm-inline">Connexion agent</span>
+                  <span class="d-inline d-sm-none">Connexion</span>
+                </button>
+              <% end %>
             <% end %>
           </div>
         <% end %>

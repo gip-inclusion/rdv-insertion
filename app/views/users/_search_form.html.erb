@@ -1,14 +1,6 @@
 <%= form_with method: :get, url: url, local: true do |form| %>
   <div class="d-flex">
-    <% url_params.except(:search_query, :motif_category_id).each do |key, value| %>
-      <% if value.is_a?(Array) %>
-        <% value.each do |v| %>
-          <%= form.hidden_field key, value: v, multiple: true %>
-        <% end %>
-      <% else %>
-        <%= form.hidden_field key, value: value %>
-      <% end %>
-    <% end %>
+    <%= render "common/url_query_params_as_form_inputs", form:, omit: [:search_query, :motif_category_id] %>
 
     <%= form.text_field :search_query, placeholder: "Prénom, nom, email, n° CAF...", class: "form-control mb-0", value: params[:search_query] %>
     <%= form.submit "Rechercher", name: nil, class: "btn btn-blue-out ms-3" %>
