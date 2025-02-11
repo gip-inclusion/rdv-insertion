@@ -1,5 +1,5 @@
 module Invitations
-  class VerifyOrganisationCreneauxAvailability < BaseService
+  class AggregateInvitationWithoutCreneauxByCategory < BaseService
     def initialize(organisation_id:)
       @organisation = Organisation.find(organisation_id)
       @invitations_params_without_creneau = []
@@ -9,15 +9,14 @@ module Invitations
     def call
       # On prend le premier agent de l'organisation pour les appels à l'API RDVSP
       @organisation.agents.first.with_rdv_solidarites_session do
-        process_invitations
-        process_invitations_params_without_creneau
-        result.grouped_invitation_params_by_category = @grouped_invitation_params_by_category
+        aggregate_invitations_without_creneaux
+        result.grouped_invitation_params_by_category = group_invitations_without_creneaux_by_category
       end
     end
 
     private
 
-    def process_invitations
+    def aggregate_invitations_without_creneaux
       return if organisation_valid_invitations.empty?
 
       invitations_params.each do |params|
@@ -32,14 +31,14 @@ module Invitations
     end
 
     def organisation_valid_invitations
-      @organisation.invitations.valid
+      @organisation.invitations.expireable.valid
     end
 
     def creneau_available?(params)
       RdvSolidaritesApi::RetrieveCreneauAvailability.call(link_params: params).creneau_availability
     end
 
-    def process_invitations_params_without_creneau
+    def group_invitations_without_creneaux_by_category
       @invitations_params_without_creneau.each do |invitation_params|
         group_invitation_params_by_category(invitation_params)
       end
