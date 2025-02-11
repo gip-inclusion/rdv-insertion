@@ -12,13 +12,25 @@ module Users
 
     private
 
-    def check_email_field
-      retrieve_user = call_service!(
+    def email_field
+      @email_field ||= begin
+        retrieved_user = retrieve_user.user
+        if retrieved_user.notification_email.present? || retrieved_user.email.blank?
+          # We use notification_email if:
+          # - it is already present in the retrieved user
+          # - or no email is present (default behavior as in creation)
+          :notification_email
+        else
+          :email
+        end
+      end
+    end
+
+    def retrieve_user
+      @retrieve_user ||= call_service!(
         RdvSolidaritesApi::RetrieveUser,
         rdv_solidarites_user_id: @rdv_solidarites_user_id
       )
-
-      retrieve_user.user.notification_email.present? ? :notification_email : :email
     end
 
     def assign_rdv_solidarites_user_id!
@@ -42,37 +54,8 @@ module Users
         return
       end
 
-      # If the user already exists in RDV-S, we assign the user to the org by updating him.
-      return handle_email_taken_error if email_taken_error?
-
       result.errors += create_rdv_solidarites_user.errors
       fail!
-    end
-
-    def handle_email_taken_error
-      existing_rdvi_user = User.find_by(rdv_solidarites_user_id: user_id_from_email_taken_error)
-
-      if existing_rdvi_user
-        fail!(
-          "Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: " \
-          "id #{existing_rdvi_user.id}"
-        )
-      else
-        @rdv_solidarites_user_id = user_id_from_email_taken_error
-        # since we are importing an existing user in RDV-S, we need to import its associations
-        @user.import_associations_from_rdv_solidarites_on_create = true
-        update_user_and_associations
-      end
-    end
-
-    def user_id_from_email_taken_error
-      create_rdv_solidarites_user.error_details&.dig("email")&.first&.dig("id")
-    end
-
-    def email_taken_error?
-      # This error no longer occurs because the email of new users is notification_email
-      # and it does not have a uniqueness constraint
-      create_rdv_solidarites_user.error_details&.dig("email")&.any? { _1["error"] == "taken" }
     end
 
     def create_rdv_solidarites_user
@@ -115,16 +98,16 @@ module Users
                    .transform_values(&:presence)
                    .compact
 
-      convert_email_to_notification_email(attrs)
+      select_appropriate_email_field(attrs)
 
       attrs
     end
 
-    def convert_email_to_notification_email(attrs)
+    def select_appropriate_email_field(attrs)
       if @rdv_solidarites_user_id
         # Existing users in RDV-S could have either email or notification_email set
         # Only convert to notification_email if that's the field currently used
-        attrs[:notification_email] = attrs.delete(:email) if check_email_field == :notification_email
+        attrs[:notification_email] = attrs.delete(:email) if email_field == :notification_email
       else
         # New users are always created with notification_email in RDV-S
         attrs[:notification_email] = attrs.delete(:email)
