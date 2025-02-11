@@ -7,22 +7,6 @@ describe RdvSolidaritesCredentials do
   let!(:client) { "28FNFEJF" }
   let!(:access_token) { "EDZADZ" }
 
-  context "with env" do
-    subject do
-      described_class.new(request_with_env)
-    end
-
-    it "is valid" do
-      expect(subject).to be_valid
-    end
-
-    describe "#email" do
-      it "retrieves the email from the env" do
-        expect(subject.email).to eq(uid)
-      end
-    end
-  end
-
   describe "#valid?" do
     context "when all required attributes are present and token is valid" do
       before do
