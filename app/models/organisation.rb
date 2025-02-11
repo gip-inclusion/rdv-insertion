@@ -64,6 +64,10 @@ class Organisation < ApplicationRecord
   end
   alias_method :rsa_related?, :with_parcours_access?
 
+  def category_configurations_sorted
+    category_configurations.order(:position)
+  end
+
   def requires_dpa_acceptance?
     dpa_agreement.nil?
   end

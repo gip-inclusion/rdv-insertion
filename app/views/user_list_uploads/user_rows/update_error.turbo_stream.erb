@@ -1,0 +1,2 @@
+<%= turbo_stream.replace "user-row-#{@user_row.id}", partial: "user_list_uploads/user_list_uploads/user_row", locals: { user_row: @user_row } %>
+<%= turbo_stream.replace "remote_modal", partial: "common/error_modal", locals: { errors: @user_row.errors.full_messages } %>

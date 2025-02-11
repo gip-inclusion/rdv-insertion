@@ -31,7 +31,8 @@ class OrganisationsController < ApplicationController
   end
 
   def geolocated
-    @department_organisations = policy_scope(Organisation).where(department: department)
+    @department_organisations = policy_scope(Organisation).preload(category_configurations: :motif_category)
+                                                          .where(department: department)
     return render_impossible_to_geolocate if retrieve_address_geocoding_params.geocoding_params.nil?
 
     if retrieve_relevant_organisations.success?

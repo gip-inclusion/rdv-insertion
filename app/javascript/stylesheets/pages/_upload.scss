@@ -1,0 +1,116 @@
+.upload-body {
+  background-color: white !important;
+}
+
+.upload-zone {
+  background-color: $light;
+  /* Light blue background */
+  transition: all 0.3s ease;
+  border-color: $light-blue !important;
+  border-width: 1.5px !important;
+  /* Lighter blue border */
+  border-style: dashed !important;
+
+  min-height: 318px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.upload-zone.drag-over {
+  background-color: $light-blue-alt;
+  /* Slightly darker blue for hover state */
+}
+
+.user-list-upload-table-container {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+}
+
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+
+.user-list-upload-table {
+  width: 100%;
+  table-layout: auto;
+
+  border-left: 1px solid $light-grey;
+  border-right: 1px solid $light-grey;
+  border-bottom: 1px solid $light-grey;
+
+
+  td,
+  th {
+    padding: 0.75rem;
+    white-space: nowrap;
+  }
+
+  th {
+    font-weight: 400;
+  }
+
+  // Only show vertical borders for the first column (checkboxes)
+  td:first-child,
+  th:first-child {
+    border-right: 1px solid rgba($light-grey, 0.3) !important;
+    width: 40px;
+  }
+
+  td:last-child {
+    border-left: 1px solid $light-grey !important;
+  }
+
+  // Show horizontal borders for body rows
+  tbody tr {
+    border-bottom: 1px solid $light-grey;
+    border-top: 1px solid $light-grey;
+  }
+
+  .user-row-details {
+    font-size: 14px;
+
+    .attribute-label {
+      font-weight: 600;
+    }
+  }
+}
+
+.user-list-save-attempts-table {
+  width: 100%;
+  table-layout: auto;
+
+  border-bottom: 1px solid $light-grey;
+
+
+  td,
+  th {
+    padding: 0.75rem;
+    white-space: nowrap;
+  }
+
+  th {
+    font-weight: 400;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $light-grey;
+    border-top: 1px solid $light-grey;
+  }
+}
+
+.user-list-before-invitation-table {
+  @extend .user-list-upload-table;
+  border-top: 1px solid $light-grey;
+}
+
+.user-list-after-invitations-table {
+  @extend .user-list-save-attempts-table;
+}

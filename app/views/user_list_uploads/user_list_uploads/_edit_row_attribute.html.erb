@@ -1,0 +1,30 @@
+<%= form_with(
+  url: user_list_upload_user_row_path(
+    user_list_upload_id: @user_list_upload.id,
+    id: user_row.id
+  ),
+  data: {
+    controller: "user-row-cell",
+    action: "turbo:submit-start->user-row-cell#setLoading"
+  },
+  method: :patch
+) do |form| %>
+  <div class="input-group input-group-sm" data-turbo-prefetch="false">
+    <% if attribute == "title" %>
+      <%= form.select "user_row[title]", User.titles.keys, { selected: user_row.title }, { class: "form-control" } %>
+    <% else %>
+      <%= form.text_field "user_row[#{attribute}]",
+                          value: user_row.user.send(attribute),
+                          class: "form-control" %>
+    <% end %>
+    <button type="submit">
+      <i class="ri-check-line text-success"></i>
+    </button>
+
+    <button type="submit">
+      <%= link_to user_list_upload_user_row_path(user_list_upload_id: @user_list_upload.id, id: user_row.id) do %>
+        <i class="ri-close-line text-danger"></i>
+      <% end %>
+    </button>
+  </div>
+<% end %>

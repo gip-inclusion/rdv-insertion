@@ -17,7 +17,7 @@ describe Users::Save, type: :service do
     before do
       allow(user).to receive(:save).and_return(true)
       allow(Users::Validate).to receive(:call)
-        .with(user: user).and_return(OpenStruct.new(success?: true))
+        .with(user: user, organisation: organisation).and_return(OpenStruct.new(success?: true))
       allow(Users::PushToRdvSolidarites).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
     end
@@ -46,6 +46,11 @@ describe Users::Save, type: :service do
 
     context "when organisation is nil" do
       subject { described_class.call(user: user) }
+
+      before do
+        allow(Users::Validate).to receive(:call)
+          .with(user: user, organisation: nil).and_return(OpenStruct.new(success?: true))
+      end
 
       it "is a success" do
         is_a_success
@@ -103,7 +108,8 @@ describe Users::Save, type: :service do
     context "when the validation service fails" do
       before do
         allow(Users::Validate).to receive(:call)
-          .with(user: user).and_return(OpenStruct.new(success?: false, errors: ["invalid user"]))
+          .with(user: user, organisation: organisation)
+          .and_return(OpenStruct.new(success?: false, errors: ["invalid user"]))
       end
 
       it "is a failure" do

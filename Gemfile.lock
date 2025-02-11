@@ -93,6 +93,8 @@ GEM
       activemodel (= 8.0.1)
       activesupport (= 8.0.1)
       timeout (>= 0.4.0)
+    activerecord-import (2.0.0)
+      activerecord (>= 4.2)
     activerecord-safer_migrations (4.0.0)
       activerecord (>= 7.0)
     activestorage (8.0.1)
@@ -688,6 +690,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activerecord-import
   activerecord-safer_migrations
   addressable
   administrate!

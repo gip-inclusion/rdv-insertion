@@ -1,0 +1,11 @@
+<%=
+  render(
+    "common/flash_content",
+    flash_message: FlashMessage.new(
+      type:,
+      title: local_assigns[:title],
+      description:,
+      persist: true
+    )
+  )
+%>

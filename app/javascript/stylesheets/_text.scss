@@ -9,3 +9,13 @@
 .text-underline {
   text-decoration: underline;
 }
+
+.text-truncate-100 {
+  @extend .text-truncate;
+  max-width: 100px;
+}
+
+.text-truncate-150 {
+  @extend .text-truncate;
+  max-width: 150px;
+}

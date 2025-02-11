@@ -1,23 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>
-      <%= content_for?(:title) ? yield(:title) : "rdv-insertion" %>
-    </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <meta name="turbo-cache-control" content="no-cache">
-
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= favicon_link_tag 'logos/rdvi-favicon.png' %>
-
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-
-    <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
-    <%= content_for :head %>
-  </head>
+  <%= render 'layouts/head' %>
 
   <body data-matomo-mask>
     <%= render 'common/confirm_modal' %>

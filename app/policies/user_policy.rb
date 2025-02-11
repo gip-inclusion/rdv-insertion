@@ -16,6 +16,11 @@ class UserPolicy < ApplicationPolicy
     RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE.slice(*organisation_types).values.min_by(&:length)
   end
 
+  def self.restricted_user_attributes_for_organisations(organisations:)
+    organisation_types = organisations.map(&:organisation_type).map(&:to_sym).uniq
+    RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE.slice(*organisation_types).values.min_by(&:length)
+  end
+
   def self.show_user_attribute?(user:, attribute_name:, agent: Current.agent)
     restricted_user_attributes_for(user:, agent:).exclude?(attribute_name.to_sym)
   end
