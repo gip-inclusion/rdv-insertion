@@ -42,12 +42,6 @@ describe Invitations::AggregateInvitationWithoutCreneauxByCategory, type: :servi
       address: "3 Rue Test 75010 Paris"
     )
   end
-  let!(:user4) do
-    create(
-      :user,
-      address: "4 Rue Test 75010 Paris"
-    )
-  end
   let!(:user_with_no_address) do
     create(
       :user,
