@@ -41,6 +41,14 @@ describe "Agents can add or remove user from organisations", :js do
                   ] }
         }.to_json
       )
+      stub_request(
+        :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/users/#{rdv_solidarites_user_id}"
+      ).to_return(
+        status: 200,
+        body: {
+          user: { id: rdv_solidarites_user_id }
+        }.to_json
+      )
       stub_update_user = stub_request(
         :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}"
       ).to_return(
@@ -86,6 +94,14 @@ describe "Agents can add or remove user from organisations", :js do
                     organisation_ids: [
                       organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id
                     ] }
+          }.to_json
+        )
+        stub_request(
+          :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/users/#{rdv_solidarites_user_id}"
+        ).to_return(
+          status: 200,
+          body: {
+            user: { id: rdv_solidarites_user_id }
           }.to_json
         )
         stub_update_user = stub_request(
