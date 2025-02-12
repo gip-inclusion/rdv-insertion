@@ -3,7 +3,6 @@ class SessionsController < ApplicationController
   wrap_parameters false
   respond_to :json, only: :create
 
-  include Agents::SignInWithRdvSolidarites
   before_action :retrieve_agent!, :mark_agent_as_logged_in!,
                 :set_agent_return_to_url,
                 only: [:create]
@@ -24,6 +23,25 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  def retrieve_agent!
+    return if authenticated_agent
+
+    flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion. \
+                    Déconnectez-vous de RDV Solidarités puis essayez avec un autre compte."
+    redirect_to @agent_return_to_url || root_path
+  end
+
+  def mark_agent_as_logged_in!
+    return if authenticated_agent.update(last_sign_in_at: Time.zone.now)
+
+    flash[:error] = authenticated_agent.errors.full_messages
+    redirect_to @agent_return_to_url || root_path
+  end
+
+  def authenticated_agent
+    @authenticated_agent ||= Agent.find_by(email: request.env["omniauth.auth"]["info"]["agent"]["email"])
+  end
 
   def set_session_credentials
     clear_session
