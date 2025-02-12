@@ -5,6 +5,7 @@ describe SendPeriodicInvitesJob do
 
   describe "#perform" do
     let!(:organisation) { create(:organisation) }
+    let!(:agent) { create(:agent, organisations: [organisation]) }
     let!(:category_configuration) do
       create(:category_configuration,
              organisation: organisation,
@@ -22,6 +23,12 @@ describe SendPeriodicInvitesJob do
         created_at: 15.days.ago,
         expires_at: nil,
         organisations: [organisation]
+      )
+    end
+
+    before do
+      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
+        OpenStruct.new(success?: true, creneau_availability: true)
       )
     end
 
@@ -55,6 +62,22 @@ describe SendPeriodicInvitesJob do
                                                                               "sms")
             subject
           end
+        end
+      end
+
+      context "when no creneaux are avaialble" do
+        before do
+          allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
+            OpenStruct.new(success?: false, creneau_availability: false)
+          )
+        end
+
+        it "does not send periodic invites" do
+          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
+                                                                            "email")
+          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
+                                                                            "sms")
+          subject
         end
       end
 

@@ -20,6 +20,7 @@ class SendPeriodicInvitesJob < ApplicationJob
 
     return if category_configuration.blank?
     return unless should_send_periodic_invite?(last_invitation, category_configuration)
+    return unless creneaux_available_for_invitation?(last_invitation, category_configuration)
 
     @sent_invites_user_ids << last_invitation.user.id
 
@@ -48,5 +49,12 @@ class SendPeriodicInvitesJob < ApplicationJob
       "📬 #{@sent_invites_user_ids.length} invitations périodiques envoyées!\n" \
       "Les usagers sont: #{@sent_invites_user_ids}"
     )
+  end
+
+  def creneaux_available_for_invitation?(invitation, category_configuration)
+    category_configuration.organisation.agents.first.with_rdv_solidarites_session do
+      params = invitation.link_params.merge(post_code: invitation.user.parsed_post_code).symbolize_keys
+      RdvSolidaritesApi::RetrieveCreneauAvailability.call(link_params: params).creneau_availability
+    end
   end
 end
