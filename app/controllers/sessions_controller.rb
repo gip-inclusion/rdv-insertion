@@ -16,12 +16,9 @@ class SessionsController < ApplicationController
 
   def destroy
     # On lit la valeur de la session et on prépare la redirection ici parce qu'il y a un `clear_session` ensuite
-    if session[:rdv_solidarites_oauth_token]
-      sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
-      redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
-    else
-      redirect_to root_path
-    end
+    sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
+    redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
+
     clear_session
     flash[:notice] = "Déconnexion réussie" # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
@@ -31,13 +28,10 @@ class SessionsController < ApplicationController
   def set_session_credentials # rubocop:disable Metrics/AbcSize
     clear_session
 
-    if request.env["omniauth.auth"]
-      session[:rdv_solidarites_oauth_token] = request.env["omniauth.auth"]["credentials"]["token"]
-    end
-
     timestamp = Time.zone.now.to_i
     session[:agent_auth] = {
       id: authenticated_agent.id,
+      rdv_solidarites_oauth_token: request.env["omniauth.auth"]["credentials"]["token"],
       created_at: timestamp,
       origin: "sign_in_form",
       signature: authenticated_agent.sign_with(timestamp)
