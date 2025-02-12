@@ -25,13 +25,12 @@ class SessionsController < ApplicationController
 
   private
 
-  def set_session_credentials
+  def set_session_credentials # rubocop:disable Metrics/AbcSize
     clear_session
 
     timestamp = Time.zone.now.to_i
     session[:agent_auth] = {
       id: authenticated_agent.id,
-      rdv_solidarites_oauth_token: request.env["omniauth.auth"]["credentials"]["token"],
       created_at: timestamp,
       origin: "sign_in_form",
       signature: authenticated_agent.sign_with(timestamp)
