@@ -1,0 +1,28 @@
+<div class="col-md-10 user-list-upload-table-container">
+  <table class="user-list-before-invitation-table">
+    <thead class="bg-white text-dark-blue sticky-header" data-controller="sort-list">
+      <tr>
+        <th scope="col" class="border-light">
+          <input type="checkbox" class="form-check-input" data-action="click->submit-selected-ids#toggleAll" checked>
+        </th>
+        <th scope="col" class="border-light">Civilité</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
+          Prénom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
+          Nom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col" class="border-light">Numéro CAF</th>
+        <th scope="col" class="border-light">Téléphone</th>
+        <th scope="col" class="border-light">Email</th>
+        <th scope="col" class="border-light" data-action="click->sort-list#changeUrlParams" data-sort-by="before_invitation_status">
+          Statut du dossier <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col" class="border-light">Courrier</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render partial: "user_row_before_invitation", collection: user_rows, as: :user_row %>
+    </tbody>
+  </table>
+</div>

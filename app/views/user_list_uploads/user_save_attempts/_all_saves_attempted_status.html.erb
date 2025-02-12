@@ -1,0 +1,17 @@
+<div class="mb-4">
+  <h2 class="h2-title">Création et mise à jour des dossiers terminées.</h2>
+  <% if user_rows_with_user_save_errors.empty? %>
+    <div class="flash-expanded">
+      <%= render "common/flash_banner", type: :success, description: "Tous les dossiers ont été créés ou mis à jour." %>
+    </div>
+  <% else %>
+    <div class="flash-expanded">
+      <%= render(
+        "common/flash_banner",
+        type: :alert,
+        title: "#{user_rows_with_user_save_errors.count} dossiers usagers n'ont pas pu être créés.",
+        description: "Vous pouvez corriger les erreurs ou passer à l'étape suivante."
+      ) %>
+    </div>
+  <% end %>
+</div>

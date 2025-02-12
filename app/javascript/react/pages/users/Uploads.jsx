@@ -11,10 +11,10 @@ import MazePoll from "../../components/MazePoll";
 
 import uploadFile from "../../lib/uploadFile";
 import retrieveUpToDateUsers from "../../lib/retrieveUpToDateUsers";
-import parseContactsData from "../../lib/parseContactsData";
+import parseContactsData from "../../../lib/parseContactsData";
 import updateUserContactsData from "../../lib/updateUserContactsData";
 import retrieveContactsData from "../../lib/retrieveContactsData";
-import { formatDateInput } from "../../../lib/datesHelper";
+import { formatDateInput } from "../../../lib/inputFormatters";
 import { parameterizeObjectValues } from "../../../lib/parameterize";
 import trackUserListComposition from "../../lib/trackUserListComposition";
 
@@ -152,7 +152,7 @@ const UsersUploads = observer(
               user.affiliationNumber?.padStart(7, "0")
           );
           if (userContactsData) {
-            const parsedUserContactsData = await parseContactsData(userContactsData);
+            const parsedUserContactsData = parseContactsData(userContactsData);
             user = await updateUserContactsData(user, parsedUserContactsData);
           }
         })

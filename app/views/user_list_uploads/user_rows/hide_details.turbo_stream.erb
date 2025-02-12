@@ -1,0 +1,8 @@
+<%= turbo_stream.remove "user-row-details-#{@user_row.id}" %>
+<%= turbo_stream.replace "user-row-#{@user_row.id}-details-link" do %>
+  <td class="border-light bg-white d-flex justify-content-center align-items-center" data-turbo-prefetch="false" id="user-row-<%= @user_row.id %>-details-link">
+    <%= link_to user_list_upload_user_row_show_details_path(user_list_upload_id: @user_list_upload.id, user_row_id: @user_row.id), data: { turbo_stream: true } do %>
+      <i class="ri-arrow-down-s-line text-dark-blue"></i>
+    <% end %>
+  </td>
+<% end %>

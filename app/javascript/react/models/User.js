@@ -6,8 +6,7 @@ import handleArchiveDelete from "../lib/handleArchiveDelete";
 import handleUserUpdate from "../lib/handleUserUpdate";
 import handleReferentAssignation from "../lib/handleReferentAssignation";
 
-import formatPhoneNumber from "../../lib/formatPhoneNumber";
-import formatAffiliationNumber from "../../lib/formatAffiliationNumber";
+import { formatPhoneNumber, formatAffiliationNumber } from "../../lib/inputFormatters"
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import { getFrenchFormatDateString, todaysDateString } from "../../lib/datesHelper";

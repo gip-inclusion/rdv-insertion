@@ -166,6 +166,9 @@ RSpec/MessageSpies:
 RSpec/IndexedLet:
   Enabled: false
 
+RSpec/ReceiveMessages:
+  Enabled: false
+
 Capybara/SpecificActions:
   Enabled: false
 

@@ -7,11 +7,11 @@
 }
 
 .alert-success {
-  background-color: #E9FAE9;
+  background-color: $green-light;
   span > i {
-    color: #2BA42F;
+    color: $dark-green;
   }
-}
+}p
 
 .alert-info {
   background-color: #E9F2FA;
@@ -32,6 +32,11 @@
   span > i {
     color: #CD8A25;
   }
+}
+
+.flash-expanded {
+  margin-left: -45px;  /* adjust based on your container's padding */
+  margin-right: -45px;
 }
 
 @keyframes appear-then-fade {

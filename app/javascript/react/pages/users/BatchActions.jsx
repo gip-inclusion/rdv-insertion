@@ -5,7 +5,7 @@ import UsersList from "../../components/users/UsersList";
 import BatchActionsButtons from "../../components/users/BatchActionsButtons";
 import DisplayReferentsColumnButton from "../../components/users/DisplayReferentsColumnButton";
 
-import { formatDateInput } from "../../../lib/datesHelper";
+import { formatDateInput } from "../../../lib/inputFormatters";
 
 import User from "../../models/User";
 import usersStore from "../../models/Users";

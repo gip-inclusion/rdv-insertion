@@ -48,6 +48,12 @@ describe Users::Validate, type: :service do
         )
       end
 
+      context "outside the department" do
+        let!(:other_org) { create(:organisation, department: create(:department)) }
+
+        it("is a success") { is_a_success }
+      end
+
       context "inside the department" do
         let!(:other_org) { create(:organisation, department: department) }
 
@@ -58,12 +64,34 @@ describe Users::Validate, type: :service do
             "Un usager avec le même ID interne au département se trouve au sein du département: [1395]"
           )
         end
-      end
 
-      context "outside the department" do
-        let!(:other_org) { create(:organisation, department: create(:department)) }
+        context "when the user does is yet to be persisted and does not belong to the organisation" do
+          let!(:user) do
+            build(
+              :user,
+              first_name: "Ramses",
+              email: "ramses2@caramail.com",
+              phone_number: "+33782605941",
+              affiliation_number: "444222",
+              role: "demandeur",
+              department_internal_id: "ABBA"
+            )
+          end
 
-        it("is a success") { is_a_success }
+          it("is a success") { is_a_success }
+
+          context "when the organisation is passed to the service" do
+            subject { described_class.call(user: user, organisation: organisation) }
+
+            it("is a failure") { is_a_failure }
+
+            it "returns an error" do
+              expect(subject.errors).to include(
+                "Un usager avec le même ID interne au département se trouve au sein du département: [1395]"
+              )
+            end
+          end
+        end
       end
     end
 
@@ -72,6 +100,12 @@ describe Users::Validate, type: :service do
         create(
           :user, id: 1395, affiliation_number: "444222", role: "demandeur", organisations: [other_org]
         )
+      end
+
+      context "outside the department" do
+        let!(:other_org) { create(:organisation, department: create(:department)) }
+
+        it("is a success") { is_a_success }
       end
 
       context "inside the department" do
@@ -84,12 +118,34 @@ describe Users::Validate, type: :service do
             "Un usager avec le même numéro CAF et rôle se trouve au sein du département: [1395]"
           )
         end
-      end
 
-      context "outside the department" do
-        let!(:other_org) { create(:organisation, department: create(:department)) }
+        context "when the user does is yet to be persisted and does not belong to the organisation" do
+          let!(:user) do
+            build(
+              :user,
+              first_name: "Ramses",
+              email: "ramses2@caramail.com",
+              phone_number: "+33782605941",
+              affiliation_number: "444222",
+              role: "demandeur",
+              department_internal_id: "ABBA"
+            )
+          end
 
-        it("is a success") { is_a_success }
+          it("is a success") { is_a_success }
+
+          context "when the organisation is passed to the service" do
+            subject { described_class.call(user: user, organisation: organisation) }
+
+            it("is a failure") { is_a_failure }
+
+            it "returns an error" do
+              expect(subject.errors).to include(
+                "Un usager avec le même numéro CAF et rôle se trouve au sein du département: [1395]"
+              )
+            end
+          end
+        end
       end
     end
 

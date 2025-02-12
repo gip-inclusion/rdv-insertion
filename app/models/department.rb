@@ -26,4 +26,8 @@ class Department < ApplicationRecord
   def name_with_region
     "#{name}, #{region}"
   end
+
+  def category_configurations_sorted
+    category_configurations.order(:department_position)
+  end
 end

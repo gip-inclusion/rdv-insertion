@@ -4,6 +4,7 @@ import createInvitationLetter from "../react/lib/createInvitationLetter";
 export default class extends Controller {
   connect() {
     this.button = this.element.querySelector("button");
+    this.initialButtonHTML = this.button.innerHTML;
     this.initialButtonText = this.button.innerText;
   }
 
@@ -15,6 +16,7 @@ export default class extends Controller {
 
   async generatePostalInvitation() {
     this.displayButtonAsLoading();
+
     const result = await createInvitationLetter(
       this.element.dataset.userId,
       this.element.dataset.departmentId,
@@ -22,10 +24,9 @@ export default class extends Controller {
       this.element.dataset.isDepartmentLevel,
       this.element.dataset.motifCategoryId
     );
-    if (result.errors) {
-      // The errors are displayed by rails
-      this.button.innerText = this.initialButtonText;
-    } else {
+
+    this.button.innerHTML = this.initialButtonHTML
+    if (result.success && this.initialButtonText === "Inviter") {
       this.button.innerText = "Révinviter";
     }
     this.button.disabled = false;
@@ -36,7 +37,7 @@ export default class extends Controller {
   }
 
   displayButtonAsLoading() {
-    this.button.innerText = "Invitation...";
+    this.button.innerHTML = "Invitation...";
     this.button.disabled = true;
   }
 
