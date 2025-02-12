@@ -9,14 +9,14 @@ module Invitations
     def call
       # On prend le premier agent de l'organisation pour les appels à l'API RDVSP
       @organisation.agents.first.with_rdv_solidarites_session do
-        aggregate_invitations_without_creneaux
+        aggregate_invitations_params_without_creneaux
         result.grouped_invitation_params_by_category = group_invitations_without_creneaux_by_category
       end
     end
 
     private
 
-    def aggregate_invitations_without_creneaux
+    def aggregate_invitations_params_without_creneaux
       return if organisation_valid_invitations.empty?
 
       invitations_params.each do |params|
