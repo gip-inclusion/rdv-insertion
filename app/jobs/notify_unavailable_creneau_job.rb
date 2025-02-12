@@ -3,7 +3,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
 
   def perform(organisation_id)
     result =
-      Invitations::VerifyOrganisationCreneauxAvailability.call(organisation_id: organisation_id)
+      Invitations::AggregateInvitationWithoutCreneauxByCategory.call(organisation_id: organisation_id)
     return if result.grouped_invitation_params_by_category.empty?
 
     # grouped_invitation_params_by_category = [{

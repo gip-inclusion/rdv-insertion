@@ -1,4 +1,4 @@
-describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
+describe Invitations::AggregateInvitationWithoutCreneauxByCategory, type: :service do
   subject do
     described_class.call(organisation_id: organisation.id)
   end
@@ -13,6 +13,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
     create(:follow_up, motif_category: category_rsa_orientation)
   end
   let!(:follow_up2_without_creneau) { create(:follow_up, motif_category: category_rsa_orientation) }
+  let!(:follow_up3_without_creneau) { create(:follow_up, motif_category: category_rsa_orientation) }
   let!(:follow_up_with_creneau) { create(:follow_up, motif_category: category_rsa_accompagnement_sociopro) }
   let!(:follow_up_with_referent_without_creneau) do
     create(:follow_up, motif_category: category_rsa_accompagnement_social)
@@ -102,6 +103,17 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       follow_up: follow_up2_without_creneau
     )
   end
+  let!(:invitation3_with_no_creneau_but_not_expireable) do
+    create(
+      :invitation,
+      user: user2,
+      organisations: [organisation],
+      link: "https://www.rdv-solidarites.fr/prendre_rdv?address=1bRueTest&city_code=12255&departement=12&invitation_token=ZIXR0X2T&latitude=44.0&longitude=2.0&motif_category_short_name=rsa_orientation&organisation_ids%5B%5D=#{organisation_id}&street_ban_id=12255_0070",
+      format: "email",
+      follow_up: follow_up3_without_creneau,
+      expires_at: nil
+    )
+  end
   let!(:invitation2_with_no_creneau_relevant_params) do
     { :city_code => "12255",
       :address => "1bRueTest",
@@ -167,6 +179,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
         when invitation_with_no_creneau_no_user_address_relevant_params,
           invitation_with_no_creneau_relevant_params,
           invitation2_with_no_creneau_relevant_params,
+          invitation3_with_no_creneau_but_not_expireable,
           invitation_with_referent_without_creneau_relevant_params
           OpenStruct.new(success?: true, creneau_availability: false)
         when invitation_with_creneau_relevant_params
