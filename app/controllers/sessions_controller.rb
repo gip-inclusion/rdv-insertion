@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
 
   private
 
-  def set_session_credentials # rubocop:disable Metrics/AbcSize
+  def set_session_credentials
     clear_session
 
     timestamp = Time.zone.now.to_i
