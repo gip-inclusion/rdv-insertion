@@ -5,7 +5,6 @@ describe SendPeriodicInvitesJob do
 
   describe "#perform" do
     let!(:organisation) { create(:organisation) }
-    let!(:agent) { create(:agent, organisations: [organisation]) }
     let!(:category_configuration) do
       create(:category_configuration,
              organisation: organisation,
