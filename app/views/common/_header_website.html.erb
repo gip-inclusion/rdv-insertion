@@ -21,7 +21,7 @@
       <div class="d-flex align-items-center">
         <% if !current_agent %>
           <div class="mx-3">
-            <%= form_tag('/auth/rdvservicepublic', method: 'post', data: {turbo: false}) do %>
+            <%= form_tag("/auth/rdvservicepublic", method: "post", data: { turbo: false }) do %>
               <div class="d-flex mb-4 justify-content-center align-items-center">
                 <button class="btn btn-blue" type='submit'>Connexion agent</button>
               </div>

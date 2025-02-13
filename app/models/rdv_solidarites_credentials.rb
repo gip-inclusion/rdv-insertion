@@ -8,7 +8,7 @@ class RdvSolidaritesCredentials
   end
 
   def valid?
-    @email.present? || (required_attributes_present? && token_valid?)
+    required_attributes_present? && token_valid?
   end
 
   def email
