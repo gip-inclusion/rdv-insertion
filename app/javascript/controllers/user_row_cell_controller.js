@@ -12,6 +12,7 @@ export default class extends Controller {
     const html = await response.text();
     if (response.ok) {
       window.Turbo.renderStreamMessage(html);
+      this.element.style.padding = "0px"
     }
   }
 }
