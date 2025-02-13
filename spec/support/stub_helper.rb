@@ -44,6 +44,17 @@ module StubHelper
     ).with(query: { user_id: rdv_solidarites_user_id, agent_id: rdv_solidarites_agent_id }).to_return(status: 200)
   end
 
+  def stub_rdv_solidarites_retrieve_user(rdv_solidarites_user_id)
+    stub_request(
+      :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/users/#{rdv_solidarites_user_id}"
+    ).to_return(
+      status: 200,
+      body: {
+        user: { id: rdv_solidarites_user_id }
+      }.to_json
+    )
+  end
+
   def stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
     stub_request(
       :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}"
@@ -79,6 +90,7 @@ module StubHelper
     stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_organisations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_many_referents(rdv_solidarites_user_id)
+    stub_rdv_solidarites_retrieve_user(rdv_solidarites_user_id)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
     stub_brevo
     stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id)
@@ -88,6 +100,7 @@ module StubHelper
   def stub_rdv_solidarites_update_user_and_associations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_organisations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_many_referents(rdv_solidarites_user_id)
+    stub_rdv_solidarites_retrieve_user(rdv_solidarites_user_id)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
   end
 
