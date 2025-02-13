@@ -7,6 +7,7 @@ export default class extends Controller {
     if (this.hasSubmitTarget) {
       this.toggleSubmit()
     }
+    this.#updateSelectedCount()
   }
 
   submit(event) {
@@ -42,6 +43,7 @@ export default class extends Controller {
     } else {
       this.#disableSubmit()
     }
+    this.#updateSelectedCount()
   }
 
   disableUninvitableUsers() {
@@ -74,6 +76,17 @@ export default class extends Controller {
 
   #atLeastOneCheckboxChecked() {
     return this.checkboxTargets.filter(checkbox => checkbox.checked).length > 0
+  }
+
+  #updateSelectedCount() {
+    const selectedCount = this.checkboxTargets.filter(checkbox => checkbox.checked).length
+
+    let textContent = ""
+    if (selectedCount === 0) textContent = "Aucun usager sélectionné"
+    else if (selectedCount === 1) textContent = "1 usager sélectionné"
+    else textContent = `${selectedCount} usagers sélectionnés`
+
+    document.querySelector(".selected-users-counter").textContent = textContent
   }
 }
 
