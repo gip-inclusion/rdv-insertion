@@ -3,6 +3,7 @@
     <%= f.search_field :search_query,
                         class: "form-control ms-2 pe-4",
                         placeholder: "Rechercher un usager",
+                        value: params[:search_query],
                         data: {
                           search_target: "searchInput",
                           action: "keyup->search#search input->search#search"
