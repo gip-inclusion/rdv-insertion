@@ -67,7 +67,8 @@
                 )
             %>
           </div>
-          <div>
+          <div class="d-flex align-items-center">
+            <span class="selected-users-counter me-4"></span>
             <%= form_tag create_many_user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload.id),
                   method: :post,
                   data: { action: "submit->submit-selected-ids#submit", turbo: false } do %>
