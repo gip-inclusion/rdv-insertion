@@ -13,8 +13,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
   end
 
   let!(:agent_attributes) do
-    { id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko", email: "josiane.balasko@gmail.com",
-      inclusion_connect_open_id_sub: "1234" }
+    { id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko", email: "josiane.balasko@gmail.com" }
   end
   let!(:rdv_solidarites_agent_role_id) { 17 }
   let!(:rdv_solidarites_organisation_id) { 222 }
@@ -25,8 +24,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
   end
   let!(:agent) do
     create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko",
-                   email: "josiane.balasko@gmail.com",
-                   inclusion_connect_open_id_sub: "1234")
+                   email: "josiane.balasko@gmail.com")
   end
 
   let!(:meta) do

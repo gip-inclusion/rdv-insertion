@@ -77,7 +77,7 @@ describe "Super admin can log in as another agent", :js do
         expect(page).to have_button("Se logger en tant que", wait: 10)
         click_button("Se logger en tant que")
         # it disconnects the agent
-        expect(page).to have_current_path(sign_in_path)
+        expect(page).to have_current_path(root_path)
       end
     end
   end

@@ -1,5 +1,5 @@
 class Agent < ApplicationRecord
-  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:email, :first_name, :last_name, :inclusion_connect_open_id_sub].freeze
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:email, :first_name, :last_name].freeze
 
   include Agent::RdvSolidaritesClient
   include Agent::Signature
@@ -19,7 +19,6 @@ class Agent < ApplicationRecord
   has_many :users, through: :referent_assignations
 
   validates :email, presence: true, uniqueness: true
-  validates :inclusion_connect_open_id_sub, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_agent_id, uniqueness: true, allow_nil: true
 
   validate :cannot_save_as_super_admin

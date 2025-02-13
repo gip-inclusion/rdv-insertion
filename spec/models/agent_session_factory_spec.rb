@@ -19,20 +19,6 @@ describe AgentSessionFactory do
         end
       end
 
-      context "when the origin is inclusion_connect" do
-        let!(:origin) { "inclusion_connect" }
-        let!(:inclusion_connect_session) { instance_double(AgentSession::ThroughInclusionConnect) }
-
-        before do
-          allow(AgentSession::ThroughInclusionConnect).to receive(:new)
-            .with(**agent_auth).and_return(inclusion_connect_session)
-        end
-
-        it "returns an instance of session through inclusion connect" do
-          expect(described_class.create_with(**agent_auth)).to eq(inclusion_connect_session)
-        end
-      end
-
       context "when the origin is impersonate" do
         let!(:origin) { "impersonate" }
         let!(:impersonate_session) { instance_double(AgentSession::ThroughImpersonate) }
