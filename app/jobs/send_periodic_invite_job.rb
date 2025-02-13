@@ -30,7 +30,7 @@ class SendPeriodicInviteJob < ApplicationJob
       :motif_category_short_name,
       :departement,
       :organisation_ids,
-      :referent_ids,
+      :referent_ids
     )
 
     Rails.cache.fetch("RetrieveCreneauAvailability/#{params.values.join('_')}", expires_in: 12.hours) do
