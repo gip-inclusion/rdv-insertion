@@ -23,7 +23,7 @@
     </button>
 
     <button type="submit">
-      <%= link_to user_list_upload_user_row_path(user_list_upload_id: @user_list_upload.id, id: user_row.id, sort_by: params[:sort_by], sort_direction: params[:sort_direction]) do %>
+      <%= link_to user_list_upload_user_row_path({ user_list_upload_id: @user_list_upload.id, id: user_row.id }.merge(sort_params)) do %>
         <i class="ri-close-line text-danger"></i>
       <% end %>
     </button>

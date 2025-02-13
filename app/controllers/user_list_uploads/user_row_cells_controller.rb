@@ -1,5 +1,5 @@
 module UserListUploads
-  class UserRowCellsController < ApplicationController
+  class UserRowCellsController < BaseController
     before_action :set_user_list_upload, :set_user_row
 
     def edit
