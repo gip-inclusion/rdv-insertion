@@ -1,6 +1,10 @@
 module SortParams
   extend ActiveSupport::Concern
 
+  included do
+    helper_method :sort_params
+  end
+
   private
 
   def sort_params
