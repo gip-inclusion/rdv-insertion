@@ -1,12 +1,13 @@
 <%= form_with url: user_list_upload_path(id: @user_list_upload.id), method: :get, data: { controller: "search", turbo_permanent: true } do |f| %>
   <div class="position-relative">
     <%= f.search_field :search_query,
-                        class: "form-control ms-2 pe-4",
-                        placeholder: "Rechercher un usager",
-                        data: {
-                          search_target: "searchInput",
-                          action: "keyup->search#search input->search#search"
-                        } %>
+                      class: "form-control ms-2 pe-4",
+                      placeholder: "Rechercher un usager",
+                      value: params[:search_query],
+                      data: {
+                        search_target: "searchInput",
+                        action: "keyup->search#search input->search#search"
+                      } %>
     <i class="ri-search-line position-absolute top-50 end-0 translate-middle-y text-muted"></i>
   </div>
 <% end %>
