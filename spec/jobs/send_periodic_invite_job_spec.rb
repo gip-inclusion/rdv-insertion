@@ -10,6 +10,7 @@ describe SendPeriodicInviteJob do
 
     let!(:format) { "email" }
     let!(:organisation) { create(:organisation) }
+    let!(:agent) { create(:agent, organisations: [organisation]) }
     let!(:category_configuration) do
       create(:category_configuration,
              organisation: organisation,
@@ -26,6 +27,12 @@ describe SendPeriodicInviteJob do
         created_at: 15.days.ago,
         expires_at: 1.day.ago,
         organisations: [organisation]
+      )
+    end
+
+    before do
+      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
+        OpenStruct.new(success?: true, creneau_availability: true)
       )
     end
 
@@ -49,6 +56,19 @@ describe SendPeriodicInviteJob do
         expect(Invitations::SaveAndSend).to receive(:call).once
 
         subject
+      end
+
+      context "when no creneaux are avaialble" do
+        before do
+          allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
+            OpenStruct.new(success?: false, creneau_availability: false)
+          )
+        end
+
+        it "does not send periodic invites" do
+          expect_any_instance_of(described_class).not_to receive(:send_invitation)
+          subject
+        end
       end
 
       context "when the user has already been invited in this category less than 1 day ago" do
