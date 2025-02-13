@@ -137,3 +137,45 @@
     top: 5px;
   }
 }
+
+.edit-row-attribute {
+  height: 50px;
+  background: white;
+  border: 1px solid $light-grey;
+  display: flex;
+  align-items: center;
+  margin-left: 0px !important;
+  padding-right: 5px !important;
+
+  .input-group, input[type=text] {
+    border: none;
+    height: 100%;
+  }
+
+  .edit-buttons {
+    width: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 0px !important;
+
+    button {
+      color: white;
+      border: none;
+      border-radius: 100%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button:first-child {
+      background: $dark-blue;
+    }
+
+    button:last-child {
+      background: $orange;
+    }
+  }
+}
