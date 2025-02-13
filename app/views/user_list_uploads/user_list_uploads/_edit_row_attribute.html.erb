@@ -1,7 +1,7 @@
 <%= form_with(
   url: user_list_upload_user_row_path(
     user_list_upload_id: @user_list_upload.id,
-    id: user_row.id
+    id: user_row.id,
   ),
   data: {
     controller: "user-row-cell",
@@ -9,6 +9,7 @@
   },
   method: :patch
 ) do |form| %>
+  <%= render "common/url_query_params_as_form_inputs", form: %>
   <div class="input-group input-group-sm" data-turbo-prefetch="false">
     <% if attribute == "title" %>
       <%= form.select "user_row[title]", User.titles.keys, { selected: user_row.title }, { class: "form-control" } %>
@@ -22,7 +23,7 @@
     </button>
 
     <button type="submit">
-      <%= link_to user_list_upload_user_row_path(user_list_upload_id: @user_list_upload.id, id: user_row.id) do %>
+      <%= link_to user_list_upload_user_row_path(user_list_upload_id: @user_list_upload.id, id: user_row.id, sort_by: params[:sort_by], sort_direction: params[:sort_direction]) do %>
         <i class="ri-close-line text-danger"></i>
       <% end %>
     </button>

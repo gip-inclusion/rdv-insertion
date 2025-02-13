@@ -12,7 +12,7 @@ module UserListUploads
       if @user_row.update(row_params.to_h.symbolize_keys)
         respond_to do |format|
           format.turbo_stream do
-            redirect_to user_list_upload_path(@user_list_upload, user_with_errors: params[:user_with_errors])
+            redirect_to(back_to_list_url)
           end
           format.json { render json: { success: true } }
         end
@@ -36,6 +36,13 @@ module UserListUploads
     end
 
     private
+
+    def back_to_list_url
+      user_list_upload_path(
+        @user_list_upload,
+        { user_with_errors: params[:user_with_errors] }.merge(sort_params)
+      )
+    end
 
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])

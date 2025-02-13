@@ -1,4 +1,4 @@
-<% url_params.except(*omit).each do |key, value| %>
+<% url_params.except(*local_assigns[:omit] || []).each do |key, value| %>
   <% if value.is_a?(Array) %>
     <% value.each do |v| %>
       <%= form.hidden_field key, value: v, multiple: true %>
