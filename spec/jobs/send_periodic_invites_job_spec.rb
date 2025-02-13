@@ -26,12 +26,6 @@ describe SendPeriodicInvitesJob do
       )
     end
 
-    before do
-      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
-        OpenStruct.new(success?: true, creneau_availability: true)
-      )
-    end
-
     context "when periodic invites are enabled" do
       context "number_of_days_between_periodic_invites is set" do
         context "when renewing is due" do
@@ -62,22 +56,6 @@ describe SendPeriodicInvitesJob do
                                                                               "sms")
             subject
           end
-        end
-      end
-
-      context "when no creneaux are avaialble" do
-        before do
-          allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
-            OpenStruct.new(success?: false, creneau_availability: false)
-          )
-        end
-
-        it "does not send periodic invites" do
-          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                            "email")
-          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                            "sms")
-          subject
         end
       end
 

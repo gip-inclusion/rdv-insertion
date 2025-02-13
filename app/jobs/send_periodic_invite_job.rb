@@ -5,6 +5,7 @@ class SendPeriodicInviteJob < ApplicationJob
     @format = format
 
     return if invitation_already_sent_today?
+    return unless creneaux_available_for_invitation?
 
     send_invitation
   end
@@ -22,6 +23,13 @@ class SendPeriodicInviteJob < ApplicationJob
     new_invitation.save!
 
     Invitations::SaveAndSend.call(invitation: new_invitation, check_creneaux_availability: false)
+  end
+
+  def creneaux_available_for_invitation?
+    @category_configuration.organisation.agents.first.with_rdv_solidarites_session do
+      params = @invitation.link_params.merge(post_code: @invitation.user.parsed_post_code).symbolize_keys
+      RdvSolidaritesApi::RetrieveCreneauAvailability.call(link_params: params).creneau_availability
+    end
   end
 
   def invitation_already_sent_today?
