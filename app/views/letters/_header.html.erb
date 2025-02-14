@@ -1,14 +1,16 @@
 <div class="header">
-  <div>
+  <div class="header-left">
     <div class="header-logo">
       <%= image_tag(organisation.logo.attached? ? organisation.logo.url : department.logo.url) %>
     </div>
   </div>
-  <div>
-    <p><%= sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
-    <br/>
-    <p>À l'attention de</p>
-    <br/><br/>
+  <div class="header-right">
+    <div>
+      <p><%= sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
+      <br/>
+      <p>À l'attention de</p>
+      <br/><br/>
+    </div>
   </div>
   <div class="user-address">
     <p><%= user.title.upcase %> <%= user.first_name.upcase %> <%= user.last_name.upcase %><br/>

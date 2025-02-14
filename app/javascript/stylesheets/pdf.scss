@@ -19,13 +19,25 @@ u {
   white-space: nowrap;
 }
 
-.header {
-  display: flex;
-  justify-content: space-around;
-}
-
 .pdf-align-center {
   text-align: center;
+}
+
+.header {
+  display: flex;
+}
+
+.header-left {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.header-right {
+  width: 50%;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 70px;
 }
 
 .header-logo {
@@ -36,6 +48,11 @@ u {
     display: block;
     margin: 0 auto;
   }
+}
+
+.user-address {
+  position: absolute;
+  right: 0;
 }
 
 .direction-names {
