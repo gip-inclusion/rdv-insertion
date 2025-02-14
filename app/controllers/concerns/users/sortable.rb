@@ -1,8 +1,16 @@
 module Users::Sortable
+  extend ActiveSupport::Concern
+
+  include SortParams
+
   private
 
+  def sortable_attributes
+    %w[first_name last_name]
+  end
+
   def order_users
-    if sort_params? && sort_params_valid?
+    if sort_params_valid?
       custom_order
     else
       default_order
@@ -21,22 +29,6 @@ module Users::Sortable
     else
       order_by_created_at
     end
-  end
-
-  def sort_by
-    params[:sort_by]
-  end
-
-  def sort_direction
-    params[:sort_direction]
-  end
-
-  def sort_params?
-    sort_by && sort_direction
-  end
-
-  def sort_params_valid?
-    sort_by.in?(%w[first_name last_name]) && sort_direction.in?(%w[asc desc])
   end
 
   def archived_order

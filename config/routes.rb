@@ -33,6 +33,8 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   agent_connect controller: AgentConnectController
 
+  get 'auth/:provider/callback', to: 'sessions#create'
+
   scope module: 'website' do
     root "static_pages#welcome"
     get "mentions-legales", to: "static_pages#legal_notice"
@@ -49,6 +51,12 @@ Rails.application.routes.draw do
     get :geolocated, on: :collection
     get :search, on: :collection
     resources :convocations, only: [:new]
+    scope module: :user_list_uploads do
+      resources :user_list_uploads, only: [:new, :create]
+    end
+    namespace :user_list_uploads do
+      resources :category_selections, only: [:new]
+    end
     resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
@@ -97,6 +105,23 @@ Rails.application.routes.draw do
     get :deployment_map, on: :collection
   end
 
+  resources :user_list_uploads, module: :user_list_uploads, only: [:show] do
+    post :enrich_with_cnaf_data
+
+    resources :user_rows, only: [:update, :show] do
+      get :show_details
+      get :hide_details
+      resource :user_row_cells, only: [:edit]
+    end
+
+    resources :user_save_attempts, only: [:index, :create] do
+      post :create_many, on: :collection
+    end
+    resources :invitation_attempts, only: [:index, :create] do
+      get :select_rows, on: :collection
+      post :create_many, on: :collection
+    end
+  end
   resources :accept_cgus, only: [:create]
 
   resources :users, module: :users, only: [] do
@@ -145,6 +170,12 @@ Rails.application.routes.draw do
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :convocations, only: [:new]
+    scope module: :user_list_uploads do
+      resources :user_list_uploads, only: [:new, :create]
+    end
+    namespace :user_list_uploads do
+      resources :category_selections, only: [:new]
+    end
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
         scope module: :users do
@@ -207,6 +238,7 @@ Rails.application.routes.draw do
   resources :sessions, only: [:create]
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
+  get '/sign_out', to: "sessions#destroy"
 
   get "inclusion_connect/auth", to: "inclusion_connect#auth"
   get "inclusion_connect/callback", to: "inclusion_connect#callback"

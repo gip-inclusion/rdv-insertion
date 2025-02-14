@@ -8,7 +8,13 @@ module User::TextHelper
   end
 
   def short_title
+    return "" if title.blank?
+
     title == "monsieur" ? "M." : "Mme"
+  end
+
+  def full_name_stripped
+    "#{short_title&.capitalize} #{first_name&.capitalize} #{last_name&.upcase}".strip
   end
 
   def conjugate(past_participle)

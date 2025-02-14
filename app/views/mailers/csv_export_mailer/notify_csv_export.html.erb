@@ -19,27 +19,27 @@
   <% if @creation_dates_before || @creation_dates_after %>
     <li><strong>Date de création</strong>&nbsp;:
       <% if @creation_dates_after %>
-        entre <%= @creation_dates_after.to_date&.strftime("%d/%m/%Y") %> et le <%= (@creation_dates_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
+        entre <%= h(@creation_dates_after.to_date&.strftime("%d/%m/%Y")) %> et le <%= h(@creation_dates_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
       <% else %>
-        avant le <%= @creation_dates_before.to_date&.strftime("%d/%m/%Y") %>
+        avant le <%= h(@creation_dates_before.to_date&.strftime("%d/%m/%Y")) %>
       <% end %>
     </li>
   <% end %>
   <% if @first_invitation_date_after || @first_invitation_date_before %>
     <li><strong>Date de première invitation</strong>&nbsp;:
       <% if @first_invitation_date_after %>
-        entre <%= @first_invitation_date_after.to_date&.strftime("%d/%m/%Y") %> et le <%= (@first_invitation_date_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
+        entre <%= h(@first_invitation_date_after.to_date&.strftime("%d/%m/%Y")) %> et le <%= h(@first_invitation_date_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
       <% else %>
-        avant le <%= @first_invitation_date_before.to_date&.strftime("%d/%m/%Y") %>
+        avant le <%= h(@first_invitation_date_before.to_date&.strftime("%d/%m/%Y")) %>
       <% end %>
     </li>
   <% end %>
   <% if @last_invitation_date_after || @last_invitation_date_before %>
     <li><strong>Date de dernière invitation</strong>&nbsp;:
       <% if @last_invitation_date_after %>
-        entre <%= @last_invitation_date_after.to_date&.strftime("%d/%m/%Y") %> et le <%= (@last_invitation_date_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
+        entre <%= h(@last_invitation_date_after.to_date&.strftime("%d/%m/%Y")) %> et le <%= h(@last_invitation_date_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
       <% elsif @last_invitation_date_before %>
-        avant le <%= @last_invitation_date_before.to_date&.strftime("%d/%m/%Y") %>
+        avant le <%= h(@last_invitation_date_before.to_date&.strftime("%d/%m/%Y")) %>
       <% end %>
     </li>
   <% end %>
@@ -47,7 +47,7 @@
     <li><strong>Usagers avec intervention nécessaire</strong>&nbsp;: Oui</li>
   <% end %>
   <% if @search_query_filter %>
-    <li><strong>Champ de recherche libre</strong>&nbsp;: <%= @search_query_filter %></li>
+    <li><strong>Champ de recherche libre</strong>&nbsp;: <%= h(@search_query_filter) %></li>
   <% end %>
   <% if @tags_filter %>
     <li><strong>Tags</strong>&nbsp;: <%= @tags_filter.join(", ") %></li>

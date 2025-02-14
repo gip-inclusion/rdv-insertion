@@ -8,6 +8,16 @@ GIT
       activerecord (>= 7.0)
 
 GIT
+  remote: https://github.com/betagouv/rdv-service-public.git
+  revision: b4751b8d270053bf901ebd8e8cab49202c166adc
+  branch: production
+  glob: lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec
+  specs:
+    omniauth-rdv-service-public (0.1.0)
+      omniauth (~> 2.0)
+      omniauth-oauth2 (~> 1.8)
+
+GIT
   remote: https://github.com/gip-inclusion/agent_connect_engine.git
   revision: f3f0c5b9a332f361ef1abf17217e3c5e106f4bbf
   specs:
@@ -83,6 +93,8 @@ GEM
       activemodel (= 8.0.1)
       activesupport (= 8.0.1)
       timeout (>= 0.4.0)
+    activerecord-import (2.0.0)
+      activerecord (>= 4.2)
     activerecord-safer_migrations (4.0.0)
       activerecord (>= 7.0)
     activestorage (8.0.1)
@@ -237,6 +249,7 @@ GEM
       nokogiri (~> 1)
     hashdiff (1.1.2)
     hashery (2.1.2)
+    hashie (5.0.0)
     htmlentities (4.3.4)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
@@ -305,18 +318,21 @@ GEM
     matrix (0.4.2)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
-    minitest (5.25.4)
-    msgpack (1.7.5)
+    minitest (5.23.1)
+    msgpack (1.7.2)
+    multi_xml (0.7.1)
+      bigdecimal (~> 3.1)
     net-http (0.6.0)
       uri
-    net-imap (0.5.5)
+    net-imap (0.5.6)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.5.0)
+    net-smtp (0.5.1)
+      net-protocol
     nio4r (2.7.4)
     nokogiri (1.18.2-aarch64-linux-gnu)
       racc (~> 1.4)
@@ -334,7 +350,24 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.2-x86_64-linux-musl)
       racc (~> 1.4)
-    openid_connect (2.3.1)
+    oauth2 (2.0.9)
+      faraday (>= 0.17.3, < 3.0)
+      jwt (>= 1.0, < 3.0)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 4)
+      snaky_hash (~> 2.0)
+      version_gem (~> 1.1)
+    omniauth (2.1.2)
+      hashie (>= 3.4.6)
+      rack (>= 2.2.3)
+      rack-protection
+    omniauth-oauth2 (1.8.0)
+      oauth2 (>= 1.4, < 3)
+      omniauth (~> 2.0)
+    omniauth-rails_csrf_protection (1.0.2)
+      actionpack (>= 4.2)
+      omniauth (~> 2.0)
+    openid_connect (2.3.0)
       activemodel
       attr_required (>= 1.0.0)
       email_validator
@@ -389,7 +422,7 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.1.8)
+    rack (3.1.10)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-oauth2 (2.2.1)
@@ -399,8 +432,10 @@ GEM
       faraday-follow_redirects
       json-jwt (>= 1.11.0)
       rack (>= 2.1.0)
-    rack-session (2.1.0)
+    rack-protection (4.0.0)
       base64 (>= 0.1.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.2.0)
       rack (>= 1.3)
@@ -576,6 +611,9 @@ GEM
       sidekiq (>= 6)
     skylight (6.0.4)
       activesupport (>= 5.2.0)
+    snaky_hash (2.0.1)
+      hashie
+      version_gem (~> 1.1, >= 1.1.1)
     spring (3.0.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
@@ -611,6 +649,7 @@ GEM
     validate_url (1.0.15)
       activemodel (>= 3.0.0)
       public_suffix
+    version_gem (1.1.4)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -652,6 +691,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activerecord-import
   activerecord-safer_migrations
   addressable
   administrate!
@@ -678,6 +718,8 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   listen (~> 3.2)
+  omniauth-rails_csrf_protection
+  omniauth-rdv-service-public!
   parallel_tests
   pdf-reader
   pg (>= 0.18, < 2.0)

@@ -1,14 +1,14 @@
 <% content_for :title, "#{current_structure.name} - Tous les contacts - rdv-insertion" %>
 
 <table class="table table-hover table-responsive">
-  <thead class="text-dark-blue" data-controller="index-table-sorting">
-    <th scope="col" class="sortable-table-header" id="js_last_name_header">
+  <thead class="text-dark-blue" data-controller="sort-list">
+    <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
       Nom
-      <i class="ri-expand-up-down-fill"></i>
+      <i class="ri-arrow-up-down-line" role="button"></i>
     </th>
-    <th scope="col" class="sortable-table-header" id="js_first_name_header">
+    <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
       Prénom
-      <i class="ri-expand-up-down-fill"></i>
+      <i class="ri-arrow-up-down-line" role="button"></i>
     </th>
     <th scope="col">Date de création</th>
     <% @all_configurations.each do |category_configuration| %>

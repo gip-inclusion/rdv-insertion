@@ -1,0 +1,10 @@
+<%= turbo_stream.after "user-row-#{@user_row.id}" do %>
+  <%= render partial: "user_list_uploads/user_list_uploads/user_row_details", locals: { user_row: @user_row } %>
+<% end %>
+<%= turbo_stream.replace "user-row-#{@user_row.id}-details-link" do %>
+  <td class="border-light bg-white d-flex justify-content-center align-items-center" data-turbo-prefetch="false" id="user-row-<%= @user_row.id %>-details-link">
+    <%= link_to user_list_upload_user_row_hide_details_path(user_list_upload_id: @user_list_upload.id, user_row_id: @user_row.id), data: { turbo_stream: true } do %>
+      <i class="ri-arrow-up-s-line text-dark-blue"></i>
+    <% end %>
+  </td>
+<% end %>

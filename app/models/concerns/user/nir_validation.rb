@@ -1,22 +1,15 @@
-module User::Nir
+module User::NirValidation
   extend ActiveSupport::Concern
 
   included do
-    before_validation :format_nir, if: :nir?
     validate :nir_is_valid, if: :nir?
 
     # We add this validation only upon create to avoid blocking the updates of existing users
     validate :nir_is_coherent_with_title, on: :create, if: :nir?
     validate :nir_is_coherent_with_birth_date, on: :create, if: :nir?
-
-    encrypts :nir, deterministic: true
   end
 
   private
-
-  def format_nir
-    self.nir = NirHelper.format_nir(nir)
-  end
 
   def nir_is_valid
     # nir should be only digits, except for people born in Corsica who have "2A" or "2B" in their nirs

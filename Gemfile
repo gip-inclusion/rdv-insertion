@@ -3,10 +3,16 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.4.1"
 
+gem "activerecord-import"
+
 # Environment variables management
 gem "dotenv-rails"
 # Policies management
 gem "pundit"
+# Authentication
+gem "omniauth-rails_csrf_protection"
+gem "omniauth-rdv-service-public", git: "https://github.com/betagouv/rdv-service-public.git", branch: "production",
+                                   glob: "lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec"
 # Http client
 gem "faraday"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

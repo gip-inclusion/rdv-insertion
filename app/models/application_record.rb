@@ -5,7 +5,13 @@ class ApplicationRecord < ActiveRecord::Base
 
   def self.squishes(*attributes)
     attributes.each do |attribute|
-      class_eval { normalizes attribute, with: ->(a) { a.squish } }
+      normalizes attribute, with: ->(a) { a.squish }
+    end
+  end
+
+  def self.nullify_blank(*attributes)
+    attributes.each do |attribute|
+      normalizes attribute, with: ->(a) { a.presence }
     end
   end
 

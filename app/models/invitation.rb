@@ -15,13 +15,14 @@ class Invitation < ApplicationRecord
 
   has_many :category_configurations, through: :organisations
   has_many :webhook_endpoints, through: :organisations
+  has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   attr_accessor :content
 
   validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
-  delegate :motif_category, :motif_category_name, to: :follow_up
+  delegate :motif_category, :motif_category_name, :motif_category_id, to: :follow_up
   delegate :model, to: :template, prefix: true
 
   enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true

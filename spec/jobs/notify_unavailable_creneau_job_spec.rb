@@ -28,7 +28,7 @@ describe NotifyUnavailableCreneauJob do
   end
 
   before do
-    allow(Invitations::VerifyOrganisationCreneauxAvailability).to receive(:call)
+    allow(Invitations::AggregateInvitationWithoutCreneauxByCategory).to receive(:call)
       .and_return(OpenStruct.new(success?: true,
                                  grouped_invitation_params_by_category: grouped_invitation_params_by_category))
     allow(OrganisationMailer).to receive(:creneau_unavailable).and_return(organisation_mail)

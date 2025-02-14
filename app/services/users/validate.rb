@@ -1,7 +1,8 @@
 module Users
   class Validate < BaseService
-    def initialize(user:)
+    def initialize(user:, organisation: nil)
       @user = user
+      @organisation = organisation
     end
 
     def call
@@ -42,6 +43,8 @@ module Users
                        "#{users_with_same_phone_number_and_first_name.pluck(:id)}"
     end
 
+    # this validation cannot be placed in the model because the record created from rdv-sp webhooks
+    # doesn't match these rules: https://github.com/gip-inclusion/rdv-insertion/pull/1224
     def validate_identifier_is_present
       return if @user.nir? || @user.department_internal_id? || @user.email? || @user.phone_number?
       return if @user.affiliation_number? && @user.role?
@@ -52,7 +55,7 @@ module Users
 
     def users_from_same_departments
       @users_from_same_departments ||= User.active.joins(:organisations).where(
-        organisations: { department_id: @user.department_ids }
+        organisations: { department_id: @user.department_ids.push(@organisation&.department_id).compact.uniq }
       )
     end
 

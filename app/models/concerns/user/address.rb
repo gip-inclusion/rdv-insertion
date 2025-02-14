@@ -4,7 +4,7 @@ module User::Address
   included do
     squishes :address
     delegate :parsed_street_address, :parsed_post_code, :parsed_city, :parsed_post_code_and_city, to: :address_parser
-    delegate :post_code, :city, to: :address_geocoding, allow_nil: true, prefix: :geocoded
+    delegate :post_code, :city, to: :address_geocoding, allow_nil: true
   end
 
   private

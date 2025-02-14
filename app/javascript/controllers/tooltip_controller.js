@@ -221,4 +221,28 @@ export default class extends Controller {
       placement: "top",
     });
   }
+
+  showErrors() {
+    const { title, errors } = this.element.dataset;
+
+    tippy(this.element, {
+      content: `${title}<br/>Détails : ${JSON.parse(errors).join("<br/>")}`,
+      allowHTML: true,
+      placement: "top",
+    });
+  }
+
+  organisationUnassignedOnUserListUpload() {
+    tippy(this.element, {
+      content: "L'organisation sera assignée automatiquement à l'usager en fonction de son adresse si la sectorisation est configurée sur ce territoire",
+    });
+  }
+
+  sectorisationDisabledInfo() {
+    tippy(this.element, {
+      content: `Les usagers créés seront placés dans l'organisation <b>${this.element.dataset.organisationName}</b>.<br/>` +
+          "Ainsi la sectorisation ne rentrera pas en compte ici. Pour placer les usagers sur une organisation en fonction de leur adresse, chargez le fichier au niveau de 'toutes les organisations' du département.",
+      allowHTML: true,
+    });
+  }
 }
