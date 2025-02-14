@@ -36,7 +36,7 @@ class NotificationsController < ApplicationController
   end
 
   def pdf
-    Grover.new(notify_participation.notification.content, format: "A4", print_background: true).to_pdf
+    Grover.new(notify_participation.notification.content).to_pdf
   end
 
   def pdf_filename

@@ -23,7 +23,6 @@
     "no-use-before-define": "off",
     "react/jsx-props-no-spreading": "off",
     "jsx-a11y/no-autofocus": "off",
-    "react/jsx-no-useless-fragment": "off",
     "react/function-component-definition": "off"
   }
 }

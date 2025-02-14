@@ -67,7 +67,7 @@ class InvitationsController < ApplicationController
   end
 
   def pdf
-    Grover.new(invitation.content, format: "A4", print_background: true).to_pdf
+    Grover.new(invitation.content).to_pdf
   end
 
   def pdf_filename
