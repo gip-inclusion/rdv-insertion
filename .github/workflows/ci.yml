@@ -123,6 +123,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
+      - name: Installing Chrome for Puppeteer test
+        run: npx puppeteer browsers install chrome
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
