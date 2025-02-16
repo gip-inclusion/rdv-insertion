@@ -3,6 +3,22 @@ class ApplicationRecord < ActiveRecord::Base
 
   include Serializable
 
+  def self.first
+    if column_for_attribute(:id) == :uuid
+      order(created_at: :asc).first
+    else
+      super
+    end
+  end
+
+  def self.last
+    if column_for_attribute(:id) == :uuid
+      order(created_at: :desc).first
+    else
+      super
+    end
+  end
+
   def self.squishes(*attributes)
     attributes.each do |attribute|
       normalizes attribute, with: ->(a) { a.squish }
