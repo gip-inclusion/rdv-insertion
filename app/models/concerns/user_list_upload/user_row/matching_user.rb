@@ -80,15 +80,15 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def retrieve_potential_matching_users_in_all_app
-    User.where(email: email).or(User.where(phone_number: phone_number)).or(User.where(nir: nir))
+    User.active.where(email: email).or(User.active.where(phone_number: phone_number)).or(User.active.where(nir: nir))
   end
 
   def retrieve_potential_matching_users_in_department
-    User.joins(:organisations).where(
+    User.active.joins(:organisations).where(
       affiliation_number: affiliation_number,
       organisations: { department_id: department.id }
     ).or(
-      User.joins(:organisations).where(
+      User.active.joins(:organisations).where(
         department_internal_id: department_internal_id,
         organisations: { department_id: department.id }
       )
