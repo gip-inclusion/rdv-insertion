@@ -1,3 +1,5 @@
+<%# now that all the invitations are attempted, we trigger refreshes only when there is an update on the row and not through the stimulus controller refresh-page-periodically %>
+<%= turbo_stream_from @user_list_upload %>
 <div class="mb-4">
   <h2 class="h2-title">Invitations envoyées.</h2>
   <% if user_rows_with_invitation_errors.empty? %>

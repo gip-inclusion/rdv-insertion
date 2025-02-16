@@ -1,3 +1,5 @@
+<%# now that all the saves are attempted, we trigger refreshes only when there is an update on the row and not through the stimulus controller refresh-page-periodically %>
+<%= turbo_stream_from @user_list_upload %>
 <div class="mb-4">
   <h2 class="h2-title">Création et mise à jour des dossiers terminées.</h2>
   <% if user_rows_with_user_save_errors.empty? %>

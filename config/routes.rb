@@ -111,6 +111,16 @@ Rails.application.routes.draw do
       get :show_details
       get :hide_details
       resource :user_row_cells, only: [:edit]
+
+      resources :organisation_assignations, only: [:new, :create]
+
+      namespace :user_save_attempts do
+        resources :retries, only: [:new, :create]
+      end
+
+      namespace :invitation_attempts do
+        resources :retries, only: [:new, :create]
+      end
     end
 
     resources :user_save_attempts, only: [:index, :create] do

@@ -18,9 +18,7 @@ module UserListUpload::UserSaveAttemptsHelper
     {
       pending: "background-blue-light text-mid-blue",
       created: "alert-success",
-      updated: "alert-success",
-      organisation_needs_to_be_assigned: "alert-info",
-      error: "alert-danger"
+      updated: "alert-success"
     }[status]
   end
 
@@ -28,10 +26,25 @@ module UserListUpload::UserSaveAttemptsHelper
     {
       pending: "En cours",
       created: "Dossier créé",
-      updated: "Mis à jour",
-      organisation_needs_to_be_assigned: "Organisation à assigner",
-      error: "Erreur"
+      updated: "Mis à jour"
     }[status]
+  end
+
+  def user_row_background_color_for_attribute(user_row, attribute)
+    return if user_row.user.valid?
+
+    "alert-danger" if user_row.user_errors.attribute_names.include?(attribute)
+  end
+
+  def user_row_icon_for_attribute(user_row, attribute)
+    return if user_row.user_errors.attribute_names.exclude?(attribute)
+
+    content_tag(
+      :i, nil, class: "ri-alert-line text-end", **tooltip_errors_attributes(
+        title: "Erreur sur cette donnée",
+        errors: user_row.user_errors.full_messages_for(attribute)
+      )
+    )
   end
 
   def tooltip_for_user_save_attempt_errors(errors)
@@ -41,11 +54,5 @@ module UserListUpload::UserSaveAttemptsHelper
       title: "Erreurs lors de la sauvegarde du dossier",
       errors: errors
     )
-  end
-
-  def user_save_icon_for_status(status)
-    return "" unless status == :error
-
-    content_tag(:i, nil, class: "ri-alert-line text-end")
   end
 end

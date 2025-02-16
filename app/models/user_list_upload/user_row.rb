@@ -10,12 +10,13 @@ class UserListUpload::UserRow < ApplicationRecord
 
   encrypts :nir
 
+  before_save :format_attributes, :set_matching_user
+  after_commit :enqueue_save_user_job, if: :should_save_user?
+
   belongs_to :user_list_upload
   belongs_to :matching_user, class_name: "User", optional: true
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", dependent: :destroy
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
-
-  before_save :format_attributes, :set_matching_user
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
   delegate :department, :department_number, :department_id, :restricted_user_attributes, to: :user_list_upload
@@ -182,12 +183,21 @@ class UserListUpload::UserRow < ApplicationRecord
     invitable? && user.can_be_invited_through?(format)
   end
 
-  def invite_user(format)
+  def invite_user_by(format)
     UserListUpload::InvitationAttempt.create_from_row(user_row: self, format:)
+  end
+
+  def invite_user
+    invite_user_by("email") if invitable_by?("email")
+    invite_user_by("sms") if invitable_by?("sms")
   end
 
   def invitation_attempted?
     invitation_attempts.any?
+  end
+
+  def last_invitation_attempt
+    invitation_attempts.max_by(&:created_at)
   end
 
   def invitation_errors
@@ -214,6 +224,16 @@ class UserListUpload::UserRow < ApplicationRecord
   # rubocop:enable Metrics/AbcSize
 
   private
+
+  def enqueue_save_user_job
+    UserListUpload::SaveUserJob.perform_later(id)
+  end
+
+  def should_save_user?
+    marked_for_user_save? && previous_changes.keys.any? do |attribute|
+      (USER_ATTRIBUTES + [:assigned_organisation_id]).include?(attribute.to_sym)
+    end
+  end
 
   def user_attributes
     symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES)

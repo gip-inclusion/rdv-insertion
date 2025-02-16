@@ -1,0 +1,13 @@
+<%= render "common/remote_modal" do %>
+  <div class="modal-body pt-0">
+    <div id="custom-body" class="w-100 mb-4">
+      <div class="w-100 text-center mb-3">
+        <%= image_tag "illustrations/success.svg", alt: "Illustration d'un message de succès", class: "mb-3" %>
+        <h5 class="mt-2">L'organisation <strong><%= @organisation.name %></strong> a été assignée à l'usager <strong><%= @user_row.user.to_s %></strong></h5>
+      </div>
+      <div class="text-center">
+        <%= link_to "OK", "#", class: "text-center btn btn-blue", data: { bs_dismiss: "modal" } %>
+      </div>
+    </div>
+  </div>
+<% end %>
