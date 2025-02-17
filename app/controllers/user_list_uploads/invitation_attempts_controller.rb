@@ -5,6 +5,7 @@ module UserListUploads
     def select_rows
       @user_collection = @user_list_upload.user_collection
       @user_collection.sort_by!(**sort_params) if sort_params_valid?
+      @user_collection.search!(params[:search_query]) if params[:search_query].present?
       @user_rows = @user_collection.user_rows_with_user_save_success
     end
 
@@ -18,9 +19,11 @@ module UserListUploads
     def index
       @user_collection = @user_list_upload.user_collection
       @user_collection.sort_by!(**sort_params) if sort_params_valid?
+      @user_collection.search!(params[:search_query]) if params[:search_query].present?
       @user_rows = @user_collection.user_rows_marked_for_invitation
       @user_rows_with_invitation_errors = @user_collection.user_rows_with_invitation_errors
       @user_rows_with_invitation_attempted = @user_collection.user_rows_with_invitation_attempted
+      @all_invitations_attempted = @user_rows_with_invitation_attempted.count == @user_rows.count
     end
 
     private

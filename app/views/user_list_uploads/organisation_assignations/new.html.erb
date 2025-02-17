@@ -1,0 +1,24 @@
+<%= render("common/remote_modal", title: "Choisissez une organisation") do %>
+  <%= form_for(@user_row, url: user_list_upload_user_row_organisation_assignations_path(user_list_upload_id: @user_list_upload.id, user_row_id: @user_row.id), method: :post, data: { turbo_frame: "user_collection" }) do |f| %>
+    <%= turbo_frame_tag "error_list" %>
+    <div class="w-100 text-center mb-3">
+      <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
+      <% if @user_row.address %>
+        <p>Veuillez choisir une organisation pour l'usager <strong><%= @user_row.user.to_s %></strong> habitant à l'adresse <br/><br/><strong><%= @user_row.address %></strong></p>
+      <% else %>
+        <p>Veuillez choisir une organisation pour l'usager <strong><%= @user_row.user.to_s %></strong></p>
+      <% end %>
+    </div>
+
+    <div class="form-group scrollable-list">
+      <%= f.select :assigned_organisation_id,
+                  @organisations.map { |o| [o.name, o.id] },
+                  { include_blank: false },
+                  { class: "form-select" }
+      %>
+    </div>
+    <div class="form-group text-center">
+      <%= f.submit "Enregistrer", class: "btn btn-blue" %>
+    </div>
+  <% end %>
+<% end %>

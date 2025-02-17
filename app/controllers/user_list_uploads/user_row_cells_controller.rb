@@ -4,7 +4,7 @@ module UserListUploads
 
     def edit
       render turbo_stream: turbo_stream.replace("user-row-cell-#{params[:user_row_id]}-#{params[:attribute]}",
-                                                partial: "user_list_uploads/user_list_uploads/edit_row_attribute",
+                                                partial: "user_list_uploads/edit_row_attribute",
                                                 locals: { user_row: @user_row, attribute: params[:attribute] })
     end
 
