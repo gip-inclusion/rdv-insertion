@@ -6,6 +6,8 @@
         <h5 class="mt-2">L'envoi d'invitation à l'usager <strong><%= @user_row.user.to_s %></strong> a été réussie</h5>
       </div>
       <div class="text-center">
+        <%# we use the refresh-page-periodically controller only to refresh the page automatically once, so that the modal closes automatically after being displayed
+            and the list updated %>
         <%= link_to "OK", "#", class: "text-center btn btn-blue", data: { bs_dismiss: "modal", controller: "refresh-page-periodically" } %>
       </div>
     </div>
