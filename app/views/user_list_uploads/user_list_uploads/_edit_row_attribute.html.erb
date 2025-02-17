@@ -16,8 +16,7 @@
     <% else %>
       <%= form.text_field "user_row[#{attribute}]",
                           value: user_row.user.send(attribute),
-                          class: "form-control",
-                          autofocus: true %>
+                          class: "form-control" %>
     <% end %>
     <div class="edit-buttons">
       <button type="submit">

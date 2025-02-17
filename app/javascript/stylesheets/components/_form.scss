@@ -141,15 +141,19 @@
 .edit-row-attribute {
   height: 50px;
   background: white;
-  border: 1px solid $light-grey;
+  border-right: 1px solid $light-grey;
+  border-left: 1px solid $light-grey;
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-left: 0px !important;
   padding-right: 5px !important;
+  min-width: 130px;
 
   .input-group, input[type=text] {
     border: none;
     height: 100%;
+    box-shadow: none;
   }
 
   .edit-buttons {
