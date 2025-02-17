@@ -4,7 +4,7 @@ class ApplicationRecord < ActiveRecord::Base
   include Serializable
 
   def self.first
-    if column_for_attribute(:id) == :uuid
+    if column_for_attribute(:id).type == :uuid
       order(created_at: :asc).first
     else
       super
@@ -12,7 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.last
-    if column_for_attribute(:id) == :uuid
+    if column_for_attribute(:id).type == :uuid
       order(created_at: :desc).first
     else
       super

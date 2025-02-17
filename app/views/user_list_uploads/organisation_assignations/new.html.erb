@@ -4,9 +4,9 @@
     <div class="w-100 text-center mb-3">
       <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
       <% if @user_row.address %>
-        <h6>Veuillez choisir une organisation pour l'usager <strong><%= @user_row.user.to_s %></strong> habitant à l'adresse <br/><br/><strong><%= @user_row.address %></strong></h6>
+        <p>Veuillez choisir une organisation pour l'usager <strong><%= @user_row.user.to_s %></strong> habitant à l'adresse <br/><br/><strong><%= @user_row.address %></strong></p>
       <% else %>
-        <h6>Veuillez choisir une organisation pour l'usager <strong><%= @user_row.user.to_s %></strong></h6>
+        <p>Veuillez choisir une organisation pour l'usager <strong><%= @user_row.user.to_s %></strong></p>
       <% end %>
     </div>
 
