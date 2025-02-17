@@ -31,7 +31,6 @@ Rails.application.routes.draw do
   end
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
-  agent_connect controller: AgentConnectController
 
   get 'auth/:provider/callback', to: 'sessions#create'
 
@@ -236,8 +235,6 @@ Rails.application.routes.draw do
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]
-  get '/sign_in', to: "sessions#new"
-  delete '/sign_out', to: "sessions#destroy"
   get '/sign_out', to: "sessions#destroy"
 
   get "inclusion_connect/auth", to: "inclusion_connect#auth"

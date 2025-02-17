@@ -11,7 +11,6 @@ import { Application } from "@hotwired/stimulus";
 import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers";
 import "chartkick/chart.js";
 
-import LoginForm from "./components/login-form";
 import StatusSelector from "./components/status-selector";
 import OrientationSelector from "./components/orientation-selector";
 import ReferentSelector from "./components/referent-selector";
@@ -45,7 +44,6 @@ Turbo.StreamActions.redirect = function () {
 }
 
 document.addEventListener("turbo:load", () => {
-  new LoginForm();
   new StatusSelector();
   new OrientationSelector();
   new ReferentSelector();
