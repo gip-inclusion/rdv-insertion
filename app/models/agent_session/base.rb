@@ -22,14 +22,6 @@ module AgentSession
       origin == "impersonate"
     end
 
-    def inclusion_connect?
-      origin == "inclusion_connect"
-    end
-
-    def agent_connect?
-      origin == "agent_connect"
-    end
-
     private
 
     def signature_valid?
