@@ -237,10 +237,6 @@ Rails.application.routes.draw do
   resources :sessions, only: [:create]
   get '/sign_out', to: "sessions#destroy"
 
-  get "inclusion_connect/auth", to: "inclusion_connect#auth"
-  get "inclusion_connect/callback", to: "inclusion_connect#callback"
-  get "inclusion_connect/sign_out", to: "inclusion_connect#sign_out"
-
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
   namespace :brevo do
     post "mail_webhooks", to: "mail_webhooks#create"

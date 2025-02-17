@@ -3,21 +3,6 @@ module AuthenticationSpecHelper
     request.session["agent_auth"] = agent_auth_hash_from_sign_in_form(agent)
   end
 
-  def sign_in_with_inclusion_connect(agent, inclusion_connect_token_id)
-    request.session["agent_auth"] = agent_auth_hash_from_inclusion_connect(agent, inclusion_connect_token_id)
-  end
-
-  def agent_auth_hash_from_inclusion_connect(agent, inclusion_connect_token_id)
-    timestamp = Time.zone.now.to_i
-    {
-      id: agent.id,
-      origin: "inclusion_connect",
-      signature: agent.sign_with(timestamp),
-      created_at: timestamp,
-      inclusion_connect_token_id:
-    }
-  end
-
   def agent_auth_hash_from_sign_in_form(agent)
     timestamp = Time.zone.now.to_i
     {

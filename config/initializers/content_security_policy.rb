@@ -10,7 +10,6 @@ matomo = "matomo.inclusion.beta.gouv.fr"
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
 maze = "*.maze.co"
-inclusion_connect = ENV["INCLUSION_CONNECT_BASE_URL"]
 flourish = "flo.uri.sh" # for deployment map
 
 Rails.application.config.content_security_policy do |policy|
@@ -22,7 +21,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.object_src  :none
   policy.script_src  :self, :https, :unsafe_inline
   policy.style_src   :self, :https, :unsafe_inline
-  policy.connect_src :self, rdv_solidarites, sentry, matomo, inclusion_connect, maze, *crisp
+  policy.connect_src :self, rdv_solidarites, sentry, matomo, maze, *crisp
   policy.worker_src :self, :blob
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report-endpoint"
