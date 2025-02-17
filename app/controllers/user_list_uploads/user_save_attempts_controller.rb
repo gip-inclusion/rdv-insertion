@@ -11,9 +11,11 @@ module UserListUploads
     def index
       @user_collection = @user_list_upload.user_collection
       @user_collection.sort_by!(**sort_params) if sort_params_valid?
+      @user_collection.search!(params[:search_query]) if params[:search_query].present?
       @user_rows = @user_collection.user_rows_marked_for_user_save
       @user_rows_with_user_save_errors = @user_collection.user_rows_with_user_save_errors
       @user_rows_with_user_save_attempted = @user_collection.user_rows_with_user_save_attempted
+      @all_saves_attempted = @user_rows_with_user_save_attempted.count == @user_rows.count
     end
 
     private
