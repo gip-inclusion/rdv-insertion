@@ -124,6 +124,7 @@ jobs:
         with:
           node-version-file: .node-version
       - name: Installing Chrome for Puppeteer test
+        # we need to install Chrome for Puppeteer tests (Grover)
         run: npx puppeteer browsers install chrome
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
