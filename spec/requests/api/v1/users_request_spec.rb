@@ -28,7 +28,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       }
 
-      let!(:user1_params) do
+      let!(:user_params_for_doc) do
         {
           first_name: "Didier",
           last_name: "Drogba",
@@ -48,9 +48,16 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       end
 
-      let!(:agent_referent) { create(:agent, email: "agentreferent@nomdedomaine.fr", organisations: [organisation]) }
+      let!(:user1_params) do
+        {
+          **user_params_for_doc,
+          created_through: "rdv_insertion_api",
+          created_from_structure_type: "Organisation",
+          created_from_structure_id: organisation.id
+        }
+      end
 
-      let!(:user2_params) do
+      let!(:user2_params_for_doc) do
         {
           first_name: "Dimitri",
           last_name: "Payet",
@@ -71,9 +78,21 @@ describe "Users API", swagger_doc: "v1/api.json" do
           }
         }
       end
-      let!(:users_params) do
-        { users: [user1_params, user2_params] }
+
+      let!(:user2_params) do
+        {
+          **user2_params_for_doc.except(:invitation),
+          created_through: "rdv_insertion_api",
+          created_from_structure_type: "Organisation",
+          created_from_structure_id: organisation.id
+        }
       end
+
+      let!(:users_params) do
+        { users: [user_params_for_doc, user2_params_for_doc] }
+      end
+
+      let!(:agent_referent) { create(:agent, email: "agentreferent@nomdedomaine.fr", organisations: [organisation]) }
       let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id:) }
       let!(:rdv_solidarites_organisation_id) { 422 }
       let!(:agent) { create(:agent, organisations: [organisation]) }
@@ -123,18 +142,22 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont incomplets",
                       true do
-        before { user1_params[:first_name] = "" }
+        before do
+          users_params[:users][0][:first_name] = ""
+        end
       end
 
       it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont invalide",
                       true do
-        before { user1_params[:email] = "invalid@email" }
+        before do
+          users_params[:users][0][:email] = "invalid@email"
+        end
       end
 
       it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand + de 25 usagers sont envoyés",
                       true do
         let!(:users_params) do
-          { users: 30.times.map { user1_params } }
+          { users: 30.times.map { user_params_for_doc } }
         end
       end
 
@@ -143,7 +166,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
         "quand l'adresse mail du réferent ne correspond à aucun agent enregistré",
         true
       ) do
-        before { user1_params[:referents_to_add] = [{ email: "agentnontrouve@nomdedomaine.fr" }] }
+        before do
+          users_params[:users][0][:referents_to_add] = [{ email: "agentnontrouve@nomdedomaine.fr" }]
+        end
       end
     end
   end
@@ -168,15 +193,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       }
 
-      let!(:user_params) do
-        {
-          user: {
-            **user_attributes,
-            invitation: { motif_category: motif_category_attributes }
-          }
-        }
-      end
-      let!(:user_attributes) do
+      let!(:user_params_for_doc) do
         {
           first_name: "Didier",
           last_name: "Drogba",
@@ -190,14 +207,30 @@ describe "Users API", swagger_doc: "v1/api.json" do
           address: "13 rue de la République 13001 MARSEILLE",
           department_internal_id: "11111444",
           nir: generate_random_nir,
-          created_through: "rdv_insertion_api",
-          created_from_structure_type: "Organisation",
-          created_from_structure_id: organisation.id,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
           ]
         }
       end
+
+      let!(:user_attributes) do
+        {
+          **user_params_for_doc,
+          created_through: "rdv_insertion_api",
+          created_from_structure_type: "Organisation",
+          created_from_structure_id: organisation.id
+        }
+      end
+
+      let!(:user_params) do
+        {
+          user: {
+            **user_params_for_doc,
+            invitation: { motif_category: motif_category_attributes }
+          }
+        }
+      end
+
       let!(:email_attributes) do
         { format: "email" }
       end
@@ -324,25 +357,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         "quand l'adresse mail du réferent ne correspond à aucun agent enregistré",
         true
       ) do
-        let!(:user_attributes) do
-          {
-            first_name: "Didier",
-            last_name: "Drogba",
-            title: "monsieur",
-            affiliation_number: "10492390",
-            role: "demandeur",
-            email: "didier@drogba.com",
-            phone_number: "0782605941",
-            birth_date: "11/03/1980",
-            birth_name: nil,
-            address: "13 rue de la République 13001 MARSEILLE",
-            department_internal_id: "11111444",
-            nir: generate_random_nir,
-            referents_to_add: [
-              { email: "agentnontrouve@nomdedomaine.fr" }
-            ]
-          }
-        end
+        before { user_params[:user][:referents_to_add] = [{ email: "agentnontrouve@nomdedomaine.fr" }] }
       end
     end
   end
