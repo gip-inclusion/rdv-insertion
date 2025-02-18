@@ -128,9 +128,7 @@ jobs:
         run: npx puppeteer browsers install chrome
       - name: Verify Chrome Installation
         run: |
-          chrome --version || true
           chromium-browser --version || true
-          ls -la /home/runner/.cache/puppeteer/chromium
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
