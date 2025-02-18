@@ -124,16 +124,8 @@ jobs:
         with:
           node-version-file: .node-version
       - name: Installing Chrome for Puppeteer test
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          mkdir -p /home/runner/.cache/puppeteer
-          sudo chmod -R 777 /home/runner/.cache/puppeteer
-          npx puppeteer browsers install chrome
-          which chromium-browser
-      - name: Verify Chrome Installation
-        run: |
-          chromium-browser --version || true
+        # we need to install Chrome for Puppeteer tests (Grover)
+        run: npx puppeteer browsers install chrome
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
