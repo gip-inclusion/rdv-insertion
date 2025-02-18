@@ -1,7 +1,6 @@
 module UserListUploads
   class UserSaveAttemptsController < BaseController
-    before_action :set_user_list_upload, only: [:create_many, :index, :create]
-    before_action :set_user_row, only: [:create]
+    before_action :set_user_list_upload, only: [:create_many, :index]
 
     def create_many
       @user_list_upload.user_collection.mark_selected_rows_for_user_save!(selected_ids)
@@ -12,17 +11,11 @@ module UserListUploads
     def index
       @user_collection = @user_list_upload.user_collection
       @user_collection.sort_by!(**sort_params) if sort_params_valid?
+      @user_collection.search!(params[:search_query]) if params[:search_query].present?
       @user_rows = @user_collection.user_rows_marked_for_user_save
       @user_rows_with_user_save_errors = @user_collection.user_rows_with_user_save_errors
       @user_rows_with_user_save_attempted = @user_collection.user_rows_with_user_save_attempted
-    end
-
-    def create
-      if @user_row.save_user
-        render json: { success: true }
-      else
-        render json: { success: false, errors: @user_row.errors.full_messages }, status: :unprocessable_entity
-      end
+      @all_saves_attempted = @user_rows_with_user_save_attempted.count == @user_rows.count
     end
 
     private
@@ -30,10 +23,6 @@ module UserListUploads
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
       authorize @user_list_upload, :edit?
-    end
-
-    def set_user_row
-      @user_row = @user_list_upload.user_rows.find(params[:user_row_id])
     end
 
     def selected_ids

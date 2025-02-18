@@ -1,17 +1,21 @@
+<%# now that all the invitations are attempted, we trigger refreshes only when there is an update on the row and not through the stimulus controller refresh-page-periodically %>
+<%= turbo_stream_from @user_list_upload %>
 <div class="mb-4">
   <h2 class="h2-title">Invitations envoyées.</h2>
-  <% if user_rows_with_invitation_errors.empty? %>
-    <div class="flash-expanded">
-      <%= render "common/flash_banner", type: :success, description: "Toutes les invitations ont été envoyées." %>
-    </div>
-  <% else %>
-    <div class="flash-expanded">
-      <%= render(
-        "common/flash_banner",
-        type: :alert,
-        title: "#{user_rows_with_invitation_errors.count} invitations n'ont pas pu être envoyées.",
-        description: "Vous pouvez corriger les erreurs ou revenir à l'accueil."
-      ) %>
-    </div>
+  <% if params[:search_query].blank? %>
+    <% if user_rows_with_invitation_errors.empty? %>
+      <div class="flash-expanded">
+        <%= render "common/flash_banner", type: :success, description: "Toutes les invitations ont été envoyées." %>
+      </div>
+    <% else %>
+      <div class="flash-expanded">
+        <%= render(
+          "common/flash_banner",
+          type: :alert,
+          title: "#{user_rows_with_invitation_errors.count} invitations n'ont pas pu être envoyées.",
+          description: "Vous pouvez corriger les erreurs ou revenir à l'accueil."
+        ) %>
+      </div>
+    <% end %>
   <% end %>
 </div>

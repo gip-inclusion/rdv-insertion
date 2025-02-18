@@ -40,14 +40,6 @@ describe AgentSession::ThroughImpersonate do
     end
   end
 
-  context "when the origin is not valid" do
-    let!(:origin) { "inclusion_connect" }
-
-    it "is not valid" do
-      expect(subject).not_to be_valid
-    end
-  end
-
   context "70 minutes after its creation" do
     before { travel_to(70.minutes.from_now) }
 

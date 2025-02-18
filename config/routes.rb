@@ -31,7 +31,6 @@ Rails.application.routes.draw do
   end
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
-  agent_connect controller: AgentConnectController
 
   get 'auth/:provider/callback', to: 'sessions#create'
 
@@ -112,6 +111,16 @@ Rails.application.routes.draw do
       get :show_details
       get :hide_details
       resource :user_row_cells, only: [:edit]
+
+      resources :organisation_assignations, only: [:new, :create]
+
+      namespace :user_save_attempts do
+        resources :retries, only: [:new, :create]
+      end
+
+      namespace :invitation_attempts do
+        resources :retries, only: [:new, :create]
+      end
     end
 
     resources :user_save_attempts, only: [:index, :create] do
@@ -236,13 +245,7 @@ Rails.application.routes.draw do
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]
-  get '/sign_in', to: "sessions#new"
-  delete '/sign_out', to: "sessions#destroy"
   get '/sign_out', to: "sessions#destroy"
-
-  get "inclusion_connect/auth", to: "inclusion_connect#auth"
-  get "inclusion_connect/callback", to: "inclusion_connect#callback"
-  get "inclusion_connect/sign_out", to: "inclusion_connect#sign_out"
 
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
   namespace :brevo do

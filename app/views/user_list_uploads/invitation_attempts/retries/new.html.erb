@@ -1,0 +1,17 @@
+<%= render("common/remote_modal", title: "Réessayer d'inviter l'usager") do %>
+  <%= form_for(@user_row, url: user_list_upload_user_row_invitation_attempts_retries_path(user_list_upload_id: @user_list_upload.id, user_row_id: @user_row.id), method: :post, data: { turbo_frame: "user_collection" }) do |f| %>
+    <div class="w-100 text-center mb-3">
+      <%= image_tag "illustrations/alert.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3", style: "height: 50px" %>
+    </div>
+    <div class="mb-3">
+      <p class="px-2">Une erreur est survenue lors de l'invitation de l'usager <strong><%= @user_row.user.to_s %></strong>:</p>
+      <p class="text-center"><%= @invitation_errors.join(", ") %></p>
+    </div>
+
+    <div class="form-group d-flex justify-content-end">
+      <%= link_to "Annuler", "#", class: "btn btn-blue-out me-2", data: { bs_dismiss: "modal" } %>
+      <%= f.submit "Réessayer d'inviter", class: "btn btn-blue" %>
+    </div>
+  <% end %>
+<% end %>
+
