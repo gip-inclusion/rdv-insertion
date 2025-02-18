@@ -12,8 +12,8 @@ module Users
 
     private
 
-    def email_field
-      @email_field ||= begin
+    def email_field_to_target
+      @email_field_to_target ||= begin
         retrieved_user = retrieve_user.user
         if retrieved_user.notification_email.present? || retrieved_user.email.blank?
           # We use notification_email if:
@@ -98,20 +98,13 @@ module Users
                    .transform_values(&:presence)
                    .compact
 
-      select_appropriate_email_field(attrs)
+      attrs[:notification_email] = attrs.delete(:email) if should_target_notification_email?
 
       attrs
     end
 
-    def select_appropriate_email_field(attrs)
-      if @rdv_solidarites_user_id
-        # Existing users in RDV-S could have either email or notification_email set
-        # Only convert to notification_email if that's the field currently used
-        attrs[:notification_email] = attrs.delete(:email) if email_field == :notification_email
-      else
-        # New users are always created with notification_email in RDV-S
-        attrs[:notification_email] = attrs.delete(:email)
-      end
+    def should_target_notification_email?
+      @rdv_solidarites_user_id.nil? || email_field_to_target == :notification_email
     end
 
     def rdv_solidarites_organisation_ids

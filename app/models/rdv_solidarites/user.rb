@@ -10,13 +10,8 @@ module RdvSolidarites
       email&.ends_with?("@deleted.rdv-solidarites.fr")
     end
 
-    def email
-      # Override email to return either email or notification_email
-      @attributes[:notification_email].presence || @attributes[:email].presence
-    end
-
-    def attributes
-      attrs = super
+    def to_rdvi_attributes
+      attrs = attributes
       attrs[:email] = attrs.delete(:notification_email) if attrs[:notification_email].present?
       attrs
     end
