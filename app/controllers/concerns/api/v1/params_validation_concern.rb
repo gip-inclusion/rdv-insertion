@@ -51,6 +51,37 @@ module Api
       end
 
       def validate_user_attributes(user_attributes, idx = nil)
+        return if validate_user_role(user_attributes, idx)
+        return if validate_user_title(user_attributes, idx)
+
+        validate_user_model(user_attributes, idx)
+      end
+
+      def validate_user_role(user_attributes, idx = nil)
+        return false unless user_attributes[:role].present? && !User.roles.key?(user_attributes[:role])
+
+        @params_validation_errors << {
+          error_details: I18n.t("activerecord.errors.models.user.attributes.role.inclusion",
+                                valid_values: User.roles.keys.join(", ")),
+          first_name: user_attributes[:first_name],
+          last_name: user_attributes[:last_name]
+        }.merge(idx.present? ? { index: idx } : {})
+        true
+      end
+
+      def validate_user_title(user_attributes, idx = nil)
+        return false unless user_attributes[:title].present? && !User.titles.key?(user_attributes[:title])
+
+        @params_validation_errors << {
+          error_details: I18n.t("activerecord.errors.models.user.attributes.title.inclusion",
+                                valid_values: User.titles.keys.join(", ")),
+          first_name: user_attributes[:first_name],
+          last_name: user_attributes[:last_name]
+        }.merge(idx.present? ? { index: idx } : {})
+        true
+      end
+
+      def validate_user_model(user_attributes, idx = nil)
         user = User.new(user_attributes.merge(creation_origin_attributes))
         # since it is an upsert we don't check the uniqueness validations
         user.skip_uniqueness_validations = true

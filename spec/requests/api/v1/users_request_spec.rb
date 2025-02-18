@@ -170,6 +170,38 @@ describe "Users API", swagger_doc: "v1/api.json" do
           users_params[:users][0][:referents_to_add] = [{ email: "agentnontrouve@nomdedomaine.fr" }]
         end
       end
+
+      response 422, "quand le rôle est invalide" do
+        schema "$ref" => "#/components/schemas/error_unprocessable_entity"
+
+        let!(:users_params) do
+          { users: [user_params_for_doc.merge(role: "invalid_role")] }
+        end
+
+        run_test! do |response|
+          expect(response.status).to eq(422)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response["errors"][0]["error_details"]).to eq(
+            "doit être l'une des valeurs suivantes : demandeur, conjoint"
+          )
+        end
+      end
+
+      response 422, "quand la civilité est invalide" do
+        schema "$ref" => "#/components/schemas/error_unprocessable_entity"
+
+        let!(:users_params) do
+          { users: [user_params_for_doc.merge(title: "invalid_title")] }
+        end
+
+        run_test! do |response|
+          expect(response.status).to eq(422)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response["errors"][0]["error_details"]).to eq(
+            "doit être l'une des valeurs suivantes : monsieur, madame"
+          )
+        end
+      end
     end
   end
 
