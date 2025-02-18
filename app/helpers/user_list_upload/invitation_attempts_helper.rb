@@ -20,12 +20,6 @@ module UserListUpload::InvitationAttemptsHelper
     }[after_invitation_status]
   end
 
-  def user_row_status_after_invitation_icon_for_status(after_invitation_status)
-    return "" unless after_invitation_status == :error
-
-    content_tag(:i, nil, class: "ri-alert-line text-end")
-  end
-
   def tooltip_for_invitation_errors(user_row)
     return unless user_row.all_invitations_failed?
 
@@ -38,8 +32,7 @@ module UserListUpload::InvitationAttemptsHelper
   def user_row_status_after_invitation_badge_class(after_invitation_status)
     {
       invited: "alert-success",
-      pending: "background-blue-light text-mid-blue",
-      error: "alert-danger"
+      pending: "background-blue-light text-mid-blue"
     }[after_invitation_status]
   end
 

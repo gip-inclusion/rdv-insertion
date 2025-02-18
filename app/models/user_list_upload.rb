@@ -86,18 +86,18 @@ class UserListUpload < ApplicationRecord
 
   def potential_matching_users_in_all_app
     @potential_matching_users_in_all_app ||=
-      User.where(email: user_row_attributes.pluck("email").compact)
-          .or(User.where(phone_number: user_row_attributes.pluck("phone_number").compact))
-          .or(User.where(nir: user_row_attributes.pluck("nir").compact))
+      User.active.where(email: user_row_attributes.pluck("email").compact)
+          .or(User.active.where(phone_number: user_row_attributes.pluck("phone_number").compact))
+          .or(User.active.where(nir: user_row_attributes.pluck("nir").compact))
           .select(:id, :nir, :phone_number, :email, :first_name)
   end
 
   def potential_matching_users_in_department
-    @potential_matching_users_in_department ||= User.joins(:organisations).where(
+    @potential_matching_users_in_department ||= User.active.joins(:organisations).where(
       affiliation_number: user_row_attributes.pluck("affiliation_number").compact,
       organisations: { department_id: department.id }
     ).or(
-      User.joins(:organisations).where(
+      User.active.joins(:organisations).where(
         department_internal_id: user_row_attributes.pluck("department_internal_id").compact,
         organisations: { department_id: department.id }
       )

@@ -22,7 +22,7 @@
     </button>
 
     <button type="submit">
-      <%= link_to user_list_upload_user_row_path(user_list_upload_id: @user_list_upload.id, id: user_row.id) do %>
+      <%= link_to user_list_upload_user_row_path(url_params.merge(user_list_upload_id: @user_list_upload.id, id: user_row.id)) do %>
         <i class="ri-close-line text-danger"></i>
       <% end %>
     </button>
