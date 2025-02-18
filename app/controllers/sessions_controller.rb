@@ -1,11 +1,15 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:create]
+  skip_before_action :authenticate_agent!, only: [:create, :new]
   wrap_parameters false
   respond_to :json, only: :create
 
   before_action :retrieve_agent!, :mark_agent_as_logged_in!,
                 :set_agent_return_to_url,
                 only: [:create]
+
+  def new
+    render "new", layout: "website"
+  end
 
   def create
     set_session_credentials

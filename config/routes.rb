@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
 
+  get '/sign_in', to: 'sessions#new'
   get 'auth/:provider/callback', to: 'sessions#create'
 
   scope module: 'website' do
