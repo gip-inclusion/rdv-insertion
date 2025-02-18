@@ -43,6 +43,10 @@ module ApplicationHelper
     current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 
+  def current_url
+    request.original_url
+  end
+
   def url_params
     Rack::Utils.parse_nested_query(request.query_string).deep_symbolize_keys
   end

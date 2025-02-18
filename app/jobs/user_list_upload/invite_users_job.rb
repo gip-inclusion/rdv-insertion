@@ -8,7 +8,7 @@ class UserListUpload::InviteUsersJob < ApplicationJob
 
     user_collection.user_rows_marked_for_invitation.each do |user_row|
       invitation_formats.each do |format|
-        user_row.invite_user(format) if user_row.invitable_by?(format)
+        user_row.invite_user_by(format) if user_row.invitable_by?(format)
       end
     end
   end

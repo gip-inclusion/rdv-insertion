@@ -15,13 +15,14 @@
 
   <%= turbo_frame_tag "user_collection", data: { turbo_action: "advance" } do %>
     <div class="row justify-content-center">
-      <div class="col-md-10">
+      <div class="col-md-10 d-flex justify-content-between align-items-center">
         <div class="mb-4">
           <h2 class="h2-title">Inviter les usagers à prendre rendez-vous</h2>
           <p class="text-muted">
             Vous pouvez envoyer des invitations par SMS, Email ou télécharger les courriers d'invitations (.pdf)
           </p>
         </div>
+        <%= render "user_list_uploads/search_form" %>
       </div>
       <%= render "user_rows_before_invitation", user_rows: @user_rows %>
 

@@ -5,7 +5,6 @@ FactoryBot.define do
     sequence(:last_name) { |n| "doe#{n}" }
 
     rdv_solidarites_agent_id { rand(1..10_000_000_000) }
-    inclusion_connect_open_id_sub { SecureRandom.uuid }
 
     transient do
       basic_role_in_organisations { [] }

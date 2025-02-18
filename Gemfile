@@ -89,8 +89,6 @@ gem "rqrcode", "~> 2.0", require: false
 gem "rexml"
 gem "addressable"
 
-gem "agent_connect", github: "gip-inclusion/agent_connect_engine"
-
 # Easily generate PDF from HTML with puppeteer and headless chrome
 gem "grover"
 

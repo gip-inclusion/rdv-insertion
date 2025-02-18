@@ -50,21 +50,6 @@ module UserListUpload::UserListUploadHelper
     )
   end
 
-  def user_row_icon_for_attribute(user_row, attribute)
-    if user_row.user_errors.attribute_names.include?(attribute)
-      content_tag(
-        :i, nil, class: "ri-alert-line text-end", **tooltip_errors_attributes(
-          title: "Erreur sur cette donnée",
-          errors: user_row.user_errors.full_messages_for(attribute)
-        )
-      )
-    elsif attribute_to_highlight?(user_row, attribute)
-      content_tag(:i, nil, class: "ri-checkbox-circle-line text-end")
-    else
-      ""
-    end
-  end
-
   def show_row_attribute?(attribute_name, user_list_upload)
     user_list_upload.restricted_user_attributes.exclude?(attribute_name.to_sym)
   end
