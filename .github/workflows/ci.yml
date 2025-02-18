@@ -126,6 +126,11 @@ jobs:
       - name: Installing Chrome for Puppeteer test
         # we need to install Chrome for Puppeteer tests (Grover)
         run: npx puppeteer browsers install chrome
+      - name: Verify Chrome Installation
+        run: |
+          chrome --version || true
+          chromium-browser --version || true
+          ls -la /home/runner/.cache/puppeteer/chromium
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
