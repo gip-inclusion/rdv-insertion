@@ -82,9 +82,13 @@ export default class extends Controller {
     const selectedCount = this.checkboxTargets.filter(checkbox => checkbox.checked).length
 
     let textContent = ""
-    if (selectedCount === 0) textContent = "Aucun usager sélectionné"
-    else if (selectedCount === 1) textContent = "1 usager sélectionné"
-    else textContent = `${selectedCount} usagers sélectionnés`
+    if (selectedCount === 0) {
+      textContent = "Aucun usager sélectionné"
+    } else if (selectedCount === 1) {
+      textContent = "1 usager sélectionné"
+    } else {
+      textContent = `${selectedCount} usagers sélectionnés`
+    }
 
     this.selectedUsersCounterTarget.textContent = textContent
   }
