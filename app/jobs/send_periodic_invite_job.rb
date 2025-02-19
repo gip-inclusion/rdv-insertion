@@ -33,7 +33,7 @@ class SendPeriodicInviteJob < ApplicationJob
       :referent_ids
     )
 
-    Rails.cache.fetch("RetrieveCreneauAvailability/#{params.values.join('_')}", expires_in: 12.hours) do
+    Rails.cache.fetch("RetrieveCreneauAvailability/#{params.sort.to_h.to_query}", expires_in: 12.hours) do
       @category_configuration.organisation.agents.first.with_rdv_solidarites_session do
         RdvSolidaritesApi::RetrieveCreneauAvailability.call(link_params: params).creneau_availability
       end
