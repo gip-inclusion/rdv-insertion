@@ -7,7 +7,7 @@ export default class extends Controller {
     if (this.hasSubmitTarget) {
       this.toggleSubmit()
     }
-    this.#updateSelectedCount()
+    this.#updateSelectedCountText()
   }
 
   submit(event) {
@@ -43,7 +43,7 @@ export default class extends Controller {
     } else {
       this.#disableSubmit()
     }
-    this.#updateSelectedCount()
+    this.#updateSelectedCountText()
   }
 
   disableUninvitableUsers() {
@@ -78,7 +78,7 @@ export default class extends Controller {
     return this.checkboxTargets.filter(checkbox => checkbox.checked).length > 0
   }
 
-  #updateSelectedCount() {
+  #updateSelectedCountText() {
     const selectedCount = this.checkboxTargets.filter(checkbox => checkbox.checked).length
 
     let textContent = ""
