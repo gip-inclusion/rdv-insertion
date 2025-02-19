@@ -41,7 +41,12 @@
           </div>
         </div>
       </div>
-      <%= render "user_rows_after_invitation", user_rows: rows_with_errors? ? @user_rows_with_invitation_errors : @user_rows %>
+
+      <% if rows_with_errors? && @user_rows_with_invitation_errors.empty? %>
+        <%= render "user_list_uploads/no_errors_user_rows" %>
+      <% else %>
+        <%= render "user_rows_after_invitation", user_rows: rows_with_errors? ? @user_rows_with_invitation_errors : @user_rows %>
+      <% end %>
 
       <div class="col-md-10 sticky-footer">
         <div class="py-3 bg-white border-top d-flex justify-content-between">
