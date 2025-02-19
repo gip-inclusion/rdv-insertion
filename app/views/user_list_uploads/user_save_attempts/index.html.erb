@@ -40,7 +40,7 @@
           </ul>
           <div class="d-flex me-2">
             <% if @all_saves_attempted %>
-              <%= render "user_list_uploads/search_form" %>
+              <%= render "user_list_uploads/search_form", params_to_remove: ["rows_with_errors"] %>
             <% end %>
           </div>
         </div>

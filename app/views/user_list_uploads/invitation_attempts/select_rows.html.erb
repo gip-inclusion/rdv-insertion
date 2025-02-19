@@ -22,7 +22,7 @@
             Vous pouvez envoyer des invitations par SMS, Email ou télécharger les courriers d'invitations (.pdf)
           </p>
         </div>
-        <%= render "user_list_uploads/search_form" %>
+        <%= render "user_list_uploads/search_form", params_to_remove: ["rows_with_errors"] %>
       </div>
       <%= render "user_rows_before_invitation", user_rows: @user_rows %>
 

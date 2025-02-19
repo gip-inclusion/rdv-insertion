@@ -36,7 +36,8 @@
           </ul>
           <div class="d-flex me-2">
             <% if @all_invitations_attempted %>
-              <%= render "user_list_uploads/search_form" %>
+              <%# Remove the rows_with_errors parameter to force display of search in the "All loaded users" tab %>
+              <%= render "user_list_uploads/search_form", params_to_remove: ["rows_with_errors"] %>
             <% end %>
           </div>
         </div>

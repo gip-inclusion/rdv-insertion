@@ -53,7 +53,7 @@
           </ul>
           <div class="d-flex me-2">
             <%= render "enrich_with_cnaf_button", user_rows: @user_rows %>
-            <%= render "user_list_uploads/search_form" %>
+            <%= render "user_list_uploads/search_form", params_to_remove: ["rows_with_errors"] %>
           </div>
         </div>
       </div>

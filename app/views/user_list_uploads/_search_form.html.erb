@@ -1,4 +1,12 @@
-<%= form_with url: current_url, method: :get, data: { controller: "search", turbo_permanent: true } do |f| %>
+<% params_to_remove ||= [] %>
+
+<%= form_with url: current_url,
+              method: :get,
+              data: {
+                controller: "search",
+                turbo_permanent: true,
+                search_params_to_remove_value: params_to_remove.to_json
+              } do |f| %>
   <div class="position-relative">
     <%= f.search_field :search_query,
                         class: "form-control ms-2 pe-4",
