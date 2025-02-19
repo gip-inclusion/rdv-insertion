@@ -68,7 +68,7 @@
             %>
           </div>
           <div class="d-flex align-items-center">
-            <span class="selected-users-counter me-4"></span>
+            <span class="me-4" data-submit-selected-ids-target="selectedUsersCounter"></span>
             <%= form_tag create_many_user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload.id),
                   method: :post,
                   data: { action: "submit->submit-selected-ids#submit", turbo: false } do %>

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["checkbox", "submit", "formatOption"]
+  static targets = ["checkbox", "submit", "formatOption", "selectedUsersCounter"]
 
   connect() {
     if (this.hasSubmitTarget) {
@@ -86,7 +86,7 @@ export default class extends Controller {
     else if (selectedCount === 1) textContent = "1 usager sélectionné"
     else textContent = `${selectedCount} usagers sélectionnés`
 
-    document.querySelector(".selected-users-counter").textContent = textContent
+    this.selectedUsersCounterTarget.textContent = textContent
   }
 }
 
