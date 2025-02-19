@@ -1,32 +1,28 @@
 <div class="col-md-10 user-list-upload-table-container">
-  <% if user_rows.any? %>
-    <table class="user-list-upload-table">
-      <thead class="bg-white text-dark-blue sticky-header" data-controller="sort-list">
-        <tr>
-          <th scope="col">
-            <input type="checkbox" class="form-check-input" data-action="click->submit-selected-ids#toggleAll" checked>
-          </th>
-          <th scope="col">Civilité</th>
-          <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
-            Prénom <i class="ri-arrow-up-down-line" role="button"></i>
-          </th>
-          <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
-            Nom <i class="ri-arrow-up-down-line" role="button"></i>
-          </th>
-          <th scope="col">Numéro CAF</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col">Email</th>
-          <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="before_user_save_status">
-            Statut du dossier <i class="ri-arrow-up-down-line" role="button"></i>
-          </th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <%= render partial: "user_row", collection: user_rows, as: :user_row %>
-      </tbody>
-    </table>
-  <% else %>
-    <%= render "user_list_uploads/empty_list_success" %>
-  <% end %>
+  <table class="user-list-upload-table">
+    <thead class="bg-white text-dark-blue sticky-header" data-controller="sort-list">
+      <tr>
+        <th scope="col">
+          <input type="checkbox" class="form-check-input" data-action="click->submit-selected-ids#toggleAll" checked>
+        </th>
+        <th scope="col">Civilité</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
+          Prénom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
+          Nom <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col">Numéro CAF</th>
+        <th scope="col">Téléphone</th>
+        <th scope="col">Email</th>
+        <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="before_user_save_status">
+          Statut du dossier <i class="ri-arrow-up-down-line" role="button"></i>
+        </th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render partial: "user_row", collection: user_rows, as: :user_row %>
+    </tbody>
+  </table>
 </div>
