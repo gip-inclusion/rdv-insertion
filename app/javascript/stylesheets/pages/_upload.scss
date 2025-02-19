@@ -27,6 +27,14 @@
   overflow-y: auto;
 }
 
+.no-errors-user-rows-container {
+  min-height: 60vh;
+}
+
+.no-errors-user-rows-image {
+  width: 150px;
+}
+
 .sticky-header {
   position: sticky;
   top: 0;

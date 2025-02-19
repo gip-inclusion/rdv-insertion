@@ -196,7 +196,7 @@ describe "Agents can upload user list", :js do
       last_name_cell.double_click
 
       within(table_row) do
-        fill_in "user_row[last_name]", with: "CRESPOGOAL"
+        fill_in "user_row[last_name]", with: "CRESPOGOAL", fill_options: { clear: :backspace }
         find("i.ri-check-line").click
       end
 

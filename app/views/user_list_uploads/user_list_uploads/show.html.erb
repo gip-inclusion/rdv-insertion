@@ -28,13 +28,24 @@
         <div class="d-flex border-bottom align-items-center">
           <ul class="nav nav-tabs flex-grow-1 border-bottom-0 align-self-end">
             <li class="nav-item">
-              <%= link_to user_list_upload_path(id: @user_list_upload.id), class: "nav-link #{rows_with_errors? ? 'text-light-blue' : 'active text-dark-blue fw-bold' }", data: { turbo_frame: "user_collection" } do %>
+              <%= link_to user_list_upload_path(
+                    id: @user_list_upload.id,
+                    search_query: params[:search_query]
+                  ),
+                  class: "nav-link #{rows_with_errors? ? 'text-light-blue' : 'active text-dark-blue fw-bold' }",
+                  data: { turbo_frame: "user_collection" } do %>
                 Tous les usagers chargés
                 <%= render "user_list_uploads/user_count_badge", user_count: @user_rows.count, active: !rows_with_errors? %>
               <% end %>
             </li>
             <li class="nav-item">
-              <%= link_to user_list_upload_path(id: @user_list_upload.id, rows_with_errors: true), class: "nav-link #{rows_with_errors? ? 'active text-dark-blue fw-bold' : 'text-light-blue' }", data: { turbo_frame: "user_collection" } do %>
+              <%= link_to user_list_upload_path(
+                    id: @user_list_upload.id,
+                    rows_with_errors: true,
+                    search_query: params[:search_query]
+                  ),
+                  class: "nav-link #{rows_with_errors? ? 'active text-dark-blue fw-bold' : 'text-light-blue' }",
+                  data: { turbo_frame: "user_collection" } do %>
                 Usagers avec erreurs
                 <%= render "user_list_uploads/user_count_badge", user_count: @user_rows_with_errors.count, active: rows_with_errors? %>
               <% end %>
@@ -47,7 +58,11 @@
         </div>
       </div>
 
-      <%= render "user_rows", user_rows: rows_with_errors? ? @user_rows_with_errors : @user_rows %>
+      <% if rows_with_errors? && @user_rows_with_errors.empty? %>
+        <%= render "user_list_uploads/no_errors_user_rows" %>
+      <% else %>
+        <%= render "user_rows", user_rows: rows_with_errors? ? @user_rows_with_errors : @user_rows %>
+      <% end %>
 
       <div class="col-md-10 sticky-footer">
         <div class="py-3 bg-white border-top d-flex justify-content-between">

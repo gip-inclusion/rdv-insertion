@@ -5,7 +5,7 @@ module Website
     def welcome
       flash[:error] = "Echec de la connexion" if request.env["omniauth.error"]
 
-      redirect_to(organisations_path) if current_agent
+      redirect_to(authenticated_root_path) if current_agent
     end
 
     def legal_notice; end

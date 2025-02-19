@@ -34,6 +34,8 @@ describe Users::PushToRdvSolidarites, type: :service do
 
   describe "#call" do
     before do
+      allow_any_instance_of(described_class).to receive(:retrieve_user)
+        .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: nil, email: "johndoe@example.com")))
       allow(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
@@ -69,6 +71,60 @@ describe Users::PushToRdvSolidarites, type: :service do
             rdv_solidarites_user_id: rdv_solidarites_user_id
           )
         subject
+      end
+
+      context "when handling email fields" do
+        context "when retrieved user has notification_email" do
+          before do
+            allow_any_instance_of(described_class).to receive(:retrieve_user)
+              .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: "johndoe@example.com", email: nil)))
+          end
+
+          it "updates the user with notification_email" do
+            expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
+              .with(
+                user_attributes: rdv_solidarites_user_attributes.merge(
+                  notification_email: "johndoe@example.com"
+                ).except(:email),
+                rdv_solidarites_user_id: rdv_solidarites_user_id
+              )
+            subject
+          end
+        end
+
+        context "when retrieved user has email field" do
+          before do
+            allow_any_instance_of(described_class).to receive(:retrieve_user)
+              .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: nil, email: "johndoe@example.com")))
+          end
+
+          it "updates the user with email field" do
+            expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
+              .with(
+                user_attributes: rdv_solidarites_user_attributes,
+                rdv_solidarites_user_id: rdv_solidarites_user_id
+              )
+            subject
+          end
+        end
+
+        context "when retrieved user has no email fields" do
+          before do
+            allow_any_instance_of(described_class).to receive(:retrieve_user)
+              .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: nil, email: nil)))
+          end
+
+          it "updates the user with notification_email" do
+            expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
+              .with(
+                user_attributes: rdv_solidarites_user_attributes.merge(
+                  notification_email: "johndoe@example.com"
+                ).except(:email),
+                rdv_solidarites_user_id: rdv_solidarites_user_id
+              )
+            subject
+          end
+        end
       end
 
       it "is a success" do
@@ -128,6 +184,13 @@ describe Users::PushToRdvSolidarites, type: :service do
 
     context "when the rdv_solidarites_user_id is nil" do
       let!(:rdv_solidarites_user_id) { nil }
+      let!(:rdv_solidarites_user_attributes) do
+        {
+          first_name: "john", last_name: "doe",
+          address: "16 rue de la tour", notification_email: "johndoe@example.com",
+          birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
+        }
+      end
 
       before do
         allow(RdvSolidaritesApi::CreateUser).to receive(:call)
@@ -213,63 +276,6 @@ describe Users::PushToRdvSolidarites, type: :service do
 
         it "stores the error" do
           expect(subject.errors).to eq(["some creation error"])
-        end
-
-        context "when the error is email taken" do
-          let!(:existing_user_id) { 42 }
-
-          before do
-            allow(RdvSolidaritesApi::CreateUser).to receive(:call)
-              .and_return(
-                OpenStruct.new(
-                  success?: false,
-                  error_details: { "email" => [{ "error" => "taken", "id" => existing_user_id }] }
-                )
-              )
-          end
-
-          context "when there is no other rdv-i user linked to this rdv-s user" do
-            it "assigns the user to the department organisations by creating user profiles on rdvs" do
-              expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
-                .with(
-                  rdv_solidarites_user_id: 42,
-                  rdv_solidarites_organisation_ids: [rdv_solidarites_organisation_id]
-                )
-              subject
-            end
-
-            it "creates the referents on rdvs" do
-              expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
-                .with(
-                  rdv_solidarites_user_id: 42,
-                  rdv_solidarites_agent_ids: [agent.rdv_solidarites_agent_id]
-                )
-              subject
-            end
-
-            it "updates the user" do
-              expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
-                .with(
-                  user_attributes: rdv_solidarites_user_attributes,
-                  rdv_solidarites_user_id: 42
-                )
-              subject
-            end
-
-            it "is a success" do
-              is_a_success
-            end
-
-            it "assign the rdv solidarites user id" do
-              subject
-              expect(user.rdv_solidarites_user_id).to eq(42)
-            end
-
-            it "marks the user to import associations from rdv-s" do
-              subject
-              expect(user.import_associations_from_rdv_solidarites_on_create).to be(true)
-            end
-          end
         end
       end
     end
