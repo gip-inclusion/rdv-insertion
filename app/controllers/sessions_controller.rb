@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
                 only: [:create]
 
   def new
-    redirect_to root_path if current_agent.present?
+    redirect_to root_path if logged_in?
   end
 
   def create
