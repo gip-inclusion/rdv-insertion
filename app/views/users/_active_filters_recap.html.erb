@@ -6,7 +6,7 @@
     <% end %>
   </div>
   <div class="active-filters-container d-flex flex-wrap">
-    <% (active_filter_list - [:search_query]).each do |filter| %>
+    <% (active_filter_list - [:search_query, :creation_date_before, :creation_date_before]).each do |filter| %>
       <% if filter == :tag_ids %>
         <% @filtered_tags.each do |tag| %>
           <span class="d-flex me-2 active-filter-badge">
