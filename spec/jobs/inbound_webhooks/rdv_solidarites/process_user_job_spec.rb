@@ -61,6 +61,48 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
       end
     end
 
+    context "when notification_email is present but email is nil" do
+      let!(:data) do
+        {
+          "id" => rdv_solidarites_user_id,
+          "first_name" => "John",
+          "last_name" => "Doe",
+          "phone_number" => "+33624242424",
+          "affiliation_number" => "CAUCSCUAHSC",
+          "email" => nil,
+          "notification_email" => "notification@example.com"
+        }.deep_symbolize_keys
+      end
+
+      it "uses notification_email as email in the upsert data" do
+        expect(UpsertRecordJob).to receive(:perform_later)
+          .with("User", hash_including(email: "notification@example.com"),
+                { last_webhook_update_received_at: timestamp })
+        subject
+      end
+
+      context "when both email and notification_email are nil" do
+        let!(:data) do
+          {
+            "id" => rdv_solidarites_user_id,
+            "first_name" => "John",
+            "last_name" => "Doe",
+            "phone_number" => "+33624242424",
+            "affiliation_number" => "CAUCSCUAHSC",
+            "email" => nil,
+            "notification_email" => nil
+          }.deep_symbolize_keys
+        end
+
+        it "removes email from the upsert data" do
+          filtered_data = data.except(:email, :notification_email)
+          expect(UpsertRecordJob).to receive(:perform_later)
+            .with("User", filtered_data, { last_webhook_update_received_at: timestamp })
+          subject
+        end
+      end
+    end
+
     context "when the user is not found" do
       let!(:user) { create(:user, rdv_solidarites_user_id: "some-id") }
 

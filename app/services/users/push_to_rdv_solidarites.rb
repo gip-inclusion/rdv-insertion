@@ -12,6 +12,27 @@ module Users
 
     private
 
+    def email_field_to_target
+      @email_field_to_target ||= begin
+        retrieved_user = retrieve_user.user
+        if retrieved_user.notification_email.present? || retrieved_user.email.blank?
+          # We use notification_email if:
+          # - it is already present in the retrieved user
+          # - or no email is present (default behavior as in creation)
+          :notification_email
+        else
+          :email
+        end
+      end
+    end
+
+    def retrieve_user
+      @retrieve_user ||= call_service!(
+        RdvSolidaritesApi::RetrieveUser,
+        rdv_solidarites_user_id: @rdv_solidarites_user_id
+      )
+    end
+
     def assign_rdv_solidarites_user_id!
       @user.rdv_solidarites_user_id = @rdv_solidarites_user_id
       save_record!(@user)
@@ -35,35 +56,8 @@ module Users
         return
       end
 
-      # If the user already exists in RDV-S, we assign the user to the org by updating him.
-      return handle_email_taken_error if email_taken_error?
-
       result.errors += create_rdv_solidarites_user.errors
       fail!
-    end
-
-    def handle_email_taken_error
-      existing_rdvi_user = User.find_by(rdv_solidarites_user_id: user_id_from_email_taken_error)
-
-      if existing_rdvi_user
-        fail!(
-          "Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: " \
-          "id #{existing_rdvi_user.id}"
-        )
-      else
-        @rdv_solidarites_user_id = user_id_from_email_taken_error
-        # since we are importing an existing user in RDV-S, we need to import its associations
-        @user.import_associations_from_rdv_solidarites_on_create = true
-        update_user_and_associations
-      end
-    end
-
-    def user_id_from_email_taken_error
-      create_rdv_solidarites_user.error_details&.dig("email")&.first&.dig("id")
-    end
-
-    def email_taken_error?
-      create_rdv_solidarites_user.error_details&.dig("email")&.any? { _1["error"] == "taken" }
     end
 
     def create_rdv_solidarites_user
@@ -100,13 +94,19 @@ module Users
     end
 
     def rdv_solidarites_user_attributes
-      user_attributes = @user.attributes
-                             .symbolize_keys
-                             .slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
-                             .transform_values(&:presence)
-                             .compact
-      user_attributes.delete(:email) if @user.conjoint?
-      user_attributes
+      attrs = @user.attributes
+                   .symbolize_keys
+                   .slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+                   .transform_values(&:presence)
+                   .compact
+
+      attrs[:notification_email] = attrs.delete(:email) if should_target_notification_email?
+
+      attrs
+    end
+
+    def should_target_notification_email?
+      @rdv_solidarites_user_id.nil? || email_field_to_target == :notification_email
     end
 
     def rdv_solidarites_organisation_ids
