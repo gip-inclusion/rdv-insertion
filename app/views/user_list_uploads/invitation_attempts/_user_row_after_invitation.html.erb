@@ -7,12 +7,18 @@
 
   <td>
     <div class="d-flex justify-content-between align-items-center">
-      <span class="badge rounded-pill <%= user_row_status_after_invitation_badge_class(user_row.after_invitation_status) %>"
-            <%= tooltip_for_invitation_errors(user_row) %>
-      >
-        <%= user_row_status_after_invitation_text(user_row.after_invitation_status) %>
-        <%= user_row_status_after_invitation_icon_for_status(user_row.after_invitation_status) %>
-      </span>
+      <% if user_row.all_invitations_failed? %>
+        <%= link_to new_user_list_upload_user_row_invitation_attempts_retry_path(user_list_upload_id: user_row.user_list_upload.id, user_row_id: user_row.id), data: { turbo_frame: "remote_modal" } do %>
+          <span class="badge rounded-pill alert-danger" <%= tooltip_for_invitation_errors(user_row) %>>
+            Erreur
+            <i class="ri-alert-line text-end"></i>
+          </span>
+        <% end %>
+      <% else %>
+        <span class="badge rounded-pill <%= user_row_status_after_invitation_badge_class(user_row.after_invitation_status) %>">
+          <%= user_row_status_after_invitation_text(user_row.after_invitation_status) %>
+        </span>
+      <% end %>
     </div>
   </td>
 </tr>

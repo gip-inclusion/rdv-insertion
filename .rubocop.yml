@@ -73,10 +73,6 @@ Metrics/BlockLength:
     - "config/environments/*"
     - "config/routes.rb"
 
-Naming/AccessorMethodName:
-  Exclude:
-    - "app/controllers/inclusion_connect_controller.rb"
-
 Layout/LineLength:
   Max: 120
 

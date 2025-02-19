@@ -115,8 +115,7 @@ describe UpsertRecord, type: :service do
     let!(:klass) { Agent }
     let!(:rdv_solidarites_agent_id) { 12 }
     let!(:agent_attributes) do
-      { id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko", email: "josiane.balasko@gmail.com",
-        inclusion_connect_open_id_sub: "1234" }
+      { id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko", email: "josiane.balasko@gmail.com" }
     end
 
     describe "#call" do
