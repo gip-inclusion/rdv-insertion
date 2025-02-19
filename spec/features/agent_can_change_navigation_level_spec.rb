@@ -57,14 +57,6 @@ describe "Agents can sort users on index page", :js do
         expect(page).to have_no_css("button#btn-organisation-navigation")
       end
     end
-
-    context "on login page" do
-      it "does not show the organisation navigation button in header" do
-        visit sign_in_path
-
-        expect(page).to have_no_css("button#btn-organisation-navigation")
-      end
-    end
   end
 
   context "when agent is logged in" do

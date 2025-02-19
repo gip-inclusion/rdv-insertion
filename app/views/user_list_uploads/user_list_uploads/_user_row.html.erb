@@ -13,13 +13,12 @@
         data-controller="user-row-cell"
         data-user-list-upload-id="<%= @user_list_upload.id %>"
         data-user-row-id="<%= user_row.id %>"
-        data-user-row-attribute="<%= attribute %>"
-        >
+        data-user-row-attribute="<%= attribute %>">
       <div class="d-flex justify-content-between align-items-center"
             id="user-row-cell-<%= user_row.id %>-<%= attribute %>"
             data-action="dblclick->user-row-cell#edit">
         <span class="<%= "text-truncate-150" if attribute.in?([:email, :affiliation_number]) %>"><%= display_attribute(user_row.user.send(attribute)) %></span>
-        <%= user_row_icon_for_attribute(user_row, attribute) %>
+        <%= render "user_cell_icon_for_attribute", user_row:, attribute: %>
       </div>
     </td>
   <% end %>

@@ -1,4 +1,4 @@
-<%= link_to sign_out_link[:url], sign_out_link[:options] do %>
+<%= link_to sign_out_path, data: { turbo: false } do %>
   <button class="btn btn-header border-light-grey w-100">
     <span class="d-none d-sm-inline">Se déconnecter</span>
     <span class="d-inline d-sm-none"><i class="ri-logout-circle-line"></i></span>

@@ -25,4 +25,8 @@ class UserListUpload::UserSaveAttempt < ApplicationRecord
   def no_organisation_to_assign?
     error_type == "no_organisation_to_assign"
   end
+
+  def error?
+    !success?
+  end
 end
