@@ -39,7 +39,7 @@
 
       <% if rows_with_errors? && @user_rows_with_invitation_errors.empty? %>
         <%= render "user_list_uploads/no_errors_user_rows" %>
-      <% elsif @user_rows.any? %>
+      <% else %>
         <%= render "user_rows_after_invitation", user_rows: rows_with_errors? ? @user_rows_with_invitation_errors : @user_rows %>
       <% end %>
 
