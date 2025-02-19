@@ -25,7 +25,6 @@ module ModalAgreementsConcern
 
   def should_accept_dpa?
     return false if current_agent.nil?
-    return false if current_organisation.nil?
     return false if agent_impersonated?
     # If params[:organisation_id] is nil, it means that
     # the agent is not actively browsing the current_organisation
