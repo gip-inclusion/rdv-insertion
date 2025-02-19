@@ -1,8 +1,16 @@
-<%= form_with url: current_url, method: :get, data: { controller: "search", turbo_permanent: true } do |f| %>
+<%= form_with url: current_url,
+              method: :get,
+              data: {
+                controller: "search",
+                turbo_permanent: true,
+                # Remove the rows_with_errors parameter to force focus of the search in the "All loaded users" tab
+                search_params_to_remove_value: ["rows_with_errors"].to_json
+              } do |f| %>
   <div class="position-relative">
     <%= f.search_field :search_query,
                         class: "form-control ms-2 pe-4",
                         placeholder: "Rechercher un usager",
+                        value: params[:search_query],
                         data: {
                           search_target: "searchInput",
                           action: "keyup->search#search input->search#search"
