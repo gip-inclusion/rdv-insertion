@@ -46,6 +46,8 @@ Rails.application.routes.draw do
                                        only: [:show]
   end
 
+  get "/organisations", to: "organisations#index", as: :authenticated_root
+
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
