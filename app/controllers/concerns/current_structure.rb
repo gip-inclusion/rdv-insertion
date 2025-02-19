@@ -53,7 +53,7 @@ module CurrentStructure
   def current_structure_id = current_organisation_id || current_department_id
 
   def current_structure
-    return if root_url?
+    return if current_url_is_root_url?
     return unless session[:department_id] || session[:organisation_id]
 
     @current_structure ||=

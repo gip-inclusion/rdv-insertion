@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
     params[:page] || 1
   end
 
-  def root_url?
+  def current_url_is_root_url?
     request.path.in?([root_path, authenticated_root_path])
   end
 
