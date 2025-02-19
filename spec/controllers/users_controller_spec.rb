@@ -1252,7 +1252,9 @@ describe UsersController do
     it "handles and single filter possibilities" do
       view_content = Rails.root.join("app/views/users/_active_filters_recap.html.erb").read
       (filter_list - [:search_query]).each do |filter|
-        expect(view_content).to include("filter == :#{filter}")
+        expect(view_content).to include("filter == :#{filter}").or(
+          include("active_filters_recap/#{filter.to_s.gsub('_before', '').gsub('_after', '')}")
+        )
       end
     end
   end
