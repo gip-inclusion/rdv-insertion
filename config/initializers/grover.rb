@@ -4,5 +4,8 @@ Grover.configure do |config|
     # print_background is mandatory to print the css background colors
     print_background: true
   }
-  config.options = default_options
+  ci_options = {
+    executable_path: "/usr/bin/chromium-browser"
+  }
+  config.options = ENV["CI"] ? default_options.merge(ci_options) : default_options
 end
