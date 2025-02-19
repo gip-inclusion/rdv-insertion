@@ -1,11 +1,10 @@
-<% params_to_remove ||= [] %>
-
 <%= form_with url: current_url,
               method: :get,
               data: {
                 controller: "search",
                 turbo_permanent: true,
-                search_params_to_remove_value: params_to_remove.to_json
+                # Remove the rows_with_errors parameter to force focus of the search in the "All loaded users" tab
+                search_params_to_remove_value: ["rows_with_errors"].to_json
               } do |f| %>
   <div class="position-relative">
     <%= f.search_field :search_query,
