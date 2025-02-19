@@ -4,8 +4,9 @@ Grover.configure do |config|
     # print_background is mandatory to print the css background colors
     print_background: true
   }
-  ci_options = {
-    executable_path: "/usr/bin/chromium-browser"
+  production_options = {
+    executable_path: "/usr/bin/chromium-browser",
+    args: ["--no-sandbox"]
   }
-  config.options = ENV["CI"] ? default_options.merge(ci_options) : default_options
+  config.options = ENV["CI"] || Rails.env.production? ? default_options.merge(production_options) : default_options
 end
