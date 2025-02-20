@@ -1,6 +1,4 @@
 spec
 /tmp/cache
-/.cache/yarn
 docs
 /node_modules/*
-!/node_modules/puppeteer
