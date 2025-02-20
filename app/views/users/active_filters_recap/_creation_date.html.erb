@@ -1,0 +1,14 @@
+<% if params[:creation_date_before].present? || params[:creation_date_after].present? %>
+  <span class="d-flex me-2 active-filter-badge">
+    <% if params[:creation_date_before].present? && params[:creation_date_after].present? %>
+      Créé entre le : <%= format_date(params[:creation_date_after].to_date) %> et le <%= format_date(params[:creation_date_before].to_date) %>
+    <% elsif params[:creation_date_before].present? %>
+      Créé avant le : <%= format_date(params[:creation_date_before].to_date) %>
+    <% elsif params[:creation_date_after].present? %>
+      Créé aprés le : <%= format_date(params[:creation_date_after].to_date) %>
+    <% end %>
+    <%= link_to structure_users_path(url_params.except(:creation_date_before, :creation_date_after)) do %>
+      <i class="ri-close-line"></i>
+    <% end %>
+  </span>
+<% end %>

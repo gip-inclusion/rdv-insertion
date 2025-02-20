@@ -1,28 +1,21 @@
 <div class="mb-1">
   <div class="w-100">
     <%= link_to(new_structure_choose_date_kind_path(url_params), data: { turbo_frame: 'remote_modal' }, class: 'btn btn-grey w-100 d-flex align-items-center justify-content-between') do %>
-      <% if params[:first_invitation_date_before] || params[:first_invitation_date_after] || params[:last_invitation_date_before] || params[:last_invitation_date_after] || params[:convocation_date_after] %>
-        <div class="invitations-date-filter-content">
-          <% if params[:first_invitation_date_after].present? %>
-            <p>Première invitation entre le <%= format_date(params[:first_invitation_date_after].to_date) %> et le <%= format_date((params[:first_invitation_date_before]&.to_date || Time.zone.now)) %></p> 
-          <% elsif params[:first_invitation_date_before].present? %>
-            <p>Première invitation avant le <%= format_date(params[:first_invitation_date_before].to_date) %></p> 
-          <% end %>
-          <% if params[:last_invitation_date_after].present? %>
-            <p>Dernière invitation entre le <%= format_date(params[:last_invitation_date_after].to_date) %> et le <%= format_date((params[:last_invitation_date_before]&.to_date || Time.zone.now)) %></p>
-          <% elsif params[:last_invitation_date_before].present? %>
-            <p>Dernière invitation avant le <%= format_date(params[:last_invitation_date_before].to_date) %></p>
-          <% end %>
-          <% if params[:convocation_date_after] %>
-            <p>Convocations entre le <%= format_date(params[:convocation_date_after].to_date) %> et le <%= format_date((params[:convocation_date_before]&.to_date || Time.zone.now)) %></p>
-          <% elsif params[:convocation_date_before] %>
-            <p>Convocations avant le <%= format_date(params[:convocation_date_before].to_date) %></p>
-          <% end %>
-        </div>
-        <span class="filter-active convocation-date-filter-active">1</span>
-        <i class="ri-pencil-fill text-dark-blue"></i>
-      <% else %>
-        <span class="w-100">Filtrer par date d'invitation ou de convocation</span>
+      <span class="w-100">Filtrer par date d'invitation ou de convocation</span>
+      <% if params[:convocation_date_after].present? || params[:convocation_date_before].present? || params[:first_invitation_date_after].present? || params[:first_invitation_date_before].present? || params[:last_invitation_date_after].present? || params[:last_invitation_date_before].present? %>
+      <span class="filter-active convocation-date-filter-active">
+        <% active_filters = 0 %>
+
+        <% active_filters += 1 if params[:convocation_date_after].present? || params[:convocation_date_before].present? %>
+        <% active_filters += 1 if params[:first_invitation_date_after].present? || params[:first_invitation_date_before].present? %>
+        <% active_filters += 1 if params[:last_invitation_date_after].present? || params[:last_invitation_date_before].present? %>
+
+        <% if active_filters > 0 %>
+          <span class="filter-active convocation-date-filter-active">
+            <%= active_filters %>
+          </span>
+        <% end %>
+      </span>
       <% end %>
     <% end %>
   </div>

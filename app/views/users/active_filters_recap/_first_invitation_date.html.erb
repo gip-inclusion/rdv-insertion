@@ -1,0 +1,14 @@
+<% if params[:first_invitation_date_before].present? || params[:first_invitation_date_after].present? %>
+  <span class="d-flex me-2 active-filter-badge">
+    <% if params[:first_invitation_date_before].present? && params[:first_invitation_date_after].present? %>
+      Première invitation envoyée entre le : <%= format_date(params[:first_invitation_date_after].to_date) %> et le <%= format_date(params[:first_invitation_date_before].to_date) %>
+    <% elsif params[:first_invitation_date_before].present? %>
+      Première invitation envoyée avant le : <%= format_date(params[:first_invitation_date_before].to_date) %>
+    <% elsif params[:first_invitation_date_after].present? %>
+      Première invitation envoyée aprés le : <%= format_date(params[:first_invitation_date_after].to_date) %>
+    <% end %>
+    <%= link_to structure_users_path(url_params.except(:first_invitation_date_before, :first_invitation_date_after)) do %>
+      <i class="ri-close-line"></i>
+    <% end %>
+  </span>
+<% end %>
