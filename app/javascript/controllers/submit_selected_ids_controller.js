@@ -1,12 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["checkbox", "submit", "formatOption"]
+  static targets = ["checkbox", "submit", "formatOption", "selectedUsersCounter"]
 
   connect() {
     if (this.hasSubmitTarget) {
       this.toggleSubmit()
     }
+    this.#updateSelectedCountText()
   }
 
   submit(event) {
@@ -42,6 +43,7 @@ export default class extends Controller {
     } else {
       this.#disableSubmit()
     }
+    this.#updateSelectedCountText()
   }
 
   disableUninvitableUsers() {
@@ -74,6 +76,21 @@ export default class extends Controller {
 
   #atLeastOneCheckboxChecked() {
     return this.checkboxTargets.filter(checkbox => checkbox.checked).length > 0
+  }
+
+  #updateSelectedCountText() {
+    const selectedCount = this.checkboxTargets.filter(checkbox => checkbox.checked).length
+
+    let textContent = ""
+    if (selectedCount === 0) {
+      textContent = "Aucun usager sélectionné"
+    } else if (selectedCount === 1) {
+      textContent = "1 usager sélectionné"
+    } else {
+      textContent = `${selectedCount} usagers sélectionnés`
+    }
+
+    this.selectedUsersCounterTarget.textContent = textContent
   }
 }
 
