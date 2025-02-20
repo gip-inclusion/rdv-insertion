@@ -11,19 +11,14 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
-  def creneau_unavailable(organisation:, grouped_invitation_params_by_category:)
-    return if organisation.email.blank?
-
+  def creneau_unavailable(organisation:, invitations_without_creneaux_by_motif_category:)
     @organisation = organisation
-    @grouped_invitation_params_by_category = grouped_invitation_params_by_category.map do |grouped_invitation_params|
-      grouped_invitation_params.merge(
-        referent_emails: Agent.where(rdv_solidarites_agent_id: grouped_invitation_params[:referent_ids] || [])
-          .pluck(:email)
-      )
-    end
+    @invitations_without_creneaux_by_motif_category = invitations_without_creneaux_by_motif_category
+
+    return if @organisation.email.blank?
 
     mail(
-      to: organisation.email,
+      to: @organisation.email,
       subject: "[Alerte créneaux] Vérifier qu'il y a suffisamment de créneaux" \
                " de libre relativement au stock d'invitations en cours",
       reply_to: "rdv-insertion@beta.gouv.fr"
@@ -43,12 +38,12 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
-  def notify_no_available_slots(organisation:, recipient:, invitation_params:)
+  def notify_no_available_slots(organisation:, invitations:, motif_category_name:, recipient:)
     @organisation = organisation
-    @invitation_params = invitation_params
-    @referent_emails = Agent
-                       .where(rdv_solidarites_agent_id: @invitation_params[:referent_ids] || [])
-                       .pluck(:email)
+    @invitations = invitations
+    @motif_category_name = motif_category_name
+    @post_codes = invitations.map(&:user_post_code).compact.uniq
+    @referent_emails = invitations.flat_map(&:referent_emails).compact.uniq
 
     mail(
       to: recipient,

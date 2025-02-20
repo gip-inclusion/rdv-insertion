@@ -1,19 +1,19 @@
 <h1>Créneaux de rendez-vous complets</h1>
 
 <p>Madame, Monsieur,</p>
-<% if @grouped_invitation_params_by_category.one? %>
+<% if @invitations_without_creneaux_by_motif_category.keys.length == 1 %>
   <p>Vous avez invité des personnes à prendre rdv sur la catégorie suivante :</p>
 <% else %>
   <p>Vous avez invité des personnes à prendre rdv sur les catégories suivantes :</p>
 <% end %>
 
-<% @grouped_invitation_params_by_category.each do |grouped_invitation_params| %>
+<% @invitations_without_creneaux_by_motif_category.each do |motif_category, invitations| %>
   <div class="margined-paragraph">
-    <p><span class="font-weight-bold"><%= grouped_invitation_params[:motif_category_name] %></span></p>
-    <p>Nombre d'invitations concernnées : <span class="font-weight-bold"><%= grouped_invitation_params[:invitations_counter] %></span></p>
-    <%= tag.p ("Les codes postaux concernés sont : #{grouped_invitation_params[:post_codes].join(", ")}.*") if grouped_invitation_params[:post_codes].present? %>
-    <%= tag.p ("Les email des référents concernés sont : #{grouped_invitation_params[:referent_emails].join(", ")}.") if grouped_invitation_params[:referent_emails].present? %>
-    <%= tag.p tag.span("*Les codes postaux n'ont de l'importance que si la sectorisation est activée.", style: "color: grey;") if grouped_invitation_params[:post_codes].present? %>
+    <p><span class="font-weight-bold"><%= motif_category.name %></span></p>
+    <p>Nombre d'invitations concernées : <span class="font-weight-bold"><%= invitations.length %></span></p>
+    <%= tag.p ("Les codes postaux concernés sont : #{invitations.map(&:user_post_code).compact.uniq.join(", ")}.*") if invitations.map(&:user_post_code).compact.any? %>
+    <%= tag.p ("Les email des référents concernés sont : #{invitations.flat_map(&:referent_emails).compact.uniq.join(", ")}.") if invitations.flat_map(&:referent_emails).compact.any? %>
+    <%= tag.p tag.span("*Les codes postaux n'ont de l'importance que si la sectorisation est activée.", style: "color: grey;") if invitations.map(&:user_post_code).compact.any? %>
   </div>
 <% end %>
 

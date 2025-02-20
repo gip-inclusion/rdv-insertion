@@ -1,18 +1,15 @@
 class NotifyUnavailableCreneauJob < ApplicationJob
-  attr_reader :organisation, :grouped_invitation_params_by_category
+  attr_reader :organisation
 
   def perform(organisation_id)
-    result =
-      Invitations::AggregateInvitationWithoutCreneauxByCategory.call(organisation_id: organisation_id)
-    return if result.grouped_invitation_params_by_category.empty?
-
-    # grouped_invitation_params_by_category = [{
-    #   motif_category_name: "RSA Orientation",
-    #   city_code: ["75001", "75002", "75003"],
-    #   referent_ids: ["1", "2", "3"]
-    # },...]
     @organisation = Organisation.find(organisation_id)
-    @grouped_invitation_params_by_category = result.grouped_invitation_params_by_category
+
+    result =
+      Invitations::AggregateInvitationWithoutCreneaux.call(organisation_id: organisation_id)
+
+    @invitations_without_creneaux = result.invitations_without_creneaux
+
+    return if @invitations_without_creneaux.empty?
 
     deliver_general_email
     deliver_per_category_email_to_notify_no_available_slots
@@ -22,50 +19,55 @@ class NotifyUnavailableCreneauJob < ApplicationJob
 
   private
 
+  def invitations_without_creneaux_by_motif_category
+    Invitation.includes(follow_up: :motif_category, user: :address_geocoding)
+              .where(id: @invitations_without_creneaux.pluck(:id))
+              .group_by(&:motif_category)
+  end
+
   def deliver_general_email
     OrganisationMailer.creneau_unavailable(
-      organisation: organisation,
-      grouped_invitation_params_by_category: grouped_invitation_params_by_category
+      organisation:, invitations_without_creneaux_by_motif_category:
     ).deliver_now
   end
 
   def deliver_per_category_email_to_notify_no_available_slots
-    grouped_invitation_params_by_category.each do |invitation_params|
+    invitations_without_creneaux_by_motif_category.each do |motif_category, invitations|
       matching_category_configuration = organisation
                                         .category_configurations
-                                        .find_by(motif_category_id: invitation_params[:motif_category_id])
+                                        .find_by(motif_category_id: motif_category.id)
 
       next unless matching_category_configuration&.notify_no_available_slots?
 
       OrganisationMailer.notify_no_available_slots(
-        organisation:,
-        recipient: matching_category_configuration.email_to_notify_no_available_slots,
-        invitation_params:
+        organisation: organisation,
+        invitations:,
+        motif_category_name: motif_category.name,
+        recipient: matching_category_configuration.email_to_notify_no_available_slots
       ).deliver_now
     end
   end
 
   def notify_on_mattermost
-    grouped_invitation_params_by_category.each do |grouped_invitation_params|
+    invitations_without_creneaux_by_motif_category.each do |motif_category, invitations|
       MattermostClient.send_to_notif_channel(formated_string_for_mattermost_message(organisation,
-                                                                                    grouped_invitation_params))
+                                                                                    motif_category,
+                                                                                    invitations))
     end
   end
 
-  def formated_string_for_mattermost_message(organisation, grouped_invitation_params)
+  def formated_string_for_mattermost_message(organisation, motif_category, invitations)
     string =
       "Créneaux indisponibles pour l'organisation #{organisation.name}" \
       " (Département: #{organisation.department.name})\n" \
-      " Motif : #{grouped_invitation_params[:motif_category_name]}\n" \
-      " Nombre d'invitations concernées : #{grouped_invitation_params[:invitations_counter]}\n"
+      " Motif : #{motif_category.name}\n" \
+      " Nombre d'invitations concernées : #{invitations.length}\n"
 
-    if grouped_invitation_params[:post_codes].present?
-      string += " Codes postaux : #{grouped_invitation_params[:post_codes].join(', ')}\n"
-    end
+    post_codes = invitations.map(&:user_post_code).compact.uniq
+    string += " Codes postaux : #{post_codes.join(', ')}\n" if post_codes.any?
 
-    if grouped_invitation_params[:referent_ids].present?
-      string += " Référents (rdvsp_ids) : #{grouped_invitation_params[:referent_ids].join(', ')}\n"
-    end
+    referent_ids = invitations.map(&:referent_ids).compact.uniq
+    string += " Référents (rdvsp_ids) : #{referent_ids.join(', ')}\n" if referent_ids.any?
 
     string += " ** L'organisation n'a pas d'email configuré et n'a pas été notifiée !**\n" if organisation.email.blank?
 
@@ -73,8 +75,6 @@ class NotifyUnavailableCreneauJob < ApplicationJob
   end
 
   def store_unavailable_creneau_log_in_db
-    counters = grouped_invitation_params_by_category.pluck(:invitations_counter)
-
-    UnavailableCreneauLog.create!(organisation:, number_of_invitations_affected: counters.sum)
+    UnavailableCreneauLog.create!(organisation:, number_of_invitations_affected: @invitations_without_creneaux.length)
   end
 end
