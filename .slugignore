@@ -3,3 +3,4 @@ spec
 /node_modules
 /.cache/yarn
 docs
+!/node_modules/puppeteer

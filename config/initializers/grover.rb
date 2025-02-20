@@ -5,7 +5,6 @@ Grover.configure do |config|
     print_background: true
   }
   production_options = {
-    executable_path: "/usr/bin/chromium-browser",
     args: ["--no-sandbox"]
   }
   config.options = ENV["CI"] || Rails.env.production? ? default_options.merge(production_options) : default_options
