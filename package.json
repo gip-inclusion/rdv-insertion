@@ -27,6 +27,7 @@
     "mobx": "^6.10.0",
     "mobx-react-lite": "^4.0.3",
     "prop-types": "^15.7.2",
+    "puppeteer": "^24.1.1",
     "qr-scanner": "^1.4.2",
     "react": "^17.0.2",
     "react_ujs": "^2.6.1",
@@ -55,11 +56,10 @@
     "eslint-plugin-react-hooks": "^4",
     "husky": "^6.0.0",
     "pinst": "^2.1.6",
-    "prettier": "^2.3.1",
-    "puppeteer": "^24.1.1"
+    "prettier": "^2.3.1"
   },
   "scripts": {
-    "postinstall": "husky install && mkdir -p puppeteer_modules && cd puppeteer_modules && yarn init -y && yarn add puppeteer@$(node -p \"require('../package.json').devDependencies.puppeteer.replace('^', '')\")",
+    "postinstall": "husky install",
     "lint": "eslint 'app/javascript/**' --quiet",
     "build": "webpack --config ./config/webpack/webpack.config.js"
   },
