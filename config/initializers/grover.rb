@@ -1,11 +1,9 @@
 Grover.configure do |config|
-  default_options = {
+  config.options = {
     format: "A4",
     # print_background is mandatory to print the css background colors
-    print_background: true
-  }
-  production_options = {
+    print_background: true,
+    root_path: Rails.root.join("puppeteer_modules").to_s,
     args: ["--no-sandbox"]
   }
-  config.options = ENV["CI"] || Rails.env.production? ? default_options.merge(production_options) : default_options
 end

@@ -35,6 +35,7 @@
 /public/packs
 /public/packs-test
 /node_modules
+/puppeteer_modules
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity

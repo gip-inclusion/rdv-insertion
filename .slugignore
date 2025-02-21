@@ -1,9 +1,5 @@
 spec
-docs
 /tmp/cache
+/node_modules
 /.cache/yarn
-
-/node_modules/@*
-/node_modules/[a-o]*
-/node_modules/[q-z]*
-# Hack pour exclure tous les node_modules par patterns sauf puppeteer (commence par un p) et ses dépendances
+docs
