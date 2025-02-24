@@ -14,7 +14,7 @@
              user_referent_assignation_path(user_id: user.id, agent_id: referent.id),
               data: {
                 turbo_confirm: "Retirer l'agent référent de cet usager ?",
-                turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer l'agent référent <b>#{referent}</b> de l'usager <b>#{user}</b> ?",
+                turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer l'agent référent <b>#{h(referent)}</b> de l'usager <b>#{h(user)}</b> ?",
                 turbo_confirm_text_action: "- Retirer",
                 turbo_method: :delete,
               },

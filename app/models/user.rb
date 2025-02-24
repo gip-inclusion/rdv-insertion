@@ -83,6 +83,9 @@ class User < ApplicationRecord
 
   squishes :first_name, :last_name, :department_internal_id, :affiliation_number
 
+  sanitize :first_name, :last_name, :email, :phone_number, :address,
+           :birth_name, :nir, :france_travail_id, :title, :role, :affiliation_number
+
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
   end

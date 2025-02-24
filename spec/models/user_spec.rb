@@ -1,4 +1,14 @@
 describe User do
+  describe "sanitization" do
+    it "sanitizes attributes" do
+      user = build(:user, first_name: "<img src=1 onerror=alert(1)> Michael")
+
+      user.save
+
+      expect(user.first_name).to eq("Michael")
+    end
+  end
+
   describe "rdv_solidarites_user_id uniqueness validation" do
     context "no collision" do
       let(:user) { build(:user, rdv_solidarites_user_id: 1) }

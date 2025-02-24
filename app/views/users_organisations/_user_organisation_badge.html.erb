@@ -12,7 +12,7 @@
       if user.organisations.count > 1
         data = {
           turbo_confirm: "Retirer l'usager de cette organisation ?",
-          turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer l'usager <b>#{user}</b> de l'organisation <b>#{organisation.name}</b> ?",
+          turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer l'usager <b>#{h(user)}</b> de l'organisation <b>#{h(organisation.name)}</b> ?",
           turbo_confirm_text_action: "- Retirer",
           turbo_method: :delete,
         }

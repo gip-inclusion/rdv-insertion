@@ -23,6 +23,8 @@ class Department < ApplicationRecord
 
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
 
+  sanitize :name
+
   def name_with_region
     "#{name}, #{region}"
   end
