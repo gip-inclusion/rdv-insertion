@@ -5,4 +5,4 @@ fr:
     attributes:
       blocked_invitations_counter:
         number_of_invitations_affected: Nombre d'invitations impactées
-        created_at: Détecté le
+        created_at: Compté le

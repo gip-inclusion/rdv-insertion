@@ -15,6 +15,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     deliver_per_category_email_to_notify_no_available_slots
     notify_on_mattermost
     create_blocked_invitations_counter
+    create_blocked_user
   end
 
   private
@@ -90,5 +91,11 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     BlockedInvitationsCounter.create!(
       organisation:, number_of_invitations_affected: @invitations_without_creneaux.length
     )
+  end
+
+  def create_blocked_user
+    @invitations_without_creneaux.map(&:user_id).uniq.each do |user_id|
+      BlockedUser.create!(user_id:) unless BlockedUser.already_counted?(user_id:)
+    end
   end
 end

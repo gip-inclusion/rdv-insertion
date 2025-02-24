@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       post :duplicate, on: :member
     end
     resources :blocked_invitations_counters, only: [:index]
+    resources :blocked_users, only: [:index]
 
     root to: "agents#index"
   end

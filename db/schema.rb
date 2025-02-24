@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_24_134608) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_24_143039) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -115,6 +115,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_24_134608) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organisation_id"], name: "index_blocked_invitations_counters_on_organisation_id"
+  end
+
+  create_table "blocked_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_blocked_users_on_created_at", order: :desc
+    t.index ["user_id"], name: "index_blocked_users_on_user_id"
   end
 
   create_table "category_configurations", force: :cascade do |t|
@@ -645,6 +653,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_24_134608) do
   add_foreign_key "archives", "organisations"
   add_foreign_key "archives", "users"
   add_foreign_key "blocked_invitations_counters", "organisations"
+  add_foreign_key "blocked_users", "users"
   add_foreign_key "category_configurations", "file_configurations"
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
