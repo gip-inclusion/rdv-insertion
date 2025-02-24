@@ -449,7 +449,7 @@ tables:
       - last_webhook_update_received_at
       - archived_at
 
-  - table_name: unavailable_creneau_logs
+  - table_name: blocked_invitations_counters
     anonymized_column_names: []
     non_anonymized_column_names:
       - number_of_invitations_affected

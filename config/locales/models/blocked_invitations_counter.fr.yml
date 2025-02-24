@@ -1,8 +1,8 @@
 fr:
   activerecord:
     models:
-      unavailable_creneau_log: Créneaux Indisponibles
+      blocked_invitations_counter: Compteur d'invitations sans créneaux
     attributes:
-      unavailable_creneau_log:
+      blocked_invitations_counter:
         number_of_invitations_affected: Nombre d'invitations impactées
         created_at: Détecté le

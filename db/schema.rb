@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_24_134608) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -107,6 +107,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
     t.bigint "organisation_id", null: false
     t.index ["organisation_id"], name: "index_archives_on_organisation_id"
     t.index ["user_id"], name: "index_archives_on_user_id"
+  end
+
+  create_table "blocked_invitations_counters", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.integer "number_of_invitations_affected"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_blocked_invitations_counters_on_organisation_id"
   end
 
   create_table "category_configurations", force: :cascade do |t|
@@ -494,14 +502,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
     t.text "punishable_warning", default: "", null: false
   end
 
-  create_table "unavailable_creneau_logs", force: :cascade do |t|
-    t.bigint "organisation_id", null: false
-    t.integer "number_of_invitations_affected"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["organisation_id"], name: "index_unavailable_creneau_logs_on_organisation_id"
-  end
-
   create_table "user_list_upload_invitation_attempts", force: :cascade do |t|
     t.boolean "success"
     t.bigint "invitation_id"
@@ -644,6 +644,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "organisations"
   add_foreign_key "archives", "users"
+  add_foreign_key "blocked_invitations_counters", "organisations"
   add_foreign_key "category_configurations", "file_configurations"
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
@@ -678,7 +679,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
-  add_foreign_key "unavailable_creneau_logs", "organisations"
   add_foreign_key "user_list_upload_invitation_attempts", "invitations"
   add_foreign_key "user_list_upload_invitation_attempts", "user_list_upload_user_rows", column: "user_row_id"
   add_foreign_key "user_list_upload_user_rows", "user_list_uploads"

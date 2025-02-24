@@ -1,4 +1,4 @@
-class UnavailableCreneauLog < ApplicationRecord
+class BlockedInvitationsCounter < ApplicationRecord
   belongs_to :organisation
 
   scope :grouped_by_day, lambda { |starts_at, ends_at|

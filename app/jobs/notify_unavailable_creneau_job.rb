@@ -14,7 +14,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     deliver_general_email
     deliver_per_category_email_to_notify_no_available_slots
     notify_on_mattermost
-    store_unavailable_creneau_log_in_db
+    create_blocked_invitations_counter
   end
 
   private
@@ -86,7 +86,9 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     string
   end
 
-  def store_unavailable_creneau_log_in_db
-    UnavailableCreneauLog.create!(organisation:, number_of_invitations_affected: @invitations_without_creneaux.length)
+  def create_blocked_invitations_counter
+    BlockedInvitationsCounter.create!(
+      organisation:, number_of_invitations_affected: @invitations_without_creneaux.length
+    )
   end
 end
