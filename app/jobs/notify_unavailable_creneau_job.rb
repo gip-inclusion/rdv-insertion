@@ -26,11 +26,17 @@ class NotifyUnavailableCreneauJob < ApplicationJob
   end
 
   def deliver_general_email
+    cache_key = "creneau_unavailable_email_#{organisation.id}_#{Date.current}"
+    return if Rails.cache.exist?(cache_key)
+
     OrganisationMailer.creneau_unavailable(
       organisation:, invitations_without_creneaux_by_motif_category:
     ).deliver_now
+
+    Rails.cache.write(cache_key, "email_sent", expires_in: 12.hours)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def deliver_per_category_email_to_notify_no_available_slots
     invitations_without_creneaux_by_motif_category.each do |motif_category, invitations|
       matching_category_configuration = organisation
@@ -39,14 +45,20 @@ class NotifyUnavailableCreneauJob < ApplicationJob
 
       next unless matching_category_configuration&.notify_no_available_slots?
 
+      cache_key = "no_available_slots_email_#{organisation.id}_#{Date.current}_#{motif_category.id}"
+      next if Rails.cache.exist?(cache_key)
+
       OrganisationMailer.notify_no_available_slots(
         organisation: organisation,
         invitations:,
         motif_category_name: motif_category.name,
         recipient: matching_category_configuration.email_to_notify_no_available_slots
       ).deliver_now
+
+      Rails.cache.write(cache_key, "email_sent", expires_in: 12.hours)
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def notify_on_mattermost
     invitations_without_creneaux_by_motif_category.each do |motif_category, invitations|
