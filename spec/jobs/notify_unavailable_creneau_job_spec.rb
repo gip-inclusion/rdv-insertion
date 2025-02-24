@@ -124,9 +124,40 @@ describe NotifyUnavailableCreneauJob do
     subject
   end
 
-  it "stores the log in the db" do
+  it "stores the invitations count in db" do
     expect { subject }.to change(BlockedInvitationsCounter, :count).by(1)
     expect(BlockedInvitationsCounter.last.number_of_invitations_affected).to eq(3)
     expect(BlockedInvitationsCounter.last.organisation).to eq(organisation)
+  end
+
+  it "stores the blocked users in db" do
+    expect { subject }.to change(BlockedUser, :count).by(3)
+    expect(BlockedUser.pluck(:user_id)).to contain_exactly(
+      invitation_rsa_orientation1.user_id,
+      invitation_rsa_orientation2.user_id,
+      invitation_rsa_accompagnement.user_id
+    )
+  end
+
+  context "when a user is already counted" do
+    context "when it is less than 30 days ago" do
+      before do
+        create(:blocked_user, user: invitation_rsa_orientation1.user, created_at: 29.days.ago)
+      end
+
+      it "does not count the user again" do
+        expect { subject }.to change(BlockedUser, :count).by(2)
+      end
+    end
+
+    context "when it is more than 30 days ago" do
+      before do
+        create(:blocked_user, user: invitation_rsa_orientation1.user, created_at: 31.days.ago)
+      end
+
+      it "counts the user again" do
+        expect { subject }.to change(BlockedUser, :count).by(3)
+      end
+    end
   end
 end
