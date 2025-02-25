@@ -171,7 +171,7 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
 - `email`: STRING (optionnel) : L'email e l'usager. S'il n'est pas présent l'invitation par email ne sera pas envoyée.
 - `phone_number`: STRING (optionnel) : Le numéro de téléphone de l'usager. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.
 - `birth_date`: STRING (optionnel) : Date de naissance de l'usager au format DD/MM/YYYY
-- `nir` (optionnel) : NIR
+- `nir` (optionnel) : NIR, Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée. Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée.
 - `france_travail_id` (optionnel) : numéro d'identification France Travail
 - `rights_opening_date`: STRING (optionnel): Si l'usager est bénéficiaire du RSA, c'est la date de réception du 1er flux bénéficiaire quotidien qui montre que l'usager est un nouvel entrant). Au format DD/MM/YYYY.
 - `address`: STRING (optionnel) : L'addresse de l'usager. Cette addresse comprend le code postal et la ville.
