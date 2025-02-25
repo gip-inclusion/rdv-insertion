@@ -1,4 +1,4 @@
-class NotifyUnavailableCreneauJob < ApplicationJob
+class Creneaux::RetrieveAndNotifyUnavailableCreneauxJob < ApplicationJob
   attr_reader :organisation
 
   def perform(organisation_id)

@@ -1,4 +1,4 @@
-describe NotifyUnavailableCreneauJob do
+describe Creneaux::RetrieveAndNotifyUnavailableCreneauxJob do
   subject do
     described_class.new.perform(organisation_id)
   end
