@@ -1,6 +1,6 @@
 module SuperAdmins
   class BlockedInvitationsCountersController < SuperAdmins::ApplicationController
-    before_action :set_starts_at, :set_ends_at, :set_blocked_invitations_counters_grouped_by_day
+    before_action :set_starts_at, :set_ends_at, :set_blocked_invitations_counters_grouped_by_day, only: :index
 
     def scoped_resource
       super.order(created_at: :desc)
