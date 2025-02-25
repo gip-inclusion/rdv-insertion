@@ -65,6 +65,13 @@ tables:
       - user_id
       - department_id
 
+  - table_name: creneau_availabilities
+    non_anonymized_column_names:
+      - number_of_creneaux_available
+      - category_configuration
+      - updated_at
+      - created_at
+
   - table_name: category_configurations
     anonymized_column_names:
       - template_rdv_title_override
