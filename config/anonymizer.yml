@@ -546,3 +546,9 @@ tables:
       - format
       - internal_error_message
       - service_errors
+  - table_name: blocked_users
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - user_id
+      - created_at
+      - updated_at
