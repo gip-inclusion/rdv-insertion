@@ -1,4 +1,3 @@
-# rubocop:disable Rails/LexicallyScopedActionFilter
 module SuperAdmins
   class OrganisationsController < SuperAdmins::ApplicationController
     before_action :set_starts_at, :set_ends_at, :set_blocked_invitations_counters_grouped_by_day, only: :show
@@ -88,4 +87,3 @@ module SuperAdmins
     # end
   end
 end
-# rubocop:enable Rails/LexicallyScopedActionFilter

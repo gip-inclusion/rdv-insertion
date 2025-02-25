@@ -16,9 +16,4 @@ class BlockedUserDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = [].freeze
 
   FORM_ATTRIBUTES = [].freeze
-
-  def resource_name
-    puts "DEBUG: resource_name method was called!"
-    return "Blocked Users"
-  end
 end
