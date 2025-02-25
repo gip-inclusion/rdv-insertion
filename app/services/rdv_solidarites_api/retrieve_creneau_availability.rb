@@ -1,12 +1,13 @@
 module RdvSolidaritesApi
   class RetrieveCreneauAvailability < Base
-    def initialize(link_params:)
-      @link_params = link_params
+    def initialize(link_params:, extra: {})
+      @link_params = link_params.merge(extra)
     end
 
     def call
       request!
       result.creneau_availability = rdv_solidarites_response_body["creneau_availability"]
+      result.creneau_availability_count = rdv_solidarites_response_body["creneau_availability_count"]
     end
 
     private
