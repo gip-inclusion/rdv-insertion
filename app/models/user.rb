@@ -69,7 +69,7 @@ class User < ApplicationRecord
   delegate :name, :number, to: :department, prefix: true
 
   after_commit :import_associations_from_rdv_solidarites, on: :create,
-                                                          if: :import_associations_from_rdv_solidarites_on_create
+                                                          if: :imported_from_rdv_solidarites?
 
   enum :role, { demandeur: "demandeur", conjoint: "conjoint" }
   enum :title, { monsieur: "monsieur", madame: "madame" }
