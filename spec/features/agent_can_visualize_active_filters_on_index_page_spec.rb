@@ -26,7 +26,7 @@ describe "Agents can visualize active filters on index page", :js do
   before do
     setup_agent_session(agent)
     visit organisation_users_path(
-      organisation, 
+      organisation,
       orientation_type: "Sociale",
       status: "rdv_seen",
       search_query: "coucou",
