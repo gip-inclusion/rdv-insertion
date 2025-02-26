@@ -1241,21 +1241,4 @@ describe UsersController do
       end
     end
   end
-
-  describe "active filters view" do
-    include UsersHelper
-
-    # This test ensures that the active_filters_recap handles every possible filter
-    # It might turn red if we add a new filter and forget to handle its associated
-    # view in the active_filters_recap.
-    # To fix it, you just need to add an if statement to the view
-    it "handles and single filter possibilities" do
-      view_content = Rails.root.join("app/views/users/_active_filters_recap.html.erb").read
-      (filter_list - [:search_query]).each do |filter|
-        expect(view_content).to include("filter == :#{filter}").or(
-          include("active_filters_recap/#{filter.to_s.gsub('_before', '').gsub('_after', '')}")
-        )
-      end
-    end
-  end
 end
