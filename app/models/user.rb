@@ -20,6 +20,7 @@ class User < ApplicationRecord
   include User::BirthDateValidation
   include User::AffiliationNumber
   include User::Referents
+  include User::Tags
   include User::CreationOrigin
   include User::Geocodable
 

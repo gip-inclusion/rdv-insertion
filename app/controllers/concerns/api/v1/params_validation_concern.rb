@@ -18,8 +18,9 @@ module Api
 
       def validate_user_params
         @params_validation_errors = []
-        validate_user_attributes(user_attributes.except(:referents_to_add))
+        validate_user_attributes(user_attributes.except(:referents_to_add, :tags_to_add))
         Array(user_attributes[:referents_to_add]).each { validate_referent_exists(_1[:email]) }
+        Array(user_attributes[:tags_to_add]).each { validate_tag_exists(_1[:value]) }
 
         return if @params_validation_errors.empty?
 
@@ -36,8 +37,9 @@ module Api
 
       def validate_users_attributes
         users_attributes.each_with_index do |user_attributes, idx|
-          validate_user_attributes(user_attributes.except(:invitation, :referents_to_add), idx)
+          validate_user_attributes(user_attributes.except(:invitation, :referents_to_add, :tags_to_add), idx)
           Array(user_attributes[:referents_to_add]).each { validate_referent_exists(_1[:email], idx) }
+          Array(user_attributes[:tags_to_add]).each { validate_tag_exists(_1[:value], idx) }
         end
       end
 
@@ -47,6 +49,15 @@ module Api
         @params_validation_errors << {
           error_details: "Assignation du référent impossible car aucun agent n'a été retrouvé " \
                          "avec l'adresse #{referent_email} au sein de l'organisation #{@organisation.name}. "
+        }.merge(idx.present? ? { index: idx } : {})
+      end
+
+      def validate_tag_exists(tag_value, idx = nil)
+        return if @organisation.tags.find_by(value: tag_value)
+
+        @params_validation_errors << {
+          error_details: "Assignation du tag impossible car aucun tag n'a été trouvé " \
+                         "avec la valeur #{tag_value} au sein de l'organisation #{@organisation.name}. "
         }.merge(idx.present? ? { index: idx } : {})
       end
 

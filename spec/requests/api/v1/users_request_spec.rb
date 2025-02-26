@@ -44,6 +44,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
           nir: generate_random_nir,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
+          ],
+          tags_to_add: [
+            { value: "A relancer" }
           ]
         }
       end
@@ -75,7 +78,11 @@ describe "Users API", swagger_doc: "v1/api.json" do
           nir: generate_random_nir,
           invitation: {
             motif_category: { name: "RSA orientation" }
-          }
+          },
+          tags_to_add: [
+            { value: "A relancer" },
+            { value: "Prioritaire" }
+          ]
         }
       end
 
@@ -103,6 +110,11 @@ describe "Users API", swagger_doc: "v1/api.json" do
           created_from_structure_id: organisation.id
         }
       end
+
+      let!(:tag_a_relancer) { create(:tag, value: "A relancer") }
+      let!(:tag_prioritaire) { create(:tag, value: "Prioritaire") }
+      let!(:tag_organisation_a_relancer) { create(:tag_organisation, tag: tag_a_relancer, organisation: organisation) }
+      let!(:tag_organisation_prio) { create(:tag_organisation, tag: tag_prioritaire, organisation: organisation) }
 
       before { allow(CreateAndInviteUserJob).to receive(:perform_later) }
 
@@ -168,6 +180,16 @@ describe "Users API", swagger_doc: "v1/api.json" do
       ) do
         before do
           users_params[:users][0][:referents_to_add] = [{ email: "agentnontrouve@nomdedomaine.fr" }]
+        end
+      end
+
+      it_behaves_like(
+        "an endpoint that returns 422 - unprocessable_entity",
+        "quand la valeur du tag ne correspond à aucun tag enregistré dans l'organisation",
+        true
+      ) do
+        before do
+          users_params[:users][0][:tags_to_add] = [{ value: "TagInexistant" }]
         end
       end
 
@@ -241,6 +263,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
           nir: generate_random_nir,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
+          ],
+          tags_to_add: [
+            { value: "A relancer" }
           ]
         }
       end
@@ -285,6 +310,11 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:email_invitation) { create(:invitation, user:, **email_attributes) }
       let!(:sms_invitation) { create(:invitation, user:, **sms_attributes) }
 
+      let!(:tag_a_relancer) { create(:tag, value: "A relancer") }
+      let!(:tag_prioritaire) { create(:tag, value: "Prioritaire") }
+      let!(:tag_organisation_a_relancer) { create(:tag_organisation, tag: tag_a_relancer, organisation: organisation) }
+      let!(:tag_organisation_prio) { create(:tag_organisation, tag: tag_prioritaire, organisation: organisation) }
+
       before do
         allow(Users::Upsert).to receive(:call)
           .with(user_attributes: user_attributes, organisation:)
@@ -300,6 +330,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
             user:, organisations: [organisation], motif_category_attributes:,
             invitation_attributes: email_attributes
           ).and_return(OpenStruct.new(success?: true, invitation: email_invitation))
+
+        allow(user).to receive(:tags).and_return([tag_a_relancer])
       end
 
       with_authentication
@@ -309,7 +341,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
                properties: {
                  success: { type: "boolean" },
                  user: {
-                   "$ref" => "#/components/schemas/user_with_referents"
+                   "$ref" => "#/components/schemas/user_with_tags_and_referents"
                  },
                  invitations: {
                    type: "array",
@@ -318,7 +350,13 @@ describe "Users API", swagger_doc: "v1/api.json" do
                },
                required: %w[success user invitations]
 
-        run_test!
+        run_test! do
+          expect(parsed_response_body["success"]).to eq(true)
+
+          expect(parsed_response_body["user"]["tags"]).to include(
+            hash_including("value" => "A relancer")
+          )
+        end
       end
 
       # rubocop:disable RSpec/EmptyExampleGroup
@@ -390,6 +428,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
         true
       ) do
         before { user_params[:user][:referents_to_add] = [{ email: "agentnontrouve@nomdedomaine.fr" }] }
+      end
+
+      it_behaves_like(
+        "an endpoint that returns 422 - unprocessable_entity",
+        "quand la valeur du tag ne correspond à aucun tag enregistré dans l'organisation",
+        true
+      ) do
+        before { user_params[:user][:tags_to_add] = [{ value: "TagInexistant" }] }
       end
     end
   end

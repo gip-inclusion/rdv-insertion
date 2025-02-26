@@ -185,6 +185,9 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
 - `referents_to_add`: ARRAY(optionnel):
   - OBJECT:
     - `email` : STRING: email du referent à ajouter à l'usager. Si l'email ne correspond à aucun agent de l'organisation la requête échoue.
+- `tags_to_add`: ARRAY(optionnel):
+  - OBJECT:
+    - `value` : STRING: nom du tag à ajouter à l'usager. Le tag doit exister au préalable dans l'organisation sinon la requête échoue.
 
 ## Idempotence
 

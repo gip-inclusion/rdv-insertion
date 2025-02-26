@@ -398,6 +398,44 @@ describe User do
     end
   end
 
+  describe "#tags_to_add=" do
+    subject { user.save }
+
+    let!(:user) { build(:user, organisations: [organisation]) }
+    let!(:organisation) { create(:organisation) }
+    let!(:tag) { create(:tag, value: "A relancer") }
+    let!(:other_tag) { create(:tag, value: "Prioritaire") }
+
+    before do
+      create(:tag_organisation, tag: tag, organisation: organisation)
+      create(:tag_organisation, tag: other_tag, organisation: organisation)
+    end
+
+    it "assigns the tags" do
+      user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+      expect { subject }.to change(TagUser, :count).by(2)
+      expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
+    end
+
+    context "when the value does not match an existing tag" do
+      it "does not assign the tag" do
+        user.tags_to_add = [{ value: "DoesNotExist" }]
+        expect { subject }.not_to change(TagUser, :count)
+        expect(user.reload.tags).to eq([])
+      end
+    end
+
+    context "when the tag is already assigned" do
+      let!(:user) { create(:user, organisations: [organisation], tags: [tag]) }
+
+      it "does not reassign the assigned tag" do
+        user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+        expect { subject }.to change(TagUser, :count).by(1)
+        expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
+      end
+    end
+  end
+
   describe "#address_department" do
     subject { user.address_department }
 
