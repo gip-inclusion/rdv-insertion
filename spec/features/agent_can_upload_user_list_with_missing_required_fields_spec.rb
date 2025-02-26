@@ -41,10 +41,16 @@ describe "Agents upload users with missing required fields", :js do
 
     expect(page).to have_content("Usagers avec erreurs 1")
 
+    expect(page).to have_css("[data-user-row-attribute='title'].alert-danger")
     title_cell = find("[data-user-row-attribute='title'].alert-danger")
-    title_cell.find("i.ri-alert-line")
 
+    expect(title_cell).to have_css("i.ri-alert-line")
+
+    expect(page).to have_css("tr", text: "Virginie")
     error_row = find("tr", text: "Virginie")
-    within(error_row) { find("[data-user-row-attribute='title'] i.ri-alert-line") }
+
+    within(error_row) do
+      expect(page).to have_css("[data-user-row-attribute='title'] i.ri-alert-line")
+    end
   end
 end
