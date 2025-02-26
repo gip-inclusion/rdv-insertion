@@ -49,7 +49,7 @@ describe "Agents can visualize active filters on index page", :js do
     expect(page).to have_content("correspondant à votre recherche \"coucou\"")
     expect(page).to have_content("Suivi par #{agent}")
     expect(page).to have_content("Convoqué entre le : 03/05/2025 et le 07/05/2025")
-    expect(page).to hace_content("Créé entre le : 05/05/2025 et le 07/05/2025")
+    expect(page).to have_content("Créé entre le : 05/05/2025 et le 07/05/2025")
     expect(page).to have_content("Dernière invitation envoyée entre le : 03/05/2025 et le 05/05/2025")
     expect(page).to have_content("Première invitation envoyée entre le : 03/05/2025 et le 05/05/2025")
   end
