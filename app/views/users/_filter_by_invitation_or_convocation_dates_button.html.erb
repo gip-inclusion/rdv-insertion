@@ -4,15 +4,9 @@
       <span class="w-100">Filtrer par date d'invitation ou de convocation</span>
       <% if params[:convocation_date_after].present? || params[:convocation_date_before].present? || params[:first_invitation_date_after].present? || params[:first_invitation_date_before].present? || params[:last_invitation_date_after].present? || params[:last_invitation_date_before].present? %>
       <span class="filter-active convocation-date-filter-active">
-        <% active_filters = 0 %>
-
-        <% active_filters += 1 if params[:convocation_date_after].present? || params[:convocation_date_before].present? %>
-        <% active_filters += 1 if params[:first_invitation_date_after].present? || params[:first_invitation_date_before].present? %>
-        <% active_filters += 1 if params[:last_invitation_date_after].present? || params[:last_invitation_date_before].present? %>
-
-        <% if active_filters > 0 %>
+        <% if invitation_or_convocation_active_filters_count > 0 %>
           <span class="filter-active convocation-date-filter-active">
-            <%= active_filters %>
+            <%= invitation_or_convocation_active_filters_count %>
           </span>
         <% end %>
       </span>
