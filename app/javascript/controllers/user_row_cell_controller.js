@@ -6,6 +6,12 @@ export default class extends Controller {
   }
 
   async edit() {
+    const nonEditableAttributes = ["post_code"];
+    const attribute = this.element.dataset.userRowAttribute;
+    if (nonEditableAttributes.includes(attribute)) {
+      return;
+    }
+
     const { userListUploadId, userRowId, userRowAttribute } = this.element.dataset;
 
     const response = await fetch(`/user_list_uploads/${userListUploadId}/user_rows/${userRowId}/user_row_cells/edit?attribute=${userRowAttribute}`);
@@ -13,7 +19,7 @@ export default class extends Controller {
     if (response.ok) {
       window.Turbo.renderStreamMessage(html);
 
-      // We're removing the padding on the parent element to ensure 
+      // We're removing the padding on the parent element to ensure
       // that the input takes the whole space available.
       // Padding is automatically removed when frame re-renders
       this.element.style.padding = "0px"
