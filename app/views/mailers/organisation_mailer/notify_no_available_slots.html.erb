@@ -4,11 +4,11 @@
 <p>Vous avez invité des personnes à prendre rdv sur la catégorie suivante :</p>
 
 <div class="margined-paragraph">
-  <p><span class="font-weight-bold"><%= @invitation_params[:motif_category_name] %></span></p>
-  <p>Nombre d'invitations concernées : <span class="font-weight-bold"><%= @invitation_params[:invitations_counter] %></span></p>
-  <%= tag.p ("Les codes postaux concernés sont : #{@invitation_params[:zip_codes].join(", ")}.*") if @invitation_params[:zip_codes].present? %>
+  <p><span class="font-weight-bold"><%= @motif_category_name %></span></p>
+  <p>Nombre d'invitations concernées : <span class="font-weight-bold"><%= @invitations.length %></span></p>
+  <%= tag.p ("Les codes postaux concernés sont : #{@post_codes.join(", ")}.*") if @post_codes.any? %>
   <%= tag.p ("Les email des référents concernés sont : #{@referent_emails.join(", ")}.") if @referent_emails.any? %>
-  <%= tag.p tag.span("*Les codes postaux n'ont de l'importance que si la sectorisation est activée.", style: "color: grey;") if @invitation_params[:zip_codes].present? %>
+  <%= tag.p tag.span("*Les codes postaux n'ont de l'importance que si la sectorisation est activée.", style: "color: grey;") if @post_codes.any? %>
 </div>
 
 <p>Les créneaux que vous aviez ouverts dans l'organisation <span class="font-weight-bold"><%= @organisation.name %></span> sont dorénavant complets.</p>
