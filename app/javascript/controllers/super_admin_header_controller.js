@@ -1,27 +1,22 @@
 import { Controller } from "@hotwired/stimulus";
+import Cookies from "js-cookie";
 
 export default class extends Controller {
-  initialize() {
-    if (localStorage.getItem("super-admin-header-closed") === "true")
-      this.hide()
-    else
-      this.show();
-  }
-
   toggle() {
-    if (this.element.classList.contains("hidden"))
+    if (this.element.classList.contains("hidden")) {
       this.show()
-    else
+    } else {
       this.hide();
+    }
   }
 
   show() {
     this.element.classList.remove("hidden");
-    localStorage.setItem("super-admin-header-closed", "false");
+    Cookies.set("super_admin_header_closed", "false", { path: "/", expires: 365 });
   }
 
   hide() {
     this.element.classList.add("hidden");
-    localStorage.setItem("super-admin-header-closed", "true");
+    Cookies.set("super_admin_header_closed", "true", { path: "/", expires: 365 });
   }
 }
