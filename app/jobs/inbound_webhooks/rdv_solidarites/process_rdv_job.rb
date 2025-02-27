@@ -129,7 +129,6 @@ module InboundWebhooks
             created_through: "rdv_solidarites_webhook",
             created_from_structure: organisation,
             organisations: [organisation],
-            import_associations_from_rdv_solidarites_on_create: true,
             **rdv_solidarites_user.to_rdvi_attributes.slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES).compact_blank
           )
         end

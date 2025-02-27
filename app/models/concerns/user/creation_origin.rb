@@ -21,7 +21,7 @@ module User::CreationOrigin
     scope :created_through_rdv_solidarites, -> { where(created_through: "rdv_solidarites_webhook") }
   end
 
-  def created_through_rdv_solidarites? = created_through_rdv_solidarites_webhook?
+  def imported_from_rdv_solidarites? = created_through_rdv_solidarites_webhook?
 
   def created_through_rdv_insertion? = !created_through_rdv_solidarites?
 end
