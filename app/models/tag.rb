@@ -7,6 +7,8 @@ class Tag < ApplicationRecord
 
   validates :value, presence: true
 
+  sanitize :value
+
   def to_s
     value
   end

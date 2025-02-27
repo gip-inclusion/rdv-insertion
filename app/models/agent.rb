@@ -29,6 +29,8 @@ class Agent < ApplicationRecord
   scope :super_admins, -> { where(super_admin: true) }
   scope :with_last_name, -> { where.not(last_name: nil) }
 
+  sanitize :email, :first_name, :last_name
+
   before_create :generate_crisp_token
 
   def delete_organisation(organisation)
