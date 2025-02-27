@@ -32,11 +32,11 @@ describe "Agents upload users with missing required fields", :js do
     expect(page).to have_content("Choisissez un fichier usagers à charger")
     attach_file(
       "user_list_upload_file",
-      Rails.root.join("spec/fixtures/fichier_usager_sans_titre.xlsx"),
+      Rails.root.join("spec/fixtures/fichier_usager_sans_civilite.xlsx"),
       make_visible: true
     )
 
-    expect(page).to have_content("fichier_usager_sans_titre.xlsx")
+    expect(page).to have_content("fichier_usager_sans_civilite.xlsx")
     click_button("Charger les données usagers")
 
     expect(page).to have_content("Usagers avec erreurs 1")
