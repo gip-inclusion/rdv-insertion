@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_27_134523) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -136,6 +136,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
     t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
   end
 
+  create_table "creneau_availabilities", force: :cascade do |t|
+    t.integer "number_of_creneaux_available"
+    t.bigint "category_configuration_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_configuration_id"], name: "index_creneau_availabilities_on_category_configuration_id"
+  end
+
   create_table "csv_exports", force: :cascade do |t|
     t.bigint "agent_id", null: false
     t.string "structure_type", null: false
@@ -165,9 +173,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
 
   create_table "dpa_agreements", force: :cascade do |t|
     t.bigint "organisation_id", null: false
-    t.bigint "agent_id", null: false
+    t.bigint "agent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "agent_email"
+    t.string "agent_full_name"
     t.index ["agent_id"], name: "index_dpa_agreements_on_agent_id"
     t.index ["organisation_id"], name: "index_dpa_agreements_on_organisation_id"
   end
@@ -647,6 +657,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
   add_foreign_key "category_configurations", "file_configurations"
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
+  add_foreign_key "creneau_availabilities", "category_configurations"
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "dpa_agreements", "agents"
   add_foreign_key "dpa_agreements", "organisations"
