@@ -10,7 +10,7 @@ describe DpaAgreement do
   describe "callbacks" do
     it "saves agent identity" do
       subject
-      expect(dpa_agreement.email).to eq(agent.email)
+      expect(dpa_agreement.agent_email).to eq(agent.email)
       expect(dpa_agreement.agent_full_name).to eq(agent.to_s)
     end
 
