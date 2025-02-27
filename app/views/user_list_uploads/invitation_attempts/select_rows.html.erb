@@ -1,6 +1,6 @@
 <% content_for :title, "Envoyer des invitations - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
 
-<div class="container px-5 py-3" data-controller="submit-selected-ids">
+<div class="container px-4" data-controller="submit-selected-ids">
   <div class="row text-dark-blue ">
     <div class="col text-center align-items-center my-1">
       <div>
@@ -15,7 +15,7 @@
 
   <%= turbo_frame_tag "user_collection", data: { turbo_action: "advance" } do %>
     <div class="row justify-content-center">
-      <div class="col-md-10 d-flex justify-content-between align-items-center">
+      <div class="col-md-12 d-flex justify-content-between align-items-center">
         <div class="mb-4">
           <h2 class="h2-title">Inviter les usagers à prendre rendez-vous</h2>
           <p class="text-muted">
@@ -26,7 +26,7 @@
       </div>
       <%= render "user_rows_before_invitation", user_rows: @user_rows %>
 
-      <div class="col-md-10 sticky-footer">
+      <div class="col-md-12 sticky-footer">
         <div class="py-3 bg-white border-top d-flex justify-content-between">
           <div>
           </div>

@@ -1,7 +1,7 @@
 <% content_for :title, "Charger un fichier usagers - #{structure_name_with_context(current_structure)} - rdv-insertion" %>
 
 <div class="container p-3">
-  <div class="row text-dark-blue col-md-10 mx-auto">
+  <div class="row text-dark-blue col-md-12 mx-auto">
     <div class="d-flex justify-content-between align-items-center my-1">
       <div>
         <%= link_to structure_users_path, class: "text-dark-blue fw-bold" do %>
@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div class="row py-4 px-3 col-md-10 mx-auto">
+  <div class="row py-4 px-3 col-md-12 mx-auto">
     <%= form_with url: new_structure_user_list_upload_path, method: :get, data: { turbo: false, controller: "radio-submit" } do |f| %>
       <div class="mb-4">
         <h2 class="h2-title mb-4">Sélectionnez la catégorie de suivi sur laquelle importer les usagers</h2>
