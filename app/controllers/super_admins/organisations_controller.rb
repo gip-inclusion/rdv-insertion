@@ -1,7 +1,6 @@
-# rubocop:disable Rails/LexicallyScopedActionFilter
 module SuperAdmins
   class OrganisationsController < SuperAdmins::ApplicationController
-    before_action :set_unavailable_creneau_logs, only: :show
+    before_action :set_starts_at, :set_ends_at, :set_blocked_invitations_counters_grouped_by_day, only: :show
 
     def create
       if create_organisation.success?
@@ -42,8 +41,17 @@ module SuperAdmins
       :department
     end
 
-    def set_unavailable_creneau_logs
-      @unavailable_creneau_logs = UnavailableCreneauLog.where(organisation: requested_resource)
+    def set_starts_at
+      @starts_at = params[:starts_at] || 30.days.ago
+    end
+
+    def set_ends_at
+      @ends_at = params[:ends_at] || Time.zone.now
+    end
+
+    def set_blocked_invitations_counters_grouped_by_day
+      @blocked_invitations_counters_grouped_by_day = BlockedInvitationsCounter.where(organisation: requested_resource)
+                                                                              .grouped_by_day(@starts_at, @ends_at)
     end
 
     # Override this method to specify custom lookup behavior.
@@ -79,4 +87,3 @@ module SuperAdmins
     # end
   end
 end
-# rubocop:enable Rails/LexicallyScopedActionFilter

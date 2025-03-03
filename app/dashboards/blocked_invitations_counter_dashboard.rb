@@ -1,6 +1,6 @@
 require "administrate/base_dashboard"
 
-class UnavailableCreneauLogDashboard < Administrate::BaseDashboard
+class BlockedInvitationsCounterDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     number_of_invitations_affected: Field::Number,
@@ -24,7 +24,7 @@ class UnavailableCreneauLogDashboard < Administrate::BaseDashboard
     created_after: ->(resources, value) { resources.where(created_at: value..) }
   }.freeze
 
-  def display_resource(unavailable_creneau_log)
-    "de créneaux indisponibles pour l'organisation #{unavailable_creneau_log.organisation}"
+  def display_resource(blocked_invitations_count)
+    "d'invitations sans créneaux pour l'organisation #{blocked_invitations_count.organisation}"
   end
 end

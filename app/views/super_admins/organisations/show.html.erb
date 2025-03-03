@@ -68,7 +68,12 @@
 
   <section class="main-content__body section-chart-container">
     <h2> Créneaux indisponibles de l'organisation <%= page.resource.name %> :</h2>
-    <%= render "super_admins/unavailable_creneau_logs/chart", scope: @unavailable_creneau_logs %>
+    <%= render(
+      "super_admins/blocked_invitations_counters/chart",
+      blocked_invitations_counters_grouped_by_day: @blocked_invitations_counters_grouped_by_day,
+      starts_at: @starts_at,
+      ends_at: @ends_at
+    ) %>
   </section>
 <% end %>
 

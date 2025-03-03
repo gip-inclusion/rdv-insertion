@@ -1,0 +1,10 @@
+fr:
+  activerecord:
+    models:
+      blocked_user:
+        one: Usager bloqué
+        other: Usagers bloqués
+    attributes:
+      blocked_user:
+        created_at: Détecté le
+        user: Usager

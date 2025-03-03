@@ -1,8 +1,0 @@
-fr:
-  activerecord:
-    models:
-      unavailable_creneau_log: Créneaux Indisponibles
-    attributes:
-      unavailable_creneau_log:
-        number_of_invitations_affected: Nombre d'invitations impactées
-        created_at: Détecté le
