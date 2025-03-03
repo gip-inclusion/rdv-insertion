@@ -4,10 +4,11 @@ class DpaAgreement < ApplicationRecord
 
   validates :organisation, uniqueness: true
   validates :agent, presence: true, on: :create
+  validates :agent_full_name, :agent_email, presence: true
 
-  before_save :set_identity
+  before_validation :set_agent_identity
 
-  def set_identity
+  def set_agent_identity
     return if agent.nil?
 
     self.agent_full_name = agent.to_s
