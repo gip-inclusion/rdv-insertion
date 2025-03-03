@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_27_134523) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -165,9 +165,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_140717) do
 
   create_table "dpa_agreements", force: :cascade do |t|
     t.bigint "organisation_id", null: false
-    t.bigint "agent_id", null: false
+    t.bigint "agent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "agent_email"
+    t.string "agent_full_name"
     t.index ["agent_id"], name: "index_dpa_agreements_on_agent_id"
     t.index ["organisation_id"], name: "index_dpa_agreements_on_organisation_id"
   end
