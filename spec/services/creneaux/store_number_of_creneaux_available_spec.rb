@@ -8,8 +8,8 @@ describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
 
   context "when API call succeeds" do
     before do
-      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to(
-        receive(:call).and_return(OpenStruct.new(creneau_availability_count: 3))
+      allow_any_instance_of(described_class).to(
+        receive(:call_service!).and_return(OpenStruct.new(creneau_availability_count: 3))
       )
     end
 
