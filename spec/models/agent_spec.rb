@@ -55,4 +55,23 @@ describe Agent do
 
     it { expect(agent.export_organisations_ids).to include(organisation.id) }
   end
+
+  describe "deletion" do
+    subject { agent.destroy! }
+
+    let!(:agent) { create(:agent) }
+
+    context "dpa_agreement" do
+      let!(:organisation) { create(:organisation, :without_dpa_agreement) }
+      let!(:dpa_agreement) { create(:dpa_agreement, agent:, organisation:) }
+
+      it "nullifies dpa_agreement" do
+        subject
+        dpa_agreement.reload
+
+        expect(dpa_agreement.agent).to be_nil
+        expect(dpa_agreement.agent_email).to eq(agent.email)
+      end
+    end
+  end
 end
