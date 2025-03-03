@@ -1,4 +1,4 @@
-describe CategoryConfigurations::StoreNumberOfCreneauxAvailable, type: :service do
+describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
   subject do
     described_class.call(category_configuration:)
   end

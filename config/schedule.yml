@@ -30,7 +30,7 @@ refresh_out_of_date_follow_up_statuses_job:
   class: "RefreshOutOfDateFollowUpStatusesJob"
 store_all_number_of_creneaux_available_job:
   cron: "0 5 * * *" # we refresh out of date statuses once a day, at 21:00
-  class: "CategoryConfigurations::StoreAllNumberOfCreneauxAvailableJob"
+  class: "Creneaux::StoreAllNumberOfCreneauxAvailableJob"
 remove_organisation_users_for_expired_archives_job:
   cron: "0 23 * * *" # we remove expired archived users from organisations once a day, at 23:00
   class: "RemoveOrganisationUsersForExpiredArchivesJob"

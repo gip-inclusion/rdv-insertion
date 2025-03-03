@@ -1,4 +1,4 @@
-module CategoryConfigurations
+module Creneaux
   class StoreNumberOfCreneauxAvailable < BaseService
     attr_reader :category_configuration
 
