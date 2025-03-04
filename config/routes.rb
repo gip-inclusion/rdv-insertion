@@ -113,6 +113,7 @@ Rails.application.routes.draw do
     resources :user_rows, only: [:update, :show] do
       get :show_details
       get :hide_details
+      patch :update_all, on: :collection
       resource :user_row_cells, only: [:edit]
 
       resources :organisation_assignations, only: [:new, :create]

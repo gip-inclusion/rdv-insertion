@@ -10,6 +10,7 @@ module UserListUploads
       @user_rows = @user_collection.user_rows
       @user_rows_with_errors = @user_collection.user_rows_with_errors
       @category_configuration = @user_list_upload.category_configuration
+      @all_user_rows_selected = @user_list_upload.user_rows.where(selected: false).empty?
     end
 
     def new; end

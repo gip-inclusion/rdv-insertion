@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import appFetch from "../lib/appFetch";
 
 export default class extends Controller {
   static targets = ["checkbox", "submit", "formatOption", "selectedUsersCounter"]
@@ -30,11 +31,13 @@ export default class extends Controller {
     })
   }
 
-  toggleAll(event) {
-    this.checkboxTargets.forEach(checkbox => {
-      checkbox.checked = checkbox.disabled ? false : event.target.checked
-    })
-    this.toggleSubmit()
+  async toggleAll(event) {
+    if (await this.#saveAllSelectedState(event)) {
+      this.checkboxTargets.forEach(checkbox => {
+        checkbox.checked = checkbox.disabled ? false : event.target.checked
+      })
+      this.toggleSubmit()
+    }
   }
 
   toggleSubmit() {
@@ -44,6 +47,24 @@ export default class extends Controller {
       this.#disableSubmit()
     }
     this.#updateSelectedCountText()
+  }
+
+  async saveSelectedState(event) {
+    const response = await appFetch(event.target.dataset.updateUserRowUrl, "PATCH", {
+      user_row: { selected: event.target.checked }
+    })
+
+    if (!response.success) {
+      event.target.checked = !event.target.checked;
+    }
+  }
+
+  async #saveAllSelectedState(event) {
+    const response = await appFetch(event.target.dataset.updateAllUserRowsUrl, "PATCH", {
+      selected: event.target.checked
+    })
+
+    return response.success
   }
 
   disableUninvitableUsers() {

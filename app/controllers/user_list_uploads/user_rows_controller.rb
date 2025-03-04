@@ -1,6 +1,7 @@
 module UserListUploads
   class UserRowsController < BaseController
-    before_action :set_user_list_upload, :set_user_row
+    before_action :set_user_list_upload
+    before_action :set_user_row, except: :update_all
     before_action :set_user_row_partial, only: [:show, :update]
 
     def show
@@ -10,11 +11,27 @@ module UserListUploads
     end
 
     def update
-      if @user_row.update(row_params.to_h.symbolize_keys)
-        redirect_to request.referer
-      else
-        render :update_error
+      success = @user_row.update(row_params.to_h.symbolize_keys)
+
+      respond_to do |format|
+        format.turbo_stream do
+          if success
+            redirect_to request.referer
+          else
+            render :update_error
+          end
+        end
+
+        format.json { render json: { success: } }
       end
+    end
+
+    def update_all
+      success = @user_list_upload.user_rows.update_all(
+        selected: params[:selected]
+      )
+
+      render json: { success: }
     end
 
     def show_details
@@ -46,7 +63,7 @@ module UserListUploads
 
     def row_params
       params.expect(
-        user_row: [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email,
+        user_row: [:selected, :title, :first_name, :last_name, :affiliation_number, :phone_number, :email,
                    :assigned_organisation_id]
       )
     end
