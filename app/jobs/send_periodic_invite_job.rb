@@ -5,6 +5,7 @@ class SendPeriodicInviteJob < ApplicationJob
     @format = format
 
     return if invitation_already_sent_today?
+    return unless creneaux_available_for_invitation?
 
     send_invitation
   end
@@ -22,6 +23,21 @@ class SendPeriodicInviteJob < ApplicationJob
     new_invitation.save!
 
     Invitations::SaveAndSend.call(invitation: new_invitation, check_creneaux_availability: false)
+  end
+
+  def creneaux_available_for_invitation?
+    params = @invitation.link_params.symbolize_keys.slice(
+      :motif_category_short_name,
+      :departement,
+      :organisation_ids,
+      :referent_ids
+    )
+
+    Rails.cache.fetch("RetrieveCreneauAvailability/#{params.sort.to_h.to_query}", expires_in: 12.hours) do
+      @category_configuration.organisation.agents.first.with_rdv_solidarites_session do
+        RdvSolidaritesApi::RetrieveCreneauAvailability.call(link_params: params).creneau_availability
+      end
+    end
   end
 
   def invitation_already_sent_today?

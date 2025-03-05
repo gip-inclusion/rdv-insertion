@@ -119,7 +119,9 @@ tables:
       - carnet_de_bord_deploiement_id
 
   - table_name: dpa_agreements
-    anonymized_column_names: []
+    anonymized_column_names:
+      - agent_email
+      - agent_full_name
     non_anonymized_column_names:
       - agent_id
       - organisation_id

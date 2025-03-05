@@ -3,6 +3,10 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["searchInput"]
 
+  static values = {
+    paramsToRemove: { type: Array, default: [] }
+  }
+
   initialize() {
     this.timeout = null
   }
@@ -18,6 +22,12 @@ export default class extends Controller {
         params.set("search_query", this.searchInputTarget.value)
       } else {
         params.delete("search_query")
+      }
+
+      if (this.paramsToRemoveValue && this.paramsToRemoveValue.length > 0) {
+        this.paramsToRemoveValue.forEach(param => {
+          params.delete(param)
+        })
       }
 
       url.search = params.toString()

@@ -1,27 +1,4 @@
 module UsersHelper
-  def filter_list
-    [
-      :search_query,
-      :tag_ids,
-      :status,
-      :orientation_type,
-      :action_required,
-      :referent_id,
-      :creation_date_after,
-      :creation_date_before,
-      :convocation_date_before,
-      :convocation_date_after,
-      :first_invitation_date_before,
-      :first_invitation_date_after,
-      :last_invitation_date_before,
-      :last_invitation_date_after
-    ]
-  end
-
-  def active_filter_list
-    filter_list.select { |filter| params[filter].present? }
-  end
-
   def show_convocation?(category_configuration)
     category_configuration.convene_user?
   end

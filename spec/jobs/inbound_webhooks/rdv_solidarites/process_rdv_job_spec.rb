@@ -258,7 +258,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               expect(User).to receive(:create!).with(
                 rdv_solidarites_user_id: user_id1,
                 organisations: [organisation],
-                import_associations_from_rdv_solidarites_on_create: true,
                 first_name: "James",
                 last_name: "Cameron",
                 address: "50 rue Victor Hugo 93500 Pantin",
@@ -307,7 +306,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               expect(User).to receive(:create!).with(
                 rdv_solidarites_user_id: user_id1,
                 organisations: [organisation],
-                import_associations_from_rdv_solidarites_on_create: true,
                 first_name: "James",
                 last_name: "Cameron",
                 address: "50 rue Victor Hugo 93500 Pantin",

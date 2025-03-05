@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
 
+  get '/sign_in', to: 'sessions#new'
   get 'auth/:provider/callback', to: 'sessions#create'
 
   scope module: 'website' do
@@ -46,6 +47,8 @@ Rails.application.routes.draw do
                                        path: '/parcours_insertion',
                                        only: [:show]
   end
+
+  get "/organisations", to: "organisations#index", as: :authenticated_root
 
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
