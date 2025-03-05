@@ -86,22 +86,6 @@ class UserListUpload::Collection
     user_rows_with_invitation_attempted.select(&:all_invitations_failed?)
   end
 
-  def mark_selected_rows_for_invitation!(selected_ids)
-    user_rows.each do |user_row|
-      user_row.mark_for_invitation! if selected_ids.include?(user_row.id)
-    end
-
-    save!(user_rows.select(&:marked_for_invitation?))
-  end
-
-  def mark_selected_rows_for_user_save!(selected_ids)
-    user_rows.each do |user_row|
-      user_row.mark_for_user_save! if selected_ids.include?(user_row.id)
-    end
-
-    save!(user_rows.select(&:marked_for_user_save?))
-  end
-
   def sort_by!(sort_by:, sort_direction:)
     user_rows.sort_by! do |user_row|
       # we place nil values at the end
