@@ -67,7 +67,7 @@ class InvitationsController < ApplicationController
   end
 
   def pdf
-    WickedPdf.new.pdf_from_string(invitation.content, encoding: "utf-8")
+    Grover.new(invitation.content).to_pdf
   end
 
   def pdf_filename
