@@ -24,6 +24,7 @@ class Invitation < ApplicationRecord
 
   delegate :motif_category, :motif_category_name, :motif_category_id, to: :follow_up
   delegate :model, to: :template, prefix: true
+  delegate :post_code, to: :user, prefix: true, allow_nil: true
 
   enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
   enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
@@ -101,6 +102,16 @@ class Invitation < ApplicationRecord
   def qr_code
     RQRCode::QRCode.new(rdv_solidarites_public_url).as_png
   end
+
+  def referent_ids = link_params["referent_ids"]
+
+  def referents
+    return Agent.none if referent_ids.blank?
+
+    Agent.where(rdv_solidarites_agent_id: referent_ids)
+  end
+
+  def referent_emails = referents.pluck(:email)
 
   private
 

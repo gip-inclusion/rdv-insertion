@@ -12,6 +12,9 @@ AllCops:
     - "node_modules/**/*"
     - "db/schema.rb"
     - "db/seeds.rb"
+    - "storage/**/*"
+    - "tmp/**/*"
+    - "log/**/*"
   NewCops: enable
 
 Style/Documentation:
