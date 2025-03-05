@@ -152,6 +152,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_27_134523) do
     t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
   end
 
+  create_table "creneau_availabilities", force: :cascade do |t|
+    t.integer "number_of_creneaux_available"
+    t.bigint "category_configuration_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_configuration_id"], name: "index_creneau_availabilities_on_category_configuration_id"
+  end
+
   create_table "csv_exports", force: :cascade do |t|
     t.bigint "agent_id", null: false
     t.string "structure_type", null: false
@@ -659,6 +667,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_27_134523) do
   add_foreign_key "category_configurations", "file_configurations"
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
+  add_foreign_key "creneau_availabilities", "category_configurations"
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "dpa_agreements", "agents"
   add_foreign_key "dpa_agreements", "organisations"
