@@ -45,7 +45,10 @@ class UserListUpload::Collection
   end
 
   def user_rows_marked_for_user_save
-    user_rows.select(&:marked_for_user_save?)
+    # .reject do |user_row|
+    #   user_row.last_user_save_attempt.success?
+    # end
+    user_rows.select(&:user_valid?).select(&:marked_for_user_save?)
   end
 
   def user_rows_with_user_save_attempted
@@ -57,9 +60,7 @@ class UserListUpload::Collection
   end
 
   def user_rows_with_user_save_errors
-    user_rows_with_user_save_attempted.reject do |user_row|
-      user_row.last_user_save_attempt.success?
-    end
+    user_rows_with_user_save_attempted.reject(&:user_save_succeded?)
   end
 
   def all_saves_attempted?
@@ -67,7 +68,10 @@ class UserListUpload::Collection
   end
 
   def user_rows_marked_for_invitation
-    user_rows.select(&:marked_for_invitation?)
+    # .reject do |user_row|
+    #   user_row.invitation_succeeded?
+    # end
+    user_rows.select(&:marked_for_invitation?).select(&:user_save_succeded?)
   end
 
   def all_invitations_attempted?

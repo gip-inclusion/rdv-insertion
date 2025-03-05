@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_04_114714) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_05_112308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -537,8 +537,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_04_114714) do
     t.uuid "user_list_upload_id", null: false
     t.integer "assigned_organisation_id"
     t.json "cnaf_data", default: {}
-    t.boolean "marked_for_invitation", default: false
-    t.boolean "marked_for_user_save", default: false
+    t.boolean "marked_for_invitation", default: true
+    t.boolean "marked_for_user_save", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "selected", default: true

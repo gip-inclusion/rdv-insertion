@@ -27,9 +27,7 @@ module UserListUploads
     end
 
     def update_all
-      success = @user_list_upload.user_rows.update_all(
-        selected: params[:selected]
-      )
+      success = @user_list_upload.user_rows.update_all(rows_params.to_h)
 
       render json: { success: }
     end
@@ -61,9 +59,13 @@ module UserListUploads
                           end
     end
 
+    def rows_params
+      params.permit(:marked_for_invitation, :marked_for_user_save)
+    end
+
     def row_params
       params.expect(
-        user_row: [:selected, :title, :first_name, :last_name, :affiliation_number, :phone_number, :email,
+        user_row: [:marked_for_user_save, :marked_for_invitation, :title, :first_name, :last_name, :affiliation_number, :phone_number, :email,
                    :assigned_organisation_id]
       )
     end

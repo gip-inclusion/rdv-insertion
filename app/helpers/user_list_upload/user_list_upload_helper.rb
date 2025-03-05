@@ -13,8 +13,8 @@ module UserListUpload::UserListUploadHelper
     }[user_row.before_user_save_status]
   end
 
-  def user_row_checked_value(user_row)
-    user_row.selected? ? "checked" : ""
+  def user_row_checked_value(selected)
+    selected ? "checked" : ""
   end
 
   def user_row_icon_for_status(errors)

@@ -11,26 +11,6 @@ export default class extends Controller {
     this.#updateSelectedCountText()
   }
 
-  submit(event) {
-    const selectedIds = this.checkboxTargets
-      .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value)
-
-    const form = event.currentTarget
-
-    // Remove any existing hidden fields first
-    form.querySelectorAll("input[name='selected_ids[]']").forEach(el => el.remove())
-
-    // Create a new hidden field for each UID
-    selectedIds.forEach(id => {
-      const hiddenField = document.createElement("input")
-      hiddenField.type = "hidden"
-      hiddenField.name = "selected_ids[]"
-      hiddenField.value = id
-      form.appendChild(hiddenField)
-    })
-  }
-
   async toggleAll(event) {
     if (await this.#saveAllSelectedState(event)) {
       this.checkboxTargets.forEach(checkbox => {
@@ -51,7 +31,7 @@ export default class extends Controller {
 
   async saveSelectedState(event) {
     const response = await appFetch(event.target.dataset.updateUserRowUrl, "PATCH", {
-      user_row: { selected: event.target.checked }
+      user_row: { [this.element.dataset.userRowSelectionType]: event.target.checked }
     })
 
     if (!response.success) {
@@ -61,7 +41,7 @@ export default class extends Controller {
 
   async #saveAllSelectedState(event) {
     const response = await appFetch(event.target.dataset.updateAllUserRowsUrl, "PATCH", {
-      selected: event.target.checked
+      [this.element.dataset.userRowSelectionType]: event.target.checked
     })
 
     return response.success
@@ -82,6 +62,7 @@ export default class extends Controller {
         checkbox.checked = false
         checkbox.disabled = true
       }
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }))
     })
 
     this.toggleSubmit()

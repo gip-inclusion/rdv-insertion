@@ -2,11 +2,11 @@
   <td>
     <input type="checkbox"
             class="form-check-input user-checkbox"
-            data-submit-selected-ids-target="checkbox"
-            data-action="click->submit-selected-ids#toggleSubmit change->submit-selected-ids#saveSelectedState"
+            data-user-row-selection-target="checkbox"
+            data-action="click->user-row-selection#toggleSubmit change->user-row-selection#saveSelectedState"
             data-update-user-row-url="<%= user_list_upload_user_row_path(id: user_row.id, user_list_upload_id: @user_list_upload.id) %>"
             value="<%= user_row.id %>"
-            <%= user_row.user_valid? ? user_row_checked_value(user_row) : "disabled" %>>
+            <%= user_row.user_valid? ? user_row_checked_value(user_row.marked_for_user_save) : "disabled" %>>
   </td>
 
   <% %i[title first_name last_name affiliation_number phone_number email].each do |attribute| %>
