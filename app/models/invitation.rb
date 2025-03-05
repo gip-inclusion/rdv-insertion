@@ -106,7 +106,7 @@ class Invitation < ApplicationRecord
   def referent_ids = link_params["referent_ids"]
 
   def referents
-    return [] if referent_ids.blank?
+    return Agent.none if referent_ids.blank?
 
     Agent.where(rdv_solidarites_agent_id: referent_ids)
   end
