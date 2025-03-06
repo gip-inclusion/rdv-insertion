@@ -2,7 +2,6 @@ import { Modal } from "bootstrap";
 
 class ConfirmModal {
   constructor() {
-    this.modalPartial = document.querySelector("#confirm-modal");
     window.Turbo.setConfirmMethod(this.confirm.bind(this));
     this.checkForExternalConfirmLinks();
   }
@@ -25,7 +24,7 @@ class ConfirmModal {
   }
 
   confirm(template) {
-    const modalContent = document.getElementById(template).cloneNode(true);
+    const modalContent = document.getElementById(template);
 
     this.modal = new Modal(modalContent);
     this.modal.show();
