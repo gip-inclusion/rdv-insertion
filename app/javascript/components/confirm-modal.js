@@ -2,6 +2,7 @@ import { Modal } from "bootstrap";
 
 class ConfirmModal {
   constructor() {
+    console.log("oui")
     this.modalPartial = document.querySelector("#confirm-modal");
     window.Turbo.setConfirmMethod(this.confirm.bind(this));
     this.checkForExternalConfirmLinks();
@@ -14,7 +15,7 @@ class ConfirmModal {
     // and shows the confirmation modal when they are clicked.
     document.querySelectorAll("[data-turbo-confirm]").forEach((element) => {
       if (element.target !== "_blank") return;
-
+      
       element.addEventListener("click", (event) => {
         event.preventDefault();
         this.confirm(element.getAttribute("data-turbo-confirm"), element).then(() => {
@@ -28,16 +29,11 @@ class ConfirmModal {
     // We use cloneNode to avoid modifying the original modalPartial
     // this allows to avoid issues when showing up multiple modals in a row.
     // More info https://github.com/betagouv/rdv-insertion/pull/2022#discussion_r1608532748
-    const modalContent = this.modalPartial.cloneNode(true);
-
     const sourceLink = this.getSourceLinkFrom(message, triggerElement)
 
+    let modalContent = null
     if (sourceLink.getAttribute("data-turbo-confirm-template")) {
-      modalContent.querySelector(".modal-content").innerHTML = sourceLink.getAttribute("data-turbo-confirm-template");
-    } else {
-      modalContent.querySelector(".modal-title").textContent = message;
-      modalContent.querySelector("#custom-body").innerHTML = sourceLink.getAttribute("data-turbo-confirm-text-content") || message;
-      modalContent.querySelector("#confirm-button").innerHTML = sourceLink.getAttribute("data-turbo-confirm-text-action") || "Confirmer";
+      modalContent = document.getElementById(sourceLink.getAttribute("data-turbo-confirm-template"))
     }
 
     this.modal = new Modal(modalContent);

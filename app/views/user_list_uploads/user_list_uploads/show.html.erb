@@ -68,6 +68,9 @@
         <div class="py-3 bg-white border-top d-flex justify-content-between">
           <div>
             <i class="ri-arrow-left-s-line"></i>
+            <%= render("common/triggerable_modal", id: "back_to_file_upload_warning") do %>
+              <%= render("user_list_uploads/user_list_uploads/back_to_file_upload_warning") %>
+            <% end %>
             <%=
                 link_to(
                   "Revenir à l'étape précédente",
@@ -76,7 +79,7 @@
                   data: {
                     turbo_frame: "_top",
                     turbo_confirm: true,
-                    turbo_confirm_template: raw(render("user_list_uploads/user_list_uploads/back_to_file_upload_warning")), # rubocop:disable Rails/OutputSafety
+                    turbo_confirm_template: "back_to_file_upload_warning",
                     turbo_method: :get
                   }
                 )

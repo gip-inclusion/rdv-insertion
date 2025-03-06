@@ -14,10 +14,16 @@
   <%= render "common/remote_modal", title: "Choix du type de rdv" do %>
     <h6 class="text-center mb-5">S'agit-il d'un rdv individuel ou d'un rdv collectif ?</h6>
     <div class="d-flex justify-content-between">
+      <%= render("common/triggerable_modal", id: "rdv-type-individuel-confirm") do %>
+        <%= render("common/rdvs_impersonation_warning", url: @convocation_links_by_type[:individuel]) %>
+      <% end %>
+      <%= render("common/triggerable_modal", id: "rdv-type-collectif-confirm") do %>
+        <%= render("common/rdvs_impersonation_warning", url: @convocation_links_by_type[:collectif]) %>
+      <% end %>
       <%= link_to @convocation_links_by_type[:individuel], target: "_blank", **with_rdv_solidarites_impersonation_warning(@convocation_links_by_type[:individuel]) do %>
         <button class="btn btn-blue-out" type="button">Rdv individuel <i class="ri-external-link-line ms-1"></i></button>
       <% end %>
-      <%= link_to @convocation_links_by_type[:collectif], target: "_blank", **with_rdv_solidarites_impersonation_warning(@convocation_links_by_type[:individuel]) do %>
+      <%= link_to @convocation_links_by_type[:collectif], target: "_blank", **with_rdv_solidarites_impersonation_warning(@convocation_links_by_type[:collectif]) do %>
         <button class="btn btn-blue-out" type="button">Rdv collectif <i class="ri-external-link-line ms-1"></i></button>
       <% end %>
     </div>
