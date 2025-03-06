@@ -1,16 +1,14 @@
 <% if user_is_archived && !department_level? %>
+  <%= render("common/triggerable_modal", title: "Rouvrir le dossier dans cette organisation ?", action: "Rouvrir le dossier", id: "confirm-archive") do %>
+    Êtes vous sûr ? <br/><br/>Le dossier de <b><%= user %></b> sera rouvert dans l'organisation <b><%= current_organisation&.name %></b> et retrouvera le statut précédant l'archivage.
+  <% end %>
   <%=
     link_to(
       "Rouvrir le dossier",
       # in this case we are at organisation level, there is always only one archive
       organisation_archive_path(current_organisation, user.archive_in_organisation(current_organisation)),
       class: "btn btn-blue", id: "archive-button",
-      data: {
-        turbo_confirm: "Rouvrir le dossier dans cette organisation ?",
-        turbo_confirm_text_content: "Êtes vous sûr ? <br/><br/>Le dossier de <b>#{h(user)}</b> sera rouvert dans l'organisation <b>#{h(current_organisation&.name)}</b> et retrouvera le statut précédant l'archivage.",
-        turbo_confirm_text_action: "Rouvrir le dossier",
-        turbo_method: :delete
-      }
+      data: { turbo_confirm: "confirm-archive", turbo_method: :delete }
     )
   %>
 <% else %>

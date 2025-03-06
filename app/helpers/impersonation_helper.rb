@@ -4,8 +4,7 @@ module ImpersonationHelper
 
     {
       data: {
-        turbo_confirm: true,
-        turbo_confirm_template: modal_dom_id
+        turbo_confirm: modal_dom_id
       }
     }
   end
