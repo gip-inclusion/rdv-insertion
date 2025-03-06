@@ -16,7 +16,7 @@
             link_to(
              user_referent_assignation_path(user_id: user.id, agent_id: referent.id),
               data: {
-                turbo_confirm: confirm_modal(content: confirm_content),
+                turbo_confirm: confirm_modal(content: confirm_content, action: "- Retirer", title: "Retirer l'agent référent de cet usager ?"),
                 turbo_method: :delete,
               },
               class: 'text-dark-grey-alt ms-2'
