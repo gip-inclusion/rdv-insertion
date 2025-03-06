@@ -5,7 +5,7 @@ module Creneaux
         .joins(:organisation)
         .where(organisations: { archived_at: nil })
         .find_each do |category_configuration|
-        Creneaux::StoreNumberOfCreneauxAvailable.perform_later(category_configuration.id)
+        Creneaux::StoreNumberOfCreneauxAvailableJob.perform_later(category_configuration.id)
       end
     end
   end
