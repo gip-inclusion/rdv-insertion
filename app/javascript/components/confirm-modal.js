@@ -2,7 +2,6 @@ import { Modal } from "bootstrap";
 
 class ConfirmModal {
   constructor() {
-    console.log("oui")
     this.modalPartial = document.querySelector("#confirm-modal");
     window.Turbo.setConfirmMethod(this.confirm.bind(this));
     this.checkForExternalConfirmLinks();
