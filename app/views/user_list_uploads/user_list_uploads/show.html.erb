@@ -68,9 +68,6 @@
         <div class="py-3 bg-white border-top d-flex justify-content-between">
           <div>
             <i class="ri-arrow-left-s-line"></i>
-            <%= render("common/triggerable_modal", id: "back_to_file_upload_warning") do %>
-              <%= render("user_list_uploads/user_list_uploads/back_to_file_upload_warning") %>
-            <% end %>
             <%=
                 link_to(
                   "Revenir à l'étape précédente",
@@ -78,7 +75,9 @@
                   class: "btn btn-link",
                   data: {
                     turbo_frame: "_top",
-                    turbo_confirm: "back_to_file_upload_warning",
+                    turbo_confirm: confirm_modal(
+                      content: render("user_list_uploads/user_list_uploads/back_to_file_upload_warning")
+                    ),
                     turbo_method: :get
                   }
                 )

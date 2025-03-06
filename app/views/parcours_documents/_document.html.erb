@@ -10,15 +10,15 @@
   <%= render "parcours_documents/document_date_form", document: document %>
 
   <div class="text-end">
-    <% signed_id = document.signed_id(expires_in: 1.hour) %>
-    <%= render("common/triggerable_modal", title: "Supprimer ce document ?", action: "Supprimer", id: "remove-parcours-document-#{signed_id}") do %>
-      Êtes-vous sûr de vouloir supprimer ce document ?
-    <% end %>
     <%=
       link_to(
-        user_parcours_document_path(user_id: document.user_id, id: signed_id),
+        user_parcours_document_path(user_id: document.user_id, id: document.signed_id(expires_in: 1.hour)),
         data: {
-          turbo_confirm: "remove-parcours-document-#{signed_id}",
+          turbo_confirm: confirm_modal(
+            title: "Supprimer ce document ?", 
+            content: "Voulez-vous vraiment supprimer ce document ?",
+            action: "Supprimer"
+          ),
           turbo_method: :delete,
         },
         id: "delete-button-#{document.id}"

@@ -65,10 +65,7 @@
                     </td>
                     <td class="px-4 py-3">
                       <% if participation.rdv.rdv_solidarites_rdv_id && policy(participation).edit? %>
-                        <%= render("common/triggerable_modal", id: "checkout-followup-confirm") do %>
-                          <%= render("common/rdvs_impersonation_warning", url: participation.rdv_solidarites_url) %>
-                        <% end %>
-                        <%= link_to participation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning("checkout-followup-confirm") do %>
+                        <%= link_to participation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(url: participation.rdv_solidarites_url) do %>
                           <button class="btn btn-blue">
                             Voir sur RDV-S<i class="ri-external-link-line ms-1"></i>
                           </button>

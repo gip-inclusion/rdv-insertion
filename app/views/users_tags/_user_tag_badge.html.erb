@@ -8,13 +8,13 @@
     <%= tag.value %>
   </span>
   <% if with_delete %>
-    <%= render("common/triggerable_modal", title: "Retirer le tag de cet usager ?", action: "- Retirer", id: "tag_remove_from_user_confirm-#{tag.id}") do %>
+    <% confirm_content = capture do %>
       Êtes-vous sûr de vouloir retirer le tag <b><%= tag.value %></b> de l'usager <b><%= user %></b> ?
     <% end %>
     <%=
       link_to(
         user_tag_assignation_path(user_id: user.id, tag_id: tag.id),
-        data: { turbo_confirm: "tag_remove_from_user_confirm-#{tag.id}", turbo_method: :delete, },
+        data: { turbo_confirm: confirm_modal(content: confirm_content), turbo_method: :delete, },
         class: 'text-dark-grey-alt ms-2'
       ) do
     %>

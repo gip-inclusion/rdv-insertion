@@ -1,5 +1,5 @@
 <% if user_is_archived && !department_level? %>
-  <%= render("common/triggerable_modal", title: "Rouvrir le dossier dans cette organisation ?", action: "Rouvrir le dossier", id: "confirm-archive") do %>
+  <% confirm_content = capture do %>
     Êtes vous sûr ? <br/><br/>Le dossier de <b><%= user %></b> sera rouvert dans l'organisation <b><%= current_organisation&.name %></b> et retrouvera le statut précédant l'archivage.
   <% end %>
   <%=
@@ -8,7 +8,7 @@
       # in this case we are at organisation level, there is always only one archive
       organisation_archive_path(current_organisation, user.archive_in_organisation(current_organisation)),
       class: "btn btn-blue", id: "archive-button",
-      data: { turbo_confirm: "confirm-archive", turbo_method: :delete }
+      data: { turbo_confirm: confirm_modal(title: "Rouvrir le dossier dans cette organisation ?", action: "Rouvrir le dossier", content: confirm_content), turbo_method: :delete }
     )
   %>
 <% else %>

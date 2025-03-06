@@ -6,10 +6,8 @@
       <%= link_to(@back_to_users_list_url || structure_users_path) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
-      <%= render("common/triggerable_modal", id: "rdvs_impersonation_warning-org") do %>
-        <%= render("common/rdvs_impersonation_warning", url: @organisation.rdv_solidarites_url) %>
-      <% end %>
-      <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning("rdvs_impersonation_warning-org") do %>
+      
+      <%= link_to(@organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(url: @organisation.rdv_solidarites_url)) do %>
         <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i></button>
       <% end %>
     </div>

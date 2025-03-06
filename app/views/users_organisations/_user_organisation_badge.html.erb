@@ -7,18 +7,16 @@
       </span>
     <% end %>
   </span>
-<% if user.organisations.count > 1 %>
-  <%= render("common/triggerable_modal", id: "remove_user_org_modal_confirm-#{organisation.id}") do %>
-    <%= render("users_organisations/remove_user_from_organisation_confirm", user:, organisation:) %>
-  <% end %>
-<% else %>
-  <%= render("common/triggerable_modal", id: "remove_user_org_modal_confirm-#{organisation.id}") do %>
-    <%= render("users_organisations/remove_user_from_last_organisation_confirm", user:, organisation:) %>
-  <% end %>
-<% end %>
+  <% 
+    confirm_content = if user.organisations.count > 1
+      render("users_organisations/remove_user_from_organisation_confirm", user:, organisation:)
+    else
+      render("users_organisations/remove_user_from_last_organisation_confirm", user:, organisation:)
+    end 
+  %>
   <% if with_delete && policy(organisation).unassign? %>
     <%= link_to(users_organisations_path(user: user.id, users_organisation: { user_id: user.id, organisation_id: organisation.id }), data: {
-          turbo_confirm: "remove_user_org_modal_confirm-#{organisation.id}",
+          turbo_confirm: confirm_modal(content: confirm_content),
           turbo_method: :delete,
         }, class: 'text-dark-grey-alt ms-2' ) do %>
       <i class="ri-close-line"></i>

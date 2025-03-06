@@ -2,14 +2,13 @@
   <span class="text-truncate">
     <%= tag.value %>
   </span>
-  <%= render("common/triggerable_modal", id: "tag_remove_from_organisation_confirm") do %>
-    <%= render("tags/tag_remove_from_organisation_confirm", tag: tag, organisation: @organisation, user_count: @user_count_by_tag_id[tag.id] || 0) %>
-  <% end %>
   <%=
     link_to(
       organisation_tag_path(organisation_id: @organisation.id, id: tag.id),
       data: {
-        turbo_confirm: "tag_remove_from_organisation_confirm",
+        turbo_confirm: confirm_modal(
+          content: render("tags/tag_remove_from_organisation_confirm", tag: tag, organisation: @organisation, user_count: @user_count_by_tag_id[tag.id] || 0)
+        ),
         turbo_method: :delete,
       },
       class: 'text-dark-grey-alt ms-2'

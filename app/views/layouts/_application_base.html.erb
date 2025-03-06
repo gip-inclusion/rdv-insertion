@@ -3,7 +3,7 @@
   <%= render 'layouts/head' %>
 
   <body data-matomo-mask>
-    <%= render 'common/confirm_modal' %>
+    <%= content_for :confirm_modal %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>
     <%= render 'common/flashes' %>

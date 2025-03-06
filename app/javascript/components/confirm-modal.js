@@ -25,7 +25,7 @@ class ConfirmModal {
   }
 
   confirm(template) {
-    const modalContent = document.getElementById(template)
+    const modalContent = document.getElementById(template).cloneNode(true);
 
     this.modal = new Modal(modalContent);
     this.modal.show();

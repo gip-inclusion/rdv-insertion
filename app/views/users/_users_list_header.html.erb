@@ -106,10 +106,7 @@
     </h4>
 
     <div class="mt-2">
-      <%= render("common/triggerable_modal", id: "checkout-structure") do %>
-        <%= render("common/rdvs_impersonation_warning", url: structure_rdv_solidarites_url(current_structure)) %>
-      <% end %>
-      <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning("checkout-structure")) do %>
+      <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning(url: structure_rdv_solidarites_url(current_structure))) do %>
         <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i></button>
       <% end %>
     </div>

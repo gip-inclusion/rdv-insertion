@@ -1,22 +1,29 @@
-<div class="modal" id="confirm-modal">
+<div class="modal" id="<%= id %>">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="custom-body" class="w-100 mb-3">
+      <% if local_assigns[:title].blank? %>
+        <%= yield %>
+      <% else %>
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <%= title %>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="d-flex justify-content-end align-items-center px-3">
-          <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
-            Annuler
-          </button>
-          <button type="button" id="confirm-button" class="btn btn-danger me-2" data-bs-dismiss="modal">
-          </button>
+        <div class="modal-body">
+          <div id="custom-body" class="w-100 mb-3">
+            <%= yield %>
+          </div>
+          <div class="d-flex justify-content-end align-items-center px-3">
+            <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+              Annuler
+            </button>
+            <button type="button" id="confirm-button" class="btn btn-danger me-2" data-bs-dismiss="modal">
+              <%= action %>
+            </button>
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
   </div>
 </div>
