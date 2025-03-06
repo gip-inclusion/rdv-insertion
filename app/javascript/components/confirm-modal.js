@@ -13,7 +13,7 @@ class ConfirmModal {
     // and shows the confirmation modal when they are clicked.
     document.querySelectorAll("[data-turbo-confirm]").forEach((element) => {
       if (element.target !== "_blank") return;
-      
+
       element.addEventListener("click", (event) => {
         event.preventDefault();
         this.confirm(element.getAttribute("data-turbo-confirm")).then(() => {
