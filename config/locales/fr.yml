@@ -9,6 +9,13 @@ fr:
             dépendant(e) existe
           has_many: Vous ne pouvez pas supprimer l'enregistrement parce que les %{record}
             dépendants existent
+      models:
+        user:
+          attributes:
+            role:
+              inclusion: "doit être l'une des valeurs suivantes : %{valid_values}"
+            title:
+              inclusion: "doit être l'une des valeurs suivantes : %{valid_values}"
   boolean:
     true: Oui
     false: Non

@@ -19,8 +19,9 @@ class UserBlueprint < ApplicationBlueprint
                           }
   end
 
-  view :with_referents do
+  view :with_referents_and_tags do
     association :referents, blueprint: AgentBlueprint
+    policy_scoped_association :tags, blueprint: TagBlueprint
   end
 
   view :extended do

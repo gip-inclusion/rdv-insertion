@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :tag_organisation do
-    tags { nil }
-    organisations { nil }
+    tag { nil }
+    organisation { nil }
   end
 end
