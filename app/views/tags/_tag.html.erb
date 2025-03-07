@@ -7,6 +7,7 @@
       organisation_tag_path(organisation_id: @organisation.id, id: tag.id),
       data: {
         turbo_confirm: confirm_modal(
+          custom: true,
           content: render("tags/tag_remove_from_organisation_confirm", tag: tag, organisation: @organisation, user_count: @user_count_by_tag_id[tag.id] || 0)
         ),
         turbo_method: :delete,

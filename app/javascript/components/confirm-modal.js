@@ -23,8 +23,8 @@ class ConfirmModal {
     });
   }
 
-  confirm(template) {
-    const modalContent = document.getElementById(template);
+  confirm(templateId) {
+    const modalContent = document.getElementById(templateId);
 
     this.modal = new Modal(modalContent);
     this.modal.show();

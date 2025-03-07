@@ -5,6 +5,7 @@ module ImpersonationHelper
     {
       data: {
         turbo_confirm: confirm_modal(
+          custom: true,
           content: render("common/rdvs_impersonation_warning", url:)
         )
       }

@@ -3,12 +3,14 @@
   <%= render 'layouts/head' %>
 
   <body data-matomo-mask>
-    <%= content_for :confirm_modal %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>
     <%= render 'common/flashes' %>
     <div class="wrapper">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
+      <%= turbo_frame_tag "confirm_modal" do %>
+        <%= content_for :confirm_modal %>
+      <% end %>
       <%= yield %>
       <%= render 'common/accept_cgu_modal' if @should_display_accept_cgu %>
       <%= render 'common/accept_dpa_modal' if @should_display_accept_dpa %>
