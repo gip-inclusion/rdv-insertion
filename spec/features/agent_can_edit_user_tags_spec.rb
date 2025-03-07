@@ -61,5 +61,30 @@ describe "Agents can edit users tags", :js do
       expect(page).to have_content("hello")
       expect(user.reload.tags).to contain_exactly(second_tag)
     end
+
+    context "with xss attempts in DB" do
+      before do
+        first_tag.update_column(:value, xss_payload)
+        user.tags << first_tag
+      end
+
+      let(:xss_payload) { '<img src=1 onerror=alert(1)>'}
+
+      it "prevents xss" do
+        visit organisation_user_path(organisation, user)
+
+        expect(page).to have_content(xss_payload)
+
+        within("p#tags_list") do
+          find(".badge", text: xss_payload).find("a").click
+        end
+
+        modal = find(".modal")
+        expect(modal).to have_content(xss_payload)
+
+        # Ensure there are no system alerts
+        expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
+      end
+    end
   end
 end
