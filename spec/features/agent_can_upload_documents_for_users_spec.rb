@@ -129,7 +129,11 @@ describe "Agents can upload documents for users", :js do
       find_by_id("delete-button-#{user.contracts.first.id}").click
       confirm_modal
 
+      sleep 0.5
+
       find_by_id("delete-button-#{user.diagnostics.first.id}").click
+
+      sleep 0.5
       confirm_modal
 
       expect(page).to have_no_css(".document-link")
