@@ -1,5 +1,7 @@
 module ConfirmModalHelper
   def confirm_modal
-    find(".modal.show .btn-danger").click
+    within(".modal.show") do
+      find(".btn-danger").click
+    end
   end
 end
