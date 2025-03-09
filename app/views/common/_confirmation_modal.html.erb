@@ -1,19 +1,22 @@
-<div class="modal" id="confirm-modal">
+<div class="modal" data-confirmation-modal-target="modal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
+          <%= title %>
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div id="custom-body" class="w-100 mb-3">
+        <div class="text-start w-100 mb-3">
+          <%= text_content %>
         </div>
         <div class="d-flex justify-content-end align-items-center px-3">
           <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
             Annuler
           </button>
-          <button type="button" id="confirm-button" class="btn btn-danger me-2" data-bs-dismiss="modal">
+          <button type="button" data-controller="confirm-button" data-action="click->confirm-button#confirm" class="btn btn-danger me-2" data-bs-dismiss="modal">
+            <%= action_text %>
           </button>
         </div>
       </div>

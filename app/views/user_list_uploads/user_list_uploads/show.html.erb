@@ -65,22 +65,18 @@
       <% end %>
 
       <div class="col-md-10 sticky-footer">
-        <div class="py-3 bg-white border-top d-flex justify-content-between">
-          <div>
+        <div class="py-3 bg-white border-top d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
             <i class="ri-arrow-left-s-line"></i>
             <%=
-                link_to(
-                  "Revenir à l'étape précédente",
-                  new_structure_user_list_upload_path(category_configuration_id: @category_configuration&.id || "none"),
-                  class: "btn btn-link",
-                  data: {
-                    turbo_frame: "_top",
-                    turbo_confirm: true,
-                    turbo_confirm_template: raw(render("user_list_uploads/user_list_uploads/back_to_file_upload_warning")), # rubocop:disable Rails/OutputSafety
-                    turbo_method: :get
-                  }
-                )
+              link_to(
+                new_structure_user_list_upload_path(category_configuration_id: @category_configuration&.id || "none"),
+                data: { controller: "confirmation-modal" }
+              ) do
             %>
+              <button class="btn btn-link" data-action="click->confirmation-modal#show">Revenir à l'étape précédente</button>
+              <%= render "back_to_file_upload_warning_modal" %>
+            <% end %>
           </div>
           <div class="d-flex align-items-center">
             <span class="me-4" data-submit-selected-ids-target="selectedUsersCounter"></span>
