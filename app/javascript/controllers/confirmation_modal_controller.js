@@ -6,7 +6,6 @@ export default class extends Controller {
 
   connect() {
     this.linkElement = this.element
-    console.log("this.linkElement", this.linkElement);
 
     // Prevent the default action of the link
     this.linkElement.addEventListener("click", (event) => {
@@ -16,10 +15,9 @@ export default class extends Controller {
   }
 
   show() {
-    console.log("show");
     if (this.modalTarget) {
       // we clone the modal and append it to the body to not apply the parent css classes
-      const modalClone = this.modalTarget.cloneNode(true);
+      const modalClone = this.modalTarget.content.querySelector(".modal").cloneNode(true);
 
       // we add the confirm-link and turbo-method to the confirm button of the cloned modal
       // that will be used in the ConfirmButtonController
