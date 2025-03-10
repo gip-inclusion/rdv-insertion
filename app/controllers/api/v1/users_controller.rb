@@ -8,7 +8,8 @@ module Api
         :nir, :france_travail_id, :birth_date, :birth_name, :rights_opening_date, :address, :department_internal_id,
         {
           invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name] }],
-          referents_to_add: [[:email]]
+          referents_to_add: [[:email]],
+          tags_to_add: [[:value]]
         }
       ].freeze
 
@@ -45,7 +46,7 @@ module Api
         render json: {
           success: true,
           # we call the blueprint explicitely here because we don't want the extended view: we only show relevant infos
-          user: UserBlueprint.render_as_json(@user, view: :with_referents),
+          user: UserBlueprint.render_as_json(@user, view: :with_referents_and_tags),
           invitations: InvitationBlueprint.render_as_json(@invitations)
         }
       end
