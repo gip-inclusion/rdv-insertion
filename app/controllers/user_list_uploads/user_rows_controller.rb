@@ -65,8 +65,8 @@ module UserListUploads
 
     def row_params
       params.expect(
-        user_row: [:marked_for_user_save, :marked_for_invitation, :title, :first_name, :last_name, :affiliation_number, :phone_number, :email,
-                   :assigned_organisation_id]
+        user_row: [:marked_for_user_save, :marked_for_invitation, :title, :first_name, :last_name, :affiliation_number,
+                   :phone_number, :email, :assigned_organisation_id]
       )
     end
   end
