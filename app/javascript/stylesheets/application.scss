@@ -69,6 +69,17 @@ body {
   flex: 1
 }
 
+.reset-dsfr-overrides {
+  a {
+    &::after {
+      display: none;
+    }
+  }
+  p {
+    line-height: normal;
+  }
+}
+
 .container {
   width: 95%;
   max-width: 1500px;

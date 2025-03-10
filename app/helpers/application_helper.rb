@@ -62,4 +62,8 @@ module ApplicationHelper
       structure.name
     end
   end
+
+  def dsfr_path
+    "/dsfr-v1.13.0"
+  end
 end
