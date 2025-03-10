@@ -27,9 +27,12 @@ describe "Agents can archive and unarchive user", :js do
 
       expect(page).to have_link "Rouvrir le dossier"
       click_link "Rouvrir le dossier"
-      expect(page).to have_content "Êtes vous sûr ?"
-      expect(page).to have_content "Le dossier de #{user} sera rouvert dans l'organisation #{organisation.name}"
-      click_button "Rouvrir le dossier"
+
+      within ".modal.show" do
+        expect(page).to have_content "Êtes vous sûr ?"
+        expect(page).to have_content "Le dossier de #{user} sera rouvert dans l'organisation #{organisation.name}"
+        click_button "Rouvrir le dossier"
+      end
 
       expect(page).to have_no_content "Dossier archivé"
 
@@ -102,9 +105,12 @@ describe "Agents can archive and unarchive user", :js do
 
         expect(page).to have_link "Rouvrir le dossier"
         click_link "Rouvrir le dossier"
-        expect(page).to have_content "Êtes vous sûr ?"
-        expect(page).to have_content "Le dossier de #{user} sera rouvert dans l'organisation #{organisation.name}"
-        click_button "Rouvrir le dossier"
+
+        within ".modal.show" do
+          expect(page).to have_content "Êtes vous sûr ?"
+          expect(page).to have_content "Le dossier de #{user} sera rouvert dans l'organisation #{organisation.name}"
+          click_button "Rouvrir le dossier"
+        end
 
         expect(page).to have_no_content "Dossier archivé"
         expect(page).to have_no_content "Motif d'archivage"

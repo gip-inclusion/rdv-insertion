@@ -1,0 +1,9 @@
+<%= line_chart(blocked_invitations_counters_grouped_by_day, colors: ["#083b66"]) %>
+<%= form_with method: :get, local: true, class: "chart-actions" do |f| %>
+  <span> Afficher seulement du </span>
+  <%= f.date_field :starts_at, value: starts_at, class: "form-control" %>
+  <span> au </span>
+  <%= f.date_field :ends_at, value: ends_at, class: "form-control" %>
+
+  <%= f.submit "Afficher", class: "btn btn-primary" %>
+<% end %>
