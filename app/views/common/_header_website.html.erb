@@ -1,69 +1,70 @@
-<% content_for :head do %>
-  <%= stylesheet_link_tag "#{dsfr_path}/dsfr.min.css", 'data-turbo-track': "reload" %>
-  <%= stylesheet_link_tag "#{dsfr_path}/utility/icons/icons.min.css", 'data-turbo-track': 'reload' %>
+<% if agent_impersonated? %>
+    <%= render "common/header_super_admin_bar_impersonated" %>
+<% elsif current_agent&.super_admin? %>
+  <%= render "common/header_super_admin_bar" %>
 <% end %>
-<header role="banner" class="fr-header">
-  <% if agent_impersonated? %>
-      <%= render "common/header_super_admin_bar_impersonated" %>
-  <% elsif current_agent&.super_admin? %>
-    <%= render "common/header_super_admin_bar" %>
-  <% end %>
+
+<header class="fr-header" role="banner" id="header">
   <div class="fr-header__body">
     <div class="fr-container">
       <div class="fr-header__body-row">
         <div class="fr-header__brand fr-enlarge-link">
           <div class="fr-header__brand-top">
             <div class="fr-header__logo">
-              <p class="fr-logo">
-                République <br>Française
-              </p>
+              <p class="fr-logo">République <br>Française</p>
             </div>
-            <div class="fr-header__navbar">
-              <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-499" id="button-500" title="Menu">
-                Menu
-              </button>
-            </div>
-          </div>
-          <div class="fr-header__service">
-            <a href="/" title="Accueil - rdv-insertion">
-              <%= image_tag "logos/rdv-insertion.svg", class: "rdvi-logo", alt: "Logo rdv insertion" %>
-            </a>
-          </div>
-        </div>
-        <div class="fr-header__tools">
-          <div class="fr-header__tools-links">
-            <ul class="fr-btns-group">
-              <% if current_agent %>
-              <li>
-                <%= link_to sign_out_path, data: { turbo: false } do %>
-                  <button class="fr-btn fr-icon-lock-unlock-line">
-                    Se déconnecter
+
+              <div class="fr-header__operator"><a href="/" title="Accueil - rdv-insertion">
+                <img class="fr-responsive-img" src="<%= asset_path('logos/rdv-insertion.svg') %>" alt="Logo rdv-insertion" width="250" style="max-width:9.0625rem;" data-fr-js-ratio="true"></a></div>
+
+              <div class="fr-header__navbar">
+
+                  <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-header-menu" aria-haspopup="menu" id="button-header-menu" title="Menu" data-fr-js-modal-button="true">
+                    Menu
                   </button>
-                <% end %>
-              </li>
-              <% else %>
-              <li>
-                <%= form_tag("/auth/rdvservicepublic", method: "post", data: { turbo: false }) do %>
-                  <button class="fr-btn fr-icon-lock-line" type='submit'>Connexion agent</button>
-                <% end %>
-              </li>
-              <% end %>
-            </ul>
+              </div>
           </div>
+
+        </div>
+
+          <div class="fr-header__tools">
+              <div class="fr-header__tools-links" data-fr-js-header-links="true">
+                <ul class="fr-btns-group">
+                  <% if current_agent %>
+                    <li>
+                      <%= link_to sign_out_path, data: { turbo: false } do %>
+                        <button class="fr-btn fr-icon-lock-unlock-line">
+                          Se déconnecter
+                        </button>
+                      <% end %>
+                    </li>
+                    
+                  <% else %>
+                    <li>
+                      <%= form_tag("/auth/rdvservicepublic", method: "post", data: { turbo: false }) do %>
+                        <button class="fr-btn fr-icon-lock-line" type='submit'>Connexion agent</button>
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+
+          </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="fr-header__menu fr-modal" id="modal-header-menu" role="navigation" data-fr-js-modal="true" data-fr-js-header-modal="true" aria-labelledby="button-header-menu">
+      <div class="fr-container">
+        <button class="fr-btn--close fr-btn" aria-controls="modal-header-menu" title="Fermer" data-fr-js-modal-button="true">
+          Fermer
+        </button>
+        <div class="fr-header__menu-links">
         </div>
       </div>
     </div>
-  </div>
+
   <% if current_agent %>
-  <div class="fr-header__menu fr-modal" aria-labelledby="button-500">
-    <div class="fr-container">
-      <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
-        Fermer
-      </button>
-      <div class="fr-header__menu-links">
-      </div>
-    </div>
-  </div>
   <div class="fr-header__menu fr-modal" aria-labelledby="button-492">
     <div class="fr-container">
         <button class="fr-btn--close fr-btn" aria-controls="modal-491" title="Fermer">

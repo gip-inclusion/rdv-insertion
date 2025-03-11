@@ -1,102 +1,60 @@
-<footer class="fr-footer" role="contentinfo">
-    <div class="fr-footer__top">
-        <div class="fr-container">
-            <div class="fr-grid-row fr-grid-row--start fr-grid-row--gutters">
-                <div class="fr-col-12 fr-col-sm-3 fr-col-md-2">
-                    <h3 class="fr-footer__top-cat">Ressources</h3>
-                    <ul class="fr-footer__top-list">
-                        <li>
-                          <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", class: "fr-footer__top-link", target: :blank %>
-                        </li>
-                        <li>
-                          <%= link_to "Statistiques d'utilisation", stats_path, class: "fr-footer__top-link" %>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+<footer>
+  <div class="container">
+    <div class="footer-top row d-flex">
+      <div class="col-8 col-md-6 flex-wrap">
+        <%= image_tag "logos/republique-francaise-logo.svg", alt: "Logo République francaise", class: "footer-logo" %>
+        <%= image_tag "logos/plateforme-inclusion.svg", alt: "Logo de la plateforme de l'inclusion", class: "footer-logo" %>
+      </div>
+      <div class="footer-top-links d-flex col-8 col-md-6 col-lg-5 col-xl-4 justify-content-between flex-wrap">
+        <div>
+          <h4>Ressources</h4>
+          <ul class="footer-top-list">
+            <li>
+              <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank %>
+            </li>
+            <li>
+              <%= link_to "Statistiques", stats_path %>
+            </li>
+            <li>
+            </li>
+          </ul>
         </div>
+        <div>
+          <h4>Nos partenaires</h4>
+          <ul class="footer-top-list">
+            <li>
+              <%= link_to "RDV-Solidarités", "https://www.rdv-solidarites.fr/", target: :blank %>
+            </li>
+            <li>
+              <%= link_to "Plateforme de l'inclusion", "https://inclusion.beta.gouv.fr/qui-sommes-nous/", target: :blank %>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div class="fr-container">
-        <div class="fr-footer__body">
-            <div class="fr-footer__brand fr-enlarge-link">
-                <a title="Plateforme de l'inclusion" class="fr-footer__brand-link" href="/">
-                  <%= image_tag "logos/footer-plateforme-inclusion.svg", alt: "Logo Plateforme de l'inclusion", class: "fr-footer__logo" %>
-                </a>
-            </div>
-            <div class="fr-footer__content">
-                <p class="fr-footer__content-desc">
-                  Ce service est proposé par le Groupement d’Intérêt Public “Plateforme de l’inclusion”, créé par arrêté en avril 2022. Sa mission est de développer de nouveaux services publics pour faciliter la vie des personnes en insertion et de celles et ceux qui les accompagnent.
-                </p>
-                <ul class="fr-footer__content-list">
-                    <li class="fr-footer__content-item">
-                      <a target="_blank" rel="noopener external" title="inclusion.gouv.fr - nouvelle fenêtre" class="fr-footer__content-link" href="https://inclusion.gouv.fr">inclusion.gouv.fr</a>
-                    </li>
-                    <li class="fr-footer__content-item">
-                      <a target="_blank" rel="noopener external" title="service-public.fr - nouvelle fenêtre" id="footer__content-link-7363" class="fr-footer__content-link" href="https://service-public.fr">service-public.fr</a>
-                    </li>
-                    <li class="fr-footer__content-item">
-                        <a target="_blank" rel="noopener external" title="travail-emploi.gouv.fr - nouvelle fenêtre" id="footer__content-link-7364" class="fr-footer__content-link" href="https://travail-emploi.gouv.fr">travail-emploi.gouv.fr</a>
-                    </li>
-                    <li class="fr-footer__content-item">
-                        <a target="_blank" rel="noopener external" title="data.gouv.fr - nouvelle fenêtre" id="footer__content-link-7365" class="fr-footer__content-link" href="https://data.gouv.fr">data.gouv.fr</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="fr-footer__partners">
-            <h2 class="fr-footer__partners-title">Nos partenaires</h2>
-            <div class="fr-footer__partners-logos">
-                <div class="fr-footer__partners-main">
-                  <a class="fr-footer__partners-link" href="https://www.numerique.gouv.fr/dinum/" target="_blank">
-                    <%= image_tag "logos/direction-interministerielle-du-numerique.svg", alt: "Logo Direction interministérielle du numérique" %>
-                  </a>
-                  <a class="fr-footer__partners-link" href="<%= ENV['RDV_SOLIDARITES_URL'] %>" target="_blank">
-                    <%= image_tag "logos/rdv-solidarites.png", alt: "Logo Rdv-Solidarités", size: 150, style: "height: auto;", class: "fr-ml-4w" %>
-                  </a>
-                </div>
-                <div class="fr-footer__partners-sub">
-                    <ul>
-                        <li>
-                          <a class="fr-footer__partners-link" href="https://emplois.inclusion.beta.gouv.fr/" target="_blank">
-                            <%= image_tag "logos/les-emplois.svg", alt: "Logo Les emplois de l'inclusion" %>
-                          </a>
-                        </li>
-                        <li>
-                          <a class="fr-footer__partners-link" href="https://www.francetravail.fr/" target="_blank">
-                            <%= image_tag "logos/france-travail.svg", alt: "Logo France Travail" %>
-                          </a>
-                        </li>
-                        <li>
-                          <a class="fr-footer__partners-link" href="https://francetravail.io/" target="_blank">
-                            <%= image_tag "logos/france-travail-io.svg", alt: "Logo France Travail.io" %>
-                          </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="fr-footer__bottom">
-            <ul class="fr-footer__bottom-list">
-                <li class="fr-footer__bottom-item">
-                    <%= link_to "Accessibilité : non conforme", accessibilite_path, class: "fr-footer__bottom-link" %>
-                </li>
-                <li class="fr-footer__bottom-item">
-                    <%= link_to "Mentions légales", mentions_legales_path, class: "fr-footer__bottom-link" %>
-                </li>
-                <li class="fr-footer__bottom-item">
-                    <%= link_to "C.G.U", cgu_path, class: "fr-footer__bottom-link" %>
-                </li>
-                <li class="fr-footer__bottom-item">
-                  <%= link_to "https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/20241209-rdv-insertion-DPAv0.3.pdf", target: "_blank", title: "Télécharger le DPA (Convention de sous-traitance) au format PDF", class: "fr-icon-file-line fr-link--icon-left fr-footer__bottom-link" do %>D.P.A<% end %>
-                </li>
-                <li class="fr-footer__bottom-item">
-                  <%= link_to 'Politique de confidentialité', politique_de_confidentialite_path, class: "fr-footer__bottom-link" %>
-                </li>
-            </ul>
-            <div class="fr-footer__bottom-copy">
-                <p>Sauf mention explicite de propriété intellectuelle détenue par des tiers, les contenus de ce site sont proposés sous <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank" rel="noopener external" title="Licence etalab - nouvelle fenêtre">licence etalab-2.0</a>
-                </p>
-            </div>
-        </div>
+    <div class="footer-bottom">
+      <ul class="footer-bottom-list">
+        <li class="footer-bottom-list-item">
+          <%= link_to 'Mentions légales', mentions_legales_path %>
+        </li>
+        <li class="footer-bottom-list-item">
+          <%= link_to 'C.G.U.', cgu_path %>
+        </li>
+        <li class="footer-bottom-list-item">
+          <%= link_to "https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/20241209-rdv-insertion-DPAv0.3.pdf", target: "_blank", title: "Télécharger le DPA (Convention de sous-traitance) au format PDF" do %>
+           D.P.A <i class="ri-file-pdf-2-line"></i>
+          <% end %>
+        </li>
+        <li class="footer-bottom-list-item">
+          <%= link_to 'Politique de confidentialité', politique_de_confidentialite_path %>
+        </li>
+        <li class="footer-bottom-list-item">
+          <%= link_to "Accessibilité: non conforme", accessibilite_path %>
+        </li>
+      </ul>
+      <div>
+        <p>Sauf mention contraire, tous les textes de ce site sont sous <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank">licence etalab-2.0</a></p>
+      </div>
     </div>
+  </div>
 </footer>
