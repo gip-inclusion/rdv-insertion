@@ -197,6 +197,10 @@ class UserListUpload::UserRow < ApplicationRecord
     invitation_attempts.any?
   end
 
+  def invitation_succeeded?
+    invitation_attempts.any?(&:success?)
+  end
+
   def last_invitation_attempt
     invitation_attempts.max_by(&:created_at)
   end

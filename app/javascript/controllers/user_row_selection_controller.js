@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import appFetch from "../lib/appFetch";
 
 export default class extends Controller {
   static targets = ["checkbox", "submit", "formatOption", "selectedUsersCounter"]
@@ -10,31 +11,13 @@ export default class extends Controller {
     this.#updateSelectedCountText()
   }
 
-  submit(event) {
-    const selectedIds = this.checkboxTargets
-      .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value)
-
-    const form = event.currentTarget
-
-    // Remove any existing hidden fields first
-    form.querySelectorAll("input[name='selected_ids[]']").forEach(el => el.remove())
-
-    // Create a new hidden field for each UID
-    selectedIds.forEach(id => {
-      const hiddenField = document.createElement("input")
-      hiddenField.type = "hidden"
-      hiddenField.name = "selected_ids[]"
-      hiddenField.value = id
-      form.appendChild(hiddenField)
-    })
-  }
-
-  toggleAll(event) {
-    this.checkboxTargets.forEach(checkbox => {
-      checkbox.checked = checkbox.disabled ? false : event.target.checked
-    })
-    this.toggleSubmit()
+  async toggleAll(event) {
+    if (await this.#saveAllSelectedState(event)) {
+      this.checkboxTargets.forEach(checkbox => {
+        checkbox.checked = checkbox.disabled ? false : event.target.checked
+      })
+      this.toggleSubmit()
+    }
   }
 
   toggleSubmit() {
@@ -44,6 +27,24 @@ export default class extends Controller {
       this.#disableSubmit()
     }
     this.#updateSelectedCountText()
+  }
+
+  async saveSelectedState(event) {
+    const response = await appFetch(event.target.dataset.updateUserRowUrl, "PATCH", {
+      user_row: { [this.element.dataset.userRowSelectionType]: event.target.checked }
+    })
+
+    if (!response.success) {
+      event.target.checked = !event.target.checked;
+    }
+  }
+
+  async #saveAllSelectedState(event) {
+    const response = await appFetch(event.target.dataset.updateAllUserRowsUrl, "PATCH", {
+      [this.element.dataset.userRowSelectionType]: event.target.checked
+    })
+
+    return response.success
   }
 
   disableUninvitableUsers() {
@@ -61,6 +62,7 @@ export default class extends Controller {
         checkbox.checked = false
         checkbox.disabled = true
       }
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }))
     })
 
     this.toggleSubmit()
