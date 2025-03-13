@@ -7,7 +7,9 @@ export default class extends Controller {
     if (this.hasSubmitTarget) {
       this.toggleSubmit()
     }
-    this.#updateSelectedCountText()
+    if (this.hasSelectedUsersCounterTarget) {
+      this.#updateSelectedCountText()
+    }
   }
 
   submit(event) {
