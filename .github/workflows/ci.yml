@@ -152,7 +152,7 @@ jobs:
             exit 1
           fi
 
-          RAILS_ENV=test bundle exec rspec $(cat node_spec_files.txt)
+          RAILS_ENV=test ENABLE_CRISP=false bundle exec rspec $(cat node_spec_files.txt)
         env:
           HOST: http://www.rdv-insertion-test.fake
           POSTGRES_HOST: localhost
@@ -160,6 +160,5 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-          ENABLE_CRISP: false
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
