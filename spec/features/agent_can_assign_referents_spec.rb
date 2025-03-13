@@ -69,7 +69,12 @@ describe "Agents can assign referents", :js do
       let(:xss_payload) { "<img src=1 onerror=alert(1)>" }
 
       let!(:user) do
-        create(:user, first_name: "Derek", last_name: "Sheperd #{xss_payload}", organisations: [organisation])
+        create(:user, first_name: "Derek", organisations: [organisation])
+      end
+
+      before do
+        # Skipping validation to ensure payload goes through
+        user.update_column(:last_name, "Sheperd #{xss_payload}")
       end
 
       it "prevents xss" do
