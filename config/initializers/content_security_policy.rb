@@ -9,7 +9,7 @@ rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
 matomo = "matomo.inclusion.beta.gouv.fr"
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
-maze = "*.maze.co"
+tally = "tally.so" # Polls
 flourish = "flo.uri.sh" # for deployment map
 
 Rails.application.config.content_security_policy do |policy|
@@ -17,11 +17,11 @@ Rails.application.config.content_security_policy do |policy|
   policy.font_src    :self, :https, :data
   policy.img_src     :self, :https, :data, s3_bucket
   policy.media_src :self, s3_bucket
-  policy.frame_src :self, flourish, maze
+  policy.frame_src :self, flourish, tally
   policy.object_src  :none
   policy.script_src  :self, :https, :unsafe_inline
   policy.style_src   :self, :https, :unsafe_inline
-  policy.connect_src :self, rdv_solidarites, sentry, matomo, maze, *crisp
+  policy.connect_src :self, rdv_solidarites, sentry, matomo, tally, *crisp
   policy.worker_src :self, :blob
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report-endpoint"
