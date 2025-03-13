@@ -8,27 +8,25 @@ export default observer(({ user }) => {
   };
 
   return (
-    <>
-      {user.referentAlreadyAssigned() ? (
-        <Tippy
-          content={`Référent: ${user.referentFullName()}`}
-        >
-          <i className="ri-check-line" />
-        </Tippy>
-      ) : (
-        <button
-          type="submit"
-          disabled={!user.createdAt || user.triggers.referentAssignation}
-          className="btn btn-primary btn-blue"
-          onClick={() => handleReferentAssignationClick()}
-        >
-          <small>
-            {user.triggers.referentAssignation
-              ? "Assignation..."
-              : `Assigner ${user.referentEmail}`}
-          </small>
-        </button>
-      )}
-    </>
+    user.referentAlreadyAssigned() ? (
+      <Tippy
+        content={`Référent: ${user.referentFullName()}`}
+      >
+        <i className="ri-check-line" />
+      </Tippy>
+    ) : (
+      <button
+        type="submit"
+        disabled={!user.createdAt || user.triggers.referentAssignation}
+        className="btn btn-primary btn-blue"
+        onClick={() => handleReferentAssignationClick()}
+      >
+        <small>
+          {user.triggers.referentAssignation
+            ? "Assignation..."
+            : `Assigner ${user.referentEmail}`}
+        </small>
+      </button>
+    )
   );
 });

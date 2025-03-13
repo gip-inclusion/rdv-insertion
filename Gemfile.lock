@@ -228,6 +228,8 @@ GEM
       rake (>= 13)
     groupdate (6.5.1)
       activesupport (>= 7)
+    grover (1.2.3)
+      nokogiri (~> 1)
     hashdiff (1.1.2)
     hashery (2.1.2)
     hashie (5.0.0)
@@ -616,7 +618,6 @@ GEM
     with_advisory_lock (5.1.0)
       activerecord (>= 6.1)
       zeitwerk (>= 2.6)
-    wkhtmltopdf-binary (0.12.6.8)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.7.1)
@@ -652,6 +653,7 @@ DEPENDENCIES
   factory_bot_rails
   faraday
   groupdate
+  grover
   image_processing
   jbuilder (~> 2.7)
   jsbundling-rails
@@ -702,9 +704,7 @@ DEPENDENCIES
   tzinfo-data
   web-console (>= 3.3.0)
   webmock
-  wicked_pdf
   with_advisory_lock
-  wkhtmltopdf-binary
 
 RUBY VERSION
    ruby 3.4.2p28
