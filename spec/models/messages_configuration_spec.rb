@@ -2,7 +2,8 @@ describe MessagesConfiguration do
   describe "signature_lines" do
     context "xss attempt" do
       let(:messages_configuration) do
-        build(:messages_configuration, organisation: create(:organisation), signature_lines: ["\"><img src=1 onerror=alert(1)>", "coucou"])
+        build(:messages_configuration, organisation: create(:organisation),
+                                       signature_lines: ["\"><img src=1 onerror=alert(1)>", "coucou"])
       end
 
       it "strips all html tags" do
