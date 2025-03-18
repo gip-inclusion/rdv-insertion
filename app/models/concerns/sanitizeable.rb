@@ -10,10 +10,8 @@ module Sanitizeable
   def sanitize_attributes
     changed_attributes.each_key do |attr|
       original_value = self[attr]
-      next unless original_value.is_a?(String)
 
-      sanitized_value = ActionView::Base.full_sanitizer.sanitize(self[attr])
-
+      sanitized_value = sanitize_value(original_value)
       next if sanitized_value == original_value
 
       self[attr] = sanitized_value
@@ -28,5 +26,29 @@ module Sanitizeable
         }
       )
     end
+  end
+
+  def sanitize_value(value)
+    case value
+    when String
+      sanitize_string(value)
+    when Array
+      sanitize_array(value)
+    else
+      value
+    end
+  end
+
+  def sanitize_string(value)
+    return value unless value.is_a?(String)
+
+    sanitized_value = ActionView::Base.full_sanitizer.sanitize(value)
+    CGI.unescapeHTML(sanitized_value)
+  end
+
+  def sanitize_array(values)
+    return values unless values.any? { |v| v.is_a?(String) }
+
+    values.map { |v| sanitize_string(v) }
   end
 end

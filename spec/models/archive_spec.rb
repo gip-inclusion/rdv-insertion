@@ -10,7 +10,7 @@ describe Archive do
     let!(:archive) { create(:archive, archiving_reason:, organisation:, user:) }
 
     it "strips all html" do
-      expect(archive.reload.archiving_reason).to eq("\"&gt;")
+      expect(archive.reload.archiving_reason).to eq("\">")
     end
   end
 
