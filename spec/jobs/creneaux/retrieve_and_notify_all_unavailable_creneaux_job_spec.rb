@@ -1,4 +1,4 @@
-describe SendCreneauAvailabilityAlertJob do
+describe Creneaux::RetrieveAndNotifyAllUnavailableCreneauxJob do
   subject { described_class.new.perform }
 
   describe "#perform" do
@@ -17,8 +17,8 @@ describe SendCreneauAvailabilityAlertJob do
         end
       end
 
-      it "perform NotifyUnavailableCreneauJob for all organisations" do
-        expect(NotifyUnavailableCreneauJob).to receive(:perform_later).exactly(6).times
+      it "perform Creneaux::RetrieveAndNotifyUnavailableCreneauxJob for all organisations" do
+        expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob).to receive(:perform_later).exactly(6).times
 
         subject
       end
@@ -28,8 +28,8 @@ describe SendCreneauAvailabilityAlertJob do
       let(:department) { create(:department) }
       let(:organisation) { create(:organisation, department: department) }
 
-      it "does not perform NotifyUnavailableCreneauJob" do
-        expect(NotifyUnavailableCreneauJob).not_to receive(:perform_later)
+      it "does not perform Creneaux::RetrieveAndNotifyUnavailableCreneauxJob" do
+        expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob).not_to receive(:perform_later)
 
         subject
       end

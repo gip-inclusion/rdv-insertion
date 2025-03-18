@@ -25,7 +25,8 @@ Rails.application.routes.draw do
     resources :webhook_endpoints, only: [:index] do
       post :duplicate, on: :member
     end
-    resources :unavailable_creneau_logs, only: [:index]
+    resources :blocked_invitations_counters, only: [:index]
+    resources :blocked_users, only: [:index]
 
     root to: "agents#index"
   end

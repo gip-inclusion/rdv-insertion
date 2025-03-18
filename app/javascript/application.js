@@ -5,7 +5,6 @@
 // Vanilla components
 import "bootstrap";
 import "./stylesheets/application.scss";
-import "remixicon/fonts/remixicon.css";
 import "@hotwired/turbo-rails";
 import { Application } from "@hotwired/stimulus";
 import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers";
@@ -16,7 +15,6 @@ import OrientationSelector from "./components/orientation-selector";
 import ReferentSelector from "./components/referent-selector";
 import DepartmentSelector from "./components/department-selector";
 import OrganisationSelector from "./components/organisation-selector";
-import ConfirmModal from "./components/confirm-modal";
 import MatomoScriptTag from "./components/matomo-script-tag";
 
 require("@rails/ujs").start();
@@ -52,5 +50,4 @@ document.addEventListener("turbo:load", () => {
   if (process.env.RAILS_ENV === "production") {
     new MatomoScriptTag();
   }
-  new ConfirmModal();
 });
