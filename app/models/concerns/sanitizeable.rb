@@ -33,9 +33,9 @@ module Sanitizeable
     when String
       sanitize_string(value)
     when Array
-      sanitize_array(value)
+      value.map { |v| sanitize_value(v) }
     when Hash
-      sanitize_hash(value)
+      hash.transform_values { |v| sanitize_value(v) }
     else
       value
     end
@@ -46,15 +46,5 @@ module Sanitizeable
 
     sanitized_value = ActionView::Base.full_sanitizer.sanitize(value)
     CGI.unescapeHTML(sanitized_value)
-  end
-
-  def sanitize_array(values)
-    return values unless values.any? { |v| v.is_a?(String) }
-
-    values.map { |v| sanitize_string(v) }
-  end
-
-  def sanitize_hash(hash)
-    hash.deep_transform_values { |v| sanitize_value(v) }
   end
 end
