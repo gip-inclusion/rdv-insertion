@@ -34,6 +34,8 @@ module Sanitizeable
       sanitize_string(value)
     when Array
       sanitize_array(value)
+    when Hash
+      sanitize_hash(value)
     else
       value
     end
@@ -50,5 +52,11 @@ module Sanitizeable
     return values unless values.any? { |v| v.is_a?(String) }
 
     values.map { |v| sanitize_string(v) }
+  end
+
+  def sanitize_hash(hash)
+    return hash unless hash.values.any? { |v| v.is_a?(String) || v.is_a?(Array) || v.is_a?(Hash) }
+
+    hash.transform_values { |v| sanitize_value(v) }
   end
 end

@@ -25,4 +25,19 @@ describe CsvExport do
       expect(csv_export.purged_at).to be_present
     end
   end
+
+  describe "xss attempt" do
+    describe "on request_params" do
+      let(:export) do
+        build(:csv_export, request_params: { no_xss: "coucou", xss: "\"><img src=1 onerror=alert(1)>" })
+      end
+
+      it "strips all html" do
+        export.save!
+
+        expect(export.request_params["no_xss"]).to eq("coucou")
+        expect(export.request_params["xss"]).to eq("\">")
+      end
+    end
+  end
 end
