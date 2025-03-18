@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Informer l’organisation par email" do %>
-  <%= form_for(:email, url: organisations_user_added_notifications_path, method: :post) do |f| %>
+  <%= form_for(:email, url: department_organisation_user_added_notifications_path(department_id: current_department.id, organisation_id: organisation.id), method: :post) do |f| %>
       <div class="p-3 pt-0">
         <p>Prévenir l’organisation que l’usager a été ajouté à leur liste </p>
         <div class="mb-3">

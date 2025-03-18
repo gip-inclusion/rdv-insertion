@@ -1,9 +1,12 @@
 class OrganisationMailer < ApplicationMailer
-  def user_added(to:, subject:, content:, user_attachements:, reply_to:)
+  def user_added(to:, subject:, content:, custom_content:, user_attachements:, reply_to:)
     @content = content
+    @custom_content = custom_content
+
     user_attachements.each do |attachment|
       attachments[attachment.original_filename] = attachment.read
     end
+
     mail(
       to: to,
       subject: subject,
