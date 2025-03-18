@@ -35,7 +35,7 @@ module Sanitizeable
     when Array
       value.map { |v| sanitize_value(v) }
     when Hash
-      hash.transform_values { |v| sanitize_value(v) }
+      value.transform_values { |v| sanitize_value(v) }
     else
       value
     end
