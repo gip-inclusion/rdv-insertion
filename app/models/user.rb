@@ -9,6 +9,14 @@ class User < ApplicationRecord
     "postal" => :address
   }.freeze
   SEARCH_ATTRIBUTES = [:first_name, :last_name, :affiliation_number, :email, :phone_number].freeze
+  EMAIL_REGEXP = /\A
+    [A-Za-z0-9_%+-]     # the first letter cannot be a dot
+    [A-Za-z0-9._%+-]+   # the rest can include dots
+    @
+    [A-Za-z0-9-]+
+    (\.[A-Za-z0-9-]+)*  # subdomains
+    \.[A-Za-z]{2,}      # TLD cannot be shorter than 2 letters
+  \z/x # x = extended mode = whitespaces ignored + allow comments
 
   include Searchable
   include Notificable
@@ -61,8 +69,7 @@ class User < ApplicationRecord
 
   validates :last_name, :first_name, presence: true
   validates :title, presence: true, if: :require_title_presence
-  validates :email, allow_blank: true,
-                    format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/ }
+  validates :email, allow_blank: true, format: { with: EMAIL_REGEXP }
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
