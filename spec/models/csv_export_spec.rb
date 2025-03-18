@@ -29,7 +29,14 @@ describe CsvExport do
   describe "xss attempt" do
     describe "on request_params" do
       let(:export) do
-        build(:csv_export, request_params: { no_xss: "coucou", xss: "\"><img src=1 onerror=alert(1)>" })
+        build(:csv_export, request_params: {
+                no_xss: "coucou",
+                xss: "\"><img src=1 onerror=alert(1)>",
+                nested: {
+                  params: ["\"><img src=1 onerror=alert(1)>"],
+                  xss: "\"><img src=1 onerror=alert(1)>"
+                }
+              })
       end
 
       it "strips all html" do
@@ -37,6 +44,8 @@ describe CsvExport do
 
         expect(export.request_params["no_xss"]).to eq("coucou")
         expect(export.request_params["xss"]).to eq("\">")
+        expect(export.request_params.dig("nested", "params")).to eq(["\">"])
+        expect(export.request_params.dig("nested", "xss")).to eq("\">")
       end
     end
   end

@@ -55,8 +55,6 @@ module Sanitizeable
   end
 
   def sanitize_hash(hash)
-    return hash unless hash.values.any? { |v| v.is_a?(String) || v.is_a?(Array) || v.is_a?(Hash) }
-
-    hash.transform_values { |v| sanitize_value(v) }
+    hash.deep_transform_values { |v| sanitize_value(v) }
   end
 end
