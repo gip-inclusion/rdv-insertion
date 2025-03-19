@@ -29,7 +29,12 @@ module Sanitizeable
   def sanitize_string(value)
     return value unless value.is_a?(String)
 
+    # full_sanitizer also removes some special characters
+    # so we need to remove them first otherwise
+    # we would have many false positives when comparing
+    # sanitized values with the original
     partially_sanitized_value = value.gsub("\r", "").gsub(" ", " ")
+
     sanitized_value = ActionView::Base.full_sanitizer.sanitize(partially_sanitized_value)
     fully_sanitized_value = CGI.unescapeHTML(sanitized_value)
 
