@@ -126,7 +126,9 @@ class UserListUpload::Collection
 
   def load_user_rows
     @user_list_upload.user_rows.preload(
-      matching_user: [:organisations, :motif_categories, :referents, :tags, :address_geocoding],
+      matching_user: [:organisations, :motif_categories, :referents, :tags, :address_geocoding, {
+        archives: :organisation
+      }],
       invitation_attempts: :invitation,
       user_save_attempts: [user: [:address_geocoding, { invitations: [:follow_up] }]]
     ).order(created_at: :asc).to_a

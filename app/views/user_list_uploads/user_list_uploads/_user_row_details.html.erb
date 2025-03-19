@@ -1,11 +1,16 @@
 <tr id="user-row-details-<%= user_row.id %>">
   <td colspan="9" class="border-light bg-white user-row-details">
-    <div class="d-flex justify-content-between px-3 py-2">
-      <div>
-        <p class="fw-bold text-dark-blue"><%= user_row.user.full_name_stripped %></p>
+    <div class="d-flex justify-content-between px-3 py-2 align-items-center mb-3">
+      <div class="d-flex justify-content-around align-items-center">
+        <p class="fw-bold text-dark-blue mb-0"><%= user_row.user.full_name_stripped %></p>
+        <% if user_row.archived? %>
+          <div class="ms-3">
+            <span class="badge rounded-pill background-maroon-light text-maroon fs-archived-badge">Archivé <%= "(motif: #{user_row.archiving_reasons.first})" if user_row.archiving_reasons.length == 1 %></span>
+          </div>
+        <% end %>
       </div>
       <div>
-        <% if user_row.matching_user_id %>
+        <% if user_row.matching_user_accessible? %>
           <%= link_to @user_list_upload.structure_user_path(user_row.matching_user_id), target: "_blank", class: "text-dark-blue" do %>
             <span class="text-underline">Ouvrir le dossier usager</span> <i class="ri-external-link-line"></i>
           <% end %>
@@ -46,7 +51,7 @@
             <span class="attribute-label">Organisations :</span>
             <% if user_row.organisations.any? %>
               <% user_row.organisations.each do |organisation| %>
-                <span class="badge badge-tag <%= user_row.association_already_persisted?(organisation, :organisations) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= organisation.name %></span>
+                <span class="badge badge-tag <%= badge_class_for_user_row_organisation(user_row, organisation) %>"><%= organisation.name %></span>
               <% end %>
             <% else %>
               <span>Aucune organisation assignée <i class="ri-information-line" data-controller="tooltip" data-action="mouseover->tooltip#organisationUnassignedOnUserListUpload"></i></span>
@@ -56,7 +61,7 @@
             <span class="attribute-label">Suivi sur :</span>
             <% if user_row.motif_categories.any? %>
               <% user_row.motif_categories.each do |motif_category| %>
-                <span class="badge badge-tag <%= user_row.association_already_persisted?(motif_category, :motif_categories) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= motif_category.name %></span>
+                <span class="badge badge-tag <%= badge_class_for_user_row_motif_category(user_row, motif_category) %>"><%= motif_category.name %><%= " (dossier traité)" if user_row.user.follow_up_for(motif_category)&.closed? %></span>
               <% end %>
             <% else %>
               <span> - </span>

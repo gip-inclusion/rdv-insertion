@@ -19,7 +19,8 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
-  delegate :department, :department_number, :department_id, :restricted_user_attributes, to: :user_list_upload
+  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
+           to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
@@ -69,6 +70,10 @@ class UserListUpload::UserRow < ApplicationRecord
     matching_user&.id
   end
 
+  def matching_user_accessible?
+    matching_user_id && matching_user.organisations.intersect?(user_list_upload.organisations)
+  end
+
   def saved_user_id
     saved_user&.id
   end
@@ -99,6 +104,38 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def motif_category_to_assign
     user_list_upload_motif_category
+  end
+
+  def archives
+    return [] if matching_user_id.blank?
+
+    @archives ||=
+      if organisation_to_assign
+        Array(matching_user.archive_in_organisation(organisation_to_assign))
+      else
+        matching_user.archives.select do |archive|
+          user_list_upload_organisations.map(&:id).include?(archive.organisation_id)
+        end
+      end
+  end
+
+  def archived?
+    archives.any?
+  end
+
+  def archiving_reasons
+    archives.map(&:archiving_reason)
+  end
+
+  def matching_follow_up
+    return unless matching_user_id
+    return unless motif_category_to_assign
+
+    matching_user.follow_ups.find { |follow_up| follow_up.motif_category_id == motif_category_to_assign.id }
+  end
+
+  def matching_follow_up_closed?
+    matching_follow_up&.closed?
   end
 
   def referent_to_assign
