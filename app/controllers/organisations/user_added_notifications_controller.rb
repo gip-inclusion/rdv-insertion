@@ -1,7 +1,6 @@
 module Organisations
   class UserAddedNotificationsController < ApplicationController
     include UserAddedNotificationsHelper
-    include UploadedAttachmentSanitizer
 
     before_action :set_department, :set_organisation, :set_user
 
@@ -36,7 +35,7 @@ module Organisations
     end
 
     def user_attachements
-      sanitize_uploaded_attachments((email_params[:attachments] || []).compact_blank)
+      UploadedFileSanitizer.sanitize((email_params[:attachments] || []).compact_blank)
     end
 
     def custom_content

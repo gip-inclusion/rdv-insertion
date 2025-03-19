@@ -1,6 +1,3 @@
-require "mime/types"
-require "filemagic"
-
 class UploadedFileSanitizer
   MAX_FILE_SIZE = 5 * 1024 * 1024 # 5MB
   ALLOWED_EXTENSIONS = %w[.jpg .png .pdf .xlsx .csv].freeze
@@ -50,11 +47,13 @@ class UploadedFileSanitizer
   end
 
   def valid_content?(file_path, extension)
-    fm = FileMagic.new(:mime)
-    detected_mime = fm.file(file_path)
-    fm.close
+    mime_types = MIME::Types.type_for(file_path)
 
+    return false if mime_types.empty?
+
+    detected_mime = mime_types.first.content_type
     expected_mime = ALLOWED_MIME_TYPES[extension]
+
     detected_mime.start_with?(expected_mime)
   end
 
