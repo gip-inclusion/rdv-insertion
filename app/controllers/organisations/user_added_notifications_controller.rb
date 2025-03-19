@@ -31,7 +31,7 @@ module Organisations
     end
 
     def email_params
-      params.expect(email: [:user_id, :custom_content, :attachments])
+      params.expect(email: [:user_id, :custom_content, { attachments: [] }])
     end
 
     def user_attachements

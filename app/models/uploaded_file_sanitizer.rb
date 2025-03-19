@@ -1,11 +1,12 @@
 class UploadedFileSanitizer
   MAX_FILE_SIZE = 5 * 1024 * 1024 # 5MB
-  ALLOWED_EXTENSIONS = %w[.jpg .png .pdf .xlsx .csv].freeze
+  ALLOWED_EXTENSIONS = %w[.jpg .jpeg .png .pdf .xlsx .csv].freeze
   ALLOWED_MIME_TYPES = {
     ".jpg" => "image/jpeg",
+    ".jpeg" => "image/jpeg",
     ".png" => "image/png",
     ".pdf" => "application/pdf",
-    ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".xlsx" => ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/zip"],
     ".csv" => "text/csv"
   }.freeze
 
@@ -27,13 +28,22 @@ class UploadedFileSanitizer
     mime_type = @uploaded_file.content_type
     file_size = @uploaded_file.size
 
-    return nil unless
-      valid_extension?(extension) &&
-      valid_mime_type?(extension, mime_type) &&
-      valid_content?(@uploaded_file.path, extension) &&
-      valid_size?(file_size)
+    if valid_extension?(extension) &&
+       valid_mime_type?(extension, mime_type) &&
+       valid_content?(@uploaded_file.path, extension) &&
+       valid_size?(file_size)
+      @uploaded_file
+    else
+      Sentry.capture_message("Invalid file upload", extra: {
+                               filename:,
+                               extension:,
+                               mime_type:,
+                               file_size:,
+                               detected_content_type:
+                             })
 
-    @uploaded_file
+      nil
+    end
   end
 
   private
@@ -43,18 +53,15 @@ class UploadedFileSanitizer
   end
 
   def valid_mime_type?(extension, mime_type)
-    ALLOWED_MIME_TYPES[extension] == mime_type
+    ALLOWED_MIME_TYPES[extension].include?(mime_type)
   end
 
   def valid_content?(file_path, extension)
-    mime_types = MIME::Types.type_for(file_path)
+    ALLOWED_MIME_TYPES[extension].include?(detected_content_type(file_path))
+  end
 
-    return false if mime_types.empty?
-
-    detected_mime = mime_types.first.content_type
-    expected_mime = ALLOWED_MIME_TYPES[extension]
-
-    detected_mime.start_with?(expected_mime)
+  def detected_content_type(file_path)
+    MimeMagic.by_magic(File.open(file_path))&.type
   end
 
   def valid_size?(file_size)
