@@ -15,10 +15,9 @@
   </div>
 
   <div class="row justify-content-center">
-    <div class="col-md-12"
-          data-controller="user-list-upload"
-          data-file-configuration-column-attributes="<%= @file_configuration.column_attributes.to_json %>"
-          data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>">
+    <div data-controller="user-list-upload"
+         data-file-configuration-column-attributes="<%= @file_configuration.column_attributes.to_json %>"
+         data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>">
 
       <%# We set the file input outside the form because we don't want to submit the file itself %>
       <input type="file"
