@@ -5,6 +5,15 @@ describe Archive do
   let!(:organisation) { create(:organisation, department:) }
   let!(:user) { create(:user) }
 
+  describe "xss attempt" do
+    let(:archiving_reason) { "\"><img src=1 onerror=alert(1)>" }
+    let!(:archive) { create(:archive, archiving_reason:, organisation:, user:) }
+
+    it "strips all html" do
+      expect(archive.reload.archiving_reason).to eq("\">")
+    end
+  end
+
   describe "no collision" do
     context "when the user is not archived" do
       let(:archive) { build(:archive, organisation: organisation, user: user) }
