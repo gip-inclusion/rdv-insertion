@@ -181,7 +181,11 @@ describe "Agents can add or remove user from organisations", :js do
     context "with xss attempt" do
       let(:xss_payload) { "<img src=1 onerror=alert(1)>" }
       let!(:organisation) do
-        create(:organisation, department:, name: "PLIE Valence #{xss_payload}")
+        create(:organisation, department:)
+      end
+
+      before do
+        organisation.update_column(:name, "PLIE Valence #{xss_payload}")
       end
 
       it "prevents xss" do
