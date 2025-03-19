@@ -4,16 +4,16 @@ class ApplicationRecord < ActiveRecord::Base
   include Sanitizeable
   include Serializable
 
-  def self.first
-    if column_for_attribute(:id).type == :uuid
+  def self.first(*args)
+    if column_for_attribute(:id).type == :uuid && args.empty?
       order(created_at: :asc).first
     else
       super
     end
   end
 
-  def self.last
-    if column_for_attribute(:id).type == :uuid
+  def self.last(*args)
+    if column_for_attribute(:id).type == :uuid && args.empty?
       order(created_at: :desc).first
     else
       super
