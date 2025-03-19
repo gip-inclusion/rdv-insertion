@@ -118,6 +118,28 @@ describe User do
       end
     end
 
+    context "wrong email format, begin with a dot" do
+      let(:user) { build(:user, email: ".abc@abc.bc") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.details).to eq({ email: [{ error: :invalid, value: ".abc@abc.bc" }] })
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+
+    context "wrong email format, domain is too short" do
+      let(:user) { build(:user, email: "abc@abc.b") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.details).to eq({ email: [{ error: :invalid, value: "abc@abc.b" }] })
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+
     context "almost perfect but incorrect email format" do
       let(:user) { build(:user, email: "abc@abc..fr") }
 
