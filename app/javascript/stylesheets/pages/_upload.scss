@@ -122,3 +122,7 @@
 .user-list-after-invitations-table {
   @extend .user-list-save-attempts-table;
 }
+
+.fs-archived-badge {
+  font-size: 0.8rem;
+}

@@ -245,4 +245,12 @@ export default class extends Controller {
       allowHTML: true,
     });
   }
+
+  showContent() {
+    const { content } = this.element.dataset;
+    tippy(this.element, {
+      content,
+      allowHTML: true,
+    });
+  }
 }

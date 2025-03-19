@@ -1,6 +1,6 @@
 module UserListUpload::UserRow::Status
   def before_user_save_status
-    return :to_create unless matching_user
+    return :to_create unless matching_user_id
 
     if will_change_matching_user?
       :to_update
