@@ -10,7 +10,7 @@ module Organisations
         subject: user_added_notification_subject,
         content: user_added_notification_content(@user, @organisation),
         custom_content:,
-        user_attachements:, reply_to: current_agent.email
+        user_attachments:, reply_to: current_agent.email
       ).deliver_now
       flash.now[:success] = "L'email a bien été envoyé à l'organisation"
       respond_to :turbo_stream
@@ -34,7 +34,7 @@ module Organisations
       params.expect(email: [:user_id, :custom_content, { attachments: [] }])
     end
 
-    def user_attachements
+    def user_attachments
       UploadedFileSanitizer.sanitize((email_params[:attachments] || []).compact_blank)
     end
 

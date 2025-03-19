@@ -1,10 +1,10 @@
 class OrganisationMailer < ApplicationMailer
   # rubocop:disable Metrics/ParameterLists
-  def user_added(to:, subject:, content:, custom_content:, user_attachements:, reply_to:)
+  def user_added(to:, subject:, content:, custom_content:, user_attachments:, reply_to:)
     @content = content
     @custom_content = custom_content
 
-    user_attachements.each do |attachment|
+    user_attachments.each do |attachment|
       attachments[attachment.original_filename] = attachment.read
     end
 
