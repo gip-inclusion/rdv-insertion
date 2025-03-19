@@ -1,4 +1,5 @@
 class OrganisationMailer < ApplicationMailer
+  # rubocop:disable Metrics/ParameterLists
   def user_added(to:, subject:, content:, custom_content:, user_attachements:, reply_to:)
     @content = content
     @custom_content = custom_content
@@ -7,12 +8,9 @@ class OrganisationMailer < ApplicationMailer
       attachments[attachment.original_filename] = attachment.read
     end
 
-    mail(
-      to: to,
-      subject: subject,
-      reply_to: reply_to
-    )
+    mail(to:, subject:, reply_to:)
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def creneau_unavailable(organisation:, invitations_without_creneaux_by_motif_category:)
     @organisation = organisation

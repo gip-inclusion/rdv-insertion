@@ -1,5 +1,5 @@
-require 'mime/types'
-require 'filemagic'
+require "mime/types"
+require "filemagic"
 
 class UploadedFileSanitizer
   MAX_FILE_SIZE = 5 * 1024 * 1024 # 5MB
@@ -29,9 +29,13 @@ class UploadedFileSanitizer
     extension = File.extname(filename).downcase
     mime_type = @uploaded_file.content_type
     file_size = @uploaded_file.size
-    
-    return nil unless valid_extension?(extension) && valid_mime_type?(extension, mime_type) && valid_content?(@uploaded_file.path, extension) && valid_size?(file_size)
-    
+
+    return nil unless
+      valid_extension?(extension) &&
+      valid_mime_type?(extension, mime_type) &&
+      valid_content?(@uploaded_file.path, extension) &&
+      valid_size?(file_size)
+
     @uploaded_file
   end
 
@@ -49,7 +53,7 @@ class UploadedFileSanitizer
     fm = FileMagic.new(:mime)
     detected_mime = fm.file(file_path)
     fm.close
-    
+
     expected_mime = ALLOWED_MIME_TYPES[extension]
     detected_mime.start_with?(expected_mime)
   end
