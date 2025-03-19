@@ -9,22 +9,7 @@ module Sanitizeable
 
   def sanitize_attributes
     changed_attributes.each_key do |attr|
-      original_value = self[attr]
-
-      sanitized_value = sanitize_value(original_value)
-      next if sanitized_value == original_value
-
-      self[attr] = sanitized_value
-
-      Sentry.capture_message(
-        "Potential XSS attempt on #{self.class.name}",
-        extra: {
-          id:,
-          attribute: attr,
-          original_value:,
-          sanitized_value:
-        }
-      )
+      self[attr] = sanitize_value(self[attr])
     end
   end
 
@@ -44,7 +29,21 @@ module Sanitizeable
   def sanitize_string(value)
     return value unless value.is_a?(String)
 
-    sanitized_value = ActionView::Base.full_sanitizer.sanitize(value)
-    CGI.unescapeHTML(sanitized_value)
+    partially_sanitized_value = value.gsub("\r", "").gsub(" ", " ")
+    sanitized_value = ActionView::Base.full_sanitizer.sanitize(partially_sanitized_value)
+    fully_sanitized_value = CGI.unescapeHTML(sanitized_value)
+
+    return value if partially_sanitized_value == fully_sanitized_value
+
+    Sentry.capture_message(
+      "Potential XSS attempt on #{self.class.name}",
+      extra: {
+        id:,
+        original_value: value,
+        sanitized_value: fully_sanitized_value
+      }
+    )
+
+    fully_sanitized_value
   end
 end
