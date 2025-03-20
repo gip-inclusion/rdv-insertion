@@ -8,7 +8,11 @@ module Organisations
       OrganisationMailer.user_added(
         to: @organisation.email,
         subject: user_added_notification_subject,
-        content: user_added_notification_content(@user, @organisation),
+        content: user_added_notification_content(
+          source: email_params[:source],
+          user: @user,
+          organisation: @organisation
+        ),
         custom_content:,
         user_attachments:, reply_to: current_agent.email
       ).deliver_now
@@ -27,11 +31,11 @@ module Organisations
     end
 
     def set_department
-      @department = policy_scope(Department).find(current_department_id)
+      @department = policy_scope(Department).find(params[:department_id])
     end
 
     def email_params
-      params.expect(email: [:user_id, :custom_content, { attachments: [] }])
+      params.expect(email: [:source, :user_id, :custom_content, { attachments: [] }])
     end
 
     def user_attachments

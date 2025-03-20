@@ -1,6 +1,7 @@
 <%= render "common/remote_modal", title: "Informer l’organisation par email" do %>
   <%= form_for(:email, url: department_organisation_user_added_notifications_path(department_id: current_department.id, organisation_id: organisation.id), method: :post) do |f| %>
       <%= f.hidden_field :user_id, value: user.id %>
+      <%= f.hidden_field :source, value: local_assigns[:source] %>
       <div class="p-3 pt-0">
         <p>Prévenir l’organisation que l’usager a été ajouté à leur liste </p>
         <div class="mb-3">
@@ -13,7 +14,7 @@
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Message</h5>
-            <%= f.text_area :content, readonly: true, class: "form-control", cols: 15, rows: 4, value: user_added_notification_content(user, organisation) %>
+            <%= f.text_area :content, readonly: true, class: "form-control", cols: 15, rows: 4, value: user_added_notification_content(source: local_assigns[:source], user:, organisation:) %>
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Ajouter un message personnalisé</h5>
