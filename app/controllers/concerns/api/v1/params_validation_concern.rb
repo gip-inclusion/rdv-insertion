@@ -44,7 +44,7 @@ module Api
       end
 
       def validate_referent_exists(referent_email, idx = nil)
-        return if @organisation.agents.find_by(email: referent_email)
+        return if @organisation.agents.find { |agent| agent.email == referent_email }
 
         @params_validation_errors << {
           error_details: "Assignation du référent impossible car aucun agent n'a été retrouvé " \
@@ -53,7 +53,7 @@ module Api
       end
 
       def validate_tag_exists(tag_value, idx = nil)
-        return if @organisation.tags.find_by(value: tag_value)
+        return if @organisation.tags.find { |tag| tag.value == tag_value }
 
         @params_validation_errors << {
           error_details: "Assignation du tag impossible car aucun tag n'a été trouvé " \
@@ -62,34 +62,7 @@ module Api
       end
 
       def validate_user_attributes(user_attributes, idx = nil)
-        return if validate_user_role(user_attributes, idx)
-        return if validate_user_title(user_attributes, idx)
-
         validate_user_model(user_attributes, idx)
-      end
-
-      def validate_user_role(user_attributes, idx = nil)
-        return false unless user_attributes[:role].present? && !User.roles.key?(user_attributes[:role])
-
-        @params_validation_errors << {
-          error_details: I18n.t("activerecord.errors.models.user.attributes.role.inclusion",
-                                valid_values: User.roles.keys.join(", ")),
-          first_name: user_attributes[:first_name],
-          last_name: user_attributes[:last_name]
-        }.merge(idx.present? ? { index: idx } : {})
-        true
-      end
-
-      def validate_user_title(user_attributes, idx = nil)
-        return false unless user_attributes[:title].present? && !User.titles.key?(user_attributes[:title])
-
-        @params_validation_errors << {
-          error_details: I18n.t("activerecord.errors.models.user.attributes.title.inclusion",
-                                valid_values: User.titles.keys.join(", ")),
-          first_name: user_attributes[:first_name],
-          last_name: user_attributes[:last_name]
-        }.merge(idx.present? ? { index: idx } : {})
-        true
       end
 
       def validate_user_model(user_attributes, idx = nil)

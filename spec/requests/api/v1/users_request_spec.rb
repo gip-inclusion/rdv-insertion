@@ -100,7 +100,10 @@ describe "Users API", swagger_doc: "v1/api.json" do
       end
 
       let!(:agent_referent) { create(:agent, email: "agentreferent@nomdedomaine.fr", organisations: [organisation]) }
-      let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id:) }
+      let!(:organisation) do
+        create(:organisation, rdv_solidarites_organisation_id:,
+                              tags: [create(:tag, value: "A relancer"), create(:tag, value: "Prioritaire")])
+      end
       let!(:rdv_solidarites_organisation_id) { 422 }
       let!(:agent) { create(:agent, organisations: [organisation]) }
       let!(:creation_source_attributes) do
@@ -110,11 +113,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
           created_from_structure_id: organisation.id
         }
       end
-
-      let!(:tag_a_relancer) { create(:tag, value: "A relancer") }
-      let!(:tag_prioritaire) { create(:tag, value: "Prioritaire") }
-      let!(:tag_organisation_a_relancer) { create(:tag_organisation, tag: tag_a_relancer, organisation: organisation) }
-      let!(:tag_organisation_prio) { create(:tag_organisation, tag: tag_prioritaire, organisation: organisation) }
 
       before { allow(CreateAndInviteUserJob).to receive(:perform_later) }
 
@@ -204,7 +202,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(response.status).to eq(422)
           parsed_response = JSON.parse(response.body)
           expect(parsed_response["errors"][0]["error_details"]).to eq(
-            "doit être l'une des valeurs suivantes : demandeur, conjoint"
+            "Rôle n'est pas inclus(e) dans la liste"
           )
         end
       end
@@ -220,7 +218,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(response.status).to eq(422)
           parsed_response = JSON.parse(response.body)
           expect(parsed_response["errors"][0]["error_details"]).to eq(
-            "doit être l'une des valeurs suivantes : monsieur, madame"
+            "Civilité n'est pas inclus(e) dans la liste"
           )
         end
       end
@@ -300,7 +298,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:motif_category_attributes) { { name: "RSA orientation" } }
 
       let!(:organisation) do
-        create(:organisation, rdv_solidarites_organisation_id:, phone_number: "0134499424")
+        create(:organisation, rdv_solidarites_organisation_id:, phone_number: "0134499424",
+                              tags: [create(:tag, value: "A relancer"), create(:tag, value: "Prioritaire")])
       end
       let!(:rdv_solidarites_organisation_id) { 422 }
       let!(:agent) { create(:agent, organisations: [organisation]) }
@@ -309,11 +308,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       let!(:email_invitation) { create(:invitation, user:, **email_attributes) }
       let!(:sms_invitation) { create(:invitation, user:, **sms_attributes) }
-
-      let!(:tag_a_relancer) { create(:tag, value: "A relancer") }
-      let!(:tag_prioritaire) { create(:tag, value: "Prioritaire") }
-      let!(:tag_organisation_a_relancer) { create(:tag_organisation, tag: tag_a_relancer, organisation: organisation) }
-      let!(:tag_organisation_prio) { create(:tag_organisation, tag: tag_prioritaire, organisation: organisation) }
 
       before do
         allow(Users::Upsert).to receive(:call)
@@ -330,8 +324,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
             user:, organisations: [organisation], motif_category_attributes:,
             invitation_attributes: email_attributes
           ).and_return(OpenStruct.new(success?: true, invitation: email_invitation))
-
-        allow(user).to receive(:tags).and_return([tag_a_relancer])
       end
 
       with_authentication
