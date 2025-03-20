@@ -1,6 +1,6 @@
 <% content_for :title, "Envoyer des invitations - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
 
-<div class="container px-5 py-3" data-controller="submit-selected-ids">
+<div class="container px-5 py-3" data-controller="user-row-selection" data-user-row-selection-type="marked_for_invitation">
   <div class="row text-dark-blue ">
     <div class="col text-center align-items-center my-1">
       <div>
@@ -33,19 +33,19 @@
           <div>
             <%= form_tag create_many_user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id),
                   method: :post,
-                  data: { action: "submit->submit-selected-ids#submit", turbo: false } do %>
+                  data: { action: "submit->user-row-selection#submit", turbo: false } do %>
               <div class="d-flex justify-content-around align-items-center">
                 <div class="align-middle">Inviter la sélection par:</div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "email", "Email", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "email" } %>
+                  <%= check_box_tag "email", "Email", checked: true, class: "form-check-input text-dark-blue", data: { user_row_selection_target: "formatOption", action: "change->user-row-selection#disableUninvitableUsers", format: "email" } %>
                   <%= label_tag "email", "Email", class: "form-check-label" %>
                 </div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "sms", "SMS", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "sms" } %>
+                  <%= check_box_tag "sms", "SMS", checked: true, class: "form-check-input text-dark-blue", data: { user_row_selection_target: "formatOption", action: "change->user-row-selection#disableUninvitableUsers", format: "sms" } %>
                   <%= label_tag "sms", "SMS", class: "form-check-label" %>
                 </div>
                 <%= hidden_field_tag "selected_ids[]" %>
-                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", data: { submit_selected_ids_target: "submit" } %>
+                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", data: { user_row_selection_target: "submit" } %>
               </div>
             <% end %>
           </div>
