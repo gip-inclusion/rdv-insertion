@@ -5,25 +5,7 @@
       -
     <% else %>
       <% referents.each do |referent| %>
-        <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex text-truncate">
-          <span class="text-truncate">
-            <%= referent %>
-          </span>
-          <%=
-            link_to(
-             user_referent_assignation_path(user_id: user.id, agent_id: referent.id),
-              data: {
-                turbo_confirm: "Retirer l'agent référent de cet usager ?",
-                turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer l'agent référent <b>#{referent}</b> de l'usager <b>#{user}</b> ?",
-                turbo_confirm_text_action: "- Retirer",
-                turbo_method: :delete,
-              },
-              class: 'text-dark-grey-alt ms-2'
-            ) do
-          %>
-            <i class="ri-close-line"></i>
-          <% end %>
-        </span>
+        <%= render "referent_badge", referent: referent, user: user %>
       <% end %>
     <% end %>
   </p>

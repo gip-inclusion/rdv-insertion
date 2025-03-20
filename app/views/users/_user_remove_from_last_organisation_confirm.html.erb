@@ -1,7 +1,4 @@
-<div class="modal-header border-0 pb-0">
-  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body pt-0">
+<%= render "common/custom_confirmation_modal" do %>
   <div id="custom-body" class="w-100 mb-4">
     <div class="w-100 text-center mb-3">
       <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
@@ -25,9 +22,9 @@
     <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
       Annuler
     </button>
-    <button type="button" id="confirm-button" class="btn btn-danger me-2" data-bs-dismiss="modal">
+    <button type="button" id="confirm-button" data-controller="confirm-button" data-action="click->confirm-button#confirm" class="btn btn-danger me-2" data-bs-dismiss="modal">
       <i class="ri-delete-bin-line-alt me-2"></i>
       Supprimer
     </button>
   </div>
-</div>
+<% end %>

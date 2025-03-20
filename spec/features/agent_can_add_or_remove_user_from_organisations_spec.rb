@@ -178,6 +178,28 @@ describe "Agents can add or remove user from organisations", :js do
       end
     end
 
+    context "with xss attempt" do
+      let(:xss_payload) { "<img src=1 onerror=alert(1)>" }
+      let!(:organisation) do
+        create(:organisation, department:)
+      end
+
+      before do
+        organisation.update_column(:name, "PLIE Valence #{xss_payload}")
+      end
+
+      it "prevents xss" do
+        visit department_user_path(department, user)
+
+        expect(page).to have_content(organisation.name)
+        expect(page).to have_content(xss_payload)
+
+        find(".badge", text: organisation.name).find("a").click
+        expect(page).to have_content("L'usager sera définitivement supprimé")
+        expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
+      end
+    end
+
     it "can remove from org" do
       stub_delete_user_profile = stub_request(
         :delete, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles"
