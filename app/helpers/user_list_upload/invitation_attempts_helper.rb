@@ -50,4 +50,19 @@ module UserListUpload::InvitationAttemptsHelper
       "environ #{time_remaining_in_minutes} min restante#{'s' if time_remaining_in_minutes > 1}"
     end
   end
+
+  def disable_invitation_for_user_row?(user_row)
+    selected_invitation_formats(user_row.user_list_upload_id).none? { |format| user_row.invitable_by?(format) }
+  end
+
+  def invitation_format_checked?(format, user_list_upload_id)
+    selected_invitation_formats(user_list_upload_id).include?(format)
+  end
+
+  def selected_invitation_formats(user_list_upload_id)
+    selected_invitation_formats =
+      cookies["selected_invitation_formats_#{user_list_upload_id}"] || %w[sms email]
+    selected_invitation_formats = JSON.parse(selected_invitation_formats) if selected_invitation_formats.is_a?(String)
+    selected_invitation_formats
+  end
 end

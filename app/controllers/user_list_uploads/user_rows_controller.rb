@@ -1,6 +1,7 @@
 module UserListUploads
   class UserRowsController < BaseController
-    before_action :set_user_list_upload, :set_user_row
+    before_action :set_user_list_upload
+    before_action :set_user_row, only: [:show, :update, :show_details, :hide_details]
     before_action :set_user_row_partial, only: [:show, :update]
 
     def show
@@ -14,6 +15,14 @@ module UserListUploads
         redirect_to request.referer
       else
         render :update_error
+      end
+    end
+
+    def batch_update
+      if @user_list_upload.update_rows(batch_update_params)
+        redirect_to request.referer
+      else
+        turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
       end
     end
 
@@ -37,7 +46,7 @@ module UserListUploads
     end
 
     def set_user_row_partial
-      @user_row_partial = if @user_row.marked_for_user_save?
+      @user_row_partial = if @user_row.selected_for_user_save?
                             "user_list_uploads/user_save_attempts/user_row"
                           else
                             "user_list_uploads/user_list_uploads/user_row"
@@ -47,7 +56,13 @@ module UserListUploads
     def row_params
       params.expect(
         user_row: [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email,
-                   :assigned_organisation_id]
+                   :assigned_organisation_id, :selected_for_user_save, :selected_for_invitation]
+      )
+    end
+
+    def batch_update_params
+      params.expect(
+        user_rows: [[:id, :selected_for_user_save, :selected_for_invitation]]
       )
     end
   end

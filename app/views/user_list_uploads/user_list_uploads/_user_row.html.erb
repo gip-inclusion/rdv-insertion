@@ -1,12 +1,12 @@
 <tr class="<%= user_row_background_color(user_row) %>" id="user-row-<%= user_row.id %>">
   <td>
     <input type="checkbox"
-            class="form-check-input user-checkbox"
-            data-submit-selected-ids-target="checkbox"
-            data-action="click->submit-selected-ids#toggleSubmit"
-            value="<%= user_row.id %>"
-            <%= "checked" if checked_by_default?(user_row) %>
-            <%= "disabled" unless user_row.user_valid? %>>
+           class="form-check-input user-checkbox"
+           data-select-user-rows-target="checkbox"
+           data-action="click->select-user-rows#toggleSelect"
+           data-user-row-id="<%= user_row.id %>"
+           <%= "checked" if user_row.selected_for_user_save? %>
+           <%= "disabled" unless user_row.user_valid? %>>
   </td>
 
   <% %i[title first_name last_name affiliation_number phone_number email].each do |attribute| %>

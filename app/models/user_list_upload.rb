@@ -8,7 +8,9 @@ class UserListUpload < ApplicationRecord
 
   accepts_nested_attributes_for :user_rows
 
-  delegate :user_rows_enriched_with_cnaf_data, :update_rows, to: :user_collection
+  delegate :user_rows_enriched_with_cnaf_data, :update_rows, :user_rows_selected_for_invitation,
+           :user_rows_selected_for_user_save,
+           to: :user_collection
   delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
   delegate :number, to: :department, prefix: true
 

@@ -135,8 +135,8 @@ module UserListUpload::UserListUploadHelper
     user_list_upload.restricted_user_attributes.exclude?(attribute_name.to_sym)
   end
 
-  def checked_by_default?(user_row)
-    user_row.user_valid? && !user_row.archived? && !user_row.matching_follow_up_closed?
+  def checkbox_to_select_all_checked?(attribute_name, user_list_upload_id)
+    cookies["checkbox_to_select_all_#{attribute_name}_checked_#{user_list_upload_id}"] != "false"
   end
 end
 # rubocop:enable Metrics/ModuleLength

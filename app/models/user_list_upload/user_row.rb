@@ -11,7 +11,8 @@ class UserListUpload::UserRow < ApplicationRecord
   encrypts :nir
 
   before_save :format_attributes, :set_matching_user
-  after_commit :enqueue_save_user_job, if: :should_save_user?
+  before_create :select_for_user_save!, if: :selected_by_default_for_user_save?
+  after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
   belongs_to :matching_user, class_name: "User", optional: true
@@ -173,8 +174,8 @@ class UserListUpload::UserRow < ApplicationRecord
       matching_user.referents != referents || matching_user.tags != tags
   end
 
-  def mark_for_user_save!
-    self.marked_for_user_save = true
+  def select_for_user_save!
+    self.selected_for_user_save = true
   end
 
   def save_user
@@ -213,8 +214,8 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def mark_for_invitation!
-    self.marked_for_invitation = true
+  def select_for_invitation!
+    self.selected_for_invitation = true
   end
 
   def invitable_by?(format)
@@ -267,8 +268,10 @@ class UserListUpload::UserRow < ApplicationRecord
     UserListUpload::SaveUserJob.perform_later(id)
   end
 
-  def should_save_user?
-    marked_for_user_save? && previous_changes.keys.any? do |attribute|
+  def should_save_user_automatically?
+    # automatic saves can only be triggered when a save has been attempted and when we change
+    # some attributes
+    attempted_user_save? && previous_changes.keys.any? do |attribute|
       (USER_ATTRIBUTES + [:assigned_organisation_id]).include?(attribute.to_sym)
     end
   end
@@ -303,6 +306,10 @@ class UserListUpload::UserRow < ApplicationRecord
         search_terms.downcase.in?(attribute)
       end
     end
+  end
+
+  def selected_by_default_for_user_save?
+    user_valid? && !archived? && !matching_follow_up_closed?
   end
 end
 # rubocop:enable Metrics/ClassLength

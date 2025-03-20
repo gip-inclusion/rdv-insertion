@@ -80,8 +80,8 @@ RSpec.describe UserListUpload::Collection do
 
       user_row1.reload
       user_row2.reload
-      expect(user_row1).to be_marked_for_user_save
-      expect(user_row2).not_to be_marked_for_user_save
+      expect(user_row1).to be_selected_for_user_save
+      expect(user_row2).not_to be_selected_for_user_save
     end
   end
 
@@ -91,8 +91,8 @@ RSpec.describe UserListUpload::Collection do
 
       user_row1.reload
       user_row2.reload
-      expect(user_row1).not_to be_marked_for_invitation
-      expect(user_row2).to be_marked_for_invitation
+      expect(user_row1).not_to be_selected_for_invitation
+      expect(user_row2).to be_selected_for_invitation
     end
   end
 
