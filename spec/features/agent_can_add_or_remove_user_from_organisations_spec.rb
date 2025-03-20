@@ -41,6 +41,14 @@ describe "Agents can add or remove user from organisations", :js do
                   ] }
         }.to_json
       )
+      stub_request(
+        :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/users/#{rdv_solidarites_user_id}"
+      ).to_return(
+        status: 200,
+        body: {
+          user: { id: rdv_solidarites_user_id }
+        }.to_json
+      )
       stub_update_user = stub_request(
         :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}"
       ).to_return(
@@ -86,6 +94,14 @@ describe "Agents can add or remove user from organisations", :js do
                     organisation_ids: [
                       organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id
                     ] }
+          }.to_json
+        )
+        stub_request(
+          :get, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/users/#{rdv_solidarites_user_id}"
+        ).to_return(
+          status: 200,
+          body: {
+            user: { id: rdv_solidarites_user_id }
           }.to_json
         )
         stub_update_user = stub_request(
@@ -159,6 +175,28 @@ describe "Agents can add or remove user from organisations", :js do
         expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
         expect(user.reload.motif_categories).not_to include(other_motif_category)
         expect(stub_create_user).to have_been_requested
+      end
+    end
+
+    context "with xss attempt" do
+      let(:xss_payload) { "<img src=1 onerror=alert(1)>" }
+      let!(:organisation) do
+        create(:organisation, department:)
+      end
+
+      before do
+        organisation.update_column(:name, "PLIE Valence #{xss_payload}")
+      end
+
+      it "prevents xss" do
+        visit department_user_path(department, user)
+
+        expect(page).to have_content(organisation.name)
+        expect(page).to have_content(xss_payload)
+
+        find(".badge", text: organisation.name).find("a").click
+        expect(page).to have_content("L'usager sera définitivement supprimé")
+        expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
       end
     end
 

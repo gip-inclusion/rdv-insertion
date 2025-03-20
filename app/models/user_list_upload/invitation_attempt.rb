@@ -14,7 +14,7 @@ class UserListUpload::InvitationAttempt < ApplicationRecord
   rescue StandardError => e
     invite_user_result = OpenStruct.new(
       success?: false,
-      errors: ["Une erreur est survenue lors de l'invitation de l'usager."],
+      errors: ["Une erreur interne est survenue lors de l'invitation de l'usager. L'équipe a été notifiée."],
       internal_error_message: e.detailed_message
     )
     Sentry.capture_exception(e)

@@ -25,7 +25,7 @@ module InboundWebhooks
       end
 
       def email
-        @data[:email]
+        @data[:email] || @data[:notification_email]
       end
 
       def user
@@ -39,7 +39,14 @@ module InboundWebhooks
 
         # If a user is created without email in RDV-S, for the conjoint for example, we do not
         # want the email to be nil in RDV-I or we cannot invite by email
-        @data.delete(:email) if email.blank?
+        # Remove this after conjoints email migration
+        if email.blank?
+          @data.delete(:email)
+          @data.delete(:notification_email)
+        end
+
+        # We store the user's email in email field whether it is the devise account email or the notification email
+        @data[:email] = email if email.present?
       end
 
       def upsert_or_delete_user

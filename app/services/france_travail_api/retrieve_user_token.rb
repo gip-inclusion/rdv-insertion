@@ -17,7 +17,7 @@ module FranceTravailApi
 
     def send_request!
       response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers: headers)
-      @response_body = JSON.parse(response.body)
+      @response_body = JSON.parse(response.body.force_encoding("UTF-8"))
 
       if response.success? && !user_not_found?(response)
         @france_travail_user_token = @response_body["jetonUsager"]
@@ -26,7 +26,7 @@ module FranceTravailApi
       else
         fail!(
           "Erreur lors de l'appel à l'api recherche-usager FT.\n" \
-          "Status: #{response.status}\n Body: #{response.body}"
+          "Status: #{response.status}\n Body: #{response.body.force_encoding('UTF-8')}"
         )
       end
     end

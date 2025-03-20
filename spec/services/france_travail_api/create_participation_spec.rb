@@ -51,4 +51,34 @@ describe FranceTravailApi::CreateParticipation, type: :service do
       )
     end
   end
+
+  context "when response body has binary encoding" do
+    before do
+      "Response with binary data".force_encoding("ASCII-8BIT")
+      allow(FranceTravailClient).to receive(:create_participation)
+        .and_return(OpenStruct.new(
+                      success?: true,
+                      body: { id: "ft-123" }.to_json.force_encoding("ASCII-8BIT")
+                    ))
+    end
+
+    it "handles the encoding correctly" do
+      expect { subject }.not_to raise_error
+      expect(participation.reload.france_travail_id).to eq("ft-123")
+    end
+  end
+
+  context "when error response has binary encoding" do
+    before do
+      binary_error = "Erreur avec caractères spéciaux: é à ç".force_encoding("ASCII-8BIT")
+      allow(FranceTravailClient).to receive(:create_participation)
+        .and_return(OpenStruct.new(success?: false, status: 400, body: binary_error))
+    end
+
+    it "handles the encoding correctly in error messages" do
+      expect { subject }.not_to raise_error(Encoding::CompatibilityError)
+      expect(subject.errors.first).to include("Status: 400")
+      expect(subject.errors.first).to include("Body: ")
+    end
+  end
 end

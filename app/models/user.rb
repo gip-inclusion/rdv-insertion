@@ -24,7 +24,8 @@ class User < ApplicationRecord
   include User::CreationOrigin
   include User::Geocodable
 
-  attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create
+  attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create,
+                :require_title_presence
 
   encrypts :nir, deterministic: true
 
@@ -60,6 +61,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :tag_users
 
   validates :last_name, :first_name, presence: true
+  validates :title, presence: true, if: :require_title_presence
   validates :email, allow_blank: true,
                     format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/ }
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
@@ -70,7 +72,7 @@ class User < ApplicationRecord
   delegate :name, :number, to: :department, prefix: true
 
   after_commit :import_associations_from_rdv_solidarites, on: :create,
-                                                          if: :import_associations_from_rdv_solidarites_on_create
+                                                          if: :imported_from_rdv_solidarites?
 
   enum :role, { demandeur: "demandeur", conjoint: "conjoint" }
   enum :title, { monsieur: "monsieur", madame: "madame" }

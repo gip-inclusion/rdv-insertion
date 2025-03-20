@@ -490,7 +490,7 @@ describe User do
   end
 
   describe "#import_associations_from_rdv_solidarites" do
-    let!(:user) { build(:user, import_associations_from_rdv_solidarites_on_create: true) }
+    let!(:user) { build(:user, created_through: "rdv_solidarites_webhook") }
 
     before do
       allow(ImportUserAssociationsFromRdvSolidaritesJob).to receive(:perform_later)
@@ -501,7 +501,7 @@ describe User do
       user.save
     end
 
-    context "when the option import_associations_from_rdv_solidarites_on_create is not set" do
+    context "when the user is not created through rdv_solidarites_webhook" do
       let!(:user) { build(:user) }
 
       it "does not enqueue a job to import associations from rdv_solidarites" do
@@ -511,10 +511,9 @@ describe User do
     end
 
     context "when the user is being updated" do
-      let!(:user) { create(:user) }
+      let!(:user) { create(:user, created_through: "rdv_solidarites_webhook") }
 
       it "does not enqueue a job to import associations from rdv_solidarites" do
-        user.import_associations_from_rdv_solidarites_on_create = true
         expect(ImportUserAssociationsFromRdvSolidaritesJob).not_to receive(:perform_later)
         user.save
       end

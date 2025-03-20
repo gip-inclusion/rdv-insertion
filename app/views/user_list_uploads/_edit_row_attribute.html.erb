@@ -7,6 +7,7 @@
     controller: "user-row-cell",
     action: "turbo:submit-start->user-row-cell#setLoading"
   },
+  class: "edit-row-attribute",
   method: :patch
 ) do |form| %>
   <div class="input-group input-group-sm" data-turbo-prefetch="false">
@@ -17,14 +18,16 @@
                           value: user_row.user.send(attribute),
                           class: "form-control" %>
     <% end %>
-    <button type="submit">
-      <i class="ri-check-line text-success"></i>
-    </button>
+    <div class="edit-buttons">
+      <button type="submit">
+        <i class="ri-check-line"></i>
+      </button>
 
-    <button type="submit">
-      <%= link_to user_list_upload_user_row_path(url_params.merge(user_list_upload_id: @user_list_upload.id, id: user_row.id)) do %>
-        <i class="ri-close-line text-danger"></i>
-      <% end %>
-    </button>
+      <button type="submit">
+        <%= link_to user_list_upload_user_row_path(url_params.merge(user_list_upload_id: @user_list_upload.id, id: user_row.id)) do %>
+          <i class="ri-close-line"></i>
+        <% end %>
+      </button>
+    </div>
   </div>
 <% end %>

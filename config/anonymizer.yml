@@ -65,6 +65,13 @@ tables:
       - user_id
       - department_id
 
+  - table_name: creneau_availabilities
+    non_anonymized_column_names:
+      - number_of_creneaux_available
+      - category_configuration
+      - updated_at
+      - created_at
+
   - table_name: category_configurations
     anonymized_column_names:
       - template_rdv_title_override
@@ -119,7 +126,9 @@ tables:
       - carnet_de_bord_deploiement_id
 
   - table_name: dpa_agreements
-    anonymized_column_names: []
+    anonymized_column_names:
+      - agent_email
+      - agent_full_name
     non_anonymized_column_names:
       - agent_id
       - organisation_id
@@ -449,7 +458,7 @@ tables:
       - last_webhook_update_received_at
       - archived_at
 
-  - table_name: unavailable_creneau_logs
+  - table_name: blocked_invitations_counters
     anonymized_column_names: []
     non_anonymized_column_names:
       - number_of_invitations_affected
@@ -546,3 +555,9 @@ tables:
       - format
       - internal_error_message
       - service_errors
+  - table_name: blocked_users
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - user_id
+      - created_at
+      - updated_at

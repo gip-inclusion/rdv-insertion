@@ -231,71 +231,129 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         context "when one of the user is not yet created" do
-          let!(:user_id1) { 82_821 }
+          context "with email field" do
+            let!(:user_id1) { 82_821 }
+            let!(:users) do
+              [{
+                id: user_id1,
+                first_name: "James",
+                last_name: "Cameron",
+                address: "50 rue Victor Hugo 93500 Pantin",
+                phone_number: "0755929249",
+                email: "james@cameron.com"
+              }]
+            end
 
-          let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
-          let!(:new_follow_up) do
-            build(:follow_up, motif_category: motif_category, user: new_user)
-          end
+            let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
+            let!(:new_follow_up) { build(:follow_up, motif_category: motif_category, user: new_user) }
 
-          before do
-            allow(User).to receive(:create!).and_return(new_user)
-            allow(FollowUp).to receive(:find_or_create_by!)
-              .with(user: new_user, motif_category: motif_category)
-              .and_return(new_follow_up)
-          end
+            before do
+              allow(User).to receive(:create!).and_return(new_user)
+              allow(FollowUp).to receive(:find_or_create_by!)
+                .with(user: new_user, motif_category: motif_category)
+                .and_return(new_follow_up)
+            end
 
-          it "creates the user" do
-            expect(User).to receive(:create!).with(
-              rdv_solidarites_user_id: user_id1,
-              organisations: [organisation],
-              import_associations_from_rdv_solidarites_on_create: true,
-              first_name: "James",
-              last_name: "Cameron",
-              address: "50 rue Victor Hugo 93500 Pantin",
-              phone_number: "0755929249",
-              created_through: "rdv_solidarites_webhook",
-              created_from_structure: organisation
-            )
-            subject
-          end
-
-          it "still upserts the rdv with the right attributes" do
-            expect(UpsertRecordJob).to receive(:perform_later)
-              .with(
-                "Rdv",
-                data,
-                {
-                  participations_attributes: [
-                    {
-                      id: nil,
-                      status: "unknown",
-                      created_by: "user",
-                      user_id: user2.id,
-                      rdv_solidarites_participation_id: 999,
-                      follow_up_id: follow_up2.id,
-                      convocable: false,
-                      rdv_solidarites_agent_prescripteur_id: nil
-                    },
-                    {
-                      id: nil,
-                      status: "unknown",
-                      created_by: "user",
-                      user_id: new_user.id,
-                      rdv_solidarites_participation_id: 998,
-                      follow_up_id: new_follow_up.id,
-                      convocable: false,
-                      rdv_solidarites_agent_prescripteur_id: nil
-                    }
-                  ],
-                  organisation_id: organisation.id,
-                  agent_ids: [agent.id],
-                  motif_id: motif.id,
-                  lieu_id: lieu.id,
-                  last_webhook_update_received_at: timestamp
-                }
+            it "creates the user with email field" do
+              expect(User).to receive(:create!).with(
+                rdv_solidarites_user_id: user_id1,
+                organisations: [organisation],
+                first_name: "James",
+                last_name: "Cameron",
+                address: "50 rue Victor Hugo 93500 Pantin",
+                phone_number: "0755929249",
+                email: "james@cameron.com",
+                created_through: "rdv_solidarites_webhook",
+                created_from_structure: organisation
               )
-            subject
+              subject
+            end
+          end
+
+          context "with notification_email field" do
+            let!(:user_id1) { 82_821 }
+            let!(:users) do
+              [{
+                id: user_id1,
+                first_name: "James",
+                last_name: "Cameron",
+                address: "50 rue Victor Hugo 93500 Pantin",
+                phone_number: "0755929249",
+                notification_email: "james@cameron.com"
+              }, {
+                id: user_id2,
+                first_name: "Jane",
+                last_name: "Campion",
+                created_at: "2021-05-29 14:20:20 +0200",
+                notification_email: "jane@campion.com",
+                phone_number: nil,
+                birth_date: nil,
+                address: nil
+              }]
+            end
+
+            let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
+            let!(:new_follow_up) { build(:follow_up, motif_category: motif_category, user: new_user) }
+
+            before do
+              allow(User).to receive(:create!).and_return(new_user)
+              allow(FollowUp).to receive(:find_or_create_by!)
+                .with(user: new_user, motif_category: motif_category)
+                .and_return(new_follow_up)
+            end
+
+            it "creates the user with notification_email converted to email field" do
+              expect(User).to receive(:create!).with(
+                rdv_solidarites_user_id: user_id1,
+                organisations: [organisation],
+                first_name: "James",
+                last_name: "Cameron",
+                address: "50 rue Victor Hugo 93500 Pantin",
+                phone_number: "0755929249",
+                email: "james@cameron.com",
+                created_through: "rdv_solidarites_webhook",
+                created_from_structure: organisation
+              )
+              subject
+            end
+
+            it "still upserts the rdv with the right attributes" do
+              expect(UpsertRecordJob).to receive(:perform_later)
+                .with(
+                  "Rdv",
+                  data,
+                  {
+                    participations_attributes: [
+                      {
+                        id: nil,
+                        status: "unknown",
+                        created_by: "user",
+                        user_id: user2.id,
+                        rdv_solidarites_participation_id: 999,
+                        follow_up_id: follow_up2.id,
+                        convocable: false,
+                        rdv_solidarites_agent_prescripteur_id: nil
+                      },
+                      {
+                        id: nil,
+                        status: "unknown",
+                        created_by: "user",
+                        user_id: new_user.id,
+                        rdv_solidarites_participation_id: 998,
+                        follow_up_id: new_follow_up.id,
+                        convocable: false,
+                        rdv_solidarites_agent_prescripteur_id: nil
+                      }
+                    ],
+                    organisation_id: organisation.id,
+                    agent_ids: [agent.id],
+                    motif_id: motif.id,
+                    lieu_id: lieu.id,
+                    last_webhook_update_received_at: timestamp
+                  }
+                )
+              subject
+            end
           end
         end
 

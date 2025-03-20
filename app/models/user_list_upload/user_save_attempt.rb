@@ -7,7 +7,7 @@ class UserListUpload::UserSaveAttempt < ApplicationRecord
   rescue StandardError => e
     save_user_result = OpenStruct.new(
       success?: false,
-      errors: ["Une erreur est survenue lors de la sauvegarde de l'usager."],
+      errors: ["Une erreur interne est survenue lors de la sauvegarde de l'usager. L'équipe a été notifiée."],
       error_type: e.class.name.underscore,
       internal_error_message: e.detailed_message
     )

@@ -50,14 +50,14 @@ module FranceTravailApi
       end
 
       if response.success?
-        response_body = JSON.parse(response.body)
+        response_body = JSON.parse(response.body.force_encoding("UTF-8"))
         @france_travail_access_token, @expires_in = [
           response_body["access_token"], response_body["expires_in"]
         ]
       else
         fail!(
           "la requête d'authentification à FT n'a pas pu aboutir.\n" \
-          "Status: #{response.status}\n Body: #{response.body}"
+          "Status: #{response.status}\n Body: #{response.body.force_encoding('UTF-8')}"
         )
       end
     end

@@ -12,7 +12,9 @@
         <%= render(
           "common/flash_banner",
           type: :alert,
-          title: "#{user_rows_with_user_save_errors.count} dossiers usagers n'ont pas pu être créés.",
+          title: user_rows_with_user_save_errors.count > 1 ?
+            "#{user_rows_with_user_save_errors.count} dossiers usagers n'ont pas pu être créés." :
+            "#{user_rows_with_user_save_errors.count} dossier usager n'a pas pu être créé.",
           description: "Vous pouvez corriger les erreurs ou passer à l'étape suivante."
         ) %>
       </div>
