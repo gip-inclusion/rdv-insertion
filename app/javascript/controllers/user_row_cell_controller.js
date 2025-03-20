@@ -6,12 +6,6 @@ export default class extends Controller {
   }
 
   async edit() {
-    const nonEditableAttributes = ["post_code"];
-    const attribute = this.element.dataset.userRowAttribute;
-    if (nonEditableAttributes.includes(attribute)) {
-      return;
-    }
-
     const { userListUploadId, userRowId, userRowAttribute } = this.element.dataset;
 
     const response = await fetch(`/user_list_uploads/${userListUploadId}/user_rows/${userRowId}/user_row_cells/edit?attribute=${userRowAttribute}`);
