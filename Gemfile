@@ -89,9 +89,8 @@ gem "rqrcode", "~> 2.0", require: false
 gem "rexml"
 gem "addressable"
 
-# Easily generate PDF from HTML
-gem "wicked_pdf"
-gem "wkhtmltopdf-binary"
+# Easily generate PDF from HTML with puppeteer and headless chrome
+gem "grover"
 
 # CORS support
 gem "rack-cors"
