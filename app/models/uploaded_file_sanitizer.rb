@@ -12,7 +12,7 @@ class UploadedFileSanitizer
 
   def self.sanitize(uploaded_files)
     uploaded_files.map do |uploaded_file|
-      new(uploaded_file).sanitize!
+      new(uploaded_file).sanitize
     end.compact
   end
 
@@ -20,7 +20,7 @@ class UploadedFileSanitizer
     @uploaded_file = uploaded_file
   end
 
-  def sanitize!
+  def sanitize
     return nil unless @uploaded_file.respond_to?(:original_filename)
 
     filename = @uploaded_file.original_filename
@@ -39,7 +39,7 @@ class UploadedFileSanitizer
                                extension:,
                                mime_type:,
                                file_size:,
-                               detected_content_type:
+                               detected_content_type: detected_content_type(@uploaded_file.path)
                              })
 
       nil
@@ -60,11 +60,11 @@ class UploadedFileSanitizer
     ALLOWED_MIME_TYPES[extension].include?(detected_content_type(file_path))
   end
 
-  def detected_content_type(file_path)
-    MimeMagic.by_magic(File.open(file_path))&.type
-  end
-
   def valid_size?(file_size)
     file_size <= MAX_FILE_SIZE
+  end
+
+  def detected_content_type(file_path)
+    MimeMagic.by_magic(File.open(file_path))&.type
   end
 end
