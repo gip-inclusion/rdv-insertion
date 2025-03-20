@@ -74,8 +74,8 @@ class User < ApplicationRecord
   after_commit :import_associations_from_rdv_solidarites, on: :create,
                                                           if: :imported_from_rdv_solidarites?
 
-  enum :role, { demandeur: "demandeur", conjoint: "conjoint" }, validate: true
-  enum :title, { monsieur: "monsieur", madame: "madame" }, validate: true
+  enum :role, { demandeur: "demandeur", conjoint: "conjoint" }, validate: { allow_nil: true }
+  enum :title, { monsieur: "monsieur", madame: "madame" }, validate: { allow_nil: true }
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }

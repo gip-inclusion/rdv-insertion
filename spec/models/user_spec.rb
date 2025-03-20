@@ -403,8 +403,10 @@ describe User do
 
     let!(:user) { build(:user, organisations: [organisation]) }
     let!(:organisation) { create(:organisation) }
+    let!(:other_organisation) { create(:organisation, tags: [other_tag_organisation]) }
     let!(:tag) { create(:tag, value: "A relancer") }
     let!(:other_tag) { create(:tag, value: "Prioritaire") }
+    let!(:other_tag_organisation) { create(:tag, value: "Non prioritaire") }
 
     before do
       create(:tag_organisation, tag: tag, organisation: organisation)
@@ -420,6 +422,14 @@ describe User do
     context "when the value does not match an existing tag" do
       it "does not assign the tag" do
         user.tags_to_add = [{ value: "DoesNotExist" }]
+        expect { subject }.not_to change(TagUser, :count)
+        expect(user.reload.tags).to eq([])
+      end
+    end
+
+    context "when the value does not match an existing tag in the organisation" do
+      it "does not assign the tag" do
+        user.tags_to_add = [{ value: "Non prioritaire" }]
         expect { subject }.not_to change(TagUser, :count)
         expect(user.reload.tags).to eq([])
       end

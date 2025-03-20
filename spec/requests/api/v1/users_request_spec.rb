@@ -28,7 +28,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       }
 
-      let!(:user_params_for_doc) do
+      let!(:user_params_without_created_attributes) do
         {
           first_name: "Didier",
           last_name: "Drogba",
@@ -51,16 +51,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       end
 
-      let!(:user1_params) do
-        {
-          **user_params_for_doc,
-          created_through: "rdv_insertion_api",
-          created_from_structure_type: "Organisation",
-          created_from_structure_id: organisation.id
-        }
-      end
-
-      let!(:user2_params_for_doc) do
+      let!(:user2_params_without_created_attributes) do
         {
           first_name: "Dimitri",
           last_name: "Payet",
@@ -86,17 +77,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       end
 
-      let!(:user2_params) do
-        {
-          **user2_params_for_doc.except(:invitation),
-          created_through: "rdv_insertion_api",
-          created_from_structure_type: "Organisation",
-          created_from_structure_id: organisation.id
-        }
-      end
-
       let!(:users_params) do
-        { users: [user_params_for_doc, user2_params_for_doc] }
+        { users: [user_params_without_created_attributes, user2_params_without_created_attributes] }
       end
 
       let!(:agent_referent) { create(:agent, email: "agentreferent@nomdedomaine.fr", organisations: [organisation]) }
@@ -125,14 +107,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user1_params.merge(creation_source_attributes),
+              user_params_without_created_attributes.merge(creation_source_attributes),
               {},
               {}
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user2_params.except(:invitation).merge(creation_source_attributes),
+              user2_params_without_created_attributes.except(:invitation).merge(creation_source_attributes),
               {},
               { name: "RSA orientation" }
             )
@@ -167,7 +149,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand + de 25 usagers sont envoyés",
                       true do
         let!(:users_params) do
-          { users: 30.times.map { user_params_for_doc } }
+          { users: 30.times.map { user_params_without_created_attributes } }
         end
       end
 
@@ -195,7 +177,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         schema "$ref" => "#/components/schemas/error_unprocessable_entity"
 
         let!(:users_params) do
-          { users: [user_params_for_doc.merge(role: "invalid_role")] }
+          { users: [user_params_without_created_attributes.merge(role: "invalid_role")] }
         end
 
         run_test! do |response|
@@ -211,7 +193,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         schema "$ref" => "#/components/schemas/error_unprocessable_entity"
 
         let!(:users_params) do
-          { users: [user_params_for_doc.merge(title: "invalid_title")] }
+          { users: [user_params_without_created_attributes.merge(title: "invalid_title")] }
         end
 
         run_test! do |response|
@@ -245,7 +227,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       }
 
-      let!(:user_params_for_doc) do
+      let!(:user_params_without_created_attributes) do
         {
           first_name: "Didier",
           last_name: "Drogba",
@@ -270,7 +252,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       let!(:user_attributes) do
         {
-          **user_params_for_doc,
+          **user_params_without_created_attributes,
           created_through: "rdv_insertion_api",
           created_from_structure_type: "Organisation",
           created_from_structure_id: organisation.id
@@ -280,7 +262,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:user_params) do
         {
           user: {
-            **user_params_for_doc,
+            **user_params_without_created_attributes,
             invitation: { motif_category: motif_category_attributes }
           }
         }
