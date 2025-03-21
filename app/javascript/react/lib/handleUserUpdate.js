@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../../lib/safeSwal";
 import updateUser from "../actions/updateUser";
 
 const handleUserUpdate = async (organisationId, user, attributes, options = {}) => {
@@ -6,7 +6,11 @@ const handleUserUpdate = async (organisationId, user, attributes, options = {}) 
   if (result.success) {
     user.updateWith(result.user, options);
   } else {
-    Swal.fire("Impossible de mettre à jour le bénéficiaire'", result.errors[0], "error");
+    safeSwal({
+      title: "Impossible de mettre à jour le bénéficiaire",
+      text: result.errors[0],
+      icon: "error",
+    });
   }
   return result;
 };

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
-import Swal from "sweetalert2";
 import Sortable from "sortablejs";
+import safeSwal from "../lib/safeSwal";
 
 export default class extends Controller {
   connect() {
@@ -27,7 +27,7 @@ export default class extends Controller {
 
     if (!response.ok) {
       this.sortable.sort(this.originalOrder);
-      Swal.fire({
+      safeSwal({
         title: "Une erreur est survenue",
         text: "L'ordre de la liste ne s'est pas mis à jour, veuillez réessayer.",
         icon: "warning",

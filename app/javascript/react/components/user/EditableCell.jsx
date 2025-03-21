@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
+import DOMPurify from "dompurify";
 import EditableTags from "./EditableTags";
 
 function EditableCell({ user, cell, type, values, labelClassName = "", labelStyle = {} }) {
