@@ -15,7 +15,8 @@
   </div>
 
   <div class="row justify-content-center">
-    <div data-controller="user-list-upload"
+    <div class="col-md-10"
+         data-controller="user-list-upload"
          data-file-configuration-column-attributes="<%= @file_configuration.column_attributes.to_json %>"
          data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>">
 
