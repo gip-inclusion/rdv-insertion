@@ -54,6 +54,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-no-unsanitized": "^4.1.2",
     "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-rdv-insertion": "file:app/javascript/eslint-rules",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4",
     "husky": "^6.0.0",

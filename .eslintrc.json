@@ -11,7 +11,7 @@
     "ecmaVersion": 13,
     "sourceType": "module"
   },
-  "plugins": ["react", "no-unsanitized"],
+  "plugins": ["react", "no-unsanitized", "rdv-insertion"],
   "rules": {
     "quotes": ["error", "double"],
     "react/prop-types": 0,
@@ -25,6 +25,8 @@
     "jsx-a11y/no-autofocus": "off",
     "arrow-body-style": "off",
     "react/no-danger": "error",
+    "rdv-insertion/enforce-safe-swal": "error",
+    "rdv-insertion/enforce-safe-tippy": "error",
     "no-unsanitized/method": ["error", {
       "escape": {
         "methods": ["DOMPurify.sanitize"]
@@ -35,5 +37,12 @@
         "methods": ["DOMPurify.sanitize"]
       }
     }]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["app/javascript"]
+      }
+    }
   }
 }

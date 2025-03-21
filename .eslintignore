@@ -4,3 +4,4 @@
 /app/javascript/application.js
 /app/javascript/mail.js
 /app/javascript/pdf.js
+/app/javascript/eslint-rules/*
