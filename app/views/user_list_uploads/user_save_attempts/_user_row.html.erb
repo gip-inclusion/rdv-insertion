@@ -23,7 +23,12 @@
 
   <td>
     <div class="d-flex justify-content-between align-items-center">
-      <% if user_row.no_organisation_to_assign? %>
+      <% if !@all_saves_attempted %>
+        <span class="badge rounded-pill alert-warning opacity-50" style="cursor: not-allowed;">
+          Assigner une organisation
+          <i class="ri-error-warning-line text-end"></i>
+        </span>
+      <% elsif user_row.no_organisation_to_assign? %>
         <%= link_to(new_user_list_upload_user_row_organisation_assignation_path(user_list_upload_id: @user_list_upload.id, user_row_id: user_row.id),
                     class: "badge rounded-pill alert-warning",
                     data: { turbo_frame: "remote_modal" }
