@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import DOMPurify from "dompurify";
 import createInvitationLetter from "../react/lib/createInvitationLetter";
 
 export default class extends Controller {
@@ -25,7 +26,7 @@ export default class extends Controller {
       this.element.dataset.motifCategoryId
     );
 
-    this.button.innerHTML = this.initialButtonHTML
+    this.button.innerHTML = DOMPurify.sanitize(this.initialButtonHTML);
     if (result.success && this.initialButtonText === "Inviter") {
       this.button.innerText = "Révinviter";
     }

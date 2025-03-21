@@ -11,7 +11,7 @@
     "ecmaVersion": 13,
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "no-unsanitized"],
   "rules": {
     "quotes": ["error", "double"],
     "react/prop-types": 0,
@@ -23,6 +23,17 @@
     "no-use-before-define": "off",
     "react/jsx-props-no-spreading": "off",
     "jsx-a11y/no-autofocus": "off",
-    "arrow-body-style": "off"
+    "arrow-body-style": "off",
+    "react/no-danger": "error",
+    "no-unsanitized/method": ["error", {
+      "escape": {
+        "methods": ["DOMPurify.sanitize"]
+      }
+    }],
+    "no-unsanitized/property": ["error", {
+      "escape": {
+        "methods": ["DOMPurify.sanitize"]
+      }
+    }]
   }
 }

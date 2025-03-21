@@ -2174,6 +2174,11 @@ eslint-plugin-jsx-a11y@^6.4.1:
     minimatch "^3.1.2"
     semver "^6.3.0"
 
+eslint-plugin-no-unsanitized@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-unsanitized/-/eslint-plugin-no-unsanitized-4.1.2.tgz#a994d7633a9ed168e33a82b377ae3b9f79d16734"
+  integrity sha512-ydF3PMFKEIkP71ZbLHFvu6/FW8SvRv6VV/gECfrQkqyD5+5oCAtPz8ZHy0GRuMDtNe2jsNdPCQXX4LSbkapAVQ==
+
 eslint-plugin-prettier@^3.4.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.4.1.tgz#e9ddb200efb6f3d05ffe83b1665a716af4a387e5"

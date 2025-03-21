@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import DOMPurify from "dompurify";
 
 export default class extends Controller {
   initialize() {
@@ -48,9 +49,9 @@ export default class extends Controller {
     const element = this.element.querySelector(`[data-sort-by="${this.sortBy}"]`);
     if (element && this.sortDirection) {
       const initialArrows = element.querySelector("i");
-      const html = ` <i class="${this.sortDirection === "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line"}" role="button"></i>`;
+      const html = `<i class="${this.sortDirection === "asc" ? "ri-arrow-up-line" : "ri-arrow-down-line"}" role="button"></i>`;
       initialArrows.remove();
-      element.insertAdjacentHTML("beforeend", html);
+      element.insertAdjacentHTML("beforeend", DOMPurify.sanitize(html));
     }
   }
 }
