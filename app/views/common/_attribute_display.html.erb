@@ -10,16 +10,15 @@
 
 <%# Other variables are optionnal : id and tooltip %>
 <%# id: adds an id to the grouping div %>
-<%# tooltip: adds a tooltip next to the label ; the tooltip must be configured in javascript/components/tooltip.js %>
+<%# tooltip: adds a tooltip next to the label ; it is a hash that must contain a content key %>
 
 <div id="<%= local_assigns[:id].present? ? id : nil %>" class="col-12 col-md-6 px-5">
   <h4>
     <%= record.class.human_attribute_name(attribute) %>
-    <% if local_assigns[:tooltip] %>
+    <% if local_assigns[:tooltip].is_a?(Hash) %>
       <i
         class="ri-question-line"
-        data-controller="tooltip"
-        data-action="mouseover->tooltip#<%= attribute.to_s.camelize(:lower) %>Attribute"
+        <%= tooltip(content: local_assigns[:tooltip][:content], placement: local_assigns[:tooltip][:placement]) %>
       >
       </i>
     <% end %>

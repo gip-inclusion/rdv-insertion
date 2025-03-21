@@ -32,7 +32,11 @@
         <% end %>
         <%= render "common/attribute_display", record: @user, attribute: :affiliation_number %>
         <% if show_user_attribute?(@user, :department_internal_id) %>
-          <%= render "common/attribute_display", record: @user, attribute: :department_internal_id, tooltip: true %>
+          <%= render "common/attribute_display",
+            record: @user,
+            attribute: :department_internal_id,
+            tooltip: { content: "ID dans l'éditeur logiciel (IODAS, SOLIS...) ou dans le SI du département" }
+          %>
         <% end %>
         <% if show_user_attribute?(@user, :nir) %>
           <%= render "common/attribute_display", record: @user, attribute: :nir %>

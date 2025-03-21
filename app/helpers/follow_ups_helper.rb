@@ -50,4 +50,10 @@ module FollowUpsHelper
     follow_up.convocable_status? ||
       follow_up.no_upcoming_rdv_and_all_invitations_expired?
   end
+
+  def closed_follow_up_tooltip_content
+    "Le statut du bénéficiaire pour cette catégorie passera en «Dossier traité» et ses invitations " \
+      "seront désactivées. Il n'apparaîtra plus dans la liste de suivi de cette catégorie, mais restera " \
+      "visible dans l'onglet «Tous les contacts»."
+  end
 end

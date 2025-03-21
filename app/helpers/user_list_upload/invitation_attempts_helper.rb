@@ -23,7 +23,7 @@ module UserListUpload::InvitationAttemptsHelper
   def tooltip_for_invitation_errors(user_row)
     return unless user_row.all_invitations_failed?
 
-    tooltip_errors_tag_attributes(
+    tooltip_errors(
       title: "Erreurs lors de l'envoi des invitations",
       errors: user_row.invitation_errors.uniq
     )

@@ -49,7 +49,16 @@
                 <span class="badge badge-tag <%= user_row.association_already_persisted?(organisation, :organisations) ? 'background-blue-light text-dark-blue' : 'background-green-light text-dark-green' %>"><%= organisation.name %></span>
               <% end %>
             <% else %>
-              <span>Aucune organisation assignée <i class="ri-information-line" data-controller="tooltip" data-action="mouseover->tooltip#organisationUnassignedOnUserListUpload"></i></span>
+              <span>
+                Aucune organisation assignée
+                <i
+                  class="ri-information-line"
+                  <%= tooltip(
+                    content: "L'organisation sera assignée automatiquement à l'usager en fonction de son adresse " \
+                    "si la sectorisation est configurée sur ce territoire"
+                  ) %>
+                ></i>
+              </span>
             <% end %>
           </p>
           <p>

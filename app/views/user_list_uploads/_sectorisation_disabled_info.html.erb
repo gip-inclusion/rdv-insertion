@@ -1,7 +1,15 @@
 <i
   class="ri-information-line ri-xl align-middle"
-  data-controller="tooltip"
-  data-action="mouseover->tooltip#sectorisationDisabledInfo"
-  data-organisation-name="<%= organisation_name %>"
+  <%= tooltip(
+    content: safe_join([
+      "Les usagers créés seront placés dans l'organisation ",
+      tag.b(organisation_name),
+      ".",
+      tag.br,
+      "Ainsi la sectorisation ne rentrera pas en compte ici. " \
+      "Pour placer les usagers sur une organisation en fonction de leur adresse, chargez le fichier au niveau de 'toutes les organisations' du département."
+    ]),
+    placement: "bottom"
+  ) %>
 >
 </i>

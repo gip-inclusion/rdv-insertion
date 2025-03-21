@@ -19,8 +19,8 @@
     Détails de l'organisation
     <i
       class="ri-question-line"
-      data-controller="tooltip"
-      data-action="mouseover->tooltip#organisationDetails">
+      <%= tooltip(content: "Les modifications du nom, de l'email et du téléphone seront répercutées sur RDV-Solidarités", placement: "bottom") %>
+    >
     </i>
   </h4>
   <%= render "organisations/organisation", organisation: @organisation %>

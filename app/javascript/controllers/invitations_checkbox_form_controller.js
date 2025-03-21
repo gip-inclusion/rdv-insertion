@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import { navigator } from "@hotwired/turbo";
-import tippy from "tippy.js";
+import safeTippy from "../lib/safeTippy";
 import handleUserInvitation from "../react/lib/handleUserInvitation";
 import { getFrenchFormatDateString, todaysDateString } from "../lib/datesHelper";
 
@@ -11,12 +11,12 @@ export default class extends Controller {
     if (!checkbox) return null;
 
     if (invitationFormat === "postal") {
-      return tippy(checkbox, {
+      return safeTippy(checkbox, {
         content: "Générer courrier d'invitation",
       });
     }
 
-    return tippy(checkbox, {
+    return safeTippy(checkbox, {
       content: `Envoyer ${invitationFormat} d'invitation`,
     });
   }

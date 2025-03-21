@@ -5,9 +5,8 @@
         Non délivrée
         <i
           class="ri-error-warning-fill"
-          data-controller="tooltip"
-          data-action="mouseover->tooltip#notDelivered"
-          data-delivery-format="<%= format %>">
+          <%= tooltip(content: not_delivered_tooltip_content(format), placement: "top") %>
+        >
         </i>
       </span>
     <% else %>

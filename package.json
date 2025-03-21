@@ -22,6 +22,7 @@
     "chart.js": "^3.7.1",
     "chartkick": "^4.1.1",
     "css-loader": "^6.9.1",
+    "dompurify": "^3.2.4",
     "flatpickr": "^4.6.13",
     "js-cookie": "^3.0.5",
     "mini-css-extract-plugin": "^2.7.7",

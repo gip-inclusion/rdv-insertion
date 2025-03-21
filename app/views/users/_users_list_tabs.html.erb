@@ -10,7 +10,11 @@
             <%= link_to structure_users_path(motif_category_id: category_configuration.motif_category_id), class: "nav-link d-flex align-items-center #{category_configuration.id == @current_category_configuration&.id ? 'active' : ''}" do %>
               <%= category_configuration.motif_category_name %>
               <% if authorized_all?(current_organisations, :configure) && @all_configurations.size > 1 %>
-                <i data-controller="tooltip" data-action="mouseover->tooltip#reOrderCategories" class="ri-draggable"></i>
+                <i
+                  class="ri-draggable"
+                  <%= tooltip(content: "Vous pouvez réorganiser l'ordre d'affichage des catégories en les faisant glisser-déposer.") %>
+                >
+                </i>
               <% end %>
             <% end %>
           </li>

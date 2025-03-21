@@ -21,7 +21,10 @@
     %>
   <% end %>
 <% else %>
-  <span class="tooltip-wrapper" data-controller="tooltip" data-action="mouseover->tooltip#archivingDisabled">
+  <span
+    class="tooltip-wrapper"
+    <%= tooltip(content: "L'usager est archivé dans toutes vos organisations. Pour rouvrir son dossier, naviguez au sein d'une organisation où il est archivé.") if user_is_archived %>
+  >
     <%=
       link_to(
         "Archiver le dossier",
