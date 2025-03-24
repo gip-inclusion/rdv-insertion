@@ -13,10 +13,16 @@ module SuperAdmins
 
     before_action :authenticate_super_admin!
 
+    private
+
     def authenticate_super_admin!
       return if current_agent.super_admin?
 
       redirect_to root_path, alert: "Vous n'avez pas accès à cette page"
+    end
+
+    def force_full_page_reload
+      @force_full_page_reload = true
     end
   end
 end
