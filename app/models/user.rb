@@ -28,6 +28,7 @@ class User < ApplicationRecord
   include User::BirthDateValidation
   include User::AffiliationNumber
   include User::Referents
+  include User::Tags
   include User::CreationOrigin
   include User::Geocodable
 
@@ -80,8 +81,8 @@ class User < ApplicationRecord
   after_commit :import_associations_from_rdv_solidarites, on: :create,
                                                           if: :imported_from_rdv_solidarites?
 
-  enum :role, { demandeur: "demandeur", conjoint: "conjoint" }
-  enum :title, { monsieur: "monsieur", madame: "madame" }
+  enum :role, { demandeur: "demandeur", conjoint: "conjoint" }, validate: { allow_nil: true }
+  enum :title, { monsieur: "monsieur", madame: "madame" }, validate: { allow_nil: true }
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
