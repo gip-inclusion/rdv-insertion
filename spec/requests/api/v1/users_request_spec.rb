@@ -28,7 +28,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       }
 
-      let!(:user_params_without_created_attributes) do
+      let!(:user1_params) do
         {
           first_name: "Didier",
           last_name: "Drogba",
@@ -51,7 +51,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       end
 
-      let!(:user2_params_without_created_attributes) do
+      let!(:user2_params) do
         {
           first_name: "Dimitri",
           last_name: "Payet",
@@ -78,7 +78,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       end
 
       let!(:users_params) do
-        { users: [user_params_without_created_attributes, user2_params_without_created_attributes] }
+        { users: [user1_params, user2_params] }
       end
 
       let!(:agent_referent) { create(:agent, email: "agentreferent@nomdedomaine.fr", organisations: [organisation]) }
@@ -107,14 +107,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user_params_without_created_attributes.merge(creation_source_attributes),
+              user1_params.merge(creation_source_attributes),
               {},
               {}
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user2_params_without_created_attributes.except(:invitation).merge(creation_source_attributes),
+              user2_params.except(:invitation).merge(creation_source_attributes),
               {},
               { name: "RSA orientation" }
             )
@@ -149,7 +149,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand + de 25 usagers sont envoyés",
                       true do
         let!(:users_params) do
-          { users: 30.times.map { user_params_without_created_attributes } }
+          { users: 30.times.map { user1_params } }
         end
       end
 
@@ -177,7 +177,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         schema "$ref" => "#/components/schemas/error_unprocessable_entity"
 
         let!(:users_params) do
-          { users: [user_params_without_created_attributes.merge(role: "invalid_role")] }
+          { users: [user1_params.merge(role: "invalid_role")] }
         end
 
         run_test! do |response|
@@ -193,7 +193,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         schema "$ref" => "#/components/schemas/error_unprocessable_entity"
 
         let!(:users_params) do
-          { users: [user_params_without_created_attributes.merge(title: "invalid_title")] }
+          { users: [user1_params.merge(title: "invalid_title")] }
         end
 
         run_test! do |response|
@@ -227,7 +227,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         }
       }
 
-      let!(:user_params_without_created_attributes) do
+      let!(:user1_params) do
         {
           first_name: "Didier",
           last_name: "Drogba",
@@ -252,7 +252,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       let!(:user_attributes) do
         {
-          **user_params_without_created_attributes,
+          **user1_params,
           created_through: "rdv_insertion_api",
           created_from_structure_type: "Organisation",
           created_from_structure_id: organisation.id
@@ -262,7 +262,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:user_params) do
         {
           user: {
-            **user_params_without_created_attributes,
+            **user1_params,
             invitation: { motif_category: motif_category_attributes }
           }
         }

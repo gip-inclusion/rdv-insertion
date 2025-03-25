@@ -317,18 +317,18 @@ RSpec.configure do |config|
               phone_number: { type: "string", nullable: true },
               department_internal_id: {
                 type: "string", nullable: true,
-                description:
-                  "Affectable seulement dans les organisations de type: conseil départemental, France Travail." \
-                  " Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée." \
-                  " Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
+                description: "Affectable seulement dans les organisations de type: conseil départemental, " \
+                             "délégataire RSA et France Travail"
               },
               rights_opening_date: { type: "string", nullable: true },
               title: { type: "string", enum: %w[monsieur madame] },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: {
                 type: "string", nullable: true,
-                description: "Affectable seulement dans les organisations de type: " \
-                             "conseil départemental, France Travail"
+                description:
+                  "Affectable seulement dans les organisations de type: conseil départemental, France Travail." \
+                  " Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée." \
+                  " Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
               },
               france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
