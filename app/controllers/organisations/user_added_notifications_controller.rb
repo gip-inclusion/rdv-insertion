@@ -39,7 +39,7 @@ module Organisations
     end
 
     def user_attachments
-      UploadedFileSanitizer.sanitize((email_params[:attachments] || []).compact_blank)
+      UploadedFileSanitizer.sanitize_all((email_params[:attachments] || []).compact_blank)
     end
 
     def custom_content

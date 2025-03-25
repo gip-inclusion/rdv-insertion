@@ -2,15 +2,15 @@ class UploadedFileSanitizer
   MAX_FILE_SIZE = 5 * 1024 * 1024 # 5MB
   ALLOWED_EXTENSIONS = %w[.jpg .jpeg .png .pdf .xlsx .csv].freeze
   ALLOWED_MIME_TYPES = {
-    ".jpg" => "image/jpeg",
-    ".jpeg" => "image/jpeg",
-    ".png" => "image/png",
-    ".pdf" => "application/pdf",
+    ".jpg" => ["image/jpeg"],
+    ".jpeg" => ["image/jpeg"],
+    ".png" => ["image/png"],
+    ".pdf" => ["application/pdf"],
     ".xlsx" => ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/zip"],
-    ".csv" => "text/csv"
+    ".csv" => ["text/csv"]
   }.freeze
 
-  def self.sanitize(uploaded_files)
+  def self.sanitize_all(uploaded_files)
     uploaded_files.map do |uploaded_file|
       new(uploaded_file).sanitize
     end.compact
@@ -22,11 +22,6 @@ class UploadedFileSanitizer
 
   def sanitize
     return nil unless @uploaded_file.respond_to?(:original_filename)
-
-    filename = @uploaded_file.original_filename
-    extension = File.extname(filename).downcase
-    mime_type = @uploaded_file.content_type
-    file_size = @uploaded_file.size
 
     if valid_extension?(extension) &&
        valid_mime_type?(extension, mime_type) &&
@@ -47,6 +42,22 @@ class UploadedFileSanitizer
   end
 
   private
+
+  def extension
+    File.extname(filename).downcase
+  end
+
+  def filename
+    @uploaded_file.original_filename
+  end
+
+  def mime_type
+    @uploaded_file.content_type
+  end
+
+  def file_size
+    @uploaded_file.size
+  end
 
   def valid_extension?(extension)
     ALLOWED_EXTENSIONS.include?(extension)

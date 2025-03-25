@@ -14,16 +14,16 @@
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Message</h5>
-            <%= f.text_area :content, readonly: true, class: "form-control", cols: 15, rows: 4, value: user_added_notification_content(source: local_assigns[:source], user:, organisation:) %>
+          <%= f.text_area :content, readonly: true, class: "form-control", cols: 15, rows: 4, value: user_added_notification_content(source: local_assigns[:source], user:, organisation:) %>
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Ajouter un message personnalisé</h5>
           <p>Ce message apparaitra après le message ci-dessus</p>
-            <%= f.text_area :custom_content, class: "form-control", cols: 15, rows: 6, placeholder: "Votre message personnalisé." %>
+          <%= f.text_area :custom_content, class: "form-control", cols: 15, rows: 6, placeholder: "Votre message personnalisé." %>
         </div>
         <div class="mb-4">
           <h5 class="text-dark-blue h4-as-labels">Pièces jointes</h5>
-            <%= f.file_field :attachments, class: "form-control", multiple: true %>
+          <%= f.file_field :attachments, class: "form-control", multiple: true %>
         </div>
 
         <div class="d-flex justify-content-end align-items-center pt-2">

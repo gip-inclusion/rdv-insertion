@@ -45,7 +45,7 @@ describe UploadedFileSanitizer do
   describe ".sanitize" do
     it "sanitizes a list of files" do
       files = [valid_file, invalid_file, large_file]
-      expect(described_class.sanitize(files)).to eq([valid_file])
+      expect(described_class.sanitize_all(files)).to eq([valid_file])
     end
   end
 end
