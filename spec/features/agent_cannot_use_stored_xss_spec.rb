@@ -39,7 +39,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
             # Add minimal interactions for specific XSS types that require user actions
             if xss_payload.include?("onmouseover")
               begin
-                page.execute_script("document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))")
+                page.execute_script(
+                  "document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))"
+                )
               rescue StandardError => _e
                 # the element might be not found or cannot be interacted with
               end
@@ -52,6 +54,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
                 # the element might be not found or cannot be interacted with
               end
             end
+
+            # We wait to be sure the injected script would have time to be executed
+            sleep 0.5
 
             # The only check we need: Ensure no alert was triggered (no XSS execution)
             expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
@@ -92,7 +97,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
               # Add minimal interactions for specific XSS types that require user actions
               if xss_payload.include?("onmouseover")
                 begin
-                  page.execute_script("document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))")
+                  page.execute_script(
+                    "document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))"
+                  )
                 rescue StandardError => _e
                   # the element might be not found or cannot be interacted with
                 end
@@ -105,6 +112,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
                   # the element might be not found or cannot be interacted with
                 end
               end
+
+              # We wait to be sure the injected script would have time to be executed
+              sleep 0.5
 
               # The only check we need: Ensure no alert was triggered (no XSS execution)
               expect do
@@ -151,7 +161,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
             # Add minimal interactions for specific XSS types that require user actions
             if xss_payload.include?("onmouseover")
               begin
-                page.execute_script("document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))")
+                page.execute_script(
+                  "document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))"
+                )
               rescue StandardError => _e
                 # the element might be not found or cannot be interacted with
               end
@@ -164,6 +176,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
                 # the element might be not found or cannot be interacted with
               end
             end
+
+            # We wait to be sure the injected script would have time to be executed
+            sleep 0.5
 
             # The only check we need: Ensure no alert was triggered (no XSS execution)
             expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
@@ -210,7 +225,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
             # Add minimal interactions for specific XSS types that require user actions
             if xss_payload.include?("onmouseover")
               begin
-                page.execute_script("document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))")
+                page.execute_script(
+                  "document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))"
+                )
               rescue StandardError => _e
                 # the element might be not found or cannot be interacted with
               end
@@ -223,6 +240,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
                 # the element might be not found or cannot be interacted with
               end
             end
+
+            # We wait to be sure the injected script would have time to be executed
+            sleep 0.5
 
             # The only check we need: Ensure no alert was triggered (no XSS execution)
             expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
@@ -272,7 +292,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
             # Add minimal interactions for specific XSS types that require user actions
             if xss_payload.include?("onmouseover")
               begin
-                page.execute_script("document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))")
+                page.execute_script(
+                  "document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))"
+                )
               rescue StandardError => _e
                 # the element might be not found or cannot be interacted with
               end
@@ -285,6 +307,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
                 # the element might be not found or cannot be interacted with
               end
             end
+
+            # We wait to be sure the injected script would have time to be executed
+            sleep 0.5
 
             # The only check we need: Ensure no alert was triggered (no XSS execution)
             expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
@@ -335,7 +360,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
               # Add minimal interactions for specific XSS types that require user actions
               if xss_payload.include?("onmouseover")
                 begin
-                  page.execute_script("document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))")
+                  page.execute_script(
+                    "document.querySelector('[onmouseover]')?.dispatchEvent(new MouseEvent('mouseover'))"
+                  )
                 rescue StandardError => _e
                   # the element might be not found or cannot be interacted with
                 end
@@ -348,6 +375,9 @@ describe "Agent cannot use stored XSS to execute malicious script", :js do
                   # the element might be not found or cannot be interacted with
                 end
               end
+
+              # We wait to be sure the injected script would have time to be executed
+              sleep 0.5
 
               # The only check we need: Ensure no alert was triggered (no XSS execution)
               expect do
