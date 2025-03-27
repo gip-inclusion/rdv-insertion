@@ -30,7 +30,6 @@ export default function safeSwal({
     sanitizedOptions.inputOptions = sanitizedInputOptions;
   }
 
-  /* eslint-disable rdv-insertion/enforce-safe-swal */
+  // eslint-disable-next-line rdv-insertion/enforce-safe-swal
   return Swal.fire(sanitizedOptions);
-  /* eslint-enable rdv-insertion/enforce-safe-swal */
 }

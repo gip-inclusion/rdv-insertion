@@ -10,7 +10,6 @@ export default function safeTippy(element, { content, allowHTML, placement, show
     ...(showOnCreate !== undefined && { showOnCreate })
   };
 
-  /* eslint-disable rdv-insertion/enforce-safe-tippy */
+  // eslint-disable-next-line rdv-insertion/enforce-safe-tippy
   return tippy(element, sanitizedOptions);
-  /* eslint-enable rdv-insertion/enforce-safe-tippy */
 }

@@ -7,14 +7,13 @@ module.exports = {
       recommended: true,
     },
     fixable: "code",
-    schema: [], // no options
+    schema: [],
     messages: {
       useSafeTippy: "Use safeTippy from 'app/javascript/lib/safeTippy' instead of tippy directly for proper HTML sanitization"
     }
   },
   create(context) {
     return {
-      // Check for CallExpression (like tippy(...))
       CallExpression(node) {
         // Check if the function called is tippy
         if (

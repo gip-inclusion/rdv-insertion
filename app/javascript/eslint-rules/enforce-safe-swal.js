@@ -7,14 +7,13 @@ module.exports = {
       recommended: true,
     },
     fixable: "code",
-    schema: [], // no options
+    schema: [],
     messages: {
       useSafeSwal: "Use safeSwal from 'app/javascript/lib/safeSwal' instead of Swal.fire directly for proper HTML sanitization"
     }
   },
   create(context) {
     return {
-      // Check for MemberExpression (like Swal.fire)
       MemberExpression(node) {
         // Check if the member expression is Swal.fire
         if (
@@ -29,7 +28,6 @@ module.exports = {
             messageId: "useSafeSwal",
             // Provide an automatic fix if possible
             fix(fixer) {
-              // Check if we're in a CallExpression
               if (node.parent && node.parent.type === "CallExpression") {
                 // Return the fix
                 return fixer.replaceText(node, "safeSwal");
