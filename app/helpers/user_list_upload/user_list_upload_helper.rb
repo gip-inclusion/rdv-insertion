@@ -59,7 +59,7 @@ module UserListUpload::UserListUploadHelper
   def tooltip_for_user_row_errors(errors)
     return if errors.empty?
 
-    tooltip_errors_tag_attributes(
+    tooltip_errors(
       title: "Erreurs des données du dossier",
       errors: errors.full_messages
     )

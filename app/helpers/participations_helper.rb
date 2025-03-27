@@ -52,4 +52,14 @@ module ParticipationsHelper
       convocation_formats.map { |format| format == "sms" ? "SMS 📱" : "Email 📧" }.join("\n")
     end
   end
+
+  def participation_created_by_tooltip_content(participation)
+    author = {
+      "prescripteur" => "un prescripteur",
+      "agent" => "un agent",
+      "user" => "l'usager"
+    }[participation.created_by]
+
+    "Rendez-vous pris par #{author} le #{participation.created_at.strftime('%d/%m/%Y à %H:%M')}"
+  end
 end

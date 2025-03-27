@@ -1,5 +1,8 @@
 <%= link_to structure_follow_up_closings_path(follow_up_id: follow_up.id, user_id: follow_up.user_id), method: :post do %>
-  <button class="btn btn-blue-out" data-controller="tooltip" data-action="mouseover->tooltip#closeFollowUpButton">
+  <button
+    class="btn btn-blue-out"
+    <%= tooltip(content: closed_follow_up_tooltip_content) %>
+  >
     <i class="ri-lock-line"></i> Fermer le suivi
   </button>
 <% end %>

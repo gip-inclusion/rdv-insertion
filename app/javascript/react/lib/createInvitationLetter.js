@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../../lib/safeSwal";
 import inviteUser from "../actions/inviteUser";
 
 const createInvitationLetter = async (
@@ -22,13 +22,17 @@ const createInvitationLetter = async (
     // we respond with json when request is unsuccessfull
     const result = await response.json();
     if (result.errors[0] === "Le format de l'adresse est invalide") {
-      Swal.fire({
+      safeSwal({
         title: "Impossible d'inviter l'usager",
         html: "L'adresse n'est pas complète ou elle n'est pas enregistrée correctement",
         icon: "error",
       });
     } else {
-      Swal.fire("Impossible d'inviter l'usager", result.errors[0], "error");
+      safeSwal({
+        title: "Impossible d'inviter l'usager",
+        text: result.errors[0],
+        icon: "error",
+      });
     }
     return result;
   }
@@ -44,11 +48,11 @@ const createInvitationLetter = async (
     a.click();
     return { success: true };
   }
-  Swal.fire(
-    "Une erreur a eu lieu pendant le téléchargement",
-    "Essayez de vous rendre sur la page du bénéficiaire et de recréer le document",
-    "error"
-  );
+  safeSwal({
+    title: "Une erreur a eu lieu pendant le téléchargement",
+    text: "Essayez de vous rendre sur la page du bénéficiaire et de recréer le document",
+    icon: "error",
+  });
   return { success: false };
 };
 
