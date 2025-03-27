@@ -13,7 +13,7 @@ module OrganisationsBadgesHelper
 
     if policy(archive).show?
       content_array << tag.br
-      content_array << "Motif : #{archive.archiving_reason}"
+      content_array << "Motif : #{strip_tags(archive.archiving_reason.to_s)}"
     end
 
     tooltip(content: safe_join(content_array))
