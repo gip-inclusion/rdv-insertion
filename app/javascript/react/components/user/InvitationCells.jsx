@@ -14,9 +14,9 @@ export default function InvitationCells({ user }) {
         {user.isArchivedInCurrentOrganisation() && (
           <Tippy
             content={
-              <span>
+              <>
                 Usager archivé pour le motif suivant : {user.archiveInCurrentOrganisation().archiving_reason}
-              </span>
+              </>
             }
           >
             <i className="ms-2 ri-information-fill" />
@@ -28,19 +28,21 @@ export default function InvitationCells({ user }) {
         L'usager n'appartient pas à une organisation qui gère ce type de rdv{" "}
         <Tippy
           content={
-            <span>
+            <>
               Ajoutez l'usager à une organisation qui gère ces rdvs en appuyant sur le boutton
               "Ajouter à une organisation" sur sa fiche, puis rechargez le fichier
-            </span>
+            </>
           }
         >
           <i className="ri-question-line" />
         </Tippy>
       </td>
     ) : user.currentFollowUpStatus === "rdv_pending" ? (
-      <td colSpan={user.list.invitationsColSpan}>
-        {user.currentFollowUp.human_status} (le {getFrenchFormatDateString(user.currentPendingRdv.starts_at)})
-      </td>
+      <>
+        <td colSpan={user.list.invitationsColSpan}>
+          {user.currentFollowUp.human_status} (le {getFrenchFormatDateString(user.currentPendingRdv.starts_at)})
+        </td>
+      </>
     ) : (
       /* ----------------------------- Enabled invitations cases --------------------------- */
 

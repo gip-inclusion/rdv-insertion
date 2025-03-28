@@ -228,8 +228,6 @@ GEM
       rake (>= 13)
     groupdate (6.5.1)
       activesupport (>= 7)
-    grover (1.2.3)
-      nokogiri (~> 1)
     hashdiff (1.1.2)
     hashery (2.1.2)
     hashie (5.0.0)
@@ -343,7 +341,6 @@ GEM
     omniauth-rails_csrf_protection (1.0.2)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
-    ostruct (0.6.1)
     parallel (1.26.3)
     parallel_tests (4.9.0)
       parallel
@@ -612,9 +609,6 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    wicked_pdf (2.8.2)
-      activesupport
-      ostruct
     with_advisory_lock (5.1.0)
       activerecord (>= 6.1)
       zeitwerk (>= 2.6)
@@ -653,7 +647,6 @@ DEPENDENCIES
   factory_bot_rails
   faraday
   groupdate
-  grover
   image_processing
   jbuilder (~> 2.7)
   jsbundling-rails

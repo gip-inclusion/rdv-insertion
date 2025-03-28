@@ -32,53 +32,55 @@ export default observer(({ user, format }) => {
 
   return (
     user.list.canBeInvitedBy(format) && (
-      <td>
-        {user.activeErrors.includes(actionType) ? (
-          <button
-            type="submit"
-            className="btn btn-danger"
-            onClick={() => handleInvitationClick()}
-          >
-            Afficher les erreurs
-          </button>
-        ) : (
-          <Tippy
-            onShow={() => user.lastInvitationDate(format) !== undefined}
-            content={
-              <span>
-                {user.lastInvitationDate(format) &&
-                  `Dernière invitation ${format} le ${getFrenchFormatDateString(user.lastInvitationDate(format))}`
-                }
-                {user.lastInvitationDate(format) && user.lastParticipationRdvStartsAt() && <br />}
-                {user.lastParticipationRdvStartsAt() &&
-                  `Dernier rendez-vous le ${getFrenchFormatDateString(user.lastParticipationRdvStartsAt())}`
-                }
-              </span>
-            }
-          >
-            <div className="d-flex justify-content-center">
-              {user.lastInvitationDate(format) !== undefined && (
-                <i className="ri-check-line d-block p-1" />
-              )}
-              <button
-                type="submit"
-                disabled={
-                  user.triggers[actionType] ||
-                  !user.createdAt ||
-                  !user.requiredAttributeToInviteBy(format) ||
-                  !user.belongsToCurrentOrg()
-                }
-                className={
-                  user.lastInvitationDate(format) === undefined ? `btn btn-primary btn-blue invitation-${format}` : `reinvitation-${format}`
-                }
-                onClick={() => handleInvitationClick()}
-              >
-                {inviteButtonContent()}
-              </button>
-            </div>
-          </Tippy>
-        )}
-      </td>
+      <>
+        <td>
+          {user.activeErrors.includes(actionType) ? (
+            <button
+              type="submit"
+              className="btn btn-danger"
+              onClick={() => handleInvitationClick()}
+            >
+              Afficher les erreurs
+            </button>
+          ) : (
+            <Tippy
+              onShow={() => user.lastInvitationDate(format) !== undefined}
+              content={
+                <span>
+                  {user.lastInvitationDate(format) &&
+                    `Dernière invitation ${format} le ${getFrenchFormatDateString(user.lastInvitationDate(format))}`
+                  }
+                  {user.lastInvitationDate(format) && user.lastParticipationRdvStartsAt() && <br />}
+                  {user.lastParticipationRdvStartsAt() &&
+                    `Dernier rendez-vous le ${getFrenchFormatDateString(user.lastParticipationRdvStartsAt())}`
+                  }
+                </span>
+              }
+            >
+              <div className="d-flex justify-content-center">
+                {user.lastInvitationDate(format) !== undefined && (
+                  <i className="ri-check-line d-block p-1" />
+                )}
+                <button
+                  type="submit"
+                  disabled={
+                    user.triggers[actionType] ||
+                    !user.createdAt ||
+                    !user.requiredAttributeToInviteBy(format) ||
+                    !user.belongsToCurrentOrg()
+                  }
+                    className={
+                      user.lastInvitationDate(format) === undefined ? `btn btn-primary btn-blue invitation-${format}` : `reinvitation-${format}`
+                    }
+                  onClick={() => handleInvitationClick()}
+                >
+                    {inviteButtonContent()}
+                </button>
+              </div>
+            </Tippy>
+          )}
+        </td>
+      </>
     )
   );
 });

@@ -36,7 +36,22 @@ class NotificationsController < ApplicationController
   end
 
   def pdf
-    Grover.new(notify_participation.notification.content).to_pdf
+    conn = Faraday.new(url: ENV["PDF_GENERATOR_URL"]) do |f|
+      f.headers["Authorization"] = ENV["PDF_GENERATOR_API_KEY"]
+      f.headers["Content-Type"] = "application/json"
+    end
+
+    response = conn.post("/generate") do |req|
+      req.body = {
+        htmlContent: notify_participation.notification.content
+      }.to_json
+    end
+
+    if response.success?
+      Base64.decode64(response.body)
+    else
+      Sentry.capture_message("PDF generation failed", extra: { notification_id: notify_participation.notification.id })
+    end
   end
 
   def pdf_filename
