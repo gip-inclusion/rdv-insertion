@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import Rails from "@rails/ujs";
 import Cookies from "js-cookie";
+import DOMPurify from "dompurify";
 
 export default class extends Controller {
   static targets = ["checkbox", "invitationFormatOption"]
@@ -40,9 +41,9 @@ export default class extends Controller {
     const form = document.createElement("form")
     form.method = "post"
     form.action = url
-    form.innerHTML = `
+    form.innerHTML = DOMPurify.sanitize(`
       <input type="hidden" name="authenticity_token" value="${document.querySelector("meta[name='csrf-token']").content}">
-    `
+    `)
 
     this.checkboxTargets.forEach(checkbox => {
       const { userRowId } = checkbox.dataset
@@ -74,11 +75,11 @@ export default class extends Controller {
     const form = document.createElement("form")
     form.method = "post"
     form.action = url
-    form.innerHTML = `
+    form.innerHTML = DOMPurify.sanitize(`
       <input type="hidden" name="_method" value="patch">
       <input type="hidden" name="authenticity_token" value="${document.querySelector("meta[name='csrf-token']").content}">
       <input type="hidden" name="user_row[${attribute}]" value="${value}">
-    `
+    `)
 
     document.body.appendChild(form)
     Rails.fire(form, "submit");

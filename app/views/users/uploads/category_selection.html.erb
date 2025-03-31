@@ -13,8 +13,12 @@
           Aucune catégorie de suivi
           <i
             class="ri-question-line"
-            data-controller="tooltip"
-            data-action="mouseover->tooltip#noCategorySelected"
+            <%= tooltip(
+                  content: "L'usager apparaitra dans l'onglet 'Tous les contacts' seulement. " \
+                            "En choisissant cette option vous ne pourrez pas inviter l'usager à prendre rdv à l'upload du fichier " \
+                            "(mais vous pourrez le faire ultérieurement en accédant à sa fiche)."
+                )
+            %>
           >
           </i>
         <% end %>

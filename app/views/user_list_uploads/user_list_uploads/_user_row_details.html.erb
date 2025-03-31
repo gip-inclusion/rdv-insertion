@@ -54,7 +54,16 @@
                 <span class="badge badge-tag <%= badge_class_for_user_row_organisation(user_row, organisation) %>"><%= organisation.name %></span>
               <% end %>
             <% else %>
-              <span>Aucune organisation assignée <i class="ri-information-line" data-controller="tooltip" data-action="mouseover->tooltip#organisationUnassignedOnUserListUpload"></i></span>
+              <span>
+                Aucune organisation assignée
+                <i
+                  class="ri-information-line"
+                  <%= tooltip(
+                    content: "L'organisation sera assignée automatiquement à l'usager en fonction de son adresse " \
+                    "si la sectorisation est configurée sur ce territoire"
+                  ) %>
+                ></i>
+              </span>
             <% end %>
           </p>
           <p>

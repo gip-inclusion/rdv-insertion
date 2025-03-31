@@ -4,8 +4,21 @@
       <%= render "common/attribute_display", record: organisation, attribute: :name %>
       <%= render "common/attribute_display", record: organisation, attribute: :email %>
       <%= render "common/attribute_display", record: organisation, attribute: :phone_number %>
-      <%= render "common/attribute_display", record: organisation, attribute: :slug, tooltip: true %>
-      <%= render "common/attribute_display", record: organisation, attribute: :safir_code, tooltip: true %>
+      <%= render(
+            "common/attribute_display",
+            record: organisation,
+            attribute: :slug,
+            tooltip: {
+              content: "Si l'assignation des usagers à l'organisation se fait via une colonne du fichier d'import " \
+                         "des usagers, les cases de cette colonne devront faire référence à la valeur définie ici."
+            }
+          ) %>
+      <%= render(
+            "common/attribute_display",
+            record: organisation,
+            attribute: :safir_code,
+            tooltip: { content: "Il ne concerne que les agences France Travail" }
+          ) %>
       <div class="col-12 col-md-6 px-5 mb-3">
         <h4>Logo</h4>
         <% if organisation.logo.attached? %>

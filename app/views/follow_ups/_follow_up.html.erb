@@ -48,10 +48,7 @@
                       <%= format_date(participation.created_at) %>
                       <i
                         class="ri-information-line"
-                        data-controller="tooltip"
-                        data-created-by="<%= participation.created_by %>"
-                        data-created-at="<%= participation.created_at.strftime("%d/%m/%Y à %H:%M") %>"
-                        data-action="mouseover->tooltip#participationCreatedByDetails">
+                        <%= tooltip(content: participation_created_by_tooltip_content(participation)) %>>
                       </i>
                     </td>
                     <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>

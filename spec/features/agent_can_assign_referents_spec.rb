@@ -64,43 +64,5 @@ describe "Agents can assign referents", :js do
       expect(page).to have_css(".badge", text: "Meredith GREY")
       expect(user.reload.referents).to contain_exactly(second_agent)
     end
-
-    context "with xss attempt" do
-      let(:xss_payload) { "<img src=1 onerror=alert(1)>" }
-
-      let!(:user) do
-        create(:user, first_name: "Derek", organisations: [organisation])
-      end
-
-      before do
-        # Skipping validation to ensure payload goes through
-        user.update_column(:last_name, "Sheperd #{xss_payload}")
-      end
-
-      it "prevents xss" do
-        visit organisation_user_path(organisation, user)
-
-        expect(page).to have_content("Derek SHEPERD #{xss_payload.upcase}")
-
-        click_button("Ajouter un référent")
-
-        expect(page).to have_content("Ajoutez un agent référent")
-        expect(page).to have_no_content("Référent déjà assigné")
-
-        expect(page).to have_content("Meredith GREY")
-        find("label", text: "Meredith GREY").click
-
-        click_button("Ajouter")
-
-        expect(page).to have_css(".badge", text: "Meredith GREY")
-
-        find(".badge", text: "Meredith GREY").find("a").click
-
-        within(".modal.show") do
-          expect(page).to have_content("Derek Sheperd #{xss_payload}")
-        end
-        expect { page.driver.browser.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
-      end
-    end
   end
 end

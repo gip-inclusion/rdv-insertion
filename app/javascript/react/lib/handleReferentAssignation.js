@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../../lib/safeSwal";
 import assignReferent from "../actions/assignReferent";
 
 const handleReferentAssignation = async (
@@ -18,7 +18,11 @@ const handleReferentAssignation = async (
   if (result.success) {
     user.updateWith(result.user);
   } else if (!result.success && options.raiseError) {
-    Swal.fire(`Impossible d'assigner le référent ${user.referentEmail}`, result.errors[0], "error");
+    safeSwal({
+      title: `Impossible d'assigner le référent ${user.referentEmail}`,
+      text: result.errors[0],
+      icon: "error",
+    });
   }
   return result;
 };

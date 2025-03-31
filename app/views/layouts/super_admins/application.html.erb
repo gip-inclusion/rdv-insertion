@@ -18,11 +18,14 @@ By default, it renders:
   <meta charset="utf-8">
   <meta name="ROBOTS" content="NOODP">
   <meta name="viewport" content="initial-scale=1">
+  <% if @force_full_page_reload %>
+    <meta name="turbo-visit-control" content="reload">
+  <% end %>
   <title>
     <%= content_for(:title) %> - <%= application_title %>
   </title>
   <%= csrf_meta_tags %>
-<%# 
+<%#
   #
   # We override this layout to add specific SCSS and JS files for the super admin.
   # These files represent a new JS and SCSS entry point.
@@ -33,6 +36,7 @@ By default, it renders:
   <%= stylesheet_link_tag "super_admin", media: 'all', 'data-turbo-track': 'reload' %>
 
   <%= render "stylesheet" %>
+  <%= render "javascript" %>
   <%= csp_meta_tag if defined?(csp_meta_tag) %>
 </head>
 <body>
@@ -46,7 +50,5 @@ By default, it renders:
       <%= yield %>
     </main>
   </div>
-
-  <%= render "javascript" %>
 </body>
 </html>

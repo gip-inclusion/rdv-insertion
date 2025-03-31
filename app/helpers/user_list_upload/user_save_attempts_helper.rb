@@ -50,7 +50,7 @@ module UserListUpload::UserSaveAttemptsHelper
   def tooltip_for_user_save_attempt_errors(errors)
     return if errors.blank?
 
-    tooltip_errors_tag_attributes(
+    tooltip_errors(
       title: "Erreurs lors de la sauvegarde du dossier",
       errors: errors
     )

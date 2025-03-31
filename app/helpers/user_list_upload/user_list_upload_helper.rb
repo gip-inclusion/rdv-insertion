@@ -91,12 +91,12 @@ module UserListUpload::UserListUploadHelper
 
   def tooltip_for_user_row(user_row)
     if user_row.user_errors.any?
-      tooltip_errors_tag_attributes(
+      tooltip_errors(
         title: "Erreurs des données du dossier",
         errors: user_row.user_errors.full_messages
       )
     else
-      tooltip_with_content(tooltip_content_for_user_row(user_row))
+      tooltip(content: tooltip_content_for_user_row(user_row))
     end
   end
 
@@ -111,24 +111,37 @@ module UserListUpload::UserListUploadHelper
                                  "Ce dossier n'existe pas encore. Si coché, celui-ci sera créé"
                                end
     end
-    tooltip_content_array.join("<br/><br/>")
+    safe_join(tooltip_content_array, safe_join([tag.br, tag.br]))
   end
 
+  # rubocop:disable Metrics/AbcSize
   def tooltip_content_for_user_row_archived(user_row)
     if user_row.department_level?
-      "<b>Dossier archivé sur #{user_row.archives.map(&:organisation).map(&:name).join(', ')}.</b> <br/>" \
-        "Motifs d'archivage : #{user_row.archiving_reasons.join(', ')}<br/>" \
-        "Si mis à jour dans l'organisation d'archivage, le dossier sera désarchivé dans cette organisation."
+      safe_join([
+                  tag.b("Dossier archivé sur #{strip_tags(user_row.archives.map(&:organisation).map(&:name).join(', '))}.</b>"),
+                  tag.br,
+                  "Motifs d'archivage : #{strip_tags(user_row.archiving_reasons.join(', '))}",
+                  tag.br,
+                  "Si mis à jour dans l'organisation d'archivage, le dossier sera désarchivé dans cette organisation."
+                ])
     else
-      "<b>Dossier archivé sur cette organisation.</b> <br/>" \
-        "Motif d'archivage : \"#{user_row.archiving_reasons.first}\"<br/>" \
-        "Si coché, le dossier sera désarchivé lors de la mise à jour."
+      safe_join([
+                  tag.b("Dossier archivé sur cette organisation."),
+                  tag.br,
+                  "Motif d'archivage : \"#{strip_tags(user_row.archiving_reasons.first)}\"",
+                  tag.br,
+                  "Si coché, le dossier sera désarchivé lors de la mise à jour."
+                ])
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def tooltip_content_for_user_row_follow_up_closed
-    "<b>Dossier traité sur cette catégorie</b><br/>" \
-      "Si coché, le dossier sera rouvert sur cette catégorie de suivi."
+    safe_join([
+                tag.b("Dossier traité sur cette catégorie"),
+                tag.br,
+                "Si coché, le dossier sera rouvert sur cette catégorie de suivi."
+              ])
   end
 
   def show_row_attribute?(attribute_name, user_list_upload)

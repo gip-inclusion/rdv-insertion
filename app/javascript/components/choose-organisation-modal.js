@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../lib/safeSwal";
 
 const chooseOrganisationModal = async (organisations, title, text) => {
   const organisationsObject = {};
@@ -6,7 +6,7 @@ const chooseOrganisationModal = async (organisations, title, text) => {
     organisationsObject[o.id] = o.name;
   });
 
-  const result = await Swal.fire({
+  const result = await safeSwal({
     title,
     html: text,
     icon: "warning",

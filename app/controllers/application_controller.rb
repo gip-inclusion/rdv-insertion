@@ -36,6 +36,10 @@ class ApplicationController < ActionController::Base
     request.path.in?([root_path, authenticated_root_path])
   end
 
+  def force_full_page_reload
+    @force_full_page_reload = true
+  end
+
   # A user can be unlinked from its rdv-solidarites record when the latter is deleted for RGPD reasons.
   # This method pushes the user to rdv-solidarites to recreate a new one.
   def recreate_rdv_solidarites_user(user)

@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../../lib/safeSwal";
 import createCarnet from "../actions/createCarnet";
 
 const handleCarnetCreation = async (user) => {
@@ -6,7 +6,11 @@ const handleCarnetCreation = async (user) => {
   if (result.success) {
     user.updateWith(result.user);
   } else {
-    Swal.fire("Impossible de créer le carnet", result.errors.join("\n"), "error");
+    safeSwal({
+      title: "Impossible de créer le carnet",
+      text: result.errors.join("\n"),
+      icon: "error",
+    });
   }
 };
 
