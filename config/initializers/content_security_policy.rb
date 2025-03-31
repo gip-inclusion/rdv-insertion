@@ -20,7 +20,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.frame_src       :self, *flourish, maze
   policy.object_src      :none
   policy.script_src      :self, matomo, *crisp, *flourish, maze, sentry
-  policy.style_src       :self, :unsafe_inline
+  policy.style_src       :self, :unsafe_inline, *crisp
   policy.connect_src     :self, rdv_solidarites, sentry, matomo, maze, *crisp
   policy.form_action     :self, rdv_solidarites
   policy.frame_ancestors :self, rdv_solidarites, matomo
