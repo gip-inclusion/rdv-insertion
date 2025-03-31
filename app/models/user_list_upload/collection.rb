@@ -53,7 +53,7 @@ class UserListUpload::Collection
   end
 
   def user_rows_with_user_save_success
-    user_rows_with_user_save_attempted.select(&:user_save_succeded?)
+    user_rows_with_user_save_attempted.select(&:user_save_succeeded?)
   end
 
   def user_rows_with_user_save_errors

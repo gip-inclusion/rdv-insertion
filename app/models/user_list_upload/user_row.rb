@@ -190,7 +190,7 @@ class UserListUpload::UserRow < ApplicationRecord
     user_save_attempts.max_by(&:created_at)
   end
 
-  def user_save_succeded?
+  def user_save_succeeded?
     last_user_save_attempt&.success?
   end
 
