@@ -21,9 +21,15 @@
           <p>Ce message apparaitra après le message ci-dessus</p>
           <%= f.text_area :custom_content, class: "form-control", cols: 15, rows: 6, placeholder: "Votre message personnalisé." %>
         </div>
-        <div class="mb-4">
+        <div class="mb-4" data-controller="email-attachments">
           <h5 class="text-dark-blue h4-as-labels">Pièces jointes</h5>
-          <%= f.file_field :attachments, class: "form-control", multiple: true %>
+          <span data-email-attachments-target="attachmentsList">
+          </span>
+          <button class="btn btn-blue-out mt-2" data-action="email-attachments#add">
+            <i class="ri-attachment-line me-2"></i>
+            Ajouter un fichier
+          </button>
+          <%= f.file_field :attachments, class: "form-control d-none", multiple: true, data: { email_attachments_target: "fileInput" } %>
         </div>
 
         <div class="d-flex justify-content-end align-items-center pt-2">
