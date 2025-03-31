@@ -11,21 +11,20 @@ export default class extends Controller {
       this.attachmentsListTarget.innerHTML = ""
       Array.from(this.fileInputTarget.files).forEach(file => {
         const fileDiv = document.createElement("div")
-        fileDiv.classList.add("d-flex", "align-items-center", "gap-2", "mb-2", "attachment-item")
+        fileDiv.classList.add("d-flex", "align-items-center", "text-dark-blue", "gap-2", "mb-2", "attachment-item")
         
         const icon = document.createElement("i")
-        icon.classList.add("ri-attachment-line")
+        icon.classList.add("ri-file-text-line")
         fileDiv.appendChild(icon)
 
         const fileName = document.createElement("span")
         fileName.innerText = file.name
-        fileName.classList.add("text-dark-blue")
         fileDiv.appendChild(fileName)
 
         const removeButton = document.createElement("button")
         removeButton.setAttribute("type", "button")
         removeButton.setAttribute("data-action", "email-attachments#remove")
-        removeButton.classList.add("btn", "remove-attachment-button", "p-0")
+        removeButton.classList.add("btn", "p-0")
 
         const closeIcon = document.createElement("i")
         closeIcon.classList.add("ri-close-line")
