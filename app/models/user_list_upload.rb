@@ -89,8 +89,10 @@ class UserListUpload < ApplicationRecord
   def potential_matching_users_in_all_app
     @potential_matching_users_in_all_app ||=
       User.active.where(email: user_row_attributes.pluck("email").compact)
-          .or(User.active.where(phone_number: user_row_attributes.pluck("phone_number").compact))
-          .or(User.active.where(nir: user_row_attributes.pluck("nir").compact))
+          .or(
+            User.active.where(phone_number: user_row_attributes_formatted_phone_numbers)
+          )
+          .or(User.active.where(nir: user_row_attributes_formatted_nirs))
           .select(:id, :nir, :phone_number, :email, :first_name)
   end
 
@@ -109,7 +111,21 @@ class UserListUpload < ApplicationRecord
   private
 
   def user_row_attributes
-    user_rows.map(&:attributes)
+    @user_row_attributes ||= user_rows.map(&:attributes)
+  end
+
+  def user_row_attributes_formatted_phone_numbers
+    @user_row_attributes_formatted_phone_numbers ||=
+      user_row_attributes.pluck("phone_number").compact.map do |phone_number|
+        PhoneNumberHelper.format_phone_number(phone_number)
+      end
+  end
+
+  def user_row_attributes_formatted_nirs
+    @user_row_attributes_formatted_nirs ||=
+      user_row_attributes.pluck("nir").compact.map do |nir|
+        NirHelper.format_nir(nir)
+      end
   end
 
   def remove_duplicates!(attributes)
