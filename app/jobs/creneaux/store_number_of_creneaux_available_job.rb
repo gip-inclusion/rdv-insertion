@@ -1,6 +1,6 @@
 module Creneaux
   class StoreNumberOfCreneauxAvailableJob < ApplicationJob
-    sidekiq_options retry: 5
+    sidekiq_options retry: 5, queue: "creneaux"
 
     def perform(category_configuration_id)
       category_configuration = CategoryConfiguration.joins(:motif_category, organisation: :agents)

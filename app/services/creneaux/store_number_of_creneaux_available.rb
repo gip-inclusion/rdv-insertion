@@ -1,5 +1,7 @@
 module Creneaux
   class StoreNumberOfCreneauxAvailable < BaseService
+    MAX_RELEVANT_CRENEAUX_COUNT_LIMIT = 200
+
     attr_reader :category_configuration
 
     def initialize(category_configuration:)
@@ -25,7 +27,8 @@ module Creneaux
             motif_category_short_name: motif_category.short_name,
             organisation_ids: [organisation.rdv_solidarites_organisation_id]
           },
-          total_count: true
+          total_count: true,
+          max_relevant_creneaux_count_limit: MAX_RELEVANT_CRENEAUX_COUNT_LIMIT
         ).creneau_availability_count
       end
     end
