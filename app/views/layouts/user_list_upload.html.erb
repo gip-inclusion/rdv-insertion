@@ -10,6 +10,7 @@
   <body data-matomo-mask class="bg-white">
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>
+    <%= content_for :fullscreen_banner %>
     <%= render 'common/flashes' %>
     <div class="wrapper">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
