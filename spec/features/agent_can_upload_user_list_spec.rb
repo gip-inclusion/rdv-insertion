@@ -478,8 +478,6 @@ describe "Agents can upload user list", :js do
 
           # Check expanded row has archive badge
           find(".ri-arrow-down-s-line", match: :first).click
-
-          # Check for archiving content in the expanded row
           expect(page).to have_content("Archivé", wait: 10)
         end
 
@@ -498,7 +496,6 @@ describe "Agents can upload user list", :js do
           )
           click_button("Charger les données usagers")
 
-          # Add a wait to ensure user row is matched and rendered
           expect(page).to have_content("Hernan", wait: 5)
 
           # Check that the row is unchecked
@@ -531,7 +528,6 @@ describe "Agents can upload user list", :js do
           )
           click_button("Charger les données usagers")
 
-          # Add a wait to ensure user row is matched and rendered
           expect(page).to have_content("Hernan", wait: 5)
 
           user_list_upload = UserListUpload.last
@@ -674,7 +670,7 @@ describe "Agents can upload user list", :js do
 
         user_list_upload = UserListUpload.last
         hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
-        # we make sure the organisation_search_terms are not present
+        # We make sure the organisation_search_terms are not present
         hernan_row.update!(organisation_search_terms: nil)
 
         # Save users
@@ -716,7 +712,7 @@ describe "Agents can upload user list", :js do
 
         user_list_upload = UserListUpload.last
         hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
-        # we make sure the organisation_search_terms are not present
+        # We make sure the organisation_search_terms are not present
         hernan_row.update!(organisation_search_terms: nil)
 
         # Save users
@@ -744,7 +740,6 @@ describe "Agents can upload user list", :js do
 
         perform_enqueued_jobs(only: UserListUpload::SaveUserJob) do
           click_button("Enregistrer")
-          # expect(page).to have_content("Dossier créé", wait: 5)
           expect(page).to have_content("L'organisation #{organisation.name} a été assignée à l'usager")
         end
 
