@@ -123,6 +123,12 @@
   @extend .user-list-save-attempts-table;
 }
 
+.link-disabled {
+  pointer-events: none;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .fs-archived-badge {
   font-size: 0.8rem;
 }
