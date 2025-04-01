@@ -1,6 +1,6 @@
 <% content_for :title, "Données usagers chargées - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
 
-<div class="container px-5 py-3" data-controller="submit-selected-ids">
+<div class="container px-4 py-3" data-controller="submit-selected-ids">
   <div class="row text-dark-blue ">
     <div class="col text-center align-items-center my-1">
       <div>
@@ -16,7 +16,7 @@
 
   <%= turbo_frame_tag "user_collection", data: { turbo_action: "advance" } do %>
     <div class="row justify-content-center">
-      <div class="col-md-10">
+      <div>
         <div class="mb-4">
           <h2 class="h2-title">Vérifiez et complétez les données usagers</h2>
           <p class="text-muted">
@@ -64,8 +64,8 @@
         <%= render "user_rows", user_rows: rows_with_errors? ? @user_rows_with_errors : @user_rows %>
       <% end %>
 
-      <div class="col-md-10 sticky-footer">
-        <div class="py-3 bg-white border-top d-flex justify-content-between align-items-center">
+      <div class="container sticky-footer">
+        <div class="py-3 px-4 bg-white d-flex justify-content-between align-items-center">
           <div class="d-flex align-items-center">
             <i class="ri-arrow-left-s-line"></i>
             <%=

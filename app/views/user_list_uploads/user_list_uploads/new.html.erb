@@ -1,6 +1,6 @@
 <% content_for :title, "Charger un fichier usagers - #{structure_name_with_context(current_structure)} - rdv-insertion" %>
 
-<div class="container px-5 py-3">
+<div class="container px-4">
   <div class="row text-dark-blue">
     <div class="col text-center align-items-center my-1">
       <div>
@@ -16,9 +16,9 @@
 
   <div class="row justify-content-center">
     <div class="col-md-10"
-          data-controller="user-list-upload"
-          data-file-configuration-column-attributes="<%= @file_configuration.column_attributes.to_json %>"
-          data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>">
+         data-controller="user-list-upload"
+         data-file-configuration-column-attributes="<%= @file_configuration.column_attributes.to_json %>"
+         data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>">
 
       <%# We set the file input outside the form because we don't want to submit the file itself %>
       <input type="file"
