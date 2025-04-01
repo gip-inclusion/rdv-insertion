@@ -1,7 +1,7 @@
 module RdvSolidaritesApi
   class RetrieveCreneauAvailability < Base
-    def initialize(link_params:, total_count: false)
-      @link_params = link_params.merge(total_count:)
+    def initialize(link_params:, total_count: false, max_relevant_creneaux_count_limit: nil)
+      @link_params = link_params.merge(total_count:, max_relevant_creneaux_count_limit:)
     end
 
     def call

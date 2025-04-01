@@ -14,8 +14,8 @@ flourish = ["flo.uri.sh", "https://public.flourish.studio/resources/embed.js"] #
 
 Rails.application.config.content_security_policy do |policy|
   policy.default_src     :self
-  policy.font_src        :self, :data
-  policy.img_src         :self, :data, s3_bucket
+  policy.font_src        :self, :data, *crisp
+  policy.img_src         :self, :data, s3_bucket, *crisp
   policy.media_src       :self, s3_bucket
   policy.frame_src       :self, *flourish, maze
   policy.object_src      :none
