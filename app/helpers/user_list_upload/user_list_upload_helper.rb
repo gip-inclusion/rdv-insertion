@@ -117,13 +117,15 @@ module UserListUpload::UserListUploadHelper
   # rubocop:disable Metrics/AbcSize
   def tooltip_content_for_user_row_archived(user_row)
     if user_row.department_level?
-      safe_join([
-                  tag.b("Dossier archivé sur #{strip_tags(user_row.archives.map(&:organisation).map(&:name).join(', '))}.</b>"),
-                  tag.br,
-                  "Motifs d'archivage : #{strip_tags(user_row.archiving_reasons.join(', '))}",
-                  tag.br,
-                  "Si mis à jour dans l'organisation d'archivage, le dossier sera désarchivé dans cette organisation."
-                ])
+      safe_join(
+        [
+          tag.b("Dossier archivé sur #{strip_tags(user_row.archives.map(&:organisation).map(&:name).join(', '))}."),
+          tag.br,
+          "Motifs d'archivage : #{strip_tags(user_row.archiving_reasons.join(', '))}",
+          tag.br,
+          "Si mis à jour dans l'organisation d'archivage, le dossier sera désarchivé dans cette organisation."
+        ]
+      )
     else
       safe_join([
                   tag.b("Dossier archivé sur cette organisation."),

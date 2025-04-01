@@ -693,7 +693,11 @@ describe "Agents can upload user list", :js do
     context "when organisation retrieval fails" do
       before do
         allow(UserListUpload::RetrieveOrganisationToAssign).to receive(:call)
-          .and_return(OpenStruct.new(organisation: nil, success?: false, errors: ["Impossible de trouver une organisation"]))
+          .and_return(
+            OpenStruct.new(
+              organisation: nil, success?: false, errors: ["Impossible de trouver une organisation"]
+            )
+          )
       end
 
       it "shows no_organisation_to_assign status when organisation and ask for organisation" do
@@ -747,7 +751,6 @@ describe "Agents can upload user list", :js do
         # Somehow the refresh triggered by the `broadcast_refresh_later` in the `SaveUserJob`
         # is not reflected in test environment, so I have to use a manual fake refresh instead
         page.refresh
-
 
         expect(page).to have_content("Dossier créé")
         expect(hernan_row.reload.user.organisations).to contain_exactly(organisation)
