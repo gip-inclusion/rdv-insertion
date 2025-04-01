@@ -2,13 +2,14 @@
   <td class="border-light">
     <input type="checkbox"
             class="form-check-input user-checkbox"
-            data-submit-selected-ids-target="checkbox"
-            data-action="click->submit-selected-ids#toggleSubmit"
+            data-select-user-rows-target="checkbox"
+            data-action="click->select-user-rows#toggleSelect"
             data-user-email="<%= user_row.user.email %>"
             data-user-phone="<%= user_row.user.phone_number %>"
             data-user-invitable="<%= user_row.invitable? %>"
-            value="<%= user_row.id %>"
-            <%= user_row.invitable? ? "checked" : "disabled" %>>
+            data-user-row-id="<%= user_row.id %>"
+            <%= "checked" if user_row.selected_for_invitation? %>
+            <%= "disabled" if disable_invitation_for_user_row?(user_row) %>>
   </td>
 
   <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email].each do |attribute| %>
