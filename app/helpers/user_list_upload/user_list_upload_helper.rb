@@ -151,7 +151,8 @@ module UserListUpload::UserListUploadHelper
   end
 
   def checkbox_to_select_all_checked?(attribute_name, user_list_upload_id)
-    cookies["checkbox_to_select_all_#{attribute_name}_checked_#{user_list_upload_id}"] != "false"
+    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}") rescue {}
+    cookie_data.dig(user_list_upload_id.to_s, "checkbox_all", attribute_name.to_s) != false
   end
 end
 # rubocop:enable Metrics/ModuleLength

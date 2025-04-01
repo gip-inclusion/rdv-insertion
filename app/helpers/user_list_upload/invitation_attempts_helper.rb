@@ -60,9 +60,8 @@ module UserListUpload::InvitationAttemptsHelper
   end
 
   def selected_invitation_formats(user_list_upload_id)
-    selected_invitation_formats =
-      cookies["selected_invitation_formats_#{user_list_upload_id}"] || %w[sms email]
-    selected_invitation_formats = JSON.parse(selected_invitation_formats) if selected_invitation_formats.is_a?(String)
-    selected_invitation_formats
+    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}") rescue {}
+    formats = cookie_data.dig(user_list_upload_id.to_s, "selected_invitation_formats")
+    formats.is_a?(Array) ? formats : %w[sms email]
   end
 end

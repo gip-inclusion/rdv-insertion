@@ -17,11 +17,22 @@ export default class extends Controller {
     this.checkboxTargets.forEach(checkbox => {
       checkbox.checked = checkbox.disabled ? false : event.target.checked
     })
-    Cookies.set(
-      `checkbox_to_select_all_${this.attributeToToggle}_checked_${this.userListUploadId}`,
-      event.target.checked,
-      { path: "/", expires: 0.01 } // ~10 minutes
-    )
+
+    // We set the state of the checkbox in the cookie
+    const cookieData = this.#getUserListUploadsCookie();
+
+    if (!cookieData[this.userListUploadId]) {
+      cookieData[this.userListUploadId] = {};
+    }
+    if (!cookieData[this.userListUploadId].checkbox_all) {
+      cookieData[this.userListUploadId].checkbox_all = {};
+    }
+
+    cookieData[this.userListUploadId].checkbox_all[this.attributeToToggle] = event.target.checked;
+
+    // We save the updated cookie
+    this.#updateUserListUploadsCookie(cookieData);
+
     this.#batchUpdateUserRows(this.attributeToToggle)
   }
 
@@ -32,6 +43,40 @@ export default class extends Controller {
     const url = `/user_list_uploads/${this.userListUploadId}/user_rows/${userRowId}`
 
     this.#updateRow(url, this.attributeToToggle, isChecked)
+  }
+
+  handleFormatOptionChange(event) {
+    const selectedFormats = this.invitationFormatOptionTargets.filter(option => option.checked).map(option => option.dataset.format)
+
+    // We set the selected formats in the cookie
+    const cookieData = this.#getUserListUploadsCookie();
+
+    if (!cookieData[this.userListUploadId]) {
+      cookieData[this.userListUploadId] = {};
+    }
+
+    cookieData[this.userListUploadId].selected_invitation_formats = selectedFormats;
+
+    this.#updateUserListUploadsCookie(cookieData);
+
+    if (event.target.checked) {
+      // we just reload the page if we are enabling the invitation format
+      window.Turbo.visit(window.location.href, { action: "replace" });
+      return
+    }
+
+    this.checkboxTargets.forEach(checkbox => {
+      const isInvitable = selectedFormats.length > 0 &&
+        (selectedFormats.includes("email") && checkbox.dataset.userEmail) ||
+        (selectedFormats.includes("sms") && checkbox.dataset.userPhone)
+
+      if (!isInvitable) {
+        checkbox.checked = false
+        checkbox.disabled = true
+      }
+    })
+
+    this.#batchUpdateUserRows()
   }
 
   #batchUpdateUserRows() {
@@ -86,33 +131,18 @@ export default class extends Controller {
     document.body.removeChild(form)
   }
 
-  handleFormatOptionChange(event) {
-    const selectedFormats = this.invitationFormatOptionTargets.filter(option => option.checked).map(option => option.dataset.format)
 
+  #getUserListUploadsCookie() {
+    const cookieData = Cookies.get("user_list_uploads");
+    return cookieData ? JSON.parse(cookieData) : {};
+  }
+
+  #updateUserListUploadsCookie(newData) {
     Cookies.set(
-      `selected_invitation_formats_${this.userListUploadId}`,
-      JSON.stringify(selectedFormats),
-      { path: "/", expires: 0.01 }
-    )
-
-    if (event.target.checked) {
-      // we just reload the page if we are enabling the invitation format
-      window.Turbo.visit(window.location.href, { action: "replace" });
-      return
-    }
-
-    this.checkboxTargets.forEach(checkbox => {
-      const isInvitable = selectedFormats.length > 0 &&
-        (selectedFormats.includes("email") && checkbox.dataset.userEmail) ||
-        (selectedFormats.includes("sms") && checkbox.dataset.userPhone)
-
-      if (!isInvitable) {
-        checkbox.checked = false
-        checkbox.disabled = true
-      }
-    })
-
-    this.#batchUpdateUserRows()
+      "user_list_uploads",
+      JSON.stringify(newData),
+      { path: "/", expires: 1/24 } // 1 hour
+    );
   }
 }
 

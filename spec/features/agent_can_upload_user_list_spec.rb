@@ -235,6 +235,10 @@ describe "Agents can upload user list", :js do
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
 
+      # All rows selection is preserved after page refresh
+      page.refresh
+      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:not(:checked)")
+
       # Check all rows
       check_all_button.click
 
