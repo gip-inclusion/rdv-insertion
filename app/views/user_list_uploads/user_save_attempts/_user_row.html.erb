@@ -12,7 +12,7 @@
           data-user-row-attribute="<%= attribute %>">
         <div class="d-flex justify-content-between align-items-center"
               id="user-row-cell-<%= user_row.id %>-<%= attribute %>"
-              <%= 'data-action="dblclick->user-row-cell#edit"'.html_safe if @all_saves_attempted %>>
+              <%= tag.attributes(data: { action: "dblclick->user-row-cell#edit" }) if @all_saves_attempted %>>
           <span><%= display_attribute(user_row.user.send(attribute)) %></span>
           <%= user_save_icon_for_attribute(user_row, attribute) %>
         </div>
@@ -24,7 +24,7 @@
     <div class="d-flex justify-content-between align-items-center">
       <% if user_row.no_organisation_to_assign? %>
         <%= link_to(new_user_list_upload_user_row_organisation_assignation_path(user_list_upload_id: @user_list_upload.id, user_row_id: user_row.id),
-                    class: "badge rounded-pill alert-warning btn #{'disabled' unless @all_saves_attempted}",
+                    class: "badge rounded-pill alert-warning #{'link-disabled' unless @all_saves_attempted}",
                     data: { turbo_frame: "remote_modal" }
         ) do %>
           Assigner une organisation
@@ -32,6 +32,7 @@
         <% end %>
       <% elsif user_row.last_user_save_attempt&.error? %>
         <%= link_to(new_user_list_upload_user_row_user_save_attempts_retry_path(user_list_upload_id: @user_list_upload.id, user_row_id: user_row.id),
+                    class: "#{'link-disabled' unless @all_saves_attempted}",
                     data: { turbo_frame: "remote_modal" }
         ) do %>
           <span class="badge rounded-pill alert-danger"<%= tooltip_for_user_save_attempt_errors(user_row.last_user_save_attempt.service_errors) %>>
