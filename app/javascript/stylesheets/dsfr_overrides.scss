@@ -1,0 +1,23 @@
+.reset-dsfr-overrides {
+  a {
+    &::after {
+      display: none;
+    }
+  }
+  p {
+    line-height: normal;
+  }
+  .btn-blue-out {
+    &:hover, &:disabled {
+      background-color: $dark-blue;
+      color: white;
+    }
+  }
+  [href] {
+    background-image: none;
+  }
+  a[href]:active, a[href]:hover {
+    --underline-hover-width: unset;
+    background-color: unset;
+  }
+}

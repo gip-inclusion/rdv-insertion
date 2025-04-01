@@ -1,5 +1,16 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "#{dsfr_path}/dsfr.min.css", 'data-turbo-track': "reload" %>
+  <%= stylesheet_link_tag "#{dsfr_path}/utility/icons/icons.min.css", 'data-turbo-track': 'reload' %>
+  <%= javascript_include_tag "#{dsfr_path}/dsfr.module.min.js", "data-turbo-track": "reload", type: "module", defer: true %>
+  <%= javascript_include_tag "#{dsfr_path}/dsfr.nomodule.min.js", "data-turbo-track": "reload", nomodule: true, defer: true %>
+<% end %>
+
 <% content_for :header do %>
   <%= render 'common/header_website' %>
+<% end %>
+
+<% content_for :footer do %>
+  <%= render 'common/footer_website' %>
 <% end %>
 
 <%= render "layouts/application_base" do %>
