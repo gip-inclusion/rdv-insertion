@@ -4,9 +4,9 @@ module UserListUploads
     before_action :set_user_row_partial, only: [:show, :update]
 
     def show
-      # Make @all_saves_attempted available to the view template to ensure the attribute is properly
-      # preserved when a user cancels cell editing. Without this, cells would
-      # become non-editable after cancellation because the attribute would be lost during re-render.
+      # We need to set @all_saves_attempted here because this action is called when canceling cell editing
+      # (through the X icon). Without it, the re-rendered row would lose this state and become non-editable
+      # since the template checks @all_saves_attempted to conditionally enable editing and links
       @all_saves_attempted = @user_list_upload.user_collection.all_saves_attempted?
       render turbo_stream: turbo_stream.replace("user-row-#{params[:id]}",
                                                 partial: @user_row_partial,
