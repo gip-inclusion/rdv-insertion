@@ -5,7 +5,7 @@
         <p class="fw-bold text-dark-blue mb-0"><%= user_row.user.full_name_stripped %></p>
         <% if user_row.archived? %>
           <div class="ms-3">
-            <span class="badge rounded-pill background-maroon-light text-maroon fs-archived-badge">Archivé <%= "(motif: #{user_row.archiving_reasons.first})" if user_row.archiving_reasons.length == 1 %></span>
+            <span class="badge rounded-pill background-brown-light text-brown fs-archived-badge">Archivé <%= "(motif: #{user_row.archiving_reasons.first})" if user_row.archiving_reasons.length == 1 %></span>
           </div>
         <% end %>
       </div>

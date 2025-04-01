@@ -16,7 +16,7 @@ module UserListUpload::UserListUploadHelper
 
   def user_row_background_color(user_row)
     if user_row.archived?
-      "background-maroon-light"
+      "background-brown-light"
     else
       "background-light"
     end
@@ -68,7 +68,7 @@ module UserListUpload::UserListUploadHelper
   def badge_class_for_user_row_organisation(user_row, organisation)
     if user_row.association_already_persisted?(organisation, :organisations)
       if user_row.archives.map(&:organisation_id).include?(organisation.id)
-        "background-maroon-light text-maroon"
+        "background-brown-light text-brown"
       else
         "background-blue-light text-dark-blue"
       end

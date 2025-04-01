@@ -472,7 +472,7 @@ describe "Agents can upload user list", :js do
           expect(page).to have_content("Hernan", wait: 5)
 
           # Check that the row is unchecked and has archived background
-          expect(page).to have_css(".background-maroon-light", wait: 5)
+          expect(page).to have_css(".background-brown-light", wait: 5)
           expect(page).to have_css("input[type='checkbox']:not(:checked)", wait: 5)
 
           # Check archiving reason is in the tooltip
