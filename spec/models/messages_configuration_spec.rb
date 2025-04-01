@@ -1,4 +1,19 @@
 describe MessagesConfiguration do
+  describe "signature_lines" do
+    context "xss attempt" do
+      let(:messages_configuration) do
+        build(:messages_configuration, organisation: create(:organisation),
+                                       signature_lines: ["\"><img src=1 onerror=alert(1)>", "coucou"])
+      end
+
+      it "strips all html tags" do
+        messages_configuration.save!
+        expect(messages_configuration.signature_lines.first).to eq("\">")
+        expect(messages_configuration.signature_lines.last).to eq("coucou")
+      end
+    end
+  end
+
   describe "remove_blank_array_fields validation" do
     context "some signature_lines fileds are blank" do
       let(:messages_configuration) do

@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../../lib/safeSwal";
 import searchUsers from "../actions/searchUsers";
 
 const retrieveUsersFromApp = async (
@@ -20,11 +20,11 @@ const retrieveUsersFromApp = async (
   if (result.success) {
     return result.users;
   }
-  Swal.fire(
-    "Une erreur s'est produite en récupérant les infos des usagers sur le serveur",
-    result.errors && result.errors.join(" - "),
-    "warning"
-  );
+  safeSwal({
+    title: "Une erreur s'est produite en récupérant les infos des usagers sur le serveur",
+    text: result.errors && result.errors.join(" - "),
+    icon: "warning",
+  });
   return null;
 };
 

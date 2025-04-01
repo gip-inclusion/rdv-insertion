@@ -1,6 +1,6 @@
-import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { parameterizeArray } from "./parameterize";
+import safeSwal from "./safeSwal";
 
 export const retrieveSheetColumnNames = (sheet) => {
   const header = [];
@@ -27,7 +27,7 @@ export const retrieveMissingColumnNames = (sheetColumnNames, expectedColumnNames
 };
 
 export const displayMissingColumnsWarning = (missingColumnNames) => {
-  Swal.fire({
+  safeSwal({
     title: "Le fichier chargé ne correspond pas au format attendu",
     html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
       <br/>
@@ -38,7 +38,7 @@ export const displayMissingColumnsWarning = (missingColumnNames) => {
 
 export const validateFileFormat = (file, acceptedFormats) => {
   if (!acceptedFormats.some((format) => file.name.endsWith(format))) {
-    Swal.fire({
+    safeSwal({
       title: `Le fichier doit être au format ${acceptedFormats.join(", ")}`,
       icon: "error",
     });

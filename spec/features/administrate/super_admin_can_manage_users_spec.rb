@@ -118,8 +118,6 @@ describe "Super admin can manage users" do
     it "can edit a user" do
       expect(page).to have_current_path(edit_super_admins_user_path(user))
       expect(page).to have_content("Modifier #{user.first_name} #{user.last_name}")
-      expect(page).to have_css("label[for=\"user_rdv_solidarites_user_id\"]", text: "ID de l'usager RDV-Solidarités")
-      expect(page).to have_field("user[rdv_solidarites_user_id]", with: user.rdv_solidarites_user_id)
       expect(page).to have_css("label[for=\"user_title-selectized\"]", text: "Civilité")
       within first("div.selectize-input") do
         expect(page).to have_field("user_title-selectized")

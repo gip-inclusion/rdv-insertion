@@ -5,6 +5,41 @@ describe Archive do
   let!(:organisation) { create(:organisation, department:) }
   let!(:user) { create(:user) }
 
+  describe "xss attempt" do
+    let(:archiving_reason) { "\"><img src=1 onerror=alert(1)>" }
+    let!(:archive) { create(:archive, archiving_reason:, organisation:, user:) }
+
+    it "strips all html" do
+      expect(archive.reload.archiving_reason).to eq("\">")
+    end
+
+    describe "attempt logging on sentry" do
+      subject { create(:archive, archiving_reason:, organisation:, user: other_user) }
+
+      let(:other_user) { create(:user) }
+
+      context "message is legit" do
+        let(:archiving_reason) do
+          "Suivi accompagnement\n\r\t Envoyer des offres &  d'emploi et d'entreprises pour son alternance "
+        end
+
+        it "does not log" do
+          expect(Sentry).not_to receive(:capture_message)
+          subject
+        end
+      end
+
+      context "message is not legit" do
+        let(:archiving_reason) { "\"><img src=1 onerror=alert(1)>" }
+
+        it "logs on sentry" do
+          expect(Sentry).to receive(:capture_message).once
+          subject
+        end
+      end
+    end
+  end
+
   describe "no collision" do
     context "when the user is not archived" do
       let(:archive) { build(:archive, organisation: organisation, user: user) }
