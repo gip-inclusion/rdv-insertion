@@ -4,8 +4,8 @@ module UserListUploads
     before_action :set_user_row_partial, only: [:show, :update]
 
     def show
-      # Make @all_saves_attempted available to the view template to ensure the data-saves-in-progress
-      # attribute is properly preserved when a user cancels cell editing. Without this, cells would
+      # Make @all_saves_attempted available to the view template to ensure the attribute is properly
+      # preserved when a user cancels cell editing. Without this, cells would
       # become non-editable after cancellation because the attribute would be lost during re-render.
       @all_saves_attempted = @user_list_upload.user_collection.all_saves_attempted?
       render turbo_stream: turbo_stream.replace("user-row-#{params[:id]}",

@@ -55,11 +55,7 @@
       <div class="col-md-10 sticky-footer">
         <div class="py-3 bg-white border-top d-flex justify-content-end">
           <div>
-              <% if @all_saves_attempted %>
-                <%= link_to "Terminer et revenir à l'accueil", @user_list_upload.structure_users_path, class: "btn btn-blue-out", data: { turbo_frame: "_top" } %>
-              <% else %>
-                <%= link_to "Terminer et revenir à l'accueil", "#", class: "btn btn-blue-out disabled" %>
-              <% end %>
+              <%= link_to "Terminer et revenir à l'accueil", @user_list_upload.structure_users_path, class: "btn btn-blue-out #{'disabled' unless @all_saves_attempted}", data: { turbo_frame: "_top" } %>
           </div>
           <div class="ms-3">
             <% if @user_list_upload.invitations_enabled? %>

@@ -6,10 +6,6 @@ export default class extends Controller {
   }
 
   async edit() {
-    if (this.element.dataset.savesInProgress === "true") {
-      return;
-    }
-
     const { userListUploadId, userRowId, userRowAttribute } = this.element.dataset;
 
     const response = await fetch(`/user_list_uploads/${userListUploadId}/user_rows/${userRowId}/user_row_cells/edit?attribute=${userRowAttribute}`);
