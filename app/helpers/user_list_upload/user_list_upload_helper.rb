@@ -151,8 +151,11 @@ module UserListUpload::UserListUploadHelper
   end
 
   def checkbox_to_select_all_checked?(attribute_name, user_list_upload_id)
-    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}") rescue {}
+    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}")
     cookie_data.dig(user_list_upload_id.to_s, "checkbox_all", attribute_name.to_s) != false
+  rescue JSON::ParserError
+    Sentry.capture_exception(JSON::ParserError, extra: { cookies: cookies["user_list_uploads"] })
+    false
   end
 end
 # rubocop:enable Metrics/ModuleLength

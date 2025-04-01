@@ -60,8 +60,11 @@ module UserListUpload::InvitationAttemptsHelper
   end
 
   def selected_invitation_formats(user_list_upload_id)
-    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}") rescue {}
+    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}")
     formats = cookie_data.dig(user_list_upload_id.to_s, "selected_invitation_formats")
     formats.is_a?(Array) ? formats : %w[sms email]
+  rescue JSON::ParserError
+    Sentry.capture_exception(JSON::ParserError, extra: { cookies: cookies["user_list_uploads"] })
+    %w[sms email]
   end
 end
