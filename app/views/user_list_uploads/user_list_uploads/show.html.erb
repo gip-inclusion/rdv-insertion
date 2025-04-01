@@ -20,8 +20,14 @@
         <div class="mb-4">
           <h2 class="h2-title">Vérifiez et complétez les données usagers</h2>
           <p class="text-muted">
-            Données du fichier « <%= @user_list_upload.file_name %> ». Vous pouvez enrichir ces données avec celles du fichier CNAF.<br/>
-            Vous pouvez modifier les données des usagers en double-cliquant sur les cellules du tableau.
+            Sur les <%= @user_list_upload.user_rows.length %> usagers importés du fichier « <%= @user_list_upload.file_name %> »:
+             <%=
+               [
+                 @user_list_upload.user_rows_with_errors.any? ? "#{@user_list_upload.user_rows_with_errors.length} dossiers comportent des erreurs" : nil,
+                 @user_list_upload.user_rows_archived.any? ? "#{@user_list_upload.user_rows_archived.length} sont archivés #{@user_list_upload.department_level? ? 'dans une des organisations du département' : 'dans cette organisation'}" : nil,
+                 @user_list_upload.user_rows_with_closed_follow_up.any? ? "#{@user_list_upload.user_rows_with_closed_follow_up.length} sont marqués comme traités sur cette catégorie" : nil
+               ].compact.to_sentence
+             %>
           </p>
         </div>
 

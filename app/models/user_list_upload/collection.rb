@@ -44,6 +44,14 @@ class UserListUpload::Collection
     user_rows.select(&:changed_by_cnaf_data?)
   end
 
+  def user_rows_archived
+    user_rows.select(&:archived?)
+  end
+
+  def user_rows_with_closed_follow_up
+    user_rows.select(&:matching_follow_up_closed?)
+  end
+
   def user_rows_selected_for_user_save
     user_rows.select(&:selected_for_user_save?)
   end
