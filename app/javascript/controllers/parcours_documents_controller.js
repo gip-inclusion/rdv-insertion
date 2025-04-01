@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import Swal from "sweetalert2";
+import safeSwal from "../lib/safeSwal";
 
 export default class extends Controller {
   fetchFile() {
@@ -14,7 +14,7 @@ export default class extends Controller {
       window.Turbo.navigator.submitForm(this.element)
       this.clearFileInput();
     } else if (file) {
-      Swal.fire({
+      safeSwal({
         title: "Ce fichier est trop lourd",
         text: `Veuillez sélectionner un fichier dont la taille ne dépasse pas ${(maxSize / 1000000).toFixed()} Mo`,
         icon: "warning",

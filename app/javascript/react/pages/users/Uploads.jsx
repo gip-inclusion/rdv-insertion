@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
 import { observer } from "mobx-react-lite";
 
+import safeSwal from "../../../lib/safeSwal";
 import FileHandler from "../../components/FileHandler";
 import EnrichWithContactFile from "../../components/users/EnrichWithContactFile";
 import BatchActionsButtons from "../../components/users/BatchActionsButtons";
@@ -105,7 +105,7 @@ const UsersUploads = observer(
     };
 
     const displayFormatErrorMessage = (acceptedFormats) => {
-      Swal.fire({
+      safeSwal({
         title: `Le fichier doit être au format ${acceptedFormats.map((format) => ` ${format}`)}`,
         icon: "error",
       });

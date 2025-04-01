@@ -2,6 +2,8 @@
 :queues:
   - default
   - stats
+  - creneaux
 
 :limits:
   stats: 2
+  creneaux: 1

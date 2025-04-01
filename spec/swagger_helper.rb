@@ -106,6 +106,14 @@ RSpec.configure do |config|
             },
             required: %w[id email first_name last_name rdv_solidarites_agent_id]
           },
+          tag: {
+            type: "object",
+            properties: {
+              id: { type: "integer" },
+              value: { type: "string" }
+            },
+            required: %w[id value]
+          },
           user_with_root: {
             type: "object",
             properties: {
@@ -153,7 +161,7 @@ RSpec.configure do |config|
               carnet_de_bord_carnet_id
             ]
           },
-          user_with_referents: {
+          user_with_tags_and_referents: {
             type: "object",
             properties: {
               id: { type: "integer" },
@@ -177,7 +185,10 @@ RSpec.configure do |config|
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: {
                 type: "string", nullable: true,
-                description: "Présent seulement pour les organisations de type: conseil départemental, France Travail."
+                description:
+                  "Affectable seulement dans les organisations de type: conseil départemental, France Travail." \
+                  " Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée." \
+                  " Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
               },
               france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
@@ -185,6 +196,10 @@ RSpec.configure do |config|
               referents: {
                 type: "array",
                 items: { "$ref" => "#/components/schemas/agent" }
+              },
+              tags: {
+                type: "array",
+                items: { "$ref" => "#/components/schemas/tag" }
               }
             },
             required: %w[
@@ -310,8 +325,10 @@ RSpec.configure do |config|
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: {
                 type: "string", nullable: true,
-                description: "Affectable seulement dans les organisations de type: " \
-                             "conseil départemental, France Travail"
+                description:
+                  "Affectable seulement dans les organisations de type: conseil départemental, France Travail." \
+                  " Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée." \
+                  " Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
               },
               france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
@@ -334,6 +351,15 @@ RSpec.configure do |config|
                   type: "object",
                   properties: {
                     email: { type: "string" }
+                  }
+                }
+              },
+              tags_to_add: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    value: { type: "string" }
                   }
                 }
               },

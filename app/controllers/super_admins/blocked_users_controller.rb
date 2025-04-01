@@ -1,5 +1,6 @@
 class SuperAdmins::BlockedUsersController < SuperAdmins::ApplicationController
-  before_action :set_starts_at, :set_ends_at, :set_blocked_users_grouped_by_month, only: :index
+  before_action :set_starts_at, :set_ends_at, :set_blocked_users_grouped_by_month, :force_full_page_reload,
+                only: :index
 
   private
 

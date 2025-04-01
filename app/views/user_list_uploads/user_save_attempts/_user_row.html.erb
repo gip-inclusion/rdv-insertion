@@ -1,11 +1,11 @@
 <tr id="user-row-<%= user_row.id %>">
-  <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :post_code].each do |attribute| %>
-    <% if user_row.user_save_succeded? %>
-      <td class="<%= "text-truncate-150" if attribute.in?([:email, :affiliation_number]) %>">
+  <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email].each do |attribute| %>
+    <% if user_row.user_save_succeeded? %>
+      <td class="<%= "text-truncate-150" if attribute.in?([:affiliation_number]) %>">
         <span><%= display_attribute(user_row.user.send(attribute)) %></span>
       </td>
     <% else %>
-      <td class="<%= "text-truncate-150" if attribute.in?([:email, :affiliation_number]) %> <%= user_save_background_color_for_attribute(user_row, attribute) %>"
+      <td class="<%= "text-truncate-150" if attribute.in?([:affiliation_number]) %> <%= user_save_background_color_for_attribute(user_row, attribute) %>"
           data-controller="user-row-cell"
           data-user-list-upload-id="<%= @user_list_upload.id %>"
           data-user-row-id="<%= user_row.id %>"
@@ -19,6 +19,7 @@
       </td>
     <% end %>
   <% end %>
+  <td><span><%= display_attribute(user_row.user.post_code) %></span></td>
 
   <td>
     <div class="d-flex justify-content-between align-items-center">

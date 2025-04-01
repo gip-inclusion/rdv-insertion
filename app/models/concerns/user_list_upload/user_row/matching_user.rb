@@ -3,6 +3,7 @@ module UserListUpload::UserRow::MatchingUser
 
   def set_matching_user
     return if matching_user_id.present?
+    return if user_save_succeeded?
 
     matching_user = find_matching_user
     self.matching_user_id = matching_user.id if matching_user
@@ -61,9 +62,8 @@ module UserListUpload::UserRow::MatchingUser
     if persisted?
       retrieve_potential_matching_users_in_all_app
     else
-      # user_row is always created with the other user_list_upload user_rows
-      # so on creation we retrieve the user_list_upload potential matching users to not
-      # trigger a new query in each user_row creation when creating the user_list_upload
+      # when user_row is not persisted, we retrieve the potential matching users at the
+      # user_list_upload level to not trigger a new query in each user_row creation
       user_list_upload.potential_matching_users_in_all_app
     end
   end
@@ -72,9 +72,8 @@ module UserListUpload::UserRow::MatchingUser
     if persisted?
       retrieve_potential_matching_users_in_department
     else
-      # user_row is always created with the other user_list_upload user_rows
-      # so on creation we retrieve the user_list_upload potential matching users to not
-      # trigger a new query in each user_row creation when creating the user_list_upload
+      # when user_row is not persisted, we retrieve the potential matching users at the
+      # user_list_upload level to not trigger a new query in each user_row creation
       user_list_upload.potential_matching_users_in_department
     end
   end

@@ -60,9 +60,7 @@
             <small>
               <i
                 class="ri-question-line"
-                data-controller="tooltip"
-                data-action="mouseover->tooltip#actionRequired"
-                data-invitation-duration-in-days="<%= @current_category_configuration&.number_of_days_before_invitations_expire %>"
+                <%= tooltip(content: action_required_tooltip_content(@current_category_configuration.number_of_days_before_invitations_expire)) %>
               >
               </i>
             </small>
@@ -127,7 +125,7 @@
           <% end %>
         </li>
         <li>
-          <%= link_to(new_structure_upload_path, class: "dropdown-item") do %>
+          <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "dropdown-item") do %>
             Charger fichier usagers
           <% end %>
         </li>

@@ -48,6 +48,11 @@ Rails.application.routes.draw do
                                        only: [:show]
   end
 
+  # CSP endpoints
+  get "/csp-test", to: "content_security_policy#test"
+  post "/csp-test-endpoint", to: "content_security_policy#test_endpoint"
+  post "/csp-violation-report", to: "content_security_policy#report"
+
   get "/organisations", to: "organisations#index", as: :authenticated_root
 
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
@@ -115,6 +120,7 @@ Rails.application.routes.draw do
       get :show_details
       get :hide_details
       resource :user_row_cells, only: [:edit]
+      post :batch_update, on: :collection
 
       resources :organisation_assignations, only: [:new, :create]
 

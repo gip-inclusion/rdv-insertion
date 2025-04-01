@@ -3,6 +3,8 @@ module Website
     skip_before_action :authenticate_agent!, only: [:index, :show, :deployment_map]
     before_action :set_organisation, :set_department, :set_stat, only: [:show]
     before_action :set_departments, only: [:index, :show]
+    # Chartkick needs a full page reload to work with our CSP.
+    before_action :force_full_page_reload, only: [:index, :show]
 
     def index
       @department_count = @departments.count

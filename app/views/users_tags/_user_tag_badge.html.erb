@@ -1,8 +1,9 @@
 <div
   class="d-inline-flex badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex text-truncate"
-  data-controller="tooltip"
-  data-action="mouseover->tooltip#tagCreationDate"
-  data-tag-creation-date="<%= user_tag_creation_date(tag, user) %>"
+  <%= tooltip(
+        content: "Tag ajouté le #{user_tag_creation_date(tag, user)}",
+        placement: "top"
+      ) %>
 >
   <span class="text-truncate">
     <%= tag.value %>
@@ -22,11 +23,11 @@
         Êtes-vous sûr de vouloir retirer le tag <b><%= tag.value %></b> de l'usager <b><%= user %></b> ?
       <% end %>
       <%= render(
-        "common/confirmation_modal",
-        title: "Retirer le tag de cet usager ?",
-        text_content: modal_text_content,
-        action_text: "- Retirer"
-      ) %>
+            "common/confirmation_modal",
+            title: "Retirer le tag de cet usager ?",
+            text_content: modal_text_content,
+            action_text: "- Retirer"
+          ) %>
     <% end %>
   <% end %>
 </div>
