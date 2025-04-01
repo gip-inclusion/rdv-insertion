@@ -3,6 +3,7 @@ module UserListUpload::UserRow::MatchingUser
 
   def set_matching_user
     return if matching_user_id.present?
+    return if user_save_succeeded?
 
     matching_user = find_matching_user
     self.matching_user_id = matching_user.id if matching_user

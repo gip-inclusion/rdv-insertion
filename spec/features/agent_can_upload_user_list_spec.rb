@@ -27,7 +27,7 @@ describe "Agents can upload user list", :js do
   # Needed for the invitations to be sent
   let!(:motif) { create(:motif, organisation: organisation, motif_category: motif_category) }
 
-  let!(:other_org_from_same_department) { create(:organisation, department:) }
+  let!(:second_department_org) { create(:organisation, department:) }
   let!(:other_department) { create(:department) }
   let!(:other_org_from_other_department) { create(:organisation, department: other_department) }
 
@@ -48,8 +48,6 @@ describe "Agents can upload user list", :js do
   end
 
   context "at organisation level" do
-    before { travel_to now }
-
     it "can upload list of users" do
       ## Category selection
       visit new_organisation_user_list_uploads_category_selection_path(organisation)
@@ -218,10 +216,44 @@ describe "Agents can upload user list", :js do
       expect(hernan_row.reload.cnaf_data["phone_number"]).to eq("+33698943255")
       expect(hernan_row.reload.cnaf_data["email"]).to eq("hernan.crespo@hotmail.fr")
 
+      ## Both rows are checked by default
+      expect(find("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']")).to be_checked
+      expect(find("input[type='checkbox'][data-user-row-id='#{christian_row.id}']")).to be_checked
+
+      expect(hernan_row.reload.selected_for_user_save).to be_truthy
+      expect(christian_row.reload.selected_for_user_save).to be_truthy
+      expect(page).to have_content("2 usagers sélectionnés")
+
+      # Uncheck all rows
+      check_all_button = find("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']")
+      expect(check_all_button).to be_checked
+      check_all_button.click
+
+      expect(page).to have_content("Aucun usager sélectionné", wait: 5)
+      expect(christian_row.reload.selected_for_user_save).to be_falsey
+      expect(hernan_row.reload.selected_for_user_save).to be_falsey
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
+
+      # Check all rows
+      check_all_button.click
+
+      expect(page).to have_content("2 usagers sélectionnés", wait: 5)
+      expect(christian_row.reload.selected_for_user_save).to be_truthy
+      expect(hernan_row.reload.selected_for_user_save).to be_truthy
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:checked")
+
       ## Uncheck Christian row
+      find("input[type='checkbox'][data-user-row-id='#{christian_row.id}']").uncheck
 
-      find("input[type='checkbox'][value='#{christian_row.id}']").uncheck
+      expect(page).to have_content("1 usager sélectionné", wait: 5)
+      expect(christian_row.reload.selected_for_user_save).to be_falsey
+      expect(hernan_row.reload.selected_for_user_save).to be_truthy
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
 
+      # Save users
       perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
         click_button("Créer et mettre à jour les dossiers")
       end
@@ -271,6 +303,23 @@ describe "Agents can upload user list", :js do
       expect(page).to have_content("Hernan")
       expect(page).to have_content("Non invité")
 
+      expect(find("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']")).to be_checked
+      expect(hernan_row.reload.selected_for_invitation).to be_truthy
+      expect(page).to have_content("1 usager sélectionné sur 2", wait: 5)
+
+      # Uncheck the checkbox to trigger the invitation
+      find("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']").click
+      expect(page).to have_content("Aucun usager sélectionné", wait: 5)
+
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
+      expect(hernan_row.reload.selected_for_invitation).to be_falsey
+
+      # Check the checkbox to trigger the invitation
+      find("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']").click
+      expect(page).to have_content("1 usager sélectionné sur 2", wait: 5)
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
+      expect(hernan_row.reload.selected_for_invitation).to be_truthy
+
       perform_enqueued_jobs(only: UserListUpload::InviteUsersJob) do
         click_button("Envoyer les invitations")
       end
@@ -294,6 +343,415 @@ describe "Agents can upload user list", :js do
       click_link "Terminer"
 
       expect(page).to have_current_path(organisation_users_path(organisation_id: organisation.id))
+    end
+
+    context "with existing matching user" do
+      context "matching criteria tests" do
+        it "matches an existing user by NIR" do
+          user = create(:user, nir: "180333147687266", organisations: [organisation])
+
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          # Add a wait to ensure user row is matched
+          expect(page).to have_content("Hernan", wait: 5)
+
+          hernan_row = UserListUpload::UserRow.find_by(first_name: "Hernan")
+          expect(hernan_row.reload.matching_user).to eq(user)
+        end
+
+        it "matches an existing user by email and first name" do
+          # Create user with matching email and first name
+          user = create(
+            :user,
+            first_name: "Christian",
+            email: "christian@vieri.com",
+            organisations: [organisation]
+          )
+
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          # Add a wait to ensure user row is matched
+          expect(page).to have_content("Christian", wait: 5)
+
+          # Check that the user was matched by email and first name
+          christian_row = UserListUpload::UserRow.find_by(first_name: "Christian")
+          expect(christian_row.reload.matching_user).to eq(user)
+        end
+
+        it "matches an existing user by department_internal_id" do
+          # Create user with matching department_internal_id
+          user = create(
+            :user,
+            department_internal_id: "8383",
+            organisations: [organisation]
+          )
+
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          # Add a wait to ensure user row is matched
+          expect(page).to have_content("Hernan", wait: 5)
+
+          # Check that the user was matched by department_internal_id
+          hernan_row = UserListUpload::UserRow.find_by(first_name: "Hernan")
+          expect(hernan_row.reload.matching_user).to eq(user)
+        end
+      end
+
+      context "special status tests" do
+        it "highlights different values between file and database" do
+          # Create user with a different last name
+          create(
+            :user,
+            first_name: "Hernan",
+            last_name: "DIFFERENT",
+            nir: "180333147687266",
+            organisations: [organisation]
+          )
+
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          expect(page).to have_content("Hernan", wait: 5)
+
+          # Check that the different value is highlighted
+          expect(page).to have_css(".alert-success", wait: 5)
+          expect(page).to have_css(".ri-checkbox-circle-line", wait: 5)
+        end
+
+        it "shows archived status with unchecked row and special background" do
+          # Create user that is archived in the organisation
+          user = create(:user, nir: "180333147687266", organisations: [organisation])
+          create(:archive, user: user, organisation: organisation, archiving_reason: "Déménagement")
+
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          # Add a wait to ensure user row is matched and rendered
+          expect(page).to have_content("Hernan", wait: 5)
+
+          # Check that the row is unchecked and has archived background
+          expect(page).to have_css(".background-maroon-light", wait: 5)
+          expect(page).to have_css("input[type='checkbox']:not(:checked)", wait: 5)
+
+          # Check archiving reason is in the tooltip
+          badge = find(".badge.rounded-pill", match: :first, wait: 5)
+          expect(badge["data-tooltip-content"]).to include("Dossier archivé")
+          expect(badge["data-tooltip-content"]).to include("Déménagement")
+
+          # Check expanded row has archive badge
+          find(".ri-arrow-down-s-line", match: :first).click
+
+          # Check for archiving content in the expanded row
+          expect(page).to have_content("Archivé", wait: 10)
+        end
+
+        it "shows closed follow-up status with unchecked row and tooltip" do
+          # Create user with a closed follow-up for this motif category
+          user = create(:user, nir: "180333147687266", organisations: [organisation])
+          create(:follow_up, user: user, motif_category: motif_category, closed_at: Time.zone.now)
+
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          # Add a wait to ensure user row is matched and rendered
+          expect(page).to have_content("Hernan", wait: 5)
+
+          # Check that the row is unchecked
+          expect(page).to have_css("input[type='checkbox']:not(:checked)", wait: 5)
+
+          # Check tooltip content using data-tooltip-content attribute
+          badge = find(".badge.rounded-pill", match: :first, wait: 5)
+          expect(badge["data-tooltip-content"]).to include("Dossier traité")
+        end
+      end
+    end
+
+    context "on user save attempts page" do
+      let!(:user) { create(:user, nir: "180333147687266", organisations: [organisation]) }
+
+      context "when the user save is successful" do
+        before do
+          allow(UserListUpload::SaveUser).to receive(:call).and_return(OpenStruct.new(success?: true, errors: [],
+                                                                                      user_id: user.id))
+        end
+
+        it "shows the user save attempt is successful" do
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          # Add a wait to ensure user row is matched and rendered
+          expect(page).to have_content("Hernan", wait: 5)
+
+          user_list_upload = UserListUpload.last
+
+          # Save users
+          perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
+            click_button("Créer et mettre à jour les dossiers")
+            expect(page).to have_current_path(
+              user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+            )
+          end
+
+          expect(page).to have_content("Mis à jour")
+        end
+      end
+
+      context "when the user save is not successful" do
+        before do
+          allow(UserListUpload::SaveUser).to receive(:call).and_return(OpenStruct.new(success?: false,
+                                                                                      errors: ["Error"]))
+        end
+
+        it "shows the user save attempt is not successful" do
+          visit new_organisation_user_list_uploads_category_selection_path(organisation)
+          choose(motif_category.name)
+          click_button("Valider")
+          attach_file(
+            "user_list_upload_file",
+            Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+            make_visible: true
+          )
+          click_button("Charger les données usagers")
+
+          # Add a wait to ensure user row is matched and rendered
+          expect(page).to have_content("Hernan", wait: 5)
+
+          # Save users
+          click_button("Créer et mettre à jour les dossiers")
+
+          user_list_upload = UserListUpload.last
+
+          expect(page).to have_current_path(
+            user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+          )
+          perform_enqueued_jobs(only: UserListUpload::SaveUsersJob)
+
+          hernan_row = user_list_upload.user_rows.find_by(first_name: "Hernan")
+
+          expect(page).to have_content("Erreur")
+          expect(hernan_row.reload).not_to be_user_save_succeeded
+          table_row = find("tr", text: "Crespo")
+          data_tooltip_content = table_row.find(".badge.rounded-pill")["data-tooltip-content"]
+          expect(data_tooltip_content).to include("Erreur")
+
+          last_name_cell = table_row.find("[data-user-row-attribute='last_name']")
+          last_name_cell.double_click
+
+          allow(UserListUpload::SaveUser).to receive(:call).and_return(
+            OpenStruct.new(success?: true, errors: [], user: OpenStruct.new(id: user.id))
+          )
+
+          within(table_row) do
+            fill_in "user_row[last_name]", with: "CRESPOGOAL", fill_options: { clear: :backspace }
+            find("i.ri-check-line").click
+          end
+
+          expect(page).to have_content("CRESPOGOAL")
+
+          perform_enqueued_jobs(only: UserListUpload::SaveUserJob)
+
+          expect(hernan_row.reload).to be_user_save_succeeded
+          # Somehow the refresh triggered by the `broadcast_refresh_later` in the `SaveUserJob`
+          # is not reflected in test environment, so I have to use a manual fake refresh instead
+          page.refresh
+
+          expect(page).to have_content("Mis à jour")
+        end
+      end
+    end
+  end
+
+  context "at department level" do
+    let!(:agent) { create(:agent, organisations: [organisation, second_department_org]) }
+    let!(:second_department_org) { create(:organisation, department: department, slug: "org2") }
+    let!(:retrieve_organisation_service_double) { instance_double(UserListUpload::RetrieveOrganisationToAssign) }
+
+    context "when organisation_search_terms are present" do
+      it "assigns organisation from file" do
+        visit new_department_user_list_uploads_category_selection_path(department)
+        choose(motif_category.name)
+        click_button("Valider")
+
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+
+        # Verify organisation was assigned correctly
+        expect(hernan_row.reload.organisation_to_assign).to eq(organisation)
+
+        # Save users
+        perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
+          click_button("Créer et mettre à jour les dossiers")
+          expect(page).to have_current_path(
+            user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+          )
+
+          expect(page).to have_content("Dossier créé", wait: 10)
+        end
+        expect(hernan_row.user.reload.organisations).to contain_exactly(organisation)
+      end
+    end
+
+    context "when no organisation_search_terms" do
+      before do
+        allow(UserListUpload::RetrieveOrganisationToAssign).to receive(:call)
+          .and_return(OpenStruct.new(organisation: second_department_org, success?: true))
+      end
+
+      it "assigns organisation by retrieving the right one from the sectorisation" do
+        visit new_department_user_list_uploads_category_selection_path(department)
+        choose(motif_category.name)
+        click_button("Valider")
+
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+        # we make sure the organisation_search_terms are not present
+        hernan_row.update!(organisation_search_terms: nil)
+
+        # Save users
+        perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
+          click_button("Créer et mettre à jour les dossiers")
+          expect(page).to have_current_path(
+            user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+          )
+        end
+
+        expect(page).to have_content("Dossier créé", wait: 5)
+        expect(hernan_row.reload.user.organisations).to contain_exactly(second_department_org)
+      end
+    end
+
+    context "when organisation retrieval fails" do
+      before do
+        allow(UserListUpload::RetrieveOrganisationToAssign).to receive(:call)
+          .and_return(OpenStruct.new(organisation: nil, success?: false, errors: ["Impossible de trouver une organisation"]))
+      end
+
+      it "shows no_organisation_to_assign status when organisation and ask for organisation" do
+        visit new_department_user_list_uploads_category_selection_path(department)
+        choose(motif_category.name)
+        click_button("Valider")
+
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+        # we make sure the organisation_search_terms are not present
+        hernan_row.update!(organisation_search_terms: nil)
+
+        # Save users
+        perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
+          click_button("Créer et mettre à jour les dossiers")
+          expect(page).to have_current_path(
+            user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+          )
+        end
+
+        # Verify no organisation was assigned
+        expect(hernan_row.reload.organisation_to_assign).to be_nil
+        expect(page).to have_content("Assigner une organisation")
+
+        # Test manual organisation assignment
+        hernan_row_element = find("tr", text: "Crespo")
+        within(hernan_row_element) do
+          click_link("Assigner une organisation")
+        end
+
+        expect(page).to have_content("Veuillez choisir une organisation pour l'usager")
+
+        # Choose an organisation manually
+        select organisation.name, from: "user_list_upload_user_row[assigned_organisation_id]"
+
+        perform_enqueued_jobs(only: UserListUpload::SaveUserJob) do
+          click_button("Enregistrer")
+          # expect(page).to have_content("Dossier créé", wait: 5)
+          expect(page).to have_content("L'organisation #{organisation.name} a été assignée à l'usager")
+        end
+
+        # Somehow the refresh triggered by the `broadcast_refresh_later` in the `SaveUserJob`
+        # is not reflected in test environment, so I have to use a manual fake refresh instead
+        page.refresh
+
+
+        expect(page).to have_content("Dossier créé")
+        expect(hernan_row.reload.user.organisations).to contain_exactly(organisation)
+      end
     end
   end
 end
