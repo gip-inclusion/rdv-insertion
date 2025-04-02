@@ -201,6 +201,26 @@ describe "Agents can upload user list", :js do
       expect(page).to have_content("CRESPOGOAL")
       expect(hernan_row.reload.last_name).to eq("CRESPOGOAL")
 
+      ## Edit and cancel edit
+      table_row = find("tr", text: "CRESPOGOAL")
+      last_name_cell = table_row.find("[data-user-row-attribute='last_name']")
+      last_name_cell.double_click
+
+      within(table_row) do
+        find("i.ri-close-line").click
+      end
+      expect(page).to have_content("Hernan")
+
+      within(table_row) do
+        find("i.ri-arrow-down-s-line").click
+      end
+
+      expect(page).to have_content("ID interne")
+
+      within(table_row) do
+        find("i.ri-arrow-up-s-line").click
+      end
+
       ## Enrich With Cnaf Data
       expect(hernan_row.phone_number).to be_nil
       expect(hernan_row.email).to eq("hernan@crespo.com")

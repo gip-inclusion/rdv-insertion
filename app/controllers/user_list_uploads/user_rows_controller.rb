@@ -50,7 +50,7 @@ module UserListUploads
     end
 
     def set_user_row_partial
-      @user_row_partial = if @user_row.selected_for_user_save?
+      @user_row_partial = if @user_row.attempted_user_save?
                             "user_list_uploads/user_save_attempts/user_row"
                           else
                             "user_list_uploads/user_list_uploads/user_row"
