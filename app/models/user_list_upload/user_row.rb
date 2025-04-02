@@ -11,7 +11,8 @@ class UserListUpload::UserRow < ApplicationRecord
   encrypts :nir
 
   before_save :format_attributes, :set_matching_user
-  after_commit :enqueue_save_user_job, if: :should_save_user?
+  before_create :select_for_user_save!, if: :selected_by_default_for_user_save?
+  after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
   belongs_to :matching_user, class_name: "User", optional: true
@@ -19,7 +20,8 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
-  delegate :department, :department_number, :department_id, :restricted_user_attributes, to: :user_list_upload
+  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
+           to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
@@ -69,6 +71,10 @@ class UserListUpload::UserRow < ApplicationRecord
     matching_user&.id
   end
 
+  def matching_user_accessible?
+    matching_user_id && matching_user.organisations.intersect?(user_list_upload.organisations)
+  end
+
   def saved_user_id
     saved_user&.id
   end
@@ -99,6 +105,38 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def motif_category_to_assign
     user_list_upload_motif_category
+  end
+
+  def archives
+    return [] if matching_user_id.blank?
+
+    @archives ||=
+      if organisation_to_assign
+        Array(matching_user.archive_in_organisation(organisation_to_assign))
+      else
+        matching_user.archives.select do |archive|
+          user_list_upload_organisations.map(&:id).include?(archive.organisation_id)
+        end
+      end
+  end
+
+  def archived?
+    archives.any?
+  end
+
+  def archiving_reasons
+    archives.map(&:archiving_reason)
+  end
+
+  def matching_follow_up
+    return unless matching_user_id
+    return unless motif_category_to_assign
+
+    matching_user.follow_ups.find { |follow_up| follow_up.motif_category_id == motif_category_to_assign.id }
+  end
+
+  def matching_follow_up_closed?
+    matching_follow_up&.closed?
   end
 
   def referent_to_assign
@@ -136,8 +174,8 @@ class UserListUpload::UserRow < ApplicationRecord
       matching_user.referents != referents || matching_user.tags != tags
   end
 
-  def mark_for_user_save!
-    self.marked_for_user_save = true
+  def select_for_user_save!
+    self.selected_for_user_save = true
   end
 
   def save_user
@@ -152,7 +190,7 @@ class UserListUpload::UserRow < ApplicationRecord
     user_save_attempts.max_by(&:created_at)
   end
 
-  def user_save_succeded?
+  def user_save_succeeded?
     last_user_save_attempt&.success?
   end
 
@@ -176,8 +214,8 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def mark_for_invitation!
-    self.marked_for_invitation = true
+  def select_for_invitation!
+    self.selected_for_invitation = true
   end
 
   def invitable_by?(format)
@@ -230,8 +268,10 @@ class UserListUpload::UserRow < ApplicationRecord
     UserListUpload::SaveUserJob.perform_later(id)
   end
 
-  def should_save_user?
-    marked_for_user_save? && previous_changes.keys.any? do |attribute|
+  def should_save_user_automatically?
+    # automatic saves can only be triggered when a save has been attempted and when we change
+    # some attributes
+    attempted_user_save? && previous_changes.keys.any? do |attribute|
       (USER_ATTRIBUTES + [:assigned_organisation_id]).include?(attribute.to_sym)
     end
   end
@@ -266,6 +306,10 @@ class UserListUpload::UserRow < ApplicationRecord
         search_terms.downcase.in?(attribute)
       end
     end
+  end
+
+  def selected_by_default_for_user_save?
+    user_valid? && !archived? && !matching_follow_up_closed?
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -11,3 +11,17 @@
     color: white;
   }
 }
+
+.announcement-banner {
+  background-color: #6363E6;
+  color: white; 
+
+  a {
+    color: white;
+
+    &:hover {
+      color: white;
+    }
+  }
+}
+

@@ -50,4 +50,21 @@ module UserListUpload::InvitationAttemptsHelper
       "environ #{time_remaining_in_minutes} min restante#{'s' if time_remaining_in_minutes > 1}"
     end
   end
+
+  def disable_invitation_for_user_row?(user_row)
+    selected_invitation_formats(user_row.user_list_upload_id).none? { |format| user_row.invitable_by?(format) }
+  end
+
+  def invitation_format_checked?(format, user_list_upload_id)
+    selected_invitation_formats(user_list_upload_id).include?(format)
+  end
+
+  def selected_invitation_formats(user_list_upload_id)
+    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}")
+    formats = cookie_data.dig(user_list_upload_id.to_s, "selected_invitation_formats")
+    formats.is_a?(Array) ? formats : %w[sms email]
+  rescue JSON::ParserError
+    Sentry.capture_exception(JSON::ParserError, extra: { cookies: cookies["user_list_uploads"] })
+    %w[sms email]
+  end
 end

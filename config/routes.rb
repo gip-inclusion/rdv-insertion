@@ -120,6 +120,7 @@ Rails.application.routes.draw do
       get :show_details
       get :hide_details
       resource :user_row_cells, only: [:edit]
+      post :batch_update, on: :collection
 
       resources :organisation_assignations, only: [:new, :create]
 
