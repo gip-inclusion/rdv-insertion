@@ -55,7 +55,20 @@
       <div class="container sticky-footer">
         <div class="py-3 px-4 bg-white d-flex justify-content-end">
           <div>
-            <%= link_to "Terminer et revenir à l'accueil", @user_list_upload.structure_users_path, class: "btn btn-blue-out #{'link-disabled' unless @all_saves_attempted}", data: { turbo_frame: "_top" } %>
+            <%=
+              link_to(
+                "Terminer et revenir à l'accueil", 
+                @user_list_upload.structure_users_path, 
+                class: "btn btn-blue-out #{'link-disabled' unless @all_saves_attempted}", 
+                data: { 
+                  turbo_frame: "_top",
+                  controller: "tally",
+                  "tally-form-id": ENV["TALLY_NEW_UPLOAD_FORM_ID"],
+                  "tally-delay-in-ms": 1000,
+                  action: "click->tally#showPopup"
+                }
+              )
+            %>
           </div>
           <div class="ms-3">
             <% if @user_list_upload.invitations_enabled? %>

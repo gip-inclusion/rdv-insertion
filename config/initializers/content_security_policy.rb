@@ -9,7 +9,7 @@ rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
 matomo = "matomo.inclusion.beta.gouv.fr"
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
-maze = "*.maze.co"
+tally = "tally.so"
 flourish = ["flo.uri.sh", "https://public.flourish.studio/resources/embed.js"] # for deployment map
 
 Rails.application.config.content_security_policy do |policy|
@@ -17,11 +17,11 @@ Rails.application.config.content_security_policy do |policy|
   policy.font_src        :self, :data, *crisp
   policy.img_src         :self, :data, s3_bucket, *crisp
   policy.media_src       :self, s3_bucket
-  policy.frame_src       :self, *flourish, maze
+  policy.frame_src       :self, *flourish, tally
   policy.object_src      :none
-  policy.script_src      :self, matomo, *crisp, *flourish, maze, sentry
+  policy.script_src      :self, matomo, *crisp, *flourish, tally, sentry
   policy.style_src       :self, :unsafe_inline, *crisp
-  policy.connect_src     :self, rdv_solidarites, sentry, matomo, maze, *crisp
+  policy.connect_src     :self, rdv_solidarites, sentry, matomo, tally, *crisp
   policy.form_action     :self, rdv_solidarites
   policy.frame_ancestors :self, rdv_solidarites, matomo
   policy.worker_src      :self, :blob
