@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   async showPopup() {
-    if (this.#hasAlreadyAnswered) return
+    if (this.#hasAlreadyAnswered || !this.element.dataset.tallyFormId) return
 
     await this.#loadScript()
     this.#displayForm()
