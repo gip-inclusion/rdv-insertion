@@ -756,4 +756,155 @@ describe "Agents can upload user list", :js do
       end
     end
   end
+
+  context "when selecting rows to invite" do
+    let!(:hernan) { create(:user, first_name: "Hernan", last_name: "Crespo", email: "hernan@crespo.com", phone_number: "+33698943255") }
+    let!(:christian) { create(:user, first_name: "Christian", last_name: "Vieri", email: "christian@vieri.com", phone_number: nil) }
+    let!(:user_list_upload) do
+      create(
+        :user_list_upload,
+        agent: agent,
+        category_configuration: create(:category_configuration, motif_category: motif_category),
+        structure: organisation
+      )
+    end
+
+    let!(:hernan_row) do
+      create(:user_row, user_list_upload:, first_name: "Hernan", last_name: "Crespo", user_save_attempts: [create(:user_save_attempt, success: true, user: hernan)])
+    end
+    let!(:christian_row) do
+      create(:user_row, user_list_upload:, first_name: "Christian", last_name: "Vieri", user_save_attempts: [create(:user_save_attempt, success: true, user: christian)])
+    end
+
+    it "can select and unselect rows to invite" do
+      visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+      expect(page).to have_content("2 usagers sélectionnés sur 2", wait: 5)
+
+      # expect rows to be checked
+      expect(find("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']")).to be_checked
+      expect(find("input[type='checkbox'][data-user-row-id='#{christian_row.id}']")).to be_checked
+
+      expect(page).to have_button("Envoyer les invitations")
+
+      expect(hernan_row.selected_for_invitation).to be_truthy
+      expect(christian_row.selected_for_invitation).to be_truthy
+
+      #  Uncheck all rows
+      check_all_button = find("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']")
+      expect(check_all_button).to be_checked
+      check_all_button.click
+
+      # expect rows to be unchecked
+      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
+
+      expect(page).to have_content("Aucun usager sélectionné", wait: 5)
+
+      expect(page).to have_button("Envoyer les invitations", disabled: true)
+
+
+      expect(hernan_row.reload.selected_for_invitation).to be_falsey
+      expect(christian_row.reload.selected_for_invitation).to be_falsey
+
+      # checkbox all still unchecked after page refresh
+      page.refresh
+      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:not(:checked)")
+
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
+
+      # Recheck all rows
+      check_all_button.click
+
+      # expect rows to be checked
+      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:checked")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:checked")
+
+      expect(page).to have_content("2 usagers sélectionnés sur 2", wait: 5)
+
+      expect(hernan_row.reload.selected_for_invitation).to be_truthy
+      expect(christian_row.reload.selected_for_invitation).to be_truthy
+
+      # Uncheck email format
+      expect(page).to have_css("input[type='checkbox'][name='email']:checked")
+      expect(page).to have_css("input[type='checkbox'][name='sms']:checked")
+      find("input[type='checkbox'][name='email']").click
+      expect(page).to have_css("input[type='checkbox'][name='email']:not(:checked)")
+
+      # it unchecks users that can't be invited by email
+      expect(page).to have_content("1 usager sélectionné sur 2", wait: 20)
+
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
+
+
+
+      expect(christian_row.reload.selected_for_invitation).to be_falsey
+
+      # Uncheck sms format
+      expect(page).to have_css("input[type='checkbox'][name='sms']:checked")
+      find("input[type='checkbox'][name='sms']").click
+      expect(page).to have_css("input[type='checkbox'][name='sms']:not(:checked)")
+
+      # it unchecks users that can't be invited by sms
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
+
+      expect(page).to have_content("Aucun usager sélectionné", wait: 5)
+
+      expect(page).to have_button("Envoyer les invitations", disabled: true)
+
+      expect(hernan_row.reload.selected_for_invitation).to be_falsey
+      expect(christian_row.reload.selected_for_invitation).to be_falsey
+
+      # It keeps the formats on page refresh
+      page.refresh
+      expect(page).to have_css("input[type='checkbox'][name='sms']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][name='email']:not(:checked)")
+    end
+
+    context "when user has already been invited" do
+      let!(:follow_up) { create(:follow_up, user: hernan, motif_category: motif_category) }
+      let!(:invitation) { create(:invitation, follow_up:, user: hernan, format: "email", created_at: Time.zone.parse("24/01/2025")) }
+
+      before do
+        travel_to(Time.zone.parse("29/01/2025 12:00:00"))
+      end
+
+      it "shows the invitation date" do
+        visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+        # hernan
+        expect(page).to have_content("Invité le 24/01/2025")
+        # christian
+        expect(page).to have_content("Non invité")
+
+        # both are invitable
+        expect(page).to have_content("2 usagers sélectionnés sur 2")
+      end
+
+      context "when user has been invited less than 24 hours ago" do
+        let!(:invitation) { create(:invitation, follow_up: follow_up, user: hernan, format: "email", created_at: Time.zone.parse("29/01/2025 11:00:00")) }
+
+
+
+        it "shows the invitation date" do
+          visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+          # hernan
+          expect(page).to have_content("Invité le 29/01/2025")
+          # christian
+          expect(page).to have_content("Non invité")
+
+          # Hernan checkbox is disabled
+          expect(find("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']")).to be_disabled
+          # Christian checkbox is enabled
+          expect(find("input[type='checkbox'][data-user-row-id='#{christian_row.id}']")).not_to be_disabled
+        end
+      end
+    end
+  end
 end
