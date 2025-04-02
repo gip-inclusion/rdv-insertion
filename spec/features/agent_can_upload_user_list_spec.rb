@@ -758,8 +758,12 @@ describe "Agents can upload user list", :js do
   end
 
   context "when selecting rows to invite" do
-    let!(:hernan) { create(:user, first_name: "Hernan", last_name: "Crespo", email: "hernan@crespo.com", phone_number: "+33698943255") }
-    let!(:christian) { create(:user, first_name: "Christian", last_name: "Vieri", email: "christian@vieri.com", phone_number: nil) }
+    let!(:hernan) do
+      create(:user, first_name: "Hernan", last_name: "Crespo", email: "hernan@crespo.com", phone_number: "+33698943255")
+    end
+    let!(:christian) do
+      create(:user, first_name: "Christian", last_name: "Vieri", email: "christian@vieri.com", phone_number: nil)
+    end
     let!(:user_list_upload) do
       create(
         :user_list_upload,
@@ -770,10 +774,12 @@ describe "Agents can upload user list", :js do
     end
 
     let!(:hernan_row) do
-      create(:user_row, user_list_upload:, first_name: "Hernan", last_name: "Crespo", user_save_attempts: [create(:user_save_attempt, success: true, user: hernan)])
+      create(:user_row, user_list_upload:, first_name: "Hernan", last_name: "Crespo",
+                        user_save_attempts: [create(:user_save_attempt, success: true, user: hernan)])
     end
     let!(:christian_row) do
-      create(:user_row, user_list_upload:, first_name: "Christian", last_name: "Vieri", user_save_attempts: [create(:user_save_attempt, success: true, user: christian)])
+      create(:user_row, user_list_upload:, first_name: "Christian", last_name: "Vieri",
+                        user_save_attempts: [create(:user_save_attempt, success: true, user: christian)])
     end
 
     it "can select and unselect rows to invite" do
@@ -803,7 +809,6 @@ describe "Agents can upload user list", :js do
       expect(page).to have_content("Aucun usager sélectionné", wait: 5)
 
       expect(page).to have_button("Envoyer les invitations", disabled: true)
-
 
       expect(hernan_row.reload.selected_for_invitation).to be_falsey
       expect(christian_row.reload.selected_for_invitation).to be_falsey
@@ -840,8 +845,6 @@ describe "Agents can upload user list", :js do
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
 
-
-
       expect(christian_row.reload.selected_for_invitation).to be_falsey
 
       # Uncheck sms format
@@ -868,7 +871,9 @@ describe "Agents can upload user list", :js do
 
     context "when user has already been invited" do
       let!(:follow_up) { create(:follow_up, user: hernan, motif_category: motif_category) }
-      let!(:invitation) { create(:invitation, follow_up:, user: hernan, format: "email", created_at: Time.zone.parse("24/01/2025")) }
+      let!(:invitation) do
+        create(:invitation, follow_up:, user: hernan, format: "email", created_at: Time.zone.parse("24/01/2025"))
+      end
 
       before do
         travel_to(Time.zone.parse("29/01/2025 12:00:00"))
@@ -887,9 +892,10 @@ describe "Agents can upload user list", :js do
       end
 
       context "when user has been invited less than 24 hours ago" do
-        let!(:invitation) { create(:invitation, follow_up: follow_up, user: hernan, format: "email", created_at: Time.zone.parse("29/01/2025 11:00:00")) }
-
-
+        let!(:invitation) do
+          create(:invitation, follow_up: follow_up, user: hernan, format: "email",
+                              created_at: Time.zone.parse("29/01/2025 11:00:00"))
+        end
 
         it "shows the invitation date" do
           visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
