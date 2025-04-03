@@ -195,27 +195,30 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def invitable?
-    saved_user && user.can_be_invited_through_phone_or_email? && !previously_invited?
+    saved_user && user.can_be_invited_through_phone_or_email? && !invited_less_than_24_hours_ago?
+  end
+
+  def invited_less_than_24_hours_ago?
+    previously_invited? && previously_invited_at > 24.hours.ago
+  end
+
+  def invited_last_time_by?(format)
+    previous_invitations.any? { |invitation| invitation.format == format }
   end
 
   def previously_invited?
-    previous_month_invitations.any?
+    previous_invitations.any?
   end
 
   def previously_invited_at
-    previous_month_invitations.max_by(&:created_at).created_at
+    previous_invitations.max_by(&:created_at).created_at
   end
 
-  def previous_month_invitations
-    user.invitations.select do |invitation|
-      invitation.created_at > 1.month.ago &&
-        # we don't consider the user as invited here if the invitation has not been sent by email or sms
-        invitation.format.in?(%w[email sms]) && invitation.motif_category_id == user_list_upload.motif_category_id
+  def previous_invitations
+    @previous_invitations ||= user.invitations.select do |invitation|
+      # we don't consider the user as invited here if the invitation has not been sent by email or sms
+      invitation.format.in?(%w[email sms]) && invitation.motif_category_id == user_list_upload.motif_category_id
     end
-  end
-
-  def select_for_invitation!
-    self.selected_for_invitation = true
   end
 
   def invitable_by?(format)
