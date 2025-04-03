@@ -34,7 +34,7 @@ module UserListUploads
     end
 
     def invitation_formats
-      [params[:email], params[:sms]].compact.map(&:downcase)
+      [params[:format_email], params[:format_sms]].compact.map(&:downcase)
     end
   end
 end
