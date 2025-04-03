@@ -2,6 +2,12 @@ class ContentSecurityPolicyController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:report, :test_endpoint]
   skip_before_action :authenticate_agent!
 
+  ORIGIN_URI_PREFIXES_TO_IGNORE = [
+    # We get a lot of violations from the invitations redirect page because there are translate
+    # scripts from google that are loaded from the page. These violations are not important since this is a redirection
+    "#{ENV['HOST']}/invitations/redirect"
+  ].freeze
+
   def test; end
 
   def test_endpoint
@@ -25,8 +31,6 @@ class ContentSecurityPolicyController < ApplicationController
   private
 
   def should_report_csp_violation?(report)
-    # We get a lot of violations from the invitations redirect page because there are translate
-    # scripts from google that are loaded from the page. These violations are not important since this is a redirection
-    !report.dig("csp-report", "document-uri").start_with?("#{ENV['HOST']}/invitations/redirect")
+    !report.dig("csp-report", "document-uri").start_with?(*ORIGIN_URI_PREFIXES_TO_IGNORE)
   end
 end
