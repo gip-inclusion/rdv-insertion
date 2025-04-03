@@ -202,10 +202,6 @@ class UserListUpload::UserRow < ApplicationRecord
     previously_invited? && previously_invited_at > 24.hours.ago
   end
 
-  def invited_last_time_by?(format)
-    previous_invitations.any? { |invitation| invitation.format == format }
-  end
-
   def previously_invited?
     previous_invitations.any?
   end
