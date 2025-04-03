@@ -1,1 +1,13 @@
-<p><%= simple_format(@content) %></p>
+<p>
+  <%= simple_format(@content) %>
+</p>
+<% if @custom_content.present?%>
+<blockquote>
+  <p> 
+    L'organisation vous ayant assigné cet usager vous fait également parvenir cette information complémentaire :
+  </p>
+  <p> 
+  <%= simple_format(@custom_content) %>
+  </p>
+</blockquote>
+<% end %>
