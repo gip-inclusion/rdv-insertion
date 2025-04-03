@@ -32,7 +32,11 @@
                 :category_configuration_id,
                 config.id,
                 class: "form-check-input",
-                data: { radio_submit_target: "radio", action: "change->radio-submit#toggleSubmit" }
+                checked: @selected_category_id == config.id.to_s,
+                data: {
+                  radio_submit_target: "radio",
+                  action: "change->radio-submit#updateUrl"
+                }
               ) %>
               <%= f.label "category_configuration_id_#{config.id}", config.motif_category.name, class: "form-check-label" %>
             </div>
@@ -42,7 +46,11 @@
               :category_configuration_id,
               "none",
               class: "form-check-input",
-              data: { radio_submit_target: "radio", action: "change->radio-submit#toggleSubmit" }
+              checked: @selected_category_id == "none",
+              data: {
+                radio_submit_target: "radio",
+                action: "change->radio-submit#updateUrl"
+              }
             ) %>
             <%= f.label :category_configuration_id_none, "Aucune catégorie de suivi", class: "form-check-label" %>
           </div>
