@@ -3,12 +3,20 @@
 </a>
 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton" data-turbo-prefetch="false">
   <li>
-    <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
+    <%= link_to(
+          structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)),
+          class: "dropdown-item",
+          **tooltip_attributes(content: "Les usagers correspondant aux filtres actuels seront exportés", placement: "bottom")
+        ) do %>
       Export des usagers
     <% end %>
   </li>
   <li>
-    <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
+    <%= link_to(
+          structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")),
+          class: "dropdown-item",
+          **tooltip_attributes(content: "Les rendez-vous des usagers correspondant aux filtres actuels seront exportés", placement: "bottom")
+        ) do %>
       Export des rendez-vous des usagers
     <% end %>
   </li>

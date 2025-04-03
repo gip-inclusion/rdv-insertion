@@ -1,27 +1,4 @@
 module UsersHelper
-  def filter_list
-    [
-      :search_query,
-      :tag_ids,
-      :status,
-      :orientation_type,
-      :action_required,
-      :referent_id,
-      :creation_date_after,
-      :creation_date_before,
-      :convocation_date_before,
-      :convocation_date_after,
-      :first_invitation_date_before,
-      :first_invitation_date_after,
-      :last_invitation_date_before,
-      :last_invitation_date_after
-    ]
-  end
-
-  def active_filter_list
-    filter_list.select { |filter| params[filter].present? }
-  end
-
   def show_convocation?(category_configuration)
     category_configuration.convene_user?
   end
@@ -117,5 +94,24 @@ module UsersHelper
         UserPolicy::RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE[organisation.organisation_type.to_sym].length
       end
     UserPolicy.assignable_user_attribute?(user:, attribute_name:, assigning_organisation:)
+  end
+
+  def action_required_tooltip_content(number_of_days_before_invitations_expire)
+    safe_join(
+      [
+        "Une intervention est nécessaire quand: ",
+        tag.ul do
+          safe_join(
+            [
+              tag.li(
+                "L'invitation a été envoyée depuis + de #{number_of_days_before_invitations_expire} jours sans réponse"
+              ),
+              tag.li("Le RDV a été annulé par l'un des partis ou l'usager ne s'est pas présenté au RDV"),
+              tag.li("L'issue du RDV n'a pas été renseignée sur RDV-Solidarités")
+            ]
+          )
+        end
+      ]
+    )
   end
 end

@@ -74,28 +74,6 @@ RSpec.describe UserListUpload::Collection do
     end
   end
 
-  describe "#mark_selected_rows_for_user_save!" do
-    it "marks only selected rows for user save" do
-      collection.mark_selected_rows_for_user_save!([user_row1.id])
-
-      user_row1.reload
-      user_row2.reload
-      expect(user_row1).to be_marked_for_user_save
-      expect(user_row2).not_to be_marked_for_user_save
-    end
-  end
-
-  describe "#mark_selected_rows_for_invitation!" do
-    it "marks only selected rows for invitation" do
-      collection.mark_selected_rows_for_invitation!([user_row2.id])
-
-      user_row1.reload
-      user_row2.reload
-      expect(user_row1).not_to be_marked_for_invitation
-      expect(user_row2).to be_marked_for_invitation
-    end
-  end
-
   describe "#search!" do
     it "finds users by first name" do
       collection.search!("john")

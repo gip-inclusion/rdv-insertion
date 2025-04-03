@@ -9,6 +9,17 @@ describe CategoryConfiguration do
     end
   end
 
+  describe "associations" do
+    context "category_configuration is destroyed" do
+      let(:category_configuration) { create(:category_configuration) }
+      let!(:creneau_availability) { create(:creneau_availability, category_configuration: category_configuration) }
+
+      it "destroys creneaux_availability" do
+        expect { category_configuration.destroy }.to change(CreneauAvailability, :count).by(-1)
+      end
+    end
+  end
+
   describe "delays validation" do
     context "number_of_days_before_invitations_expire is superior to 3" do
       let(:category_configuration) do

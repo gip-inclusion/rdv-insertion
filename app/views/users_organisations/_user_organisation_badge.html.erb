@@ -1,5 +1,5 @@
-<span class="<%= css_classes_for_organisation_badge(archive) %>" <%= tooltip_for_archived_organisation_badge(archive) %>>
-  <span class="text-truncate">
+<div class="d-inline-flex <%= css_classes_for_organisation_badge(archive) %>">
+  <span class="text-truncate" <%= tooltip_for_archived_organisation_badge(archive) %>>
     <%= organisation.name %>
     <% if department.id != organisation.department_id %>
       <span class="text-dark-grey-alt">
@@ -8,24 +8,26 @@
     <% end %>
   </span>
   <% if with_delete && policy(organisation).unassign? %>
-    <%
-      if user.organisations.count > 1
-        data = {
-          turbo_confirm: "Retirer l'usager de cette organisation ?",
-          turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer l'usager <b>#{user}</b> de l'organisation <b>#{organisation.name}</b> ?",
-          turbo_confirm_text_action: "- Retirer",
-          turbo_method: :delete,
-        }
-      else
-        data = {
-          turbo_confirm: true,
-          turbo_confirm_template: raw(render("users/user_remove_from_last_organisation_confirm", user: user, organisation: organisation)),
-          turbo_method: :delete,
-        }
-      end
-    %>
-    <%= link_to(users_organisations_path(user: user.id, users_organisation: { user_id: user.id, organisation_id: organisation.id }), data:, class: 'text-dark-grey-alt ms-2' ) do %>
-      <i class="ri-close-line"></i>
+    <%= link_to(
+          users_organisations_path(user: user.id, users_organisation: { user_id: user.id, organisation_id: organisation.id }),
+          data: {
+            controller: "confirmation-modal",
+            turbo_method: :delete
+          }
+        ) do %>
+      <i class="ri-close-line text-dark-grey-alt ms-2" data-action="click->confirmation-modal#show"></i>
+      <% if user.organisations.count > 1 %>
+        <% modal_text_content = capture do %>
+          Êtes-vous sûr de vouloir retirer l'usager <b><%= user %></b> de l'organisation <b><%= organisation.name %></b> ?
+        <% end %>
+        <%= render "common/confirmation_modal",
+          title: "Retirer l'usager de cette organisation ?",
+          text_content: modal_text_content,
+          action_text: "- Retirer"
+        %>
+      <% else %>
+        <%= render "users/user_remove_from_last_organisation_confirm", user: user, organisation: organisation %>
+      <% end %>
     <% end %>
   <% end %>
-</span>
+</div>

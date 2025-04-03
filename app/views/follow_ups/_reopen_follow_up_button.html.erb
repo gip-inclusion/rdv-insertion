@@ -1,5 +1,5 @@
 <%= link_to structure_follow_up_closings_path(follow_up_id: follow_up.id, user_id: follow_up.user_id), method: :delete do %>
-  <button class="btn btn-blue"  data-controller="tooltip" data-action="mouseover->tooltip#reopenFollowUpButton">
+  <button class="btn btn-blue" <%= tooltip(content: "Le bénéficiaire pourra de nouveau être invité et suivi dans ce contexte", placement: "bottom") %>>
     <i class="ri-lock-unlock-line"></i> Rouvrir
   </button>
 <% end %>

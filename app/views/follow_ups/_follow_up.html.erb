@@ -48,10 +48,7 @@
                       <%= format_date(participation.created_at) %>
                       <i
                         class="ri-information-line"
-                        data-controller="tooltip"
-                        data-created-by="<%= participation.created_by %>"
-                        data-created-at="<%= participation.created_at.strftime("%d/%m/%Y à %H:%M") %>"
-                        data-action="mouseover->tooltip#participationCreatedByDetails">
+                        <%= tooltip(content: participation_created_by_tooltip_content(participation)) %>>
                       </i>
                     </td>
                     <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
@@ -65,8 +62,9 @@
                     </td>
                     <td class="px-4 py-3">
                       <% if participation.rdv.rdv_solidarites_rdv_id && policy(participation).edit? %>
-                        <%= link_to participation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning(participation.rdv_solidarites_url) do %>
-                          <button class="btn btn-blue">
+                        <%= link_to participation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning do %>
+                          <%= render "common/rdvs_impersonation_warning", url: participation.rdv_solidarites_url if agent_impersonated? %>
+                          <button class="btn btn-blue" <%= agent_impersonated? ? "data-action=click->confirmation-modal#show" : "" %>>
                             Voir sur RDV-S<i class="ri-external-link-line ms-1"></i>
                           </button>
                         <% end %>

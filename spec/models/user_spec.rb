@@ -118,6 +118,28 @@ describe User do
       end
     end
 
+    context "wrong email format, begin with a dot" do
+      let(:user) { build(:user, email: ".abc@abc.bc") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.details).to eq({ email: [{ error: :invalid, value: ".abc@abc.bc" }] })
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+
+    context "wrong email format, domain is too short" do
+      let(:user) { build(:user, email: "abc@abc.b") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.details).to eq({ email: [{ error: :invalid, value: "abc@abc.b" }] })
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+
     context "almost perfect but incorrect email format" do
       let(:user) { build(:user, email: "abc@abc..fr") }
 
@@ -398,6 +420,54 @@ describe User do
     end
   end
 
+  describe "#tags_to_add=" do
+    subject { user.save }
+
+    let!(:user) { build(:user, organisations: [organisation]) }
+    let!(:organisation) { create(:organisation) }
+    let!(:other_organisation) { create(:organisation, tags: [other_tag_organisation]) }
+    let!(:tag) { create(:tag, value: "A relancer") }
+    let!(:other_tag) { create(:tag, value: "Prioritaire") }
+    let!(:other_tag_organisation) { create(:tag, value: "Non prioritaire") }
+
+    before do
+      create(:tag_organisation, tag: tag, organisation: organisation)
+      create(:tag_organisation, tag: other_tag, organisation: organisation)
+    end
+
+    it "assigns the tags" do
+      user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+      expect { subject }.to change(TagUser, :count).by(2)
+      expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
+    end
+
+    context "when the value does not match an existing tag" do
+      it "does not assign the tag" do
+        user.tags_to_add = [{ value: "DoesNotExist" }]
+        expect { subject }.not_to change(TagUser, :count)
+        expect(user.reload.tags).to eq([])
+      end
+    end
+
+    context "when the value does not match an existing tag in the organisation" do
+      it "does not assign the tag" do
+        user.tags_to_add = [{ value: "Non prioritaire" }]
+        expect { subject }.not_to change(TagUser, :count)
+        expect(user.reload.tags).to eq([])
+      end
+    end
+
+    context "when the tag is already assigned" do
+      let!(:user) { create(:user, organisations: [organisation], tags: [tag]) }
+
+      it "does not reassign the assigned tag" do
+        user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+        expect { subject }.to change(TagUser, :count).by(1)
+        expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
+      end
+    end
+  end
+
   describe "#address_department" do
     subject { user.address_department }
 
@@ -452,7 +522,7 @@ describe User do
   end
 
   describe "#import_associations_from_rdv_solidarites" do
-    let!(:user) { build(:user, import_associations_from_rdv_solidarites_on_create: true) }
+    let!(:user) { build(:user, created_through: "rdv_solidarites_webhook") }
 
     before do
       allow(ImportUserAssociationsFromRdvSolidaritesJob).to receive(:perform_later)
@@ -463,7 +533,7 @@ describe User do
       user.save
     end
 
-    context "when the option import_associations_from_rdv_solidarites_on_create is not set" do
+    context "when the user is not created through rdv_solidarites_webhook" do
       let!(:user) { build(:user) }
 
       it "does not enqueue a job to import associations from rdv_solidarites" do
@@ -473,10 +543,9 @@ describe User do
     end
 
     context "when the user is being updated" do
-      let!(:user) { create(:user) }
+      let!(:user) { create(:user, created_through: "rdv_solidarites_webhook") }
 
       it "does not enqueue a job to import associations from rdv_solidarites" do
-        user.import_associations_from_rdv_solidarites_on_create = true
         expect(ImportUserAssociationsFromRdvSolidaritesJob).not_to receive(:perform_later)
         user.save
       end

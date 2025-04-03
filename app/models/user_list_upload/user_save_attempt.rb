@@ -2,6 +2,8 @@ class UserListUpload::UserSaveAttempt < ApplicationRecord
   belongs_to :user_row, class_name: "UserListUpload::UserRow"
   belongs_to :user, optional: true
 
+  after_commit :mark_user_row_for_invitation!, if: :should_mark_user_row_for_invitation?
+
   def self.create_from_row(user_row:)
     save_user_result = UserListUpload::SaveUser.call(user_row: user_row)
   rescue StandardError => e
@@ -28,5 +30,15 @@ class UserListUpload::UserSaveAttempt < ApplicationRecord
 
   def error?
     !success?
+  end
+
+  private
+
+  def mark_user_row_for_invitation!
+    user_row.update!(selected_for_invitation: true)
+  end
+
+  def should_mark_user_row_for_invitation?
+    success? && user_row.invitable?
   end
 end

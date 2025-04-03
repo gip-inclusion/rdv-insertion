@@ -1,8 +1,9 @@
-<span
-  class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex text-truncate"
-  data-controller="tooltip"
-  data-action="mouseover->tooltip#tagCreationDate"
-  data-tag-creation-date="<%= user_tag_creation_date(tag, user) %>"
+<div
+  class="d-inline-flex badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex text-truncate"
+  <%= tooltip(
+        content: "Tag ajouté le #{user_tag_creation_date(tag, user)}",
+        placement: "top"
+      ) %>
 >
   <span class="text-truncate">
     <%= tag.value %>
@@ -12,15 +13,21 @@
       link_to(
         user_tag_assignation_path(user_id: user.id, tag_id: tag.id),
         data: {
-          turbo_confirm: "Retirer le tag de cet usager ?",
-          turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer le tag <b>#{tag.value}</b> de l'usager <b>#{user}</b> ?",
-          turbo_confirm_text_action: "- Retirer",
+          controller: "confirmation-modal",
           turbo_method: :delete,
-        },
-        class: 'text-dark-grey-alt ms-2'
+        }
       ) do
     %>
-      <i class="ri-close-line"></i>
+      <i class="ri-close-line text-dark-grey-alt ms-2" data-action="click->confirmation-modal#show"></i>
+      <% modal_text_content = capture do %>
+        Êtes-vous sûr de vouloir retirer le tag <b><%= tag.value %></b> de l'usager <b><%= user %></b> ?
+      <% end %>
+      <%= render(
+            "common/confirmation_modal",
+            title: "Retirer le tag de cet usager ?",
+            text_content: modal_text_content,
+            action_text: "- Retirer"
+          ) %>
     <% end %>
   <% end %>
-</span>
+</div>

@@ -51,10 +51,10 @@ describe "Agents can edit users tags", :js do
       expect(page).to have_content("Aucun autre tag disponible.")
       click_button("Ok")
 
-      within("p#tags_list") do
+      within("#tags_list") do
         find(".badge", text: "coucou").find("a").click
       end
-      modal = find(".modal")
+      modal = find(".modal.show")
       modal.click_button("Retirer")
 
       expect(page).to have_no_content("coucou")

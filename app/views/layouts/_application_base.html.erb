@@ -3,10 +3,10 @@
   <%= render 'layouts/head' %>
 
   <body data-matomo-mask>
-    <%= render 'common/confirm_modal' %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>
     <%= render 'common/flashes' %>
+    <%= content_for :announcement_banner %>
     <div class="wrapper">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
       <%= yield %>

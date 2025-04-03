@@ -60,9 +60,7 @@
             <small>
               <i
                 class="ri-question-line"
-                data-controller="tooltip"
-                data-action="mouseover->tooltip#actionRequired"
-                data-invitation-duration-in-days="<%= @current_category_configuration&.number_of_days_before_invitations_expire %>"
+                <%= tooltip(content: action_required_tooltip_content(@current_category_configuration.number_of_days_before_invitations_expire)) %>
               >
               </i>
             </small>
@@ -106,8 +104,11 @@
     </h4>
 
     <div class="mt-2">
-      <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning(structure_rdv_solidarites_url(current_structure))) do %>
-        <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i></button>
+      <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning) do %>
+        <button class="btn btn-blue" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
+          Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i>
+        </button>
+        <%= render "common/rdvs_impersonation_warning", url: structure_rdv_solidarites_url(current_structure) if agent_impersonated? %>
       <% end %>
     </div>
   </div>
@@ -124,7 +125,7 @@
           <% end %>
         </li>
         <li>
-          <%= link_to(new_structure_upload_path, class: "dropdown-item") do %>
+          <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "dropdown-item") do %>
             Charger fichier usagers
           <% end %>
         </li>

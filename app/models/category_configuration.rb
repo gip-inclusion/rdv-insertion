@@ -3,6 +3,8 @@ class CategoryConfiguration < ApplicationRecord
   belongs_to :file_configuration
   belongs_to :organisation
 
+  has_many :creneau_availabilities, dependent: :destroy
+
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
   validate :minimum_invitation_duration,

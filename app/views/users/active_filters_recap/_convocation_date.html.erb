@@ -1,0 +1,14 @@
+<% if params[:convocation_date_before].present? || params[:convocation_date_after].present? %>
+  <span class="d-flex me-2 active-filter-badge">
+    <% if params[:convocation_date_before].present? && params[:convocation_date_after].present? %>
+      Convoqué entre le : <%= format_date(params[:convocation_date_after].to_date) %> et le <%= format_date(params[:convocation_date_before].to_date) %>
+    <% elsif params[:convocation_date_before].present? %>
+      Convoqué avant le : <%= format_date(params[:convocation_date_before].to_date) %>
+    <% elsif params[:convocation_date_after].present? %>
+      Convoqué aprés le : <%= format_date(params[:convocation_date_after].to_date) %>
+    <% end %>
+    <%= link_to structure_users_path(url_params.except(:convocation_date_before, :convocation_date_after)) do %>
+      <i class="ri-close-line"></i>
+    <% end %>
+  </span>
+<% end %>

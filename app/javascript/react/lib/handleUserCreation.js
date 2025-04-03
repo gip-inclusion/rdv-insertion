@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../../lib/safeSwal";
 import createUser from "../actions/createUser";
 
 const handleUserCreation = async (user, organisationId, options = { raiseError: true }) => {
@@ -6,7 +6,11 @@ const handleUserCreation = async (user, organisationId, options = { raiseError: 
   if (result.success) {
     user.updateWith(result.user);
   } else if (options.raiseError)
-    Swal.fire("Impossible de créer l'usager", result.errors[0], "error");
+    safeSwal({
+      title: "Impossible de créer l'usager",
+      text: result.errors[0],
+      icon: "error",
+    });
   return result;
 };
 

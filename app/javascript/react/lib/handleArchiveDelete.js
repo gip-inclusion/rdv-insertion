@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import safeSwal from "../../lib/safeSwal";
 import deleteArchive from "../actions/deleteArchive";
 
 const handleArchiveDelete = async (user, options = { raiseError: true }) => {
@@ -7,10 +7,17 @@ const handleArchiveDelete = async (user, options = { raiseError: true }) => {
   if (result.success) {
     user.archives = user.archives.filter((archive) => archive.id !== archiveToDelete.id);
     if (options.raiseError) {
-      Swal.fire("Dossier de l'usager rouvert avec succès", "", "info");
+      safeSwal({
+        title: "Dossier de l'usager rouvert avec succès",
+        icon: "info",
+      });
     }
   } else if (!result.success && options.raiseError) {
-    Swal.fire("Impossible de rouvrir le dossier du bénéficiaire'", result.errors[0], "error");
+    safeSwal({
+      title: "Impossible de rouvrir le dossier du bénéficiaire",
+      text: result.errors[0],
+      icon: "error",
+    });
   }
   return result;
 };

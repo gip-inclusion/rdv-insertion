@@ -25,13 +25,15 @@ Rails.application.routes.draw do
     resources :webhook_endpoints, only: [:index] do
       post :duplicate, on: :member
     end
-    resources :unavailable_creneau_logs, only: [:index]
+    resources :blocked_invitations_counters, only: [:index]
+    resources :blocked_users, only: [:index]
 
     root to: "agents#index"
   end
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
 
+  get '/sign_in', to: 'sessions#new'
   get 'auth/:provider/callback', to: 'sessions#create'
 
   scope module: 'website' do
@@ -45,6 +47,11 @@ Rails.application.routes.draw do
                                        path: '/parcours_insertion',
                                        only: [:show]
   end
+
+  # CSP endpoints
+  get "/csp-test", to: "content_security_policy#test"
+  post "/csp-test-endpoint", to: "content_security_policy#test_endpoint"
+  post "/csp-violation-report", to: "content_security_policy#report"
 
   get "/organisations", to: "organisations#index", as: :authenticated_root
 
@@ -113,6 +120,7 @@ Rails.application.routes.draw do
       get :show_details
       get :hide_details
       resource :user_row_cells, only: [:edit]
+      post :batch_update, on: :collection
 
       resources :organisation_assignations, only: [:new, :create]
 

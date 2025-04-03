@@ -31,11 +31,11 @@ describe UserListUpload::SaveUser, type: :service do
     it("is a success") { is_a_success }
 
     it "assigns resources to the user" do
-      expect(user).to receive(:referents=).with(referents)
-      expect(user).to receive(:tags=).with(tags)
-      expect(user).to receive(:assign_motif_category).with(motif_category.id)
-
       subject
+
+      expect(user.referents).to eq(referents)
+      expect(user.tags).to eq(tags)
+      expect(user.motif_categories).to include(motif_category)
     end
 
     context "when organisation is provided in user_row" do
@@ -85,6 +85,27 @@ describe UserListUpload::SaveUser, type: :service do
         it "includes the retrieval service errors" do
           expect(subject.errors).to eq(["Some error"])
         end
+      end
+    end
+
+    context "when user is archived" do
+      let!(:archive) { create(:archive, user: user, organisation: organisation) }
+
+      before do
+        allow(UserListUpload::RetrieveOrganisationToAssign).to receive(:call)
+          .and_return(OpenStruct.new(success?: true, organisation: organisation))
+      end
+
+      it "unarchives the user" do
+        expect { subject }.to change { user.archives.count }.from(1).to(0)
+      end
+    end
+
+    context "when the follow up is closed" do
+      let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category, closed_at: Time.current) }
+
+      it "reopens the follow up" do
+        expect { subject }.to change { follow_up.reload.closed_at }.to(nil)
       end
     end
 

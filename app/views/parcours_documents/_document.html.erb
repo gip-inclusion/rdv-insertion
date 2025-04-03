@@ -14,15 +14,19 @@
       link_to(
         user_parcours_document_path(user_id: document.user_id, id: document.signed_id(expires_in: 1.hour)),
         data: {
-          turbo_confirm: "Supprimer ce document ?",
-          turbo_confirm_text_content: "Êtes-vous sûr de vouloir supprimer ce document ?",
-          turbo_confirm_text_action: "Supprimer",
+          controller: "confirmation-modal",
           turbo_method: :delete,
         },
         id: "delete-button-#{document.id}"
     ) do
     %>
-      <i class="ri-delete-bin-line text-dark-blue"></i>
+      <i class="ri-delete-bin-line text-dark-blue" data-action="click->confirmation-modal#show"></i>
+      <%= render(
+        "common/confirmation_modal",
+        title: "Supprimer ce document ?",
+        text_content: "Êtes-vous sûr de vouloir supprimer ce document ?",
+        action_text: "Supprimer"
+      ) %>
     <% end if policy(document).destroy? %>
   </div>
 </div>

@@ -7,7 +7,7 @@
         <p class="mb-2"> <%= "Organisation".pluralize(@user_organisations.size) %> déjà <%= "sélectionnée".pluralize(@user_organisations.size) %></p>
         <div class="flex-wrap d-flex text-truncate">
           <% @user_organisations.each do |organisation| %>
-            <%= render "users_organisations/user_organisation_badge", organisation:, department: @department, archive: organisation_archive(organisation, @user_archives), with_delete: false %>
+            <%= render "users_organisations/user_organisation_badge", organisation:, department: @department, user: @user, archive: organisation_archive(organisation, @user_archives), with_delete: false %>
           <% end %>
         </div>
       <% end %>

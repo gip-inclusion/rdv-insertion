@@ -204,7 +204,9 @@ describe UsersController do
 
     context "when user is archived" do
       let!(:user) { create(:user, organisations: [organisation]) }
-      let!(:archive) { create(:archive, user: user, organisation: organisation) }
+      let!(:archive) do
+        create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("03/10/2024"))
+      end
       let!(:show_params) { { id: user.id, organisation_id: organisation.id } }
 
       it "the user is displayed as archived" do
@@ -212,10 +214,7 @@ describe UsersController do
 
         expect(response).to be_successful
         expect(response.body).to match(/Dossier archivé/)
-        expect(response.body).to match(
-          "span class=\"badge badge-tag justify-content-between text-dark-blue me-2 mb-2 " \
-          "d-flex text-truncate background-warning"
-        )
+        expect(response.body).to match(/Archivé le 03\/10\/2024/)
       end
     end
 
@@ -234,19 +233,20 @@ describe UsersController do
         let!(:other_organisation) { create(:organisation, department:) }
         let!(:agent) { create(:agent, basic_role_in_organisations: [organisation, other_organisation]) }
         let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
-        let!(:archive) { create(:archive, user: user, organisation: organisation) }
-        let!(:archive2) { create(:archive, user: user, organisation: other_organisation) }
+        let!(:archive) do
+          create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("05/10/2024"))
+        end
+        let!(:archive2) do
+          create(:archive, user: user, organisation: other_organisation, created_at: Time.zone.parse("03/10/2024"))
+        end
 
         it "the user is displayed as archived" do
           get :show, params: show_params
 
           expect(response).to be_successful
           expect(response.body).to match(/Dossier archivé/)
-          matches = response.body.scan(
-            "span class=\"badge badge-tag justify-content-between text-dark-blue me-2 mb-2 " \
-            "d-flex text-truncate background-warning"
-          )
-          expect(matches.size).to eq(2)
+          expect(response.body).to match(/Archivé le 05\/10\/2024/)
+          expect(response.body).to match(/Archivé le 03\/10\/2024/)
         end
       end
 
@@ -254,18 +254,16 @@ describe UsersController do
         let!(:other_organisation) { create(:organisation, department:) }
         let!(:agent) { create(:agent, basic_role_in_organisations: [organisation, other_organisation]) }
         let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
-        let!(:archive) { create(:archive, user: user, organisation: organisation) }
+        let!(:archive) do
+          create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("05/10/2024"))
+        end
 
         it "the user is not displayed as archived" do
           get :show, params: show_params
 
           expect(response).to be_successful
           expect(response.body).not_to match(/Dossier archivé/)
-          matches = response.body.scan(
-            "span class=\"badge badge-tag justify-content-between text-dark-blue me-2 mb-2 " \
-            "d-flex text-truncate background-warning"
-          )
-          expect(matches.size).to eq(1)
+          expect(response.body).to match(/Archivé le 05\/10\/2024/)
         end
       end
     end
@@ -1238,21 +1236,6 @@ describe UsersController do
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
         end
-      end
-    end
-  end
-
-  describe "active filters view" do
-    include UsersHelper
-
-    # This test ensures that the active_filters_recap handles every possible filter
-    # It might turn red if we add a new filter and forget to handle its associated
-    # view in the active_filters_recap.
-    # To fix it, you just need to add an if statement to the view
-    it "handles and single filter possibilities" do
-      view_content = Rails.root.join("app/views/users/_active_filters_recap.html.erb").read
-      (filter_list - [:search_query]).each do |filter|
-        expect(view_content).to include("filter == :#{filter}")
       end
     end
   end

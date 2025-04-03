@@ -13,7 +13,7 @@ export default class extends Controller {
     if (response.ok) {
       window.Turbo.renderStreamMessage(html);
 
-      // We're removing the padding on the parent element to ensure 
+      // We're removing the padding on the parent element to ensure
       // that the input takes the whole space available.
       // Padding is automatically removed when frame re-renders
       this.element.style.padding = "0px"
