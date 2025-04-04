@@ -74,7 +74,11 @@ class InvitationsController < ApplicationController
 
     response = conn.post("/generate") do |req|
       req.body = {
-        htmlContent: invitation.content
+        htmlContent: invitation.content,
+        marginTop: "0cm",
+        marginRight: "0cm",
+        marginBottom: "0cm",
+        marginLeft: "0cm"
       }.to_json
     end
 

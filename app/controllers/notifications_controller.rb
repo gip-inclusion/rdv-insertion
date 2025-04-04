@@ -43,7 +43,11 @@ class NotificationsController < ApplicationController
 
     response = conn.post("/generate") do |req|
       req.body = {
-        htmlContent: notify_participation.notification.content
+        htmlContent: notify_participation.notification.content,
+        marginTop: "0cm",
+        marginRight: "0cm",
+        marginBottom: "0cm",
+        marginLeft: "0cm"
       }.to_json
     end
 
