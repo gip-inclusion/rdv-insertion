@@ -109,6 +109,27 @@ describe UserListUpload::SaveUser, type: :service do
       end
     end
 
+    context "when no motif category is assigned" do
+      let(:user_row) do
+        instance_double(
+          "UserRow",
+          user: user,
+          referents: referents,
+          tags: tags,
+          motif_category_to_assign: nil,
+          organisation_to_assign: organisation_to_assign
+        )
+      end
+
+      it "does not create a follow up" do
+        expect { subject }.not_to change(FollowUp, :count)
+      end
+
+      it "does not raise an error" do
+        expect { subject }.not_to raise_error
+      end
+    end
+
     context "when user save fails" do
       before do
         allow(Users::Save).to receive(:call).and_return(OpenStruct.new(success?: false, errors: ["Some error"]))
