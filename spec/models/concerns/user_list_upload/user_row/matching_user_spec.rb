@@ -101,6 +101,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
 
     describe "matching priority order" do
       subject { user_row.save! }
+
       let(:user_row) { user_list_upload.user_rows.build(user_row_attributes) }
 
       context "when multiple matching criteria are satisfied" do
