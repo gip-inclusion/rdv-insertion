@@ -31,15 +31,6 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         end
       end
 
-      context "when matching by email and first name" do
-        let!(:matching_user) { create(:user, email: "john@example.com", first_name: "John") }
-
-        it "sets the matching user" do
-          subject
-          expect(user_row.reload.matching_user).to eq(matching_user)
-        end
-      end
-
       context "when matching by department internal ID" do
         let(:organisation) { create(:organisation, department: department) }
         let!(:matching_user) do
@@ -58,6 +49,24 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
             subject
             expect(user_row.reload.matching_user).to be_nil
           end
+        end
+      end
+
+      context "when matching by email and first name" do
+        let!(:matching_user) { create(:user, email: "john@example.com", first_name: "John") }
+
+        it "sets the matching user" do
+          subject
+          expect(user_row.reload.matching_user).to eq(matching_user)
+        end
+      end
+
+      context "when matching by phone number and first name" do
+        let!(:matching_user) { create(:user, phone_number: "+33612345678", first_name: "John") }
+
+        it "sets the matching user" do
+          subject
+          expect(user_row.reload.matching_user).to eq(matching_user)
         end
       end
 
@@ -86,6 +95,81 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         it "does not set a matching user" do
           subject
           expect(user_row.reload.matching_user).to be_nil
+        end
+      end
+    end
+
+    describe "matching priority order" do
+      subject { user_row.save! }
+      let(:user_row) { user_list_upload.user_rows.build(user_row_attributes) }
+
+      context "when multiple matching criteria are satisfied" do
+        let(:org_in_department) { create(:organisation, department: department) }
+
+        context "NIR has highest priority" do
+          let!(:nir_match) { create(:user, nir: "1234567890123", first_name: "Different") }
+          let!(:internal_id_match) do
+            create(:user, department_internal_id: "ABC123", first_name: "John", organisations: [org_in_department])
+          end
+          let!(:email_match) { create(:user, email: "john@example.com", first_name: "John") }
+
+          it "matches by NIR even when other criteria would match" do
+            subject
+            expect(user_row.reload.matching_user).to eq(nir_match)
+          end
+        end
+
+        context "department internal ID has second priority" do
+          # No NIR match
+          let!(:internal_id_match) do
+            create(:user, department_internal_id: "ABC123", first_name: "Different", organisations: [org_in_department])
+          end
+          let!(:email_match) { create(:user, email: "john@example.com", first_name: "John") }
+          let!(:phone_match) { create(:user, phone_number: "+33612345678", first_name: "John") }
+
+          it "matches by department internal ID when NIR doesn't match" do
+            subject
+            expect(user_row.reload.matching_user).to eq(internal_id_match)
+          end
+        end
+
+        context "email has third priority" do
+          # No NIR match or internal ID match
+          let!(:email_match) { create(:user, email: "john@example.com", first_name: "John") }
+          let!(:phone_match) { create(:user, phone_number: "+33612345678", first_name: "John") }
+          let!(:affiliation_match) do
+            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
+          end
+
+          it "matches by email when higher priority criteria don't match" do
+            subject
+            expect(user_row.reload.matching_user).to eq(email_match)
+          end
+        end
+
+        context "phone number has fourth priority" do
+          # No NIR, internal ID, or email match
+          let!(:phone_match) { create(:user, phone_number: "+33612345678", first_name: "John") }
+          let!(:affiliation_match) do
+            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
+          end
+
+          it "matches by phone number when higher priority criteria don't match" do
+            subject
+            expect(user_row.reload.matching_user).to eq(phone_match)
+          end
+        end
+
+        context "affiliation number and role has lowest priority" do
+          # Only affiliation number match exists
+          let!(:affiliation_match) do
+            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
+          end
+
+          it "matches by affiliation number when all other criteria don't match" do
+            subject
+            expect(user_row.reload.matching_user).to eq(affiliation_match)
+          end
         end
       end
     end
