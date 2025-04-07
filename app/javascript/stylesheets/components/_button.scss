@@ -9,6 +9,31 @@ button, input[type="button"] {
   outline: inherit;
 }
 
+#btn-notification-center {
+  @extend .btn;
+  @extend .btn-header;
+  @extend .btn-blue-out;
+  position: relative;
+  width: 50px;
+  min-width: 50px !important;
+  height: 50px;
+
+  &.has-notification {
+    @extend .btn-blue;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: #EC4C4C;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+  }
+}
+
 #btn-organisation-navigation {
   @extend .btn;
   @extend .btn-header;

@@ -14,6 +14,7 @@
     <div class="nav col justify-content-end align-items-center">
       <% if current_agent %>
         <%= render "common/header_help_menu" %>
+        <%= render "common/header_notification_center"%>
         <% if show_organisation_navigation_button? %>
           <%= render "common/header_organisation_navigation_button" %>
         <% end %>

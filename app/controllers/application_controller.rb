@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include AuthenticatedControllerConcern
   include AuthorizationConcern
+  include NotificationCenterConcern
   include CurrentStructure
   include NavigationHelper
   include PolicyHelper
