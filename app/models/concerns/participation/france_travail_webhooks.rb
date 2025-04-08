@@ -39,12 +39,12 @@ module Participation::FranceTravailWebhooks
   end
 
   def france_travail_active_department?
-    # C'est une condition temporaire, nous allons activer la fonctionnalité pour un département pour tester en production
+    # C'est une condition temporaire le temps de tester la fonctionnalité en production sur un département
     organisation.department.number.in?(ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS", "").split(","))
   end
 
   def eligible_organisation?
-    # francetravail organisations are not eligible for webhooks because they already have theses rdvs in their own system
+    # francetravail organisations are not eligible for webhooks, they already have theses rdvs in their own system
     organisation.delegataire_rsa? || organisation.conseil_departemental?
   end
 end

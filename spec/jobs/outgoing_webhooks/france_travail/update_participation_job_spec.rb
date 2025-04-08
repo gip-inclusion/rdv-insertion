@@ -128,7 +128,7 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
               timestamp: timestamp
             )
           end
-        end.not_to raise_error
+        end.not_to raise_error # Le job est discard quand il y a une erreur UserNotFound
 
         assert_no_enqueued_jobs
       end
