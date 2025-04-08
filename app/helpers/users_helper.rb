@@ -15,10 +15,6 @@ module UsersHelper
     users.empty? && params[:search_query].present?
   end
 
-  def display_back_to_list_button?
-    active_filter_list.any?
-  end
-
   def options_for_select_status(statuses_count)
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
