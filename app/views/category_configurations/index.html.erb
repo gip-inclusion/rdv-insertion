@@ -6,8 +6,8 @@
       <%= link_to(@back_to_users_list_url || structure_users_path) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
-      <%= link_to @organisation.rdv_solidarites_url, target: "_blank", **with_rdv_solidarites_impersonation_warning do %>
-        <%= render "common/rdvs_impersonation_warning", url: @organisation.rdv_solidarites_url if agent_impersonated? %>
+      <%= link_to @organisation.rdv_solidarites_configuration_url, target: "_blank", **with_rdv_solidarites_impersonation_warning do %>
+        <%= render "common/rdvs_impersonation_warning", url: @organisation.rdv_solidarites_configuration_url if agent_impersonated? %>
         <button class="btn btn-blue" <%= agent_impersonated? ? "data-action=click->confirmation-modal#show" : "" %>>
           Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i>
         </button>
