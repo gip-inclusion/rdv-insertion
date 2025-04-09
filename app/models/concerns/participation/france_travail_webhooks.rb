@@ -16,18 +16,16 @@ module Participation::FranceTravailWebhooks
       )
     end
 
-    around_destroy lambda { |participation, block|
+    before_destroy do
       if france_travail_webhook_updatable?
         OutgoingWebhooks::FranceTravail::DeleteParticipationJob.perform_later(
           participation_id: id,
-          france_travail_id: participation.france_travail_id,
-          user_id: participation.user.id,
+          france_travail_id: france_travail_id,
+          user_id: user.id,
           timestamp: Time.current
         )
       end
-
-      block.call
-    }
+    end
   end
 
   def eligible_for_france_travail_webhook?
