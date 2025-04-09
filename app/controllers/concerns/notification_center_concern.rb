@@ -2,67 +2,32 @@ module NotificationCenterConcern
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_notifications, if: -> { request.get? }
+    before_action :set_has_notifications, if: -> { request.get? }
+    helper_method :most_recent_notification_read, :oldest_notification_read, :notification_read?
   end
 
   private
 
-  def set_notifications
+  def set_has_notifications
     return unless current_agent
 
-    @notifications = CreneauAvailability
-                     .where(category_configuration: current_agent.category_configurations)
-                     .order(created_at: :desc)
-                     .includes(category_configuration: [:motif_category, :invitations])
-                     .joins(category_configuration: :invitations)
-                     .where("invitations.expires_at > ? OR invitations.expires_at IS NULL", Time.zone.now)
-                     .limit(10)
-                     .map do |creneau_availability|
-      {
-        id: creneau_availability.id,
-        title: infer_notification_title_from_creneau_availability(creneau_availability),
-        type: infer_notification_type_from_creneau_availability(creneau_availability),
-        description: infer_notification_description_from_creneau_availability(creneau_availability),
-        created_at: creneau_availability.created_at
-      }
-    end
+    @has_notifications = CreneauAvailability
+                         .where(category_configuration: current_agent.category_configurations)
+                         .lacking_availability
+                         .where(created_at: most_recent_notification_read...)
+                         .or(CreneauAvailability.where(created_at: ...oldest_notification_read))
+                         .exists?
   end
 
-  def infer_notification_title_from_creneau_availability(creneau_availability)
-    if creneau_availability.number_of_creneaux_available.zero?
-      "Il n’y a plus de créneaux sur #{creneau_availability.category_configuration.motif_category.name}"
-    elsif creneau_availability.number_of_creneaux_available < 25
-      "#{creneau_availability.number_of_creneaux_available} créneaux restants " \
-        "sur #{creneau_availability.category_configuration.motif_category.name}"
-    elsif creneau_availability.number_of_creneaux_available >= 200
-      "Plus de #{creneau_availability.number_of_creneaux_available} créneaux disponibles " \
-        "sur #{creneau_availability.category_configuration.motif_category.name}"
-    else
-      "#{creneau_availability.number_of_creneaux_available} créneaux disponibles " \
-        "sur #{creneau_availability.category_configuration.motif_category.name}"
-    end
+  def most_recent_notification_read
+    Time.zone.at(cookies["most_recent_notification_read"].to_i)
   end
 
-  def infer_notification_description_from_creneau_availability(creneau_availability)
-    message = "Il y a #{creneau_availability.category_configuration.invitations.count} invitations " \
-        "en attente de réponse. "
-
-
-    if creneau_availability.number_of_creneaux_available < 25
-      message += "Créez des plages d'ouverture ou augmentez le délai de prise " \
-        "de rendez-vous sur RDV-Soldiarités pour le pas bloquer les usagers."
-    end
-
-    message
+  def oldest_notification_read
+    Time.zone.at(cookies["oldest_notification_read"]&.to_i || Time.now.to_i)
   end
 
-  def infer_notification_type_from_creneau_availability(creneau_availability)
-    if creneau_availability.number_of_creneaux_available > 30
-      "info"
-    elsif creneau_availability.number_of_creneaux_available > 10
-      "warning"
-    else
-      "danger"
-    end
+  def notification_read?(notification)
+    notification[:created_at] < oldest_notification_read || notification[:created_at] > most_recent_notification_read
   end
 end

@@ -274,4 +274,6 @@ Rails.application.routes.draw do
     # LetterOpener
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
+
+  resources :notification_center, only: [:index]
 end

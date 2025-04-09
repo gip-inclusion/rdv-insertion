@@ -1,53 +1,27 @@
-<%= turbo_frame_tag "notification-center" do %>
-  <div id="notification-center" data-controller="notification-center" class="position-relative ms-2">
-    <% notifications_read_at = DateTime.parse(cookies["notification-center-opened"] || "1999-01-01") %>
-    <% has_notifications = notifications_read_at < 1.day.ago %>
-    <button id="btn-notification-center" data-notification-center-target="button" class="accessible text-truncate <%= has_notifications ? 'has-notification' : '' %>" type="button" data-action="click->notification-center#toggle" aria-haspopup="true" aria-expanded="false">
-      <i class="ri-notification-3-fill"></i>
-    </button>
-    <div id="notification-center-dropdown" data-notification-center-target="dropdown" class="p-0 mt-2 d-none position-absolute card-white">
-      <div class="notification-center-dropdown-header p-1 px-3 pe-1">
-        <h3 class="mb-0 fs-5 fw-bold">Notifications</h3>
-        <div class="notification-center-dropdown-header-actions">
-          <button class="btn text-dark-blue px-2" data-action="click->notification-center#markAllAsRead">
-            <i class="ri-mail-open-line"></i>
-          </button>
-          <button class="btn text-dark-blue px-2" data-action="click->notification-center#close">
-            <i class="ri-close-line"></i>
-          </button>
-        </div>
-      </div>
-      <div class="notification-center-dropdown-body">
-        <% @notifications.each do |notification| %>
-        <div class="notification-center-dropdown-body-item position-relative px-3 py-2 <%= "seen" if notification[:created_at] < notifications_read_at %> <%= "important" if ["warning", "danger"].include?(notification[:type]) && notification[:created_at] > notifications_read_at %>">
-          <div class="notification-center-dropdown-body-item-avatar d-flex justify-content-center align-items-center alert-<%= notification[:type] %>">
-            <span>
-              <i class="ri-calendar-line"></i>
-            </span>
-          </div>
-          <div class="notification-center-dropdown-body-item-content pe-3">
-            <h4 class="mb-0 fw-bold">
-              <%= notification[:title] %>
-              <i
-                class="ri-question-line"
-                <%= tooltip(content: "Ce compteur de créneaux ne concerne  que les créneaux de votre organisation pour cette catégorie. Il ne tient pas compte de l'éventuelle sectorisation mise en place et de l'assignation à des référents.", placement: "bottom") %>
-              ></i>
-            </h4>
-            <p class="mb-0 notification-center-dropdown-body-item-content-description">
-              <%= notification[:description] %>
-            </p>
-            <p class="mb-0 notification-center-dropdown-body-item-content-date">
-                <%= l(notification[:created_at], format: :human) %>
-              </p>
-            </div>
-          </div>
-        <% end %>
-        <div class="notification-center-dropdown-body-item-footer align-items-center d-flex justify-content-center">
-          <a href="#" class="btn btn-link">
-            Afficher plus
-          </a>
-        </div>
+<div id="notification-center" data-controller="notification-center" class="position-relative ms-2">
+  <button id="btn-notification-center" data-notification-center-target="button" class="accessible text-truncate <%= @has_notifications ? 'has-notification' : '' %>" type="button" data-action="click->notification-center#toggle" aria-haspopup="true" aria-expanded="false">
+    <i class="ri-notification-3-fill"></i>
+  </button>
+  <div id="notification-center-dropdown" data-notification-center-target="dropdown" class="p-0 mt-2 d-none position-absolute card-white">
+    <div class="notification-center-dropdown-header p-1 px-3 pe-1">
+      <h3 class="mb-0 fs-5 fw-bold">Notifications</h3>
+      <div class="notification-center-dropdown-header-actions">
+        <button class="btn text-dark-blue px-2" data-action="click->notification-center#markAllAsRead">
+          <i class="ri-mail-open-line"></i>
+        </button>
+        <button class="btn text-dark-blue px-2" data-action="click->notification-center#close">
+          <i class="ri-close-line"></i>
+        </button>
       </div>
     </div>
+    <div class="notification-center-dropdown-body">
+      <%= turbo_frame_tag "notification_center_content", src: notification_center_index_path, loading: :lazy do %>
+      <div class="d-flex justify-content-center p-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+      </div>
+      <% end %>
+    </div>
   </div>
-<% end %>
+</div>
