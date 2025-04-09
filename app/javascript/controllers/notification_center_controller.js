@@ -61,5 +61,11 @@ export default class extends Controller {
   markAllAsRead() {
     this.dropdownTarget.classList.add("d-none");
     this.buttonTarget.classList.remove("has-notification");
+
+    const veryOldDate = new Date(0);
+    const now = new Date();
+    
+    Cookies.set("oldest_notification_read", Math.floor(veryOldDate.getTime() / 1000));
+    Cookies.set("most_recent_notification_read", Math.floor(now.getTime() / 1000));
   }
 }
