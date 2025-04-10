@@ -19,7 +19,7 @@
         </p>
         <p class="mb-0 notification-center-dropdown-body-item-content-date">
           <% if notification[:created_at] > 3.days.ago %>
-            Il y a <%= time_ago_in_words(notification[:created_at]) %>
+            <span title="<%= l(notification[:created_at], format: :long).capitalize %>">Il y a <%= time_ago_in_words(notification[:created_at]) %></span>
           <% else %>
             <%= l(notification[:created_at], format: :human).capitalize %>
           <% end %>
