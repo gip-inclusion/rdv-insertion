@@ -2,7 +2,7 @@ module NotificationCenterConcern
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_has_notifications, if: -> { request.get? }
+    before_action :set_has_notifications, if: -> { request.get? && !turbo_frame_request? && !request.xhr? }
     helper_method :most_recent_notification_read, :oldest_notification_read, :notification_read?
   end
 
