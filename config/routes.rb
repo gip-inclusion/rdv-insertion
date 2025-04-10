@@ -55,6 +55,8 @@ Rails.application.routes.draw do
 
   get "/organisations", to: "organisations#index", as: :authenticated_root
 
+  resources :notification_center, only: [:index]
+
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
@@ -274,6 +276,4 @@ Rails.application.routes.draw do
     # LetterOpener
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
-
-  resources :notification_center, only: [:index]
 end
