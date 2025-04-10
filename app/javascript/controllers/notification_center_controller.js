@@ -17,11 +17,22 @@ export default class extends Controller {
       childList: true,
       subtree: true
     })
+
+    this.handleClickOutside = this.#handleClickOutside.bind(this)
+    document.addEventListener("click", this.handleClickOutside)
   }
 
   disconnect() {
     if (this.observer) {
       this.observer.disconnect()
+    }
+
+    document.removeEventListener("click", this.handleClickOutside)
+  }
+
+  #handleClickOutside(event) {
+    if (!this.element.contains(event.target)) {
+      this.close()
     }
   }
 
