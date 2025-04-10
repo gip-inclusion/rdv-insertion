@@ -1,7 +1,7 @@
 module NotificationCenterConcern
   extend ActiveSupport::Concern
 
-  MOTIFS_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN = [:rsa_accompagnement, :rsa_orientation].freeze
+  MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN = [:rsa_accompagnement, :rsa_orientation].freeze
 
   included do
     before_action :set_has_notifications, if: :show_notification_center?
@@ -13,8 +13,11 @@ module NotificationCenterConcern
 
   def set_has_notifications
     @has_unread_important_notifications = CreneauAvailability
-                                          .joins(:category_configuration)
+                                          .joins(category_configuration: :motif_category)
                                           .where(category_configuration: { organisation_id: current_organisation_id })
+                                          .where(motif_category: {
+                                                   short_name: MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN
+                                                 })
                                           .where(created_at: most_recent_notification_read...)
                                           .with_pending_invitations
                                           .order(created_at: :desc)
@@ -49,6 +52,8 @@ module NotificationCenterConcern
   end
 
   def organisation_has_expected_motifs_for_notification_center?
-    current_organisation.motif_categories.where(short_name: MOTIFS_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN).any?
+    current_organisation
+      .motif_categories
+      .exists?(short_name: MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN)
   end
 end
