@@ -11,11 +11,11 @@ module NotificationCenterConcern
   def set_has_notifications
     return unless current_agent
 
-    @has_notifications = CreneauAvailability
-                         .lacking_availability
-                         .where(category_configuration: current_agent.category_configurations)
-                         .where.not(created_at: oldest_notification_read..most_recent_notification_read)
-                         .exists?
+    @has_unread_important_notifications = CreneauAvailability
+                                          .where(category_configuration: current_agent.category_configurations)
+                                          .where(created_at: most_recent_notification_read...)
+                                          .order(created_at: :desc)
+                                          .first&.serious?
   end
 
   def most_recent_notification_read

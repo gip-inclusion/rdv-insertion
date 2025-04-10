@@ -41,6 +41,24 @@ describe "Agents can read notifications", :js do
     end
   end
 
+  context "agent has notifications but the last one is not important" do
+    let!(:creneau_availability) do
+      create(:creneau_availability,
+             category_configuration:,
+             number_of_creneaux_available: 30,
+             number_of_pending_invitations: 8)
+    end
+
+    before do
+      setup_agent_session(agent)
+      visit organisation_users_path(organisation)
+    end
+
+    it "doesn't see notification indicator" do
+      expect(page).to have_no_css("#btn-notification-center.has-notification")
+    end
+  end
+
   context "agent has read all notifications" do
     before do
       visit "/"
