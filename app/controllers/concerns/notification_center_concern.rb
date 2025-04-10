@@ -24,10 +24,11 @@ module NotificationCenterConcern
   end
 
   def oldest_notification_read
-    Time.zone.at(cookies["oldest_notification_read"]&.to_i || Time.now.to_i)
+    Time.zone.at(cookies["oldest_notification_read"]&.to_i || Time.zone.now.strftime("%s%L").to_i)
   end
 
   def notification_read?(notification)
-    notification[:created_at] < oldest_notification_read || notification[:created_at] > most_recent_notification_read
+    notification[:created_at].to_i <= most_recent_notification_read.to_i &&
+      notification[:created_at].to_i >= oldest_notification_read.to_i
   end
 end
