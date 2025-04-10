@@ -1,12 +1,16 @@
 class CreneauAvailability < ApplicationRecord
   belongs_to :category_configuration
 
-  scope :lacking_availability, lambda {
+  scope :with_pending_invitations, lambda {
     where.not(number_of_pending_invitations: [nil, 0])
-         .where(
-           "(number_of_creneaux_available <= number_of_pending_invitations) OR " \
-           "(number_of_creneaux_available - number_of_pending_invitations < 10)"
-         )
+  }
+
+  scope :lacking_availability, lambda {
+    with_pending_invitations
+      .where(
+        "(number_of_creneaux_available <= number_of_pending_invitations) OR " \
+        "(number_of_creneaux_available - number_of_pending_invitations < 10)"
+      )
   }
 
   def seriousness
