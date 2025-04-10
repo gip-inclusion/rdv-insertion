@@ -122,7 +122,7 @@ describe InvitationsController do
         end
 
         before do
-          allow(WickedPdf).to receive_message_chain(:new, :pdf_from_string)
+          allow(Grover).to receive_message_chain(:new, :to_pdf)
           allow(invitation).to receive(:content).and_return("some content")
         end
 
