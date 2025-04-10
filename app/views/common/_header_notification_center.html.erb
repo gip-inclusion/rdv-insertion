@@ -1,4 +1,4 @@
-<div id="notification-center" data-controller="notification-center" class="position-relative ms-2">
+<div id="notification-center" data-controller="notification-center" data-organisation-id="<%= current_organisation_id %>" class="position-relative ms-2">
   <button id="btn-notification-center" data-notification-center-target="button" class="accessible text-truncate <%= "has-notification" if @has_unread_important_notifications %>" type="button" data-action="click->notification-center#toggle" aria-haspopup="true" aria-expanded="false">
     <i class="ri-notification-3-fill"></i>
   </button>

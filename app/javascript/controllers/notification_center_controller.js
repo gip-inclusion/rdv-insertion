@@ -43,17 +43,25 @@ export default class extends Controller {
       const firstNotificationCreatedAt = parseInt(notificationItems[0].dataset.created_at, 10)
       const lastNotificationCreatedAt = parseInt(notificationItems[notificationItems.length - 1].dataset.created_at, 10)
       
-      const existingFirst = parseInt(Cookies.get("most_recent_notification_read"), 10)
-      const existingLast = parseInt(Cookies.get("oldest_notification_read"), 10)
+      const existingFirst = parseInt(Cookies.get(this.mostRecentNotificationReadCookieName), 10)
+      const existingLast = parseInt(Cookies.get(this.oldestNotificationReadCookieName), 10)
       
       if (!existingFirst || firstNotificationCreatedAt > existingFirst) {
-        Cookies.set("most_recent_notification_read", firstNotificationCreatedAt + 1)
+        Cookies.set(this.mostRecentNotificationReadCookieName, firstNotificationCreatedAt + 1)
       }
       
       if (!existingLast || lastNotificationCreatedAt < existingLast) {
-        Cookies.set("oldest_notification_read", lastNotificationCreatedAt - 1)
+        Cookies.set(this.oldestNotificationReadCookieName, lastNotificationCreatedAt - 1)
       }
     }
+  }
+
+  get mostRecentNotificationReadCookieName() {
+    return `most_recent_notification_read_on_${this.element.dataset.organisationId}`
+  }
+
+  get oldestNotificationReadCookieName() {
+    return `oldest_notification_read_on_${this.element.dataset.organisationId}`
   }
   
   toggle() {

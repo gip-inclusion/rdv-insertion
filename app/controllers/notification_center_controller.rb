@@ -21,9 +21,10 @@ class NotificationCenterController < ApplicationController
 
   def creneaux_availabilities
     @creneaux_availabilities ||= CreneauAvailability
-                                 .where(category_configuration: current_agent.category_configurations)
-                                 .with_pending_invitations
+                                 .joins(:category_configuration)
+                                 .where(category_configuration: { organisation_id: current_organisation_id })
                                  .includes(category_configuration: :motif_category)
+                                 .with_pending_invitations
                                  .order(created_at: :desc)
   end
 
