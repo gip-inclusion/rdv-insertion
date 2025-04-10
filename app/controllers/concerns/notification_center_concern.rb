@@ -3,7 +3,8 @@ module NotificationCenterConcern
 
   included do
     before_action :set_has_notifications, if: :show_notification_center?
-    helper_method :most_recent_notification_read, :oldest_notification_read, :notification_read?, :show_notification_center?
+    helper_method :most_recent_notification_read, :oldest_notification_read, :notification_read?,
+                  :show_notification_center?
   end
 
   private
@@ -23,7 +24,9 @@ module NotificationCenterConcern
   end
 
   def oldest_notification_read
-    Time.zone.at(cookies["oldest_notification_read_on_#{current_organisation_id}"]&.to_i || Time.zone.now.strftime("%s%L").to_i)
+    Time.zone.at(
+      cookies["oldest_notification_read_on_#{current_organisation_id}"]&.to_i || Time.zone.now.strftime("%s%L").to_i
+    )
   end
 
   def notification_read?(notification)
