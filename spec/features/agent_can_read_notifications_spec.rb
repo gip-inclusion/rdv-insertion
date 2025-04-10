@@ -41,6 +41,19 @@ describe "Agents can read notifications", :js do
     end
   end
 
+  context "organisation has no valid motif_category" do
+    let!(:motif_category) { create(:motif_category, short_name: "other_category", name: "Other Category") }
+
+    before do
+      setup_agent_session(agent)
+      visit organisation_users_path(organisation)
+    end
+
+    it "doesn't show notification center" do
+      expect(page).to have_no_css("#btn-notification-center")
+    end
+  end
+
   context "agent has notifications but the last one is not important" do
     let!(:creneau_availability) do
       create(:creneau_availability,
