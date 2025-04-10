@@ -15,7 +15,6 @@ button, input[type="button"] {
   @extend .btn-blue-out;
   position: relative;
   width: 50px;
-  min-width: 50px !important;
   height: 50px;
 
   &.has-notification {
@@ -26,7 +25,7 @@ button, input[type="button"] {
       position: absolute;
       top: 15px;
       right: 15px;
-      background-color: #EC4C4C;
+      background-color: $danger;
       width: 7px;
       height: 7px;
       border-radius: 50%;
