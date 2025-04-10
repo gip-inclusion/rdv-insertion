@@ -12,16 +12,19 @@ module NotificationCenterConcern
   private
 
   def set_has_notifications
-    @has_unread_important_notifications = CreneauAvailability
+    @has_important_unread_notifications = CreneauAvailability
                                           .joins(category_configuration: :motif_category)
                                           .where(category_configuration: { organisation_id: current_organisation_id })
                                           .where(motif_category: {
                                                    short_name: MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN
                                                  })
                                           .where(created_at: most_recent_notification_read...)
+                                          # If organisation has 2 valid motif_categories it will receive 2 notifications
+                                          # Any of the notifications created today may be important, not just the last
+                                          .where(created_at: Time.zone.today...)
                                           .with_pending_invitations
                                           .order(created_at: :desc)
-                                          .first&.serious?
+                                          .any?(&:serious?)
   end
 
   def most_recent_notification_read
