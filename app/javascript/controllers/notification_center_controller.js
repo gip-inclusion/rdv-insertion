@@ -29,18 +29,18 @@ export default class extends Controller {
     const notificationItems = this.dropdownTarget.querySelectorAll(".notification-center-dropdown-body-item")
 
     if (notificationItems.length > 0) {
-      const firstNotificationCreatedAt = notificationItems[0].dataset.created_at
-      const lastNotificationCreatedAt = notificationItems[notificationItems.length - 1].dataset.created_at
+      const firstNotificationCreatedAt = parseInt(notificationItems[0].dataset.created_at, 10)
+      const lastNotificationCreatedAt = parseInt(notificationItems[notificationItems.length - 1].dataset.created_at, 10)
       
-      const existingFirst = Cookies.get("most_recent_notification_read")
-      const existingLast = Cookies.get("oldest_notification_read")
+      const existingFirst = parseInt(Cookies.get("most_recent_notification_read"), 10)
+      const existingLast = parseInt(Cookies.get("oldest_notification_read"), 10)
       
-      if (!existingFirst || parseInt(firstNotificationCreatedAt, 10) > parseInt(existingFirst, 10)) {
-        Cookies.set("most_recent_notification_read", firstNotificationCreatedAt)
+      if (!existingFirst || firstNotificationCreatedAt > existingFirst) {
+        Cookies.set("most_recent_notification_read", firstNotificationCreatedAt + 1)
       }
       
-      if (!existingLast || parseInt(lastNotificationCreatedAt, 10) < parseInt(existingLast, 10)) {
-        Cookies.set("oldest_notification_read", lastNotificationCreatedAt)
+      if (!existingLast || lastNotificationCreatedAt < existingLast) {
+        Cookies.set("oldest_notification_read", lastNotificationCreatedAt - 1)
       }
     }
   }

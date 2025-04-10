@@ -12,10 +12,9 @@ module NotificationCenterConcern
     return unless current_agent
 
     @has_notifications = CreneauAvailability
-                         .where(category_configuration: current_agent.category_configurations)
                          .lacking_availability
-                         .where(created_at: most_recent_notification_read...)
-                         .or(CreneauAvailability.where(created_at: ...oldest_notification_read))
+                         .where(category_configuration: current_agent.category_configurations)
+                         .where.not(created_at: oldest_notification_read..most_recent_notification_read)
                          .exists?
   end
 

@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "notification_center_list" do %>
   <% @notifications.each do |notification| %>
-    <div data-created_at="<%= notification[:created_at].to_i %>" class="notification-center-dropdown-body-item position-relative px-3 py-2 <%= "seen" if notification_read?(notification) %> <%= "important" if ["warning", "danger"].include?(notification[:type]) && notification_read?(notification) %>">
+    <div data-created_at="<%= notification[:created_at].to_i %>" class="notification-center-dropdown-body-item position-relative px-3 py-2 <%= "seen" if notification_read?(notification) %> <%= "important" if ["warning", "danger"].include?(notification[:type]) %>">
       <div class="notification-center-dropdown-body-item-avatar d-flex justify-content-center align-items-center alert-<%= notification[:type] %>">
         <span>
           <i class="ri-calendar-line"></i>
