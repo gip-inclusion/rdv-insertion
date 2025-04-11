@@ -30,4 +30,9 @@
       </div>
     <% end %>
   <% end %>
+  <% if @notifications.empty? %>
+    <p class="my-2 p-3 notification-center-dropdown-body-item-content-description">
+      Vous n'avez aucune notification pour le moment.
+    </p>
+  <% end %>
 <% end %>
