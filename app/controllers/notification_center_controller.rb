@@ -41,7 +41,9 @@ class NotificationCenterController < ApplicationController
         title: infer_notification_title_from_creneau_availability(creneau_availability),
         type: creneau_availability.seriousness,
         description: infer_notification_description_from_creneau_availability(creneau_availability),
-        created_at: creneau_availability.created_at
+        created_at: creneau_availability.created_at,
+        link: notification_link,
+        link_title: notification_link_title
       }
     end
   end
@@ -72,5 +74,13 @@ class NotificationCenterController < ApplicationController
     end
 
     message
+  end
+
+  def notification_link
+    @notification_link ||= "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{current_organisation.rdv_solidarites_organisation_id}/agents/#{current_agent.rdv_solidarites_agent_id}/plage_ouvertures"
+  end
+
+  def notification_link_title
+    "Voir vos plages d'ouverture sur RDV-Solidarités"
   end
 end
