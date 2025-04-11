@@ -77,10 +77,12 @@ class NotificationCenterController < ApplicationController
   end
 
   def notification_link
-    @notification_link ||= "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{current_organisation.rdv_solidarites_organisation_id}/agents/#{current_agent.rdv_solidarites_agent_id}/plage_ouvertures"
+    @notification_link ||= "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/" \
+                           "#{current_organisation.rdv_solidarites_organisation_id}/" \
+                           "agent_agendas/#{current_agent.rdv_solidarites_agent_id}"
   end
 
   def notification_link_title
-    "Voir vos plages d'ouverture sur RDV-Solidarités"
+    "Voir votre agenda sur RDV-Solidarités"
   end
 end
