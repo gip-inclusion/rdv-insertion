@@ -45,6 +45,7 @@ module NotificationCenterConcern
   def show_notification_center?
     @show_notification_center ||=
       will_request_load_header_partial_on_organisation_scoped_page? &&
+      current_agent &&
       organisation_has_expected_motifs_for_notification_center?
   end
 
