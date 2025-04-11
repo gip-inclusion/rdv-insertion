@@ -8,7 +8,7 @@
     },
     accept: ".csv, .txt"
   %>
-  <%= label_tag :enrich_with_cnaf_data_file_input, "Enrichir avec les données CNAF", class: "btn btn-blue-out mb-2" %>
+  <%= label_tag :enrich_with_cnaf_data_file_input, "Enrichir avec les données CNAF", class: "btn btn-blue-out mb-2", id: "rdvi_upload_users-data_data-complete" %>
 
   <%= form_with(url: user_list_upload_enrich_with_cnaf_data_path(user_list_upload_id: @user_list_upload.id), local: true, data: { enrich_with_cnaf_file_target: "form", target: "_top" }) do |f| %>
     <%= f.hidden_field :rows_cnaf_data %>

@@ -4,11 +4,11 @@
   <thead class="text-dark-blue" data-controller="sort-list">
     <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
       Nom
-      <i class="ri-arrow-up-down-line" role="button"></i>
+      <i class="ri-arrow-up-down-line" id="rdvi_upload_users-data_last-name_sort" role="button"></i>
     </th>
     <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
       Prénom
-      <i class="ri-arrow-up-down-line" role="button"></i>
+      <i class="ri-arrow-up-down-line" id="rdvi_upload_users-data_first-name_sort" role="button"></i>
     </th>
     <th scope="col">Date de création</th>
     <% @all_configurations.each do |category_configuration| %>
@@ -41,8 +41,8 @@
           <% end %>
         <% end %>
         <td class="padding-left-15">
-          <%= link_to structure_user_path(user.id) do %>
-            <button class="btn btn-blue">Gérer</button>
+          <%= link_to structure_user_path(user.id), class: "btn btn-blue" do %>
+            Gérer
           <% end %>
         </td>
       </tr>

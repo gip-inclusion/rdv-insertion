@@ -4,11 +4,11 @@
   <h2 class="h2-title">Création et mise à jour des dossiers terminées.</h2>
   <% if params[:search_query].blank? %>
     <% if user_rows_with_user_save_errors.empty? %>
-      <div class="flash-expanded">
+      <div class="flash-expanded" id="rdvi_upload_users-data_success-alert">
         <%= render "common/flash_banner", type: :success, description: "Tous les dossiers ont été créés ou mis à jour." %>
       </div>
     <% else %>
-      <div class="flash-expanded">
+      <div class="flash-expanded" id="rdvi_upload_users-data_warning-alert">
         <%= render(
           "common/flash_banner",
           type: :alert,
