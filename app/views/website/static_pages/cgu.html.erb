@@ -3,7 +3,22 @@
 <div class="container legal-notice mb-4">
   <div class="row d-flex justify-content-center mt-2">
     <div class="col-10">
-      <%= render "cgu_content" %>
+      <h1>CONDITIONS GENERALES D'UTILISATION</h1>
+      <p><strong><u>Version du <%= l(Date.strptime(@version, "%Y_%m_%d"), format: :long) %></u></strong></p>
+
+      <%= render "website/static_pages/cgus_versions/#{@version}" %>
+
+      <div class="mt-4">
+        <h3>Toutes les versions des CGU</h3>
+        <p>Vous pouvez consulter l'historique des versions de nos conditions générales d'utilisation en cliquant sur les liens ci-dessous :</p>
+        <ul>
+          <% cgus_versions.each do |date, version| %>
+            <li>
+              <%= link_to "Version du #{l(date, format: :long)}", cgu_path(version:) %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
