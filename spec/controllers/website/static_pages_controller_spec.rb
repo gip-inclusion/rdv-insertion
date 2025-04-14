@@ -50,7 +50,7 @@ describe Website::StaticPagesController do
     it "returns a success response" do
       get :cgu
       expect(response).to be_successful
-      expect(response.body).to match(/Conditions générales d’utilisation/)
+      expect(response.body).to match(/CONDITIONS GENERALES D'UTILISATION/)
     end
   end
 end
