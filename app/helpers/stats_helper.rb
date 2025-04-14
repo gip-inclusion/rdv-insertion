@@ -69,7 +69,7 @@ module StatsHelper
 
   def invitations_count_tooltip
     tooltip(
-      content: "Il s'agit du nombre d'invitations à prendre rendre rendez-vous envoyées depuis rdv-insertion " \
+      content: "Il s'agit du nombre d'invitations à prendre rendez-vous envoyées depuis rdv-insertion " \
                "et ce, quel que soit le support (invitation mail, SMS, courrier). Ce graphique ne s'applique " \
                "donc pas aux organisations qui n'invitent pas les usagers et procèdent uniquement à des convocations."
     )
