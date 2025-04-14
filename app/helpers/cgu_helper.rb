@@ -1,9 +1,9 @@
 module CguHelper
   def most_recent_cgu_version
-    cgus_versions.first[1]
+    cgu_versions.first[1]
   end
 
-  def cgus_versions
+  def cgu_versions
     Rails.root
          .glob("app/views/website/static_pages/cgus_versions/*.html.erb")
          .sort
@@ -16,6 +16,6 @@ module CguHelper
   end
 
   def cgu_version_exists?(version)
-    cgus_versions.find { |_, v| v == version }
+    cgu_versions.find { |_, v| v == version }
   end
 end

@@ -12,7 +12,7 @@
         <h3>Toutes les versions des CGU</h3>
         <p>Vous pouvez consulter l'historique des versions de nos conditions générales d'utilisation en cliquant sur les liens ci-dessous :</p>
         <ul>
-          <% cgus_versions.each do |date, version| %>
+          <% cgu_versions.each do |date, version| %>
             <li>
               <%= link_to "Version du #{l(date, format: :long)}", cgu_path(version:) %>
             </li>
