@@ -10,7 +10,7 @@ matomo = "matomo.inclusion.beta.gouv.fr"
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
 tally = "tally.so"
-flourish = ["flo.uri.sh", "https://public.flourish.studio/resources/embed.js"] # for deployment map
+flourish = ["flo.uri.sh", "public.flourish.studio"] # for deployment map
 
 Rails.application.config.content_security_policy do |policy|
   policy.default_src     :self
