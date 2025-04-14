@@ -48,6 +48,11 @@ Rails.application.routes.draw do
                                        only: [:show]
   end
 
+  # CSP endpoints
+  get "/csp-test", to: "content_security_policy#test"
+  post "/csp-test-endpoint", to: "content_security_policy#test_endpoint"
+  post "/csp-violation-report", to: "content_security_policy#report"
+
   get "/organisations", to: "organisations#index", as: :authenticated_root
 
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
@@ -115,6 +120,7 @@ Rails.application.routes.draw do
       get :show_details
       get :hide_details
       resource :user_row_cells, only: [:edit]
+      post :batch_update, on: :collection
 
       resources :organisation_assignations, only: [:new, :create]
 
@@ -160,10 +166,6 @@ Rails.application.routes.draw do
 
   namespace :users do
     resources :searches, only: :create
-  end
-
-  namespace :organisations do
-    resources :user_added_notifications, only: [:create]
   end
 
   resources :participations, only: [] do
@@ -212,8 +214,14 @@ Rails.application.routes.draw do
       resource :closings, only: [:create, :destroy]
     end
     resource :stats, only: [:show], controller: 'website/stats'
+
     resources :users_organisations, only: [:index, :create]
     resource :users_organisations, only: [:destroy]
+
+    resources :organisations, only: [] do
+      resources :user_added_notifications, only: [:create], controller: 'organisations/user_added_notifications'
+    end
+
     scope module: :dates_filterings do
       resources :choose_date_kind,
                 :invitation_dates_filterings,

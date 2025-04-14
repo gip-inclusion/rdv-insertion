@@ -27,4 +27,16 @@ module InvitationsHelper
   def max_number_of_invitations_in_any_format(invitations_by_format)
     invitations_by_format.values.map(&:count).max
   end
+
+  def not_delivered_tooltip_content(format)
+    case format
+    when "sms"
+      "Le SMS n'a pas pu être délivré. Causes possibles : numéro incorrect, problème de l'opérateur, etc. " \
+      "Nous vous invitons à vérifier le format du numéro et à le modifier si nécessaire."
+    when "email"
+      "L’email n'a pas pu être remis. Causes possibles : boîte de réception pleine ou indisponible, " \
+      "adresse email incorrecte ou inexistante, filtre anti-spams, etc. " \
+      "Nous vous invitons à vérifier le format de l’adresse email et de réessayer d'envoyer l'invitation."
+    end
+  end
 end

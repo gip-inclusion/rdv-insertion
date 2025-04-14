@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
 import { observer } from "mobx-react-lite";
 
+import safeSwal from "../../../lib/safeSwal";
 import FileHandler from "../../components/FileHandler";
 import EnrichWithContactFile from "../../components/users/EnrichWithContactFile";
 import BatchActionsButtons from "../../components/users/BatchActionsButtons";
 import DisplayReferentsColumnButton from "../../components/users/DisplayReferentsColumnButton";
 import UsersList from "../../components/users/UsersList";
-import MazePoll from "../../components/MazePoll";
 
 import uploadFile from "../../lib/uploadFile";
 import retrieveUpToDateUsers from "../../lib/retrieveUpToDateUsers";
@@ -105,7 +104,7 @@ const UsersUploads = observer(
     };
 
     const displayFormatErrorMessage = (acceptedFormats) => {
-      Swal.fire({
+      safeSwal({
         title: `Le fichier doit être au format ${acceptedFormats.map((format) => ` ${format}`)}`,
         icon: "error",
       });
@@ -232,7 +231,6 @@ const UsersUploads = observer(
               </div>
             </div>
             <UsersList users={users} />
-            <MazePoll />
           </>
         )}
       </>

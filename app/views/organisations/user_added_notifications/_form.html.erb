@@ -1,26 +1,35 @@
 <%= render "common/remote_modal", title: "Informer l’organisation par email" do %>
-  <%= form_for(:email, url: organisations_user_added_notifications_path, method: :post) do |f| %>
+  <%= form_for(:email, url: department_organisation_user_added_notifications_path(department_id: current_department.id, organisation_id: organisation.id), method: :post) do |f| %>
+      <%= f.hidden_field :user_id, value: user.id %>
+      <%= f.hidden_field :source, value: source %>
       <div class="p-3 pt-0">
         <p>Prévenir l’organisation que l’usager a été ajouté à leur liste </p>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Destinataire</h5>
-            <%= f.select :to,
-                        emails,
-                        { include_blank: false },
-                        class: "form-control"
-            %>
+          <input readonly value="<%= organisation.email %>" class="form-control">
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Objet</h5>
-            <%= f.text_field :subject, class: "form-control", value: "[RDV-Insertion] Un usager a été ajouté à votre organisation" %>
+            <%= f.text_field :subject, class: "form-control", value: user_added_notification_subject, readonly: true %>
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Message</h5>
-            <%= f.text_area :content, class: "form-control", cols: 15, rows: 6, value: "L'usager #{user} a été ajouté à votre organisation #{organisation.name}.\nVous pouvez consulter son profil à l'adresse suivante :\n #{organisation_user_url(id: user.id, organisation_id: organisation.id, host: ENV['HOST'])}" %>
+          <%= f.text_area :content, readonly: true, class: "form-control", cols: 15, rows: 4, value: user_added_notification_content(source: source, user:, organisation:) %>
         </div>
-        <div class="mb-4">
+        <div class="mb-3">
+          <h5 class="text-dark-blue h4-as-labels">Ajouter un message personnalisé</h5>
+          <p>Ce message apparaitra après le message ci-dessus</p>
+          <%= f.text_area :custom_content, class: "form-control", cols: 15, rows: 6, placeholder: "Votre message personnalisé." %>
+        </div>
+        <div class="mb-4" data-controller="email-attachments">
           <h5 class="text-dark-blue h4-as-labels">Pièces jointes</h5>
-            <%= f.file_field :attachments, class: "form-control", multiple: true %>
+          <span data-email-attachments-target="attachmentsList">
+          </span>
+          <button class="btn btn-blue-out mt-2" data-action="email-attachments#add">
+            <i class="ri-attachment-line me-2"></i>
+            Ajouter un fichier
+          </button>
+          <%= f.file_field :attachments, class: "form-control d-none", multiple: true, data: { email_attachments_target: "fileInput" } %>
         </div>
 
         <div class="d-flex justify-content-end align-items-center pt-2">

@@ -118,6 +118,28 @@ describe User do
       end
     end
 
+    context "wrong email format, begin with a dot" do
+      let(:user) { build(:user, email: ".abc@abc.bc") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.details).to eq({ email: [{ error: :invalid, value: ".abc@abc.bc" }] })
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+
+    context "wrong email format, domain is too short" do
+      let(:user) { build(:user, email: "abc@abc.b") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.details).to eq({ email: [{ error: :invalid, value: "abc@abc.b" }] })
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+
     context "almost perfect but incorrect email format" do
       let(:user) { build(:user, email: "abc@abc..fr") }
 
@@ -394,6 +416,54 @@ describe User do
         user.referents_to_add = [{ email: "someagent@gmail.com" }, { email: "otheragent@gmail.com" }]
         expect { subject }.to change(ReferentAssignation, :count).by(1)
         expect(user.reload.referent_ids).to contain_exactly(agent.id, other_agent.id)
+      end
+    end
+  end
+
+  describe "#tags_to_add=" do
+    subject { user.save }
+
+    let!(:user) { build(:user, organisations: [organisation]) }
+    let!(:organisation) { create(:organisation) }
+    let!(:other_organisation) { create(:organisation, tags: [other_tag_organisation]) }
+    let!(:tag) { create(:tag, value: "A relancer") }
+    let!(:other_tag) { create(:tag, value: "Prioritaire") }
+    let!(:other_tag_organisation) { create(:tag, value: "Non prioritaire") }
+
+    before do
+      create(:tag_organisation, tag: tag, organisation: organisation)
+      create(:tag_organisation, tag: other_tag, organisation: organisation)
+    end
+
+    it "assigns the tags" do
+      user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+      expect { subject }.to change(TagUser, :count).by(2)
+      expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
+    end
+
+    context "when the value does not match an existing tag" do
+      it "does not assign the tag" do
+        user.tags_to_add = [{ value: "DoesNotExist" }]
+        expect { subject }.not_to change(TagUser, :count)
+        expect(user.reload.tags).to eq([])
+      end
+    end
+
+    context "when the value does not match an existing tag in the organisation" do
+      it "does not assign the tag" do
+        user.tags_to_add = [{ value: "Non prioritaire" }]
+        expect { subject }.not_to change(TagUser, :count)
+        expect(user.reload.tags).to eq([])
+      end
+    end
+
+    context "when the tag is already assigned" do
+      let!(:user) { create(:user, organisations: [organisation], tags: [tag]) }
+
+      it "does not reassign the assigned tag" do
+        user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+        expect { subject }.to change(TagUser, :count).by(1)
+        expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
       end
     end
   end

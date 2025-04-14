@@ -8,6 +8,8 @@ class UserListUpload::SaveUser < BaseService
       assign_resources_to_user
       @organisation_to_assign = @user_row.organisation_to_assign || retrieve_organisation_to_assign!
       save_user!
+      reopen_follow_up_if_closed
+      unarchive_user_if_archived
       result.user = saved_user
     end
   end
@@ -21,7 +23,19 @@ class UserListUpload::SaveUser < BaseService
   def assign_resources_to_user
     user.referents = @user_row.referents
     user.tags = @user_row.tags
-    user.assign_motif_category(@user_row.motif_category_to_assign&.id) if @user_row.motif_category_to_assign
+    find_or_create_follow_up if @user_row.motif_category_to_assign
+  end
+
+  def find_or_create_follow_up
+    @follow_up = FollowUp.find_or_create_by!(user: user, motif_category: @user_row.motif_category_to_assign)
+  end
+
+  def reopen_follow_up_if_closed
+    @follow_up.update!(closed_at: nil) if @follow_up&.closed?
+  end
+
+  def unarchive_user_if_archived
+    user.archive_in_organisation(@organisation_to_assign)&.destroy!
   end
 
   def retrieve_organisation_to_assign!

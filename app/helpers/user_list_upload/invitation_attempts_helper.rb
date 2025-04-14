@@ -23,7 +23,7 @@ module UserListUpload::InvitationAttemptsHelper
   def tooltip_for_invitation_errors(user_row)
     return unless user_row.all_invitations_failed?
 
-    tooltip_errors_tag_attributes(
+    tooltip_errors(
       title: "Erreurs lors de l'envoi des invitations",
       errors: user_row.invitation_errors.uniq
     )
@@ -49,5 +49,22 @@ module UserListUpload::InvitationAttemptsHelper
     else
       "environ #{time_remaining_in_minutes} min restante#{'s' if time_remaining_in_minutes > 1}"
     end
+  end
+
+  def disable_invitation_for_user_row?(user_row)
+    selected_invitation_formats(user_row.user_list_upload_id).none? { |format| user_row.invitable_by?(format) }
+  end
+
+  def invitation_format_checked?(format, user_list_upload_id)
+    selected_invitation_formats(user_list_upload_id).include?(format)
+  end
+
+  def selected_invitation_formats(user_list_upload_id)
+    cookie_data = JSON.parse(cookies["user_list_uploads"] || "{}")
+    formats = cookie_data.dig(user_list_upload_id.to_s, "selected_invitation_formats")
+    formats.is_a?(Array) ? formats : %w[sms email]
+  rescue JSON::ParserError
+    Sentry.capture_exception(JSON::ParserError, extra: { cookies: cookies["user_list_uploads"] })
+    %w[sms email]
   end
 end

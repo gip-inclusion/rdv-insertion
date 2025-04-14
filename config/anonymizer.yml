@@ -530,8 +530,8 @@ tables:
       - user_list_upload_id
       - matching_user_id
       - assigned_organisation_id
-      - marked_for_invitation
-      - marked_for_user_save
+      - selected_for_invitation
+      - selected_for_user_save
 
   - table_name: user_list_upload_user_save_attempts
     anonymized_column_names: []

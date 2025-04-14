@@ -12,8 +12,7 @@
       >
         <% if invitations.any?(&:"format_#{invitation_format}?") %>
           <span
-            data-controller="tooltip"
-            data-action="mouseover->tooltip#reinviteButton"
+            <%= tooltip(content: "Réinviter remettra les compteurs à 0 vis à vis des délais", placement: "bottom") %>
           >
             Réinviter
           </span>

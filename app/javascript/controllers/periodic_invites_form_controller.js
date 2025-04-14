@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
-import tippy from "tippy.js";
+import DOMPurify from "dompurify";
+import safeTippy from "../lib/safeTippy";
 
 export default class extends Controller {
   static targets = [
@@ -49,9 +50,9 @@ export default class extends Controller {
 
   numberOfDaysInputChanged() {
     if (this.numberOfDaysTarget.value < this.constructor.minValueForNumberOfDays) {
-      const tooltip = tippy(this.numberOfDaysTarget, { content: "Le délai minimal entre 2 invitations est de 14 jours.", showOnCreate: true })
+      const tooltip = safeTippy(this.numberOfDaysTarget, { content: "Le délai minimal entre 2 invitations est de 14 jours.", showOnCreate: true })
 
-      // We destroy the tooltip so that it won't show up again unless the 
+      // We destroy the tooltip so that it won't show up again unless the
       // user intentionnaly sets another value under the threshold
       setTimeout(() => tooltip.destroy(), 2000)
 
@@ -74,22 +75,22 @@ export default class extends Controller {
 
   showIndicator() {
     if (!this.enableTarget.checked) {
-      this.nextInviteIndicatorTarget.innerHTML = "Les invitations périodiques sont désactivées."
+      this.nextInviteIndicatorTarget.innerHTML = DOMPurify.sanitize("Les invitations périodiques sont désactivées.")
       return
     }
 
     if (this.numberOfDaysTarget.value) {
-      this.nextInviteIndicatorTarget.innerHTML = `Une invitation sera envoyée ${this.numberOfDaysTarget.value} jour(s) suivant la dernière invitation.`
+      this.nextInviteIndicatorTarget.innerHTML = DOMPurify.sanitize(`Une invitation sera envoyée ${this.numberOfDaysTarget.value} jour(s) suivant la dernière invitation.`)
     } else if (this.dayOfTheMonthTarget.value) {
-      this.nextInviteIndicatorTarget.innerHTML = `Une invitation sera envoyée le ${this.dayOfTheMonthTarget.value} de chaque mois.`
+      this.nextInviteIndicatorTarget.innerHTML = DOMPurify.sanitize(`Une invitation sera envoyée le ${this.dayOfTheMonthTarget.value} de chaque mois.`)
     } else if (this.enable.checked) {
-      this.nextInviteIndicatorTarget.innerHTML = "Vous devez configurer la récurrence afin d'activer les invitations périodiques."
+      this.nextInviteIndicatorTarget.innerHTML = DOMPurify.sanitize("Vous devez configurer la récurrence afin d'activer les invitations périodiques.")
     }
   }
 
   disableInvitationsExpiration() {
     const invitationsExpirationFormController = this.application.getControllerForElementAndIdentifier(
-      document.querySelector("[data-controller=\"invitations-expiration-form\"]"), 
+      document.querySelector("[data-controller=\"invitations-expiration-form\"]"),
       "invitations-expiration-form"
     );
 

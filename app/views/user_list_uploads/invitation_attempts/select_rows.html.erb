@@ -1,7 +1,7 @@
 <% content_for :title, "Envoyer des invitations - #{structure_name_with_context(@user_list_upload.structure)} - rdv-insertion" %>
 
-<div class="container px-5 py-3" data-controller="submit-selected-ids">
-  <div class="row text-dark-blue ">
+<div class="container px-4 py-3">
+  <div class="row text-dark-blue">
     <div class="col text-center align-items-center my-1">
       <div>
         <h1 class="h1-title">Envoyer des invitations</h1>
@@ -14,8 +14,12 @@
   </div>
 
   <%= turbo_frame_tag "user_collection", data: { turbo_action: "advance" } do %>
-    <div class="row justify-content-center">
-      <div class="col-md-10 d-flex justify-content-between align-items-center">
+    <div class="row justify-content-center"
+        data-controller="select-user-rows"
+        data-user-list-upload-id="<%= @user_list_upload.id %>"
+        data-attribute-to-toggle="selected_for_invitation"
+    >
+      <div class="d-flex justify-content-between align-items-center">
         <div class="mb-4">
           <h2 class="h2-title">Inviter les usagers à prendre rendez-vous</h2>
           <p class="text-muted">
@@ -26,26 +30,32 @@
       </div>
       <%= render "user_rows_before_invitation", user_rows: @user_rows %>
 
-      <div class="col-md-10 sticky-footer">
-        <div class="py-3 bg-white border-top d-flex justify-content-between">
+      <div class="container sticky-footer">
+        <div class="py-3 px-4 bg-white d-flex justify-content-between">
           <div>
+            <% if @number_of_user_rows_selected.zero? %>
+              Aucun usager sélectionné
+            <% elsif @number_of_user_rows_selected == 1 %>
+              <%= @number_of_user_rows_selected %> usager sélectionné sur <%= @total_number_of_user_rows %>
+            <% else %>
+              <%= @number_of_user_rows_selected %> usagers sélectionnés sur <%= @total_number_of_user_rows %>
+            <% end %>
           </div>
           <div>
             <%= form_tag create_many_user_list_upload_invitation_attempts_path(user_list_upload_id: @user_list_upload.id),
                   method: :post,
-                  data: { action: "submit->submit-selected-ids#submit", turbo: false } do %>
+                  data: { turbo: false } do %>
               <div class="d-flex justify-content-around align-items-center">
                 <div class="align-middle">Inviter la sélection par:</div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "email", "Email", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "email" } %>
-                  <%= label_tag "email", "Email", class: "form-check-label" %>
+                  <%= check_box_tag "format_email", "Email", checked: invitation_format_checked?("email", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "email" } %>
+                  <%= label_tag "format_email", "Email", class: "form-check-label" %>
                 </div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "sms", "SMS", checked: true, class: "form-check-input text-dark-blue", data: { submit_selected_ids_target: "formatOption", action: "change->submit-selected-ids#disableUninvitableUsers", format: "sms" } %>
-                  <%= label_tag "sms", "SMS", class: "form-check-label" %>
+                  <%= check_box_tag "format_sms", "SMS", checked: invitation_format_checked?("sms", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "sms" } %>
+                  <%= label_tag "format_sms", "SMS", class: "form-check-label" %>
                 </div>
-                <%= hidden_field_tag "selected_ids[]" %>
-                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", data: { submit_selected_ids_target: "submit" } %>
+                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", disabled: @number_of_user_rows_selected.zero? %>
               </div>
             <% end %>
           </div>

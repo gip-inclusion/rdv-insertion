@@ -15,10 +15,6 @@ module UsersHelper
     users.empty? && params[:search_query].present?
   end
 
-  def display_back_to_list_button?
-    active_filter_list.any?
-  end
-
   def options_for_select_status(statuses_count)
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
@@ -94,5 +90,24 @@ module UsersHelper
         UserPolicy::RESTRICTED_USER_ATTRIBUTES_BY_ORGANISATION_TYPE[organisation.organisation_type.to_sym].length
       end
     UserPolicy.assignable_user_attribute?(user:, attribute_name:, assigning_organisation:)
+  end
+
+  def action_required_tooltip_content(number_of_days_before_invitations_expire)
+    safe_join(
+      [
+        "Une intervention est nécessaire quand: ",
+        tag.ul do
+          safe_join(
+            [
+              tag.li(
+                "L'invitation a été envoyée depuis + de #{number_of_days_before_invitations_expire} jours sans réponse"
+              ),
+              tag.li("Le RDV a été annulé par l'un des partis ou l'usager ne s'est pas présenté au RDV"),
+              tag.li("L'issue du RDV n'a pas été renseignée sur RDV-Solidarités")
+            ]
+          )
+        end
+      ]
+    )
   end
 end

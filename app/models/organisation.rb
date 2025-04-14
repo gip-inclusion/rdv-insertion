@@ -53,11 +53,13 @@ class Organisation < ApplicationRecord
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}"
   end
 
+  def rdv_solidarites_configuration_url
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}/configuration"
+  end
+
   def to_s
     name
   end
-
-  def france_travail? = safir_code?
 
   def with_parcours_access?
     organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)

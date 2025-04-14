@@ -1,5 +1,6 @@
 class SuperAdmins::BlockedUsersController < SuperAdmins::ApplicationController
-  before_action :set_starts_at, :set_ends_at, :set_blocked_users_grouped_by_month, only: :index
+  before_action :set_starts_at, :set_ends_at, :set_blocked_users_grouped_by_day, :force_full_page_reload,
+                only: :index
 
   private
 
@@ -11,7 +12,7 @@ class SuperAdmins::BlockedUsersController < SuperAdmins::ApplicationController
     @ends_at = params[:ends_at] || Time.zone.now
   end
 
-  def set_blocked_users_grouped_by_month
-    @blocked_users_grouped_by_month = BlockedUser.grouped_by_month(@starts_at, @ends_at)
+  def set_blocked_users_grouped_by_day
+    @blocked_users_grouped_by_day = BlockedUser.grouped_by_day(@starts_at, @ends_at)
   end
 end

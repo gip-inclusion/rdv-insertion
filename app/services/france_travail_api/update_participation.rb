@@ -33,7 +33,7 @@ module FranceTravailApi
     def handle_failure!(response)
       fail!(
         "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Update de Participation).\n" \
-        "Status: #{response.status}\n Body: #{response.body}"
+        "Status: #{response.status}\n Body: #{response.body.force_encoding('UTF-8')}"
       )
     end
 

@@ -289,7 +289,7 @@ describe UserListUpload::UserRow do
     end
 
     before do
-      allow(NirHelper).to receive(:format_nir).with("123456789").and_return("1234567890123")
+      allow(NirHelper).to receive(:format_nir).and_return("1234567890123")
       user_row.save
     end
 
@@ -371,7 +371,7 @@ describe UserListUpload::UserRow do
           end
 
           it "returns :organisation_needs_to_be_assigned" do
-            expect(user_row.after_user_save_status).to eq(:organisation_needs_to_be_assigned)
+            expect(user_row.reload.after_user_save_status).to eq(:organisation_needs_to_be_assigned)
           end
         end
 
@@ -381,7 +381,7 @@ describe UserListUpload::UserRow do
           end
 
           it "returns :error" do
-            expect(user_row.after_user_save_status).to eq(:error)
+            expect(user_row.reload.after_user_save_status).to eq(:error)
           end
         end
 
@@ -392,17 +392,17 @@ describe UserListUpload::UserRow do
 
           it "returns :created for new users" do
             allow(user_row).to receive(:before_user_save_status).and_return(:to_create)
-            expect(user_row.after_user_save_status).to eq(:created)
+            expect(user_row.reload.after_user_save_status).to eq(:created)
           end
 
           it "returns :updated for existing users" do
             allow(user_row).to receive(:before_user_save_status).and_return(:to_update)
-            expect(user_row.after_user_save_status).to eq(:updated)
+            expect(user_row.reload.after_user_save_status).to eq(:updated)
           end
 
           it "returns :updated for up_to_date users" do
             allow(user_row).to receive(:before_user_save_status).and_return(:up_to_date)
-            expect(user_row.after_user_save_status).to eq(:updated)
+            expect(user_row.reload.after_user_save_status).to eq(:updated)
           end
         end
       end

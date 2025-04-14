@@ -3,28 +3,41 @@ module UserListUpload::UserRow::MatchingUser
 
   def set_matching_user
     return if matching_user_id.present?
+    return if user_save_succeeded?
 
     matching_user = find_matching_user
     self.matching_user_id = matching_user.id if matching_user
   end
 
   def find_matching_user
-    find_matching_user_in_all_app || find_matching_user_in_department
+    all_app_users = potential_matching_users_in_all_app
+    department_users = potential_matching_users_in_department
+
+    find_user_by_nir(all_app_users) ||
+      find_user_by_department_internal_id(department_users) ||
+      find_user_by_email(all_app_users) ||
+      find_user_by_phone_number(all_app_users) ||
+      find_user_by_affiliation_number_and_role(department_users)
   end
 
-  def find_matching_user_in_all_app
-    potential_matching_users_in_all_app.find do |matching_user|
-      user_matches_nir?(matching_user.nir) ||
-        user_matches_phone_number?(matching_user) ||
-        user_matches_email?(matching_user)
-    end
+  def find_user_by_nir(users)
+    users.find { |user| user_matches_nir?(user.nir) }
   end
 
-  def find_matching_user_in_department
-    potential_matching_users_in_department.find do |matching_user|
-      user_matches_department_internal_id?(matching_user) ||
-        user_matches_affiliation_number_and_role?(matching_user)
-    end
+  def find_user_by_department_internal_id(users)
+    users.find { |user| user_matches_department_internal_id?(user) }
+  end
+
+  def find_user_by_email(users)
+    users.find { |user| user_matches_email?(user) }
+  end
+
+  def find_user_by_phone_number(users)
+    users.find { |user| user_matches_phone_number?(user) }
+  end
+
+  def find_user_by_affiliation_number_and_role(users)
+    users.find { |user| user_matches_affiliation_number_and_role?(user) }
   end
 
   def user_matches_nir?(matching_user_nir)
@@ -61,9 +74,8 @@ module UserListUpload::UserRow::MatchingUser
     if persisted?
       retrieve_potential_matching_users_in_all_app
     else
-      # user_row is always created with the other user_list_upload user_rows
-      # so on creation we retrieve the user_list_upload potential matching users to not
-      # trigger a new query in each user_row creation when creating the user_list_upload
+      # when user_row is not persisted, we retrieve the potential matching users at the
+      # user_list_upload level to not trigger a new query in each user_row creation
       user_list_upload.potential_matching_users_in_all_app
     end
   end
@@ -72,9 +84,8 @@ module UserListUpload::UserRow::MatchingUser
     if persisted?
       retrieve_potential_matching_users_in_department
     else
-      # user_row is always created with the other user_list_upload user_rows
-      # so on creation we retrieve the user_list_upload potential matching users to not
-      # trigger a new query in each user_row creation when creating the user_list_upload
+      # when user_row is not persisted, we retrieve the potential matching users at the
+      # user_list_upload level to not trigger a new query in each user_row creation
       user_list_upload.potential_matching_users_in_department
     end
   end

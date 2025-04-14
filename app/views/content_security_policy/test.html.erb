@@ -1,0 +1,74 @@
+<% content_for :title, "CSP Form Action Test" %>
+
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="text-center mb-4">CSP Form Action Test</h1>
+
+      <div data-controller="csp-test" class="card-container">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-light">
+            <h4 class="card-title fs-5 mb-0">Test 1: Direct Form Submission</h4>
+          </div>
+          <div class="card-body text-center py-4">
+            <form action="https://example.com/some-endpoint" method="POST">
+              <input type="hidden" name="test_data" value="This is sensitive data">
+              <button type="submit" class="btn btn-primary">Submit to external domain</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-light">
+            <h4 class="card-title fs-5 mb-0">Test 2: JavaScript Form Submission</h4>
+          </div>
+          <div class="card-body text-center py-4">
+            <button data-action="click->csp-test#submitExternalForm" class="btn btn-primary">
+              Create and submit form to external domain via JavaScript
+            </button>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-light">
+            <h4 class="card-title fs-5 mb-0">Test 3: External Script Loading</h4>
+          </div>
+          <div class="card-body text-center py-4">
+            <button data-action="click->csp-test#loadExternalScript" class="btn btn-primary">
+              Load script from external domain
+            </button>
+          </div>
+        </div>
+
+        <div data-csp-test-target="result" class="alert alert-info mb-4 shadow-sm text-center hidden"></div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-light">
+            <h4 class="card-title fs-5 mb-0">Test 4: Control (should work)</h4>
+          </div>
+          <div class="card-body text-center py-4">
+            <form action="/csp-test-endpoint" method="POST" data-action="submit->csp-test#sameOriginSubmit">
+              <input type="hidden" name="test_data" value="This is sensitive data">
+              <button type="submit" class="btn btn-success">Submit to same origin (should work)</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-info bg-opacity-10">
+            <h4 class="card-title fs-5 mb-0">Expected Results</h4>
+          </div>
+          <div class="card-body">
+            <p class="fw-medium mb-2">If CSP is working correctly:</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item bg-transparent">Test 1 should be blocked by the browser with a CSP error</li>
+              <li class="list-group-item bg-transparent">Test 2 should be blocked by the browser with a CSP error</li>
+              <li class="list-group-item bg-transparent">Test 3 should be blocked by the browser with a CSP error</li>
+              <li class="list-group-item bg-transparent">Test 4 should work (it will submit to a test endpoint)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
