@@ -49,7 +49,7 @@ class UserListUpload::Collection
   end
 
   def user_rows_with_closed_follow_up
-    user_rows.select(&:matching_follow_up_closed?)
+    user_rows.select(&:matching_user_follow_up_closed?)
   end
 
   def user_rows_selected_for_user_save
