@@ -62,9 +62,9 @@ describe Website::StaticPagesController do
       end
 
       it "returns a 404 for an invalid version" do
-        expect {
+        expect do
           get :cgu, params: { version: "invalid_version" }
-        }.to raise_error(ActionController::RoutingError, "Not Found")
+        end.to raise_error(ActionController::RoutingError, "Not Found")
       end
     end
 
