@@ -4,6 +4,7 @@ module UserListUpload::UserRow::MatchingUser
   def set_matching_user
     return if matching_user_id.present?
     return if user_save_succeeded?
+    return if persisted? && !matching_attribute_changed?
 
     matching_user = find_matching_user
     self.matching_user_id = matching_user.id if matching_user
@@ -104,5 +105,10 @@ module UserListUpload::UserRow::MatchingUser
         organisations: { department_id: department.id }
       )
     )
+  end
+
+  def matching_attribute_changed?
+    nir_changed? || phone_number_changed? || department_internal_id_changed? || affiliation_number_changed? ||
+      email_changed? || role_changed?
   end
 end
