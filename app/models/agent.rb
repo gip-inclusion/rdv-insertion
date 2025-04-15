@@ -61,6 +61,10 @@ class Agent < ApplicationRecord
     Current.agent = nil
   end
 
+  def name_for_paper_trail
+    "#{first_name} #{last_name&.upcase} (#{email}) ID RDV-S: #{rdv_solidarites_agent_id}"
+  end
+
   private
 
   def generate_crisp_token

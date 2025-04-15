@@ -3,6 +3,8 @@ class UserListUpload::UserRow < ApplicationRecord
   include UserListUpload::UserRow::Status
   include UserListUpload::UserRow::MatchingUser
 
+  has_paper_trail
+
   USER_ATTRIBUTES = %i[
     email phone_number title first_name last_name affiliation_number nir birth_date department_internal_id
     france_travail_id role address

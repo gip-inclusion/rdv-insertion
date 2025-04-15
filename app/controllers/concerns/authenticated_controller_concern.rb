@@ -39,4 +39,10 @@ module AuthenticatedControllerConcern
   def agent_impersonated?
     agent_session&.impersonated?
   end
+
+  def super_admin_impersonating
+    return unless agent_impersonated?
+
+    agent_session.super_admin_agent
+  end
 end
