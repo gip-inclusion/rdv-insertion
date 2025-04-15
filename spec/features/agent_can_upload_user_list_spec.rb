@@ -854,10 +854,10 @@ describe "Agents can upload user list", :js do
       expect(christian_row.reload.selected_for_invitation).to be_truthy
 
       # Uncheck email format
-      expect(page).to have_css("input[type='checkbox'][name='email']:checked")
-      expect(page).to have_css("input[type='checkbox'][name='sms']:checked")
-      find("input[type='checkbox'][name='email']").click
-      expect(page).to have_css("input[type='checkbox'][name='email']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][name='format_email']:checked")
+      expect(page).to have_css("input[type='checkbox'][name='format_sms']:checked")
+      find("input[type='checkbox'][name='format_email']").click
+      expect(page).to have_css("input[type='checkbox'][name='format_email']:not(:checked)")
 
       # it unchecks users that can't be invited by email
       expect(page).to have_content("1 usager sélectionné sur 2", wait: 20)
@@ -868,9 +868,9 @@ describe "Agents can upload user list", :js do
       expect(christian_row.reload.selected_for_invitation).to be_falsey
 
       # Uncheck sms format
-      expect(page).to have_css("input[type='checkbox'][name='sms']:checked")
-      find("input[type='checkbox'][name='sms']").click
-      expect(page).to have_css("input[type='checkbox'][name='sms']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][name='format_sms']:checked")
+      find("input[type='checkbox'][name='format_sms']").click
+      expect(page).to have_css("input[type='checkbox'][name='format_sms']:not(:checked)")
 
       # it unchecks users that can't be invited by sms
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
@@ -885,8 +885,8 @@ describe "Agents can upload user list", :js do
 
       # It keeps the formats on page refresh
       page.refresh
-      expect(page).to have_css("input[type='checkbox'][name='sms']:not(:checked)")
-      expect(page).to have_css("input[type='checkbox'][name='email']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][name='format_sms']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][name='format_email']:not(:checked)")
     end
 
     context "when user has already been invited" do

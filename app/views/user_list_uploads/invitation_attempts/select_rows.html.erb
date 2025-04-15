@@ -48,12 +48,12 @@
               <div class="d-flex justify-content-around align-items-center">
                 <div class="align-middle">Inviter la sélection par:</div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "email", "Email", checked: invitation_format_checked?("email", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "email" } %>
-                  <%= label_tag "email", "Email", class: "form-check-label" %>
+                  <%= check_box_tag "format_email", "Email", checked: invitation_format_checked?("email", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "email" } %>
+                  <%= label_tag "format_email", "Email", class: "form-check-label" %>
                 </div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "sms", "SMS", checked: invitation_format_checked?("sms", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "sms" } %>
-                  <%= label_tag "sms", "SMS", class: "form-check-label" %>
+                  <%= check_box_tag "format_sms", "SMS", checked: invitation_format_checked?("sms", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "sms" } %>
+                  <%= label_tag "format_sms", "SMS", class: "form-check-label" %>
                 </div>
                 <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", disabled: @number_of_user_rows_selected.zero? %>
               </div>

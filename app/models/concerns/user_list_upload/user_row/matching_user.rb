@@ -10,22 +10,34 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def find_matching_user
-    find_matching_user_in_all_app || find_matching_user_in_department
+    all_app_users = potential_matching_users_in_all_app
+    department_users = potential_matching_users_in_department
+
+    find_user_by_nir(all_app_users) ||
+      find_user_by_department_internal_id(department_users) ||
+      find_user_by_email(all_app_users) ||
+      find_user_by_phone_number(all_app_users) ||
+      find_user_by_affiliation_number_and_role(department_users)
   end
 
-  def find_matching_user_in_all_app
-    potential_matching_users_in_all_app.find do |matching_user|
-      user_matches_nir?(matching_user.nir) ||
-        user_matches_phone_number?(matching_user) ||
-        user_matches_email?(matching_user)
-    end
+  def find_user_by_nir(users)
+    users.find { |user| user_matches_nir?(user.nir) }
   end
 
-  def find_matching_user_in_department
-    potential_matching_users_in_department.find do |matching_user|
-      user_matches_department_internal_id?(matching_user) ||
-        user_matches_affiliation_number_and_role?(matching_user)
-    end
+  def find_user_by_department_internal_id(users)
+    users.find { |user| user_matches_department_internal_id?(user) }
+  end
+
+  def find_user_by_email(users)
+    users.find { |user| user_matches_email?(user) }
+  end
+
+  def find_user_by_phone_number(users)
+    users.find { |user| user_matches_phone_number?(user) }
+  end
+
+  def find_user_by_affiliation_number_and_role(users)
+    users.find { |user| user_matches_affiliation_number_and_role?(user) }
   end
 
   def user_matches_nir?(matching_user_nir)

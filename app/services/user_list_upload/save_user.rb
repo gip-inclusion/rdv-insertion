@@ -31,7 +31,7 @@ class UserListUpload::SaveUser < BaseService
   end
 
   def reopen_follow_up_if_closed
-    @follow_up.update!(closed_at: nil) if @follow_up.closed?
+    @follow_up.update!(closed_at: nil) if @follow_up&.closed?
   end
 
   def unarchive_user_if_archived

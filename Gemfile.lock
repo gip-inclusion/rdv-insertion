@@ -290,6 +290,9 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    mimemagic (0.4.3)
+      nokogiri (~> 1)
+      rake
     mini_magick (4.13.2)
     mini_mime (1.1.5)
     minitest (5.23.1)
@@ -654,6 +657,7 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   listen (~> 3.2)
+  mimemagic (~> 0.4)
   omniauth-rails_csrf_protection
   omniauth-rdv-service-public!
   parallel_tests
