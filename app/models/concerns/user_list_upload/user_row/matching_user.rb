@@ -103,7 +103,7 @@ module UserListUpload::UserRow::MatchingUser
 
   def retrieve_potential_matching_users_in_all_app
     base = User.active
-    scope = base.none
+    scope = User.none
 
     scope = scope.or(base.where(email: email)) if email.present?
     scope = scope.or(base.where(phone_number: phone_number)) if phone_number.present?
@@ -114,7 +114,7 @@ module UserListUpload::UserRow::MatchingUser
 
   def retrieve_potential_matching_users_in_department
     base = User.active.joins(:organisations).where(organisations: { department_id: department.id })
-    scope = base.none
+    scope = User.none
 
     scope = scope.or(base.where(affiliation_number: affiliation_number)) if affiliation_number.present?
     scope = scope.or(base.where(department_internal_id: department_internal_id)) if department_internal_id.present?
