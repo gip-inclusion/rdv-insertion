@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import { navigator } from "@hotwired/turbo";
-import tippy from "tippy.js";
+import DOMPurify from "dompurify";
+import safeTippy from "../lib/safeTippy";
 import handleUserInvitation from "../react/lib/handleUserInvitation";
 import { getFrenchFormatDateString, todaysDateString } from "../lib/datesHelper";
 
@@ -11,12 +12,12 @@ export default class extends Controller {
     if (!checkbox) return null;
 
     if (invitationFormat === "postal") {
-      return tippy(checkbox, {
+      return safeTippy(checkbox, {
         content: "Générer courrier d'invitation",
       });
     }
 
-    return tippy(checkbox, {
+    return safeTippy(checkbox, {
       content: `Envoyer ${invitationFormat} d'invitation`,
     });
   }
@@ -67,18 +68,18 @@ export default class extends Controller {
   updateFirstInvitationDate(followUpId) {
     const firstInvitationDate = document.getElementById(`first-invitation-date-${followUpId}`);
     if (firstInvitationDate.innerHTML === " - ") {
-      firstInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
+      firstInvitationDate.innerHTML = DOMPurify.sanitize(getFrenchFormatDateString(todaysDateString()));
     }
   }
 
   updateLastInvitationDate(followUpId) {
     const lastInvitationDate = document.getElementById(`last-invitation-date-${followUpId}`);
-    lastInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
+    lastInvitationDate.innerHTML = DOMPurify.sanitize(getFrenchFormatDateString(todaysDateString()));
   }
 
   updateStatus(followUpId) {
     const status = document.getElementById(`follow-up-status-${followUpId}`);
     status.classList = [];
-    status.innerHTML = "Invitation en attente de réponse";
+    status.innerHTML = DOMPurify.sanitize("Invitation en attente de réponse");
   }
 }

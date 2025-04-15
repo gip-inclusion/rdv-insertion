@@ -44,16 +44,24 @@ class UserListUpload::Collection
     user_rows.select(&:changed_by_cnaf_data?)
   end
 
-  def user_rows_marked_for_user_save
-    user_rows.select(&:marked_for_user_save?)
+  def user_rows_archived
+    user_rows.select(&:archived?)
+  end
+
+  def user_rows_with_closed_follow_up
+    user_rows.select(&:matching_follow_up_closed?)
+  end
+
+  def user_rows_selected_for_user_save
+    user_rows.select(&:selected_for_user_save?)
   end
 
   def user_rows_with_user_save_attempted
-    user_rows_marked_for_user_save.select(&:attempted_user_save?)
+    user_rows_selected_for_user_save.select(&:attempted_user_save?)
   end
 
   def user_rows_with_user_save_success
-    user_rows_with_user_save_attempted.select(&:user_save_succeded?)
+    user_rows_with_user_save_attempted.select(&:user_save_succeeded?)
   end
 
   def user_rows_with_user_save_errors
@@ -63,15 +71,15 @@ class UserListUpload::Collection
   end
 
   def all_saves_attempted?
-    user_rows_marked_for_user_save.all?(&:attempted_user_save?)
+    user_rows_selected_for_user_save.all?(&:attempted_user_save?)
   end
 
-  def user_rows_marked_for_invitation
-    user_rows.select(&:marked_for_invitation?)
+  def user_rows_selected_for_invitation
+    user_rows.select(&:selected_for_invitation?)
   end
 
   def all_invitations_attempted?
-    user_rows_marked_for_invitation.all?(&:invitation_attempted?)
+    user_rows_selected_for_invitation.all?(&:invitation_attempted?)
   end
 
   def user_rows_with_invitation_attempted
@@ -80,22 +88,6 @@ class UserListUpload::Collection
 
   def user_rows_with_invitation_errors
     user_rows_with_invitation_attempted.select(&:all_invitations_failed?)
-  end
-
-  def mark_selected_rows_for_invitation!(selected_ids)
-    user_rows.each do |user_row|
-      user_row.mark_for_invitation! if selected_ids.include?(user_row.id)
-    end
-
-    save!(user_rows.select(&:marked_for_invitation?))
-  end
-
-  def mark_selected_rows_for_user_save!(selected_ids)
-    user_rows.each do |user_row|
-      user_row.mark_for_user_save! if selected_ids.include?(user_row.id)
-    end
-
-    save!(user_rows.select(&:marked_for_user_save?))
   end
 
   def sort_by!(sort_by:, sort_direction:)
@@ -126,7 +118,9 @@ class UserListUpload::Collection
 
   def load_user_rows
     @user_list_upload.user_rows.preload(
-      matching_user: [:organisations, :motif_categories, :referents, :tags, :address_geocoding],
+      matching_user: [:organisations, :motif_categories, :referents, :tags, :address_geocoding, {
+        archives: :organisation
+      }],
       invitation_attempts: :invitation,
       user_save_attempts: [user: [:address_geocoding, { invitations: [:follow_up] }]]
     ).order(created_at: :asc).to_a

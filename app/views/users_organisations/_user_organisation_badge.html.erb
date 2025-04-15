@@ -1,5 +1,5 @@
-<span class="<%= css_classes_for_organisation_badge(archive) %>" <%= tooltip_for_archived_organisation_badge(archive) %>>
-  <span class="text-truncate">
+<div class="d-inline-flex <%= css_classes_for_organisation_badge(archive) %>">
+  <span class="text-truncate" <%= tooltip_for_archived_organisation_badge(archive) %>>
     <%= organisation.name %>
     <% if department.id != organisation.department_id %>
       <span class="text-dark-grey-alt">
@@ -30,4 +30,4 @@
       <% end %>
     <% end %>
   <% end %>
-</span>
+</div>

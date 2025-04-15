@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
-import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
+import safeSwal from "../lib/safeSwal";
 import { retrieveMissingColumnNames, retrieveSheetColumnNames, displayMissingColumnsWarning, validateFileFormat } from "../lib/fileParser";
 import parseContactsData from "../lib/parseContactsData";
 
@@ -33,7 +33,7 @@ export default class extends Controller {
     this.#retrieveRowsCnafData()
 
     if (this.rowsCnafData.length === 0) {
-      Swal.fire({
+      safeSwal({
         title: "Aucun usager trouvé",
         text: "Aucun usager trouvé dans le fichier CNAF",
         icon: "warning",

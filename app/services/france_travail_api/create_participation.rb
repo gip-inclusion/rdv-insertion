@@ -26,8 +26,10 @@ module FranceTravailApi
         headers: ft_user_headers
       )
 
-      if response.success? && JSON.parse(response.body)["id"].present?
-        @participation.update_column(:france_travail_id, JSON.parse(response.body)["id"])
+      response_body = response.body.force_encoding("UTF-8")
+
+      if response.success? && JSON.parse(response_body)["id"].present?
+        @participation.update_column(:france_travail_id, JSON.parse(response_body)["id"])
       else
         handle_failure!(response)
       end
@@ -36,9 +38,10 @@ module FranceTravailApi
     end
 
     def handle_failure!(response)
+      response_body = response.body.force_encoding("UTF-8")
       fail!(
         "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Création de Participation).\n" \
-        "Status: #{response.status}\n Body: #{response.body}"
+        "Status: #{response.status}\n Body: #{response_body}"
       )
     end
 

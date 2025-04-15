@@ -6,6 +6,7 @@
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>
     <%= render 'common/flashes' %>
+    <%= content_for :announcement_banner %>
     <div class="wrapper reset-dsfr-overrides">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
       <%= yield %>

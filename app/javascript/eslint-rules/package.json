@@ -1,0 +1,7 @@
+{
+  "name": "eslint-plugin-rdv-insertion",
+  "version": "1.0.0",
+  "description": "Custom ESLint rules for RDV Insertion",
+  "main": "index.js",
+  "license": "MIT"
+}

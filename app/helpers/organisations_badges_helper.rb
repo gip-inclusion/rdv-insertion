@@ -9,11 +9,13 @@ module OrganisationsBadgesHelper
   def tooltip_for_archived_organisation_badge(archive)
     return if archive.nil?
 
-    tooltip_tag_attributes(
-      stimulus_action: "mouseover->tooltip#organisationArchiveInformations",
-      archive_creation_date: format_date(archive.created_at),
-      archive_reason: archive.archiving_reason,
-      show_archiving_reason: policy(archive).show?
-    )
+    content_array = ["Archivé le #{format_date(archive.created_at)}"]
+
+    if policy(archive).show?
+      content_array << tag.br
+      content_array << "Motif : #{strip_tags(archive.archiving_reason.to_s)}"
+    end
+
+    tooltip(content: safe_join(content_array))
   end
 end

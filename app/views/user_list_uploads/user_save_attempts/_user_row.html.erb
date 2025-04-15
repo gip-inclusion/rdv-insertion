@@ -1,30 +1,31 @@
 <tr id="user-row-<%= user_row.id %>">
-  <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email, :post_code].each do |attribute| %>
-    <% if user_row.user_save_succeded? %>
-      <td class="<%= "text-truncate-150" if attribute.in?([:email, :affiliation_number]) %>">
+  <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email].each do |attribute| %>
+    <% if user_row.user_save_succeeded? %>
+      <td class="<%= "text-truncate-150" if attribute.in?([:affiliation_number]) %>">
         <span><%= display_attribute(user_row.user.send(attribute)) %></span>
       </td>
     <% else %>
-      <td class="<%= "text-truncate-150" if attribute.in?([:email, :affiliation_number]) %> <%= user_save_background_color_for_attribute(user_row, attribute) %>"
+      <td class="<%= "text-truncate-150" if attribute.in?([:affiliation_number]) %> <%= user_save_background_color_for_attribute(user_row, attribute) %>"
           data-controller="user-row-cell"
           data-user-list-upload-id="<%= @user_list_upload.id %>"
           data-user-row-id="<%= user_row.id %>"
           data-user-row-attribute="<%= attribute %>">
         <div class="d-flex justify-content-between align-items-center"
               id="user-row-cell-<%= user_row.id %>-<%= attribute %>"
-              data-action="dblclick->user-row-cell#edit">
+              <%= tag.attributes(data: { action: "dblclick->user-row-cell#edit" }) if @all_saves_attempted %>>
           <span><%= display_attribute(user_row.user.send(attribute)) %></span>
           <%= user_save_icon_for_attribute(user_row, attribute) %>
         </div>
       </td>
     <% end %>
   <% end %>
+  <td><span><%= display_attribute(user_row.user.post_code) %></span></td>
 
   <td>
     <div class="d-flex justify-content-between align-items-center">
       <% if user_row.no_organisation_to_assign? %>
         <%= link_to(new_user_list_upload_user_row_organisation_assignation_path(user_list_upload_id: @user_list_upload.id, user_row_id: user_row.id),
-                    class: "badge rounded-pill alert-warning",
+                    class: "badge rounded-pill alert-warning #{'link-disabled' unless @all_saves_attempted}",
                     data: { turbo_frame: "remote_modal" }
         ) do %>
           Assigner une organisation
@@ -32,6 +33,7 @@
         <% end %>
       <% elsif user_row.last_user_save_attempt&.error? %>
         <%= link_to(new_user_list_upload_user_row_user_save_attempts_retry_path(user_list_upload_id: @user_list_upload.id, user_row_id: user_row.id),
+                    class: "#{'link-disabled' unless @all_saves_attempted}",
                     data: { turbo_frame: "remote_modal" }
         ) do %>
           <span class="badge rounded-pill alert-danger"<%= tooltip_for_user_save_attempt_errors(user_row.last_user_save_attempt.service_errors) %>>

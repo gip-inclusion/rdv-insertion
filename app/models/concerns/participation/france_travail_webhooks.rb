@@ -10,37 +10,39 @@ module Participation::FranceTravailWebhooks
       )
     end
 
-    after_commit on: :update, if: -> { eligible_for_france_travail_webhook_update? } do
+    after_commit on: :update, if: -> { france_travail_webhook_updatable? } do
       OutgoingWebhooks::FranceTravail::UpdateParticipationJob.perform_later(
         participation_id: id, timestamp: updated_at
       )
     end
 
-    around_destroy lambda { |participation, block|
-      if participation.eligible_for_france_travail_webhook?
+    before_destroy do
+      if france_travail_webhook_updatable?
         OutgoingWebhooks::FranceTravail::DeleteParticipationJob.perform_later(
           participation_id: id,
-          france_travail_id: participation.france_travail_id,
-          user_id: participation.user.id,
+          france_travail_id: france_travail_id,
+          user_id: user.id,
           timestamp: Time.current
         )
       end
-
-      block.call
-    }
+    end
   end
 
   def eligible_for_france_travail_webhook?
-    organisation.france_travail? && user.birth_date? && user.nir? && france_travail_active_department?
+    eligible_organisation? && user.birth_date? && user.nir? && france_travail_active_department?
   end
 
-  def eligible_for_france_travail_webhook_update?
+  def france_travail_webhook_updatable?
     eligible_for_france_travail_webhook? && france_travail_id?
   end
 
   def france_travail_active_department?
-    # C'est une condition temporaire, les autorisations des clés d'api de France Travail sont scopés au niveau des CD
-    # le temps que FT autorise notre clé d'API au niveau national on limitera à un département pour les tests
+    # C'est une condition temporaire le temps de tester la fonctionnalité en production sur un département
     organisation.department.number.in?(ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS", "").split(","))
+  end
+
+  def eligible_organisation?
+    # francetravail organisations are not eligible for webhooks, they already have theses rdvs in their own system
+    organisation.delegataire_rsa? || organisation.conseil_departemental?
   end
 end

@@ -37,14 +37,6 @@ module InboundWebhooks
         # in RDV-I because we need it to keep it for the uid.
         @data.delete(:affiliation_number) if affiliation_number.blank?
 
-        # If a user is created without email in RDV-S, for the conjoint for example, we do not
-        # want the email to be nil in RDV-I or we cannot invite by email
-        # Remove this after conjoints email migration
-        if email.blank?
-          @data.delete(:email)
-          @data.delete(:notification_email)
-        end
-
         # We store the user's email in email field whether it is the devise account email or the notification email
         @data[:email] = email if email.present?
       end

@@ -1,6 +1,6 @@
 describe OutgoingWebhooks::FranceTravail::CreateParticipationJob do
   let!(:department) { create(:department, :ft_department) }
-  let!(:organisation) { create(:organisation, safir_code: "123456", department: department) }
+  let!(:organisation) { create(:organisation, organisation_type: "delegataire_rsa", department: department) }
   let!(:now) { Time.zone.parse("21/01/2023 23:42:11") }
 
   before do
@@ -9,35 +9,36 @@ describe OutgoingWebhooks::FranceTravail::CreateParticipationJob do
   end
 
   describe "callbacks" do
-    context "when the organisation is france_travail and user is valid" do
-      let!(:user) { create(:user, :with_valid_nir) }
+    context "when the organisation is eligible for France Travail webhooks" do
       let!(:rdv) { build(:rdv) }
+      let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
 
-      context "on creation" do
-        let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
+      context "when user has a valid nir" do
+        let!(:user) { create(:user, :with_valid_nir) }
 
-        it "notifies the creation" do
-          expect(described_class).to receive(:perform_later)
-          participation.save
+        context "on creation" do
+          it "notifies the creation" do
+            expect(described_class).to receive(:perform_later)
+            participation.save
+          end
+        end
+      end
+
+      context "when user has no nir" do
+        let!(:user) { create(:user) }
+
+        context "on creation" do
+          it "does not send webhook" do
+            expect(described_class).not_to receive(:perform_later)
+            participation.save
+          end
         end
       end
     end
 
-    context "when organisation is not france_travail" do
-      let!(:organisation) { create(:organisation, safir_code: nil) }
-
-      context "on creation" do
-        let!(:participation) { build(:participation, organisation: organisation) }
-
-        it "does not send webhook" do
-          expect(described_class).not_to receive(:perform_later)
-          participation.save
-        end
-      end
-    end
-
-    context "when organisation is france_travail but user has no nir" do
-      let!(:user) { create(:user) }
+    context "when organisation is not eligible for France Travail webhooks" do
+      let!(:organisation) { create(:organisation, organisation_type: "france_travail", department: department) }
+      let!(:user) { create(:user, :with_valid_nir) }
       let!(:rdv) { build(:rdv) }
       let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
 
