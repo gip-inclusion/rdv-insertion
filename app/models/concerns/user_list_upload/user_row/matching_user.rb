@@ -11,8 +11,8 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def find_matching_user
-    all_app_users = potential_matching_users_in_all_app
-    department_users = potential_matching_users_in_department
+    all_app_users = potential_matching_users_in_all_app.to_a
+    department_users = potential_matching_users_in_department.to_a
 
     find_user_by_nir(all_app_users) ||
       find_user_by_department_internal_id(department_users) ||
@@ -22,22 +22,32 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def find_user_by_nir(users)
+    return if nir.blank?
+
     users.find { |user| user_matches_nir?(user.nir) }
   end
 
   def find_user_by_department_internal_id(users)
+    return if department_internal_id.blank?
+
     users.find { |user| user_matches_department_internal_id?(user) }
   end
 
   def find_user_by_email(users)
+    return if email.blank?
+
     users.find { |user| user_matches_email?(user) }
   end
 
   def find_user_by_phone_number(users)
+    return if phone_number.blank?
+
     users.find { |user| user_matches_phone_number?(user) }
   end
 
   def find_user_by_affiliation_number_and_role(users)
+    return if affiliation_number.blank? || role.blank?
+
     users.find { |user| user_matches_affiliation_number_and_role?(user) }
   end
 
@@ -92,19 +102,24 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def retrieve_potential_matching_users_in_all_app
-    User.active.where(email: email).or(User.active.where(phone_number: phone_number)).or(User.active.where(nir: nir))
+    base = User.active
+    scope = base.none
+
+    scope = scope.or(base.where(email: email)) if email.present?
+    scope = scope.or(base.where(phone_number: phone_number)) if phone_number.present?
+    scope = scope.or(base.where(nir: nir)) if nir.present?
+
+    scope
   end
 
   def retrieve_potential_matching_users_in_department
-    User.active.joins(:organisations).where(
-      affiliation_number: affiliation_number,
-      organisations: { department_id: department.id }
-    ).or(
-      User.active.joins(:organisations).where(
-        department_internal_id: department_internal_id,
-        organisations: { department_id: department.id }
-      )
-    )
+    base = User.active.joins(:organisations).where(organisations: { department_id: department.id })
+    scope = base.none
+
+    scope = scope.or(base.where(affiliation_number: affiliation_number)) if affiliation_number.present?
+    scope = scope.or(base.where(department_internal_id: department_internal_id)) if department_internal_id.present?
+
+    scope
   end
 
   def matching_attribute_changed?
