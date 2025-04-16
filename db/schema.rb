@@ -636,7 +636,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_14_140419) do
   create_table "versions", force: :cascade do |t|
     t.string "whodunnit"
     t.datetime "created_at"
-    t.bigint "item_id", null: false
+    t.string "item_id", null: false
     t.string "item_type", null: false
     t.string "event", null: false
     t.jsonb "object"

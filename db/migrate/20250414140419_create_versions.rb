@@ -30,7 +30,7 @@ class CreateVersions < ActiveRecord::Migration[8.0]
       # t.datetime :created_at, limit: 6
       t.datetime :created_at
 
-      t.bigint   :item_id,   null: false
+      t.string   :item_id, null: false
       t.string   :item_type, null: false
       t.string   :event,     null: false
       t.jsonb :object
