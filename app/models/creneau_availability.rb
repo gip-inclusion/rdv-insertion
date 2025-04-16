@@ -5,7 +5,7 @@ class CreneauAvailability < ApplicationRecord
     where.not(number_of_pending_invitations: [nil, 0])
   }
 
-  def seriousness
+  def availability_level
     return "info" if number_of_creneaux_available > 190
 
     diff = number_of_creneaux_available - number_of_pending_invitations
@@ -19,7 +19,7 @@ class CreneauAvailability < ApplicationRecord
     end
   end
 
-  def serious?
-    %w[danger warning].include?(seriousness)
+  def low_availability?
+    %w[danger warning].include?(availability_level)
   end
 end

@@ -15,14 +15,14 @@ RSpec.describe CreneauAvailability, type: :model do
     end
   end
 
-  describe "#seriousness" do
+  describe "#availability_level" do
     context "when number_of_creneaux_available > 190" do
       let(:creneau) do
         build(:creneau_availability, number_of_creneaux_available: 200, number_of_pending_invitations: 5)
       end
 
       it "returns 'info'" do
-        expect(creneau.seriousness).to eq("info")
+        expect(creneau.availability_level).to eq("info")
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe CreneauAvailability, type: :model do
       let(:creneau) { build(:creneau_availability, number_of_creneaux_available: 5, number_of_pending_invitations: 10) }
 
       it "returns 'danger'" do
-        expect(creneau.seriousness).to eq("danger")
+        expect(creneau.availability_level).to eq("danger")
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe CreneauAvailability, type: :model do
       let(:creneau) { build(:creneau_availability, number_of_creneaux_available: 15, number_of_pending_invitations: 8) }
 
       it "returns 'warning'" do
-        expect(creneau.seriousness).to eq("warning")
+        expect(creneau.availability_level).to eq("warning")
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe CreneauAvailability, type: :model do
       let(:creneau) { build(:creneau_availability, number_of_creneaux_available: 20, number_of_pending_invitations: 5) }
 
       it "returns 'info'" do
-        expect(creneau.seriousness).to eq("info")
+        expect(creneau.availability_level).to eq("info")
       end
     end
   end

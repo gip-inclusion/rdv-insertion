@@ -6,8 +6,8 @@
     <div class="notification-center-dropdown-header p-1 px-3 pe-1">
       <h3 class="mb-0 fs-5 fw-bold">Notifications</h3>
       <div class="notification-center-dropdown-header-actions">
-        <button id="notification-center-mark-all-as-read" class="btn text-dark-blue px-2" data-action="click->notification-center#markAllAsRead" title="Marquer toutes les notifications comme lues">
-          <i class="ri-mail-open-line"></i>
+        <button id="notification-center-mark-all-as-read" class="btn text-dark-blue px-2" data-action="click->notification-center#markAllAsRead">
+          <i class="ri-mail-open-line" <%= tooltip(content: "Marquer toutes les notifications comme lues") %>></i>
         </button>
         <button id="notification-center-close" class="btn text-dark-blue px-2" data-action="click->notification-center#close" title="Fermer le centre de notifications">
           <i class="ri-close-line"></i>

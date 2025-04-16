@@ -5,12 +5,17 @@ class NotificationCenterController < ApplicationController
     @total_notifications_count = creneaux_availabilities.count
     @notifications = creneaux_availabilities_as_notifications
 
-    return unless params[:page]
-
-    render turbo_stream: [
-      turbo_stream.replace("notification_center_pagination", partial: "notification_center/pagination"),
-      turbo_stream.append("notification_center_list", partial: "notification_center/list")
-    ]
+    # When paginating we only re-render the list and the pagination
+    # Not the entire bloc
+    if params[:page]
+      render turbo_stream: [
+        turbo_stream.replace("notification_center_pagination", partial: "notification_center/pagination"),
+        turbo_stream.append("notification_center_list", partial: "notification_center/list")
+      ]
+    else
+      # Render the full page
+      render "index"
+    end
   end
 
   private
@@ -39,7 +44,7 @@ class NotificationCenterController < ApplicationController
       {
         id: creneau_availability.id,
         title: infer_notification_title_from_creneau_availability(creneau_availability),
-        type: creneau_availability.seriousness,
+        type: creneau_availability.availability_level,
         description: infer_notification_description_from_creneau_availability(creneau_availability),
         created_at: creneau_availability.created_at,
         link: notification_link,
@@ -49,9 +54,9 @@ class NotificationCenterController < ApplicationController
   end
 
   def infer_notification_title_from_creneau_availability(creneau_availability)
-    if creneau_availability.seriousness == "danger"
+    if creneau_availability.availability_level == "danger"
       "Il n'y a pas suffisamment de créneaux sur #{creneau_availability.category_configuration.motif_category.name}"
-    elsif creneau_availability.seriousness == "warning"
+    elsif creneau_availability.availability_level == "warning"
       "#{creneau_availability.number_of_creneaux_available} créneaux restants " \
         "sur #{creneau_availability.category_configuration.motif_category.name}"
     elsif creneau_availability.number_of_creneaux_available >= 150
@@ -68,7 +73,7 @@ class NotificationCenterController < ApplicationController
               "en attente de réponse pour #{creneau_availability.number_of_creneaux_available} " \
               "créneaux disponibles. "
 
-    if %w[warning danger].include?(creneau_availability.seriousness)
+    if %w[warning danger].include?(creneau_availability.availability_level)
       message += "Créez des plages d'ouverture ou augmentez le délai de prise " \
                  "de rendez-vous sur RDV-Solidarités pour ne pas bloquer les usagers."
     end
