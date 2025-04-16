@@ -1,12 +1,22 @@
-<div class="container legal-notice mt-5 mb-5">
+<div class="container legal-notice mt-4 mb-5">
   <div class="row justify-content-center align-items-center mt-2">
-    <div class="col-11 col-lg-5">
-      <%= image_tag "illustrations/contact_us.svg", class: "error-illustration mb-3", alt: "Image d'illustration contactez-nous" %>
+    <div class="col-8 col-lg-5 text-center">
+      <%= image_tag "illustrations/invalid_invitation", class: "error-illustration mb-3 w-75", alt: "Image d'illustration invitation expirée" %>
     </div>
-    <div class="col-11 col-lg-5">
-      <h2 class="text-center text-dark-blue">Désolé, votre invitation n'est plus valide !</h2>
-      <p class="text-center">
-        Veuillez appeler le <strong><%= @invitation.help_phone_number %></strong> pour plus d'informations et planifier un rendez-vous.</p>
+    <div class="col-11 col-lg-4">
+      <h3 class="mb-3">Votre invitation à prendre rendez-vous a expirée.</h3>
+      <p>Le délai pour prendre rendez-vous avec cette invitation est maintenant dépassé.</p>
+
+      <% organisations_with_contact = @invitation.organisations.select { |org| org.phone_number.present? || org.email.present? } %>
+      <% if organisations_with_contact.any? %>
+        <p>Pour planifier votre rendez-vous, nous vous invitons à contacter <%= organisations_with_contact.count > 1 ? "une des organisations suivantes" : "l'organisation suivante" %> :</p>
+
+        <% organisations_with_contact.each do |organisation| %>
+          <div class="mt-4">
+            <%= render 'invitations/organisation_contact_card', organisation: organisation %>
+          </div>
+        <% end %>
+      <% end %>
     </div>
   </div>
 </div>
