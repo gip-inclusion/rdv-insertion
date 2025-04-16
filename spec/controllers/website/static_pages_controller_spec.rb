@@ -50,7 +50,31 @@ describe Website::StaticPagesController do
     it "returns a success response" do
       get :cgu
       expect(response).to be_successful
-      expect(response.body).to match(/Conditions générales d’utilisation/)
+      expect(response.body).to match(/CONDITIONS GENERALES D'UTILISATION/)
+    end
+
+    context "when accessing a specific version" do
+      it "returns a success response for a valid version" do
+        get :cgu, params: { version: "2023_02_09" }
+        expect(response).to be_successful
+        expect(response.body).to match(/CONDITIONS GENERALES D'UTILISATION/)
+        expect(response.body).to match(/Version du 09 février 2023/)
+      end
+
+      it "returns a 404 for an invalid version" do
+        expect do
+          get :cgu, params: { version: "invalid_version" }
+        end.to raise_error(ActionController::RoutingError, "Not Found")
+      end
+    end
+
+    context "when accessing previous versions" do
+      it "displays a list of all available versions" do
+        get :cgu
+        expect(response.body).to match(/Toutes les versions des CGU/)
+        expect(response.body).to match(/Version du 09 février 2023/)
+        expect(response.body).to match(/Version du 01 février 2023/)
+      end
     end
   end
 end

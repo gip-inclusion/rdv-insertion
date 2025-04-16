@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_14_140419) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_15_134038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -617,11 +617,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_14_140419) do
     t.string "created_from_structure_type"
     t.bigint "created_from_structure_id"
     t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
+    t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
     t.index ["phone_number"], name: "index_users_on_phone_number"
     t.index ["rdv_solidarites_user_id"], name: "index_users_on_rdv_solidarites_user_id", unique: true
+    t.index ["role", "affiliation_number"], name: "index_users_on_role_and_affiliation_number"
     t.index ["uid"], name: "index_users_on_uid"
   end
 

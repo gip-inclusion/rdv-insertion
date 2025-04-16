@@ -130,15 +130,15 @@ class UserListUpload::UserRow < ApplicationRecord
     archives.map(&:archiving_reason)
   end
 
-  def matching_follow_up
+  def matching_user_follow_up
     return unless matching_user_id
     return unless motif_category_to_assign
 
     matching_user.follow_ups.find { |follow_up| follow_up.motif_category_id == motif_category_to_assign.id }
   end
 
-  def matching_follow_up_closed?
-    matching_follow_up&.closed?
+  def matching_user_follow_up_closed?
+    matching_user_follow_up&.closed?
   end
 
   def referent_to_assign
@@ -310,7 +310,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def selected_by_default_for_user_save?
-    user_valid? && !archived? && !matching_follow_up_closed?
+    user_valid? && !archived? && !matching_user_follow_up_closed?
   end
 end
 # rubocop:enable Metrics/ClassLength

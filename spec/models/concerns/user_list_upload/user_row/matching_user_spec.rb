@@ -190,16 +190,28 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
     end
 
     describe "set matching user on update" do
-      context "when updating an existing record" do
+      context "when updating an existing record without changing matching attributes" do
+        let!(:user_row) { user_list_upload.user_rows.create!(user_row_attributes) }
+
+        it "does not retrieve the potential matching users" do
+          expect(user_row).not_to receive(:find_matching_user)
+          user_row.update!(title: "Mr.")
+        end
+      end
+
+      context "when updating an existing record with matching attribute changes" do
         let!(:user_row) { user_list_upload.user_rows.create!(user_row_attributes) }
 
         it "does not retrieve the potential matching users from the user_list_upload" do
           expect(user_list_upload).not_to receive(:potential_matching_users_in_all_app)
           expect(user_list_upload).not_to receive(:potential_matching_users_in_department)
-          user_row.save!
+          user_row.update!(email: "new-email@example.com")
         end
 
-        include_examples "matches user correctly"
+        it "attempts to find a matching user" do
+          expect(user_row).to receive(:find_matching_user).and_call_original
+          user_row.update!(email: "new-email@example.com")
+        end
       end
     end
   end
