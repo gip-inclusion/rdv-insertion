@@ -1,7 +1,5 @@
 class NotificationCenterController < ApplicationController
   def index
-    return unless current_agent
-
     @total_notifications_count = creneaux_availabilities.count
     @notifications = creneaux_availabilities_as_notifications
 
