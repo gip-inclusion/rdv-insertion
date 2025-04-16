@@ -1,0 +1,13 @@
+<div class="card">
+  <div class="card-body">
+    <h6 class="card-title bold mb-3"><%= organisation.name %></h6>
+    <ul>
+      <% if organisation.phone_number.present? %>
+        <li class="mb-2">Téléphone : <%= link_to organisation.phone_number, "tel:#{organisation.phone_number}", class: "btn-link" %></li>
+      <% end %>
+      <% if organisation.email.present? %>
+        <li class="mb-2">Email : <%= mail_to organisation.email, organisation.email, class: "btn-link" %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
