@@ -54,7 +54,7 @@
           </div>
           <div>
             <% if @all_invitations_attempted %>
-              <%= link_to "Terminer", @user_list_upload.structure_users_path, class: "btn btn-primary d-block mx-auto", data: { turbo_frame: "_top", controller: "tally", "tally-form-id": ENV["TALLY_NEW_UPLOAD_FORM_ID"], "tally-delay-in-ms": 1000, action: "click->tally#showPopup" } %>
+              <%= link_to "Terminer", @user_list_upload.structure_users_path, class: "btn btn-primary d-block mx-auto", id: "rdvi_upload_users-invit_end", data: { turbo_frame: "_top", controller: "tally", "tally-form-id": ENV["TALLY_NEW_UPLOAD_FORM_ID"], "tally-delay-in-ms": 1000, action: "click->tally#showPopup" } %>
             <% else %>
               <%= link_to "Terminer", "#", class: "btn btn-primary d-block mx-auto disabled" %>
             <% end %>
