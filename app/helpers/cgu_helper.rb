@@ -18,6 +18,6 @@ module CguHelper
   end
 
   def cgu_version_date(version)
-    Date.strptime(version, "%Y_%m_%d")
+    l(Date.strptime(version, "%Y_%m_%d"), format: :long)
   end
 end
