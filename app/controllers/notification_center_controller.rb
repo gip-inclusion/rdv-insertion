@@ -4,14 +4,14 @@ class NotificationCenterController < ApplicationController
     @notifications = creneaux_availabilities_as_notifications
 
     # When paginating we only re-render the list and the pagination
-    # Not the entire bloc
-    if params[:page]
+    # Not the entire notification center
+    if loading_more_notifications?
       render turbo_stream: [
         turbo_stream.replace("notification_center_pagination", partial: "notification_center/pagination"),
         turbo_stream.append("notification_center_list", partial: "notification_center/list")
       ]
     else
-      # Render the full page
+      # Render the entire notification center
       render "index"
     end
   end
@@ -20,6 +20,10 @@ class NotificationCenterController < ApplicationController
 
   def page
     @page ||= params[:page]&.to_i || 1
+  end
+
+  def loading_more_notifications?
+    params[:page].present?
   end
 
   def creneaux_availabilities
