@@ -1,4 +1,6 @@
 class NotificationCenterController < ApplicationController
+  after_action :update_notification_read_timestamps, only: [:index]
+
   def index
     @total_notifications_count = creneaux_availabilities.count
     @notifications = creneaux_availabilities_as_notifications
@@ -91,5 +93,36 @@ class NotificationCenterController < ApplicationController
 
   def notification_link_title
     "Voir votre agenda sur RDV-Solidarités"
+  end
+
+  def update_notification_read_timestamps
+    return if @notifications.empty?
+
+    update_most_recent_notification_read_timestamp if agent_hasnt_read_most_recent_notification?
+    update_oldest_notification_read_timestamp if agent_hasnt_read_oldest_notification?
+  end
+
+  def update_most_recent_notification_read_timestamp
+    cookies["most_recent_notification_read_on_#{current_organisation_id}"] = first_notification_created_at + 1
+  end
+
+  def update_oldest_notification_read_timestamp
+    cookies["oldest_notification_read_on_#{current_organisation_id}"] = last_notification_created_at - 1
+  end
+
+  def agent_hasnt_read_most_recent_notification?
+    most_recent_notification_read.to_i.zero? || first_notification_created_at > most_recent_notification_read.to_i
+  end
+
+  def agent_hasnt_read_oldest_notification?
+    oldest_notification_read.to_i.zero? || last_notification_created_at < oldest_notification_read.to_i
+  end
+
+  def first_notification_created_at
+    @notifications.first[:created_at].to_i
+  end
+
+  def last_notification_created_at
+    @notifications.last[:created_at].to_i
   end
 end
