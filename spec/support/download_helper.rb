@@ -1,6 +1,6 @@
 # Inspired by https://dev.to/coorasse/test-downloaded-files-with-rspec-and-system-tests-55mn
 module DownloadHelper
-  TIMEOUT = 30
+  TIMEOUT = 10
   PATH = Rails.root.join("tmp/downloads")
 
   def downloads
