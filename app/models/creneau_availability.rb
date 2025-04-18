@@ -1,4 +1,6 @@
 class CreneauAvailability < ApplicationRecord
+  include NotificationCenter::CreneauxAvailabilityAsNotification
+
   belongs_to :category_configuration
 
   scope :with_pending_invitations, lambda {
