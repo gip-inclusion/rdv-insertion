@@ -68,6 +68,26 @@ make run      ## appelle foreman s -f Procfile.dev
 
 Vous trouverez dans le dossier [Resources](https://github.com/betagouv/rdv-insertion/tree/staging/docs/resources) 2 fichiers de test pour l'import des usagers via l'upload dans l'application : Un fichier xlsx contenant des usagers et un fichier csv de contacts.
 
+
+### Installation du service de génération de pdf
+
+Cloner en local le repo https://github.com/gip-inclusion/pdf-generator.
+Assurez vous d'avoir ces valeurs dans vos variables d'environnement pour pdf-generator (`.env`)
+
+```
+API_KEY=your-secret-api-key
+PORT=8501
+```
+
+Lancer le serveur Express avec `npm start`
+
+Assurez vous d'avoir ces valeurs dans vos variables d'environnement pour rdv-insertion (`.env`)
+
+```
+PDF_GENERATOR_URL=http://localhost:8501
+PDF_GENERATOR_API_KEY=your-secret-api-key
+```
+
 ## Commandes
 
 Un [Makefile](https://github.com/betagouv/rdv-insertion/blob/staging/Makefile) est disponible, qui sert de point d’entrée aux différents outils :
