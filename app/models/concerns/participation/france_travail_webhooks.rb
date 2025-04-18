@@ -29,16 +29,11 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_for_france_travail_webhook?
-    eligible_organisation? && user.birth_date? && user.nir? && france_travail_active_department?
+    eligible_organisation? && user.birth_date? && user.nir?
   end
 
   def france_travail_webhook_updatable?
     eligible_for_france_travail_webhook? && france_travail_id?
-  end
-
-  def france_travail_active_department?
-    # C'est une condition temporaire le temps de tester la fonctionnalité en production sur un département
-    organisation.department.number.in?(ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS", "").split(","))
   end
 
   def eligible_organisation?
