@@ -26,6 +26,7 @@
       <% if user_row.no_organisation_to_assign? %>
         <%= link_to(new_user_list_upload_user_row_organisation_assignation_path(user_list_upload_id: @user_list_upload.id, user_row_id: user_row.id),
                     class: "badge rounded-pill alert-warning #{'link-disabled' unless @all_saves_attempted}",
+                    id: "rdvi_upload_users-date_select-orga",
                     data: { turbo_frame: "remote_modal" }
         ) do %>
           Assigner une organisation

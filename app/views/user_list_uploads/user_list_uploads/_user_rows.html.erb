@@ -11,22 +11,23 @@
           <input
             type="checkbox"
             class="form-check-input"
+            id="rdvi_upload_users-data_all-select"
             data-action="click->select-user-rows#toggleAll"
             <%= "checked" if checkbox_to_select_all_checked?("selected_for_user_save", @user_list_upload.id) %>
           >
         </th>
         <th scope="col">Civilité</th>
         <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="first_name">
-          Prénom <i class="ri-arrow-up-down-line" role="button"></i>
+          Prénom <i class="ri-arrow-up-down-line" id="rdvi_upload_users-data_first-name_sort" role="button"></i>
         </th>
         <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="last_name">
-          Nom <i class="ri-arrow-up-down-line" role="button"></i>
+          Nom <i class="ri-arrow-up-down-line" id="rdvi_upload_users-data_last-name_sort" role="button"></i>
         </th>
         <th scope="col">Numéro CAF</th>
         <th scope="col">Téléphone</th>
         <th scope="col">Email</th>
         <th scope="col" data-action="click->sort-list#changeUrlParams" data-sort-by="before_user_save_status">
-          Statut du dossier <i class="ri-arrow-up-down-line" role="button"></i>
+          Statut du dossier <i class="ri-arrow-up-down-line" id="rdvi_upload_users-data_folder-statut_sort" role="button"></i>
         </th>
         <th scope="col"></th>
       </tr>
