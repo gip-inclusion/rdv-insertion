@@ -160,6 +160,9 @@ describe "Super admin can manage users" do
       expect(page).to have_current_path(super_admins_user_path(user))
       expect(page).to have_content("Usager a été correctement modifié(e)")
       expect(page).to have_content("Détails #{user.first_name} Newname")
+
+      expect(page).to have_content("Historique des modifications")
+      expect(page).to have_content("[Agent via Super Admin] #{super_admin.name_for_paper_trail}")
     end
 
     context "when a required attribute is missing" do

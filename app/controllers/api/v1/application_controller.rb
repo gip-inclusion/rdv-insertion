@@ -8,6 +8,7 @@ module Api
                     :set_current_agent
 
       include AuthorizationConcern
+      include Api::V1::PaperTrailConcern
 
       private
 

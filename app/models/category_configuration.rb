@@ -1,4 +1,6 @@
 class CategoryConfiguration < ApplicationRecord
+  has_paper_trail
+
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation

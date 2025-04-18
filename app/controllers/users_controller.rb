@@ -70,7 +70,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.assign_attributes(formatted_attributes.except(*restricted_user_attributes))
+    @user.assign_attributes(user_params.except(*restricted_user_attributes))
     authorize @user
     if save_user.success?
       render_save_user_success
@@ -86,13 +86,6 @@ class UsersController < ApplicationController
   end
 
   def restricted_user_attributes = UserPolicy.restricted_user_attributes_for(user: @user, agent: current_agent)
-
-  def formatted_attributes
-    # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
-    user_params.to_h do |k, v|
-      [k, k.in?([:affiliation_number, :department_internal_id, :email, :france_travail_id, :nir]) ? v.presence : v]
-    end
-  end
 
   def csv_exporter
     if params[:export_type] == "participations"

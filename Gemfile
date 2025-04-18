@@ -126,6 +126,9 @@ gem "skylight"
 # Sets migrations timeouts
 gem "activerecord-safer_migrations"
 
+# Use paper_trail to track changes
+gem "paper_trail"
+
 # CSV is not part of the standard library anymore
 gem "csv"
 

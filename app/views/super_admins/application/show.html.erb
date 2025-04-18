@@ -1,11 +1,21 @@
-<%# Show
-We override the default show page of the agent resource to add a button to sign in as another agent.
-original file : https://github.com/thoughtbot/administrate/blob/main/app/views/administrate/application/show.html.erb
+<%#
+# This partial is overrided from the default Administrate navigation
+# to add the changes history
+
+# Show
+
+This view is the template for the show page.
+It renders the attributes of a resource,
+as well as a link to its edit page.
 
 ## Local variables:
 
-- `page`: An instance of [Administrate::Page::Show][1]. Contains methods for accessing the resource to be
-          displayed on the page, as well as helpers for describing how each attribute of the resource should be.
+- `page`:
+  An instance of [Administrate::Page::Show][1].
+  Contains methods for accessing the resource to be displayed on the page,
+  as well as helpers for describing how each attribute of the resource
+  should be displayed.
+
 [1]: http://www.rubydoc.info/gems/administrate/Administrate/Page/Show
 %>
 
@@ -16,8 +26,9 @@ original file : https://github.com/thoughtbot/administrate/blob/main/app/views/a
     <%= content_for(:title) %>
   </h1>
 
+  <%= content_for(:header_middle) %>
+
   <div>
-    <%= link_to 'Voir sur le Super admin rdv-sp', "#{ENV["RDV_SOLIDARITES_URL"]}/super_admins/users/#{page.resource.rdv_solidarites_user_id}", class: "button button--alt", target: "_blank" %>
     <%= link_to(
       t("administrate.actions.edit_resource", name: page.page_title),
       [:edit, namespace, page.resource],
@@ -32,6 +43,8 @@ original file : https://github.com/thoughtbot/administrate/blob/main/app/views/a
       data: { turbo_confirm: t("administrate.actions.confirm") }
     ) if accessible_action?(page.resource, :destroy) %>
   </div>
+
+  <%= content_for(:header_last) %>
 </header>
 
 <%= content_for(:before_main) %>
