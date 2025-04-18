@@ -7,7 +7,9 @@ describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
   let!(:agent) { create(:agent, admin_role_in_organisations: [category_configuration.organisation]) }
   let!(:user) { create(:user) }
   let!(:follow_up) { create(:follow_up, user: user, motif_category: category_configuration.motif_category) }
-  let!(:invitation) { create(:invitation, user: user, follow_up: follow_up, organisations: [category_configuration.organisation]) }
+  let!(:invitation) do
+    create(:invitation, user: user, follow_up: follow_up, organisations: [category_configuration.organisation])
+  end
 
   context "when API call succeeds" do
     before do
