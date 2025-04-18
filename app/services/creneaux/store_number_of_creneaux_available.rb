@@ -35,8 +35,9 @@ module Creneaux
     end
 
     def number_of_pending_invitations
-      Invitation.joins(:category_configurations)
-                .where(category_configurations: { id: category_configuration.id })
+      Invitation.joins(:follow_up, :organisations)
+                .where(follow_ups: { motif_category_id: category_configuration.motif_category_id })
+                .where(organisations: { id: category_configuration.organisation_id })
                 .valid
                 .count
     end
