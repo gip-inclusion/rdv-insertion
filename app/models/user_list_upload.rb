@@ -27,7 +27,10 @@ class UserListUpload < ApplicationRecord
   end
 
   def referents_from_rows
-    @referents_from_rows ||= Agent.where(email: user_rows.pluck("referent_email")).distinct
+    @referents_from_rows ||= Agent.joins(:organisations)
+                                  .where(organisations:)
+                                  .where(email: user_rows.pluck("referent_email"))
+                                  .distinct
   end
 
   def tags_from_rows
