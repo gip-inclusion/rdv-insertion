@@ -29,7 +29,10 @@ class DestroyOldRessourcesJob < ApplicationJob
                   WHERE users_organisations.user_id = users.id AND (users_organisations.created_at >= ?)
               )", date_limit)
           .distinct
-          .destroy_all
+
+    inactive_users.find_each(&:mark_for_rgpd_destruction)
+
+    inactive_users.destroy_all
 
     MattermostClient.send_to_notif_channel(
       "🚮 Les usagers suivants ont été supprimés pour inactivité : " \

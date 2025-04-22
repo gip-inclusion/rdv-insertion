@@ -29,15 +29,21 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_for_france_travail_webhook?
-    eligible_organisation? && user.birth_date? && user.nir?
+    eligible_user_for_france_travail_webhook? && eligible_organisation_for_france_travail_webhook?
   end
 
   def france_travail_webhook_updatable?
     eligible_for_france_travail_webhook? && france_travail_id?
   end
 
-  def eligible_organisation?
+  private
+
+  def eligible_user_for_france_travail_webhook?
+    user_id? && user.birth_date? && user.nir? && !user.marked_for_rgpd_destruction?
+  end
+
+  def eligible_organisation_for_france_travail_webhook?
     # francetravail organisations are not eligible for webhooks, they already have theses rdvs in their own system
-    organisation.delegataire_rsa? || organisation.conseil_departemental?
+    organisation && (organisation.conseil_departemental? || organisation.delegataire_rsa?)
   end
 end
