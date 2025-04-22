@@ -27,6 +27,8 @@ describe Users::RemoveFromOrganisation, type: :service do
     it "deletes the user when there is no org attached" do
       subject
       expect(user.deleted?).to eq(true)
+      expect(user.first_name).to eq("Usager supprimé")
+      expect(user.last_name).to eq("Usager supprimé")
     end
 
     context "when user does not have a rdv_solidarites_user_id" do
