@@ -11,7 +11,7 @@
       </div>
       <div>
         <% if user_row.matching_user_accessible? %>
-          <%= link_to @user_list_upload.structure_user_path(user_row.matching_user_id), target: "_blank", class: "text-dark-blue", id: "rdvi_upload_users-data_open-folder-user" do %>
+          <%= link_to @user_list_upload.structure_user_path(user_row.matching_user_id), target: "_blank", class: "text-dark-blue", id: "rdvi_upload_users-data_open-folder-user-#{user_row.id}" do %>
             <span class="text-underline">Ouvrir le dossier usager</span> <i class="ri-external-link-line"></i>
           <% end %>
         <% end %>
