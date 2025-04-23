@@ -22,6 +22,7 @@ class User < ApplicationRecord
   include Notificable
   include Invitable
   include HasParticipationsToRdvs
+  include RgpdDestroyable
   include User::TextHelper
   include User::Address
   include User::NirValidation

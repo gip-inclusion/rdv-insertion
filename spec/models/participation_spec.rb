@@ -236,4 +236,34 @@ describe Participation do
       end
     end
   end
+
+  describe "#eligible_for_france_travail_webhook?" do
+    subject { participation.eligible_for_france_travail_webhook? }
+
+    let!(:participation) { create(:participation, user:, rdv: create(:rdv, organisation:)) }
+    let!(:organisation) { create(:organisation, organisation_type: "conseil_departemental") }
+    let!(:user) { create(:user, :with_valid_nir) }
+
+    context "when the user is not marked for rgpd destruction" do
+      it "is eligible" do
+        expect(subject).to eq(true)
+      end
+    end
+
+    context "when the user is marked for rgpd destruction" do
+      before { user.mark_for_rgpd_destruction }
+
+      it "is not eligible" do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context "when the organisation is not a conseil departemental or delegataire" do
+      let!(:organisation) { create(:organisation, organisation_type: "siae") }
+
+      it "is not eligible" do
+        expect(subject).to eq(false)
+      end
+    end
+  end
 end
