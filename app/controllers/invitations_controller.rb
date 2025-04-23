@@ -67,7 +67,29 @@ class InvitationsController < ApplicationController
   end
 
   def pdf
-    WickedPdf.new.pdf_from_string(invitation.content, encoding: "utf-8")
+    response = pdf_request
+    if response.success?
+      Base64.decode64(response.body)
+    else
+      Sentry.capture_message("PDF generation failed", extra: { invitation_id: invitation.id })
+    end
+  end
+
+  def pdf_request
+    conn = Faraday.new(url: ENV["PDF_GENERATOR_URL"]) do |f|
+      f.headers["Authorization"] = ENV["PDF_GENERATOR_API_KEY"]
+      f.headers["Content-Type"] = "application/json"
+    end
+
+    conn.post("/generate") do |req|
+      req.body = {
+        htmlContent: invitation.content,
+        marginTop: "0cm",
+        marginRight: "0cm",
+        marginBottom: "0cm",
+        marginLeft: "0cm"
+      }.to_json
+    end
   end
 
   def pdf_filename

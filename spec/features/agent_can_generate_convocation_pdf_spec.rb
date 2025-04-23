@@ -32,6 +32,12 @@ describe "Agents can generate convocation pdf", :js do
   before do
     travel_to(Time.zone.parse("2022-06-20"))
     setup_agent_session(agent)
+    allow_any_instance_of(NotificationsController)
+      .to receive(:pdf_request).and_wrap_original do |original_method, *_args|
+      notification_content = original_method.receiver.send(:notify_participation).notification.content
+      stub_pdf_service(sample_text: notification_content)
+      instance_double(Faraday::Response, success?: true, body: Base64.encode64(notification_content))
+    end
   end
 
   it "can generate a pdf" do

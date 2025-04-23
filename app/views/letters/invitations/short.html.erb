@@ -13,17 +13,16 @@
   <p>Vous êtes <%= user.conjugate('invité') %> pour un <%= rdv_title %>.</p>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
   <p>Choisissez un créneau à votre convenance&nbsp;:</p>
-  <div>
-    <div class="invitation-left-col pdf-align-center">
+  <div class="invitation-choices">
+    <div class="pdf-align-center">
       <div>soit en scannant ce QR code</div>
       <div class="qr-code"><%= image_tag(qr_code.to_data_url) %></div>
     </div>
-    <div class="invitation-right-col pdf-align-center">
+    <div class="pdf-align-center">
       <div>soit en vous rendant à l'adresse</div>
       <div class="invitation-token"><%= invitation_url %> </div>
     </div>
   </div>
-  <br style="clear:both"/>
   <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
   <%= tag.p tag.span("En l'absence d'action de votre part, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>
