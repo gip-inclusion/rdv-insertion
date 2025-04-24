@@ -114,10 +114,10 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
       end
     end
 
-    context "when service fails with UserNotFound error" do
+    context "when service fails with NoMatchingUser error" do
       before do
         allow(service).to receive(:call)
-          .and_raise(FranceTravailApi::RetrieveUserToken::UserNotFound, "Aucun usager trouvé")
+          .and_raise(FranceTravailApi::RetrieveUserToken::NoMatchingUser, "Aucun usager trouvé")
       end
 
       it "discards the job without raising an error" do
@@ -128,7 +128,7 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
               timestamp: timestamp
             )
           end
-        end.not_to raise_error # Le job est discard quand il y a une erreur UserNotFound
+        end.not_to raise_error # Le job est discard quand il y a une erreur NoMatchingUser
 
         assert_no_enqueued_jobs
       end
