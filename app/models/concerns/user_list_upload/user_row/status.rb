@@ -1,13 +1,12 @@
 module UserListUpload::UserRow::Status
   def before_user_save_status
-    return determine_create_status unless matching_user_id
-    # The evaluation order is important here: user_valid? must be evaluated before will_change_matching_user?
-    # to ensure consistent results during sorting
-    if (user_valid? && will_change_matching_user?) || (!user_valid? && will_change_matching_user?)
-      return determine_update_status
+    if !matching_user_id
+      user_valid? ? :to_create_with_no_errors : :to_create_with_errors
+    elsif will_change_matching_user?
+      user_valid? ? :to_update_with_no_errors : :to_update_with_errors
+    else
+      :up_to_date
     end
-
-    :up_to_date
   end
 
   def after_user_save_status
@@ -38,15 +37,5 @@ module UserListUpload::UserRow::Status
     else
       :invited
     end
-  end
-
-  private
-
-  def determine_create_status
-    user_valid? ? :to_create_with_no_errors : :to_create_with_errors
-  end
-
-  def determine_update_status
-    user_valid? ? :to_update_with_no_errors : :to_update_with_errors
   end
 end

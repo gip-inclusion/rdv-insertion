@@ -168,10 +168,8 @@ class UserListUpload::UserRow < ApplicationRecord
   def will_change_matching_user?
     return false unless matching_user
 
-    matching_user.changed? ||
-      matching_user.organisations != organisations ||
-      matching_user.motif_categories != motif_categories ||
-      matching_user.referents != referents || matching_user.tags != tags
+    matching_user.assign_attributes(user_attributes)
+    attributes_changed? || associations_changed?
   end
 
   def select_for_user_save!
@@ -309,6 +307,16 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def selected_by_default_for_user_save?
     user_valid? && !archived? && !matching_user_follow_up_closed?
+  end
+
+  def attributes_changed?
+    matching_user.changed?
+  end
+
+  def associations_changed?
+    matching_user.organisations != organisations ||
+      matching_user.motif_categories != motif_categories ||
+      matching_user.referents != referents || matching_user.tags != tags
   end
 end
 # rubocop:enable Metrics/ClassLength
