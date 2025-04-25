@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_15_134038) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_25_122635) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -185,6 +185,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_134038) do
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
     t.string "carnet_de_bord_deploiement_id"
+    t.boolean "disable_ft_webhooks", default: false
   end
 
   create_table "dpa_agreements", force: :cascade do |t|

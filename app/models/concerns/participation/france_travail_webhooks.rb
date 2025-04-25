@@ -50,6 +50,6 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_department_for_france_travail_webhook?
-    ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS_DISABLED", "").split(",").exclude?(organisation.department.number)
+    !organisation.department.disable_ft_webhooks?
   end
 end

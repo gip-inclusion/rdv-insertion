@@ -1,5 +1,5 @@
 describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
-  let!(:department) { create(:department, :ft_department) }
+  let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:now) { Time.zone.parse("21/01/2023 23:42:11") }
 

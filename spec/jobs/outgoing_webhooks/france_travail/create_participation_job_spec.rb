@@ -1,5 +1,5 @@
 describe OutgoingWebhooks::FranceTravail::CreateParticipationJob do
-  let!(:department) { create(:department, :ft_department) }
+  let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, organisation_type: "delegataire_rsa", department: department) }
   let!(:now) { Time.zone.parse("21/01/2023 23:42:11") }
 
@@ -51,7 +51,7 @@ describe OutgoingWebhooks::FranceTravail::CreateParticipationJob do
     end
 
     context "when the department is not eligible for France Travail webhooks" do
-      let!(:department) { create(:department, number: 84) }
+      let!(:department) { create(:department, disable_ft_webhooks: true) }
       let!(:organisation) { create(:organisation, organisation_type: "delegataire_rsa", department: department) }
       let!(:user) { create(:user, :with_valid_nir) }
       let!(:rdv) { build(:rdv) }
