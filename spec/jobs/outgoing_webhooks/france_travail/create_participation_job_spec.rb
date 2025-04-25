@@ -49,6 +49,21 @@ describe OutgoingWebhooks::FranceTravail::CreateParticipationJob do
         end
       end
     end
+
+    context "when the department is not eligible for France Travail webhooks" do
+      let!(:department) { create(:department, number: 84) }
+      let!(:organisation) { create(:organisation, organisation_type: "delegataire_rsa", department: department) }
+      let!(:user) { create(:user, :with_valid_nir) }
+      let!(:rdv) { build(:rdv) }
+      let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
+
+      context "on creation" do
+        it "does not send webhook" do
+          expect(described_class).not_to receive(:perform_later)
+          participation.save
+        end
+      end
+    end
   end
 
   describe "#perform" do

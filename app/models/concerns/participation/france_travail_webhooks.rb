@@ -29,7 +29,9 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_for_france_travail_webhook?
-    eligible_user_for_france_travail_webhook? && eligible_organisation_for_france_travail_webhook?
+    eligible_user_for_france_travail_webhook? &&
+      eligible_organisation_for_france_travail_webhook? &&
+      eligible_department_for_france_travail_webhook?
   end
 
   def france_travail_webhook_updatable?
@@ -45,5 +47,9 @@ module Participation::FranceTravailWebhooks
   def eligible_organisation_for_france_travail_webhook?
     # francetravail organisations are not eligible for webhooks, they already have theses rdvs in their own system
     organisation&.conseil_departemental? || organisation&.delegataire_rsa?
+  end
+
+  def eligible_department_for_france_travail_webhook?
+    ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS_DISABLED", "").split(",").exclude?(organisation.department.number)
   end
 end
