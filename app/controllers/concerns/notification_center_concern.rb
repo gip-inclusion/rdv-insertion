@@ -1,7 +1,8 @@
 module NotificationCenterConcern
   extend ActiveSupport::Concern
 
-  MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN = [:rsa_accompagnement, :rsa_orientation].freeze
+  MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN = [:rsa_accompagnement, :rsa_orientation,
+                                                              :rsa_orientation_france_travail].freeze
 
   included do
     before_action :set_has_important_unread_notifications, if: :show_notification_center?
