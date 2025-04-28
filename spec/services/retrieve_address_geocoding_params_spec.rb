@@ -42,7 +42,7 @@ describe RetrieveAddressGeocodingParams, type: :service do
     before do
       allow(Faraday).to receive(:get)
         .with(
-          "https://api-adresse.data.gouv.fr/search/",
+          ApiAdresseClient::URL,
           { q: address }, { "Content-Type" => "application/json" }
         )
         .and_return(OpenStruct.new(success?: true, body: response_body.to_json))
@@ -85,7 +85,7 @@ describe RetrieveAddressGeocodingParams, type: :service do
       before do
         allow(Faraday).to receive(:get)
           .with(
-            "https://api-adresse.data.gouv.fr/search/",
+            ApiAdresseClient::URL,
             { q: address }, { "Content-Type" => "application/json" }
           )
           .and_return(OpenStruct.new(success?: false, body: { "error" => "something" }.to_json))
@@ -105,7 +105,7 @@ describe RetrieveAddressGeocodingParams, type: :service do
         [address, parsed_post_code_and_city, parsed_city].each do |query|
           allow(Faraday).to receive(:get)
             .with(
-              "https://api-adresse.data.gouv.fr/search/",
+              ApiAdresseClient::URL,
               { q: query }, { "Content-Type" => "application/json" }
             )
             .and_return(OpenStruct.new(success?: true, body: response_body.to_json))
@@ -149,7 +149,7 @@ describe RetrieveAddressGeocodingParams, type: :service do
         [address, parsed_post_code_and_city, parsed_city].each do |query|
           expect(Faraday).to receive(:get)
             .with(
-              "https://api-adresse.data.gouv.fr/search/",
+              ApiAdresseClient::URL,
               { q: query }, { "Content-Type" => "application/json" }
             )
         end
@@ -169,7 +169,7 @@ describe RetrieveAddressGeocodingParams, type: :service do
         [address, parsed_post_code_and_city].each do |query|
           allow(Faraday).to receive(:get)
             .with(
-              "https://api-adresse.data.gouv.fr/search/",
+              ApiAdresseClient::URL,
               { q: query }, { "Content-Type" => "application/json" }
             )
             .and_return(OpenStruct.new(success?: true, body: response_body.to_json))
@@ -181,7 +181,7 @@ describe RetrieveAddressGeocodingParams, type: :service do
         [address, parsed_post_code_and_city].each do |query|
           expect(Faraday).to receive(:get)
             .with(
-              "https://api-adresse.data.gouv.fr/search/",
+              ApiAdresseClient::URL,
               { q: query }, { "Content-Type" => "application/json" }
             )
         end
