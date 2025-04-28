@@ -19,10 +19,10 @@ class Organisation < ApplicationRecord
   has_one :dpa_agreement, dependent: :destroy
 
   has_many :category_configurations, dependent: :destroy
-  has_many :rdvs, dependent: :nullify
+  has_many :rdvs, dependent: :restrict_with_exception
   has_many :participations, through: :rdvs
-  has_many :lieux, dependent: :nullify
-  has_many :motifs, dependent: :nullify
+  has_many :lieux, dependent: :restrict_with_exception
+  has_many :motifs, dependent: :restrict_with_exception
   has_many :agent_roles, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
   has_many :tag_organisations, dependent: :destroy
