@@ -124,6 +124,7 @@ tables:
       - updated_at
       - display_in_stats
       - carnet_de_bord_deploiement_id
+      - disable_ft_webhooks
 
   - table_name: dpa_agreements
     anonymized_column_names:
