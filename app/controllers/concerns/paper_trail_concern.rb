@@ -11,7 +11,7 @@ module PaperTrailConcern
     return "Aucun agent connecté" unless current_agent
 
     if agent_impersonated?
-      "[Agent Impersonné] #{current_agent.name_for_paper_trail}. Impersonné par #{super_admin_impersonating.email}"
+      "[Agent Délégué] #{current_agent.name_for_paper_trail}. Action effectuée par #{super_admin_impersonating.email}"
     else
       "[Agent] #{current_agent.name_for_paper_trail}"
     end
