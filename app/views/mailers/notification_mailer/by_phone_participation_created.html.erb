@@ -1,6 +1,6 @@
 <h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
 <p>Vous êtes <%= @user_designation %> et à ce titre vous êtes <%= @user.conjugate("convoqué") %> à un <%= @rdv_title_by_phone %> afin de <%= @rdv_purpose %>.</p>
-<p>Un travailleur social vous appellera <span class="font-weight-bold">le <%= I18n.l(@rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="font-weight-bold"><%= @user.phone_number %></span>.</p>
+<p>Un conseiller d'insertion vous appellera <span class="font-weight-bold">le <%= I18n.l(@rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="font-weight-bold"><%= @user.phone_number %></span>.</p>
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
 <% if @instruction_for_rdv.present? %>
   <p>
