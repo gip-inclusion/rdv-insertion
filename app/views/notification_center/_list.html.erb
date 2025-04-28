@@ -1,29 +1,29 @@
 <%= turbo_frame_tag "notification_center_list" do %>
   <% @notifications.each do |notification| %>
-    <%= link_to notification[:link], target: "_blank", **with_rdv_solidarites_impersonation_warning  do %>
-      <%= render "common/rdvs_impersonation_warning", url: notification[:link] if agent_impersonated? %>
-      <div data-created_at="<%= notification[:created_at].to_i %>" class="notification-center-dropdown-body-item position-relative px-3 py-2 <%= "seen" if notification_read?(notification) %> <%= "important" if ["warning", "danger"].include?(notification[:type]) %>">
-        <div class="notification-center-dropdown-body-item-avatar d-flex justify-content-center align-items-center alert-<%= notification[:type] %>">
+    <%= link_to @notification_link, target: "_blank", **with_rdv_solidarites_impersonation_warning, title: @notification_link_title do %>
+      <%= render "common/rdvs_impersonation_warning", url: notification.link if agent_impersonated? %>
+      <div data-created_at="<%= notification.created_at.to_i %>" class="notification-center-dropdown-body-item position-relative px-3 py-2 <%= "seen" if notification_read?(notification) %> <%= "important" if ["warning", "danger"].include?(notification.type) %>">
+        <div class="notification-center-dropdown-body-item-avatar d-flex justify-content-center align-items-center alert-<%= notification.type %>">
           <span>
             <i class="ri-calendar-line"></i>
           </span>
         </div>
         <div class="notification-center-dropdown-body-item-content pe-3">
           <h4 class="mb-0 fw-bold">
-            <%= notification[:title] %>
+            <%= notification.title %>
             <i
               class="ri-question-line"
               <%= tooltip(content: "Ce compteur de créneaux ne concerne  que les créneaux de votre organisation pour cette catégorie. Il ne tient pas compte de l'éventuelle sectorisation mise en place et de l'assignation à des référents.", placement: "bottom") %>
             ></i>
           </h4>
           <p class="mb-0 notification-center-dropdown-body-item-content-description">
-            <%= notification[:description] %>
+            <%= notification.description %>
           </p>
           <p class="mb-0 notification-center-dropdown-body-item-content-date">
-            <% if notification[:created_at] > 3.days.ago %>
-              <span title="<%= l(notification[:created_at], format: :long).capitalize %>">Il y a <%= time_ago_in_words(notification[:created_at]) %></span>
+            <% if notification.created_at > 3.days.ago %>
+              <span title="<%= l(notification.created_at, format: :long).capitalize %>">Il y a <%= time_ago_in_words(notification.created_at) %></span>
             <% else %>
-              <%= l(notification[:created_at], format: :human).capitalize %>
+              <%= l(notification.created_at, format: :human).capitalize %>
             <% end %>
           </p>
         </div>

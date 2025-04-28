@@ -38,8 +38,8 @@ module NotificationCenterConcern
   end
 
   def notification_read?(notification)
-    notification[:created_at].to_i <= most_recent_notification_read.to_i &&
-      notification[:created_at].to_i >= oldest_notification_read.to_i
+    notification.created_at.to_i <= most_recent_notification_read.to_i &&
+      notification.created_at.to_i >= oldest_notification_read.to_i
   end
 
   def show_notification_center?
