@@ -36,6 +36,11 @@ class User < ApplicationRecord
   attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create,
                 :require_title_presence
 
+  has_paper_trail(
+    only: [:first_name, :last_name, :email, :phone_number, :address, :affiliation_number, :birth_date, :birth_name,
+           :department_internal_id, :title, :role, :nir, :france_travail_id]
+  )
+
   encrypts :nir, deterministic: true
 
   before_validation :generate_uid
@@ -93,6 +98,8 @@ class User < ApplicationRecord
   scope :with_sent_invitations, -> { where.associated(:invitations) }
 
   squishes :first_name, :last_name, :department_internal_id, :affiliation_number
+  nullify_blank :first_name, :last_name, :department_internal_id, :affiliation_number, :email, :phone_number, :nir,
+                :france_travail_id, :address
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }

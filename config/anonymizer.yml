@@ -21,6 +21,9 @@ tables:
   - table_name: address_geocodings
     truncated: true
 
+  - table_name: versions
+    truncated: true
+
   - table_name: agents
     anonymized_column_names:
       - email

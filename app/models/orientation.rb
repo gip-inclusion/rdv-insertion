@@ -1,6 +1,8 @@
 class Orientation < ApplicationRecord
   MINIMUM_DURATION_IN_DAYS = 7
 
+  has_paper_trail
+
   belongs_to :user
   belongs_to :organisation
   belongs_to :orientation_type

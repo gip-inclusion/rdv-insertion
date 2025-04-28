@@ -636,6 +636,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_25_122635) do
     t.index ["organisation_id", "user_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
   end
 
+  create_table "versions", force: :cascade do |t|
+    t.string "whodunnit"
+    t.datetime "created_at"
+    t.string "item_id", null: false
+    t.string "item_type", null: false
+    t.string "event", null: false
+    t.jsonb "object"
+    t.jsonb "object_changes"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+  end
+
   create_table "webhook_endpoints", force: :cascade do |t|
     t.string "url"
     t.string "secret"

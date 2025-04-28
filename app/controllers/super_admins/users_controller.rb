@@ -5,7 +5,7 @@ module SuperAdmins
     #
 
     def update
-      requested_resource.assign_attributes(**formatted_attributes)
+      requested_resource.assign_attributes(**resource_params)
       if save_user.success?
         redirect_after_succesful_action(requested_resource)
       else
@@ -14,16 +14,6 @@ module SuperAdmins
     end
 
     private
-
-    def formatted_attributes
-      # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
-      attributes = {}
-      resource_params.to_h.deep_symbolize_keys.each do |k, v|
-        attributes[k] =
-          k.in?([:affiliation_number, :department_internal_id, :email, :france_travail_id, :nir]) ? v.presence : v
-      end
-      attributes
-    end
 
     def save_user
       @save_user ||= Users::Save.call(user: requested_resource)
