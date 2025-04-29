@@ -256,7 +256,7 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous d'orientation téléphonique." \
-            " Un travailleur social vous appellera le 20/12/2021 à " \
+            " Un conseiller d'insertion vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
@@ -279,7 +279,7 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "M. John DOE,\nVotre rendez-vous d'orientation téléphonique " \
               "dans le cadre de votre RSA a été modifié. " \
-              "Un travailleur social vous appellera le 20/12/2021 à " \
+              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d’empêchement, appelez rapidement le 0101010101."
@@ -303,7 +303,7 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "RAPPEL: M. John DOE,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
               "rendez-vous d'orientation téléphonique." \
-              " Un travailleur social vous appellera le 20/12/2021 à " \
+              " Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d’empêchement, appelez rapidement le 0101010101."
@@ -393,7 +393,7 @@ describe Notifications::SendSms, type: :service do
 
           let!(:content) do
             "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
-              "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
+              "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
               "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
@@ -417,7 +417,7 @@ describe Notifications::SendSms, type: :service do
             let!(:content) do
               "M. John DOE,\nVotre rendez-vous d'accompagnement téléphonique " \
                 "dans le cadre de votre RSA a été modifié. " \
-                "Un travailleur social vous appellera le 20/12/2021 à " \
+                "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
                 "partir de 10:00 sur ce numéro. " \
                 "Ce RDV est obligatoire. " \
                 "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
@@ -510,7 +510,7 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous téléphonique de signature de CER. " \
-            "Un travailleur social vous appellera le 20/12/2021 à " \
+            "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
@@ -533,7 +533,7 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "M. John DOE,\nVotre rendez-vous téléphonique de signature de CER" \
               " dans le cadre de votre RSA a été modifié. " \
-              "Un travailleur social vous appellera le 20/12/2021 à " \
+              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d’empêchement, appelez rapidement le 0101010101."
@@ -621,7 +621,7 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous de suivi téléphonique. " \
-            "Un travailleur social vous appellera le 20/12/2021 à " \
+            "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
@@ -643,7 +643,7 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "M. John DOE,\nVotre rendez-vous de suivi téléphonique" \
               " dans le cadre de votre RSA a été modifié. " \
-              "Un travailleur social vous appellera le 20/12/2021 à " \
+              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "En cas d’empêchement, appelez rapidement le 0101010101."
           end
@@ -733,7 +733,7 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "M. John DOE,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
-            "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
+            "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
             "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
@@ -757,7 +757,7 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "M. John DOE,\nVotre rendez-vous d'accompagnement téléphonique dans le cadre de votre " \
               "demande d'emploi a été modifié. " \
-              "Un travailleur social vous appellera le 20/12/2021 à " \
+              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \

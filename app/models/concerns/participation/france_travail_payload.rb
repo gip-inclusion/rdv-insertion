@@ -25,9 +25,9 @@ module Participation::FranceTravailPayload
       theme: motif.name,
       typeReception: france_travail_type_reception,
       interlocuteur: {
-        email: agents.first.email,
-        nom: agents.first.last_name,
-        prenom: agents.first.first_name
+        email: agents.first&.email,
+        nom: agents.first&.last_name,
+        prenom: agents.first&.first_name
       }
     }
   end

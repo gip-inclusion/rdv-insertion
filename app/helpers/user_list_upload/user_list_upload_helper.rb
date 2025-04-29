@@ -103,7 +103,7 @@ module UserListUpload::UserListUploadHelper
   def tooltip_content_for_user_row(user_row)
     tooltip_content_array = []
     tooltip_content_array << tooltip_content_for_user_row_archived(user_row) if user_row.archived?
-    tooltip_content_array << tooltip_content_for_user_row_follow_up_closed if user_row.matching_follow_up_closed?
+    tooltip_content_array << tooltip_content_for_user_row_follow_up_closed if user_row.matching_user_follow_up_closed?
     if tooltip_content_array.empty?
       tooltip_content_array << if user_row.matching_user_id
                                  "Ce dossier existe déjà. Si coché, les données seront mises à jour"

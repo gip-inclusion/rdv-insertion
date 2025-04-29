@@ -44,4 +44,20 @@ RSpec.describe UserListUpload do
       expect(user_row.last_name).to eq("Valjean")
     end
   end
+
+  describe "#referents_from_rows" do
+    let(:organisation) { create(:organisation) }
+    let(:agent) { create(:agent, organisations: [organisation]) }
+    let(:user_list_upload) { create(:user_list_upload, agent:, structure: organisation) }
+    let(:referent_from_organisation) { create(:agent, organisations: [organisation]) }
+    let(:referent_from_outside_organisation) { create(:agent) }
+    let!(:user_row) { create(:user_row, user_list_upload:, referent_email: referent_from_organisation.email) }
+    let!(:user_row_from_outside_organisation) do
+      create(:user_row, user_list_upload:, referent_email: referent_from_outside_organisation.email)
+    end
+
+    it "returns the referents from the rows scoped to the structure" do
+      expect(user_list_upload.reload.referents_from_rows).to eq([referent_from_organisation])
+    end
+  end
 end

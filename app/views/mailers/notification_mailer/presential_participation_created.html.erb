@@ -5,7 +5,12 @@
 <p><h4><%= @rdv.lieu.address %></h4></p>
 <br/>
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
-<%= tag.p tag.strong(@instruction_for_rdv, class: "bold-blue") if @instruction_for_rdv.present? %>
+<% if @instruction_for_rdv.present? %>
+  <p>
+    <%= tag.strong("Informations importantes :") %><br>
+    <%= simple_format(h(@instruction_for_rdv)) %>
+  </p>
+<% end %>
 <%= tag.p tag.strong("En cas d'absence, #{@punishable_warning}.") if @punishable_warning.present? %>
 <p>En cas d'empêchement, merci d'appeler rapidement le <%= @rdv.phone_number %>.</p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
