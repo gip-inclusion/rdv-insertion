@@ -17,7 +17,7 @@
     <% end %>
 
     <%= link_to department_users_path(current_department), title: "#{current_department_name} - Toutes les organisations" do %>
-      <div class="dropdown-item py-3 text-truncate <%= "navigation-selected-item" if department_level? %>">
+      <div class="dropdown-item py-3 text-truncate <%= "navigation-selected-item" if department_level? %>" data-organisation-filter-target="item">
         <i class="ri-building-line me-3 <%= department_level? ? "text-white" : "text-dark-blue" %>"></i><%= current_department_name %> - Toutes les organisations
       </div>
     <% end %>
