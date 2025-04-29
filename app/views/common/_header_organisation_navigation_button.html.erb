@@ -3,7 +3,7 @@
     <i class="<%= department_level? ? "ri-building-line" : "ri-building-4-line" %> me-1"></i> <%= structure_name_with_context(current_structure) %>
   </button>
   <div id="organisation-navigation-dropdown" data-dropdown-menu-target="dropdown" class="dropdown-menu py-0 mt-2" data-controller="organisation-filter">
-    <% if current_agent_department_organisations.count > 1 %>
+    <% if current_agent_department_organisations.count > 10 %>
       <div class="px-3 pt-2 pb-2 border-bottom">
         <div class="position-relative">
           <input type="text"
