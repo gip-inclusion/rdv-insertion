@@ -67,29 +67,24 @@ class InvitationsController < ApplicationController
   end
 
   def pdf
-    response = pdf_request
+    response = pdf_generator.generate_pdf(content: invitation.content)
     if response.success?
       Base64.decode64(response.body)
     else
-      Sentry.capture_message("PDF generation failed", extra: { invitation_id: invitation.id })
+      Sentry.capture_message(
+        "PDF generation failed",
+        extra: {
+          status: response.status,
+          body: response.body,
+          invitation_id: invitation.id
+        }
+      )
+      nil
     end
   end
 
-  def pdf_request
-    conn = Faraday.new(url: ENV["PDF_GENERATOR_URL"]) do |f|
-      f.headers["Authorization"] = ENV["PDF_GENERATOR_API_KEY"]
-      f.headers["Content-Type"] = "application/json"
-    end
-
-    conn.post("/generate") do |req|
-      req.body = {
-        htmlContent: invitation.content,
-        marginTop: "0cm",
-        marginRight: "0cm",
-        marginBottom: "0cm",
-        marginLeft: "0cm"
-      }.to_json
-    end
+  def pdf_generator
+    @pdf_generator ||= PdfGeneratorClient.new
   end
 
   def pdf_filename

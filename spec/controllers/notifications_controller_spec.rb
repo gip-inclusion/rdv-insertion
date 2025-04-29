@@ -63,7 +63,7 @@ describe NotificationsController do
             post :create, params: create_params
             expect(Sentry).to have_received(:capture_message).with(
               "PDF generation failed",
-              extra: { notification_id: notification.id }
+              extra: { status: 500, body: "error", notification_id: notification.id }
             )
           end
         end

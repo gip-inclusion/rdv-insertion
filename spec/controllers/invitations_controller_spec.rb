@@ -148,7 +148,7 @@ describe InvitationsController do
             post :create, params: create_params
             expect(Sentry).to have_received(:capture_message).with(
               "PDF generation failed",
-              extra: { invitation_id: invitation.id }
+              extra: { status: 500, body: "error", invitation_id: invitation.id }
             )
           end
         end
