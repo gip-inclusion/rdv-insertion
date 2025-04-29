@@ -100,6 +100,6 @@ class InvitationsController < ApplicationController
   def verify_invitation_validity
     return unless @invitation.expired?
 
-    render :invalid # TODO: add a custom layout
+    render :invalid, layout: "website"
   end
 end
