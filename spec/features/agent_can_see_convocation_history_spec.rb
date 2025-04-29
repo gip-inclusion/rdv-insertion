@@ -107,7 +107,7 @@ describe "Agents can see convocation history", :js do
     end
 
     # Configure the mock with the notification content
-    allow_any_instance_of(PdfGeneratorClient).to receive(:generate_pdf).and_wrap_original do |original_method, args|
+    allow_any_instance_of(PdfGeneratorClient).to receive(:generate_pdf).and_wrap_original do |_original_method, _args|
       # Use the notification content for the mock
       mock_pdf_service(success: true, pdf_content: notification_content)
       instance_double(Faraday::Response, success?: true, body: Base64.encode64(notification_content))
