@@ -1,46 +1,83 @@
-<header>
-  <% if agent_impersonated? %>
-      <%= render "common/header_super_admin_bar_impersonated" %>
-  <% elsif current_agent&.super_admin? %>
-    <%= render "common/header_super_admin_bar" %>
-  <% end %>
-  <nav class="container navbar px-3 navbar-expand-lg">
-    <div class="d-flex justify-content-start">
-      <%= link_to root_path do %>
-        <%= image_tag "logos/republique-francaise-logo.svg", height: 80, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
-        <%= image_tag "logos/rdv-insertion.svg", class: "rdvi-logo", alt: "Logo rdv insertion" %>
-      <% end %>
-    </div>
-    <div class="nav col justify-content-end align-items-center">
-      <% if current_agent %>
-        <%= render "common/header_help_menu" %>
-        <div class="mx-3">
-        <%= render "common/sign_out_button" %>
-        </div>
-      <% end %>
-      <div class="d-flex align-items-center">
-        <% if !current_agent %>
-          <div class="mx-3">
-            <%= form_tag("/auth/rdvservicepublic", method: "post", data: { turbo: false }) do %>
-              <div class="d-flex mb-4 justify-content-center align-items-center">
-                <button class="btn btn-blue" type='submit'>Connexion agent</button>
-              </div>
-            <% end %>
+<% if agent_impersonated? %>
+  <%= render "common/header_super_admin_bar_impersonated" %>
+<% elsif current_agent&.super_admin? %>
+  <%= render "common/header_super_admin_bar" %>
+<% end %>
+<header class="fr-header" role="banner" id="header">
+  <div class="fr-header__body">
+    <div class="fr-container">
+      <div class="fr-header__body-row">
+        <div class="fr-header__brand fr-enlarge-link">
+          <div class="fr-header__brand-top">
+            <div class="fr-header__logo">
+              <p class="fr-logo">République <br>Française</p>
+            </div>
+            <div class="fr-header__operator">
+              <a href="/" title="Accueil - rdv-insertion">
+                <img class="fr-responsive-img" src="<%= asset_path('logos/rdv-insertion-dsfr.svg') %>" alt="Logo rdv-insertion" width="250" style="max-width:9.0625rem;" data-fr-js-ratio="true">
+              </a>
+            </div>
+            <div class="fr-header__navbar">
+              <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-header-menu" aria-haspopup="menu" id="button-header-menu" title="Menu" data-fr-js-modal-button="true">
+                Menu
+              </button>
+            </div>
           </div>
-        <% end %>
+        </div>
+        <div class="fr-header__tools">
+          <div class="fr-header__tools-links" data-fr-js-header-links="true">
+            <ul class="fr-btns-group">
+              <% if current_agent %>
+                <li>
+                  <%= link_to sign_out_path, data: { turbo: false } do %>
+                    <button class="fr-btn fr-icon-lock-unlock-line">
+                      Se déconnecter
+                    </button>
+                  <% end %>
+                </li>
+              <% else %>
+                <li>
+                  <%= form_tag("/auth/rdvservicepublic", method: "post", data: { turbo: false }) do %>
+                    <button class="fr-btn fr-icon-lock-line" type='submit'>Connexion agent</button>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
+  </div>
+  <div class="fr-header__menu fr-modal" id="modal-header-menu" role="navigation" data-fr-js-modal="true" data-fr-js-header-modal="true" aria-labelledby="button-header-menu">
+    <div class="fr-container">
+      <button class="fr-btn--close fr-btn" aria-controls="modal-header-menu" title="Fermer" data-fr-js-modal-button="true">
+        Fermer
+      </button>
+      <div class="fr-header__menu-links">
+      </div>
+    </div>
+  </div>
   <% if current_agent %>
-    <div class="sub-header d-none d-md-flex">
-      <div class="container d-none d-md-flex ">
-        <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
-          <p class="mb-0">Guide d'utilisation&nbsp;<i class="ri-external-link-line"></i></p>
-        <% end %>
-        <%= link_to stats_path, class: "nav-link optional-link " do %>
-          <p class="mb-0">Statistiques d'utilisation</p>
-        <% end %>
-        <%= link_to "Contacter l'équipe", "mailto:rdv-insertion@beta.gouv.fr", class: "nav-link optional-link" %>
+    <div class="fr-header__menu fr-modal" aria-labelledby="button-492">
+      <div class="fr-container">
+        <button class="fr-btn--close fr-btn" aria-controls="modal-491" title="Fermer">
+            Fermer
+        </button>
+        <div class="fr-header__menu-links">
+        </div>
+        <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
+          <ul class="fr-nav__list">
+            <li class="fr-nav__item">
+              <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", class: "fr-nav__link", target: :blank %>
+            </li>
+            <li class="fr-nav__item">
+              <%= link_to "Statistiques d'utilisation", stats_path, class: "fr-nav__link", "aria-current": params[:controller] == "website/stats" ? "true" : "false" %>
+            </li>
+            <li class="fr-nav__item">
+              <%= link_to "Contacter l'équipe", "mailto:rdv-insertion@beta.gouv.fr", class: "fr-nav__link" %>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   <% end %>
