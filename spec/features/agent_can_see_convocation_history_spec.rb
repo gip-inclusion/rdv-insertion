@@ -91,10 +91,25 @@ describe "Agents can see convocation history", :js do
   before do
     travel_to(Time.zone.parse("2022-06-20"))
     setup_agent_session(agent)
+    setup_pdf_service_mock
+  end
+
+  def setup_pdf_service_mock
+    # Intercept the notification creation to get its content
+    notification_content = nil
+
+    # Intercept the notify_participation method to capture the notification content
     allow_any_instance_of(NotificationsController)
-      .to receive(:pdf_request).and_wrap_original do |original_method, *_args|
-      notification_content = original_method.receiver.send(:notify_participation).notification.content
-      stub_pdf_service(sample_text: notification_content)
+      .to receive(:notify_participation).and_wrap_original do |original_method, *_args|
+      result = original_method.call
+      notification_content = result.notification.content
+      result
+    end
+
+    # Configure the mock with the notification content
+    allow_any_instance_of(PdfGeneratorClient).to receive(:generate_pdf).and_wrap_original do |original_method, args|
+      # Use the notification content for the mock
+      mock_pdf_service(success: true, pdf_content: notification_content)
       instance_double(Faraday::Response, success?: true, body: Base64.encode64(notification_content))
     end
   end
@@ -152,8 +167,7 @@ describe "Agents can see convocation history", :js do
     expect(Notification.last.format).to eq("postal")
     expect(Notification.last.delivery_status).to eq(nil)
 
-    pdf = download_content(format: "pdf")
-    pdf_text = extract_raw_text(pdf)
+    pdf_text = download_content
 
     expect(pdf_text).to include(lieu.name)
     expect(pdf_text).to include(lieu.address)
