@@ -163,7 +163,7 @@ jobs:
             exit 1
           fi
 
-          RAILS_ENV=test ENABLE_CRISP=false bundle exec rspec $(cat node_spec_files.txt)
+          RAILS_ENV=test bundle exec rspec $(cat node_spec_files.txt)
         env:
           HOST: http://www.rdv-insertion-test.fake
           POSTGRES_HOST: localhost

@@ -21,6 +21,14 @@ button, input[type="button"] {
   max-width: 350px;
 }
 
+
+/*
+*
+* DSFR adds styles that are applied as a global scope.
+* Scoping those overrides makes them prevail over the DSFR styles and ensure
+* the buttons are styled as expected.
+*
+*/
 .reset-dsfr-overrides {
   .btn-blue {
     background-color: $dark-blue;
