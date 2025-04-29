@@ -1,6 +1,7 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
+  prepend_before_action :set_invitation_context
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
   def create # rubocop:disable Metrics/AbcSize
@@ -48,6 +49,10 @@ class InvitationsController < ApplicationController
   end
 
   private
+
+  def set_invitation_context
+    @invitation_context = true
+  end
 
   def invitation_params
     params.expect(
