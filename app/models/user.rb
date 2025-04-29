@@ -131,8 +131,8 @@ class User < ApplicationRecord
 
   def soft_delete
     update_columns(
-      last_name: "Usager supprimé",
-      first_name: "Usager supprimé",
+      last_name: "[Usager supprimé]",
+      first_name: "[Usager supprimé]",
       deleted_at: Time.zone.now,
       affiliation_number: nil,
       role: nil,
