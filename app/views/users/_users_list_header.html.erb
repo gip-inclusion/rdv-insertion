@@ -84,15 +84,7 @@
           <i class="ri-arrow-up-line"></i> Voir moins de filtres
         </button>
       </div>
-      <% if display_back_to_list_button? %>
-        <div>
-          <%= link_to structure_users_path(motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
-            <i class="ri-arrow-go-back-line"></i> Réinitialiser les filtres
-          <% end %>
-        </div>
-      <% end %>
     </div>
-
   </div>
 
   <div class="col-4 d-flex flex-column justify-content-center align-items-center">
@@ -127,6 +119,9 @@
         <li>
           <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "dropdown-item") do %>
             Charger fichier usagers
+            <span class="badge background-violet ms-2">
+              Nouveau
+            </span>
           <% end %>
         </li>
       </ul>

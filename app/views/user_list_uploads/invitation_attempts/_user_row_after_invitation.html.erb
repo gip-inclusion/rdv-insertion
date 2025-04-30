@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-center">
       <% if user_row.all_invitations_failed? %>
         <%= link_to new_user_list_upload_user_row_invitation_attempts_retry_path(user_list_upload_id: user_row.user_list_upload.id, user_row_id: user_row.id), data: { turbo_frame: "remote_modal" } do %>
-          <span class="badge rounded-pill alert-danger" <%= tooltip_for_invitation_errors(user_row) %>>
+          <span class="badge rounded-pill alert-danger" id="rdvi_upload_users-invit_statut-tag-error-<%= user_row.id %>" <%= tooltip_for_invitation_errors(user_row) %>>
             Erreur
             <i class="ri-alert-line text-end"></i>
           </span>

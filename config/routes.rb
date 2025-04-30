@@ -170,10 +170,6 @@ Rails.application.routes.draw do
     resources :searches, only: :create
   end
 
-  namespace :organisations do
-    resources :user_added_notifications, only: [:create]
-  end
-
   resources :participations, only: [] do
     resources :notifications, only: :create
   end
@@ -220,8 +216,14 @@ Rails.application.routes.draw do
       resource :closings, only: [:create, :destroy]
     end
     resource :stats, only: [:show], controller: 'website/stats'
+
     resources :users_organisations, only: [:index, :create]
     resource :users_organisations, only: [:destroy]
+
+    resources :organisations, only: [] do
+      resources :user_added_notifications, only: [:create], controller: 'organisations/user_added_notifications'
+    end
+
     scope module: :dates_filterings do
       resources :choose_date_kind,
                 :invitation_dates_filterings,

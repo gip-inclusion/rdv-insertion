@@ -46,52 +46,62 @@ button, input[type="button"] {
   max-width: 350px;
 }
 
-.btn-blue {
-  background-color: $dark-blue;
-  border-color: $dark-blue;
-  color: white;
-  min-width: 90px;
-  &:hover, &:disabled {
-    color: white;
-    border-color: $dark-blue-dim;
-    background-color: $dark-blue-dim;
-  }
-  &.show-referent-button {
-    min-width: 0;
-  }
-}
 
-.btn-blue-out {
-  border-color: $dark-blue;
-  background-color: white;
-  color: $dark-blue;
-  &:hover {
+/*
+*
+* DSFR adds styles that are applied as a global scope.
+* Scoping those overrides makes them prevail over the DSFR styles and ensure
+* the buttons are styled as expected.
+*
+*/
+.reset-dsfr-overrides {
+  .btn-blue {
     background-color: $dark-blue;
+    border-color: $dark-blue;
     color: white;
+    min-width: 90px;
+    &:hover, &:disabled {
+      color: white;
+      border-color: $dark-blue-dim;
+      background-color: $dark-blue-dim;
+    }
+    &.show-referent-button {
+      min-width: 0;
+    }
   }
-}
-
-.btn-danger {
-  background-color: $danger;
-  border-color: $danger;
-  color: white;
-  min-width: 90px;
-  &:hover, &:disabled {
+  
+  .btn-blue-out {
+    border-color: $dark-blue;
+    background-color: white;
+    color: $dark-blue;
+    &:hover {
+      background-color: $dark-blue;
+      color: white;
+    }
+  }
+  
+  .btn-danger {
+    background-color: $danger;
+    border-color: $danger;
     color: white;
-    border-color: $orange-light;
-    background-color: $orange-light;
+    min-width: 90px;
+    &:hover, &:disabled {
+      color: white;
+      border-color: $orange-light;
+      background-color: $orange-light;
+    }
   }
-}
-
-.btn-grey {
-  border-color: $light-grey;
-  background-color: white;
-  color: black;
-}
-
-.btn-sm {
-  min-width: 105px !important;
-  padding: 0.25rem;
+  
+  .btn-grey {
+    border-color: $light-grey;
+    background-color: white;
+    color: black;
+  }
+  
+  .btn-sm {
+    min-width: 105px !important;
+    padding: 0.25rem;
+  }
 }
 
 .text-array__remove {

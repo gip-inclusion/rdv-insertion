@@ -1,5 +1,6 @@
 class AgentRole < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:access_level].freeze
+  has_paper_trail
 
   belongs_to :agent
   belongs_to :organisation

@@ -43,6 +43,14 @@ describe FranceTravailApi::RetrieveUserToken do
         subject
         expect(subject.user_token).to eq(user_token)
       end
+
+      context "when no matching user is found" do
+        let(:response_body) { { "jetonUsager" => nil, "codeRetour" => "S003" }.to_json }
+
+        it "returns an error" do
+          expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::NoMatchingUser)
+        end
+      end
     end
 
     context "when the API call fails" do

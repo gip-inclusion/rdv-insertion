@@ -133,6 +133,8 @@ describe "Agents can add user orientation", :js do
     expect(page).to have_content("Informer l’organisation par email")
     expect(page).to have_content("Prévenir l’organisation que l’usager a été ajouté à leur liste")
 
+    fill_in "email_custom_content", with: "coucou"
+
     expect(OrganisationMailer).to receive(:user_added)
       .once
       .with(
@@ -144,7 +146,8 @@ describe "Agents can add user orientation", :js do
         " lien suivant :\n " \
         "http://www.rdv-insertion-test.fake:#{Capybara.current_session.server.port}" \
         "/organisations/#{other_organisation.id}/users/#{user.id}/parcours",
-        user_attachements: [],
+        custom_content: "coucou",
+        user_attachments: [],
         reply_to: agent.email
       )
       .and_return(OpenStruct.new(deliver_now: nil))

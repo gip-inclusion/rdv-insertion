@@ -22,7 +22,7 @@ module Notifications
     def by_phone_participation_created_content
       "#{user.full_name},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title_by_phone}. Un travailleur social vous appellera le #{formatted_start_date}" \
+        "#{rdv_title_by_phone}. Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -42,7 +42,7 @@ module Notifications
 
     def by_phone_participation_updated_content
       "#{user.full_name},\nVotre #{rdv_title_by_phone} dans le cadre de votre #{rdv_subject} a été modifié. " \
-        "Un travailleur social vous appellera le #{formatted_start_date}" \
+        "Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -64,7 +64,7 @@ module Notifications
     def by_phone_participation_reminder_content
       "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title_by_phone}. Un travailleur social vous appellera le #{formatted_start_date}" \
+        "#{rdv_title_by_phone}. Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \

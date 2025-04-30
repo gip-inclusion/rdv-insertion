@@ -1,5 +1,5 @@
 class ApiAdresseClient
-  URL = "https://api-adresse.data.gouv.fr/search/".freeze
+  URL = "https://data.geopf.fr/geocodage/search/".freeze
 
   def self.get_geocoding(address, **params)
     Faraday.get(URL, { q: address }.merge(params), { "Content-Type" => "application/json" })

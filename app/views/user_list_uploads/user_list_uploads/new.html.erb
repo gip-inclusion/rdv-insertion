@@ -48,7 +48,7 @@
             <p class="mb-0">Glisser/déposer votre fichier ici</p>
             <p class="text-muted small">OU</p>
             <div class="mt-2">
-              <label for="user_list_upload_file" class="btn btn-primary">
+              <label for="user_list_upload_file" class="btn btn-primary" id="rdvi_upload_select-file_file-choice">
                 Charger un fichier
               </label>
             </div>
@@ -59,16 +59,25 @@
               <div class="px-2">
                 <i class="ri-file-text-line ri-2x"></i>
               </div>
-              <div class="px-2">
+              <div class="px-2 text-start">
                 <p>Fichier « <span data-user-list-upload-target="fileName"></span> »</p>
                 <p class="text-start text-muted small" data-user-list-upload-target="userCount"></p>
+                <div class="d-flex text-brown position-relative d-none position-absolute" data-user-list-upload-target="warning">
+                  <div class="d-flex">
+                    <i class="ri-information-line me-1 fs-4"></i>
+                    <p class="w-50">
+                      Votre fichier contient plus de 500 lignes. Cela risque de ralentir les importations.
+                      Nous vous conseillons de découper votre fichier et d’effectuer plusieurs imports.
+                    </p>
+                  </div>
+                </div>
               </div>
               <div class="px-2">
-                <i class="ri-close-line ri-2x btn btn-link text-decoration-none" data-action="click->user-list-upload#handleFileRemove"></i>
+                <i class="ri-close-line ri-2x btn btn-link text-decoration-none" data-action="click->user-list-upload#handleFileRemove" id="rdvi_upload_select-file_delete"></i>
               </div>
             </div>
             <div>
-              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline">
+              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline" id="rdvi_upload_select-file_change-file">
                 Changer de fichier
               </label>
             </div>
@@ -78,11 +87,12 @@
         <div class="d-flex justify-content-between my-5">
           <div>
             <i class="ri-arrow-left-s-line"></i>
-            <%= link_to "Revenir à l'étape précédente", new_structure_user_list_uploads_category_selection_path, class: "btn btn-link" %>
+            <%= link_to "Revenir à l'étape précédente", new_structure_user_list_uploads_category_selection_path, class: "btn btn-link", id: "rdvi_upload_select-file_back" %>
           </div>
           <div>
             <%= f.submit "Charger les données usagers",
                         class: "btn btn-primary d-block mx-auto disabled",
+                        id: "rdvi_upload_select-file_validate",
                         data: {
                           action: "click->user-list-upload#handleSubmit",
                           user_list_upload_target: "submitButton"
