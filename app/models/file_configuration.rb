@@ -1,5 +1,3 @@
-require "csv"
-
 class FileConfiguration < ApplicationRecord
   has_many :category_configurations, dependent: :restrict_with_error
 
@@ -17,12 +15,6 @@ class FileConfiguration < ApplicationRecord
 
   def self.matching_user_attribute_name(attribute_name)
     User.attribute_names.find { |n| n == attribute_name.delete_suffix("_column") }
-  end
-
-  def template_file_content
-    CSV.generate do |csv|
-      csv << column_attributes.values
-    end
   end
 
   private

@@ -20,7 +20,7 @@ class FileConfigurationsController < ApplicationController
   def edit; end
 
   def download_template
-    send_data @file_configuration.template_file_content,
+    send_data @file_configuration.column_attributes.values.to_csv,
               filename: "template_file_configuration.csv",
               type: "text/csv",
               disposition: "attachment"
