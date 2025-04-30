@@ -22,7 +22,7 @@ gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
 gem "puma", "< 7"
 
-# Load images assets
+# Load image assets and required for administrate gem
 gem "sprockets-rails", require: "sprockets/railtie"
 
 # JavaScript Bundling for Rails
