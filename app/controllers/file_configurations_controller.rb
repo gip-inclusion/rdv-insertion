@@ -7,8 +7,8 @@ class FileConfigurationsController < ApplicationController
     :rights_opening_date_column, :organisation_search_terms_column, :referent_email_column, :france_travail_id_column
   ].freeze
 
-  before_action :set_organisation, only: [:show, :new, :create, :edit, :confirm_update, :update]
-  before_action :set_file_configuration, only: [:show, :edit, :confirm_update, :update]
+  before_action :set_organisation, only: [:show, :new, :create, :edit, :confirm_update, :update, :download_template]
+  before_action :set_file_configuration, only: [:show, :edit, :confirm_update, :update, :download_template]
   before_action :set_edit_form_url, :set_edit_form_html_method, only: [:edit, :update]
 
   def show; end
@@ -18,6 +18,13 @@ class FileConfigurationsController < ApplicationController
   end
 
   def edit; end
+
+  def download_template
+    send_data @file_configuration.template_file_content,
+              filename: "template_file_configuration.csv",
+              type: "text/csv",
+              disposition: "attachment"
+  end
 
   def confirm_update
     @file_configuration.assign_attributes(**formatted_params)
