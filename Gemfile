@@ -21,8 +21,9 @@ gem "rails", ">= 6.0.4.1"
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
 gem "puma", "< 7"
-# Use SCSS for stylesheets
-gem "sass-rails", ">= 6"
+
+# Load images assets
+gem "sprockets-rails", require: "sprockets/railtie"
 
 # JavaScript Bundling for Rails
 gem "jsbundling-rails"
