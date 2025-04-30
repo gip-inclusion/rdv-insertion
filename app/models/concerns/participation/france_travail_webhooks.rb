@@ -46,7 +46,7 @@ module Participation::FranceTravailWebhooks
 
   def eligible_organisation_for_france_travail_webhook?
     # francetravail organisations are not eligible for webhooks, they already have theses rdvs in their own system
-    organisation&.conseil_departemental? || organisation&.delegataire_rsa?
+    organisation.conseil_departemental? || organisation.delegataire_rsa?
   end
 
   def eligible_department_for_france_travail_webhook?
