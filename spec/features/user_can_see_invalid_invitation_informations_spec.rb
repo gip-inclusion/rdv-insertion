@@ -36,7 +36,9 @@ describe "User can see invalid invitation informations", :js do
     expect(page).to have_content("Votre invitation à prendre rendez-vous a expirée")
     expect(page).to have_content("Le délai pour prendre rendez-vous avec cette invitation est maintenant dépassé")
 
-    expect(page).to have_content("Pour planifier votre rendez-vous, nous vous invitons à contacter une des organisations suivantes")
+    expect(page).to have_content(
+      "Pour planifier votre rendez-vous, nous vous invitons à contacter une des organisations suivantes"
+    )
 
     expect(page).to have_content("FT Paris Nord")
     expect(page).to have_content("01 23 45 67 89")
