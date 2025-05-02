@@ -91,7 +91,7 @@ describe "Agents can read notifications", :js do
   context "agent has read all notifications" do
     before do
       visit "/"
-      page.driver.browser.manage.add_cookie(name: "notifications_read_at_on_#{organisation.id}",
+      page.driver.browser.manage.add_cookie(name: "notifications_read_at_on_org_id_#{organisation.id}",
                                             value: 1.hour.from_now.to_i.to_s)
 
       setup_agent_session(agent)
