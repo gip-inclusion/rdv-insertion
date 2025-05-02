@@ -1,4 +1,4 @@
-<header data-turbo-prefetch="false">
+<header data-turbo-prefetch="false" class="reset-dsfr-overrides">
   <% if agent_impersonated? %>
       <%= render "common/header_super_admin_bar_impersonated" %>
   <% elsif current_agent&.super_admin? %>
