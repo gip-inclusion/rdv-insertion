@@ -10,37 +10,46 @@ module Participation::FranceTravailWebhooks
       )
     end
 
-    after_commit on: :update, if: -> { eligible_for_france_travail_webhook_update? } do
+    after_commit on: :update, if: -> { france_travail_webhook_updatable? } do
       OutgoingWebhooks::FranceTravail::UpdateParticipationJob.perform_later(
         participation_id: id, timestamp: updated_at
       )
     end
 
-    around_destroy lambda { |participation, block|
-      if participation.eligible_for_france_travail_webhook?
+    before_destroy do
+      if france_travail_webhook_updatable?
         OutgoingWebhooks::FranceTravail::DeleteParticipationJob.perform_later(
           participation_id: id,
-          france_travail_id: participation.france_travail_id,
-          user_id: participation.user.id,
+          france_travail_id: france_travail_id,
+          user_id: user.id,
           timestamp: Time.current
         )
       end
-
-      block.call
-    }
+    end
   end
 
   def eligible_for_france_travail_webhook?
-    organisation.france_travail? && user.birth_date? && user.nir? && france_travail_active_department?
+    eligible_user_for_france_travail_webhook? &&
+      eligible_organisation_for_france_travail_webhook? &&
+      eligible_department_for_france_travail_webhook?
   end
 
-  def eligible_for_france_travail_webhook_update?
+  def france_travail_webhook_updatable?
     eligible_for_france_travail_webhook? && france_travail_id?
   end
 
-  def france_travail_active_department?
-    # C'est une condition temporaire, les autorisations des clés d'api de France Travail sont scopés au niveau des CD
-    # le temps que FT autorise notre clé d'API au niveau national on limitera à un département pour les tests
-    organisation.department.number.in?(ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS", "").split(","))
+  private
+
+  def eligible_user_for_france_travail_webhook?
+    user.birth_date? && user.nir? && !user.marked_for_rgpd_destruction?
+  end
+
+  def eligible_organisation_for_france_travail_webhook?
+    # francetravail organisations are not eligible for webhooks, they already have theses rdvs in their own system
+    organisation&.conseil_departemental? || organisation&.delegataire_rsa?
+  end
+
+  def eligible_department_for_france_travail_webhook?
+    !organisation.department.disable_ft_webhooks?
   end
 end

@@ -31,11 +31,11 @@ describe UserListUpload::SaveUser, type: :service do
     it("is a success") { is_a_success }
 
     it "assigns resources to the user" do
+      expect(user).to receive(:assign_motif_category).with(motif_category.id)
       subject
 
       expect(user.referents).to eq(referents)
       expect(user.tags).to eq(tags)
-      expect(user.motif_categories).to include(motif_category)
     end
 
     context "when organisation is provided in user_row" do
@@ -106,6 +106,27 @@ describe UserListUpload::SaveUser, type: :service do
 
       it "reopens the follow up" do
         expect { subject }.to change { follow_up.reload.closed_at }.to(nil)
+      end
+    end
+
+    context "when no motif category is assigned" do
+      let(:user_row) do
+        instance_double(
+          "UserRow",
+          user: user,
+          referents: referents,
+          tags: tags,
+          motif_category_to_assign: nil,
+          organisation_to_assign: organisation_to_assign
+        )
+      end
+
+      it "does not create a follow up" do
+        expect { subject }.not_to change(FollowUp, :count)
+      end
+
+      it "does not raise an error" do
+        expect { subject }.not_to raise_error
       end
     end
 

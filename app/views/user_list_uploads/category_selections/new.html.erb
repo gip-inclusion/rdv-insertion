@@ -5,7 +5,7 @@
   <div class="row text-dark-blue col-md-10 mx-auto">
     <div class="d-flex justify-content-between align-items-center my-1">
       <div>
-        <%= link_to structure_users_path, class: "text-dark-blue fw-bold" do %>
+        <%= link_to structure_users_path, class: "text-dark-blue fw-bold", id: "rdvi_upload_select-category_back" do %>
           <i class="ri-arrow-left-s-line"></i><span> Retour</span>
         <% end %>
       </div>
@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="text-end mt-5 me-5">
-          <%= f.submit "Valider la sélection", name: nil, class: "btn btn-primary", data: { radio_submit_target: "submit" } %>
+          <%= f.submit "Valider la sélection", name: nil, class: "btn btn-primary", id: "rdvi_upload_select-category_validate", data: { radio_submit_target: "submit" } %>
         </div>
       </div>
     <% end %>

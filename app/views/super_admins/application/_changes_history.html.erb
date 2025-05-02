@@ -1,0 +1,27 @@
+<% if resource.is_a?(PaperTrail::Model::InstanceMethods) && resource.versions.exists? %>
+  <h2 class="main-content__header">Historique des modifications</h2>
+  <section class="main-content__body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Propriété</th>
+          <th>Avant</th>
+          <th>Après</th>
+          <th>Quand?</th>
+          <th>Qui?</th>
+        </tr>
+      </thead>
+      <% resource.versions.sort_by(&:created_at).reverse_each do |version| %>
+        <% version.changeset.each do |property, values| %>
+          <tr>
+            <td><%= property %></td>
+            <td><%= values[0] %></td>
+            <td><%= values[1] %></td>
+            <td><%= version.created_at %></td>
+            <td><%= version.whodunnit %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
+  </section>
+<% end %>

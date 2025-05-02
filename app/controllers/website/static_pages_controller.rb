@@ -2,6 +2,8 @@ module Website
   class StaticPagesController < BaseController
     skip_before_action :authenticate_agent!
 
+    include CguHelper
+
     def welcome
       flash[:error] = "Echec de la connexion" if request.env["omniauth.error"]
 
@@ -10,7 +12,11 @@ module Website
 
     def legal_notice; end
 
-    def cgu; end
+    def cgu
+      @version = params[:version] || most_recent_cgu_version
+
+      raise ActionController::RoutingError, "Not Found" unless cgu_version_exists?(@version)
+    end
 
     def privacy_policy; end
 

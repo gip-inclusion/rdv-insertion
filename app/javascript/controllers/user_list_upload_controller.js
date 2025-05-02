@@ -5,7 +5,7 @@ import { parameterizeObjectKeys, parameterizeObjectValues } from "../lib/paramet
 import { formatInput, formatAffiliationNumber, formatDateInput, formatAddress, formatRole, formatTitle, formatTags } from "../lib/inputFormatters"
 
 export default class extends Controller {
-  static targets = ["dropZone", "input", "uploadedFileInfo", "fileName", "fileInputInstruction", "userCount", "submitButton"]
+  static targets = ["dropZone", "input", "uploadedFileInfo", "fileName", "fileInputInstruction", "userCount", "submitButton", "warning"]
 
   connect() {
     this.fileConfigurationColumnAttributes = JSON.parse(this.element.dataset.fileConfigurationColumnAttributes)
@@ -28,6 +28,7 @@ export default class extends Controller {
 
     const file = event.dataTransfer.files[0]
     if (file) {
+      this.dropZoneTarget.setAttribute("data-matomo-event", "rdvi_upload_select-file_drag-drop");
       await this.#processFile(file)
     }
   }
@@ -195,10 +196,20 @@ export default class extends Controller {
   #setFileSelected(file) {
     this.#updateFileName(file.name)
     this.#updateUserCount(this.rows.length)
+
+    this.#toggleTooManyLinesWarning()
     this.fileInputInstructionTarget.classList.add("d-none")
     this.uploadedFileInfoTarget.classList.remove("d-none")
     if (this.rows.length > 0) {
       this.submitButtonTarget.classList.remove("disabled")
+    }
+  }
+
+  #toggleTooManyLinesWarning() {
+    if (this.rows.length > 500) {
+      this.warningTarget.classList.remove("d-none")
+    } else {
+      this.warningTarget.classList.add("d-none")
     }
   }
 

@@ -39,6 +39,9 @@ gem "redis", "~> 4.0"
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# Ensure uploaded file are secure
+gem "mimemagic", "~> 0.4"
+
 # AR Pagination
 gem "kaminari"
 # PG search
@@ -89,6 +92,9 @@ gem "rqrcode", "~> 2.0", require: false
 gem "rexml"
 gem "addressable"
 
+# Allows to include the DSFR assets in the application
+gem "dsfr-assets"
+
 # Easily generate PDF from HTML
 gem "wicked_pdf"
 gem "wkhtmltopdf-binary"
@@ -122,6 +128,9 @@ gem "skylight"
 
 # Sets migrations timeouts
 gem "activerecord-safer_migrations"
+
+# Use paper_trail to track changes
+gem "paper_trail"
 
 # CSV is not part of the standard library anymore
 gem "csv"
