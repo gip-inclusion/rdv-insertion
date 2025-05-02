@@ -1,4 +1,4 @@
-<div id="notification-center" data-controller="notification-center" data-organisation-id="<%= current_organisation_id %>" class="position-relative ms-2">
+<div id="notification-center" data-controller="notification-center" class="position-relative ms-2">
   <button id="btn-notification-center" data-notification-center-target="button" class="accessible text-truncate <%= "has-notification" if @has_important_unread_notifications %>" type="button" data-action="click->notification-center#toggle" aria-haspopup="true" aria-expanded="false">
     <i class="ri-notification-3-fill"></i>
   </button>
@@ -6,9 +6,6 @@
     <div class="notification-center-dropdown-header p-1 px-3 pe-1">
       <h3 class="mb-0 fs-5 fw-bold">Notifications</h3>
       <div class="notification-center-dropdown-header-actions">
-        <button id="notification-center-mark-all-as-read" class="btn text-dark-blue px-2" data-action="click->notification-center#markAllAsRead">
-          <i class="ri-mail-open-line" <%= tooltip(content: "Marquer toutes les notifications comme lues") %>></i>
-        </button>
         <button id="notification-center-close" class="btn text-dark-blue px-2" data-action="click->notification-center#close" title="Fermer le centre de notifications">
           <i class="ri-close-line"></i>
         </button>

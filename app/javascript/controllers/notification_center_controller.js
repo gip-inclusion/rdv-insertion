@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import Cookies from "js-cookie"
 
 export default class extends Controller {
   static targets = ["dropdown", "button"]
@@ -32,16 +31,5 @@ export default class extends Controller {
 
   close() {
     this.dropdownTarget.classList.add("d-none")
-  }
-
-  markAllAsRead() {
-    this.close()
-    this.buttonTarget.classList.remove("has-notification")
-
-    const veryOldDate = new Date(0)
-    const now = new Date()
-    
-    Cookies.set("oldest_notification_read", Math.floor(veryOldDate.getTime() / 1000))
-    Cookies.set("most_recent_notification_read", Math.floor(now.getTime() / 1000))
   }
 }

@@ -1,10 +1,12 @@
 class NotificationCenterController < ApplicationController
-  after_action :update_notification_read_timestamps, only: [:index]
+  after_action :update_notification_read_at_timestamp, only: [:index]
   before_action :set_notification_link, :set_notification_link_title, only: :index
 
   def index
-    @total_notifications_count = creneaux_availabilities.count
-    @notifications = creneaux_availabilities_as_notifications
+    @total_notifications_count = creneaux_availabilities.total_count
+    @notifications = creneaux_availabilities.map do |creneau_availability|
+      NotificationCenter::CreneauxAvailabilityNotification.new(creneau_availability)
+    end
 
     # When paginating we only re-render the list and the pagination
     # Not the entire notification center
@@ -21,10 +23,6 @@ class NotificationCenterController < ApplicationController
 
   private
 
-  def page
-    @page ||= params[:page]&.to_i || 1
-  end
-
   def loading_more_notifications?
     params[:page].present?
   end
@@ -39,15 +37,8 @@ class NotificationCenterController < ApplicationController
                                         })
                                  .with_pending_invitations
                                  .order(created_at: :desc)
-  end
-
-  def creneaux_availabilities_as_notifications
-    creneaux_availabilities
-      .limit(10)
-      .offset((page - 1) * 10)
-      .map do |creneau_availability|
-      NotificationCenter::CreneauxAvailabilityNotification.new(creneau_availability)
-    end
+                                 .page(params[:page])
+                                 .per(10)
   end
 
   def set_notification_link
@@ -60,34 +51,7 @@ class NotificationCenterController < ApplicationController
     @notification_link_title = "Voir votre agenda sur RDV-Solidarités"
   end
 
-  def update_notification_read_timestamps
-    return if @notifications.empty?
-
-    update_most_recent_notification_read_timestamp if agent_hasnt_read_most_recent_notification?
-    update_oldest_notification_read_timestamp if agent_hasnt_read_oldest_notification?
-  end
-
-  def update_most_recent_notification_read_timestamp
-    cookies["most_recent_notification_read_on_#{current_organisation_id}"] = first_notification_created_at + 1
-  end
-
-  def update_oldest_notification_read_timestamp
-    cookies["oldest_notification_read_on_#{current_organisation_id}"] = last_notification_created_at - 1
-  end
-
-  def agent_hasnt_read_most_recent_notification?
-    most_recent_notification_read.to_i.zero? || first_notification_created_at > most_recent_notification_read.to_i
-  end
-
-  def agent_hasnt_read_oldest_notification?
-    oldest_notification_read.to_i.zero? || last_notification_created_at < oldest_notification_read.to_i
-  end
-
-  def first_notification_created_at
-    @notifications.first.created_at.to_i
-  end
-
-  def last_notification_created_at
-    @notifications.last.created_at.to_i
+  def update_notification_read_at_timestamp
+    cookies["notifications_read_at_on_org_id_#{current_organisation_id}"] = Time.now.to_i
   end
 end

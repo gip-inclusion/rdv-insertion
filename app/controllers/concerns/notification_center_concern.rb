@@ -6,7 +6,7 @@ module NotificationCenterConcern
 
   included do
     before_action :set_has_important_unread_notifications, if: :show_notification_center?
-    helper_method :most_recent_notification_read, :oldest_notification_read, :notification_read?,
+    helper_method :notifications_read_at, :notification_read?,
                   :show_notification_center?
   end
 
@@ -19,7 +19,7 @@ module NotificationCenterConcern
                                           .where(motif_category: {
                                                    short_name: MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN
                                                  })
-                                          .where(created_at: most_recent_notification_read...)
+                                          .where(created_at: notifications_read_at...)
                                           # If organisation has 2 valid motif_categories it will receive 2 notifications
                                           # Any of the notifications created today may be important, not just the last
                                           .where(created_at: Time.zone.today...)
@@ -28,19 +28,14 @@ module NotificationCenterConcern
                                           .any?(&:low_availability?)
   end
 
-  def most_recent_notification_read
-    Time.zone.at(cookies["most_recent_notification_read_on_#{current_organisation_id}"].to_i)
-  end
-
-  def oldest_notification_read
+  def notifications_read_at
     Time.zone.at(
-      cookies["oldest_notification_read_on_#{current_organisation_id}"]&.to_i || Time.zone.now.strftime("%s%L").to_i
+      cookies["notifications_read_at_on_org_id_#{current_organisation_id}"].to_i
     )
   end
 
   def notification_read?(notification)
-    notification.created_at.to_i <= most_recent_notification_read.to_i &&
-      notification.created_at.to_i >= oldest_notification_read.to_i
+    notification.created_at.to_i <= notifications_read_at.to_i
   end
 
   def show_notification_center?
@@ -51,9 +46,7 @@ module NotificationCenterConcern
   end
 
   def will_request_load_header_partial_on_organisation_scoped_page?
-    return false unless request.get? && !turbo_frame_request? && !request.xhr?
-
-    params[:organisation_id].present?
+    request.get? && !turbo_frame_request? && !request.xhr? && params[:organisation_id].present?
   end
 
   def organisation_has_expected_motifs_for_notification_center?

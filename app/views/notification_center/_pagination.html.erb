@@ -1,9 +1,7 @@
 <%= turbo_frame_tag "notification_center_pagination" do %>
   <div class="notification-center-dropdown-body-item-footer align-items-center d-flex justify-content-center">
-    <% if @notifications.size == 10 && @total_notifications_count > @notifications.size %>
-      <%= link_to notification_center_index_path(page: @page + 1), class: "btn btn-link" do %>
-        Afficher plus
-      <% end %>
-    <% end %>
+    <%= link_to notification_center_index_path(page: @creneaux_availabilities.next_page), class: "btn btn-link" do %>
+      Afficher plus
+    <% end unless @creneaux_availabilities.last_page? %>
   </div>
 <% end %>
