@@ -1,7 +1,8 @@
 class WebhookEndpoint < ApplicationRecord
   belongs_to :organisation
 
-  validates :organisation_id, uniqueness: true
+  validates :url, :secret, :signature_type, presence: true
+  validates :url, uniqueness: { scope: :organisation_id }
 
   enum :signature_type, { hmac: "hmac", jwt: "jwt" }
 

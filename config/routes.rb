@@ -106,6 +106,7 @@ Rails.application.routes.draw do
     end
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
+      get :download_template
     end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
     resource :stats, only: [:show], controller: 'website/stats'
