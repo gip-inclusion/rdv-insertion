@@ -7,17 +7,16 @@
   p {
     line-height: normal;
   }
-  .btn-blue-out {
-    &:hover, &:disabled {
-      background-color: $dark-blue;
-      color: white;
-    }
-  }
   [href] {
     background-image: none;
   }
   a[href]:active, a[href]:hover {
     --underline-hover-width: unset;
-    background-color: unset;
+  }
+  .btn-blue-out {
+    &:hover, &:disabled {
+      background-color: $dark-blue !important;
+      color: white;
+    }
   }
 }
