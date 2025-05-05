@@ -43,6 +43,10 @@ module ApplicationHelper
     current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 
+  def pluralize_regular(count:, word:)
+    "#{word}#{"s" if count > 1}"
+  end
+
   def current_url
     request.original_url
   end
