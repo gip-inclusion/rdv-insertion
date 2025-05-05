@@ -71,6 +71,7 @@ tables:
   - table_name: creneau_availabilities
     non_anonymized_column_names:
       - number_of_creneaux_available
+      - number_of_pending_invitations
       - category_configuration
       - updated_at
       - created_at

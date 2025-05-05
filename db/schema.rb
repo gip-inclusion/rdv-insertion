@@ -157,7 +157,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_25_122635) do
     t.bigint "category_configuration_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "number_of_pending_invitations"
     t.index ["category_configuration_id"], name: "index_creneau_availabilities_on_category_configuration_id"
+    t.index ["created_at"], name: "index_creneau_availabilities_on_created_at"
   end
 
   create_table "csv_exports", force: :cascade do |t|

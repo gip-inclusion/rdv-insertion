@@ -1,0 +1,24 @@
+<div id="notification-center" data-controller="notification-center" class="position-relative ms-2">
+  <button id="btn-notification-center" data-notification-center-target="button" class="accessible text-truncate <%= "has-notification" if @has_important_unread_notifications %>" type="button" data-action="click->notification-center#toggle" aria-haspopup="true" aria-expanded="false">
+    <i class="ri-notification-3-fill"></i>
+  </button>
+  <div id="notification-center-dropdown" data-notification-center-target="dropdown" class="p-0 mt-2 d-none position-absolute card-white">
+    <div class="notification-center-dropdown-header p-1 px-3 pe-1">
+      <h3 class="mb-0 fs-5 fw-bold">Notifications</h3>
+      <div class="notification-center-dropdown-header-actions">
+        <button id="notification-center-close" class="btn text-dark-blue px-2" data-action="click->notification-center#close" title="Fermer le centre de notifications">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+    </div>
+    <div class="notification-center-dropdown-body">
+      <%= turbo_frame_tag "notification_center_content", src: notification_center_index_path, loading: :lazy do %>
+      <div class="d-flex justify-content-center p-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>

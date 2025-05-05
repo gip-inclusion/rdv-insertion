@@ -9,19 +9,6 @@ button, input[type="button"] {
   outline: inherit;
 }
 
-#btn-organisation-navigation {
-  @extend .btn;
-  @extend .btn-header;
-  @extend .btn-blue-out;
-  min-width: 200px;
-}
-
-.btn-header {
-  height: 50px;
-  max-width: 350px;
-}
-
-
 /*
 *
 * DSFR adds styles that are applied as a global scope.
@@ -30,6 +17,43 @@ button, input[type="button"] {
 *
 */
 .reset-dsfr-overrides {
+  #btn-notification-center {
+    @extend .btn;
+    @extend .btn-header;
+    @extend .btn-blue-out;
+    position: relative;
+    width: 50px;
+    min-width: 50px !important;
+    height: 50px;
+  
+    &.has-notification {
+      @extend .btn-blue;
+  
+      &::after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: $danger;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+    }
+  }
+  
+  .btn-header {
+    height: 50px;
+    max-width: 350px;
+  }
+  
+  #btn-organisation-navigation {
+    @extend .btn;
+    @extend .btn-header;
+    @extend .btn-blue-out;
+    min-width: 200px;
+  }
+  
   .btn-blue {
     background-color: $dark-blue;
     border-color: $dark-blue;
