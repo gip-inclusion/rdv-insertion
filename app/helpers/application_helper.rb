@@ -44,7 +44,7 @@ module ApplicationHelper
   end
 
   def custom_pluralize(count, word, with_count: true)
-    "#{with_count ? "#{count} " : ""}#{count > 1 ? ActiveSupport::Inflector.pluralize(word) : word}"
+    "#{with_count ? "#{count} " : ''}#{count > 1 ? ActiveSupport::Inflector.pluralize(word) : word}"
   end
 
   def current_url
