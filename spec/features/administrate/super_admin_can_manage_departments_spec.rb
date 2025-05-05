@@ -69,8 +69,6 @@ describe "Super admin can manage departments" do
       expect(page).to have_css("dd", class: "attribute-data", text: department.email)
       expect(page).to have_css("dt", id: "phone_number", text: "TÉLÉPHONE")
       expect(page).to have_css("dd", class: "attribute-data", text: department.phone_number)
-      expect(page).to have_css("dt", id: "carnet_de_bord_deploiement_id", text: "ID DU TERRITOIRE CARNET DE BORD")
-      expect(page).to have_css("dd", class: "attribute-data", text: department.carnet_de_bord_deploiement_id)
       expect(page).to have_css("dt", id: "display_in_stats", text: "AFFICHER DANS LES STATISTIQUES")
       expect(page).to have_css("dt", id: "organisations", text: "ORGANISATIONS")
       expect(page).to have_css("tr", class: "js-table-row", count: 1)
@@ -111,10 +109,6 @@ describe "Super admin can manage departments" do
       expect(page).to have_field("department[email]")
       expect(page).to have_css("label[for=\"department_phone_number\"]", text: "Téléphone")
       expect(page).to have_field("department[phone_number]")
-      expect(page).to have_css(
-        "label[for=\"department_carnet_de_bord_deploiement_id\"]", text: "ID du territoire Carnet de bord"
-      )
-      expect(page).to have_field("department[carnet_de_bord_deploiement_id]")
       expect(page).to have_css("label[for=\"department_display_in_stats\"]", text: "Afficher dans les statistiques")
       expect(page).to have_field("department[display_in_stats]")
       expect(page).to have_button("Enregistrer")
@@ -170,12 +164,6 @@ describe "Super admin can manage departments" do
       expect(page).to have_field("department[email]", with: department.email)
       expect(page).to have_css("label[for=\"department_phone_number\"]", text: "Téléphone")
       expect(page).to have_field("department[phone_number]", with: department.phone_number)
-      expect(page).to have_css(
-        "label[for=\"department_carnet_de_bord_deploiement_id\"]", text: "ID du territoire Carnet de bord"
-      )
-      expect(page).to have_field(
-        "department[carnet_de_bord_deploiement_id]", with: department.carnet_de_bord_deploiement_id
-      )
       expect(page).to have_css("label[for=\"department_display_in_stats\"]", text: "Afficher dans les statistiques")
       expect(page).to have_field("department[display_in_stats]")
       expect(page).to have_button("Enregistrer")
