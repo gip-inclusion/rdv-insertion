@@ -44,7 +44,7 @@ module ApplicationHelper
   end
 
   def pluralize_regular(count:, word:)
-    "#{word}#{"s" if count > 1}"
+    "#{word}#{'s' if count > 1}"
   end
 
   def current_url
