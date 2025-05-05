@@ -5,6 +5,7 @@ class UserListUpload < ApplicationRecord
 
   has_many :user_rows, class_name: "UserListUpload::UserRow", dependent: :destroy
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", through: :user_rows
+  has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", through: :user_rows
 
   accepts_nested_attributes_for :user_rows
 

@@ -6,6 +6,7 @@ class CategoryConfiguration < ApplicationRecord
   belongs_to :organisation
 
   has_many :creneau_availabilities, dependent: :destroy
+  has_many :user_list_uploads, dependent: :nullify
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
