@@ -180,10 +180,6 @@ Rails.application.routes.draw do
     resources :notifications, only: [:index]
   end
 
-  namespace :carnet_de_bord do
-    resources :carnets, only: [:create]
-  end
-
   resources :departments, only: [] do
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"

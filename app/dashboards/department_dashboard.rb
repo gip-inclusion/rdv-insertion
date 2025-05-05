@@ -11,7 +11,6 @@ class DepartmentDashboard < Administrate::BaseDashboard
     id: Field::Number,
     agents: Field::HasMany,
     capital: Field::String,
-    carnet_de_bord_deploiement_id: Field::String,
     category_configurations: Field::HasMany,
     display_in_stats: Field::Boolean,
     email: Field::String,
@@ -59,7 +58,6 @@ class DepartmentDashboard < Administrate::BaseDashboard
     region
     email
     phone_number
-    carnet_de_bord_deploiement_id
     display_in_stats
     organisations
     orientation_types
@@ -79,7 +77,6 @@ class DepartmentDashboard < Administrate::BaseDashboard
     region
     email
     phone_number
-    carnet_de_bord_deploiement_id
     display_in_stats
     logo
   ].freeze

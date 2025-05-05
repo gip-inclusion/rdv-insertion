@@ -127,7 +127,6 @@ tables:
       - created_at
       - updated_at
       - display_in_stats
-      - carnet_de_bord_deploiement_id
       - disable_ft_webhooks
 
   - table_name: dpa_agreements
@@ -336,7 +335,6 @@ tables:
       - nir
       - france_travail_id
       - pole_emploi_id
-      - carnet_de_bord_carnet_id
     non_anonymized_column_names:
       - rights_opening_date
       - rdv_solidarites_user_id

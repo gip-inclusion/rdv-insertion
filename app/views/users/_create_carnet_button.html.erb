@@ -1,7 +1,0 @@
-<div id="create_carnet_button" class="d-inline">
-  <%= form_for(:carnet, url: carnet_de_bord_carnets_path, html: { method: :post, class: "d-inline" }) do |f| %>
-    <%= f.hidden_field :user_id, value: user_id %>
-    <%= f.hidden_field :department_id, value: department_id %>
-    <button type= "submit" class="btn btn-blue-out">Créer carnet</button>
-  <% end %>
-</div>

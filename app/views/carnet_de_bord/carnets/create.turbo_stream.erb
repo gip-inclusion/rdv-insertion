@@ -1,7 +1,0 @@
-<% if @success %>
-   <%= turbo_stream.replace "create_carnet_button" do %>
-     <%= render partial: "users/carnet_de_bord_carnet_link", locals: { carnet_url: @user.carnet_de_bord_carnet_url } %>
-   <% end %>
-<% end %>
-<%= render_turbo_stream_flash_messages %>
-
