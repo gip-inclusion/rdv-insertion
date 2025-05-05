@@ -23,9 +23,9 @@
             Sur les <%= @user_list_upload.user_rows.length %> usagers importés du fichier « <%= @user_list_upload.file_name %> » : il y a
             <%=
               [
-                "#{@user_list_upload.user_rows_with_errors.length} #{pluralize_regular(count: @user_list_upload.user_rows_with_errors.length, word: "dossier")} en erreurs",
-                "#{@user_list_upload.user_rows_archived.length} #{pluralize_regular(count: @user_list_upload.user_rows_archived.length, word: "dossier")} #{pluralize_regular(count: @user_list_upload.user_rows_archived.length, word: "archivé")}#{@user_list_upload.department_level? ? '' : ' dans cette organisation'}",
-                @user_list_upload.category_configuration_id ? "#{@user_list_upload.user_rows_with_closed_follow_up.length} #{pluralize_regular(count: @user_list_upload.user_rows_with_closed_follow_up.length, word: "dossier")} #{pluralize_regular(count: @user_list_upload.user_rows_with_closed_follow_up.length, word: "marqué")} comme #{pluralize_regular(count: @user_list_upload.user_rows_with_closed_follow_up.length, word: "traité")} sur cette catégorie" : nil
+                "#{custom_pluralize(@user_list_upload.user_rows_with_errors.length, "dossier")} en erreurs",
+                "#{custom_pluralize(@user_list_upload.user_rows_archived.length, "dossier")} #{custom_pluralize(@user_list_upload.user_rows_archived.length, "archivé", with_count: false)}#{@user_list_upload.department_level? ? '' : ' dans cette organisation'}",
+                @user_list_upload.category_configuration_id ? "#{custom_pluralize(@user_list_upload.user_rows_with_closed_follow_up.length, "dossier")} #{custom_pluralize(@user_list_upload.user_rows_with_closed_follow_up.length, "marqué", with_count: false)} comme #{custom_pluralize(@user_list_upload.user_rows_with_closed_follow_up.length, "traité", with_count: false)} sur cette catégorie" : nil
               ].compact.to_sentence
             -%>.
           </p>

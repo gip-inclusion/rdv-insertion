@@ -43,8 +43,8 @@ module ApplicationHelper
     current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 
-  def pluralize_regular(count:, word:)
-    "#{word}#{'s' if count > 1}"
+  def custom_pluralize(count, word, with_count: true)
+    "#{with_count ? "#{count} " : ""}#{count > 1 ? ActiveSupport::Inflector.pluralize(word) : word}"
   end
 
   def current_url
