@@ -1,5 +1,5 @@
 .reset-dsfr-overrides {
-  a {
+  a:not(.dropdown-toggle) {
     &::after {
       display: none;
     }
