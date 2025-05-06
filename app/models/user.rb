@@ -57,6 +57,7 @@ class User < ApplicationRecord
   has_many :orientations, dependent: :destroy
   has_many :diagnostics, dependent: :destroy
   has_many :contracts, dependent: :destroy
+  has_many :blocked_users, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :organisations, through: :users_organisations
