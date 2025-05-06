@@ -169,10 +169,6 @@ class User < ApplicationRecord
     types&.include?(:mobile)
   end
 
-  def carnet_de_bord_carnet_url
-    "#{ENV['CARNET_DE_BORD_URL']}/manager/carnets/#{carnet_de_bord_carnet_id}"
-  end
-
   def notifiable?
     title.present?
   end

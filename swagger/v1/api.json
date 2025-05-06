@@ -297,10 +297,6 @@
             "type": "string",
             "nullable": true
           },
-          "carnet_de_bord_carnet_id": {
-            "type": "string",
-            "nullable": true
-          },
           "rdv_solidarites_user_id": {
             "type": "integer"
           }
@@ -323,8 +319,7 @@
           "birth_name",
           "rdv_solidarites_user_id",
           "nir",
-          "france_travail_id",
-          "carnet_de_bord_carnet_id"
+          "france_travail_id"
         ]
       },
       "user_with_tags_and_referents": {
@@ -405,10 +400,6 @@
             "type": "string",
             "nullable": true
           },
-          "carnet_de_bord_carnet_id": {
-            "type": "string",
-            "nullable": true
-          },
           "rdv_solidarites_user_id": {
             "type": "integer"
           },
@@ -443,8 +434,7 @@
           "birth_name",
           "rdv_solidarites_user_id",
           "nir",
-          "france_travail_id",
-          "carnet_de_bord_carnet_id"
+          "france_travail_id"
         ]
       },
       "user_with_referents_for_delegataire_rsa": {
@@ -519,10 +509,6 @@
             "type": "string",
             "nullable": true
           },
-          "carnet_de_bord_carnet_id": {
-            "type": "string",
-            "nullable": true
-          },
           "rdv_solidarites_user_id": {
             "type": "integer"
           },
@@ -550,8 +536,7 @@
           "rights_opening_date",
           "birth_name",
           "rdv_solidarites_user_id",
-          "france_travail_id",
-          "carnet_de_bord_carnet_id"
+          "france_travail_id"
         ]
       },
       "user_with_referents_for_siae": {
@@ -622,10 +607,6 @@
             "type": "string",
             "nullable": true
           },
-          "carnet_de_bord_carnet_id": {
-            "type": "string",
-            "nullable": true
-          },
           "rdv_solidarites_user_id": {
             "type": "integer"
           },
@@ -652,8 +633,7 @@
           "rights_opening_date",
           "birth_name",
           "rdv_solidarites_user_id",
-          "france_travail_id",
-          "carnet_de_bord_carnet_id"
+          "france_travail_id"
         ]
       },
       "user_with_referents_for_autre": {
@@ -724,10 +704,6 @@
             "type": "string",
             "nullable": true
           },
-          "carnet_de_bord_carnet_id": {
-            "type": "string",
-            "nullable": true
-          },
           "rdv_solidarites_user_id": {
             "type": "integer"
           },
@@ -754,8 +730,7 @@
           "rights_opening_date",
           "birth_name",
           "rdv_solidarites_user_id",
-          "france_travail_id",
-          "carnet_de_bord_carnet_id"
+          "france_travail_id"
         ]
       },
       "user_params": {
@@ -795,7 +770,7 @@
           "department_internal_id": {
             "type": "string",
             "nullable": true,
-            "description": "Affectable seulement dans les organisations de type: conseil départemental, France Travail. Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée. Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
+            "description": "Affectable seulement dans les organisations de type: conseil départemental, délégataire RSA et France Travail"
           },
           "rights_opening_date": {
             "type": "string",
@@ -819,13 +794,9 @@
           "nir": {
             "type": "string",
             "nullable": true,
-            "description": "Affectable seulement dans les organisations de type: conseil départemental, France Travail"
+            "description": "Affectable seulement dans les organisations de type: conseil départemental, France Travail. Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée. Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
           },
           "france_travail_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "carnet_de_bord_carnet_id": {
             "type": "string",
             "nullable": true
           },
@@ -1376,7 +1347,6 @@
                         "number": "13",
                         "capital": "Marseille",
                         "region": "Provence-Alpes-Côte d'Azur",
-                        "carnet_de_bord_deploiement_id": null,
                         "organisations": [
                           {
                             "id": 2,
@@ -1384,7 +1354,7 @@
                             "email": "pole-parcours@departement13.fr",
                             "phone_number": "0101010101",
                             "department_number": "13",
-                            "rdv_solidarites_organisation_id": 2452304071,
+                            "rdv_solidarites_organisation_id": 5142930602,
                             "department_id": 1,
                             "motif_categories": [
                               {
@@ -1395,7 +1365,7 @@
                             ],
                             "motifs": [
                               {
-                                "rdv_solidarites_motif_id": 5022,
+                                "rdv_solidarites_motif_id": 26102,
                                 "name": "RSA orientation sur site",
                                 "collectif": false,
                                 "location_type": "public_office",
@@ -1409,7 +1379,7 @@
                             ],
                             "lieux": [
                               {
-                                "rdv_solidarites_lieu_id": 5022,
+                                "rdv_solidarites_lieu_id": 26102,
                                 "name": "DINUM",
                                 "address": "20 avenue de Ségur 75007 Paris",
                                 "phone_number": null
@@ -1548,33 +1518,33 @@
                     "value": {
                       "rdv": {
                         "id": 2,
-                        "starts_at": "2025-03-28T10:41:11.945+01:00",
+                        "starts_at": "2025-05-08T17:21:57.987+02:00",
                         "duration_in_min": 30,
                         "cancelled_at": null,
                         "address": "2O avenue de Ségur, 75007 Paris",
-                        "uuid": "e1faaf2d-6d4c-4d82-9d1f-edfcf99c0a4c",
+                        "uuid": "0ae0d1bd-3cb1-41de-9212-7bb734f4b2b0",
                         "created_by": "user",
                         "status": "unknown",
                         "users_count": 0,
                         "max_participants_count": null,
-                        "rdv_solidarites_rdv_id": 5025,
+                        "rdv_solidarites_rdv_id": 26105,
                         "agents": [
                           {
                             "id": 13,
-                            "email": "agent5060@gouv.fr",
+                            "email": "agent26140@gouv.fr",
                             "first_name": "jane39",
                             "last_name": "doe39",
-                            "rdv_solidarites_agent_id": 5960594509
+                            "rdv_solidarites_agent_id": 8694901523
                           }
                         ],
                         "lieu": {
-                          "rdv_solidarites_lieu_id": 5029,
+                          "rdv_solidarites_lieu_id": 26109,
                           "name": "DINUM",
                           "address": "20 avenue de Ségur 75007 Paris",
                           "phone_number": null
                         },
                         "motif": {
-                          "rdv_solidarites_motif_id": 5028,
+                          "rdv_solidarites_motif_id": 26108,
                           "name": "RSA orientation sur site",
                           "collectif": false,
                           "location_type": "public_office",
@@ -1588,33 +1558,32 @@
                         "users": [
                           {
                             "id": 1,
-                            "uid": "bnVtZXJvXzUwMjYgLSBkZW1hbmRldXI=",
-                            "affiliation_number": "numero_5026",
+                            "uid": "bnVtZXJvXzI2MTA2IC0gZGVtYW5kZXVy",
+                            "affiliation_number": "numero_26106",
                             "role": "demandeur",
                             "created_at": "0024-12-02T22:22:00.000+00:09",
-                            "department_internal_id": "4270",
-                            "first_name": "john5026",
-                            "last_name": "doe5026",
+                            "department_internal_id": "4440",
+                            "first_name": "john26106",
+                            "last_name": "doe26106",
                             "title": "monsieur",
                             "address": "27 avenue de Ségur 75007 Paris",
                             "phone_number": "+33782605941",
-                            "email": "johndoe5026@yahoo.fr",
+                            "email": "johndoe26106@yahoo.fr",
                             "birth_date": null,
                             "rights_opening_date": null,
                             "birth_name": null,
-                            "rdv_solidarites_user_id": 5026,
+                            "rdv_solidarites_user_id": 26106,
                             "nir": null,
-                            "carnet_de_bord_carnet_id": null,
                             "france_travail_id": null
                           }
                         ],
                         "organisation": {
                           "id": 3,
-                          "name": "Organisation n°5039",
-                          "email": "organisation5039@rdv-insertion.fr",
+                          "name": "Organisation n°26119",
+                          "email": "organisation26119@rdv-insertion.fr",
                           "phone_number": "0101010101",
                           "department_number": "18",
-                          "rdv_solidarites_organisation_id": 1035985962,
+                          "rdv_solidarites_organisation_id": 4104829487,
                           "department_id": 3,
                           "motif_categories": [
                             {
@@ -1629,27 +1598,26 @@
                             "id": 2,
                             "status": "unknown",
                             "created_by": "user",
-                            "created_at": "2025-03-25T10:41:11.944+01:00",
-                            "starts_at": "2025-03-28T10:41:11.945+01:00",
+                            "created_at": "2025-05-05T17:21:57.982+02:00",
+                            "starts_at": "2025-05-08T17:21:57.987+02:00",
                             "user": {
                               "id": 1,
-                              "uid": "bnVtZXJvXzUwMjYgLSBkZW1hbmRldXI=",
-                              "affiliation_number": "numero_5026",
+                              "uid": "bnVtZXJvXzI2MTA2IC0gZGVtYW5kZXVy",
+                              "affiliation_number": "numero_26106",
                               "role": "demandeur",
                               "created_at": "0024-12-02T22:22:00.000+00:09",
-                              "department_internal_id": "4270",
-                              "first_name": "john5026",
-                              "last_name": "doe5026",
+                              "department_internal_id": "4440",
+                              "first_name": "john26106",
+                              "last_name": "doe26106",
                               "title": "monsieur",
                               "address": "27 avenue de Ségur 75007 Paris",
                               "phone_number": "+33782605941",
-                              "email": "johndoe5026@yahoo.fr",
+                              "email": "johndoe26106@yahoo.fr",
                               "birth_date": null,
                               "rights_opening_date": null,
                               "birth_name": null,
-                              "rdv_solidarites_user_id": 5026,
+                              "rdv_solidarites_user_id": 26106,
                               "nir": null,
-                              "carnet_de_bord_carnet_id": null,
                               "france_travail_id": null
                             }
                           }
@@ -1894,7 +1862,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°5085. ",
+                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°26165. ",
                           "index": 0
                         }
                       ]
@@ -1905,7 +1873,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°5086. ",
+                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°26166. ",
                           "index": 0
                         }
                       ]
@@ -1979,7 +1947,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180682537782819",
+                        "nir": "180544115249643",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2005,7 +1973,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180784774791538",
+                        "nir": "180647856388763",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -2039,7 +2007,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180155485323428",
+                        "nir": "180966459486149",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2065,7 +2033,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180617565335958",
+                        "nir": "180982597752964",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -2099,7 +2067,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180868283153192",
+                        "nir": "180114989438378",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2125,7 +2093,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180396439591410",
+                        "nir": "180812618573242",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -2159,7 +2127,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180389182967762",
+                        "nir": "180545447659954",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2185,7 +2153,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180914789984821",
+                        "nir": "180732256141718",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -2219,7 +2187,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180995968271170",
+                        "nir": "180779751159855",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2245,7 +2213,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180984934695374",
+                        "nir": "180182286192608",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -2279,7 +2247,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180141346765952",
+                        "nir": "180239717399609",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2305,7 +2273,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180396428553206",
+                        "nir": "180636615857529",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -2339,7 +2307,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2363,7 +2331,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2387,7 +2355,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2411,7 +2379,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2435,7 +2403,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2459,7 +2427,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2483,7 +2451,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2507,7 +2475,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2531,7 +2499,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2555,7 +2523,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2579,7 +2547,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2603,7 +2571,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2627,7 +2595,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2651,7 +2619,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2675,7 +2643,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2699,7 +2667,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2723,7 +2691,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2747,7 +2715,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2771,7 +2739,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2795,7 +2763,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2819,7 +2787,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2843,7 +2811,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2867,7 +2835,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2891,7 +2859,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2915,7 +2883,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2939,7 +2907,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2963,7 +2931,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2987,7 +2955,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3011,7 +2979,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3035,7 +3003,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180653314274402",
+                        "nir": "180523893526318",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3066,7 +3034,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180739479319665",
+                        "nir": "180955931396951",
                         "referents_to_add": [
                           {
                             "email": "agentnontrouve@nomdedomaine.fr"
@@ -3092,7 +3060,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180676698546828",
+                        "nir": "180244446437639",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -3126,7 +3094,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180666688896795",
+                        "nir": "180983859195602",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3152,7 +3120,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180689731696262",
+                        "nir": "180317752978307",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -3186,7 +3154,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180369856451497",
+                        "nir": "180452517683548",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3217,7 +3185,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180996953735445",
+                        "nir": "180568414235930",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3319,9 +3287,8 @@
                         "birth_date": "1980-03-11",
                         "rights_opening_date": null,
                         "birth_name": null,
-                        "rdv_solidarites_user_id": 5041,
-                        "nir": "180892558391604",
-                        "carnet_de_bord_carnet_id": null,
+                        "rdv_solidarites_user_id": 26121,
+                        "nir": "180154126649475",
                         "france_travail_id": null,
                         "referents": [
                           {
@@ -3329,7 +3296,7 @@
                             "email": "agentreferent@nomdedomaine.fr",
                             "first_name": "jane113",
                             "last_name": "doe113",
-                            "rdv_solidarites_agent_id": 993636384
+                            "rdv_solidarites_agent_id": 8383046664
                           }
                         ],
                         "tags": [
@@ -3345,10 +3312,10 @@
                           "format": "sms",
                           "clicked": false,
                           "rdv_with_referents": false,
-                          "created_at": "2025-03-25T10:41:14.689+01:00",
+                          "created_at": "2025-05-05T17:22:06.290+02:00",
                           "delivery_status": null,
                           "delivered_at": null,
-                          "expires_at": "2025-04-01T10:41:14.667+02:00",
+                          "expires_at": "2025-05-12T17:22:06.203+02:00",
                           "motif_category": {
                             "id": 2,
                             "short_name": "rsa_orientation_16",
@@ -3360,10 +3327,10 @@
                           "format": "email",
                           "clicked": false,
                           "rdv_with_referents": false,
-                          "created_at": "2025-03-25T10:41:14.659+01:00",
+                          "created_at": "2025-05-05T17:22:06.182+02:00",
                           "delivery_status": null,
                           "delivered_at": null,
-                          "expires_at": "2025-04-01T10:41:14.635+02:00",
+                          "expires_at": "2025-05-12T17:22:06.111+02:00",
                           "motif_category": {
                             "id": 1,
                             "short_name": "rsa_orientation_15",
@@ -3511,7 +3478,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°5144. "
+                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°26224. "
                         }
                       ]
                     }
@@ -3521,7 +3488,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°5149. "
+                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°26229. "
                         }
                       ]
                     }
@@ -3564,7 +3531,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180892558391604",
+                      "nir": "180154126649475",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3598,7 +3565,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180367199622685",
+                      "nir": "180259776363367",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3632,7 +3599,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180671919115120",
+                      "nir": "180819224555928",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3666,7 +3633,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180266915147158",
+                      "nir": "180256548622645",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3700,7 +3667,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180841971254975",
+                      "nir": "180481298192569",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3734,7 +3701,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180798913241522",
+                      "nir": "180617949194850",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3768,7 +3735,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180915688571243",
+                      "nir": "180348687235835",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3802,7 +3769,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180139552833601",
+                      "nir": "180367277541696",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3836,7 +3803,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180328338114787",
+                      "nir": "180446425251130",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3870,7 +3837,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180813157812276",
+                      "nir": "180557369159397",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3904,7 +3871,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180212355493614",
+                      "nir": "180825283198791",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3938,7 +3905,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180268154182992",
+                      "nir": "180757621292518",
                       "referents_to_add": [
                         {
                           "email": "agentnontrouve@nomdedomaine.fr"
@@ -3972,7 +3939,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180553534977744",
+                      "nir": "180434735425594",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"

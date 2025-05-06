@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_25_122635) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -186,7 +186,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_25_122635) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
-    t.string "carnet_de_bord_deploiement_id"
     t.boolean "disable_ft_webhooks", default: false
   end
 
@@ -614,7 +613,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_25_122635) do
     t.datetime "last_webhook_update_received_at"
     t.string "nir"
     t.string "france_travail_id"
-    t.string "carnet_de_bord_carnet_id"
     t.string "created_through"
     t.bigint "old_rdv_solidarites_user_id"
     t.string "created_from_structure_type"

@@ -3,7 +3,6 @@ import { makeAutoObservable } from "mobx";
 
 import CreationCell from "../components/user/CreationCell";
 import ReferentAssignationCell from "../components/user/ReferentAssignationCell";
-import CarnetCreationCell from "../components/user/CarnetCreationCell";
 import EditableCell from "../components/user/EditableCell";
 
 class Users {
@@ -168,12 +167,6 @@ class Users {
         name: this.sourcePage === "upload" ? "Création compte" : "Voir compte",
         attributes: { style: { whiteSpace: "nowrap" }, scope: "col" },
         content: ({ user }) => <CreationCell user={user} />
-      },
-      {
-        name: "Création carnet",
-        attributes: { style: { whiteSpace: "nowrap" }, scope: "col" },
-        visible: this.showCarnetColumn,
-        content: ({ user }) => <CarnetCreationCell user={user} />
       },
       {
         name: "Référent",
