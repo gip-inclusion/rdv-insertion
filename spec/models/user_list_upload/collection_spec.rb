@@ -130,5 +130,29 @@ RSpec.describe UserListUpload::Collection do
       expect(collection.user_rows.first).to eq(user_row1) # John
       expect(collection.user_rows.last).to eq(user_row2)  # Jane
     end
+
+    context "when sorting by before_user_save_status" do
+      it "delegates to Sorter with correct parameters" do
+        expect(UserListUpload::Sorter).to receive(:sort).with(collection.user_rows, "before_user_save_status", "asc")
+        collection.sort_by!(sort_by: "before_user_save_status", sort_direction: "asc")
+      end
+
+      it "delegates to Sorter with desc direction" do
+        expect(UserListUpload::Sorter).to receive(:sort).with(collection.user_rows, "before_user_save_status", "desc")
+        collection.sort_by!(sort_by: "before_user_save_status", sort_direction: "desc")
+      end
+    end
+
+    context "when sorting by standard attributes" do
+      it "delegates to Sorter for standard attributes" do
+        expect(UserListUpload::Sorter).to receive(:sort).with(collection.user_rows, "first_name", "asc")
+        collection.sort_by!(sort_by: "first_name", sort_direction: "asc")
+      end
+
+      it "delegates to Sorter with desc direction for standard attributes" do
+        expect(UserListUpload::Sorter).to receive(:sort).with(collection.user_rows, "last_name", "desc")
+        collection.sort_by!(sort_by: "last_name", sort_direction: "desc")
+      end
+    end
   end
 end

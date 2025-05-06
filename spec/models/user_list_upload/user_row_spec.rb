@@ -327,8 +327,13 @@ describe UserListUpload::UserRow do
     let(:user_row) { create(:user_row, user_list_upload: user_list_upload) }
 
     describe "#before_user_save_status" do
-      it "returns :to_create when there is no matching user" do
-        expect(user_row.before_user_save_status).to eq(:to_create)
+      it "returns :to_create_with_no_errors when there is no matching user" do
+        expect(user_row.before_user_save_status).to eq(:to_create_with_no_errors)
+      end
+
+      it "returns :to_create_with_errors when the user is invalid" do
+        allow(user_row).to receive(:user_valid?).and_return(false)
+        expect(user_row.before_user_save_status).to eq(:to_create_with_errors)
       end
 
       context "when there is a matching user" do
@@ -350,8 +355,13 @@ describe UserListUpload::UserRow do
             allow(user_row).to receive(:will_change_matching_user?).and_return(true)
           end
 
-          it "returns :to_update" do
-            expect(user_row.before_user_save_status).to eq(:to_update)
+          it "returns :to_update_with_no_errors when the user is valid" do
+            expect(user_row.before_user_save_status).to eq(:to_update_with_no_errors)
+          end
+
+          it "returns :to_update_with_errors when the user is invalid" do
+            allow(user_row).to receive(:user_valid?).and_return(false)
+            expect(user_row.before_user_save_status).to eq(:to_update_with_errors)
           end
         end
       end
