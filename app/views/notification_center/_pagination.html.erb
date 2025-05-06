@@ -2,6 +2,6 @@
   <div class="notification-center-dropdown-body-item-footer align-items-center d-flex justify-content-center">
     <%= link_to notification_center_index_path(page: @creneaux_availabilities.next_page), class: "btn btn-link" do %>
       Afficher plus
-    <% end unless @creneaux_availabilities.last_page? %>
+    <% end unless @creneaux_availabilities.last_page? || @creneaux_availabilities.empty? %>
   </div>
 <% end %>
