@@ -1,4 +1,8 @@
 module UserListUpload::InvitationAttemptsHelper
+  def user_row_background_color_before_invitation(user_row)
+    "background-light" if user_row.selected_for_invitation?
+  end
+
   def user_row_before_invitation_badge_class(user_row)
     {
       already_invited: "background-very-light-grey text-very-dark-grey",
