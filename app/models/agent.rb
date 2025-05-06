@@ -11,6 +11,7 @@ class Agent < ApplicationRecord
   has_many :csv_exports, dependent: :destroy
   has_many :parcours_documents, dependent: :nullify
   has_many :dpa_agreements, dependent: :nullify
+  has_many :user_list_uploads, dependent: :destroy
 
   has_many :organisations, through: :agent_roles
   has_many :departments, -> { distinct }, through: :organisations
