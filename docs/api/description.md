@@ -339,7 +339,6 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
         "rdv_solidarites_user_id": 468,
         "nir": null,
         "france_travail_id": null,
-        "carnet_de_bord_carnet_id": null
       }
     ],
     "organisation": {
@@ -397,7 +396,6 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
           "birth_name": null,
           "rdv_solidarites_user_id": 468,
           "nir": null,
-          "carnet_de_bord_carnet_id": null,
           "france_travail_id": null
         }
       }
