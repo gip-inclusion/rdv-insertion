@@ -30,7 +30,7 @@ class NotificationCenterController < ApplicationController
   def creneaux_availabilities
     @creneaux_availabilities ||= CreneauAvailability
                                  .joins(:category_configuration)
-                                 .includes(category_configuration: :motif_category)
+                                 .preload(category_configuration: :motif_category)
                                  .where(category_configuration: { organisation_id: current_organisation_id })
                                  .with_rsa_related_motif
                                  .with_pending_invitations
