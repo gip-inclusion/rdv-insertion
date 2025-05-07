@@ -13,6 +13,24 @@ RSpec.describe CreneauAvailability, type: :model do
         expect(result).not_to include(creneau_with_zero_invitations)
       end
     end
+
+    describe ".with_rsa_related_motif" do
+      let!(:rsa_motif_category) { create(:motif_category, motif_category_type: "rsa_orientation") }
+      let!(:non_rsa_motif_category) { create(:motif_category, motif_category_type: "autre") }
+
+      let!(:rsa_category_config) { create(:category_configuration, motif_category: rsa_motif_category) }
+      let!(:non_rsa_category_config) { create(:category_configuration, motif_category: non_rsa_motif_category) }
+
+      let!(:rsa_creneau) { create(:creneau_availability, category_configuration: rsa_category_config) }
+      let!(:non_rsa_creneau) { create(:creneau_availability, category_configuration: non_rsa_category_config) }
+
+      it "returns only records with RSA-related motif categories" do
+        result = described_class.with_rsa_related_motif
+
+        expect(result).to include(rsa_creneau)
+        expect(result).not_to include(non_rsa_creneau)
+      end
+    end
   end
 
   describe "#availability_level" do

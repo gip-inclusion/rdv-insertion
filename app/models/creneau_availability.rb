@@ -5,6 +5,15 @@ class CreneauAvailability < ApplicationRecord
     where.not(number_of_pending_invitations: [nil, 0])
   }
 
+  scope :with_rsa_related_motif, lambda {
+    joins(category_configuration: :motif_category)
+      .where(category_configuration: {
+               motif_categories: {
+                 motif_category_type: MotifCategory::RSA_RELATED_TYPES
+               }
+             })
+  }
+
   def availability_level
     return "info" if number_of_creneaux_available > 190
 

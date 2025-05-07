@@ -29,12 +29,10 @@ class NotificationCenterController < ApplicationController
 
   def creneaux_availabilities
     @creneaux_availabilities ||= CreneauAvailability
-                                 .joins(category_configuration: :motif_category)
+                                 .joins(:category_configuration)
                                  .includes(category_configuration: :motif_category)
                                  .where(category_configuration: { organisation_id: current_organisation_id })
-                                 .where(motif_category: {
-                                          short_name: MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN
-                                        })
+                                 .with_rsa_related_motif
                                  .with_pending_invitations
                                  .order(created_at: :desc)
                                  .page(params[:page])
