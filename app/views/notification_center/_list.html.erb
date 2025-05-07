@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "notification_center_list" do %>
   <% @notifications.each do |notification| %>
     <%= link_to @notification_link, target: "_blank", **with_rdv_solidarites_impersonation_warning, title: @notification_link_title do %>
-      <%= render "common/rdvs_impersonation_warning", url: notification.link if agent_impersonated? %>
+      <%= render "common/rdvs_impersonation_warning", url: @notification_link if agent_impersonated? %>
       <div data-created_at="<%= notification.created_at.to_i %>" class="notification-center-dropdown-body-item position-relative px-3 py-2 <%= "seen" if notification_read?(notification) %> <%= "important" if ["warning", "danger"].include?(notification.type) %>">
         <div class="notification-center-dropdown-body-item-avatar d-flex justify-content-center align-items-center alert-<%= notification.type %>">
           <span>
