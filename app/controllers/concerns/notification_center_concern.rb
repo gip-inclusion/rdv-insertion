@@ -1,9 +1,6 @@
 module NotificationCenterConcern
   extend ActiveSupport::Concern
 
-  MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN = [:rsa_accompagnement, :rsa_orientation,
-                                                              :rsa_orientation_france_travail].freeze
-
   included do
     before_action :set_has_important_unread_notifications, if: :show_notification_center?
     helper_method :notifications_read_at, :notification_read?,
@@ -14,11 +11,9 @@ module NotificationCenterConcern
 
   def set_has_important_unread_notifications
     @has_important_unread_notifications = CreneauAvailability
-                                          .joins(category_configuration: :motif_category)
+                                          .with_rsa_related_motif
+                                          .joins(:category_configuration)
                                           .where(category_configuration: { organisation_id: current_organisation_id })
-                                          .where(motif_category: {
-                                                   short_name: MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN
-                                                 })
                                           .where(created_at: notifications_read_at...)
                                           # If organisation has 2 valid motif_categories it will receive 2 notifications
                                           # Any of the notifications created today may be important, not just the last
@@ -52,6 +47,6 @@ module NotificationCenterConcern
   def organisation_has_expected_motifs_for_notification_center?
     current_organisation
       .motif_categories
-      .exists?(short_name: MOTIF_SHORT_NAMES_FOR_WHICH_NOTIFICATION_CENTER_IS_SHOWN)
+      .exists?(motif_category_type: MotifCategory::RSA_RELATED_TYPES)
   end
 end

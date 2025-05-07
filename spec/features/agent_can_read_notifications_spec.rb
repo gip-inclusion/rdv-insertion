@@ -2,7 +2,9 @@ describe "Agents can read notifications", :js do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
-  let!(:motif_category_other) { create(:motif_category, short_name: "coucou", name: "Coucou") }
+  let!(:motif_category_other) do
+    create(:motif_category, short_name: "coucou", name: "Coucou", motif_category_type: "autre")
+  end
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
   end
@@ -58,7 +60,9 @@ describe "Agents can read notifications", :js do
   end
 
   context "organisation has no valid motif_category" do
-    let!(:motif_category) { create(:motif_category, short_name: "other_category", name: "Other Category") }
+    let!(:motif_category) do
+      create(:motif_category, short_name: "other_category", name: "Other Category", motif_category_type: "autre")
+    end
 
     before do
       setup_agent_session(agent)
