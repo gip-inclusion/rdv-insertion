@@ -12,7 +12,7 @@ module Invitations
     def call
       verify_format!(invitation)
       verify_phone_number!(invitation)
-      send_sms(invitation.sms_sender_name, invitation.phone_number, content, invitation.record_identifier)
+      send_sms(invitation, content)
     end
 
     private
@@ -21,7 +21,7 @@ module Invitations
       if invitation.reminder?
         send("#{invitation.template_model}_reminder_content")
       else
-        send("#{@invitation.template_model}_content")
+        send("#{invitation.template_model}_content")
       end
     end
   end

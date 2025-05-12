@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_12_150409) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -257,6 +257,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.string "trigger", default: "manual", null: false
     t.string "delivery_status"
     t.datetime "last_brevo_webhook_received_at"
+    t.string "sms_provider"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["expires_at"], name: "index_invitations_on_expires_at"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
@@ -341,6 +342,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.bigint "participation_id"
     t.string "delivery_status"
     t.datetime "last_brevo_webhook_received_at"
+    t.string "sms_provider"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
 

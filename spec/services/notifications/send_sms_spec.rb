@@ -47,13 +47,21 @@ describe Notifications::SendSms, type: :service do
     create(:participation, user: user, rdv: rdv, follow_up: follow_up)
   end
   let!(:notification) do
-    create(:notification, participation: participation, format: "sms", event: "participation_created")
+    create(:notification, participation: participation, format: "sms", sms_provider: "brevo", event: "participation_created")
+  end
+
+  let!(:content) do
+    "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+      "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
+      " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+      "Ce RDV est obligatoire. " \
+      "En cas d’empêchement, appelez rapidement le 0101010101."
   end
 
   describe "#call" do
     before do
       allow(notification).to receive(:sms_sender_name).and_return(sms_sender_name)
-      allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(Sms::SendWithBrevo).to receive(:call).and_return(OpenStruct.new(success?: true))
     end
 
     it("is a success") { is_a_success }
@@ -104,7 +112,7 @@ describe Notifications::SendSms, type: :service do
       end
     end
 
-    context "when the invitation format is not sms" do
+    context "when the notification format is not sms" do
       before { notification.format = "email" }
 
       it("is a failure") { is_a_failure }
@@ -114,17 +122,42 @@ describe Notifications::SendSms, type: :service do
       end
     end
 
-    describe "RSA orientation" do
-      let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
-          "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
-          " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-          "Ce RDV est obligatoire. " \
-          "En cas d’empêchement, appelez rapidement le 0101010101."
+    context "when the sms provider is primotexto" do
+      before do
+        notification.update!(sms_provider: "primotexto")
+        allow(Sms::SendWithPrimotexto).to receive(:call).and_return(OpenStruct.new(success?: true))
       end
 
+      it "calls the send sms with primotexto service with the right content" do
+        expect(Sms::SendWithPrimotexto).to receive(:call)
+          .with(
+            phone_number: phone_number, content: content, sender_name: sms_sender_name
+          )
+        subject
+      end
+
+      it "is a success" do
+        is_a_success
+      end
+
+      context "when the sms provider returns a failure" do
+        before do
+          allow(Sms::SendWithPrimotexto).to receive(:call).and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+        end
+
+        it "is a failure" do
+          is_a_failure
+        end
+
+        it "returns the error" do
+          expect(subject.errors).to eq(["some error"])
+        end
+      end
+    end
+
+    describe "RSA orientation" do
       it "sends the sms with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -147,7 +180,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -175,7 +208,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the overriden content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -198,7 +231,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -221,7 +254,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -241,7 +274,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -263,7 +296,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -286,7 +319,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -310,7 +343,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "sends the sms with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -336,7 +369,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -359,7 +392,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "sends the sms with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -379,7 +412,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "sends the sms with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -401,7 +434,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -425,7 +458,7 @@ describe Notifications::SendSms, type: :service do
             end
 
             it "calls the send transactional service with the right content" do
-              expect(SendTransactionalSms).to receive(:call)
+              expect(Sms::SendWithBrevo).to receive(:call)
                 .with(
                   phone_number: phone_number, content: content,
                   sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -451,7 +484,7 @@ describe Notifications::SendSms, type: :service do
       end
 
       it "sends the sms with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -474,7 +507,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -495,7 +528,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -517,7 +550,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -540,7 +573,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -564,7 +597,7 @@ describe Notifications::SendSms, type: :service do
       end
 
       it "sends the sms with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -585,7 +618,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -606,7 +639,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -627,7 +660,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -649,7 +682,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -674,7 +707,7 @@ describe Notifications::SendSms, type: :service do
       end
 
       it "sends the sms with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -698,7 +731,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -719,7 +752,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "sends the sms with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -741,7 +774,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: notification.record_identifier
@@ -765,7 +798,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: notification.record_identifier

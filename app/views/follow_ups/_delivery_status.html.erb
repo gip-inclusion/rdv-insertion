@@ -1,16 +1,30 @@
 <div>
   <span class="small">
-    <% if deliverable.delivery_failed? %>
-      <span class="text-danger">
-        Non délivrée
-        <i
-          class="ri-error-warning-fill"
-          <%= tooltip(content: not_delivered_tooltip_content(format), placement: "top") %>
-        >
-        </i>
-      </span>
+    <% if deliverable.delivery_status_retrievable? %>
+      <% if deliverable.delivery_failed? %>
+        <span class="text-danger">
+          Non délivrée
+          <i
+            class="ri-error-warning-fill"
+            <%= tooltip(content: not_delivered_tooltip_content(format), placement: "top") %>
+          >
+          </i>
+        </span>
+      <% else %>
+        <%= deliverable.human_delivery_status_and_date %>
+      <% end %>
     <% else %>
-      <%= deliverable.human_delivery_status_and_date %>
+      État de livraison inconnu
+      <i
+        class="ri-information-line"
+        <%=
+          tooltip(
+            content: "Le fournisseur de SMS utilisé pour envoyer le message ne permet pas de récupérer le statut de livraison",
+            placement: "top"
+          )
+        %>
+      >
+      </i>
     <% end %>
   </span>
 </div>
