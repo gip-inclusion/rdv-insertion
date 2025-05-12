@@ -34,8 +34,8 @@ describe Invitations::SendSms, type: :service do
     create(
       :invitation,
       user: user, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
-      organisations: [organisation],
-      link: "https://www.rdv-solidarites-test.localhost/lieux?invitation_token=123", format: "sms", sms_provider: "brevo",
+      organisations: [organisation], link: "https://www.rdv-solidarites-test.localhost/lieux?invitation_token=123",
+      format: "sms", sms_provider: "brevo",
       follow_up: follow_up
     )
   end
@@ -114,7 +114,8 @@ describe Invitations::SendSms, type: :service do
 
       context "when the sms provider returns a failure" do
         before do
-          allow(Sms::SendWithPrimotexto).to receive(:call).and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+          allow(Sms::SendWithPrimotexto).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "is a failure" do

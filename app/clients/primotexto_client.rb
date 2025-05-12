@@ -1,24 +1,26 @@
 class PrimotextoClient
-  SEND_SMS_URL = "https://api.primotexto.com/v2/notification/messages/send"
+  SEND_SMS_URL = "https://api.primotexto.com/v2/notification/messages/send".freeze
 
-  def self.send_sms(phone_number:, sender_name:, content:)
-    Faraday.post(
-      SEND_SMS_URL,
+  class << self
+    def send_sms(phone_number:, sender_name:, content:)
+      Faraday.post(
+        SEND_SMS_URL,
+        {
+          number: phone_number,
+          sender: sender_name,
+          message: content
+        }.to_json,
+        headers
+      )
+    end
+
+    private
+
+    def headers
       {
-        number: phone_number,
-        sender: sender_name,
-        message: content
-      }.to_json,
-      headers
-    )
-  end
-
-  private
-
-  def self.headers
-    {
-      "Content-Type" => "application/json",
-      "X-Primotexto-ApiKey" => ENV["PRIMOTEXTO_API_KEY"]
-    }
+        "Content-Type" => "application/json",
+        "X-Primotexto-ApiKey" => ENV["PRIMOTEXTO_API_KEY"]
+      }
+    end
   end
 end

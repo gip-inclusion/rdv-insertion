@@ -24,7 +24,8 @@ describe Sms::SendWithPrimotexto, type: :service do
 
   context "when the PrimotextoClient returns a failure" do
     before do
-      allow(PrimotextoClient).to receive(:send_sms).and_return(OpenStruct.new(success?: false, body: { "code" => "some code" }))
+      allow(PrimotextoClient).to receive(:send_sms)
+        .and_return(OpenStruct.new(success?: false, body: { "code" => "some code" }))
     end
 
     it "is a failure" do
@@ -32,7 +33,9 @@ describe Sms::SendWithPrimotexto, type: :service do
     end
 
     it "returns the error" do
-      expect(subject.errors).to eq(["une erreur est survenue en envoyant le sms via Primotexto: {\"code\" => \"some code\"}"])
+      expect(subject.errors).to eq(
+        ["une erreur est survenue en envoyant le sms via Primotexto: {\"code\" => \"some code\"}"]
+      )
     end
   end
 end

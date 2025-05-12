@@ -19,7 +19,9 @@ module Sms
     end
 
     def primotexto_response
-      @primotexto_response ||= PrimotextoClient.send_sms(phone_number: @phone_number, sender_name: @sender_name, content: @content)
+      @primotexto_response ||= PrimotextoClient.send_sms(
+        phone_number: @phone_number, sender_name: @sender_name, content: @content
+      )
     end
   end
 end

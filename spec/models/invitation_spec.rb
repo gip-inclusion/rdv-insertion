@@ -59,8 +59,9 @@ describe Invitation do
   end
 
   describe "#set_sms_provider" do
-    let!(:invitation) { build(:invitation, format: "sms") }
     subject { invitation.save! }
+
+    let!(:invitation) { build(:invitation, format: "sms") }
 
     context "when primotexto is available and forced" do
       before do

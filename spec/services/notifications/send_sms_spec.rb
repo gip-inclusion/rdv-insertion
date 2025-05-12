@@ -47,7 +47,10 @@ describe Notifications::SendSms, type: :service do
     create(:participation, user: user, rdv: rdv, follow_up: follow_up)
   end
   let!(:notification) do
-    create(:notification, participation: participation, format: "sms", sms_provider: "brevo", event: "participation_created")
+    create(
+      :notification,
+      participation: participation, format: "sms", sms_provider: "brevo", event: "participation_created"
+    )
   end
 
   let!(:content) do
@@ -142,7 +145,8 @@ describe Notifications::SendSms, type: :service do
 
       context "when the sms provider returns a failure" do
         before do
-          allow(Sms::SendWithPrimotexto).to receive(:call).and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+          allow(Sms::SendWithPrimotexto).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "is a failure" do
