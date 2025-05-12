@@ -189,6 +189,7 @@ tables:
       - trigger
       - rdv_with_referents
       - expires_at
+      - sms_provider
 
   - table_name: invitations_organisations
     non_anonymized_column_names:
@@ -265,6 +266,7 @@ tables:
       - rdv_solidarites_rdv_id
       - format
       - participation_id
+      - sms_provider
 
   - table_name: orientations
     anonymized_column_names: []
