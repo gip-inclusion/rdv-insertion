@@ -90,24 +90,14 @@ class UserListUpload < ApplicationRecord
     super
   end
 
-  def potential_matching_users_in_all_app
-    @potential_matching_users_in_all_app ||=
-      User.active.where(email: user_row_attributes.pluck("email").compact)
-          .or(
-            User.active.where(phone_number: user_row_attributes_formatted_phone_numbers)
-          )
-          .or(User.active.where(nir: user_row_attributes_formatted_nirs))
-          .select(:id, :nir, :phone_number, :email, :first_name)
-  end
-
   def potential_matching_users_in_department
-    @potential_matching_users_in_department ||= User.active.joins(:organisations).where(
+    @potential_matching_users_in_department ||= User.active.where(
       affiliation_number: user_row_attributes.pluck("affiliation_number").compact,
-      organisations: { department_id: department.id }
+      department_id: department.id
     ).or(
-      User.active.joins(:organisations).where(
+      User.active.where(
         department_internal_id: user_row_attributes.pluck("department_internal_id").compact,
-        organisations: { department_id: department.id }
+        department_id: department.id
       )
     ).select(:id, :department_internal_id, :affiliation_number, :role)
   end

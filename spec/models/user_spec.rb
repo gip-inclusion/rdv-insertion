@@ -468,33 +468,6 @@ describe User do
     end
   end
 
-  describe "#address_department" do
-    subject { user.address_department }
-
-    let!(:yvelines) { create(:department, number: "78") }
-    let!(:drome) { create(:department, number: "26") }
-    let!(:organisation_yvelines_department) { create(:organisation, department: yvelines) }
-    let!(:organisation_drome_department) { create(:organisation, department: drome) }
-    let!(:user) do
-      create(:user, address: "78940 Garancières la Queue",
-                    organisations: [organisation_yvelines_department, organisation_drome_department])
-    end
-
-    it "retrieves the current department through the address" do
-      expect(subject).to eq(yvelines)
-    end
-
-    context "when the user has no post code in address" do
-      let!(:user) do
-        create(:user, address: nil, organisations: [organisation_yvelines_department, organisation_drome_department])
-      end
-
-      it "does not retrieve a current department" do
-        expect(subject).to be_nil
-      end
-    end
-  end
-
   describe "#current_department" do
     subject { user.current_department }
 
