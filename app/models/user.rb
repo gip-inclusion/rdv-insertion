@@ -60,7 +60,9 @@ class User < ApplicationRecord
   has_many :blocked_users, dependent: :destroy
 
   has_many :rdvs, through: :participations
-  has_many :organisations, through: :users_organisations
+  # dependent: :destroy is needed to trigger AR callbacks on UsersOrganisation when deleting an organisation
+  # from the user
+  has_many :organisations, through: :users_organisations, dependent: :destroy
   has_many :notifications, through: :participations
   has_many :category_configurations, through: :organisations
   has_many :motif_categories, through: :follow_ups
