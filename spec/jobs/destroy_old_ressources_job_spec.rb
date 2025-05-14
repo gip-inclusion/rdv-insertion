@@ -4,7 +4,7 @@ describe DestroyOldRessourcesJob do
   end
 
   let!(:organisation) { create(:organisation) }
-  let!(:recent_user) { create(:user, organisations: [organisation]) }
+  let!(:recent_user) { create(:user, department: organisation.department, organisations: [organisation]) }
   let!(:recent_rdv_collectif_with_no_participation) do
     create(:rdv, participations: [], created_at: 25.months.ago)
   end

@@ -26,7 +26,7 @@ describe Users::PushToRdvSolidarites, type: :service do
   let!(:user) do
     create(
       :user,
-      user_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
+      user_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id, department: organisation.department)
     )
   end
 

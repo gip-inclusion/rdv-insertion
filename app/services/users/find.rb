@@ -38,7 +38,7 @@ module Users
     def find_user_by_email
       return if @attributes[:email].blank? || @attributes[:first_name].blank?
 
-      users.find_by(email: @attributes[:email]).find do |user|
+      users.where(email: @attributes[:email]).find do |user|
         user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
@@ -46,7 +46,7 @@ module Users
     def find_user_by_phone_number
       return if phone_number_formatted.blank? || @attributes[:first_name].blank?
 
-      users.find_by(phone_number: phone_number_formatted).find do |user|
+      users.where(phone_number: phone_number_formatted).find do |user|
         user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
