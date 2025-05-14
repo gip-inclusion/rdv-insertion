@@ -14,7 +14,6 @@ FactoryBot.define do
     created_at { Time.zone.parse("24/12/2O22 22:22") }
     created_through { "rdv_insertion_upload_page" }
     created_from_structure { association :organisation }
-    department { created_from_structure.department }
     trait :skip_validate do
       to_create { |instance| instance.save(validate: false) }
     end
@@ -22,6 +21,10 @@ FactoryBot.define do
       birth_date { "1985-01-01" }
       nir { "185027800608443" }
       title { "monsieur" }
+    end
+
+    after(:build) do |user|
+      user.department ||= user.organisations.last&.department || create(:department)
     end
   end
 end
