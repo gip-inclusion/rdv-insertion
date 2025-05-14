@@ -13,6 +13,7 @@ describe InvitationsController do
       create(
         :user,
         first_name: "JANE", last_name: "DOE", title: "madame",
+        department: department,
         id: user_id, organisations: [organisation]
       )
     end
