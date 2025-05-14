@@ -3,7 +3,7 @@ describe "Agents can edit users tags", :js do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, name: "orga 1", department:) }
   let!(:other_organisation) { create(:organisation, name: "orga 2", department:) }
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, department:, organisations: [organisation]) }
 
   before do
     setup_agent_session(agent)
@@ -20,7 +20,7 @@ describe "Agents can edit users tags", :js do
     end
 
     context "when the user belongs to two orgs" do
-      let!(:user) { create(:user, department: organisation.department, organisations: [organisation, other_organisation]) }
+      let!(:user) { create(:user, department:, organisations: [organisation, other_organisation]) }
 
       it "shows two links" do
         visit organisation_user_path(user, organisation_id: organisation.id)
