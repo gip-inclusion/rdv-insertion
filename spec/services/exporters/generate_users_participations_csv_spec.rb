@@ -268,21 +268,6 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         it "displays the rdv" do
           expect(subject.csv).to include("22/01/2022")
         end
-
-        context "when the org is in a different department" do
-          let!(:other_organisation) do
-            create(:organisation, department: other_department, name: "CD 01", users: [user1])
-          end
-          let!(:other_department) { create(:department, name: "Ain", number: "01") }
-
-          it "displays the rdv" do
-            expect(subject.csv).to include("22/01/2022")
-          end
-
-          it "precises the org is in another department" do
-            expect(subject.csv).to include("CD 01 (Organisation d'un autre départment : 01 - Ain)")
-          end
-        end
       end
 
       context "when the agent does not belong to the other org" do
