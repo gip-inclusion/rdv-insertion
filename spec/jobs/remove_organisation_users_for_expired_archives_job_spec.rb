@@ -3,11 +3,12 @@ describe RemoveOrganisationUsersForExpiredArchivesJob do
     described_class.new.perform
   end
 
+  let!(:department) { create(:department) }
   let!(:agent) { create(:agent, admin_role_in_organisations: organisations) }
-  let!(:organisation1) { create(:organisation) }
-  let!(:organisation2) { create(:organisation) }
-  let!(:organisation3) { create(:organisation) }
-  let!(:organisation4) { create(:organisation) }
+  let!(:organisation1) { create(:organisation, department: department) }
+  let!(:organisation2) { create(:organisation, department: department) }
+  let!(:organisation3) { create(:organisation, department: department) }
+  let!(:organisation4) { create(:organisation, department: department) }
   let!(:organisations) { [organisation1, organisation2, organisation3, organisation4] }
   let!(:archived_user) { create(:user, organisations: organisations) }
   let!(:old_archive1) { create(:archive, user: archived_user, organisation: organisation1, created_at: 25.months.ago) }

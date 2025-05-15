@@ -41,6 +41,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           birth_name: nil,
           address: "13 rue de la République 13001 MARSEILLE",
           department_internal_id: "11111444",
+          department_id: organisation.department_id,
           nir: generate_random_nir,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
@@ -65,6 +66,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           rights_opening_date: "15/11/2021",
           address: "5 Avenue du Moulin des Baux, 13260 Cassis",
           department_internal_id: "22221111",
+          department_id: organisation.department_id,
           france_travail_id: "22233333",
           nir: generate_random_nir,
           invitation: {
@@ -240,6 +242,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           birth_date: "11/03/1980",
           birth_name: nil,
           address: "13 rue de la République 13001 MARSEILLE",
+          department_id: organisation.department_id,
           department_internal_id: "11111444",
           nir: generate_random_nir,
           referents_to_add: [

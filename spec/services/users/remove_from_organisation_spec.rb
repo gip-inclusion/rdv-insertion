@@ -44,7 +44,7 @@ describe Users::RemoveFromOrganisation, type: :service do
     end
 
     context "when the user is attached to more than one org" do
-      let!(:other_organisation) { create(:organisation) }
+      let!(:other_organisation) { create(:organisation, department: organisation.department) }
       let!(:user) do
         create(:user, department: organisation.department, organisations: [organisation, other_organisation])
       end
