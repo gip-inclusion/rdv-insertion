@@ -92,7 +92,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
         {
           created_through: "rdv_insertion_api",
           created_from_structure_type: "Organisation",
-          created_from_structure_id: organisation.id
+          created_from_structure_id: organisation.id,
+          department_id: organisation.department_id
         }
       end
 
