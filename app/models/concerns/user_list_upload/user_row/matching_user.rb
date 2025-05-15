@@ -11,13 +11,14 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def find_matching_user
-    department_users = potential_matching_users_in_department.to_a
+    users_with_department_specific_attributes = potential_matching_users_by_department_specific_attributes.to_a
+    users_with_common_attributes = potential_matching_users_by_common_attributes.to_a
 
-    find_user_by_nir(department_users) ||
-      find_user_by_department_internal_id(department_users) ||
-      find_user_by_email(department_users) ||
-      find_user_by_phone_number(department_users) ||
-      find_user_by_affiliation_number_and_role(department_users)
+    find_user_by_nir(users_with_common_attributes) ||
+      find_user_by_department_internal_id(users_with_department_specific_attributes) ||
+      find_user_by_email(users_with_common_attributes) ||
+      find_user_by_phone_number(users_with_common_attributes) ||
+      find_user_by_affiliation_number_and_role(users_with_department_specific_attributes)
   end
 
   def find_user_by_nir(users)
@@ -80,17 +81,38 @@ module UserListUpload::UserRow::MatchingUser
       matching_user.email == email
   end
 
-  def potential_matching_users_in_department
+  def potential_matching_users_by_common_attributes
     if persisted?
-      retrieve_potential_matching_users_in_department
+      retrieve_potential_matching_users_by_common_attributes
     else
       # when user_row is not persisted, we retrieve the potential matching users at the
       # user_list_upload level to not trigger a new query in each user_row creation
-      user_list_upload.potential_matching_users_in_department
+      user_list_upload.potential_matching_users_by_common_attributes
     end
   end
 
-  def retrieve_potential_matching_users_in_department
+  def potential_matching_users_by_department_specific_attributes
+    if persisted?
+      retrieve_potential_matching_users_by_department_specific_attributes
+    else
+      # when user_row is not persisted, we retrieve the potential matching users at the
+      # user_list_upload level to not trigger a new query in each user_row creation
+      user_list_upload.potential_matching_users_by_department_specific_attributes
+    end
+  end
+
+  def retrieve_potential_matching_users_by_common_attributes
+    base = User.active.where(department_id: department.id)
+    scope = User.none
+
+    scope = scope.or(base.where(email: email)) if email.present?
+    scope = scope.or(base.where(phone_number: phone_number)) if phone_number.present?
+    scope = scope.or(base.where(nir: nir)) if nir.present?
+
+    scope
+  end
+
+  def retrieve_potential_matching_users_by_department_specific_attributes
     base = User.active.where(department_id: department.id)
     scope = User.none
 
