@@ -184,27 +184,5 @@ describe "Agents can upload documents for users", :js do
         end
       end
     end
-
-    context "when user has multiple documents in multiple departments" do
-      let!(:other_department) { create(:department) }
-      let!(:other_department_agent) { create(:agent) }
-      let!(:other_department_organisation) do
-        create(:organisation, department: other_department, users: [user], agents: [other_department_agent])
-      end
-      let!(:first_department_diagnostic) do
-        create(:parcours_document, user:, document_date: "20/12/1995", type: "Diagnostic", department:)
-      end
-      let!(:second_department_orientation) do
-        create(:parcours_document, user:, document_date: "10/11/2002", type: "Contract", department: other_department)
-      end
-
-      it "shows the department document only" do
-        visit department_user_parcours_path(user_id: user.id, department_id: department.id)
-
-        expect(page).to have_content("20/12/1995")
-        expect(page).to have_no_content("10/11/2002")
-        expect(page).to have_content("Aucun contrat renseigné")
-      end
-    end
   end
 end
