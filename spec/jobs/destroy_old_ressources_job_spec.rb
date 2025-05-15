@@ -9,7 +9,7 @@ describe DestroyOldRessourcesJob do
     create(:rdv, participations: [], created_at: 25.months.ago)
   end
 
-  let!(:inactive_user_created_25_months_ago) { create(:user, created_at: 26.months.ago) }
+  let!(:inactive_user_created_25_months_ago) { create(:user, created_at: 26.months.ago, department: organisation.department) }
   let!(:users_organisation1) do
     create(:users_organisation, user: inactive_user_created_25_months_ago,
                                 organisation: organisation, created_at: 25.months.ago)
@@ -33,7 +33,7 @@ describe DestroyOldRessourcesJob do
     )
   end
 
-  let!(:user_created_25_months_ago_with_a_recent_invitation) { create(:user, created_at: 25.months.ago) }
+  let!(:user_created_25_months_ago_with_a_recent_invitation) { create(:user, created_at: 25.months.ago, department: organisation.department) }
   let!(:users_organisation2) do
     create(:users_organisation, user: user_created_25_months_ago_with_a_recent_invitation,
                                 organisation: organisation, created_at: 25.months.ago)
@@ -55,7 +55,7 @@ describe DestroyOldRessourcesJob do
     )
   end
 
-  let!(:user_created_25_months_ago_with_recent_and_old_records) { create(:user, created_at: 25.months.ago) }
+  let!(:user_created_25_months_ago_with_recent_and_old_records) { create(:user, created_at: 25.months.ago, department: organisation.department) }
   let!(:users_organisation3) do
     create(:users_organisation, user: user_created_25_months_ago_with_recent_and_old_records,
                                 organisation: organisation, created_at: 25.months.ago)
@@ -79,7 +79,7 @@ describe DestroyOldRessourcesJob do
     )
   end
 
-  let!(:user_created_25_months_ago_with_a_recent_organisation) { create(:user, created_at: 25.months.ago) }
+  let!(:user_created_25_months_ago_with_a_recent_organisation) { create(:user, created_at: 25.months.ago, department: organisation.department) }
   let!(:users_organisation4) do
     create(:users_organisation, user: user_created_25_months_ago_with_a_recent_organisation,
                                 organisation: organisation, created_at: 1.month.ago)
