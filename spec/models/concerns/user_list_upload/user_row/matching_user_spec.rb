@@ -176,7 +176,9 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         let(:user_row) { user_list_upload.user_rows.build(user_row_attributes) }
 
         it "retrieves potential matching users from the user_list_upload" do
-          expect(user_list_upload).to receive(:potential_matching_users_by_department_specific_attributes).once.and_call_original
+          expect(user_list_upload).to(
+            receive(:potential_matching_users_by_department_specific_attributes).once.and_call_original
+          )
           user_row.save!
         end
 

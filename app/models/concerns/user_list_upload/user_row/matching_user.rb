@@ -102,24 +102,30 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def retrieve_potential_matching_users_by_common_attributes
-    base = User.active.where(department_id: department.id)
     scope = User.none
 
-    scope = scope.or(base.where(email: email)) if email.present?
-    scope = scope.or(base.where(phone_number: phone_number)) if phone_number.present?
-    scope = scope.or(base.where(nir: nir)) if nir.present?
+    scope = scope.or(active_users_in_department.where(email: email)) if email.present?
+    scope = scope.or(active_users_in_department.where(phone_number: phone_number)) if phone_number.present?
+    scope = scope.or(active_users_in_department.where(nir: nir)) if nir.present?
 
     scope
   end
 
   def retrieve_potential_matching_users_by_department_specific_attributes
-    base = User.active.where(department_id: department.id)
     scope = User.none
 
-    scope = scope.or(base.where(affiliation_number: affiliation_number)) if affiliation_number.present?
-    scope = scope.or(base.where(department_internal_id: department_internal_id)) if department_internal_id.present?
+    if affiliation_number.present?
+      scope = scope.or(active_users_in_department.where(affiliation_number: affiliation_number))
+    end
+    if department_internal_id.present?
+      scope = scope.or(active_users_in_department.where(department_internal_id: department_internal_id))
+    end
 
     scope
+  end
+
+  def active_users_in_department
+    @active_users_in_department ||= User.active.where(department_id: department.id)
   end
 
   def matching_attribute_changed?

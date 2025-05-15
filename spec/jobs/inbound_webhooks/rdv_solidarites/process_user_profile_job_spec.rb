@@ -117,7 +117,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       context "when the user does not belong to the org" do
         let!(:other_org) { create(:organisation, department: organisation.department) }
         let!(:user) do
-          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org], department: organisation.department)
+          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org],
+                        department: organisation.department)
         end
 
         it "adds the user to the org" do
@@ -151,7 +152,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       context "when the user does not belong to the org" do
         let!(:other_org) { create(:organisation, department: organisation.department) }
         let!(:user) do
-          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org], department: organisation.department)
+          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org],
+                        department: organisation.department)
         end
 
         it "adds the user to the org" do

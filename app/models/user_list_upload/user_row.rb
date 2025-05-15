@@ -285,7 +285,8 @@ class UserListUpload::UserRow < ApplicationRecord
     {
       created_through: "rdv_insertion_upload_page",
       created_from_structure_type: user_list_upload.structure_type,
-      created_from_structure_id: user_list_upload.structure_id
+      created_from_structure_id: user_list_upload.structure_id,
+      department_id: user_list_upload.department.id
     }
   end
 
