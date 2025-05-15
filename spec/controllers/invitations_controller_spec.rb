@@ -73,7 +73,8 @@ describe InvitationsController do
 
       it "calls the service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations: [organisation, other_org].sort_by(&:id), invitation_attributes:, motif_category_attributes:)
+          .with(user:, organisations: [organisation,
+                                       other_org].sort_by(&:id), invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
 

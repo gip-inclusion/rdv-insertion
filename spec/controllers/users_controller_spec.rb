@@ -232,7 +232,9 @@ describe UsersController do
       context "when user is archived" do
         let!(:other_organisation) { create(:organisation, department:) }
         let!(:agent) { create(:agent, basic_role_in_organisations: [organisation, other_organisation]) }
-        let!(:user) { create(:user, department: organisation.department, organisations: [organisation, other_organisation]) }
+        let!(:user) do
+          create(:user, department: organisation.department, organisations: [organisation, other_organisation])
+        end
         let!(:archive) do
           create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("05/10/2024"))
         end
@@ -253,7 +255,9 @@ describe UsersController do
       context "when user is partially archived" do
         let!(:other_organisation) { create(:organisation, department:) }
         let!(:agent) { create(:agent, basic_role_in_organisations: [organisation, other_organisation]) }
-        let!(:user) { create(:user, department: organisation.department, organisations: [organisation, other_organisation]) }
+        let!(:user) do
+          create(:user, department: organisation.department, organisations: [organisation, other_organisation])
+        end
         let!(:archive) do
           create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("05/10/2024"))
         end
