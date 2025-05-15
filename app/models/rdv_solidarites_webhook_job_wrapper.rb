@@ -24,9 +24,7 @@ class RdvSolidaritesWebhookJobWrapper
   end
 
   def timestamp
-    return unless meta["timestamp"]
-
-    Time.zone.parse(meta["timestamp"])
+    meta["timestamp"].is_a?(String) ? Time.zone.parse(meta["timestamp"]) : nil
   end
 
   def ==(other)
