@@ -557,11 +557,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_12_140245) do
     t.uuid "user_list_upload_id", null: false
     t.integer "assigned_organisation_id"
     t.json "cnaf_data", default: {}
-    t.boolean "selected_for_invitation", default: true
-    t.boolean "selected_for_user_save", default: true
+    t.boolean "selected_for_invitation", default: false
+    t.boolean "selected_for_user_save", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "selected", default: true
     t.index ["assigned_organisation_id"], name: "index_user_list_upload_user_rows_on_assigned_organisation_id"
     t.index ["matching_user_id"], name: "index_user_list_upload_user_rows_on_matching_user_id"
     t.index ["user_list_upload_id"], name: "index_user_list_upload_user_rows_on_user_list_upload_id"
