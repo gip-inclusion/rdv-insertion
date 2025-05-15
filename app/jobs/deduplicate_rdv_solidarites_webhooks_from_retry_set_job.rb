@@ -12,9 +12,9 @@ class DeduplicateRdvSolidaritesWebhooksFromRetrySetJob < ApplicationJob
       job.valid? && job.resource_id == resource_id
     end
 
-    job_to_keep = candidates.max_by(&:timestamp)
+    return if candidates.length < 2
 
-    return unless job_to_keep
+    job_to_keep = candidates.max_by(&:timestamp)
 
     candidates.each do |candidate|
       candidate.sidekiq_job.delete unless candidate == job_to_keep
