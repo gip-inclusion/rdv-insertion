@@ -16,7 +16,7 @@ module Notifications
       verify_format!(notification)
       verify_phone_number!(notification)
       verify_sender_phone_number!(notification)
-      send_sms(notification.sms_sender_name, notification.phone_number, content, notification.record_identifier)
+      send_sms(notification, content)
     end
 
     private

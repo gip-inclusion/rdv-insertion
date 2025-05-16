@@ -12,7 +12,9 @@
           <% if invitations_by_format[format]&.fetch(idx, nil).present? %>
             <% invitation = invitations_by_format[format].fetch(idx, nil) %>
             <%= format_date(invitation.created_at) %>
-            <%= render "follow_ups/delivery_status", deliverable: invitation, format: format %>
+            <% if format != "postal" %>
+              <%= render "follow_ups/delivery_status", deliverable: invitation, format: format %>
+            <% end %>
           <% elsif idx == 0 %>
             -
           <% end %>
