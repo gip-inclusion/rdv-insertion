@@ -20,9 +20,12 @@ class FileConfigurationsController < ApplicationController
   def edit; end
 
   def download_template
-    send_data @file_configuration.column_attributes.values.to_csv,
-              filename: "template_file_configuration.csv",
-              type: "text/csv",
+    # This line ensures the CSV is read as UTF-8
+    bom = "\uFEFF"
+    csv_data = bom + @file_configuration.column_attributes.values.to_csv
+    send_data csv_data,
+              filename: "modele-#{@organisation.name.parameterize}.csv",
+              type: "text/csv; charset=utf-8",
               disposition: "attachment"
   end
 
