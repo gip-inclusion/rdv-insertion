@@ -1,22 +1,25 @@
-<% if ENV["ENVIRONMENT_NAME"] == "production" || ENV["ENVIRONMENT_NAME"] == "demo" %>
+<% if ENV["ENVIRONMENT_NAME"] == "production" %>
 monitor_webhook_activity_job:
   cron: "0 0-1,6-23 * * 1-5" # Monitor webhooks activity every hour from Monday to Friday except between 1:00 and 6:00
   class: "MonitorWebhookActivityJob"
-send_periodic_invites_job:
-  cron: "0 14 * * *" # we send recurrent invitations X days after the previous one, at 14:00
-  class: "SendPeriodicInvitesJob"
-send_invitation_reminders_job:
-  cron: "0 11 * * *" # we send reminders once a day, at 11:00
-  class: "SendInvitationRemindersJob"
-send_convocation_reminders_job:
-  cron: "0 10 * * *" # we send reminders once a day, at 10:00
-  class: "SendConvocationRemindersJob"
 notify_jobs_to_retry_on_mattermost_job:
   cron: "30 10 * * *" # we send jobs in the retry_set once a day, at 10:30
   class: "NotifyJobsToRetryOnMattermostJob"
 retrieve_and_notify_all_unavailable_creneaux_job:
   cron: "0 01 * * *" # we verify organisations creneaux availability once a day, at 01:00
   class: "Creneaux::RetrieveAndNotifyAllUnavailableCreneauxJob"
+send_periodic_invites_job:
+  cron: "0 14 * * *" # we send recurrent invitations X days after the previous one, at 14:00
+  class: "SendPeriodicInvitesJob"
+<% end %>
+
+<% if ENV["ENVIRONMENT_NAME"] == "production" || ENV["ENVIRONMENT_NAME"] == "demo" %>
+send_invitation_reminders_job:
+  cron: "0 11 * * *" # we send reminders once a day, at 11:00
+  class: "SendInvitationRemindersJob"
+send_convocation_reminders_job:
+  cron: "0 10 * * *" # we send reminders once a day, at 10:00
+  class: "SendConvocationRemindersJob"
 <% end %>
 
 upsert_global_stats_job:
