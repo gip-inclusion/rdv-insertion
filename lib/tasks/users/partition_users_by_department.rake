@@ -6,6 +6,6 @@ namespace :users do
     it only keeps the organisations in the same department as the most recent activity
   DESC
   task partition_users_by_department: :environment do
-    Users::PartitionUsersByDepartment.new.call
+    Users::PartitionAllUsersJob.perform_later
   end
 end
