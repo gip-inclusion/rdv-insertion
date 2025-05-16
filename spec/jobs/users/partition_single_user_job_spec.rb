@@ -1,16 +1,16 @@
-require Rails.root.join("lib/users/partition_users_by_department")
+require "rails_helper"
 
-RSpec.describe Users::PartitionUsersByDepartment do
-  describe "#call" do
+RSpec.describe Users::PartitionSingleUserJob do
+  describe "#perform" do
     let!(:department1) { create(:department) }
     let!(:department2) { create(:department) }
-    let!(:organisation1) { create(:organisation, department: department1, name: "Organisation 1") }
-    let!(:organisation2) { create(:organisation, department: department2, name: "Organisation 2") }
-    let!(:user) { create(:user, department: department1) }
+    let!(:organisation1) { create(:organisation, department: department1) }
+    let!(:organisation2) { create(:organisation, department: department2) }
+    let!(:user) { create(:user) }
 
     before do
-      UsersOrganisation.new(user: user, organisation: organisation1).save!(validate: false)
       UsersOrganisation.new(user: user, organisation: organisation2).save!(validate: false)
+      UsersOrganisation.new(user: user, organisation: organisation1).save!(validate: false)
     end
 
     context "when user has most recent activity in department1" do
@@ -19,12 +19,11 @@ RSpec.describe Users::PartitionUsersByDepartment do
         create(:participation, user: user, organisation: organisation1)
       end
 
-      it "removes user from department2 and updates user department" do
-        described_class.new.call
+      it "updates user department and removes other organisations" do
+        described_class.new.perform(user.id)
 
         expect(user.reload.department).to eq(department1)
-        expect(user.users_organisations.count).to eq(1)
-        expect(user.users_organisations.first.organisation).to eq(organisation1)
+        expect(user.organisations).to contain_exactly(organisation1)
       end
     end
 
@@ -34,12 +33,11 @@ RSpec.describe Users::PartitionUsersByDepartment do
         create(:participation, user: user, organisation: organisation2)
       end
 
-      it "removes user from department1 and updates user department" do
-        described_class.new.call
+      it "updates user department and removes other organisations" do
+        described_class.new.perform(user.id)
 
         expect(user.reload.department).to eq(department2)
-        expect(user.users_organisations.count).to eq(1)
-        expect(user.users_organisations.first.organisation).to eq(organisation2)
+        expect(user.organisations).to contain_exactly(organisation2)
       end
     end
 
@@ -49,11 +47,10 @@ RSpec.describe Users::PartitionUsersByDepartment do
         user.users_organisations.find_by(organisation: organisation1).update!(created_at: 2.days.ago)
         user.users_organisations.find_by(organisation: organisation2).update!(created_at: 1.day.ago)
 
-        described_class.new.call
+        described_class.new.perform(user.id)
 
         expect(user.reload.department).to eq(department2)
-        expect(user.users_organisations.count).to eq(1)
-        expect(user.users_organisations.first.organisation).to eq(organisation2)
+        expect(user.organisations).to contain_exactly(organisation2)
       end
     end
 
@@ -64,12 +61,24 @@ RSpec.describe Users::PartitionUsersByDepartment do
       end
 
       it "considers the most recent activity regardless of type" do
-        described_class.new.call
+        described_class.new.perform(user.id)
 
         expect(user.reload.department).to eq(department1)
-        expect(user.users_organisations.count).to eq(1)
-        expect(user.users_organisations.first.organisation).to eq(organisation1)
+        expect(user.organisations).to contain_exactly(organisation1)
+      end
+    end
+
+    context "when user has no organisations" do
+      before do
+        user.users_organisations.destroy_all
+      end
+
+      it "does not update the department" do
+        original_department = user.department
+        described_class.new.perform(user.id)
+
+        expect(user.reload.department).to eq(original_department)
       end
     end
   end
-end
+end 
