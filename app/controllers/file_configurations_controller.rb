@@ -24,7 +24,7 @@ class FileConfigurationsController < ApplicationController
     bom = "\uFEFF"
     csv_data = bom + @file_configuration.column_attributes.values.to_csv
     send_data csv_data,
-              filename: "modele-#{@file_configuration.sheet_name.parameterize}.csv",
+              filename: "modele-#{@organisation.name.parameterize}.csv",
               type: "text/csv; charset=utf-8",
               disposition: "attachment"
   end
