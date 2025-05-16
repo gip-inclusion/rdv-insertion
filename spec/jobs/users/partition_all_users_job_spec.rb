@@ -14,4 +14,4 @@ RSpec.describe Users::PartitionAllUsersJob do
       described_class.new.perform
     end
   end
-end 
+end
