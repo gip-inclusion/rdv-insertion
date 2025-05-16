@@ -1,4 +1,4 @@
-module Delivery::Status
+module DeliveryStatus
   extend ActiveSupport::Concern
 
   FAILED_DELIVERY_STATUS = %w[soft_bounce hard_bounce blocked invalid_email error].freeze

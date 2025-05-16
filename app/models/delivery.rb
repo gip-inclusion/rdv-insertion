@@ -1,20 +1,27 @@
 class Delivery < ApplicationRecord
-  delegated_type :delivery_channel, types: %w[
-    Delivery::SmsDelivery
-    Delivery::EmailDelivery
-    Delivery::PostalDelivery
+  delegated_type :delivery_method, types: %w[
+    Delivery::BySms
+    Delivery::ByEmail
+    Delivery::ByLetter
   ], dependent: :destroy
 
-  scope :sms,    -> { where(delivery_channel_type: "Delivery::SmsDelivery") }
-  scope :email,  -> { where(delivery_channel_type: "Delivery::EmailDelivery") }
-  scope :postal, -> { where(delivery_channel_type: "Delivery::PostalDelivery") }
+  scope :by_sms,    -> { where(delivery_method_type: "Delivery::BySms") }
+  scope :by_email,  -> { where(delivery_method_type: "Delivery::ByEmail") }
+  scope :by_letter, -> { where(delivery_method_type: "Delivery::ByLetter") }
 
-  belongs_to :deliverable, polymorphic: true
+  belongs_to :sendable, polymorphic: true
 
-  validates :delivery_channel, presence: true
+  validates :delivery_method, presence: true
 
-  # Returns "sms", "email", or "postal"
-  def channel
-    delivery_channel_type.demodulize.sub("Delivery", "").underscore
+  accepts_nested_attributes_for :delivery_method
+
+  def sms? = delivery_method_type == "Delivery::BySms"
+  def email?  = delivery_method_type == "Delivery::ByEmail"
+  def letter? = delivery_method_type == "Delivery::ByLetter"
+
+  class << self
+    def build_with_delivery_method(channel:)
+      new(delivery_method: "Delivery::By#{channel.to_s.capitalize}".constantize.new)
+    end
   end
 end

@@ -253,7 +253,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.bigint "follow_up_id"
     t.datetime "expires_at"
     t.string "uuid"
-    t.boolean "rdv_with_referents", default: false
+    t.boolean "rdv_with_referents"
     t.string "trigger", default: "manual", null: false
     t.string "delivery_status"
     t.datetime "last_brevo_webhook_received_at"
@@ -336,8 +336,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.string "event"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "rdv_solidarites_rdv_id"
     t.string "format"
+    t.bigint "rdv_solidarites_rdv_id"
     t.bigint "participation_id"
     t.string "delivery_status"
     t.datetime "last_brevo_webhook_received_at"

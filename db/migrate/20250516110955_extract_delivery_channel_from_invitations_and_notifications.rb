@@ -1,123 +1,91 @@
 class ExtractDeliveryChannelFromInvitationsAndNotifications < ActiveRecord::Migration[8.0]
   def up
     create_table :deliveries do |t|
-      t.string :delivery_channel_type
-      t.bigint :delivery_channel_id
-      t.references :deliverable, polymorphic: true, null: false
+      t.string :delivery_method_type
+      t.bigint :delivery_method_id
+      t.references :sendable, polymorphic: true, null: false
       t.timestamps
     end
 
-    create_table :delivery_sms_deliveries do |t|
+    create_table :sms_deliveries do |t|
       t.string :provider, default: "brevo"
       t.string :delivery_status
       t.datetime :last_brevo_webhook_received_at
       t.timestamps
     end
 
-    create_table :delivery_email_deliveries do |t|
+    create_table :email_deliveries do |t|
       t.string :provider, default: "brevo"
       t.string :delivery_status
       t.datetime :last_brevo_webhook_received_at
       t.timestamps
     end
 
-    create_table :delivery_postal_deliveries do |t|
+    create_table :letter_deliveries do |t|
       t.timestamps
     end
 
-    add_index :deliveries, [:delivery_channel_type, :delivery_channel_id]
-
-    remove_column :invitations, :delivery_status, :string
-    remove_column :invitations, :last_brevo_webhook_received_at, :datetime
-    remove_column :notifications, :delivery_status, :string
-    remove_column :notifications, :last_brevo_webhook_received_at, :datetime
+    add_index :deliveries, [:delivery_method_type, :delivery_method_id]
 
     say_with_time "Migrating invitations to deliveries" do
       Invitation.find_each do |invitation|
-        channel = case invitation.format
-                  when "sms"
-                    Delivery::SmsDelivery.new(
-                      provider: "brevo",
-                      delivery_status: invitation.delivery_status,
-                      last_brevo_webhook_received_at: invitation.last_brevo_webhook_received_at
-                    )
-                  when "email"
-                    Delivery::EmailDelivery.new(
-                      provider: "brevo",
-                      delivery_status: invitation.delivery_status,
-                      last_brevo_webhook_received_at: invitation.last_brevo_webhook_received_at
-                    )
-                  when "postal"
-                    Delivery::PostalDelivery.new
-                  end
-
-        Delivery.new(
-          deliverable: invitation,
-          delivery_channel: channel
-        ).save!
+        delivery_method_attrs = extract_method_attributes(invitation.format, invitation)
+        Delivery.create!(
+          sendable: invitation,
+          delivery_method_type: delivery_method_attrs[:type],
+          delivery_method_attributes: delivery_method_attrs[:attributes]
+        )
       end
     end
 
     say_with_time "Migrating notifications to deliveries" do
       Notification.find_each do |notification|
-        channel = case notification.format
-                  when "sms"
-                    Delivery::SmsDelivery.new(
-                      provider: "brevo",
-                      delivery_status: notification.delivery_status,
-                      last_brevo_webhook_received_at: notification.last_brevo_webhook_received_at
-                    )
-                  when "email"
-                    Delivery::EmailDelivery.new(
-                      provider: "brevo",
-                      delivery_status: notification.delivery_status,
-                      last_brevo_webhook_received_at: notification.last_brevo_webhook_received_at
-                    )
-                  when "postal"
-                    Delivery::PostalDelivery.new
-                  end
-
-        Delivery.new(
-          deliverable: notification,
-          delivery_channel: channel
-        ).save!
+        delivery_method_attrs = extract_delivery_method_attributes(notification.format, notification)
+        Delivery.create!(
+          sendable: notification,
+          delivery_method_type: delivery_method_attrs[:type],
+          delivery_method_attributes: delivery_method_attrs[:attributes]
+        )
       end
     end
   end
 
   def down
-    add_column :invitations, :delivery_status, :string
-    add_column :invitations, :last_brevo_webhook_received_at, :datetime
-    add_column :notifications, :delivery_status, :string
-    add_column :notifications, :last_brevo_webhook_received_at, :datetime
-
-    say_with_time "Restoring invitations delivery fields" do
-      Invitation.includes(delivery: :delivery_channel).find_each do |invitation|
-        channel = invitation.delivery&.delivery_channel
-        next unless channel.respond_to?(:delivery_status)
-
-        invitation.update!(
-          delivery_status: channel.delivery_status,
-          last_brevo_webhook_received_at: channel.last_brevo_webhook_received_at
-        )
-      end
-    end
-
-    say_with_time "Restoring notifications delivery fields" do
-      Notification.includes(delivery: :delivery_channel).find_each do |notification|
-        channel = notification.delivery&.delivery_channel
-        next unless channel.respond_to?(:delivery_status)
-
-        notification.update!(
-          delivery_status: channel.delivery_status,
-          last_brevo_webhook_received_at: channel.last_brevo_webhook_received_at
-        )
-      end
-    end
-
     drop_table :deliveries
-    drop_table :delivery_sms_deliveries
-    drop_table :delivery_email_deliveries
-    drop_table :delivery_postal_deliveries
+    drop_table :sms_deliveries
+    drop_table :email_deliveries
+    drop_table :letter_deliveries
+  end
+
+  private
+
+  def extract_delivery_method_attributes(format, record)
+    case format
+    when "sms"
+      {
+        type: "Delivery::BySms",
+        attributes: {
+          provider: "brevo",
+          delivery_status: record[:delivery_status],
+          last_brevo_webhook_received_at: record[:last_brevo_webhook_received_at]
+        }
+      }
+    when "email"
+      {
+        type: "Delivery::ByEmail",
+        attributes: {
+          provider: "brevo",
+          delivery_status: record[:delivery_status],
+          last_brevo_webhook_received_at: record[:last_brevo_webhook_received_at]
+        }
+      }
+    when "postal", "letter"
+      {
+        type: "Delivery::ByLetter",
+        attributes: {}
+      }
+    else
+      raise "Unknown format: #{format}"
+    end
   end
 end
