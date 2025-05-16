@@ -1,4 +1,4 @@
-<% if ENV["ENVIRONMENT_NAME"] == "production" %>
+<% if ENV["ENVIRONMENT_NAME"] == "production" || ENV["ENVIRONMENT_NAME"] == "demo" %>
 monitor_webhook_activity_job:
   cron: "0 0-1,6-23 * * 1-5" # Monitor webhooks activity every hour from Monday to Friday except between 1:00 and 6:00
   class: "MonitorWebhookActivityJob"
