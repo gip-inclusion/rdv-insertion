@@ -8,6 +8,10 @@ module InboundWebhooks
         "#{base_lock_key}:#{data[:id]}"
       end
 
+      def self.on_lock_failure(data, _meta)
+        DeduplicateRdvSolidaritesWebhooksFromRetrySetJob.perform_later(name, data[:id])
+      end
+
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys

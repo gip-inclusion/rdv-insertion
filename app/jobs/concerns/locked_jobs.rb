@@ -13,6 +13,9 @@ module LockedJobs
     ActiveRecord::Base.with_advisory_lock!(
       self.class.lock_key(*arguments), timeout_seconds: 0, &
     )
+  rescue WithAdvisoryLock::FailedToAcquireLock
+    self.class.on_lock_failure(*arguments) if self.class.respond_to?(:on_lock_failure)
+    raise
   end
 
   class_methods do
