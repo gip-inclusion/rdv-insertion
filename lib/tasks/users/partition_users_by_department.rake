@@ -1,5 +1,3 @@
-require Rails.root.join("lib/users/partition_users_by_department")
-
 namespace :users do
   desc <<-DESC
     This task allows to partition users by department
