@@ -280,7 +280,6 @@ export default class User {
     this.id = upToDateUser.id;
     this.archives = upToDateUser.archives;
     this.organisations = upToDateUser.organisations;
-    this.carnet_de_bord_carnet_id = upToDateUser.carnet_de_bord_carnet_id;
     // we assign a current organisation when we are in the context of a department
     this.currentOrganisation ||= upToDateUser.organisations.find(
       (o) =>
