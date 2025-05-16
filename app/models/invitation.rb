@@ -5,7 +5,7 @@ class Invitation < ApplicationRecord
   include Templatable
   include Sendable
   include WebhookDeliverable
-  include Deliverable
+  include HasDelivery
 
   belongs_to :user
   belongs_to :department
@@ -26,7 +26,6 @@ class Invitation < ApplicationRecord
   delegate :model, to: :template, prefix: true
   delegate :post_code, to: :user, prefix: true, allow_nil: true
 
-  enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
   enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid

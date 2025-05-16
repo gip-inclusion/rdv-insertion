@@ -2,7 +2,7 @@ class Notification < ApplicationRecord
   include HasCurrentCategoryConfiguration
   include Templatable
   include Sendable
-  include Deliverable
+  include HasDelivery
 
   attr_accessor :content
 
@@ -14,7 +14,6 @@ class Notification < ApplicationRecord
     participation_cancelled: "participation_cancelled",
     participation_reminder: "participation_reminder"
   }
-  enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
 
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 
