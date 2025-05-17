@@ -1,14 +1,15 @@
 describe "Agents can sort users on index page", :js do
+  let!(:department) { create(:department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, department:) }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
   end
   let!(:motif) { create(:motif, motif_category: motif_category, organisation: organisation) }
-  let!(:user1) { create(:user, first_name: "Bertrand", last_name: "Blier") }
-  let!(:user2) { create(:user, first_name: "Amanda", last_name: "Ajer") }
-  let!(:user3) { create(:user, first_name: "Claire", last_name: "Casubolo") }
+  let!(:user1) { create(:user, first_name: "Bertrand", last_name: "Blier", department:) }
+  let!(:user2) { create(:user, first_name: "Amanda", last_name: "Ajer", department:) }
+  let!(:user3) { create(:user, first_name: "Claire", last_name: "Casubolo", department:) }
 
   before do
     setup_agent_session(agent)
@@ -45,7 +46,7 @@ describe "Agents can sort users on index page", :js do
 
   context "on motif_category tab" do
     # on motif_category tab, users are sorted by follow_ups creation date by default
-    let!(:organisation) { create(:organisation, users: [user1, user2, user3]) }
+    let!(:organisation) { create(:organisation, users: [user1, user2, user3], department:) }
     let!(:follow_up1) { create(:follow_up, user: user1, motif_category: motif_category, created_at: Time.zone.now) }
     let!(:follow_up2) { create(:follow_up, user: user2, motif_category: motif_category, created_at: 1.day.ago) }
     let!(:follow_up3) { create(:follow_up, user: user3, motif_category: motif_category, created_at: 2.days.ago) }
@@ -60,7 +61,7 @@ describe "Agents can sort users on index page", :js do
 
   context "on archived users tab" do
     # on archived users tab, users are sorted by archives creation date by default
-    let!(:organisation) { create(:organisation, users: [user1, user2, user3]) }
+    let!(:organisation) { create(:organisation, users: [user1, user2, user3], department:) }
     let!(:archive1) { create(:archive, user: user1, created_at: Time.zone.now) }
     let!(:archive2) { create(:archive, user: user2, created_at: 1.day.ago) }
     let!(:archive3) { create(:archive, user: user3, created_at: 2.days.ago) }

@@ -1,14 +1,15 @@
 describe "Agents can sort users by orientation on index page", :js do
+  let!(:department) { create(:department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, department:) }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
   end
   let!(:motif) { create(:motif, motif_category: motif_category, organisation: organisation) }
-  let!(:user1) { create(:user, first_name: "Bertrand", last_name: "Blier") }
-  let!(:user2) { create(:user, first_name: "Amanda", last_name: "Ajer") }
-  let!(:user3) { create(:user, first_name: "Claire", last_name: "Casubolo") }
+  let!(:user1) { create(:user, first_name: "Bertrand", last_name: "Blier", department:) }
+  let!(:user2) { create(:user, first_name: "Amanda", last_name: "Ajer", department:) }
+  let!(:user3) { create(:user, first_name: "Claire", last_name: "Casubolo", department:) }
 
   let!(:users_organisation1) do
     create(:users_organisation, user: user1, organisation: organisation, created_at: Time.zone.now)
@@ -36,12 +37,12 @@ describe "Agents can sort users by orientation on index page", :js do
   end
 
   context "with orientations for user that are no longer in current org" do
-    let!(:user4) { create(:user, first_name: "Diane", last_name: "Dujardin") }
+    let!(:user4) { create(:user, first_name: "Diane", last_name: "Dujardin", department:) }
     let!(:users_organisation4) do
       create(:users_organisation, user: user4, organisation: organisation2, created_at: 3.days.ago)
     end
 
-    let!(:organisation2) { create(:organisation) }
+    let!(:organisation2) { create(:organisation, department:) }
 
     let!(:orientation2) do
       create(:orientation, organisation: organisation2, user: user4, orientation_type: orientation_type2)

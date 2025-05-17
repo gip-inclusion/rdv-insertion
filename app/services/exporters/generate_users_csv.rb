@@ -279,8 +279,6 @@ module Exporters
     end
 
     def oriented_in_less_than_n_days?(user, number_of_days)
-      return "Non calculable" if user.in_many_departments?
-
       follow_up = user.first_orientation_follow_up
       result = follow_up.present? && follow_up.days_between_follow_up_creation_and_first_seen_rdv.present? &&
                follow_up.days_between_follow_up_creation_and_first_seen_rdv < number_of_days

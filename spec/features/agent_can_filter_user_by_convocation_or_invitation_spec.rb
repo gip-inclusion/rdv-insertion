@@ -1,14 +1,15 @@
 describe "Agents can filter users by convocation or invitation on index page", :js do
+  let!(:department) { create(:department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, department:) }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
   end
   let!(:motif) { create(:motif, motif_category: motif_category, organisation: organisation) }
-  let!(:user1) { create(:user, first_name: "Bertrand", last_name: "Blier") }
-  let!(:user2) { create(:user, first_name: "Amanda", last_name: "Ajer") }
-  let!(:user3) { create(:user, first_name: "Claire", last_name: "Casubolo") }
+  let!(:user1) { create(:user, first_name: "Bertrand", last_name: "Blier", department: department) }
+  let!(:user2) { create(:user, first_name: "Amanda", last_name: "Ajer", department: department) }
+  let!(:user3) { create(:user, first_name: "Claire", last_name: "Casubolo", department: department) }
 
   let!(:users_organisation1) do
     create(:users_organisation, user: user1, organisation: organisation, created_at: Time.zone.now)
