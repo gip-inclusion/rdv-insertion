@@ -47,9 +47,9 @@ export default class extends Controller {
       this.#setLoadingState(false)
       return
     }
-    
+
     this.#insertFormInputs()
-    
+
     await this.formTarget.requestSubmit()
   }
 
