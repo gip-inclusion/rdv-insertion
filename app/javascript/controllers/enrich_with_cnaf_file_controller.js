@@ -5,7 +5,7 @@ import { retrieveMissingColumnNames, retrieveSheetColumnNames, displayMissingCol
 import parseContactsData from "../lib/parseContactsData";
 
 export default class extends Controller {
-  static targets = ["input", "form"]
+  static targets = ["input", "form", "button", "buttonText", "spinner"]
 
   connect() {
     this.userRows = JSON.parse(this.element.dataset.userRows)
@@ -19,12 +19,16 @@ export default class extends Controller {
       return
     }
 
+    this.#setLoadingState(true)
+
     if (!validateFileFormat(file, this.#acceptedFileFormats())) {
       this.inputTarget.value = ""
+      this.#setLoadingState(false)
       return
     }
     if (!await this.#readFile(file)) {
       this.inputTarget.value = ""
+      this.#setLoadingState(false)
       return
     }
 
@@ -40,14 +44,20 @@ export default class extends Controller {
         confirmButtonText: "OK"
       })
       this.inputTarget.value = ""
+      this.#setLoadingState(false)
       return
     }
-
+    
     this.#insertFormInputs()
-
+    
     await this.formTarget.requestSubmit()
   }
 
+  #setLoadingState(isLoading) {
+    this.buttonTarget.disabled = isLoading
+    this.buttonTextTarget.textContent = isLoading ? "Enrichissement des données..." : "Enrichir avec les données CNAF"
+    this.spinnerTarget.classList.toggle("d-none", !isLoading)
+  }
 
   #insertFormInputs() {
     // we make sure to remove existing inputs from previous submissions
