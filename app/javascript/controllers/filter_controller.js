@@ -4,10 +4,10 @@ export default class extends Controller {
   static targets = ["input", "item", "noResults"]
 
   connect() {
-    // filter is optional in case of low number of organisations so input target is optional
+    // search is optional in case of low number of items so input target is optional
     if (this.hasInputTarget) {
       document.addEventListener("click", (event) => {
-        // reset input value and show all items when clicking outside the dropdown
+        // Reset filter state (empty input and unfiltered items) when clicking outside the dropdown
         if (!this.element.contains(event.target) && this.hasInputTarget) {
           this.inputTarget.value = "";
           this.#showAllItems();
@@ -16,9 +16,7 @@ export default class extends Controller {
     }
   }
 
-  filter() {
-    if (!this.hasInputTarget) return;
-
+  search() {
     const searchText = this.inputTarget.value.toLowerCase().trim();
 
     if (searchText === "") {
@@ -26,18 +24,22 @@ export default class extends Controller {
       return;
     }
 
-    let visibleCount = 0;
+    let foundItemsCount = 0;
     this.itemTargets.forEach(item => {
       const itemText = item.textContent.toLowerCase();
       if (itemText.includes(searchText)) {
         item.classList.remove("d-none");
-        visibleCount += 1;
+        foundItemsCount += 1;
       } else {
         item.classList.add("d-none");
       }
     });
 
-    this.noResultsTarget.style.display = visibleCount === 0 ? "block" : "none";
+    if (foundItemsCount === 0) {
+      this.noResultsTarget.classList.remove("d-none");
+    } else {
+      this.noResultsTarget.classList.add("d-none");
+    }
   }
 
   #showAllItems() {
@@ -45,6 +47,6 @@ export default class extends Controller {
       item.classList.remove("d-none");
     });
 
-    this.noResultsTarget.style.display = "none";
+    this.noResultsTarget.classList.add("d-none");
   }
 }
