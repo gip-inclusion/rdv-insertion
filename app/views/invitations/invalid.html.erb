@@ -7,11 +7,10 @@
       <h3 class="mb-3">Votre invitation à prendre rendez-vous a expirée.</h3>
       <p>Le délai pour prendre rendez-vous avec cette invitation est maintenant dépassé.</p>
 
-      <% organisations_with_contact = @invitation.organisations.select { |org| org.phone_number.present? || org.email.present? } %>
-      <% if organisations_with_contact.any? %>
-        <p>Pour planifier votre rendez-vous, nous vous invitons à contacter <%= organisations_with_contact.count > 1 ? "une des organisations suivantes" : "l'organisation suivante" %> :</p>
+      <% if @organisations_with_contact.any? %>
+        <p>Pour planifier votre rendez-vous, nous vous invitons à contacter <%= @organisations_with_contact.count > 1 ? "une des organisations suivantes" : "l'organisation suivante" %> :</p>
 
-        <% organisations_with_contact.each do |organisation| %>
+        <% @organisations_with_contact.each do |organisation| %>
           <div class="mt-4">
             <%= render 'invitations/organisation_contact_card', organisation: organisation %>
           </div>

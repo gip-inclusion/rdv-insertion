@@ -1,7 +1,7 @@
 class InvitationsController < ApplicationController
+  layout "invitation", only: [:invitation_code, :redirect]
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
-  before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
-  prepend_before_action :set_invitation_context
+  before_action :set_invitation, :set_organisations_with_contact, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
   def create # rubocop:disable Metrics/AbcSize
@@ -50,10 +50,6 @@ class InvitationsController < ApplicationController
 
   private
 
-  def set_invitation_context
-    @invitation_context = true
-  end
-
   def invitation_params
     params.expect(
       invitation: [:format, :rdv_solidarites_lieu_id, { motif_category: [:id] }]
@@ -87,6 +83,12 @@ class InvitationsController < ApplicationController
       .joins(:motif_categories).where(motif_categories: { id: invitation_params.dig(:motif_category, :id) })
   end
 
+  def set_organisations_with_contact
+    @organisations_with_contact = @invitation.organisations.select do |org|
+      org.phone_number.present? || org.email.present?
+    end
+  end
+
   def set_user
     @user = policy_scope(User).includes(:invitations).find(params[:user_id])
   end
@@ -105,6 +107,6 @@ class InvitationsController < ApplicationController
   def verify_invitation_validity
     return unless @invitation.expired?
 
-    render :invalid, layout: "website"
+    render :invalid
   end
 end
