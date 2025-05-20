@@ -1,28 +1,4 @@
-require "rails_helper"
-
 RSpec.describe UserListUpload::Sorter do
-  describe ".custom_sort?" do
-    it "returns true for attributes with custom sorting configuration" do
-      expect(described_class.send(:custom_sort?, "before_user_save_status")).to be true
-    end
-
-    it "returns false for attributes without custom sorting configuration" do
-      expect(described_class.send(:custom_sort?, "first_name")).to be false
-    end
-  end
-
-  describe ".order_for" do
-    it "returns cycle1 order for before_user_save_status with 'asc' direction" do
-      expected_order = described_class::STATUS_ORDERS[:before_user_save_status][:cycle1]
-      expect(described_class.send(:order_for, "before_user_save_status", "asc")).to eq(expected_order)
-    end
-
-    it "returns cycle2 order for before_user_save_status with 'desc' direction" do
-      expected_order = described_class::STATUS_ORDERS[:before_user_save_status][:cycle2]
-      expect(described_class.send(:order_for, "before_user_save_status", "desc")).to eq(expected_order)
-    end
-  end
-
   describe ".sort" do
     context "with standard attributes" do
       let(:user_row1) { instance_double("UserListUpload::UserRow", first_name: "John") }

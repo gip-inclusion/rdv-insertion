@@ -5,11 +5,11 @@ module UserListUpload::UserListUploadHelper
   end
 
   def user_row_status_badge_class(user_row)
-    return "alert-danger" if user_row.user_errors.any?
-
     {
       to_create_with_no_errors: "background-blue-light text-mid-blue",
+      to_create_with_errors: "alert-danger",
       to_update_with_no_errors: "background-blue-light text-mid-blue",
+      to_update_with_errors: "alert-danger",
       up_to_date: "background-very-light-grey text-very-dark-grey"
     }[user_row.before_user_save_status]
   end

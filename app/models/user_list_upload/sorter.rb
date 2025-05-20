@@ -60,4 +60,6 @@ class UserListUpload::Sorter
 
     sort_direction == "desc" ? result.reverse : result
   end
+
+  private_class_method :custom_sort?, :order_for, :custom_sort, :default_sort
 end
