@@ -34,28 +34,26 @@ describe "Agents can generate convocation pdf", :js do
     setup_agent_session(agent)
   end
 
-  def setup_pdf_mock
-    # Intercept the notification creation to get its content
-    notification_content = nil
-
-    # Intercept the notify_participation method to capture the notification content
-    allow_any_instance_of(NotificationsController)
-      .to receive(:notify_participation).and_wrap_original do |original_method, *_args|
-      result = original_method.call
-      notification_content = result.notification.content
-      result
-    end
-
-    # Configure the mock with the notification content
-    allow_any_instance_of(PdfGeneratorClient).to receive(:generate_pdf).and_wrap_original do |_original_method, _args|
-      # Use the notification content for the mock
-      mock_pdf_service(success: true, pdf_content: notification_content)
-      instance_double(Faraday::Response, success?: true, body: Base64.encode64(notification_content))
-    end
-  end
-
   context "when the pdf is generated" do
-    before { setup_pdf_mock }
+    before do
+      stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+        .with(
+          headers: {
+            "Authorization" => ENV["PDF_GENERATOR_API_KEY"],
+            "Content-Type" => "application/json"
+          }
+        )
+        .to_return do |request|
+        # we get the content of the notification from the request body
+        request_body = JSON.parse(request.body)
+        notification_content = request_body["htmlContent"]
+        {
+          status: 200,
+          body: Base64.encode64(notification_content),
+          headers: { "Content-Type" => "application/json" }
+        }
+      end
+    end
 
     it "can generate a pdf" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
@@ -160,6 +158,42 @@ describe "Agents can generate convocation pdf", :js do
         "Le format de l'adresse est invalide. Le format attendu est le suivant: 10 rue de l'envoi 12345 - La Ville"
       )
 
+      expect(page).to have_button "Télécharger le courrier"
+    end
+  end
+
+  context "when the PDF generation service fails" do
+    before do
+      stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+        .to_return(status: 500, body: "Une erreur est survenue lors de la génération du PDF")
+      allow(Sentry).to receive(:capture_message)
+    end
+
+    it "shows an error message and allows retry" do
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
+      click_button "Télécharger le courrier"
+
+      expect(page).to have_content("Une erreur est survenue lors de la génération du PDF")
+      expect(page).to have_button "Télécharger le courrier"
+      expect(Sentry).to have_received(:capture_message).with(
+        "PDF generation failed",
+        extra: { status: 500, body: "Une erreur est survenue lors de la génération du PDF",
+                 notification_id: Notification.last.id }
+      )
+    end
+  end
+
+  context "when the notification service fails" do
+    before do
+      allow(Notifications::SaveAndSend).to receive(:call)
+        .and_return(OpenStruct.new(success?: false, errors: ["Erreur lors de la création de la notification"]))
+    end
+
+    it "shows an error message and allows retry" do
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
+      click_button "Télécharger le courrier"
+
+      expect(page).to have_content("Erreur lors de la création de la notification")
       expect(page).to have_button "Télécharger le courrier"
     end
   end

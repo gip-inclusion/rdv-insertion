@@ -4,7 +4,7 @@ class NotificationsController < ApplicationController
   def create
     if notify_participation.success?
       respond_to do |format|
-        format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
+        format.pdf { pdf.present? ? send_pdf_data : handle_pdf_generation_error }
       end
     else
       respond_to do |format|
@@ -33,6 +33,15 @@ class NotificationsController < ApplicationController
       format: notification_params[:format],
       event: notification_params[:event]
     )
+  end
+
+  def send_pdf_data
+    send_data pdf, filename: pdf_filename, layout: "application/pdf"
+  end
+
+  def handle_pdf_generation_error
+    flash[:error] = "Une erreur est survenue lors de la génération du PDF"
+    redirect_to request.referer
   end
 
   def pdf
