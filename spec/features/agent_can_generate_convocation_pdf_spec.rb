@@ -165,7 +165,7 @@ describe "Agents can generate convocation pdf", :js do
   context "when the PDF generation service fails" do
     before do
       stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
-        .to_return(status: 500, body: "Une erreur est survenue lors de la génération du PDF")
+        .to_return(status: 500, body: "Erreur du service de génération de PDF")
       allow(Sentry).to receive(:capture_message)
     end
 
@@ -173,11 +173,14 @@ describe "Agents can generate convocation pdf", :js do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
       click_button "Télécharger le courrier"
 
-      expect(page).to have_content("Une erreur est survenue lors de la génération du PDF")
+      expect(page).to have_content(
+        "Une erreur est survenue lors de la génération du PDF." \
+        " L'équipe a été notifiée de l'erreur et tente de la résoudre."
+      )
       expect(page).to have_button "Télécharger le courrier"
       expect(Sentry).to have_received(:capture_message).with(
         "PDF generation failed",
-        extra: { status: 500, body: "Une erreur est survenue lors de la génération du PDF",
+        extra: { status: 500, body: "Erreur du service de génération de PDF",
                  notification_id: Notification.last.id }
       )
     end

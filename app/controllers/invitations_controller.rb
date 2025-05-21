@@ -7,7 +7,7 @@ class InvitationsController < ApplicationController
     if invite_user.success?
       respond_to do |format|
         format.json { render json: { success: true, invitation: invitation } }
-        format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
+        format.pdf { pdf.present? ? send_pdf_data : handle_pdf_generation_error }
         format.turbo_stream { redirect_to structure_user_follow_ups_path(user_id: @user.id) }
       end
     else
@@ -64,6 +64,21 @@ class InvitationsController < ApplicationController
       invitation_attributes: invitation_params.except(:motif_category),
       motif_category_attributes: invitation_params[:motif_category] || {}
     )
+  end
+
+  def send_pdf_data
+    send_data pdf, filename: pdf_filename, layout: "application/pdf"
+  end
+
+  def handle_pdf_generation_error
+    render json: {
+             success: false,
+             errors: [
+               "Une erreur est survenue lors de la génération du PDF.
+               L'équipe a été notifiée de l'erreur et tente de la résoudre."
+             ]
+           },
+           status: :internal_server_error
   end
 
   def pdf

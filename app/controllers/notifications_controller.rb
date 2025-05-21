@@ -40,7 +40,8 @@ class NotificationsController < ApplicationController
   end
 
   def handle_pdf_generation_error
-    flash[:error] = "Une erreur est survenue lors de la génération du PDF"
+    flash[:error] = "Une erreur est survenue lors de la génération du PDF." \
+                    " L'équipe a été notifiée de l'erreur et tente de la résoudre."
     redirect_to request.referer
   end
 
