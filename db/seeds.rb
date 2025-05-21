@@ -9,8 +9,7 @@
 
 # Les seeds de rdv-solidarités permettent de créer ces différents éléments
 # L'agent à utiliser est alors "Alain Sertion"
-  # email: "alain.sertion@rdv-insertion-demo.fr",
-  # password: "Rdvservicepublictest1!",
+  # email: "alain.sertion@rdv-insertion-demo.fr"
 # Les rdv_solidarites_organisation_id sont configurées pour match ces seeds, mais il est préférable de les vérifier
 
 if Agent.exists?(email: "alain.sertion@rdv-insertion-demo.fr")
