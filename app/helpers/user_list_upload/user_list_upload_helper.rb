@@ -8,8 +8,8 @@ module UserListUpload::UserListUploadHelper
     return "alert-danger" if user_row.user_errors.any?
 
     {
-      to_create: "background-blue-light text-mid-blue",
-      to_update: "background-blue-light text-mid-blue",
+      to_create: "background-blue-light text-info",
+      to_update: "background-blue-light text-info",
       up_to_date: "background-very-light-grey text-very-dark-grey"
     }[user_row.before_user_save_status]
   end
