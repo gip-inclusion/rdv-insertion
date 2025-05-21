@@ -21,8 +21,9 @@ gem "rails", ">= 6.0.4.1"
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
 gem "puma", "< 7"
-# Use SCSS for stylesheets
-gem "sass-rails", ">= 6"
+
+# Load image assets and required for administrate gem
+gem "sprockets-rails", require: "sprockets/railtie"
 
 # JavaScript Bundling for Rails
 gem "jsbundling-rails"
@@ -92,6 +93,9 @@ gem "rqrcode", "~> 2.0", require: false
 gem "rexml"
 gem "addressable"
 
+# Allows to include the DSFR assets in the application
+gem "dsfr-assets"
+
 # CORS support
 gem "rack-cors"
 
@@ -121,6 +125,9 @@ gem "skylight"
 
 # Sets migrations timeouts
 gem "activerecord-safer_migrations"
+
+# Use paper_trail to track changes
+gem "paper_trail"
 
 # CSV is not part of the standard library anymore
 gem "csv"

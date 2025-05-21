@@ -151,14 +151,12 @@ RSpec.configure do |config|
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: { type: "string", nullable: true },
               france_travail_id: { type: "string", nullable: true },
-              carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" }
             },
             required: %w[
               id uid affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id nir france_travail_id
-              carnet_de_bord_carnet_id
             ]
           },
           user_with_tags_and_referents: {
@@ -191,7 +189,6 @@ RSpec.configure do |config|
                   " Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
               },
               france_travail_id: { type: "string", nullable: true },
-              carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
               referents: {
                 type: "array",
@@ -206,7 +203,6 @@ RSpec.configure do |config|
               id uid affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id nir france_travail_id
-              carnet_de_bord_carnet_id
             ]
           },
           user_with_referents_for_delegataire_rsa: {
@@ -228,7 +224,6 @@ RSpec.configure do |config|
               uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               france_travail_id: { type: "string", nullable: true },
-              carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
               referents: {
                 type: "array",
@@ -239,7 +234,6 @@ RSpec.configure do |config|
               id uid affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id france_travail_id
-              carnet_de_bord_carnet_id
             ]
           },
           user_with_referents_for_siae: {
@@ -260,7 +254,6 @@ RSpec.configure do |config|
               uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               france_travail_id: { type: "string", nullable: true },
-              carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
               referents: {
                 type: "array",
@@ -270,7 +263,6 @@ RSpec.configure do |config|
             required: %w[
               id uid affiliation_number role created_at first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id france_travail_id
-              carnet_de_bord_carnet_id
             ]
           },
           user_with_referents_for_autre: {
@@ -291,7 +283,6 @@ RSpec.configure do |config|
               uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               france_travail_id: { type: "string", nullable: true },
-              carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
               referents: {
                 type: "array",
@@ -301,7 +292,6 @@ RSpec.configure do |config|
             required: %w[
               id uid affiliation_number role created_at first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id france_travail_id
-              carnet_de_bord_carnet_id
             ]
           },
           user_params: {
@@ -331,7 +321,6 @@ RSpec.configure do |config|
                   " Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée."
               },
               france_travail_id: { type: "string", nullable: true },
-              carnet_de_bord_carnet_id: { type: "string", nullable: true },
               invitation: {
                 type: "object",
                 properties: {

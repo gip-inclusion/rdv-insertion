@@ -29,20 +29,27 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_for_france_travail_webhook?
-    eligible_organisation? && user.birth_date? && user.nir? && france_travail_active_department?
+    eligible_user_for_france_travail_webhook? &&
+      eligible_organisation_for_france_travail_webhook? &&
+      eligible_department_for_france_travail_webhook?
   end
 
   def france_travail_webhook_updatable?
     eligible_for_france_travail_webhook? && france_travail_id?
   end
 
-  def france_travail_active_department?
-    # C'est une condition temporaire le temps de tester la fonctionnalité en production sur un département
-    organisation.department.number.in?(ENV.fetch("FRANCE_TRAVAIL_WEBHOOKS_DEPARTMENTS", "").split(","))
+  private
+
+  def eligible_user_for_france_travail_webhook?
+    user.birth_date? && user.nir? && !user.marked_for_rgpd_destruction?
   end
 
-  def eligible_organisation?
+  def eligible_organisation_for_france_travail_webhook?
     # francetravail organisations are not eligible for webhooks, they already have theses rdvs in their own system
-    organisation.delegataire_rsa? || organisation.conseil_departemental?
+    organisation.conseil_departemental? || organisation.delegataire_rsa?
+  end
+
+  def eligible_department_for_france_travail_webhook?
+    !organisation.department.disable_ft_webhooks?
   end
 end

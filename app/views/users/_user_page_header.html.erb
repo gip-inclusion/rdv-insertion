@@ -4,13 +4,6 @@
       <button class="btn btn-blue-out">Retour</button>
     <% end %>
     <%= render "users/find_rdv_button" %>
-    <% if @department.carnet_de_bord_deploiement_id? %>
-      <% if @user.carnet_de_bord_carnet_id? %>
-        <%= render "users/carnet_de_bord_carnet_link", carnet_url: @user.carnet_de_bord_carnet_url %>
-      <% else %>
-        <%= render "users/create_carnet_button", user_id: @user.id, department_id: @department.id %>
-      <% end %>
-    <% end %>
   </div>
   <div class="col-sm-4 d-flex justify-content-center align-items-center flex-column">
     <h4 class="text-center">

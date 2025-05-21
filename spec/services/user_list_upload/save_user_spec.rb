@@ -31,11 +31,11 @@ describe UserListUpload::SaveUser, type: :service do
     it("is a success") { is_a_success }
 
     it "assigns resources to the user" do
+      expect(user).to receive(:assign_motif_category).with(motif_category.id)
       subject
 
       expect(user.referents).to eq(referents)
       expect(user.tags).to eq(tags)
-      expect(user.motif_categories).to include(motif_category)
     end
 
     context "when organisation is provided in user_row" do

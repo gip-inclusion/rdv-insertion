@@ -7,8 +7,8 @@ class FileConfigurationsController < ApplicationController
     :rights_opening_date_column, :organisation_search_terms_column, :referent_email_column, :france_travail_id_column
   ].freeze
 
-  before_action :set_organisation, only: [:show, :new, :create, :edit, :confirm_update, :update]
-  before_action :set_file_configuration, only: [:show, :edit, :confirm_update, :update]
+  before_action :set_organisation, only: [:show, :new, :create, :edit, :confirm_update, :update, :download_template]
+  before_action :set_file_configuration, only: [:show, :edit, :confirm_update, :update, :download_template]
   before_action :set_edit_form_url, :set_edit_form_html_method, only: [:edit, :update]
 
   def show; end
@@ -18,6 +18,16 @@ class FileConfigurationsController < ApplicationController
   end
 
   def edit; end
+
+  def download_template
+    # This line ensures the CSV is read as UTF-8
+    bom = "\uFEFF"
+    csv_data = bom + @file_configuration.column_attributes.values.to_csv
+    send_data csv_data,
+              filename: "modele-#{@organisation.name.parameterize}.csv",
+              type: "text/csv; charset=utf-8",
+              disposition: "attachment"
+  end
 
   def confirm_update
     @file_configuration.assign_attributes(**formatted_params)

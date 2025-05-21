@@ -1,7 +1,8 @@
-<tr class="background-light">
+<tr class="<%= user_row_background_color_before_invitation(user_row) %>">
   <td class="border-light">
     <input type="checkbox"
             class="form-check-input user-checkbox"
+            id="rdvi_upload_users-invit_user-select-<%= user_row.id %>"
             data-select-user-rows-target="checkbox"
             data-action="click->select-user-rows#toggleSelect"
             data-user-email="<%= user_row.user.email %>"
@@ -35,6 +36,7 @@
       data-motif-category-id="<%= @user_list_upload.motif_category_id %>"
   >
       <button type="submit"
+              id="rdvi_upload_users-invit_user-download-<%= user_row.id %>"
               data-action="click->invitation-button#generatePostalInvitation">
         <i class="ri-download-line"></i>
       </button>

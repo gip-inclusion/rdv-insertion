@@ -21,6 +21,9 @@ tables:
   - table_name: address_geocodings
     truncated: true
 
+  - table_name: versions
+    truncated: true
+
   - table_name: agents
     anonymized_column_names:
       - email
@@ -68,6 +71,7 @@ tables:
   - table_name: creneau_availabilities
     non_anonymized_column_names:
       - number_of_creneaux_available
+      - number_of_pending_invitations
       - category_configuration
       - updated_at
       - created_at
@@ -123,7 +127,7 @@ tables:
       - created_at
       - updated_at
       - display_in_stats
-      - carnet_de_bord_deploiement_id
+      - disable_ft_webhooks
 
   - table_name: dpa_agreements
     anonymized_column_names:
@@ -331,7 +335,6 @@ tables:
       - nir
       - france_travail_id
       - pole_emploi_id
-      - carnet_de_bord_carnet_id
     non_anonymized_column_names:
       - rights_opening_date
       - rdv_solidarites_user_id

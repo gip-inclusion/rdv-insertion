@@ -1,4 +1,4 @@
-<header data-turbo-prefetch="false">
+<header data-turbo-prefetch="false" class="reset-dsfr-overrides">
   <% if agent_impersonated? %>
       <%= render "common/header_super_admin_bar_impersonated" %>
   <% elsif current_agent&.super_admin? %>
@@ -14,6 +14,7 @@
     <div class="nav col justify-content-end align-items-center">
       <% if current_agent %>
         <%= render "common/header_help_menu" %>
+        <%= render "common/header_notification_center" if show_notification_center? %>
         <% if show_organisation_navigation_button? %>
           <%= render "common/header_organisation_navigation_button" %>
         <% end %>

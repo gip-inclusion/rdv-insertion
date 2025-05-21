@@ -20,17 +20,16 @@
         <div class="mb-4">
           <h2 class="h2-title">Vérifiez et complétez les données usagers</h2>
           <p class="text-muted">
-            Sur les <%= @user_list_upload.user_rows.length %> usagers importés du fichier « <%= @user_list_upload.file_name %> »:
-             <%=
-               [
-                 @user_list_upload.user_rows_with_errors.any? ? "#{@user_list_upload.user_rows_with_errors.length} dossiers comportent des erreurs" : nil,
-                 @user_list_upload.user_rows_archived.any? ? "#{@user_list_upload.user_rows_archived.length} sont archivés #{@user_list_upload.department_level? ? 'dans une des organisations du département' : 'dans cette organisation'}" : nil,
-                 @user_list_upload.user_rows_with_closed_follow_up.any? ? "#{@user_list_upload.user_rows_with_closed_follow_up.length} sont marqués comme traités sur cette catégorie" : nil
-               ].compact.to_sentence
-             %>
+            Sur les <%= @user_list_upload.user_rows.length %> usagers importés du fichier « <%= @user_list_upload.file_name %> » : il y a
+            <%=
+              [
+                "#{custom_pluralize(@user_list_upload.user_rows_with_errors.length, "dossier")} en erreurs",
+                "#{custom_pluralize(@user_list_upload.user_rows_archived.length, "dossier")} #{custom_pluralize(@user_list_upload.user_rows_archived.length, "archivé", with_count: false)}#{@user_list_upload.department_level? ? '' : ' dans cette organisation'}",
+                @user_list_upload.category_configuration_id ? "#{custom_pluralize(@user_list_upload.user_rows_with_closed_follow_up.length, "dossier")} #{custom_pluralize(@user_list_upload.user_rows_with_closed_follow_up.length, "marqué", with_count: false)} comme #{custom_pluralize(@user_list_upload.user_rows_with_closed_follow_up.length, "traité", with_count: false)} sur cette catégorie" : nil
+              ].compact.to_sentence
+            -%>.
           </p>
         </div>
-
         <div class="d-flex border-bottom align-items-center">
           <ul class="nav nav-tabs flex-grow-1 border-bottom-0 align-self-end">
             <li class="nav-item">
@@ -39,6 +38,7 @@
                     search_query: params[:search_query]
                   ),
                   class: "nav-link #{rows_with_errors? ? 'text-light-blue' : 'active text-dark-blue fw-bold' }",
+                  id: "rdvi_upload_users-data_all-data-user",
                   data: { turbo_frame: "user_collection" } do %>
                 Tous les usagers chargés
                 <%= render "user_list_uploads/user_count_badge", user_count: @user_rows.count, active: !rows_with_errors? %>
@@ -51,6 +51,7 @@
                     search_query: params[:search_query]
                   ),
                   class: "nav-link #{rows_with_errors? ? 'active text-dark-blue fw-bold' : 'text-light-blue' }",
+                  id: "rdvi_upload_users-data_data-user-error",
                   data: { turbo_frame: "user_collection" } do %>
                 Usagers avec erreurs
                 <%= render "user_list_uploads/user_count_badge", user_count: @user_rows_with_errors.count, active: rows_with_errors? %>
@@ -80,7 +81,7 @@
                 data: { controller: "confirmation-modal" }
               ) do
             %>
-              <button class="btn btn-link" data-action="click->confirmation-modal#show">Revenir à l'étape précédente</button>
+              <button class="btn btn-link" id="rdvi_upload_users-data_return" data-action="click->confirmation-modal#show">Revenir à l'étape précédente</button>
               <%= render "back_to_file_upload_warning_modal" %>
             <% end %>
           </div>
@@ -97,7 +98,7 @@
             <%= form_tag create_many_user_list_upload_user_save_attempts_path(user_list_upload_id: @user_list_upload.id),
                   method: :post,
                   data: { turbo: false } do %>
-              <%= submit_tag "Créer et mettre à jour les dossiers", class: "btn btn-primary d-block mx-auto", disabled: @number_of_user_rows_selected.zero? %>
+              <%= submit_tag "Créer et mettre à jour les dossiers", class: "btn btn-primary d-block mx-auto", id: "rdvi_upload_users-data_create-folder", disabled: @number_of_user_rows_selected.zero? %>
             <% end %>
           </div>
         </div>

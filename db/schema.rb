@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_20_105629) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -157,7 +157,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_20_105629) do
     t.bigint "category_configuration_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "number_of_pending_invitations"
     t.index ["category_configuration_id"], name: "index_creneau_availabilities_on_category_configuration_id"
+    t.index ["created_at"], name: "index_creneau_availabilities_on_created_at"
   end
 
   create_table "csv_exports", force: :cascade do |t|
@@ -184,7 +186,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_20_105629) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
-    t.string "carnet_de_bord_deploiement_id"
+    t.boolean "disable_ft_webhooks", default: false
   end
 
   create_table "dpa_agreements", force: :cascade do |t|
@@ -611,17 +613,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_20_105629) do
     t.datetime "last_webhook_update_received_at"
     t.string "nir"
     t.string "france_travail_id"
-    t.string "carnet_de_bord_carnet_id"
     t.string "created_through"
     t.bigint "old_rdv_solidarites_user_id"
     t.string "created_from_structure_type"
     t.bigint "created_from_structure_id"
     t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
+    t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
     t.index ["phone_number"], name: "index_users_on_phone_number"
     t.index ["rdv_solidarites_user_id"], name: "index_users_on_rdv_solidarites_user_id", unique: true
+    t.index ["role", "affiliation_number"], name: "index_users_on_role_and_affiliation_number"
     t.index ["uid"], name: "index_users_on_uid"
   end
 
@@ -631,6 +634,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_20_105629) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["organisation_id", "user_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string "whodunnit"
+    t.datetime "created_at"
+    t.string "item_id", null: false
+    t.string "item_type", null: false
+    t.string "event", null: false
+    t.jsonb "object"
+    t.jsonb "object_changes"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|

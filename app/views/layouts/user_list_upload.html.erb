@@ -12,7 +12,7 @@
     <%= content_for :header %>
     <%= content_for :announcement_banner %>
     <%= render 'common/flashes' %>
-    <div class="wrapper">
+    <div class="wrapper reset-dsfr-overrides">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
       <%= yield %>
       <%= render 'common/accept_cgu_modal' if @should_display_accept_cgu %>

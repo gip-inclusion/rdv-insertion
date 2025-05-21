@@ -14,7 +14,8 @@ module Creneaux
         category_configuration.organisation
       )
 
-      save_record!(CreneauAvailability.new(category_configuration:, number_of_creneaux_available:))
+      save_record!(CreneauAvailability.new(category_configuration:, number_of_creneaux_available:,
+                                           number_of_pending_invitations:))
     end
 
     private
@@ -31,6 +32,14 @@ module Creneaux
           max_relevant_creneaux_count_limit: MAX_RELEVANT_CRENEAUX_COUNT_LIMIT
         ).creneau_availability_count
       end
+    end
+
+    def number_of_pending_invitations
+      Invitation.joins(:follow_up, :organisations)
+                .where(follow_ups: { motif_category_id: category_configuration.motif_category_id })
+                .where(organisations: { id: category_configuration.organisation_id })
+                .valid
+                .count
     end
   end
 end

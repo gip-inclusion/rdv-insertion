@@ -18,7 +18,8 @@
     <div class="col-md-10"
          data-controller="user-list-upload"
          data-file-configuration-column-attributes="<%= @file_configuration.column_attributes.to_json %>"
-         data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>">
+         data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>"
+         data-category-configuration-id="<%= @category_configuration&.id %>">
 
       <%# We set the file input outside the form because we don't want to submit the file itself %>
       <input type="file"
@@ -29,8 +30,6 @@
               accept=".csv, .xlsx, .xls, .ods">
 
       <%= form_with(url: structure_user_list_uploads_path, local: true, class: "upload-form") do |f| %>
-        <%= f.hidden_field :category_configuration_id, value: @category_configuration&.id %>
-        <%= f.hidden_field :file_name %>
 
         <div class="mb-4">
           <h2 class="h2-title">Choisissez un fichier usagers à charger</h2>
@@ -48,7 +47,7 @@
             <p class="mb-0">Glisser/déposer votre fichier ici</p>
             <p class="text-muted small">OU</p>
             <div class="mt-2">
-              <label for="user_list_upload_file" class="btn btn-primary">
+              <label for="user_list_upload_file" class="btn btn-primary" id="rdvi_upload_select-file_file-choice">
                 Charger un fichier
               </label>
             </div>
@@ -66,18 +65,18 @@
                   <div class="d-flex">
                     <i class="ri-information-line me-1 fs-4"></i>
                     <p class="w-50">
-                      Votre fichier contient plus de 500 lignes. Cela risque de ralentir les importations. 
-                      Nous vous conseillons de découper votre fichier et d’effectuer plusieurs imports. 
+                      Votre fichier contient plus de 500 lignes. Cela risque de ralentir les importations.
+                      Nous vous conseillons de découper votre fichier et d’effectuer plusieurs imports.
                     </p>
                   </div>
                 </div>
               </div>
               <div class="px-2">
-                <i class="ri-close-line ri-2x btn btn-link text-decoration-none" data-action="click->user-list-upload#handleFileRemove"></i>
+                <i class="ri-close-line ri-2x btn btn-link text-decoration-none" data-action="click->user-list-upload#handleFileRemove" id="rdvi_upload_select-file_delete"></i>
               </div>
             </div>
             <div>
-              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline">
+              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline" id="rdvi_upload_select-file_change-file">
                 Changer de fichier
               </label>
             </div>
@@ -87,11 +86,12 @@
         <div class="d-flex justify-content-between my-5">
           <div>
             <i class="ri-arrow-left-s-line"></i>
-            <%= link_to "Revenir à l'étape précédente", new_structure_user_list_uploads_category_selection_path, class: "btn btn-link" %>
+            <%= link_to "Revenir à l'étape précédente", new_structure_user_list_uploads_category_selection_path, class: "btn btn-link", id: "rdvi_upload_select-file_back" %>
           </div>
           <div>
             <%= f.submit "Charger les données usagers",
                         class: "btn btn-primary d-block mx-auto disabled",
+                        id: "rdvi_upload_select-file_validate",
                         data: {
                           action: "click->user-list-upload#handleSubmit",
                           user_list_upload_target: "submitButton"

@@ -22,6 +22,7 @@ class User < ApplicationRecord
   include Notificable
   include Invitable
   include HasParticipationsToRdvs
+  include RgpdDestroyable
   include User::TextHelper
   include User::Address
   include User::NirValidation
@@ -34,6 +35,11 @@ class User < ApplicationRecord
 
   attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create,
                 :require_title_presence
+
+  has_paper_trail(
+    only: [:first_name, :last_name, :email, :phone_number, :address, :affiliation_number, :birth_date, :birth_name,
+           :department_internal_id, :title, :role, :nir, :france_travail_id]
+  )
 
   encrypts :nir, deterministic: true
 
@@ -51,9 +57,12 @@ class User < ApplicationRecord
   has_many :orientations, dependent: :destroy
   has_many :diagnostics, dependent: :destroy
   has_many :contracts, dependent: :destroy
+  has_many :blocked_users, dependent: :destroy
 
   has_many :rdvs, through: :participations
-  has_many :organisations, through: :users_organisations
+  # dependent: :destroy is needed to trigger AR callbacks on UsersOrganisation when deleting an organisation
+  # from the user
+  has_many :organisations, through: :users_organisations, dependent: :destroy
   has_many :notifications, through: :participations
   has_many :category_configurations, through: :organisations
   has_many :motif_categories, through: :follow_ups
@@ -92,6 +101,8 @@ class User < ApplicationRecord
   scope :with_sent_invitations, -> { where.associated(:invitations) }
 
   squishes :first_name, :last_name, :department_internal_id, :affiliation_number
+  nullify_blank :first_name, :last_name, :department_internal_id, :affiliation_number, :email, :phone_number, :nir,
+                :france_travail_id, :address
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
@@ -131,6 +142,8 @@ class User < ApplicationRecord
 
   def soft_delete
     update_columns(
+      last_name: "[Usager supprimé]",
+      first_name: "[Usager supprimé]",
       deleted_at: Time.zone.now,
       affiliation_number: nil,
       role: nil,
@@ -156,10 +169,6 @@ class User < ApplicationRecord
   def phone_number_is_mobile?
     types = PhoneNumberHelper.parsed_number(phone_number)&.types
     types&.include?(:mobile)
-  end
-
-  def carnet_de_bord_carnet_url
-    "#{ENV['CARNET_DE_BORD_URL']}/manager/carnets/#{carnet_de_bord_carnet_id}"
   end
 
   def notifiable?
