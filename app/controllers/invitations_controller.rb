@@ -82,7 +82,7 @@ class InvitationsController < ApplicationController
   end
 
   def pdf
-    response = pdf_generator.generate_pdf(content: invitation.content)
+    response = PdfGeneratorClient.generate_pdf(content: invitation.content)
     if response.success?
       Base64.decode64(response.body)
     else
@@ -96,10 +96,6 @@ class InvitationsController < ApplicationController
       )
       nil
     end
-  end
-
-  def pdf_generator
-    @pdf_generator ||= PdfGeneratorClient.new
   end
 
   def pdf_filename
