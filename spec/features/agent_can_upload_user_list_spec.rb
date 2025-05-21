@@ -1019,7 +1019,5 @@ describe "Agents can upload user list", :js do
         end
       end
     end
-
-    
   end
 end
