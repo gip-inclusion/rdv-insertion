@@ -8,6 +8,6 @@ module CrispConcern
   private
 
   def set_should_display_crisp_chatbox
-    @should_display_crisp_chatbox = current_agent && !agent_impersonated? && ENV["ENABLE_CRISP"] == "true"
+    @should_display_crisp_chatbox = current_agent.present? && !agent_impersonated? && ENV["ENABLE_CRISP"] == "true"
   end
 end
