@@ -631,6 +631,93 @@ describe "Agents can upload user list", :js do
         end
       end
     end
+
+    context "with a large file" do
+      let!(:file_configuration_for_large_file) do
+        create(
+          :file_configuration,
+          title_column: "Civilité",
+          first_name_column: "Prénom bénéficiaire",
+          last_name_column: "Nom bénéficiaire",
+          email_column: "Adresses Mails",
+          phone_number_column: "N° Téléphones",
+          birth_date_column: "Date de Naissance",
+          address_first_field_column: "CP Ville",
+          address_second_field_column: nil,
+          address_third_field_column: nil,
+          address_fourth_field_column: nil,
+          address_fifth_field_column: nil,
+          affiliation_number_column: "N° CAF",
+          department_internal_id_column: "ID Iodas",
+          referent_email_column: "Référent",
+          tags_column: "Role",
+          nir_column: nil,
+          france_travail_id_column: nil
+        )
+      end
+
+      before do
+        category_configuration.update!(file_configuration: file_configuration_for_large_file)
+      end
+
+      it "can upload list of users with 600 rows" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+
+        expect(page).to have_content("Sélectionnez la catégorie de suivi sur laquelle importer les usagers")
+        expect(page).to have_content("Charger un fichier usagers")
+        expect(page).to have_content(motif_category.name)
+        expect(page).to have_content("Aucune catégorie de suivi")
+
+        choose(motif_category.name)
+
+        click_button("Valider")
+
+        expect(page).to have_content("Choisissez un fichier usagers à charger")
+        expect(page).to have_content(motif_category.name)
+        expect(page).to have_content(organisation.name)
+
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/fichier_usager_600_lignes.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("fichier_usager_600_lignes.csv")
+        expect(page).to have_content("600 usagers à importer")
+        expect(page).to have_content("Changer de fichier")
+        expect(page).to have_content("Votre fichier contient plus de 500 lignes")
+
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Civilité", wait: 20)
+
+        expect(UserListUpload.count).to eq(1)
+        expect(UserListUpload::UserRow.count).to eq(600)
+
+        user_list_upload = UserListUpload.last
+
+        expect(page).to have_current_path(user_list_upload_path(user_list_upload))
+        expect(user_list_upload.user_rows.count).to eq(600)
+
+        first_row_data = user_list_upload.user_rows.first
+        expect(page).to have_content(first_row_data.first_name)
+        expect(page).to have_content(first_row_data.last_name)
+
+        expect(page).to have_content("il y a 161 dossiers en erreurs")
+        expect(page).to have_content("439 usagers sélectionnés")
+        expect(page).to have_content("Tous les usagers chargés 600")
+
+        perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
+          click_button("Créer et mettre à jour les dossiers")
+        end
+
+        expect(page).to have_current_path(
+          user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+        )
+
+        expect(UserListUpload.last.user_rows.count).to eq(600)
+      end
+    end
   end
 
   context "at department level" do
@@ -932,5 +1019,7 @@ describe "Agents can upload user list", :js do
         end
       end
     end
+
+    
   end
 end
