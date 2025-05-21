@@ -1,5 +1,5 @@
 <div id="organisation-navigation" class="dropdown ms-3" data-controller="dropdown-menu">
-  <button id="btn-organisation-navigation" class="dropdown-toggle accessible text-truncate" type="button" data-action="click->dropdown-menu#toggle" data-dropdown-menu-target="button" aria-haspopup="true" aria-expanded="false">
+  <button id="rdvi_header_organisation-nav" class="dropdown-toggle accessible text-truncate" type="button" data-action="click->dropdown-menu#toggle" data-dropdown-menu-target="button" aria-haspopup="true" aria-expanded="false">
     <i class="<%= department_level? ? "ri-building-line" : "ri-building-4-line" %> me-1"></i> <%= structure_name_with_context(current_structure) %>
   </button>
   <div id="organisation-navigation-dropdown" data-dropdown-menu-target="dropdown" class="dropdown-menu py-0 mt-2">
