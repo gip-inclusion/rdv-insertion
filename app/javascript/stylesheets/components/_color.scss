@@ -3,7 +3,7 @@
 }
 
 .background-blue-light {
-  background-color: $light-blue-alt;
+  background-color: $light;
 }
 
 .background-warning {
@@ -62,8 +62,8 @@
   }
 }
 
-.text-dark-grey-alt {
-  color: $dark-grey-alt;
+.text-dark-grey {
+  color: $dark-grey;
 }
 
 .text-very-dark-grey {
@@ -71,11 +71,11 @@
 }
 
 .text-dark-grey {
-  color: $dark-grey-alt;
+  color: $dark-grey;
 }
 
-.text-purple {
-  color: $purple;
+.text-violet {
+  color: $violet;
 }
 
 .text-brown {
@@ -91,15 +91,15 @@
 }
 
 .link-blue-light {
-  color: $light-blue-alt;
+  color: $light;
   &:hover {
     color: white;
   }
 }
 
-.link-purple-underlined {
+.link-violet-underlined {
   text-decoration: underline;
-  color: $purple;
+  color: $violet;
   &:hover {
     color: $alt-grey;
   }

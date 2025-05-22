@@ -67,7 +67,7 @@
     min-width: 85px;
   }
   .active-filter-badge {
-    background-color: $light-blue-alt-2;
+    background-color: $light;
     border-radius: 20px;
     padding: 5px 10px;
     margin-right: 5px;
@@ -83,7 +83,7 @@
 .filter-active {
   position: relative;
   display: inline-block;
-  background-color: $light-blue-alt-2;
+  background-color: $light;
   width: 23px;
   height: 23px;
   border-radius: 100%;

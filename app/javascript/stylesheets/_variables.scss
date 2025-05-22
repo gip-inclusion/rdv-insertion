@@ -1,27 +1,36 @@
-$purple: #6570C5;
-$violet: #6363E6;
-$purple-light: #9199D6;
-$very-light-grey: #F4F4F4;
-$very-dark-grey: #929292;
-$light-grey: #CECECE;
-$dark-grey: #929292;
-$dark-grey-alt: #507494;
-$alt-grey: #161616;
+// Blues
+$dark-blue: #000091;
 $light-blue: #1212FF;
-$orange: #F95A5C;
-$orange-light: #EDF5FE;
+$info: #0063CB;
+
+// Browns
 $brown: #B34000;
 $brown-light: #FFF6F5;
-$dark-blue: #000091;
-$light-blue-alt: #d8e1f4;
-$light-blue-alt-2: #E9F2FA;
-$light: #F5F5FE;
-$green: #57EE93 ;
+
+// Greens  
 $dark-green: #18753C;
+$green: #57EE93;
 $green-light: #E1FEE8;
-$rdv_solidarites_blue: #222e5c;
-$primary: $dark-blue;
+
+// Greys
+$alt-grey: #161616;
+$very-dark-grey: #929292;
+$dark-grey: #929292;
+$light-grey: #CECECE;
+$very-light-grey: #F4F4F4;
+
+// Oranges
+$orange: #F95A5C;
+$orange-light: #ffb88e;
+
+// Purples
+$violet: #6363E6;
+$light: #F5F5FE;
+
+// Reds
 $danger: #CE0500;
+
+// Semantic colors
+$primary: $dark-blue;
 $warning: #B34000;
 $success: $dark-green;
-$info: #0063CB;
