@@ -1,9 +1,9 @@
 module UserListUpload::UserRow::Status
   def before_user_save_status
-    return :to_create unless matching_user_id
-
-    if will_change_matching_user?
-      :to_update
+    if !matching_user_id
+      user_valid? ? :to_create_with_no_errors : :to_create_with_errors
+    elsif will_change_matching_user?
+      user_valid? ? :to_update_with_no_errors : :to_update_with_errors
     else
       :up_to_date
     end
@@ -16,7 +16,9 @@ module UserListUpload::UserRow::Status
 
     {
       to_create: :created,
+      to_create_with_no_errors: :created,
       to_update: :updated,
+      to_update_with_no_errors: :updated,
       up_to_date: :updated
     }[before_user_save_status]
   end
