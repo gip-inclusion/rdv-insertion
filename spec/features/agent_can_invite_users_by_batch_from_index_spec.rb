@@ -95,7 +95,7 @@ describe "Agent can invite users by batch from index" do
 
     it "can return to index page with the same arguments" do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-      select("Non invité", from: "user_status")
+      select("Non invité", from: "rdvi_index-nav_filter-status")
       click_link "Envoyer des invitations aux non-invités"
 
       expect(page).to have_button("Retour au suivi")
@@ -155,7 +155,7 @@ describe "Agent can invite users by batch from index" do
 
     it "can return to index page with the same arguments" do
       visit department_users_path(department, motif_category_id: motif_category.id)
-      select("Non invité", from: "user_status")
+      select("Non invité", from: "rdvi_index-nav_filter-status")
       click_link "Envoyer des invitations aux non-invités"
 
       expect(page).to have_button("Retour au suivi")

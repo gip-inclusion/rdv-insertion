@@ -29,7 +29,7 @@
             <ul class="fr-btns-group">
               <% if current_agent %>
                 <li>
-                  <%= link_to sign_out_path, data: { turbo: false } do %>
+                  <%= link_to sign_out_path, data: { turbo: false }, id: "rdvi_header_log-out" do %>
                     <button class="fr-btn fr-icon-lock-unlock-line">
                       Se déconnecter
                     </button>
