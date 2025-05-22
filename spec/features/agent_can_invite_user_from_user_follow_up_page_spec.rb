@@ -14,7 +14,7 @@ describe "Agents can invite user from user follow up page", :js do
   let!(:category_configuration) do
     create(
       :category_configuration,
-      motif_category: motif_category, organisation: organisation, invitation_formats: %w[sms email]
+      motif_category: motif_category, organisation: organisation, invitation_formats: %w[sms email postal]
     )
   end
   let!(:motif) { create(:motif, motif_category: motif_category, organisation: organisation) }
@@ -27,6 +27,8 @@ describe "Agents can invite user from user follow up page", :js do
     stub_creneau_availability(true)
     follow_up.set_status
     follow_up.save
+    stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+      .to_return(status: 200, body: Base64.encode64("mock pdf content"))
   end
 
   shared_examples "agent can invite user" do
@@ -40,10 +42,36 @@ describe "Agents can invite user from user follow up page", :js do
       expect_successful_invitation
     end
 
+    it "can invite the user by pdf" do
+      find("[data-action='click->invitation-button#generatePostalInvitation']").click
+      expect_successful_invitation
+    end
+
     it "gets an error message when the invitation fails (no creneau)" do
       stub_creneau_availability(false)
       invite_user("email")
       expect_invitation_failure_message
+    end
+
+    context "when pdf generation fails" do
+      before do
+        stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+          .to_return(status: 500, body: "Erreur du service de génération de PDF")
+        allow(Sentry).to receive(:capture_message)
+      end
+
+      it "displays an error message and notify sentry" do
+        find("[data-action='click->invitation-button#generatePostalInvitation']").click
+        expect(page).to have_content(
+          "Une erreur est survenue lors de la génération du PDF." \
+          " L'équipe a été notifiée de l'erreur et tente de la résoudre."
+        )
+        expect(Sentry).to have_received(:capture_message).with(
+          "PDF generation failed",
+          extra: { status: 500, body: "Erreur du service de génération de PDF",
+                   invitation_id: Invitation.last.id }
+        )
+      end
     end
   end
 

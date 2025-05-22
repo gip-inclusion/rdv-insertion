@@ -28,7 +28,7 @@ export default class extends Controller {
 
     this.button.innerHTML = DOMPurify.sanitize(this.initialButtonHTML);
     if (result.success && this.initialButtonText === "Inviter") {
-      this.button.innerText = "Révinviter";
+      this.button.innerText = "Réinviter";
     }
     this.button.disabled = false;
   }

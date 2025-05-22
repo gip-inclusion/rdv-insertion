@@ -11,19 +11,14 @@ module DownloadHelper
     downloads.first
   end
 
-  def download_content(format: nil)
-    format == "pdf" ? PDF::Reader.new(download) : File.read(download)
+  def download_content
+    File.read(download)
   end
 
   def wait_for_download
     Timeout.timeout(TIMEOUT) do
       sleep 0.1 until downloaded?
     end
-  end
-
-  def downloaded_content(format: nil)
-    wait_for_download
-    download_content(format:)
   end
 
   def downloaded?

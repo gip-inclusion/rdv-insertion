@@ -96,10 +96,6 @@ gem "addressable"
 # Allows to include the DSFR assets in the application
 gem "dsfr-assets"
 
-# Easily generate PDF from HTML
-gem "wicked_pdf"
-gem "wkhtmltopdf-binary"
-
 # CORS support
 gem "rack-cors"
 

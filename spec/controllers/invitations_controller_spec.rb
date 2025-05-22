@@ -122,8 +122,7 @@ describe InvitationsController do
         end
 
         before do
-          allow(WickedPdf).to receive_message_chain(:new, :pdf_from_string)
-          allow(invitation).to receive(:content).and_return("some content")
+          mock_pdf_service(success: true)
         end
 
         it "is a success" do
@@ -132,13 +131,26 @@ describe InvitationsController do
           expect(response.headers["Content-Type"]).to eq("application/pdf")
         end
 
-        it "renders the invitation" do
+        it "renders the invitation as a PDF attachment" do
           post :create, params: create_params
           expect(response).to be_successful
           expect(response.headers["Content-Disposition"]).to start_with("attachment; filename=")
-          first_name = user.first_name
-          last_name = user.last_name
-          expect(response.headers["Content-Disposition"]).to end_with("_#{last_name}_#{first_name}.pdf")
+          expect(response.headers["Content-Disposition"]).to include("_#{user.last_name}_#{user.first_name}.pdf")
+        end
+
+        context "when the PDF generation fails" do
+          before do
+            mock_pdf_service(success: false)
+            allow(Sentry).to receive(:capture_message)
+          end
+
+          it "informs Sentry of the error" do
+            post :create, params: create_params
+            expect(Sentry).to have_received(:capture_message).with(
+              "PDF generation failed",
+              extra: { status: 500, body: "error", invitation_id: invitation.id }
+            )
+          end
         end
       end
     end
