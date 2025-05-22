@@ -8,7 +8,7 @@ export default class extends Controller {
 
   connect() {
     window.addEventListener("click", (e) => {
-      if (e.target !== this.buttonTarget && this.isOpen()){
+      if (e.target !== this.buttonTarget && !this.dropdownTarget.contains(e.target) && this.isOpen()){
         this.toggle()
       }
     })
