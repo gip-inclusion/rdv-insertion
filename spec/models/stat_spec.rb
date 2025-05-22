@@ -168,9 +168,9 @@ describe Stat do
         let!(:user3) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
-        let!(:user4) { create(:user, organisations: [organisation]) }
-        let!(:user5) { create(:user, organisations: [organisation]) }
-        let!(:user6) { create(:user, organisations: [organisation]) }
+        let!(:user4) { create(:user, department: organisation.department, organisations: [organisation]) }
+        let!(:user5) { create(:user, department: organisation.department, organisations: [organisation]) }
+        let!(:user6) { create(:user, department: organisation.department, organisations: [organisation]) }
         let!(:invitation3) { create(:invitation, user: user3, department: department, created_at: date) }
         let!(:invitation5) { create(:invitation, user: user5, department: department) }
         let!(:invitation6) { create(:invitation, user: user6, department: department, created_at: date) }
@@ -199,7 +199,7 @@ describe Stat do
         let!(:first_user) do
           create(:user, organisations: [organisation])
         end
-        let!(:second_user) { create(:user, organisations: [organisation]) }
+        let!(:second_user) { create(:user, department: organisation.department, organisations: [organisation]) }
         let!(:third_user) do
           create(:user, organisations: [organisation])
         end
@@ -356,9 +356,9 @@ describe Stat do
         let!(:user3) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
-        let!(:user4) { create(:user, organisations: [organisation]) }
-        let!(:user5) { create(:user, organisations: [organisation]) }
-        let!(:user6) { create(:user, organisations: [organisation]) }
+        let!(:user4) { create(:user, department: organisation.department, organisations: [organisation]) }
+        let!(:user5) { create(:user, department: organisation.department, organisations: [organisation]) }
+        let!(:user6) { create(:user, department: organisation.department, organisations: [organisation]) }
         let!(:invitation3) { create(:invitation, user: user3, department: department, created_at: date) }
         let!(:invitation5) { create(:invitation, user: user5, department: department) }
         let!(:invitation6) { create(:invitation, user: user6, department: department, created_at: date) }

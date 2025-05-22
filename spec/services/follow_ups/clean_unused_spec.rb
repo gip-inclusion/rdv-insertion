@@ -2,9 +2,10 @@ describe FollowUps::CleanUnused do
   subject { described_class.call(user:) }
 
   let!(:user) { create(:user, organisations: [organisation, organisation2, organisation3]) }
-  let!(:organisation) { create(:organisation, category_configurations: [category_configuration]) }
-  let!(:organisation2) { create(:organisation, category_configurations: [category_configuration2]) }
-  let!(:organisation3) { create(:organisation, category_configurations: [category_configuration3]) }
+  let!(:department) { create(:department) }
+  let!(:organisation) { create(:organisation, category_configurations: [category_configuration], department:) }
+  let!(:organisation2) { create(:organisation, category_configurations: [category_configuration2], department:) }
+  let!(:organisation3) { create(:organisation, category_configurations: [category_configuration3], department:) }
   let!(:category_configuration) { create(:category_configuration, motif_category: rsa_accompagnement) }
   let!(:category_configuration2) { create(:category_configuration, motif_category: rsa_accompagnement) }
   let!(:category_configuration3) { create(:category_configuration, motif_category: rsa_orientation) }

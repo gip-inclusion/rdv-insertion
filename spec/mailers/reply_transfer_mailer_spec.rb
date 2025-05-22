@@ -11,10 +11,11 @@ RSpec.describe ReplyTransferMailer do
     Mail.new(headers: source_mail_headers, subject: "coucou", attachments: [])
   end
   let!(:reply_body) { "Je souhaite annuler mon RDV" }
-  let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
+  let!(:organisation) { create(:organisation, email: "organisation@departement.fr", department:) }
+  let!(:department) { create(:department) }
   let(:user) do
     create(:user, email: "bene_ficiaire@gmail.com",
-                  first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
+                  first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation], department:)
   end
   let(:rdv_uuid) { "8fae4d5f-4d63-4f60-b343-854d939881a3" }
   let!(:follow_up) { create(:follow_up, user: user) }
