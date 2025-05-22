@@ -4,7 +4,7 @@
     <% if document.document_date.present? %>
       <strong><%= document.document_date.strftime("%d/%m/%Y") %></strong>
     <% else %>
-      <span class="text-dark-grey-alt">Non renseignée</span>
+      <span class="text-dark-grey">Non renseignée</span>
     <% end %>
   </div>
   <% if policy(document).edit? %>

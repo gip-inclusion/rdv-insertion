@@ -18,7 +18,7 @@
         }
       ) do
     %>
-      <i class="ri-close-line text-dark-grey-alt ms-2" data-action="click->confirmation-modal#show"></i>
+      <i class="ri-close-line text-dark-grey ms-2" data-action="click->confirmation-modal#show"></i>
       <% modal_text_content = capture do %>
         Êtes-vous sûr de vouloir retirer le tag <b><%= tag.value %></b> de l'usager <b><%= user %></b> ?
       <% end %>

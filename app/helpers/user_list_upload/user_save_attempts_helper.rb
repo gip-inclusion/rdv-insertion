@@ -16,7 +16,7 @@ module UserListUpload::UserSaveAttemptsHelper
 
   def user_save_status_badge_class(status)
     {
-      pending: "background-blue-light text-mid-blue",
+      pending: "background-blue-light text-info",
       created: "alert-success",
       updated: "alert-success"
     }[status]

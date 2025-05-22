@@ -1,3 +1,4 @@
+@import "./_variables";
 // note: flexbox is not working with wkhtmltopdf/wicked-pdf ; hence, the dirty css to keep everything centered/aligned
 
 @font-face {
@@ -82,7 +83,7 @@ u {
 }
 
 .invitation-token {
-  background-color: #083b66;
+  background-color: $dark-blue;
   color: white;
   vertical-align: middle;
   text-align: center;
@@ -102,7 +103,7 @@ u {
 
 .bold-blue {
   font-weight: bold;
-  color: #083b66;
+  color: $dark-blue;
 }
 
 .letter-signature {
