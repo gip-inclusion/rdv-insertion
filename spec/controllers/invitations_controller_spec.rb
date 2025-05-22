@@ -207,8 +207,11 @@ describe InvitationsController do
 
         it "says the invitation is invalid" do
           subject
-          expect(response.body.encode).to include("Désolé, votre invitation n'est plus valide !")
-          expect(response.body.encode).to include(invitation.help_phone_number)
+          expect(response.body.encode).to include(
+            "Le délai pour prendre rendez-vous avec cette invitation est maintenant dépassé."
+          )
+          expect(response.body.encode).to include(invitation2.organisations.first.phone_number)
+          expect(response.body.encode).to include(invitation2.organisations.first.email)
         end
       end
 
