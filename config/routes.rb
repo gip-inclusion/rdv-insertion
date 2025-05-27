@@ -55,6 +55,8 @@ Rails.application.routes.draw do
 
   get "/organisations", to: "organisations#index", as: :authenticated_root
 
+  resources :notification_center, only: [:index]
+
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
@@ -104,6 +106,7 @@ Rails.application.routes.draw do
     end
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
+      get :download_template
     end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
     resource :stats, only: [:show], controller: 'website/stats'
@@ -175,10 +178,6 @@ Rails.application.routes.draw do
   namespace :previews do
     resources :invitations, only: [:index]
     resources :notifications, only: [:index]
-  end
-
-  namespace :carnet_de_bord do
-    resources :carnets, only: [:create]
   end
 
   resources :departments, only: [] do

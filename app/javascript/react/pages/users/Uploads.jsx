@@ -50,7 +50,6 @@ const UsersUploads = observer(
 
     const retrieveUsersFromList = async (file) => {
       users.fileColumnNames = parameterizedColumnNames;
-      users.showCarnetColumn = !!department.carnet_de_bord_deploiement_id;
       users.showReferentColumn = categoryConfiguration?.rdv_with_referents;
       users.categoryConfiguration = categoryConfiguration;
       users.isDepartmentLevel = isDepartmentLevel;

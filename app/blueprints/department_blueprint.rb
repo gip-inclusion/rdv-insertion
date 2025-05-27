@@ -1,6 +1,6 @@
 class DepartmentBlueprint < ApplicationBlueprint
   identifier :id
-  fields :number, :capital, :region, :carnet_de_bord_deploiement_id
+  fields :number, :capital, :region
 
   view :extended do
     association :organisations, blueprint: OrganisationBlueprint, view: :extended

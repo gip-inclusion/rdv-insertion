@@ -35,7 +35,7 @@ module UserListUploads
       authorize @user_list_upload
 
       if @user_list_upload.save
-        redirect_to user_list_upload_path(@user_list_upload)
+        render json: { location: user_list_upload_path(@user_list_upload) }
       else
         turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
       end

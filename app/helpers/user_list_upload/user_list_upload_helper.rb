@@ -17,7 +17,7 @@ module UserListUpload::UserListUploadHelper
   def user_row_background_color(user_row)
     if user_row.archived?
       "background-brown-light"
-    else
+    elsif user_row.selected_for_user_save?
       "background-light"
     end
   end

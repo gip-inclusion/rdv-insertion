@@ -3,6 +3,8 @@ class UserListUpload::UserRow < ApplicationRecord
   include UserListUpload::UserRow::Status
   include UserListUpload::UserRow::MatchingUser
 
+  has_paper_trail
+
   USER_ATTRIBUTES = %i[
     email phone_number title first_name last_name affiliation_number nir birth_date department_internal_id
     france_travail_id role address
@@ -27,7 +29,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
   nullify_blank :first_name, :last_name, :affiliation_number, :department_internal_id, :address, :phone_number,
-                :nir, :email, :referent_email, :organisation_search_terms
+                :nir, :email, :referent_email, :organisation_search_terms, :france_travail_id
 
   EDITABLE_ATTRIBUTES = %i[title first_name last_name affiliation_number phone_number email].freeze
 

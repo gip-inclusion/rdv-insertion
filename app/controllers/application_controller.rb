@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   include TurboStreamConcern
   include ModalAgreementsConcern
   include CrispConcern
+  include NotificationCenterConcern
+  include PaperTrailConcern
 
   protect_from_forgery with: :exception
   before_action :set_sentry_context

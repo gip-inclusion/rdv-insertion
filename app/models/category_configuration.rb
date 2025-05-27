@@ -1,9 +1,12 @@
 class CategoryConfiguration < ApplicationRecord
+  has_paper_trail
+
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation
 
   has_many :creneau_availabilities, dependent: :destroy
+  has_many :user_list_uploads, dependent: :nullify
 
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }

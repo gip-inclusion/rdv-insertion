@@ -62,6 +62,7 @@ original file : https://github.com/thoughtbot/administrate/blob/main/app/views/a
       <% end %>
     </dl>
   </section>
+  <%= render "super_admins/application/changes_history", resource: page.resource %>
 <% end %>
 
 <%= content_for(:after_main) %>

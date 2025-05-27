@@ -2,6 +2,10 @@
   <%= render 'common/header' %>
 <% end %>
 
+<% content_for :footer do %>
+  <%= render 'common/footer' %>
+<% end %>
+
 <%= render "layouts/application_base" do %>
   <%= yield %>
 <% end %>

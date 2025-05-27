@@ -43,6 +43,11 @@ module ApplicationHelper
     current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 
+  def custom_pluralize(count, word, with_count: true)
+    word = ActiveSupport::Inflector.pluralize(word) if count > 1
+    with_count ? "#{count} #{word}" : word
+  end
+
   def current_url
     request.original_url
   end

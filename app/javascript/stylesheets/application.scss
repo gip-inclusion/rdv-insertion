@@ -18,6 +18,7 @@
 @import "./components/image";
 @import "./components/title";
 @import "./components/color";
+@import "./components/notification_center";
 @import "./components/flash";
 @import "./components/index_filters";
 @import "./components/stat";
@@ -30,6 +31,7 @@
 @import "./components/rdv_insertion_instance_name";
 @import "tippy.js/dist/tippy.css";
 @import "remixicon/fonts/remixicon.css";
+@import "./dsfr_overrides.scss";
 
 @font-face {
   font-family: 'Marianne';
