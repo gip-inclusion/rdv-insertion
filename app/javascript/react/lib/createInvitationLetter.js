@@ -27,6 +27,12 @@ const createInvitationLetter = async (
         html: "L'adresse n'est pas complète ou elle n'est pas enregistrée correctement",
         icon: "error",
       });
+    } else if (result.errors[0] === "Une erreur est survenue lors de la génération du PDF. L'équipe a été notifiée de l'erreur et tente de la résoudre.") {
+      safeSwal({
+        title: "Erreur de génération du PDF",
+        text: result.errors[0],
+        icon: "error",
+      });
     } else {
       safeSwal({
         title: "Impossible d'inviter l'usager",
