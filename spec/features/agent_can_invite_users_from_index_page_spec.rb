@@ -13,7 +13,7 @@ describe "Agents can invite from index page", :js do
   let!(:category_configuration) do
     create(
       :category_configuration,
-      motif_category: motif_category, organisation: organisation, invitation_formats: %w[sms email]
+      motif_category: motif_category, organisation: organisation, invitation_formats: %w[sms email postal]
     )
   end
   let!(:motif) { create(:motif, motif_category: motif_category, organisation: organisation) }
@@ -37,13 +37,40 @@ describe "Agents can invite from index page", :js do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
       expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
       expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
+      expect(page).to have_field("postal_invite_for_user_#{user.id}", checked: false, disabled: false)
       expect(page).to have_content("Non invité")
 
       check("email_invite_for_user_#{user.id}")
 
       expect(page).to have_field("email_invite_for_user_#{user.id}", checked: true, disabled: true)
       expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
+      expect(page).to have_field("postal_invite_for_user_#{user.id}", checked: false, disabled: false)
       expect(page).to have_content("Invitation en attente de réponse")
+    end
+
+    context "when pdf generation fails" do
+      before do
+        stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+          .to_return(status: 500, body: "Erreur du service de génération de PDF")
+        allow(Sentry).to receive(:capture_message)
+      end
+
+      it "displays an error message" do
+        follow_up.set_status
+        follow_up.save!
+
+        visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+        check("postal_invite_for_user_#{user.id}")
+        expect(page).to have_content(
+          "Une erreur est survenue lors de la génération du PDF." \
+          " L'équipe a été notifiée de l'erreur et tente de la résoudre."
+        )
+        expect(Sentry).to have_received(:capture_message).with(
+          "PDF generation failed",
+          extra: { status: 500, body: "Erreur du service de génération de PDF",
+                   invitation_id: Invitation.last.id }
+        )
+      end
     end
 
     context "when there is no creneau available" do
@@ -85,6 +112,7 @@ describe "Agents can invite from index page", :js do
 
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
       expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
+      expect(page).to have_field("postal_invite_for_user_#{user.id}", checked: false, disabled: false)
 
       check("email_invite_for_user_#{user.id}")
 
@@ -130,13 +158,40 @@ describe "Agents can invite from index page", :js do
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
         expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
+        expect(page).to have_field("postal_invite_for_user_#{user.id}", checked: false, disabled: false)
         expect(page).to have_content("RDV honoré")
 
         check("email_invite_for_user_#{user.id}")
 
         expect(page).to have_field("email_invite_for_user_#{user.id}", checked: true, disabled: true)
         expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
+        expect(page).to have_field("postal_invite_for_user_#{user.id}", checked: false, disabled: false)
         expect(page).to have_content("Invitation en attente de réponse")
+      end
+
+      context "when pdf generation fails" do
+        before do
+          stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+            .to_return(status: 500, body: "Erreur du service de génération de PDF")
+          allow(Sentry).to receive(:capture_message)
+        end
+
+        it "displays an error message" do
+          follow_up.set_status
+          follow_up.save!
+
+          visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+          check("postal_invite_for_user_#{user.id}")
+          expect(page).to have_content(
+            "Une erreur est survenue lors de la génération du PDF." \
+            " L'équipe a été notifiée de l'erreur et tente de la résoudre."
+          )
+          expect(Sentry).to have_received(:capture_message).with(
+            "PDF generation failed",
+            extra: { status: 500, body: "Erreur du service de génération de PDF",
+                     invitation_id: Invitation.last.id }
+          )
+        end
       end
 
       context "when there is no creneau available" do
@@ -178,6 +233,7 @@ describe "Agents can invite from index page", :js do
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
+        expect(page).to have_field("postal_invite_for_user_#{user.id}", checked: false, disabled: false)
 
         check("email_invite_for_user_#{user.id}")
 
@@ -222,6 +278,7 @@ describe "Agents can invite from index page", :js do
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_no_field("sms_invite_for_user_#{user.id}")
         expect(page).to have_no_field("email_invite_for_user_#{user.id}")
+        expect(page).to have_no_field("postal_invite_for_user_#{user.id}")
         expect(page).to have_content("RDV à venir")
       end
     end

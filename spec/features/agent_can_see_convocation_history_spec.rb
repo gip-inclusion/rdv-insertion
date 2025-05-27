@@ -91,6 +91,23 @@ describe "Agents can see convocation history", :js do
   before do
     travel_to(Time.zone.parse("2022-06-20"))
     setup_agent_session(agent)
+    stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+      .with(
+        headers: {
+          "Authorization" => ENV["PDF_GENERATOR_API_KEY"],
+          "Content-Type" => "application/json"
+        }
+      )
+      .to_return do |request|
+      # we get the content of the notification from the request body
+      request_body = JSON.parse(request.body)
+      notification_content = request_body["htmlContent"]
+      {
+        status: 200,
+        body: Base64.encode64(notification_content),
+        headers: { "Content-Type" => "application/json" }
+      }
+    end
   end
 
   it "can click on more history and check individual notification status delivery" do
@@ -146,8 +163,7 @@ describe "Agents can see convocation history", :js do
     expect(Notification.last.format).to eq("postal")
     expect(Notification.last.delivery_status).to eq(nil)
 
-    pdf = download_content(format: "pdf")
-    pdf_text = extract_raw_text(pdf)
+    pdf_text = download_content
 
     expect(pdf_text).to include(lieu.name)
     expect(pdf_text).to include(lieu.address)

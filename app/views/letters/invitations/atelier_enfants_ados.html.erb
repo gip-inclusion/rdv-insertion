@@ -10,17 +10,16 @@
   <p>Nous te proposons de découvrir le programme.</p>
   <p><%= sender_name.capitalize %> a mis en place <span class="bold-blue">une plateforme te permettant de t'inscrire.</span></p>
   <p>Choisis ton créneau&nbsp;:</p>
-  <div>
-    <div class="invitation-left-col pdf-align-center">
+  <div class="invitation-choices">
+    <div class="pdf-align-center">
       <div>soit en scannant ce QR code</div>
       <div class="qr-code"><%= image_tag(qr_code.to_data_url) %></div>
     </div>
-    <div class="invitation-right-col pdf-align-center">
+    <div class="pdf-align-center">
       <div>soit en vous rendant à l'adresse</div>
       <div class="invitation-token"><%= invitation_url %> </div>
     </div>
   </div>
-  <br style="clear:both"/>
 
   <div class="letter-signature">
     <%= render "common/organisation_signature", signature_lines: signature_lines, department: department %>
