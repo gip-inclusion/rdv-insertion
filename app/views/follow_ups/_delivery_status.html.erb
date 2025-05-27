@@ -14,12 +14,12 @@
         <%= deliverable.human_delivery_status_and_date %>
       <% end %>
     <% else %>
-      État de livraison inconnu
+      État de délivrance inconnu
       <i
         class="ri-information-line"
         <%=
           tooltip(
-            content: "Le fournisseur utilisé pour envoyer le message ne permet pas de récupérer le statut de livraison",
+            content: "Le fournisseur utilisé pour envoyer le message ne permet pas de récupérer le statut de délivrance",
             placement: "top"
           )
         %>
