@@ -10,7 +10,7 @@ export default class extends Controller {
         // Reset filter state (empty input and unfiltered items) when clicking outside the dropdown
         if (!this.element.contains(event.target) && this.hasInputTarget) {
           this.inputTarget.value = "";
-          this.#showAllItems();
+          this.#unhideAllItems();
         }
       });
     }
@@ -20,7 +20,7 @@ export default class extends Controller {
     const searchText = this.inputTarget.value.toLowerCase().trim();
 
     if (searchText === "") {
-      this.#showAllItems();
+      this.#unhideAllItems();
       return;
     }
 
@@ -42,7 +42,7 @@ export default class extends Controller {
     }
   }
 
-  #showAllItems() {
+  #unhideAllItems() {
     this.itemTargets.forEach(item => {
       item.classList.remove("d-none");
     });
