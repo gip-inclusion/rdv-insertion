@@ -1,5 +1,5 @@
 class InvitationsController < ApplicationController
-  layout "invitation", only: [:invitation_code, :redirect]
+  layout "invited_user", only: [:invitation_code, :redirect]
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
   before_action :set_invitation, :set_organisations_with_contact, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
