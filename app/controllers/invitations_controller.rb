@@ -1,6 +1,7 @@
 class InvitationsController < ApplicationController
+  layout "invited_user", only: [:invitation_code, :redirect]
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
-  before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
+  before_action :set_invitation, :set_organisations_with_contact, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
   def create # rubocop:disable Metrics/AbcSize
@@ -80,6 +81,12 @@ class InvitationsController < ApplicationController
       .preload(:motif_categories, :department, :messages_configuration)
       .where(department_level? ? { department_id: params[:department_id] } : { id: params[:organisation_id] })
       .joins(:motif_categories).where(motif_categories: { id: invitation_params.dig(:motif_category, :id) })
+  end
+
+  def set_organisations_with_contact
+    @organisations_with_contact = @invitation.organisations.select do |org|
+      org.phone_number.present? || org.email.present?
+    end
   end
 
   def set_user
