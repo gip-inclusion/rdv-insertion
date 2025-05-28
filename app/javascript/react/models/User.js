@@ -13,7 +13,7 @@ import { getFrenchFormatDateString, todaysDateString } from "../../lib/datesHelp
 
 const ROLES = {
   usager: "demandeur",
-    dem: "demandeur",
+  dem: "demandeur",
   cjt: "conjoint",
 };
 
