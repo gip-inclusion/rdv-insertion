@@ -25,7 +25,7 @@ module Api
 
           CreateAndInviteUserJob.perform_later(
             @organisation.id,
-            user_attributes.merge(creation_origin_attributes),
+            user_attributes.merge(creation_origin_attributes).merge(department_id: @organisation.department_id),
             invitation_attributes,
             motif_category_attributes
           )

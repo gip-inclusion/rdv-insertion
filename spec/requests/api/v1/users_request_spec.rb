@@ -94,8 +94,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         {
           created_through: "rdv_insertion_api",
           created_from_structure_type: "Organisation",
-          created_from_structure_id: organisation.id,
-          department_id: organisation.department_id
+          created_from_structure_id: organisation.id
         }
       end
 
@@ -110,14 +109,17 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user1_params.merge(creation_source_attributes),
+              user1_params.merge(creation_source_attributes).merge(department_id: organisation.department_id),
               {},
               {}
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user2_params.except(:invitation).merge(creation_source_attributes),
+              user2_params
+                .except(:invitation)
+                .merge(creation_source_attributes)
+                .merge(department_id: organisation.department_id),
               {},
               { name: "RSA orientation" }
             )
