@@ -62,7 +62,7 @@ class Organisation < ApplicationRecord
   end
 
   def with_parcours_access?
-    organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+    department.with_parcours_access? && organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
   end
   alias_method :rsa_related?, :with_parcours_access?
 

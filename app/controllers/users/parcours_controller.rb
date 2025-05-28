@@ -1,7 +1,7 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_department, :set_user_tags, :set_back_to_users_list_url,
-                  only: [:show]
+    before_action :set_user, :set_department, :set_organisation, :set_user_tags, :set_back_to_users_list_url,
+                  :ensure_has_access_to_parcours, only: [:show]
 
     include BackToListConcern
     include Users::Taggable
@@ -18,7 +18,18 @@ module Users
 
     def set_department
       @department = current_department
-      authorize(@department, :parcours?)
+    end
+
+    def set_organisation
+      @organisation = current_organisation
+    end
+
+    def ensure_has_access_to_parcours
+      if department_level?
+        authorize(@department, :parcours?)
+      else
+        authorize(@organisation, :parcours?)
+      end
     end
 
     def set_user

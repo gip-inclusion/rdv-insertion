@@ -63,9 +63,11 @@ module UsersHelper
   end
 
   def show_parcours?(department, organisation)
-    return policy(department).parcours? if department_level?
-
-    policy(department).parcours? && (organisation.blank? || policy(organisation).parcours?)
+    if department_level?
+      policy(department).parcours?
+    else
+      policy(organisation).parcours?
+    end
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)
