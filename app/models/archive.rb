@@ -6,7 +6,7 @@ class Archive < ApplicationRecord
 
   validates :user_id, uniqueness: { scope: :organisation_id }
 
-  after_create :invalidate_related_invitations
+  after_create_commit :invalidate_related_invitations
 
   def self.new_batch(organisation_ids:, user_id:, archiving_reason:)
     organisation_ids.map do |organisation_id|
@@ -17,9 +17,12 @@ class Archive < ApplicationRecord
   private
 
   def invalidate_related_invitations
-    organisation.invitations.where(user_id: user.id).includes(:organisations).find_each do |invitation|
-      invitation_archives = Archive.where(organisation_id: invitation.organisations, user_id: user.id)
-      ExpireInvitationJob.perform_later(invitation.id) if invitation_archives.count == invitation.organisations.count
+    organisation.invitations.where(user: user.reload).includes(:organisations).find_each do |invitation|
+      next unless (invitation.organisations & user.organisations).all? do |organisation|
+        user.archived_in_organisation?(organisation)
+      end
+
+      ExpireInvitationJob.perform_later(invitation.id)
     end
   end
 end
