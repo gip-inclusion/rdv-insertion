@@ -6,7 +6,7 @@ import handleArchiveDelete from "../lib/handleArchiveDelete";
 import handleUserUpdate from "../lib/handleUserUpdate";
 import handleReferentAssignation from "../lib/handleReferentAssignation";
 
-import { formatPhoneNumber, formatAffiliationNumber } from "../../lib/inputFormatters"
+import { formatPhoneNumber, formatAffiliationNumber, formatTitle } from "../../lib/inputFormatters"
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import { getFrenchFormatDateString, todaysDateString } from "../../lib/datesHelper";
@@ -17,11 +17,6 @@ const ROLES = {
   cjt: "conjoint",
 };
 
-const TITLES = {
-  m: "monsieur",
-  mr: "monsieur",
-  mme: "madame",
-};
 
 export default class User {
   constructor(
@@ -48,7 +43,7 @@ export default class User {
     this.emailNew = null;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
-    this.title = this.formatTitle(formattedAttributes.title);
+    this.title = formatTitle(formattedAttributes.title);
     this.shortTitle = this.title ? (this.title === "monsieur" ? "M" : "Mme") : null;
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
@@ -106,13 +101,6 @@ export default class User {
 
   get uid() {
     return this.generateUid();
-  }
-
-  formatTitle(title) {
-    title = title?.toLowerCase();
-    title = TITLES[title] || title;
-    if (!Object.values(TITLES).includes(title)) return null;
-    return title;
   }
 
   formatRole(role) {
