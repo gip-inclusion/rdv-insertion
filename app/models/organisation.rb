@@ -47,6 +47,8 @@ class Organisation < ApplicationRecord
     autre: "autre"
   }
 
+  scope :displayed_in_stats, -> { where(display_in_stats: true) }
+
   ORGANISATION_TYPES_WITH_PARCOURS_ACCESS = %w[delegataire_rsa conseil_departemental france_travail].freeze
 
   def rdv_solidarites_url
