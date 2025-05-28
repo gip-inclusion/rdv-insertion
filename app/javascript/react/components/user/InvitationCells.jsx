@@ -10,7 +10,7 @@ export default function InvitationCells({ user }) {
     /* ----------------------------- Disabled invitations cases -------------------------- */
     user.isArchived() ? (
       <td colSpan={user.list.invitationsColSpan}>
-        Dossier archivé 
+        Dossier archivé
         {user.isArchivedInCurrentOrganisation() && (
           <Tippy
             content={
