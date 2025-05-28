@@ -22,7 +22,7 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
-  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
+  delegate :department, :department_number, :restricted_user_attributes, :department_level?,
            to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
@@ -278,14 +278,18 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def user_attributes
-    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES).merge(department_id: department_id)
+    symbolized_attributes
+      .compact_blank
+      .merge(cnaf_data.symbolize_keys)
+      .slice(*USER_ATTRIBUTES)
+      .merge(department_id: department.id)
   end
 
   def user_creation_origin_attributes
     {
       created_through: "rdv_insertion_upload_page",
       created_from_structure_type: user_list_upload.structure_type,
-      created_from_structure_id: user_list_upload.structure_id,
+      created_from_structure_id: user_list_upload.structure_id
     }
   end
 
