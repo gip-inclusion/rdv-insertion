@@ -27,10 +27,12 @@ $orange-light: #ffb88e;
 $violet: #6363E6;
 $light: #F5F5FE;
 
-// Reds
-$danger: #CE0500;
-
 // Semantic colors
 $primary: $dark-blue;
 $warning: #B34000;
 $success: $dark-green;
+
+
+$danger: $orange;
+$warning: $orange-light;
+$success: $green;
