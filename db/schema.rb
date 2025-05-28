@@ -558,11 +558,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_133003) do
     t.uuid "user_list_upload_id", null: false
     t.integer "assigned_organisation_id"
     t.json "cnaf_data", default: {}
-    t.boolean "selected_for_invitation", default: true
-    t.boolean "selected_for_user_save", default: true
+    t.boolean "selected_for_invitation", default: false
+    t.boolean "selected_for_user_save", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "selected", default: true
     t.index ["assigned_organisation_id"], name: "index_user_list_upload_user_rows_on_assigned_organisation_id"
     t.index ["matching_user_id"], name: "index_user_list_upload_user_rows_on_matching_user_id"
     t.index ["user_list_upload_id"], name: "index_user_list_upload_user_rows_on_user_list_upload_id"
@@ -619,10 +618,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_133003) do
     t.bigint "old_rdv_solidarites_user_id"
     t.string "created_from_structure_type"
     t.bigint "created_from_structure_id"
-    t.bigint "department_id"
     t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
-    t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
@@ -725,6 +722,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_133003) do
   add_foreign_key "user_list_upload_user_save_attempts", "users"
   add_foreign_key "user_list_uploads", "agents"
   add_foreign_key "user_list_uploads", "category_configurations"
-  add_foreign_key "users", "departments"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end
