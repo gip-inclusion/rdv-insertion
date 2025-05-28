@@ -1,5 +1,3 @@
-require "rails_helper"
-
 RSpec.describe Users::PartitionSingleUserJob do
   describe "#perform" do
     let!(:department1) { create(:department) }
