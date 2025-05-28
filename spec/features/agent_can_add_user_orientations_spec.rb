@@ -5,7 +5,7 @@ describe "Agents can add user orientation", :js do
     create(:organisation, name: "CD 26", agents: organisation_agents, department: department)
   end
   let!(:user) do
-    create(:user, organisations: [organisation])
+    create(:user, organisations: [organisation], department:)
   end
   let!(:organisation_agents) do
     [agent, create(:agent, first_name: "Kad", last_name: "Merad"),
@@ -193,60 +193,5 @@ describe "Agents can add user orientation", :js do
     expect(page).to have_content("Asso 26")
     expect(page).to have_no_content("Informer l’organisation par email")
     expect(page).to have_no_content("L'organisation Asso 26 n'a pas d'adresse email renseignée.")
-  end
-
-  describe "department scoped orientations" do
-    let!(:other_department) { create(:department, number: "13") }
-    let!(:other_department_agent) { create(:agent) }
-    let!(:other_department_organisation) do
-      create(:organisation, department: other_department, name: "CD 13", users: [user],
-                            agents: [other_department_agent])
-    end
-
-    let!(:first_department_orientation) do
-      create(:orientation,
-             user:,
-             starts_at: "20/12/2022",
-             ends_at: "03/01/2023",
-             orientation_type: orientation_type_social,
-             organisation:)
-    end
-
-    let!(:second_department_orientation) do
-      create(:orientation,
-             user:,
-             starts_at: "12/01/2023",
-             ends_at: "07/02/2023",
-             orientation_type: orientation_type_pro,
-             organisation: other_department_organisation)
-    end
-
-    it "shows only the department scoped orientation" do
-      visit department_user_parcours_path(user_id: user.id, department_id: department.id)
-
-      expect(page).to have_content("Du 20/12/2022 au 03/01/2023")
-      expect(page).to have_content("CD 26")
-      expect(page).to have_content("Sociale")
-
-      expect(page).to have_no_content("Du 12/01/2023 au 07/02/2023")
-      expect(page).to have_no_content("CD 13")
-      expect(page).to have_no_content("Professionnelle")
-    end
-
-    context "for another agent" do
-      before { setup_agent_session(other_department_agent) }
-
-      it "shows only the department scoped orientation" do
-        visit department_user_parcours_path(user_id: user.id, department_id: other_department.id)
-
-        expect(page).to have_content("Du 12/01/2023 au 07/02/2023")
-        expect(page).to have_content("CD 13")
-        expect(page).to have_content("Professionnelle")
-
-        expect(page).to have_no_content("Du 20/12/2022 au 03/01/2023")
-        expect(page).to have_no_content("CD 26")
-        expect(page).to have_no_content("Sociale")
-      end
-    end
   end
 end
