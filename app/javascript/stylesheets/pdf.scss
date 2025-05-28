@@ -1,3 +1,5 @@
+@import "./_variables";
+// note: flexbox is not working with wkhtmltopdf/wicked-pdf ; hence, the dirty css to keep everything centered/aligned
 
 // Chrome headless (use by Grover) does'nt have access to assets so we need to encode Marianne font in base64 to use it in the PDF
 @font-face {
@@ -116,8 +118,8 @@ u {
 }
 
 .invitation-token {
+  background-color: $dark-blue;
   vertical-align: middle;
-  background-color: #083b66;
   color: white;
   text-align: center;
   padding: 10px;
@@ -136,7 +138,7 @@ u {
 
 .bold-blue {
   font-weight: bold;
-  color: #083b66;
+  color: $dark-blue;
 }
 
 .letter-signature {
