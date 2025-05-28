@@ -148,7 +148,7 @@ class UsersController < ApplicationController
 
   def upsert_user
     @upsert_user ||= Users::Upsert.call(
-      user_attributes: user_params.merge(department_id: @department.id),
+      user_attributes: user_params,
       organisation: @organisation
     )
   end
