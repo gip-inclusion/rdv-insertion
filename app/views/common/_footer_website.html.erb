@@ -6,10 +6,10 @@
             <h3 class="fr-footer__top-cat">Ressources</h3>
             <ul class="fr-footer__top-list">
               <li>
-                <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", class: "fr-footer__top-link", target: :blank %>
+                <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", class: "fr-footer__top-link", target: :blank, id: "rdvi_footer_help-center" %>
               </li>
               <li>
-                <%= link_to "Statistiques d'utilisation", stats_path, class: "fr-footer__top-link" %>
+                <%= link_to "Statistiques d'utilisation", stats_path, class: "fr-footer__top-link", id: "rdvi_footer_stats-link" %>
               </li>
             </ul>
           </div>
@@ -29,7 +29,7 @@
           </p>
           <ul class="fr-footer__content-list">
             <li class="fr-footer__content-item">
-              <a target="_blank" rel="noopener external" title="inclusion.gouv.fr - nouvelle fenêtre" class="fr-footer__content-link" href="https://inclusion.gouv.fr">inclusion.gouv.fr</a>
+              <a target="_blank" rel="noopener external" title="inclusion.gouv.fr - nouvelle fenêtre" class="fr-footer__content-link" href="https://inclusion.gouv.fr" id="rdvi_footer_pdi-redirection">inclusion.gouv.fr</a>
             </li>
             <li class="fr-footer__content-item">
               <a target="_blank" rel="noopener external" title="service-public.fr - nouvelle fenêtre" id="footer__content-link-7363" class="fr-footer__content-link" href="https://service-public.fr">service-public.fr</a>
@@ -50,7 +50,7 @@
             <a class="fr-footer__partners-link" href="https://www.numerique.gouv.fr/dinum/" target="_blank">
               <%= image_tag "logos/direction-interministerielle-du-numerique.svg", alt: "Logo Direction interministérielle du numérique" %>
             </a>
-            <a class="fr-footer__partners-link" href="<%= ENV['RDV_SOLIDARITES_URL'] %>" target="_blank">
+            <a class="fr-footer__partners-link" href="<%= ENV['RDV_SOLIDARITES_URL'] %>" target="_blank" id="rdvi_footer_rdvs-redirection">
               <%= image_tag "logos/rdv-solidarites.png", alt: "Logo Rdv-Solidarités", size: 150, style: "height: auto;", class: "fr-ml-4w" %>
             </a>
           </div>
@@ -78,19 +78,19 @@
       <div class="fr-footer__bottom">
         <ul class="fr-footer__bottom-list">
           <li class="fr-footer__bottom-item">
-            <%= link_to "Accessibilité : non conforme", accessibilite_path, class: "fr-footer__bottom-link" %>
+            <%= link_to "Accessibilité : non conforme", accessibilite_path, class: "fr-footer__bottom-link", id: "rdvi_footer_accessibility-link" %>
           </li>
           <li class="fr-footer__bottom-item">
-            <%= link_to "Mentions légales", mentions_legales_path, class: "fr-footer__bottom-link" %>
+            <%= link_to "Mentions légales", mentions_legales_path, class: "fr-footer__bottom-link", id: "rdvi_footer_legal-notice-link" %>
           </li>
           <li class="fr-footer__bottom-item">
-            <%= link_to "C.G.U", cgu_path, class: "fr-footer__bottom-link" %>
+            <%= link_to "C.G.U", cgu_path, class: "fr-footer__bottom-link", id: "rdvi_footer_CGU-link" %>
           </li>
           <li class="fr-footer__bottom-item">
-            <%= link_to "https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/20241209-rdv-insertion-DPAv0.3.pdf", target: "_blank", title: "Télécharger le DPA (Convention de sous-traitance) au format PDF", class: "fr-icon-file-line fr-link--icon-left fr-footer__bottom-link" do %>D.P.A<% end %>
+            <%= link_to "https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/20241209-rdv-insertion-DPAv0.3.pdf", target: "_blank", title: "Télécharger le DPA (Convention de sous-traitance) au format PDF", class: "fr-icon-file-line fr-link--icon-left fr-footer__bottom-link", id: "rdvi_footer_DPA-link" do %>D.P.A<% end %>
           </li>
           <li class="fr-footer__bottom-item">
-            <%= link_to 'Politique de confidentialité', politique_de_confidentialite_path, class: "fr-footer__bottom-link" %>
+            <%= link_to 'Politique de confidentialité', politique_de_confidentialite_path, class: "fr-footer__bottom-link", id: "rdvi_footer_privacy-link" %>
           </li>
         </ul>
         <div class="fr-footer__bottom-copy">
