@@ -60,6 +60,7 @@ const ROLES = {
 };
 
 const TITLES = {
+  "m.": "monsieur",
   m: "monsieur",
   mr: "monsieur",
   mme: "madame",
