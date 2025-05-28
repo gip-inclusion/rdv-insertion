@@ -1,7 +1,5 @@
 module Users
   class PartitionSingleUserJob < ApplicationJob
-    queue_as :default
-
     def perform(user_id)
       user = User.find(user_id)
       partition_user(user)
