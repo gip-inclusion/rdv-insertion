@@ -82,7 +82,7 @@ module Api
       end
 
       def user_attributes
-        user_params.except(:invitation)
+        user_params.except(:invitation).merge(department_id: @organisation.department_id)
       end
 
       def creation_origin_attributes
@@ -90,7 +90,6 @@ module Api
           created_through: "rdv_insertion_api",
           created_from_structure_type: "Organisation",
           created_from_structure_id: @organisation.id,
-          department_id: @organisation.department_id
         }
       end
 

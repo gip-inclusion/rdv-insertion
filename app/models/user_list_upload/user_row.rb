@@ -278,7 +278,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def user_attributes
-    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES)
+    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES).merge(department_id: department_id)
   end
 
   def user_creation_origin_attributes
@@ -286,7 +286,6 @@ class UserListUpload::UserRow < ApplicationRecord
       created_through: "rdv_insertion_upload_page",
       created_from_structure_type: user_list_upload.structure_type,
       created_from_structure_id: user_list_upload.structure_id,
-      department_id: user_list_upload.department.id
     }
   end
 

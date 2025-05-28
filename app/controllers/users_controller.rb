@@ -82,7 +82,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.expect(user: PERMITTED_PARAMS).to_h.deep_symbolize_keys
+    params.expect(user: PERMITTED_PARAMS).to_h.deep_symbolize_keys.merge(department_id: @department.id)
   end
 
   def restricted_user_attributes = UserPolicy.restricted_user_attributes_for(user: @user, agent: current_agent)
@@ -148,7 +148,7 @@ class UsersController < ApplicationController
 
   def upsert_user
     @upsert_user ||= Users::Upsert.call(
-      user_attributes: user_params,
+      user_attributes: user_params.merge(department_id: @department.id),
       organisation: @organisation
     )
   end

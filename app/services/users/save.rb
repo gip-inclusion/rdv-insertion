@@ -16,7 +16,6 @@ module Users
       User.with_advisory_lock "saving_user_#{lock_key}" do
         User.transaction do
           assign_organisation if @organisation.present?
-          assign_department if @organisation.present?
           validate_user!
           save_record!(@user)
           push_user_to_rdv_solidarites
@@ -30,10 +29,6 @@ module Users
 
     def assign_organisation
       @user.organisations = (@user.organisations.to_a + [@organisation]).uniq
-    end
-
-    def assign_department
-      @user.department_id = @organisation.department_id
     end
 
     def push_user_to_rdv_solidarites
