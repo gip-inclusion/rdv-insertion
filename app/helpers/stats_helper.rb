@@ -7,7 +7,7 @@ module StatsHelper
 
   def options_for_organisation_select(department)
     default_option = [["Sélection", [["Toutes les organisations", "0"]]]]
-    grouped_organisations = department.organisations.reject { |o| disable_stats_for_organisation?(o) }
+    grouped_organisations = department.organisations.displayed_in_stats
                                       .group_by(&:organisation_type)
                                       .map do |type, orgs|
       [
@@ -41,14 +41,6 @@ module StatsHelper
   end
 
   private
-
-  def organisation_ids_where_stats_disabled
-    ENV.fetch("ORGANISATION_IDS_WHERE_STATS_DISABLED", "").split(",")
-  end
-
-  def disable_stats_for_organisation?(organisation)
-    organisation_ids_where_stats_disabled.include?(organisation.id.to_s)
-  end
 
   def users_count_tooltip
     tooltip(

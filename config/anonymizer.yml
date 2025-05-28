@@ -454,6 +454,7 @@ tables:
       - name
       - slug
       - organisation_type
+      - display_in_stats
       - rdv_solidarites_organisation_id
       - created_at
       - updated_at
