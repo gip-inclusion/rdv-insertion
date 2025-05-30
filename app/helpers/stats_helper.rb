@@ -119,12 +119,15 @@ module StatsHelper
     )
   end
 
-  def rate_of_users_accompanied_in_less_than_15_days_tooltip
+  def rate_of_users_accompanied_in_less_than_30_days_tooltip
     tooltip(
       content: "Il s'agit du pourcentage d'usagers qui valident la condition suivante : rendez-vous d'accompagnement " \
-               "honoré au plus tard 15 jours après l'ouverture du suivi de la catégorie RSA accompagnement ou bien, " \
+               "honoré au plus tard 30 jours après l'ouverture du suivi de la catégorie RSA accompagnement ou bien, " \
                "pour les usagers qui avaient déjà un rendez-vous d'orientation sur notre outil, rendez-vous " \
-               "d'accompagnement honoré au plus tard 15 jours après le rendez-vous d'orientation précédemment honoré."
+               "d'accompagnement honoré au plus tard 30 jours après le rendez-vous d'orientation précédemment honoré." \
+               " Ce délai de 4 semaines fait référence au délai prévu par le décret n° 2024-1244 " \
+               "du 30 décembre 2024 relatif aux délais d'orientation et d'accompagnement des demandeurs d'emploi " \
+               "qui fixe à 4 semaines le délai durant lequel le bénéficiaire doit signer son contrat d'engagement."
     )
   end
 
