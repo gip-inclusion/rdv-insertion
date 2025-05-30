@@ -108,7 +108,7 @@ export default class extends Controller {
         return
       }
 
-      const matchingCnafDataRow = this.#findMatchingCnafDataForUser(userRow);
+      const matchingCnafDataRow = this.#findCnafDataByNir(userRow.nir) || this.#findCnafDataByAffiliationNumber(userRow.affiliation_number);
 
       if (matchingCnafDataRow) {
         const parsedCnafData = parseContactsData(matchingCnafDataRow)
@@ -122,11 +122,6 @@ export default class extends Controller {
         })
       }
     })
-  }
-
-  #findMatchingCnafDataForUser(userRow) {
-    return this.#findCnafDataByNir(userRow.nir) ||
-           this.#findCnafDataByAffiliationNumber(userRow.affiliation_number);
   }
 
   #findCnafDataByNir(nir) {
