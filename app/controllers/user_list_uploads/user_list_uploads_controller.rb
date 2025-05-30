@@ -20,8 +20,16 @@ module UserListUploads
       authorize @user_list_upload
 
       if @user_list_upload.update_rows(enrich_with_cnaf_data_params)
-        flash[:success] = "Les données de #{@user_list_upload.user_rows_enriched_with_cnaf_data.count} usagers" \
-                          " ont été mises à jour avec les données du fichier importé"
+        enriched_rows_count = @user_list_upload.user_rows_enriched_with_cnaf_data.count
+
+        if enriched_rows_count.positive?
+          flash[:success] = "Fichier CNAF chargé avec succès. Les nouvelles données ont été intégrées aux" \
+                            " dossiers usagers ci-dessous."
+        else
+          flash[:success] =
+            "Fichier CNAF chargé avec succès. Aucun dossier n'est concerné par les données de ce fichier."
+        end
+
         turbo_stream_redirect(user_list_upload_path(@user_list_upload))
       else
         turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
@@ -73,6 +81,9 @@ module UserListUploads
     end
 
     def enrich_with_cnaf_data_params
+      # if no rows_cnaf_data is present this mean no matching cnaf data was found
+      return [] unless params.key?(:rows_cnaf_data)
+
       params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }]])
     end
 
