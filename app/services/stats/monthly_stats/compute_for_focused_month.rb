@@ -54,10 +54,10 @@ module Stats
         ).value.round
       end
 
-      def rate_of_users_accompanied_in_less_than_15_days_by_month
+      def rate_of_users_accompanied_in_less_than_30_days_by_month
         ComputeFollowUpSeenRateWithinDelays.call(
           follow_ups: created_during_focused_month(@stat.users_first_accompaniement_follow_up),
-          target_delay_days: 15,
+          target_delay_days: 30,
           consider_orientation_rdv_as_start: true
         ).value.round
       end
