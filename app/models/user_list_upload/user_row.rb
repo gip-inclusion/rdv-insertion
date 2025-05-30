@@ -168,12 +168,10 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def will_change_matching_user?
-    return false unless matching_user
+    return false unless user == matching_user
 
-    matching_user.changed? ||
-      matching_user.organisations != organisations ||
-      matching_user.motif_categories != motif_categories ||
-      matching_user.referents != referents || matching_user.tags != tags
+    user.changed? || user.organisations != organisations || user.motif_categories != motif_categories ||
+      user.referents != referents || user.tags != tags
   end
 
   def select_for_user_save!

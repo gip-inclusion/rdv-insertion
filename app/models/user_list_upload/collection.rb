@@ -91,11 +91,7 @@ class UserListUpload::Collection
   end
 
   def sort_by!(sort_by:, sort_direction:)
-    user_rows.sort_by! do |user_row|
-      # we place nil values at the end
-      [user_row.send(sort_by).nil? ? 1 : 0, user_row.send(sort_by)]
-    end
-    user_rows.reverse! if sort_direction == "desc"
+    @user_rows = UserListUpload::Sorter.sort(user_rows, sort_by, sort_direction)
   end
 
   def search!(query)
