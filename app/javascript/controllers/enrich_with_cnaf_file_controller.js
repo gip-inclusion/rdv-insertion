@@ -36,10 +36,10 @@ export default class extends Controller {
 
     this.#retrieveRowsCnafData()
 
-    if (this.rowsCnafData.length === 0) {
+    if (this.cnafDataRows.length === 0) {
       safeSwal({
-        title: "Aucun usager trouvé",
-        text: "Aucun usager trouvé dans le fichier CNAF",
+        title: "Fichier CNAF vide",
+        text: "Le fichier CNAF ne contient aucune donnée",
         icon: "warning",
         confirmButtonText: "OK"
       })
