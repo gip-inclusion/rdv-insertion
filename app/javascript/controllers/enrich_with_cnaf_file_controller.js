@@ -107,11 +107,8 @@ export default class extends Controller {
       if (!userRow.affiliation_number && !userRow.nir) {
         return
       }
-      const matchingCnafDataRow = this.cnafDataRows.find((cnafDataRow) =>
-        // for affiliation number that have less than 7 digits, we fill the missing digits with 0 at the beginning
-        (userRow.affiliation_number && cnafDataRow.MATRICULE && userRow.affiliation_number.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0"))
-        || (userRow.nir && cnafDataRow.NIR && userRow.nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13))
-      )
+
+      const matchingCnafDataRow = this.#findCnafDataByNir(userRow.nir) || this.#findCnafDataByAffiliationNumber(userRow.affiliation_number);
 
       if (matchingCnafDataRow) {
         const parsedCnafData = parseContactsData(matchingCnafDataRow)
@@ -125,6 +122,23 @@ export default class extends Controller {
         })
       }
     })
+  }
+
+  #findCnafDataByNir(nir) {
+    if (!nir) return null;
+
+    return this.cnafDataRows.find((cnafDataRow) =>
+      cnafDataRow.NIR && nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13)
+    );
+  }
+
+  #findCnafDataByAffiliationNumber(affiliationNumber) {
+    if (!affiliationNumber) return null;
+
+    return this.cnafDataRows.find((cnafDataRow) =>
+      cnafDataRow.MATRICULE &&
+      affiliationNumber.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0")
+    );
   }
 
   #readFile(file) {

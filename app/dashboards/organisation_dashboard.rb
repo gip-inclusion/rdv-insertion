@@ -13,6 +13,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     agents: Field::HasMany,
     category_configurations: Field::HasMany,
     department: Field::BelongsTo,
+    display_in_stats: Field::Boolean,
     email: Field::String,
     organisation_type: Field::Select.with_options(
       searchable: false,
@@ -70,6 +71,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     organisation_type
     safir_code
     agent_roles
+    display_in_stats
     lieux
     motif_categories
     created_at
@@ -90,6 +92,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     email
     organisation_type
     safir_code
+    display_in_stats
     logo
   ].freeze
 
