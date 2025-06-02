@@ -219,6 +219,10 @@ class User < ApplicationRecord
     archives.find { |a| a.organisation_id == organisation.id }
   end
 
+  def archived_in_organisation?(organisation)
+    !archive_in_organisation(organisation).nil?
+  end
+
   def tag_users_attributes=(attributes)
     attributes.map!(&:with_indifferent_access)
     attributes.uniq! { |attr| attr["tag_id"] }

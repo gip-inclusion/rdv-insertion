@@ -479,8 +479,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_133003) do
     t.json "rate_of_no_show_grouped_by_month"
     t.float "rate_of_users_oriented_in_less_than_45_days"
     t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
-    t.float "rate_of_users_accompanied_in_less_than_15_days"
-    t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
+    t.float "rate_of_users_accompanied_in_less_than_30_days"
+    t.json "rate_of_users_accompanied_in_less_than_30_days_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
