@@ -34,8 +34,9 @@ describe Invitations::SendSms, type: :service do
     create(
       :invitation,
       user: user, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
-      organisations: [organisation],
-      link: "https://www.rdv-solidarites-test.localhost/lieux?invitation_token=123", format: "sms", follow_up: follow_up
+      organisations: [organisation], link: "https://www.rdv-solidarites-test.localhost/lieux?invitation_token=123",
+      format: "sms", sms_provider: "brevo",
+      follow_up: follow_up
     )
   end
 
@@ -50,14 +51,14 @@ describe Invitations::SendSms, type: :service do
 
   describe "#call" do
     before do
-      allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(Sms::SendWithBrevo).to receive(:call).and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:sms_sender_name).and_return(sms_sender_name)
     end
 
     it("is a success") { is_a_success }
 
     it "calls the send sms service with the right content" do
-      expect(SendTransactionalSms).to receive(:call)
+      expect(Sms::SendWithBrevo).to receive(:call)
         .with(
           phone_number: phone_number, content: content,
           sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -95,6 +96,52 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "when the sms provider is primotexto" do
+      before do
+        invitation.update!(sms_provider: "primotexto")
+        allow(Sms::SendWithPrimotexto).to receive(:call).and_return(OpenStruct.new(success?: true))
+      end
+
+      it "calls the send sms with primotexto service with the right content" do
+        expect(Sms::SendWithPrimotexto).to receive(:call)
+          .with(phone_number: phone_number, content: content, sender_name: sms_sender_name)
+        subject
+      end
+
+      it "is a success" do
+        is_a_success
+      end
+
+      context "when the sms provider returns a failure" do
+        before do
+          allow(Sms::SendWithPrimotexto).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+        end
+
+        it "is a failure" do
+          is_a_failure
+        end
+
+        it "returns the error" do
+          expect(subject.errors).to eq(["some error"])
+        end
+      end
+    end
+
+    context "when the sms provider is nil" do
+      before do
+        invitation.sms_provider = nil
+      end
+
+      it "is a failure" do
+        is_a_failure
+      end
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Le fournisseur de SMS n'est pas valide"])
+      end
+    end
+
     context "when it is a reminder" do
       let!(:content) do
         "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
@@ -109,7 +156,7 @@ describe Invitations::SendSms, type: :service do
       end
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -135,7 +182,7 @@ describe Invitations::SendSms, type: :service do
       end
 
       it "sends the content with the overriden attributes" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -167,7 +214,7 @@ describe Invitations::SendSms, type: :service do
         it("is a success") { is_a_success }
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -191,7 +238,7 @@ describe Invitations::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(SendTransactionalSms).to receive(:call)
+            expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
                 sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -218,7 +265,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -239,7 +286,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -267,7 +314,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -291,7 +338,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -319,7 +366,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -342,7 +389,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -370,7 +417,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -393,7 +440,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -421,7 +468,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -445,7 +492,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -472,7 +519,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -496,7 +543,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -524,7 +571,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -548,7 +595,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -575,7 +622,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -599,7 +646,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -625,7 +672,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -653,7 +700,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -679,7 +726,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -706,7 +753,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -729,7 +776,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -755,7 +802,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -780,7 +827,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -805,7 +852,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -831,7 +878,7 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(SendTransactionalSms).to receive(:call)
+        expect(Sms::SendWithBrevo).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
             sender_name: sms_sender_name, record_identifier: invitation.record_identifier
@@ -855,7 +902,7 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(SendTransactionalSms).to receive(:call)
+          expect(Sms::SendWithBrevo).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
               sender_name: sms_sender_name, record_identifier: invitation.record_identifier

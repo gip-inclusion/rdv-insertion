@@ -6,6 +6,7 @@ class Invitation < ApplicationRecord
   include Sendable
   include WebhookDeliverable
   include Deliverable
+  include HasSmsProvider
 
   belongs_to :user
   belongs_to :department
