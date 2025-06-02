@@ -11,6 +11,10 @@ module Users
 
     private
 
+    def users
+      @users ||= User.where(department_id: @department_id).active
+    end
+
     def find_matching_user
       find_user_by_nir ||
         find_user_by_department_internal_id ||
@@ -22,22 +26,19 @@ module Users
     def find_user_by_nir
       return if formatted_nir_attribute.blank?
 
-      User.active.find_by(nir: formatted_nir_attribute)
+      users.find_by(nir: formatted_nir_attribute)
     end
 
     def find_user_by_department_internal_id
       return if @attributes[:department_internal_id].blank?
 
-      User.active.joins(:organisations).where(
-        department_internal_id: @attributes[:department_internal_id],
-        organisations: { department_id: @department_id }
-      ).first
+      users.find_by(department_internal_id: @attributes[:department_internal_id])
     end
 
     def find_user_by_email
       return if @attributes[:email].blank? || @attributes[:first_name].blank?
 
-      User.active.where(email: @attributes[:email]).find do |user|
+      users.where(email: @attributes[:email]).find do |user|
         user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
@@ -45,7 +46,7 @@ module Users
     def find_user_by_phone_number
       return if phone_number_formatted.blank? || @attributes[:first_name].blank?
 
-      User.active.where(phone_number: phone_number_formatted).find do |user|
+      users.where(phone_number: phone_number_formatted).find do |user|
         user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
@@ -53,10 +54,7 @@ module Users
     def find_user_by_role_and_affiliation_number
       return if @attributes[:role].blank? || @attributes[:affiliation_number].blank?
 
-      User.active.joins(:organisations).where(
-        affiliation_number: @attributes[:affiliation_number],
-        role: @attributes[:role], organisations: { department_id: @department_id }
-      ).first
+      users.find_by(affiliation_number: @attributes[:affiliation_number], role: @attributes[:role])
     end
 
     def phone_number_formatted

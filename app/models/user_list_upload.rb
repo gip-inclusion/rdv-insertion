@@ -90,26 +90,25 @@ class UserListUpload < ApplicationRecord
     super
   end
 
-  def potential_matching_users_in_all_app
-    @potential_matching_users_in_all_app ||=
-      User.active.where(email: user_row_attributes.pluck("email").compact)
-          .or(
-            User.active.where(phone_number: user_row_attributes_formatted_phone_numbers)
-          )
-          .or(User.active.where(nir: user_row_attributes_formatted_nirs))
+  def potential_matching_users_by_common_attributes
+    @potential_matching_users_by_common_attributes ||= begin
+      base = User.active.where(department_id: department.id)
+
+      base.where(email: user_row_attributes.pluck("email").compact)
+          .or(base.where(phone_number: user_row_attributes_formatted_phone_numbers))
+          .or(base.where(nir: user_row_attributes_formatted_nirs))
           .select(:id, :nir, :phone_number, :email, :first_name)
+    end
   end
 
-  def potential_matching_users_in_department
-    @potential_matching_users_in_department ||= User.active.joins(:organisations).where(
-      affiliation_number: user_row_attributes.pluck("affiliation_number").compact,
-      organisations: { department_id: department.id }
-    ).or(
-      User.active.joins(:organisations).where(
-        department_internal_id: user_row_attributes.pluck("department_internal_id").compact,
-        organisations: { department_id: department.id }
-      )
-    ).select(:id, :department_internal_id, :affiliation_number, :role)
+  def potential_matching_users_by_department_specific_attributes
+    @potential_matching_users_by_department_specific_attributes ||= begin
+      base = User.active.where(department_id: department.id)
+
+      base.where(affiliation_number: user_row_attributes.pluck("affiliation_number").compact)
+          .or(base.where(department_internal_id: user_row_attributes.pluck("department_internal_id").compact))
+          .select(:id, :department_internal_id, :affiliation_number, :role)
+    end
   end
 
   private

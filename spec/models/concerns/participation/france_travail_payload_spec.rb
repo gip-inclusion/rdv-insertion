@@ -1,7 +1,7 @@
 describe Participation::FranceTravailPayload, type: :concern do
   let(:payload) { participation.to_ft_payload }
   let(:organisation) { create(:organisation, organisation_type: "conseil_departemental") }
-  let(:user) { create(:user, organisations: [organisation]) }
+  let(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
   let(:follow_up) { create(:follow_up, user: user) }
   let(:motif) { create(:motif, motif_category:) }
   let(:motif_category) { create(:motif_category, motif_category_type: "rsa_orientation") }

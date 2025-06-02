@@ -15,8 +15,9 @@ describe User do
     end
 
     context "colliding rdv_solidarites_user_id" do
-      let!(:user_existing) { create(:user, rdv_solidarites_user_id: 1) }
-      let(:user) { build(:user, rdv_solidarites_user_id: 1) }
+      let!(:department) { create(:department) }
+      let!(:user_existing) { create(:user, rdv_solidarites_user_id: 1, department:) }
+      let(:user) { build(:user, rdv_solidarites_user_id: 1, department:) }
 
       it "adds errors" do
         expect(user).not_to be_valid
@@ -299,8 +300,9 @@ describe User do
     end
 
     context "when nir exists already" do
-      let!(:existing_user) { create(:user, nir: "123456789012311") }
-      let(:user) { build(:user, nir: "123456789012311") }
+      let!(:department) { create(:department) }
+      let!(:existing_user) { create(:user, nir: "123456789012311", department:) }
+      let(:user) { build(:user, nir: "123456789012311", department:) }
 
       it { expect(user).not_to be_valid }
     end
@@ -464,59 +466,6 @@ describe User do
         user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
         expect { subject }.to change(TagUser, :count).by(1)
         expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
-      end
-    end
-  end
-
-  describe "#address_department" do
-    subject { user.address_department }
-
-    let!(:yvelines) { create(:department, number: "78") }
-    let!(:drome) { create(:department, number: "26") }
-    let!(:organisation_yvelines_department) { create(:organisation, department: yvelines) }
-    let!(:organisation_drome_department) { create(:organisation, department: drome) }
-    let!(:user) do
-      create(:user, address: "78940 Garancières la Queue",
-                    organisations: [organisation_yvelines_department, organisation_drome_department])
-    end
-
-    it "retrieves the current department through the address" do
-      expect(subject).to eq(yvelines)
-    end
-
-    context "when the user has no post code in address" do
-      let!(:user) do
-        create(:user, address: nil, organisations: [organisation_yvelines_department, organisation_drome_department])
-      end
-
-      it "does not retrieve a current department" do
-        expect(subject).to be_nil
-      end
-    end
-  end
-
-  describe "#current_department" do
-    subject { user.current_department }
-
-    context "when the user belongs to one department" do
-      let!(:user) do
-        create(:user, organisations: [organisation, other_organisation])
-      end
-      let!(:department) { create(:department) }
-      let!(:organisation) { create(:organisation, department:) }
-      let!(:other_organisation) { create(:organisation, department:) }
-
-      it "retrieves the department" do
-        expect(subject).to eq(department)
-      end
-
-      context "when the user belongs to more than one department" do
-        let!(:other_department) { create(:department) }
-        let!(:other_organisation) { create(:organisation, department: other_department) }
-
-        it "does not retrieve a department" do
-          expect(subject).to be_nil
-        end
       end
     end
   end
