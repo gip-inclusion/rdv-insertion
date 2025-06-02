@@ -10,7 +10,8 @@ module Users
       @orientations = policy_scope(@user.orientations)
                       .where(organisation: { department_id: current_department_id })
                       .includes(:agent, :organisation, :orientation_type).order(starts_at: :asc)
-      @diagnostics = @user.diagnostics.where(department_id: current_department_id).order(document_date: :desc, id: :desc)
+      @diagnostics = @user.diagnostics.where(department_id: current_department_id).order(document_date: :desc,
+                                                                                         id: :desc)
       @contracts = @user.contracts.where(department_id: current_department_id).order(document_date: :desc, id: :desc)
     end
 
