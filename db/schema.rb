@@ -186,6 +186,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_133003) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
+    t.boolean "parcours_enabled", default: true
     t.boolean "disable_ft_webhooks", default: false
   end
 

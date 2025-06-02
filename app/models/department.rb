@@ -32,6 +32,6 @@ class Department < ApplicationRecord
   end
 
   def with_parcours_access?
-    !number.in?(ENV.fetch("DEPARTMENTS_WHERE_PARCOURS_DISABLED", "").split(","))
+    parcours_enabled
   end
 end

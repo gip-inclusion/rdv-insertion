@@ -13,6 +13,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     capital: Field::String,
     category_configurations: Field::HasMany,
     display_in_stats: Field::Boolean,
+    parcours_enabled: Field::Boolean,
     email: Field::String,
     file_configurations: Field::HasMany,
     invitations: Field::HasMany,
@@ -59,6 +60,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     email
     phone_number
     display_in_stats
+    parcours_enabled
     organisations
     orientation_types
     created_at
@@ -78,6 +80,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     email
     phone_number
     display_in_stats
+    parcours_enabled
     logo
   ].freeze
 
