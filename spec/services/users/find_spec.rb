@@ -151,4 +151,60 @@ describe Users::Find, type: :service do
       end
     end
   end
+
+  describe "matching priority order" do
+    context "when multiple users match different criteria" do
+      let!(:user_nir) { create(:user, nir: nir) }
+      let!(:user_department_id) do
+        create(
+          :user, department_internal_id: department_internal_id,
+                 organisations: [other_org_inside_the_department]
+        )
+      end
+      let!(:user_email) { create(:user, email: email, first_name: "JANE") }
+      let!(:user_phone) { create(:user, phone_number: phone_number, first_name: "JANE") }
+      let!(:user_role_affiliation) do
+        create(
+          :user, role: role, affiliation_number: affiliation_number,
+                 organisations: [other_org_inside_the_department]
+        )
+      end
+
+      it "prioritizes NIR over all other criteria" do
+        expect(subject.user).to eq(user_nir)
+      end
+
+      context "when no NIR match exists" do
+        let!(:nir) { nil }
+
+        it "prioritizes department internal ID over email, phone, and role/affiliation" do
+          expect(subject.user).to eq(user_department_id)
+        end
+
+        context "when no department internal ID match exists" do
+          let!(:department_internal_id) { nil }
+
+          it "prioritizes email over phone and role/affiliation" do
+            expect(subject.user).to eq(user_email)
+          end
+
+          context "when no email match exists" do
+            let!(:email) { nil }
+
+            it "prioritizes phone number over role/affiliation" do
+              expect(subject.user).to eq(user_phone)
+            end
+
+            context "when no phone match exists" do
+              let!(:phone_number) { nil }
+
+              it "falls back to role/affiliation matching (lowest priority)" do
+                expect(subject.user).to eq(user_role_affiliation)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
 end
