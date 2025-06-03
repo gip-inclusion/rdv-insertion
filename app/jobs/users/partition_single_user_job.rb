@@ -15,6 +15,8 @@ module Users
 
       user.update!(department_id: most_recent_active_department.id)
 
+      return if user.organisations.count <= 1
+
       # Remove all organisations that are not in the same department
       UsersOrganisation.joins(:organisation)
                        .where(user:)
