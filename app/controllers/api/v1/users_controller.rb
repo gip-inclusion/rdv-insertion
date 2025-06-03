@@ -25,7 +25,7 @@ module Api
 
           CreateAndInviteUserJob.perform_later(
             @organisation.id,
-            user_attributes,
+            user_attributes.merge(creation_origin_attributes).merge(department_id: @organisation.department_id),
             invitation_attributes,
             motif_category_attributes
           )
@@ -55,7 +55,7 @@ module Api
 
       def upsert_user
         @upsert_user ||= Users::Upsert.call(
-          user_attributes: user_attributes, organisation: @organisation
+          user_attributes: user_attributes.merge(creation_origin_attributes), organisation: @organisation
         )
       end
 
@@ -82,8 +82,7 @@ module Api
       end
 
       def user_attributes
-        user_params.except(:invitation)
-                   .merge(department_id: @organisation.department_id).merge(creation_origin_attributes)
+        user_params.except(:invitation).merge(department_id: @organisation.department_id)
       end
 
       def creation_origin_attributes
