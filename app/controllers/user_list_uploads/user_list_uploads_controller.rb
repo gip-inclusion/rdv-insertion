@@ -19,9 +19,11 @@ module UserListUploads
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
       authorize @user_list_upload
 
-      if enrich_with_cnaf_data_params.empty?
+      cnaf_data = enrich_with_cnaf_data_params
+
+      if cnaf_data.empty?
         flash[:success] = no_cnaf_data_enriched_message
-      elsif @user_list_upload.update_rows(enrich_with_cnaf_data_params)
+      elsif @user_list_upload.update_rows(cnaf_data)
         flash[:success] = cnaf_data_enriched_message
       else
         turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
