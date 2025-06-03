@@ -5,7 +5,10 @@ module Brevo::IpWhitelistConcern
 
   # IP list comes from
   # https://help.brevo.com/hc/en-us/articles/15127404548498-Brevo-IP-ranges-List-of-publicly-exposed-services#h_01HENC062K8KJKJE7BJNYMPM77
-  IP_WHITELIST_RANGE = "1.179.112.0/20".freeze
+  IP_WHITELIST_RANGES = [
+    "1.179.112.0/20",
+    "172.246.240.0/20"
+  ].freeze
 
   included do
     before_action :ensure_ip_comes_from_brevo_ips
@@ -18,7 +21,7 @@ module Brevo::IpWhitelistConcern
     # we need a quick way to skip this check
     return if ENV["DISABLE_BREVO_IP_WHITELIST"].present?
 
-    return if IPAddr.new(IP_WHITELIST_RANGE).include?(request.remote_ip)
+    return if IP_WHITELIST_RANGES.any? { |range| IPAddr.new(range).include?(request.remote_ip) }
 
     Sentry.capture_message("Brevo Webhook received with following non whitelisted IP", {
                              extra: {

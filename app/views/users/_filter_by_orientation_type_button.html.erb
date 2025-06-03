@@ -5,7 +5,8 @@
       :orientation_type,
       @orientation_types,
       { prompt: "Filtrer par type d'orientation" },
-      class: "form-select js-orientation-selector"
+      class: "form-select js-orientation-selector",
+      id: "rdvi_index-nav_filter-orientation-type_drop"
     )
   %>
   <% selected_orientation = @orientation_types.find { |orientation_type| orientation_type.name == params[:orientation_type] }%>

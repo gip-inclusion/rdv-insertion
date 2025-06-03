@@ -14,9 +14,9 @@ module Users
     def find_matching_user
       find_user_by_nir ||
         find_user_by_department_internal_id ||
-        find_user_by_role_and_affiliation_number ||
         find_user_by_email ||
-        find_user_by_phone_number
+        find_user_by_phone_number ||
+        find_user_by_role_and_affiliation_number
     end
 
     def find_user_by_nir

@@ -369,6 +369,118 @@ describe "Agents can upload user list", :js do
       expect(page).to have_current_path(organisation_users_path(organisation_id: organisation.id))
     end
 
+    context "CNAF data enrichment with NIR priority" do
+      it "prioritizes NIR matching over MATRICULE matching" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+        choose(motif_category.name)
+        click_button("Valider")
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+
+        expect(hernan_row.phone_number).to be_nil
+        expect(hernan_row.email).to eq("hernan@crespo.com")
+        expect(hernan_row.cnaf_data).to eq({})
+
+        hernan_row.update!(nir: "180444588799777")
+        # Refresh the page to ensure the new NIR is loaded
+        page.refresh
+
+        attach_file(
+          "enrich_with_cnaf_data_file_input",
+          Rails.root.join("spec/fixtures/fichier_contact_test_priorite_nir.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("+33111111111")
+        expect(page).to have_content("nir.priority@example.fr")
+        expect(hernan_row.reload.cnaf_data["phone_number"]).to eq("+33111111111")
+        expect(hernan_row.reload.cnaf_data["email"]).to eq("nir.priority@example.fr")
+
+        expect(page).to have_no_content("matricule.fallback@example.fr")
+      end
+
+      it "falls back to MATRICULE matching when NIR doesn't match" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+        choose(motif_category.name)
+        click_button("Valider")
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+
+        hernan_row.update!(affiliation_number: "ISQCJQO")
+        # Refresh the page to ensure the new affiliation number is loaded
+        page.refresh
+
+        attach_file(
+          "enrich_with_cnaf_data_file_input",
+          Rails.root.join("spec/fixtures/fichier_contact_test_priorite_nir.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("+33222222222")
+        expect(page).to have_content("matricule.fallback@example.fr")
+        expect(hernan_row.reload.cnaf_data["phone_number"]).to eq("+33222222222")
+        expect(hernan_row.reload.cnaf_data["email"]).to eq("matricule.fallback@example.fr")
+
+        expect(page).to have_no_content("nir.priority@example.fr")
+      end
+
+      it "enriches multiple users with different matching criteria" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+        choose(motif_category.name)
+        click_button("Valider")
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+        expect(page).to have_content("Christian", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+        christian_row = user_list_upload.user_rows.find { |row| row.first_name == "Christian" }
+        hernan_row.update!(nir: "180444588799777", affiliation_number: "ISQCJQO")
+        christian_row.update!(nir: "777777777777777", affiliation_number: "ISQCJQO")
+        # Refresh the page to ensure the new NIR and affiliation numbers are loaded
+        page.refresh
+
+        attach_file(
+          "enrich_with_cnaf_data_file_input",
+          Rails.root.join("spec/fixtures/fichier_contact_test_priorite_nir.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("+33111111111")
+        expect(page).to have_content("nir.priority@example.fr")
+        expect(hernan_row.reload.cnaf_data["email"]).to eq("nir.priority@example.fr")
+        expect(hernan_row.cnaf_data["phone_number"]).to eq("+33111111111")
+        expect(page).to have_content("+33222222222")
+        expect(page).to have_content("matricule.fallback@example.fr")
+        expect(christian_row.reload.cnaf_data["email"]).to eq("matricule.fallback@example.fr")
+        expect(christian_row.cnaf_data["phone_number"]).to eq("+33222222222")
+      end
+    end
+
     context "with existing matching user" do
       context "matching criteria tests" do
         it "matches an existing user by NIR" do
