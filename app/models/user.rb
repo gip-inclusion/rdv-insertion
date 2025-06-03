@@ -81,8 +81,11 @@ class User < ApplicationRecord
   validates :last_name, :first_name, presence: true
   validates :title, presence: true, if: :require_title_presence
   validates :email, allow_blank: true, format: { with: EMAIL_REGEXP }
-  validates :rdv_solidarites_user_id, :nir, :france_travail_id,
-            uniqueness: { scope: :department_id }, allow_nil: true, unless: :skip_uniqueness_validations
+
+  validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
+  validates :nir, :france_travail_id, uniqueness: { scope: :department_id }, allow_nil: true,
+                                      unless: :skip_uniqueness_validations
+
   validates :department_id, presence: true, on: :create
 
   validates :phone_number, phone_number: true
