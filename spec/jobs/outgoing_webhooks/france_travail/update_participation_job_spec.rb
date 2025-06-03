@@ -133,5 +133,24 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
         assert_no_enqueued_jobs
       end
     end
+
+    context "when participation is not found (destroyed before the job is processed)" do
+      before do
+        allow(FranceTravailApi::UpdateParticipation).to receive(:new).and_call_original
+      end
+
+      it "discards the job without raising an error" do
+        expect do
+          perform_enqueued_jobs do
+            described_class.perform_now(
+              participation_id: 999_999,
+              timestamp: timestamp
+            )
+          end
+        end.not_to raise_error
+
+        assert_no_enqueued_jobs
+      end
+    end
   end
 end
