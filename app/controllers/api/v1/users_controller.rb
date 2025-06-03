@@ -82,7 +82,8 @@ module Api
       end
 
       def user_attributes
-        user_params.except(:invitation).merge(department_id: @organisation.department_id).merge(creation_origin_attributes)
+        user_params.except(:invitation)
+                   .merge(department_id: @organisation.department_id).merge(creation_origin_attributes)
       end
 
       def creation_origin_attributes
