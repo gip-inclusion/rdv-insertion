@@ -20,7 +20,7 @@ module UserListUploads
       authorize @user_list_upload
 
       if enrich_with_cnaf_data_params.empty?
-        flash[:success] = no_cnaf_data_matches_message
+        flash[:success] = no_cnaf_data_enriched_message
       elsif @user_list_upload.update_rows(enrich_with_cnaf_data_params)
         flash[:success] = cnaf_data_enriched_message
       else
@@ -93,7 +93,7 @@ module UserListUploads
         end
     end
 
-    def no_cnaf_data_matches_message
+    def no_cnaf_data_enriched_message
       "Fichier CNAF chargé avec succès. Aucun dossier n'est concerné par les données de ce fichier."
     end
 
