@@ -64,9 +64,12 @@ class Organisation < ApplicationRecord
   end
 
   def with_parcours_access?
-    department.with_parcours_access? && organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+    rsa_related? && department.with_parcours_access?
   end
-  alias_method :rsa_related?, :with_parcours_access?
+
+  def rsa_related?
+    organisation_type.in?(ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+  end
 
   def category_configurations_sorted
     category_configurations.order(:position)
