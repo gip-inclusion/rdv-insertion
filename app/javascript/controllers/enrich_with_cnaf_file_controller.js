@@ -127,7 +127,7 @@ export default class extends Controller {
     if (!nir) return null;
 
     return this.cnafFileData.find((cnafFileDataRow) =>
-      cnafDataRow.NIR && nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13)
+      cnafFileDataRow.NIR && nir.slice(0, 13) === cnafFileDataRow.NIR.slice(0, 13)
     );
   }
 
@@ -135,8 +135,8 @@ export default class extends Controller {
     if (!affiliationNumber) return null;
 
     return this.cnafFileData.find((cnafFileDataRow) =>
-      cnafDataRow.MATRICULE &&
-      affiliationNumber.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0")
+      cnafFileDataRow.MATRICULE &&
+      affiliationNumber.toString().padStart(7, "0") === cnafFileDataRow.MATRICULE.toString().padStart(7, "0")
     );
   }
 
