@@ -623,8 +623,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_12_140245) do
     t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
-    t.index ["france_travail_id", "department_id"], name: "index_users_on_france_travail_id_and_department_id", unique: true
-    t.index ["nir", "department_id"], name: "index_users_on_nir_and_department_id", unique: true
     t.index ["nir"], name: "index_users_on_nir"
     t.index ["phone_number"], name: "index_users_on_phone_number"
     t.index ["rdv_solidarites_user_id"], name: "index_users_on_rdv_solidarites_user_id", unique: true
