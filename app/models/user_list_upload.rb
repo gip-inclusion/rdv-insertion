@@ -90,26 +90,20 @@ class UserListUpload < ApplicationRecord
     super
   end
 
-  def potential_matching_users_by_common_attributes
-    @potential_matching_users_by_common_attributes ||= begin
+  # rubocop:disable Metrics/AbcSize
+  def potential_matching_users
+    @potential_matching_users ||= begin
       base = User.active.where(department_id: department.id)
 
       base.where(email: user_row_attributes.pluck("email").compact)
           .or(base.where(phone_number: user_row_attributes_formatted_phone_numbers))
-          .or(base.where(nir: user_row_attributes_formatted_nirs))
-          .select(:id, :nir, :phone_number, :email, :first_name)
-    end
-  end
-
-  def potential_matching_users_by_department_specific_attributes
-    @potential_matching_users_by_department_specific_attributes ||= begin
-      base = User.active.where(department_id: department.id)
-
-      base.where(affiliation_number: user_row_attributes.pluck("affiliation_number").compact)
           .or(base.where(department_internal_id: user_row_attributes.pluck("department_internal_id").compact))
-          .select(:id, :department_internal_id, :affiliation_number, :role)
+          .or(base.where(nir: user_row_attributes_formatted_nirs))
+          .or(base.where(affiliation_number: user_row_attributes.pluck("affiliation_number").compact))
+          .select(:id, :nir, :phone_number, :email, :first_name, :department_internal_id, :affiliation_number, :role)
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 

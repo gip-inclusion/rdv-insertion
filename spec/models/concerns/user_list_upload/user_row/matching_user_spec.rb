@@ -177,7 +177,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
 
         it "retrieves potential matching users from the user_list_upload" do
           expect(user_list_upload).to(
-            receive(:potential_matching_users_by_department_specific_attributes).once.and_call_original
+            receive(:potential_matching_users).once.and_call_original
           )
           user_row.save!
         end
@@ -200,7 +200,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         let!(:user_row) { user_list_upload.user_rows.create!(user_row_attributes) }
 
         it "does not retrieve the potential matching users from the user_list_upload" do
-          expect(user_list_upload).not_to receive(:potential_matching_users_by_department_specific_attributes)
+          expect(user_list_upload).not_to receive(:potential_matching_users)
           user_row.update!(email: "new-email@example.com")
         end
 

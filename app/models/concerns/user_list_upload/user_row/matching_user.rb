@@ -11,44 +11,41 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def find_matching_user
-    users_with_department_specific_attributes = potential_matching_users_by_department_specific_attributes.to_a
-    users_with_common_attributes = potential_matching_users_by_common_attributes.to_a
-
-    find_user_by_nir(users_with_common_attributes) ||
-      find_user_by_department_internal_id(users_with_department_specific_attributes) ||
-      find_user_by_email(users_with_common_attributes) ||
-      find_user_by_phone_number(users_with_common_attributes) ||
-      find_user_by_affiliation_number_and_role(users_with_department_specific_attributes)
+    find_user_by_nir ||
+      find_user_by_department_internal_id ||
+      find_user_by_email ||
+      find_user_by_phone_number ||
+      find_user_by_affiliation_number_and_role
   end
 
-  def find_user_by_nir(users)
+  def find_user_by_nir
     return if nir.blank?
 
-    users.find { |user| user_matches_nir?(user.nir) }
+    potential_matching_users.find { |user| user_matches_nir?(user.nir) }
   end
 
-  def find_user_by_department_internal_id(users)
+  def find_user_by_department_internal_id
     return if department_internal_id.blank?
 
-    users.find { |user| user_matches_department_internal_id?(user) }
+    potential_matching_users.find { |user| user_matches_department_internal_id?(user) }
   end
 
-  def find_user_by_email(users)
+  def find_user_by_email
     return if email.blank?
 
-    users.find { |user| user_matches_email?(user) }
+    potential_matching_users.find { |user| user_matches_email?(user) }
   end
 
-  def find_user_by_phone_number(users)
+  def find_user_by_phone_number
     return if phone_number.blank?
 
-    users.find { |user| user_matches_phone_number?(user) }
+    potential_matching_users.find { |user| user_matches_phone_number?(user) }
   end
 
-  def find_user_by_affiliation_number_and_role(users)
+  def find_user_by_affiliation_number_and_role
     return if affiliation_number.blank? || role.blank?
 
-    users.find { |user| user_matches_affiliation_number_and_role?(user) }
+    potential_matching_users.find { |user| user_matches_affiliation_number_and_role?(user) }
   end
 
   def user_matches_nir?(matching_user_nir)
@@ -81,48 +78,29 @@ module UserListUpload::UserRow::MatchingUser
       matching_user.email == email
   end
 
-  def potential_matching_users_by_common_attributes
-    if persisted?
-      retrieve_potential_matching_users_by_common_attributes
-    else
-      # when user_row is not persisted, we retrieve the potential matching users at the
-      # user_list_upload level to not trigger a new query in each user_row creation
-      user_list_upload.potential_matching_users_by_common_attributes
-    end
+  def potential_matching_users
+    @potential_matching_users ||= if persisted?
+                                    retrieve_potential_matching_users.to_a
+                                  else
+                                    # when user_row is not persisted, we retrieve the potential matching users at the
+                                    # user_list_upload level to not trigger a new query in each user_row creation
+                                    user_list_upload.potential_matching_users.to_a
+                                  end
   end
 
-  def potential_matching_users_by_department_specific_attributes
-    if persisted?
-      retrieve_potential_matching_users_by_department_specific_attributes
-    else
-      # when user_row is not persisted, we retrieve the potential matching users at the
-      # user_list_upload level to not trigger a new query in each user_row creation
-      user_list_upload.potential_matching_users_by_department_specific_attributes
-    end
-  end
-
-  def retrieve_potential_matching_users_by_common_attributes
+  # rubocop:disable Metrics/AbcSize
+  def retrieve_potential_matching_users
     scope = User.none
 
-    scope = scope.or(active_users_in_department.where(email: email)) if email.present?
-    scope = scope.or(active_users_in_department.where(phone_number: phone_number)) if phone_number.present?
-    scope = scope.or(active_users_in_department.where(nir: nir)) if nir.present?
+    scope = scope.or(active_users_in_department.where(email:)) if email.present?
+    scope = scope.or(active_users_in_department.where(phone_number:)) if phone_number.present?
+    scope = scope.or(active_users_in_department.where(affiliation_number:)) if affiliation_number.present?
+    scope = scope.or(active_users_in_department.where(department_internal_id:)) if department_internal_id.present?
+    scope = scope.or(active_users_in_department.where(nir:)) if nir.present?
 
     scope
   end
-
-  def retrieve_potential_matching_users_by_department_specific_attributes
-    scope = User.none
-
-    if affiliation_number.present?
-      scope = scope.or(active_users_in_department.where(affiliation_number: affiliation_number))
-    end
-    if department_internal_id.present?
-      scope = scope.or(active_users_in_department.where(department_internal_id: department_internal_id))
-    end
-
-    scope
-  end
+  # rubocop:enable Metrics/AbcSize
 
   def active_users_in_department
     @active_users_in_department ||= User.active.where(department_id: department.id)
