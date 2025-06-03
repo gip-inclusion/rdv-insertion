@@ -32,11 +32,11 @@ export default class extends Controller {
       return
     }
 
-    this.rowsCnafData = []
+    this.matchedCnafData = []
 
-    this.#retrieveRowsCnafData()
+    this.#retrieveMatchedCnafData()
 
-    if (this.cnafDataRows.length === 0) {
+    if (this.cnafFileData.length === 0) {
       safeSwal({
         title: "Fichier CNAF vide",
         text: "Le fichier CNAF ne contient aucune donnée",
@@ -63,7 +63,7 @@ export default class extends Controller {
     // we make sure to remove existing inputs from previous submissions
     this.#removeExistingInputs()
 
-    this.rowsCnafData.forEach((row) => {
+    this.matchedCnafData.forEach((row) => {
       const idInput = document.createElement("input")
       idInput.type = "hidden"
       idInput.name = "rows_cnaf_data[][id]"
@@ -102,20 +102,20 @@ export default class extends Controller {
     return this.inputTarget.accept.split(",").map((format) => format.trim())
   }
 
-  #retrieveRowsCnafData() {
+  #retrieveMatchedCnafData() {
     this.userRows.forEach((userRow) => {
       if (!userRow.affiliation_number && !userRow.nir) {
         return
       }
-      const matchingCnafDataRow = this.cnafDataRows.find((cnafDataRow) =>
+      const matchingCnafDataRow = this.cnafFileData.find((cnafFileDataRow) =>
         // for affiliation number that have less than 7 digits, we fill the missing digits with 0 at the beginning
-        (userRow.affiliation_number && cnafDataRow.MATRICULE && userRow.affiliation_number.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0"))
-        || (userRow.nir && cnafDataRow.NIR && userRow.nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13))
+        (userRow.affiliation_number && cnafFileDataRow.MATRICULE && userRow.affiliation_number.toString().padStart(7, "0") === cnafFileDataRow.MATRICULE.toString().padStart(7, "0"))
+        || (userRow.nir && cnafFileDataRow.NIR && userRow.nir.slice(0, 13) === cnafFileDataRow.NIR.slice(0, 13))
       )
 
       if (matchingCnafDataRow) {
         const parsedCnafData = parseContactsData(matchingCnafDataRow)
-        this.rowsCnafData.push({
+        this.matchedCnafData.push({
           id: userRow.id,
           cnaf_data: {
             email: parsedCnafData.email || "",
@@ -150,7 +150,7 @@ export default class extends Controller {
           displayMissingColumnsWarning(missingColumnNames);
           resolve(false);
         } else {
-          this.cnafDataRows = XLSX.utils.sheet_to_json(sheet, { raw: false });
+          this.cnafFileData = XLSX.utils.sheet_to_json(sheet, { raw: false });
           resolve(true);
         }
       };

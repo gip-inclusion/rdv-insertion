@@ -19,21 +19,16 @@ module UserListUploads
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
       authorize @user_list_upload
 
-      if @user_list_upload.update_rows(enrich_with_cnaf_data_params)
-        enriched_rows_count = @user_list_upload.user_rows_enriched_with_cnaf_data.count
-
-        if enriched_rows_count.positive?
-          flash[:success] = "Fichier CNAF chargé avec succès. Les nouvelles données ont été intégrées aux" \
-                            " dossiers usagers ci-dessous."
-        else
-          flash[:success] =
-            "Fichier CNAF chargé avec succès. Aucun dossier n'est concerné par les données de ce fichier."
-        end
-
-        turbo_stream_redirect(user_list_upload_path(@user_list_upload))
+      if enrich_with_cnaf_data_params.empty?
+        flash[:success] = no_cnaf_data_matches_message
+      elsif @user_list_upload.update_rows(enrich_with_cnaf_data_params)
+        flash[:success] = cnaf_data_enriched_message
       else
         turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
+        return
       end
+
+      turbo_stream_redirect(user_list_upload_path(@user_list_upload))
     end
 
     def create
@@ -81,8 +76,9 @@ module UserListUploads
     end
 
     def enrich_with_cnaf_data_params
-      # if no rows_cnaf_data is present this mean no matching cnaf data was found
-      return [] unless params.key?(:rows_cnaf_data)
+      # Guard clause: when no CNAF matches are found, Stimulus controller creates no form inputs,
+      # causing "param is missing" error with params.expect(). Return empty array to avoid this.
+      return [] if params[:rows_cnaf_data].blank?
 
       params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }]])
     end
@@ -95,6 +91,14 @@ module UserListUploads
           # we take the file_configuration linked to the largest number of category_configurations in this case
           @all_configurations.map(&:file_configuration).tally.max_by { |_file_config, count| count }.first
         end
+    end
+
+    def no_cnaf_data_matches_message
+      "Fichier CNAF chargé avec succès. Aucun dossier n'est concerné par les données de ce fichier."
+    end
+
+    def cnaf_data_enriched_message
+      "Fichier CNAF chargé avec succès. Les nouvelles données ont été intégrées aux dossiers usagers ci-dessous."
     end
   end
 end
