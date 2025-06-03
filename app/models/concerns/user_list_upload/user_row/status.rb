@@ -1,11 +1,9 @@
 module UserListUpload::UserRow::Status
   def before_user_save_status
-    if !matching_user_id
-      user_valid? ? :to_create_with_no_errors : :to_create_with_errors
-    elsif will_change_matching_user?
-      user_valid? ? :to_update_with_no_errors : :to_update_with_errors
+    if matching_user_id
+      before_user_save_status_for_existing_user
     else
-      :up_to_date
+      before_user_save_status_for_new_user
     end
   end
 
@@ -36,6 +34,20 @@ module UserListUpload::UserRow::Status
       :error
     else
       :invited
+    end
+  end
+
+  private
+
+  def before_user_save_status_for_new_user
+    user_valid? ? :to_create_with_no_errors : :to_create_with_errors
+  end
+
+  def before_user_save_status_for_existing_user
+    if will_change_matching_user?
+      user_valid? ? :to_update_with_no_errors : :to_update_with_errors
+    else
+      :up_to_date
     end
   end
 end
