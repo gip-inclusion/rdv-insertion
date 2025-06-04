@@ -265,5 +265,61 @@ describe Participation do
         expect(subject).to eq(false)
       end
     end
+
+    context "when the user has no nir" do
+      let!(:user) { create(:user) }
+
+      it "is not eligible" do
+        expect(subject).to eq(false)
+      end
+    end
+  end
+
+  describe "france travail webhook callbacks on update" do
+    let!(:department) { create(:department) }
+    let!(:organisation) { create(:organisation, organisation_type: "conseil_departemental", department: department) }
+    let!(:user) { create(:user, :with_valid_nir) }
+    let!(:rdv) { create(:rdv, organisation: organisation) }
+    let!(:now) { Time.zone.parse("21/01/2023 23:42:11") }
+
+    before do
+      travel_to now
+      allow(OutgoingWebhooks::FranceTravail::CreateParticipationJob).to receive(:perform_later)
+      allow(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).to receive(:perform_later)
+    end
+
+    context "when participation becomes newly eligible on update" do
+      let!(:participation) do
+        create(:participation, rdv: rdv, user: user, organisation: organisation, france_travail_id: nil)
+      end
+
+      it "triggers CreateParticipationJob instead of UpdateParticipationJob" do
+        expect(OutgoingWebhooks::FranceTravail::CreateParticipationJob).to receive(:perform_later)
+          .with(
+            participation_id: participation.id,
+            timestamp: kind_of(now)
+          )
+        expect(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).not_to receive(:perform_later)
+
+        participation.save
+      end
+    end
+
+    context "when participation is already eligible and has france_travail_id" do
+      let!(:participation) do
+        create(:participation, rdv: rdv, user: user, organisation: organisation, france_travail_id: "ft-123")
+      end
+
+      it "triggers UpdateParticipationJob" do
+        expect(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).to receive(:perform_later)
+          .with(
+            participation_id: participation.id,
+            timestamp: kind_of(now)
+          )
+        expect(OutgoingWebhooks::FranceTravail::CreateParticipationJob).not_to receive(:perform_later)
+
+        participation.save
+      end
+    end
   end
 end
