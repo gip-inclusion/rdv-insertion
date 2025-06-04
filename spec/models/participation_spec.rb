@@ -297,7 +297,7 @@ describe Participation do
         expect(OutgoingWebhooks::FranceTravail::CreateParticipationJob).to receive(:perform_later)
           .with(
             participation_id: participation.id,
-            timestamp: kind_of(now)
+            timestamp: now
           )
         expect(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).not_to receive(:perform_later)
 
@@ -314,7 +314,7 @@ describe Participation do
         expect(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).to receive(:perform_later)
           .with(
             participation_id: participation.id,
-            timestamp: kind_of(now)
+            timestamp: now
           )
         expect(OutgoingWebhooks::FranceTravail::CreateParticipationJob).not_to receive(:perform_later)
 
