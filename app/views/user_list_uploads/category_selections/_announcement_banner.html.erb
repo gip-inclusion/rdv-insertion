@@ -2,14 +2,14 @@
   <div class="container pt-2 pb-3 px-5">
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex justify-content-between  flex-column">
-          <h5>
+          <h5 class="text-white">
             <i class="ri-information-line me-1 fs-4"></i>
             Bienvenue sur la nouvelle version d’import de fichier de rdv-insertion !
           </h5>
         <p class="mb-0">
           Nous l’avons conçue pour simplifier la gestion des dossiers usagers et l’envoi des invitations en masse. 
-          <%= link_to "Consulter notre tutoriel", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/invitation-and-convocation/import-des-usagers-nouvelle-version", target: "_blank", class: "btn-link" %> ou 
-          <%= link_to "revenir sur l’ancienne version", new_structure_upload_path, class: "btn-link" %>.      
+          <%= link_to "Consulter notre tutoriel", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/invitation-and-convocation/import-des-usagers-nouvelle-version", target: "_blank" %> ou 
+          <%= link_to "revenir sur l’ancienne version", new_structure_upload_path %>.      
         </p>
       </div>
       <button class="btn text-white align-self-start p-0" data-action="click->announcement-banner#close">

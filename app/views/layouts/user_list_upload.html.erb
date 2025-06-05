@@ -2,6 +2,14 @@
   <%= render 'common/header' %>
 <% end %>
 
+<% content_for :head do %>
+  <%= stylesheet_link_tag "dsfr.min", "application-turbo-track": "reload" %>
+  <%= javascript_include_tag "dsfr.module.min.js", type: 'module' %>
+  <%= javascript_include_tag "dsfr.nomodule.min.js", nomodule: true %>
+  <%= stylesheet_link_tag "utility/dsfr-utility.min", "application-turbo-track": "reload" %>
+<% end %>
+
+
 <!DOCTYPE html>
 <html>
   <%= render 'layouts/head' %>
