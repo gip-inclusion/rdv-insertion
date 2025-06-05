@@ -7,23 +7,21 @@
         <% end %>
       </div>
       <div class="col-10 d-flex flex-column justify-content-between">
-        <% unless department_level? %>
-          <span class="department-title mb-0 text-dark-blue">
-            <%= current_department.name %>
-          </span>
-        <% end %>
+        <span class="department-title mb-0 text-dark-blue">
+          <%= department_level? ? "Département" : current_department.name %>
+        </span>
         <h2 class="structure-title mb-2 text-dark-blue">
           <%= current_structure.name %>
         </h2>
         <div class="d-flex">
           <% if authorized_any?(current_organisations, :configure) %>
             <% if department_level? %>
-              <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "fr-link fr-icon-arrow-right-line fr-link--icon-right") do %>
-                <span class="fr-icon-settings-5-fill" aria-hidden="true"></span>
-                Configurer une organisation
+              <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "fr-link") do %>
+                <span class="ri-settings-5-fill" aria-hidden="true"></span>
+                Configurer
               <% end %>
             <% else %>
-              <%= link_to(organisation_category_configurations_path(@organisation), class: "fr-link fr-icon-arrow-right-line fr-link--icon-right") do %>
+              <%= link_to(organisation_category_configurations_path(@organisation), class: "fr-link") do %>
               <span class="ri-settings-5-fill" aria-hidden="true"></span>
                 Configurer l'organisation
               <% end %>
@@ -51,56 +49,127 @@
   </div>
   <div class="row">
     <div class="col-12 d-flex flex-column justify-content-between">
-      <div class="col-6">
+      <div class="col-7">
         <%= render "search_form_dsfr", url: structure_users_path %>
       </div>
-      <div class="d-flex">
-        <span class="d-flex align-items-center me-2">Filtrer par :</span>
+      <div class="d-flex index-filters flex-wrap">
+        <span class="d-flex align-items-center me-2 ">Filtrer par :</span>
         <% if @current_category_configuration.present? %>
-          <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center">
-            <%=
-              select(
-                "user", "status", options_for_select_status(@statuses_count),
-                { prompt: "Statut" },
-                class: "form-select js-status-selector",
-                id: "rdvi_index-nav_filter-status"
-              )
-            %>
-            <% selected_status = options_for_select_status(@statuses_count).find { |statut| statut[1] == params[:status] }%>
-            <span class="label-alt position-absolute bg-white pe-none">
-              <span class="status-label-alt">
-                <% if selected_status.present? %>
-                  Statut : <%= selected_status[0] %> <span class="filter-active">1</span>
-                <% else %>
-                  Statut
-                <% end %>
-              </span>
-              <i class="ri-arrow-down-s-line"></i>
-            </span>
+          <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
+               data-controller="filter"
+               data-filter-param-name-value="status">
+            <button type="button"
+                    class="btn btn-grey dropdown-toggle"
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                    id="rdvi_index-nav_filter-status-button">
+              <% selected_values_count = params[:status]&.split(',')&.count || 0 %>
+              <% if selected_values_count > 0 %>
+                Statut <span class="filter-active ms-1"><%= selected_values_count %></span>
+              <% else %>
+                Statut
+              <% end %>
+            </button>
+            <div class="dropdown-menu" style="min-width: 280px;">
+              <% options_for_select_status(@statuses_count).each do |label, value| %>
+                <% selected = params[:status].present? && params[:status].include?(value) %>
+                <div class="form-check">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         value="<%= value %>"
+                         id="status_<%= value %>"
+                         data-filter-target="checkbox"
+                         <%= 'checked' if selected %>>
+                  <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="status_<%= value %>">
+                    <%= label %>
+                  </label>
+                </div>
+              <% end %>
+              <div class="mt-3">
+                <button type="button" class="btn btn-blue" data-action="filter#apply">
+                  Appliquer
+                </button>
+              </div>
+            </div>
           </div>
         <% end %>
-        <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center">
-          <%=
-            select(
-              "user",
-              "referent_id",
-              options_for_select_referent(@referents_list),
-              { prompt: "Référent" },
-              class: "form-select js-referent-selector",
-              id: "rdvi_index-nav_filter-referent"
-            )
-          %>
-          <% selected_referent = @referents_list.find { |referent| referent.id == params[:referent_id].to_i }%>
-          <span class="label-alt position-absolute bg-white pe-none">
-            <span class="referent-label-alt">
+        <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
+             data-controller="filter" 
+             data-filter-param-name-value="referent_id">
+          <button type="button"
+                  class="btn btn-grey dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  id="rdvi_index-nav_filter-referent-button">
+            <% selected_referent_id = params[:referent_id] %>
+            <% if selected_referent_id.present? %>
+              Référent <span class="filter-active ms-1">1</span>
+            <% else %>
               Référent
-              <% if selected_referent.present? %>
-                <span class="filter-active">1</span>
-              <% end %>
-            </span>
-            <i class="ri-arrow-down-s-line"></i>
-          </span>
+            <% end %>
+          </button>
+          <div class="dropdown-menu" style="min-width: 280px;">
+            <% options_for_select_referent(@referents_list).each do |label, id| %>
+              <% selected = params[:referent_id] == id.to_s %>
+              <div class="form-check">
+                <input class="form-check-input"
+                       type="radio"
+                       value="<%= id %>"
+                       id="referent_<%= id %>"
+                       name="referent_id"
+                       data-filter-target="checkbox"
+                       <%= 'checked' if selected %>>
+                <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="referent_<%= id %>">
+                  <%= label %>
+                </label>
+              </div>
+            <% end %>
+            <div class="mt-3">
+              <button type="button" class="btn btn-blue" data-action="filter#apply">
+                Appliquer
+              </button>
+            </div>
+          </div>
         </div>
+        <% if @tags.any? || @current_category_configuration.present? %>
+        <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
+             data-controller="filter" 
+             data-filter-param-name-value="tag_ids">
+          <button type="button"
+                  class="btn btn-grey dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  id="rdvi_index-nav_filter-tags-button">
+            <% selected_tag_ids_count = params[:tag_ids]&.map(&:to_i)&.count || 0 %>
+            <% if selected_tag_ids_count > 0 %>
+              Tags <span class="filter-active ms-1"><%= selected_tag_ids_count %></span>
+            <% else %>
+              Tags
+            <% end %>
+          </button>
+          <div class="dropdown-menu" style="min-width: 280px; max-height: 300px; overflow-y: auto;">
+            <% @tags.each do |tag| %>
+              <% selected = params[:tag_ids]&.include?(tag.id.to_s) %>
+              <div class="form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       value="<%= tag.id %>"
+                       id="tag_<%= tag.id %>"
+                       data-filter-target="checkbox"
+                       <%= 'checked' if selected %>>
+                <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="tag_<%= tag.id %>">
+                  <%= tag.value %>
+                </label>
+              </div>
+            <% end %>
+            <div class="mt-3">
+              <button type="button" class="btn btn-blue" data-action="filter#apply">
+                Appliquer
+              </button>
+            </div>
+          </div>
+        </div>
+        <% end %>
         <%= render "filter_by_orientation_type_button" if show_orientations_filter? %>
         <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
         <%= render "filter_by_invitation_or_convocation_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>

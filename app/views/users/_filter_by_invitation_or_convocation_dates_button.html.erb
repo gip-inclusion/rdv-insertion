@@ -1,7 +1,9 @@
 <div class="mb-1">
   <div class="w-100">
-    <%= link_to(new_structure_choose_date_kind_path(url_params), data: { turbo_frame: 'remote_modal' }, class: 'btn btn-grey w-100 d-flex align-items-center justify-content-between', id: "rdvi_index-nav_filter-invitation-summon-date") do %>
-      <span class="w-100">Filtrer par date d'invitation ou de convocation</span>
+    <%= link_to(new_structure_choose_date_kind_path(url_params), data: { turbo_frame: 'remote_modal' }, id: "rdvi_index-nav_filter-invitation-summon-date") do %>
+      <button class="btn btn-grey w-100 dropdown-toggle">
+        Date d'invitation ou de convocation
+      </button>
       <% if params[:convocation_date_after].present? || params[:convocation_date_before].present? || params[:first_invitation_date_after].present? || params[:first_invitation_date_before].present? || params[:last_invitation_date_after].present? || params[:last_invitation_date_before].present? %>
       <span class="filter-active convocation-date-filter-active">
         <% if invitation_or_convocation_active_filters_count > 0 %>

@@ -15,10 +15,24 @@
         --underline-hover-width: unset;
     }
     .btn-blue-out {
+        &:hover {
+            background-color: $dark-blue !important;
+            color: white;
+        }
+
+        &:disabled {
+            color: $dark-blue-dim;
+        }
+    }
+    .btn-primary {
+        &:hover {
+            background-color: $dark-blue !important;
+        }
+    }
+    .btn-primary {
         &:hover,
         &:disabled {
             background-color: $dark-blue !important;
-            color: white;
         }
     }
 }

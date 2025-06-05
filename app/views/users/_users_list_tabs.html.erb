@@ -1,12 +1,12 @@
 <div class="d-flex border-bottom align-items-center">
-  <ul class="nav nav-tabs flex-grow-1 border-bottom-0 align-self-end">
-    <li class="nav-item">
+  <ul class="nav nav-tabs d-flex align-items-end border-bottom-0">
+    <li class="nav-item pb-0">
       <%= link_to "Tous les contacts", structure_users_path, class: "nav-link #{@current_category_configuration.present? || archived_scope?(@users_scope) ? '' : 'active'}" %>
     </li>
-    <li>
+    <li class="pb-0">
       <ul data-controller="drag" data-drag-url="<%= structure_category_configurations_positions_update_path %>" class="<%= "draggable" if authorized_all?(current_organisations, :configure) %> nav">
         <% @all_configurations.each do |category_configuration| %>
-          <li class="nav-item" data-id="<%= category_configuration.id %>">
+          <li class="nav-item pb-0" data-id="<%= category_configuration.id %>">
             <%= link_to structure_users_path(motif_category_id: category_configuration.motif_category_id), class: "nav-link d-flex align-items-center #{category_configuration.id == @current_category_configuration&.id ? 'active' : ''}" do %>
               <%= category_configuration.motif_category_name %>
               <% if authorized_all?(current_organisations, :configure) && @all_configurations.size > 1 %>
@@ -21,7 +21,7 @@
         <% end %>
       </ul>
     </li>
-    <li class="nav-item">
+    <li class="nav-item pb-0">
       <%= link_to "Archivés", structure_users_path(users_scope: "archived"), class: "nav-link #{archived_scope?(@users_scope) ? 'active' : ''}" %>
     </li>
   </ul>

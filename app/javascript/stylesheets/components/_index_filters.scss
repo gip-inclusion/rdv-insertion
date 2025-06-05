@@ -43,3 +43,18 @@
     }
   }
 }
+
+.btn-grey.dropdown-toggle[aria-expanded="true"] {
+  border-color: $dark-blue;
+  color: $dark-blue;
+}
+
+.filter-label-checked {
+  font-weight: bold;
+}
+
+.index-filters {
+  label {
+    font-size: 15px;
+  }
+}
