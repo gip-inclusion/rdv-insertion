@@ -26,7 +26,7 @@ class ReferentSelector {
 
   attachListener() {
     this.selectElt.addEventListener("change", (event) => {
-      this.setAlternativeLabel();
+      // this.setAlternativeLabel();
       this.refreshQuery(event.target.value);
     });
   }

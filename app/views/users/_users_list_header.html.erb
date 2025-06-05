@@ -1,7 +1,7 @@
 <div class="row mb-4 card-white justify-content-center">
   <div class="row mb-2 pb-2">
     <div class="col-6 d-flex">
-      <div class="map-container me-3 d-flex align-items-center">
+      <div class="map-container me-4 d-flex align-items-center">
         <% if asset_exists?("maps/#{@department.name.parameterize}.svg") %>
           <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 80, height: 80) %>
         <% end %>
@@ -50,10 +50,57 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-6 d-flex flex-column justify-content-between">
-      <%= render "search_form_dsfr", url: structure_users_path %>
+    <div class="col-12 d-flex flex-column justify-content-between">
+      <div class="col-6">
+        <%= render "search_form_dsfr", url: structure_users_path %>
+      </div>
       <div class="d-flex">
         <span class="d-flex align-items-center me-2">Filtrer par :</span>
+        <% if @current_category_configuration.present? %>
+          <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center">
+            <%=
+              select(
+                "user", "status", options_for_select_status(@statuses_count),
+                { prompt: "Statut" },
+                class: "form-select js-status-selector",
+                id: "rdvi_index-nav_filter-status"
+              )
+            %>
+            <% selected_status = options_for_select_status(@statuses_count).find { |statut| statut[1] == params[:status] }%>
+            <span class="label-alt position-absolute bg-white pe-none">
+              <span class="status-label-alt">
+                <% if selected_status.present? %>
+                  Statut : <%= selected_status[0] %> <span class="filter-active">1</span>
+                <% else %>
+                  Statut
+                <% end %>
+              </span>
+              <i class="ri-arrow-down-s-line"></i>
+            </span>
+          </div>
+        <% end %>
+        <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center">
+          <%=
+            select(
+              "user",
+              "referent_id",
+              options_for_select_referent(@referents_list),
+              { prompt: "Référent" },
+              class: "form-select js-referent-selector",
+              id: "rdvi_index-nav_filter-referent"
+            )
+          %>
+          <% selected_referent = @referents_list.find { |referent| referent.id == params[:referent_id].to_i }%>
+          <span class="label-alt position-absolute bg-white pe-none">
+            <span class="referent-label-alt">
+              Référent
+              <% if selected_referent.present? %>
+                <span class="filter-active">1</span>
+              <% end %>
+            </span>
+            <i class="ri-arrow-down-s-line"></i>
+          </span>
+        </div>
         <%= render "filter_by_orientation_type_button" if show_orientations_filter? %>
         <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
         <%= render "filter_by_invitation_or_convocation_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
