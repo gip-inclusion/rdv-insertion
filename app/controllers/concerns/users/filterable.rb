@@ -15,8 +15,13 @@ module Users::Filterable
     filter_users_by_last_invitations
     filter_users_by_convocation_date_before
     filter_users_by_convocation_date_after
-    filter_users_by_page
     filter_users_by_tags
+    set_users_count
+    filter_users_by_page
+  end
+
+  def set_users_count
+    @users_count = @users.count
   end
 
   def filter_users_by_tags
