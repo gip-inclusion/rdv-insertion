@@ -18,6 +18,14 @@ module UsersFiltersHelper
     ]
   end
 
+  def filters_without_specific_display
+    [:status, :orientation_type, :action_required, :referent_id]
+  end
+
+  def active_filters_without_specific_display
+    filters_without_specific_display & active_filter_list
+  end
+
   def active_filter_list
     filter_list.select { |filter| params[filter].present? }
   end
