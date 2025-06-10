@@ -48,7 +48,7 @@ class User < ApplicationRecord
 
   before_save :format_phone_number
 
-  belongs_to :department, optional: true
+  belongs_to :department
 
   has_many :follow_ups, dependent: :destroy
   has_many :invitations, dependent: :destroy
