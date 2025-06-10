@@ -16,6 +16,34 @@
   }
 }
 
+.dropdown-toggle {
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 8px;
+    margin-left: 8px;
+    border: unset;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    vertical-align: middle;
+    border: none;
+  }
+
+  &:hover {
+    &::after {
+      background-color: currentColor;
+    }
+  }
+}
+
 .dropdown-toggle:not(.accessible):focus {
   box-shadow: none !important;
 }

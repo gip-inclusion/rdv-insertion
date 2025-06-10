@@ -1,12 +1,12 @@
  <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
       data-controller="filter" 
       data-filter-param-name-value="orientation_type">
+  <% selected_orientation_type = params[:orientation_type] %>
   <button type="button"
-          class="btn btn-grey dropdown-toggle"
+          class="btn btn-grey dropdown-toggle <% if selected_orientation_type.present? %>border-blue<% end %>"
           data-bs-toggle="dropdown"
           aria-expanded="false"
           id="rdvi_index-nav_filter-orientation-type-button">
-    <% selected_orientation_type = params[:orientation_type] %>
     <% if selected_orientation_type.present? %>
       Type d'orientation <span class="filter-active ms-1">1</span>
     <% else %>

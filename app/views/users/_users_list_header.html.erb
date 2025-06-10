@@ -1,5 +1,5 @@
-<div class="row mb-4 card-white justify-content-center">
-  <div class="row mb-2 pb-2">
+<div class="row mb-4 card-white justify-content-center p-0">
+  <div class="row mb-2 p-4 pb-3">
     <div class="col-6 d-flex">
       <div class="map-container me-4 d-flex align-items-center">
         <% if asset_exists?("maps/#{@department.name.parameterize}.svg") %>
@@ -47,7 +47,7 @@
       <% end %>
     </div>
   </div>
-  <div class="row">
+  <div class="row p-4 filters-container pt-3">
     <div class="col-12 d-flex flex-column justify-content-between">
       <div class="col-7">
         <%= render "search_form_dsfr", url: structure_users_path %>
@@ -58,12 +58,12 @@
           <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
                data-controller="filter"
                data-filter-param-name-value="status">
+            <% selected_values_count = params[:status]&.split(',')&.count || 0 %>
             <button type="button"
-                    class="btn btn-grey dropdown-toggle"
+                    class="btn btn-grey dropdown-toggle <% if selected_values_count > 0 %>border-blue<% end %>"
                     data-bs-toggle="dropdown" 
                     aria-expanded="false"
                     id="rdvi_index-nav_filter-status-button">
-              <% selected_values_count = params[:status]&.split(',')&.count || 0 %>
               <% if selected_values_count > 0 %>
                 Statut <span class="filter-active ms-1"><%= selected_values_count %></span>
               <% else %>
@@ -96,12 +96,12 @@
         <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
              data-controller="filter" 
              data-filter-param-name-value="referent_id">
+          <% selected_referent_id = params[:referent_id] %>
           <button type="button"
-                  class="btn btn-grey dropdown-toggle"
+                  class="btn btn-grey dropdown-toggle <% if selected_referent_id.present? %>border-blue<% end %>"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                   id="rdvi_index-nav_filter-referent-button">
-            <% selected_referent_id = params[:referent_id] %>
             <% if selected_referent_id.present? %>
               Référent <span class="filter-active ms-1">1</span>
             <% else %>
@@ -135,12 +135,12 @@
         <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
              data-controller="filter" 
              data-filter-param-name-value="tag_ids">
+            <% selected_tag_ids_count = params[:tag_ids]&.map(&:to_i)&.count || 0 %>
           <button type="button"
-                  class="btn btn-grey dropdown-toggle"
+                  class="btn btn-grey dropdown-toggle <% if selected_tag_ids_count > 0 %>border-blue<% end %>"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                   id="rdvi_index-nav_filter-tags-button">
-            <% selected_tag_ids_count = params[:tag_ids]&.map(&:to_i)&.count || 0 %>
             <% if selected_tag_ids_count > 0 %>
               Tags <span class="filter-active ms-1"><%= selected_tag_ids_count %></span>
             <% else %>
