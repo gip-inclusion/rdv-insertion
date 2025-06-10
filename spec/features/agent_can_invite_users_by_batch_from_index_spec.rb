@@ -51,8 +51,12 @@ describe "Agent can invite users by batch from index" do
     it "can export non invited users to a batch_actions page" do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
 
-      expect(page).to have_link(
-        "Envoyer des invitations aux non-invités",
+      expect(page).to have_button(
+        "Inviter les non-invités",
+        href: "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}"
+      )
+      expect(page).to have_button(
+        "Inviter les non-invités",
         href: "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}"
       )
       expect(page).to have_content(user1.last_name)
@@ -111,8 +115,8 @@ describe "Agent can invite users by batch from index" do
     it "can export non invited users to a batch_actions page" do
       visit department_users_path(department, motif_category_id: motif_category.id)
 
-      expect(page).to have_link(
-        "Envoyer des invitations aux non-invités",
+      expect(page).to have_button(
+        "Inviter les non-invités",
         href: "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
       )
       expect(page).to have_content(user1.last_name)
@@ -120,7 +124,7 @@ describe "Agent can invite users by batch from index" do
       expect(page).to have_content(user3.last_name)
       expect(page).to have_no_content(user4.last_name)
 
-      click_link "Envoyer des invitations aux non-invités"
+      click_button "Inviter les non-invités"
 
       expect(page).to have_current_path(
         "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
@@ -155,8 +159,9 @@ describe "Agent can invite users by batch from index" do
 
     it "can return to index page with the same arguments" do
       visit department_users_path(department, motif_category_id: motif_category.id)
-      select("Non invité", from: "rdvi_index-nav_filter-status")
-      click_link "Envoyer des invitations aux non-invités"
+      click_button "Statut"
+      select("Non invité", from: "status_invitation_pending")
+      click_button "Inviter les non-invités"
 
       expect(page).to have_button("Retour au suivi")
       click_button("Retour au suivi")

@@ -25,9 +25,15 @@
       <%= link_to "Archivés", structure_users_path(users_scope: "archived"), class: "nav-link #{archived_scope?(@users_scope) ? 'active' : ''}" %>
     </li>
   </ul>
-  <% if authorized_all?(current_organisations, :export_csv) %>
-    <div class="ms-auto">
-      <%= render "csv_export_button" %>
-    </div>
-  <% end %>
+  <div class="ms-auto d-flex align-items-end flex-column">
+    <% if authorized_all?(current_organisations, :export_csv) %>
+        <%= render "csv_export_button" %>
+    <% end %>
+    <% if @current_category_configuration.present? %>
+      <%= link_to(new_structure_batch_action_path(motif_category_id: @current_category_configuration.motif_category_id), class: "btn btn-blue-out mb-2", id: "rdvi_index-nav_send-invitations-uninvited") do %>
+        <i class="ri-send-plane-fill"></i>
+        Inviter les non-invités
+      <% end %>
+    <% end %>
+  </div>
 </div>
