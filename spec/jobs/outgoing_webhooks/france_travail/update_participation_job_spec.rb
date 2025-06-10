@@ -114,7 +114,13 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
       end
     end
 
-    context "when service fails with NoMatchingUser error", skip: "Not sure this test fails for the right reason" do
+    context "when service fails with NoMatchingUser error" do
+      let!(:user) { create(:user, :with_valid_nir, department:) }
+      let!(:rdv) { build(:rdv) }
+      let!(:participation) do
+        create(:participation, rdv: rdv, user: user, organisation: organisation)
+      end
+
       before do
         allow(service).to receive(:call)
           .and_raise(FranceTravailApi::RetrieveUserToken::NoMatchingUser, "Aucun usager trouvé")
@@ -130,7 +136,9 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
           end
         end.not_to raise_error # Le job est discard quand il y a une erreur NoMatchingUser
 
-        assert_no_enqueued_jobs
+        expect(
+          ActiveJob::Base.queue_adapter.enqueued_jobs
+        ).not_to include(hash_including("job_class" => described_class))
       end
     end
   end

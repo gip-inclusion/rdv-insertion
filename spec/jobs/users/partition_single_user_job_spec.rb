@@ -12,11 +12,6 @@ RSpec.describe Users::PartitionSingleUserJob do
     end
 
     context "when user has most recent activity in department1" do
-      before do
-        create(:participation, user: user, organisation: organisation2)
-        create(:participation, user: user, organisation: organisation1)
-      end
-
       it "updates user department and removes other organisations" do
         described_class.new.perform(user.id)
 
@@ -27,7 +22,6 @@ RSpec.describe Users::PartitionSingleUserJob do
 
     context "when user has most recent activity in department2" do
       before do
-        create(:participation, user: user, organisation: organisation1)
         create(:participation, user: user, organisation: organisation2)
       end
 
@@ -76,6 +70,23 @@ RSpec.describe Users::PartitionSingleUserJob do
         described_class.new.perform(user.id)
 
         expect(user.reload.department).to eq(original_department)
+      end
+    end
+
+    context "when user has multiple organisations in the same department as the most recent active one" do
+      let!(:organisation3) { create(:organisation, department: department2) }
+
+      before do
+        UsersOrganisation.new(user: user, organisation: organisation3).save!(validate: false)
+        create(:participation, user: user, organisation: organisation2)
+      end
+
+      it "preserves all organisations in the same department and removes others" do
+        described_class.new.perform(user.id)
+
+        expect(user.reload.department).to eq(department2)
+        expect(user.organisations).to contain_exactly(organisation2, organisation3)
+        expect(user.organisations).not_to include(organisation1)
       end
     end
   end
