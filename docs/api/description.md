@@ -232,11 +232,13 @@ Pour voir si les personnes ont bien été invitées, on peut:
 - Aller sur l'interface web RDV-I et vérifier dans la liste que les personnes ont bien été invitées (les coches sont cochées pour chaque format d'invitation dans la liste des usagers)
 - Souscrire au webhook envoyé lorsqu'une invitation est envoyée. Les détails de ces webhooks sont explicités dans la partie webhooks ci-dessous.
 
-## Création et invitation synchrone d'un usager
+## Création et/ou invitation synchrone d'un usager
 
 - `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite`
+- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create`
+- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/invite`
 
-Cet endpoint permet de créer et inviter un seul usager à prendre rdv. Contrairement à l'endpoint permettant d'inviter une liste d'usager, la réponse est ici synchrone: La requête est un succès que si la personne a été créée et invitée.
+Ces endpoints permettent de créer et/ou inviter un seul usager à prendre rdv. Contrairement à l'endpoint permettant d'inviter une liste d'usager, les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
 
 Les formats des réponses sont spécifiés en bas de page.
 

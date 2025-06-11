@@ -1,5 +1,6 @@
 module Api
   module V1
+    # rubocop:disable Metrics/ClassLength
     class UsersController < ApplicationController
       include ParamsValidationConcern
 
@@ -13,9 +14,28 @@ module Api
         }
       ].freeze
 
+      USERS_PER_PAGE = 30
+      SEARCHABLE_FIELDS = %w[first_name last_name email phone_number affiliation_number].freeze
+
       before_action :set_organisation
-      before_action :set_users_params, :validate_users_params, only: :create_and_invite_many
-      before_action :validate_user_params, only: :create_and_invite
+      before_action :set_users_params, :validate_users_params, only: [:create_and_invite_many, :create_many]
+      before_action :validate_user_params, only: [:create_and_invite, :create]
+      before_action :set_user, only: [:invite]
+
+      def index
+        @users = search_users
+        render json: {
+          success: true,
+          users: UserBlueprint.render_as_json(@users, view: :with_referents_and_tags),
+          pagination: {
+            current_page: @users.current_page,
+            next_page: @users.next_page,
+            prev_page: @users.prev_page,
+            total_pages: @users.total_pages,
+            total_count: @users.total_count
+          }
+        }
+      end
 
       def create_and_invite_many
         users_attributes.each do |attrs|
@@ -30,6 +50,30 @@ module Api
             motif_category_attributes
           )
         end
+        render json: { success: true }
+      end
+
+      def create_many
+        users_attributes.each do |attrs|
+          user_attributes = attrs.except(:invitation)
+
+          CreateUserJob.perform_later(
+            @organisation.id,
+            user_attributes.merge(creation_origin_attributes)
+          )
+        end
+        render json: { success: true }
+      end
+
+      def invite_many
+        users_invitations_attributes.each do |attrs|
+          user_id = attrs[:id]
+          invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
+          motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
+
+          InviteUserJob.perform_later(user_id, @organisation.id, invitation_attributes, motif_category_attributes)
+        end
+
         render json: { success: true }
       end
 
@@ -51,7 +95,54 @@ module Api
         }
       end
 
+      # this endpoint allows to create a user synchronously
+      def create
+        @user = upsert_user.user
+        return render_errors(["Impossible de créer l'usager: #{upsert_user.errors.join(', ')}"]) if upsert_user.failure?
+
+        render json: {
+          success: true,
+          user: UserBlueprint.render_as_json(@user, view: :with_referents_and_tags)
+        }
+      end
+
+      # this endpoint allows to invite a user synchronously
+      def invite
+        @invitations, @invitation_errors = [[], []]
+        invite_user_from_request("sms") if @user.phone_number_is_mobile?
+        invite_user_from_request("email") if @user.email?
+        return render_errors(@invitation_errors) unless @invitation_errors.empty?
+
+        render json: {
+          success: true,
+          user: UserBlueprint.render_as_json(@user, view: :with_referents_and_tags),
+          invitations: InvitationBlueprint.render_as_json(@invitations)
+        }
+      end
+
       private
+
+      def search_users
+        users = @organisation.users.active
+        users = apply_search_filter(users) if search_params[:search_query].present?
+        users.page(search_params[:page]).per(USERS_PER_PAGE)
+      end
+
+      def apply_search_filter(users)
+        query = "%#{search_params[:search_query]}%"
+        search_conditions = SEARCHABLE_FIELDS.map { |field| "#{field} ILIKE ?" }.join(" OR ")
+        search_values = Array.new(SEARCHABLE_FIELDS.length, query)
+
+        users.where(search_conditions, *search_values)
+      end
+
+      def search_params
+        params.permit(:search_query, :page)
+      end
+
+      def set_user
+        @user = @organisation.users.find(params[:id])
+      end
 
       def upsert_user
         @upsert_user ||= Users::Upsert.call(
@@ -68,10 +159,28 @@ module Api
         @invitations << invite_user_service.invitation
       end
 
-      def call_invite_user_service_by(format)
+      def invite_user_from_request(format)
+        invitation_attrs = (invitation_params[:invitation] || {}).except(:motif_category)
+        motif_category_attrs = invitation_params.dig(:invitation, :motif_category) || {}
+
+        invite_user_service = call_invite_user_service_by(format, invitation_attrs, motif_category_attrs)
+
+        unless invite_user_service.success?
+          @invitation_errors <<
+            "Erreur en envoyant l'invitation par #{format}: #{invite_user_service.errors.join(', ')}"
+        end
+        @invitations << invite_user_service.invitation
+      end
+
+      def call_invite_user_service_by(format, custom_invitation_attrs = nil, custom_motif_category_attrs = nil)
+        invite_attrs = custom_invitation_attrs || invitation_attributes
+        motif_attrs = custom_motif_category_attrs || motif_category_attributes
+
         InviteUser.call(
-          user: @user, organisations: [@organisation], motif_category_attributes:,
-          invitation_attributes: invitation_attributes.merge(format:)
+          user: @user,
+          organisations: [@organisation],
+          motif_category_attributes: motif_attrs,
+          invitation_attributes: invite_attrs.merge(format: format)
         )
       end
 
@@ -116,9 +225,26 @@ module Api
 
       def set_users_params
         # we want POST applicants/create_and_invite_many to behave like users/create_and_invite_many,
-        # so we're changing the payload to have users instead of users
+        # so we're changing the payload to have users instead of applicants
         params[:users] ||= params[:applicants]
       end
+
+      def users_invitations_attributes
+        users_invitations_params.map do |user_invitation_attributes|
+          user_invitation_attributes.to_h.deep_symbolize_keys.tap { |attrs| attrs[:invitation] ||= {} }
+        end
+      end
+
+      def users_invitations_params
+        params.permit(users: [:id,
+                              { invitation: [:rdv_solidarites_lieu_id,
+                                             { motif_category: [:name, :short_name] }] }])[:users] || []
+      end
+
+      def invitation_params
+        params.permit(invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name] }])
+      end
     end
+    # rubocop: enable Metrics/ClassLength
   end
 end
