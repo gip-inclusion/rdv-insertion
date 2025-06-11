@@ -61,9 +61,9 @@ describe "Agents can sort users on index page", :js do
   context "on archived users tab" do
     # on archived users tab, users are sorted by archives creation date by default
     let!(:organisation) { create(:organisation, users: [user1, user2, user3]) }
-    let!(:archive1) { create(:archive, user: user1, created_at: Time.zone.now) }
-    let!(:archive2) { create(:archive, user: user2, created_at: 1.day.ago) }
-    let!(:archive3) { create(:archive, user: user3, created_at: 2.days.ago) }
+    let!(:archive1) { create(:archive, user: user1, created_at: Time.zone.now, organisation:) }
+    let!(:archive2) { create(:archive, user: user2, created_at: 1.day.ago, organisation:) }
+    let!(:archive3) { create(:archive, user: user3, created_at: 2.days.ago, organisation:) }
 
     before do
       visit organisation_users_path(organisation, users_scope: "archived")
