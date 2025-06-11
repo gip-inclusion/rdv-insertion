@@ -1,6 +1,17 @@
 <div class="col-12 text-center overflow-auto">
-  <% if no_search_results?(@users.to_a) %>
-    <h4 class="py-4">Aucun usager ne correspond à votre recherche</h4>
+  <% if @users.empty? %>
+    <%= image_tag "illustrations/empty-results.png", alt: "Illustration pas de résultats", class: "mt-5 mb-3", width: 200 %>
+    <h4 class="mb-0 pb-2">Pas de résultat</h4>
+    <% if no_users_matching_filters?(@users) %>
+      <p class="mb-0 pb-2">Aucun usager ne correspond à vos filtres</p>
+      <p class="mb-0 pb-3">Essayer d'éliminer certains filtres</p>
+    <% elsif no_search_results?(@users) %>
+      <p class="mb-0 pb-2">Aucun usager ne correspond à votre recherche</p>
+      <p class="mb-0 pb-3">Essayer d'éliminer certains filtres</p>
+    <% else %>
+
+      <p class="mb-0 pb-3">Il semblerait que vous n'ayez aucun usager correspondant</p>
+    <% end %>
   <% elsif archived_scope?(@users_scope) %>
     <%= render "archived_users_table" %>
   <% elsif @current_category_configuration %>
