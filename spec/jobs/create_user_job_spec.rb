@@ -40,7 +40,7 @@ describe CreateUserJob do
   end
 
   context "when the save fails" do
-    let!(:department_mail) { "department_mail@example.com" }
+    let!(:department_mail) { instance_double("mail") }
     let!(:error_messages) { ["Email invalide"] }
 
     before do
