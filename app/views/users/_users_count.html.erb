@@ -1,4 +1,4 @@
-<p class="me-2 ms-1" role="status" aria-live="polite">
+<p class="me-3 ms-1 mb-2 users-count-recap" role="status" aria-live="polite">
   <% if active_filter_list.any? %>
     <% if params[:search_query].present? %>
       <%= custom_pluralize(users_count, "dossier") %> correspondant à votre recherche « <strong><%= params[:search_query] %></strong> »

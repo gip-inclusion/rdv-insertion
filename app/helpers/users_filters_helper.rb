@@ -19,7 +19,7 @@ module UsersFiltersHelper
   end
 
   def filters_without_specific_display
-    [:status, :orientation_type, :action_required, :referent_id]
+    [:orientation_type, :action_required, :referent_id]
   end
 
   def active_filters_without_specific_display
