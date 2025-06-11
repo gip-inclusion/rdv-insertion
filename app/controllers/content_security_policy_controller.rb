@@ -5,14 +5,9 @@ class ContentSecurityPolicyController < ApplicationController
   ORIGIN_URI_PREFIXES_TO_IGNORE = [
     # We get a lot of violations from the invitations redirect page because there are translate
     # scripts from google that are loaded from the page. These violations are not important since this is a redirection
-    "#{ENV['HOST']}/invitations/redirect"
+    "#{ENV['HOST']}/invitation",
+    "#{ENV['HOST']}/r/"
   ].freeze
-
-  def test; end
-
-  def test_endpoint
-    render plain: "Form submission to same origin received"
-  end
 
   def report
     request_body = request.body.read
