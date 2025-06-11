@@ -147,13 +147,60 @@ Le fonctionnement des endpoints de création et invitation des usagers est expli
 
 # Création et invitations des usagers à prendre rdv
 
-Il y a 2 façons d'inviter les usagers à prendre rdv:
+Il y a plusieurs façons de travailler avec les usagers via l'API :
 
-- En envoyant dans une seule requête une liste d'usager à inviter (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many`). **La création des fiches d'usagers et l'envoi des invitations se fera alors de manière asynchrone**.
+## Recherche d'usagers
 
-- En invitant une seule personne par requête (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite`). **La création de la fiche d'usager et l'envoi des invitations (mail et sms) se fera alors de manière synchrone**.
+- `GET https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users`
 
-**Pour ces 2 endpoints, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.
+Cet endpoint permet de **rechercher et lister les usagers** d'une organisation de manière paginée.
+
+### Paramètres de recherche
+
+- `search_query` (optionnel) : Terme de recherche qui s'applique sur les champs suivants :
+  - **Prénom** de l'usager
+  - **Nom** de l'usager
+  - **Email** de l'usager
+  - **Numéro de téléphone** de l'usager
+  - **Numéro d'affiliation** (numéro CAF)
+
+- `page` (optionnel, défaut: 1) : Numéro de page pour la pagination
+
+### Pagination
+
+Les résultats sont **automatiquement paginés** avec **30 utilisateurs par page**. La réponse inclut les métadonnées de pagination :
+- `current_page` : Page actuelle
+- `next_page` : Page suivante (null si dernière page)
+- `prev_page` : Page précédente (null si première page)
+- `total_pages` : Nombre total de pages
+- `total_count` : Nombre total d'usagers correspondant à la recherche
+
+## Création et invitation d'usagers
+
+Il y a plusieurs façons d'inviter les usagers à prendre rdv:
+
+### Endpoints en lot (_many)
+
+- **Création et invitation en lot** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many` - Crée et invite jusqu'à **25** usagers de manière **asynchrone**
+
+- **Création en lot sans invitation** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_many` - Crée jusqu'à **25** usagers sans les inviter, de manière **asynchrone**
+
+- **Invitation en lot d'usagers existants** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/invite_many` - Invite plusieurs usagers existants de manière **asynchrone**. Chaque usager peut avoir ses **paramètres d'invitation individuels**.
+
+Ces endpoints étant asynchrones, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités.
+
+### Endpoints unitaires
+
+- **Création et invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite` - Crée et invite un usager de manière **synchrone**
+
+- **Création unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users` - Crée un usager sans l'inviter, de manière **synchrone**
+
+- **Invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/{id}/invite` - Invite un usager existant de manière **synchrone**
+
+**Pour tous les endpoints d'invitation, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.
+
+Les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
+Les formats des réponses sont spécifiés en bas de page.
 
 ## Paramètres de l'URL
 
@@ -191,16 +238,10 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
 
 ## Idempotence
 
-Ces 2 endpoints sont idempotents, ce qui veut dire que le fait de jouer ces requêtes plusieurs fois aura le même effet que de les jouer une seule fois. Plus précisément:
+Ces endpoints sont idempotents, ce qui veut dire que le fait de jouer ces requêtes plusieurs fois aura le même effet que de les jouer une seule fois. Plus précisément:
 
 - Si l'usager que l'on essaie de créer est déjà présent dans l'application, il ne sera pas créé une deuxième fois. Il sera mis à jour si les attributs passés dans la requête sont changés par rapport à ce qui est enregistré en base de données.
 - On ne renverra pas d'invitation à l'usager si une invitation a déjà été envoyée à l'usager il y a moins de 24 heures.
-
-## Création et invitation asynchrone d'une liste d'usagers
-
-- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many`
-
-Cet endpoint permet de créer et inviter jusqu'à **25** usagers en une seule requête. La création de la fiche usager et son invitation à prendre rendez-vous se fait de manière asynchrone. Une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités (voir détails ci-dessous).
 
 ### Réponse
 
@@ -231,16 +272,6 @@ Pour voir si les personnes ont bien été invitées, on peut:
 
 - Aller sur l'interface web RDV-I et vérifier dans la liste que les personnes ont bien été invitées (les coches sont cochées pour chaque format d'invitation dans la liste des usagers)
 - Souscrire au webhook envoyé lorsqu'une invitation est envoyée. Les détails de ces webhooks sont explicités dans la partie webhooks ci-dessous.
-
-## Création et/ou invitation synchrone d'un usager
-
-- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite`
-- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create`
-- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/invite`
-
-Ces endpoints permettent de créer et/ou inviter un seul usager à prendre rdv. Contrairement à l'endpoint permettant d'inviter une liste d'usager, les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
-
-Les formats des réponses sont spécifiés en bas de page.
 
 # Webhooks (API de notifications)
 

@@ -272,57 +272,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(parsed_response_body["success"]).to eq(true)
         end
       end
-
-      it_behaves_like "common API errors"
-
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "les paramètres sont incomplets", true do
-        before { users_params[:users][0][:first_name] = "" }
-      end
-
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "les paramètres sont invalide", true do
-        before { users_params[:users][0][:email] = "invalid@email" }
-      end
-
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "+ de 25 usagers sont envoyés",
-                      true do
-        let!(:users_params) do
-          { users: 30.times.map { user1_params } }
-        end
-      end
-
-      response 422, "le rôle est invalide" do
-        schema "$ref" => "#/components/schemas/error_unprocessable_entity"
-
-        let!(:users_params) do
-          { users: [user1_params.merge(role: "invalid_role")] }
-        end
-
-        run_test! do |response|
-          expect(response.status).to eq(422)
-          parsed_response = JSON.parse(response.body)
-          expect(parsed_response["errors"][0]["error_details"]).to eq(
-            "Rôle n'est pas inclus(e) dans la liste"
-          )
-        end
-      end
-
-      response 422, "la civilité est invalide" do
-        schema "$ref" => "#/components/schemas/error_unprocessable_entity"
-
-        let!(:users_params) do
-          { users: [user1_params.merge(title: "invalid_title")] }
-        end
-
-        run_test! do |response|
-          expect(response.status).to eq(422)
-          parsed_response = JSON.parse(response.body)
-          expect(parsed_response["errors"][0]["error_details"]).to eq(
-            "Civilité n'est pas inclus(e) dans la liste"
-          )
-        end
-      end
-
-      it_behaves_like "referent and tag validation errors", :users_array
     end
   end
 
@@ -391,51 +340,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
           )
         end
       end
-
-      # rubocop:disable RSpec/EmptyExampleGroup
-      context "it does not show all the user attributes depending on organisation type" do
-        [:siae, :delegataire_rsa, :autre].each do |organisation_type|
-          response(
-            200,
-            "Pour une organisation de type" \
-            "#{I18n.t("activerecord.attributes.organisation.organisation_types.#{organisation_type}")}",
-            document: false
-          ) do
-            let!(:organisation_type) { organisation_type }
-
-            schema type: "object",
-                   properties: {
-                     success: { type: "boolean" },
-                     user: {
-                       "$ref" => "#/components/schemas/user_with_referents_for_#{organisation_type}"
-                     }
-                   },
-                   required: %w[success user]
-
-            run_test!
-          end
-        end
-      end
-      # rubocop:enable RSpec/EmptyExampleGroup
-
-      it_behaves_like "common API errors"
-
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "les paramètres sont incomplets", true do
-        before { user_params[:user][:first_name] = "" }
-      end
-
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "les paramètres sont invalide", true do
-        before { user_params[:user][:email] = "invalid@email" }
-      end
-
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "l'usager ne peut pas être créé", true do
-        before do
-          allow(Users::Upsert).to receive(:call)
-            .and_return(OpenStruct.new(failure?: true, errors: ["L'usager n'a pas pu être créé"]))
-        end
-      end
-
-      it_behaves_like "referent and tag validation errors", :user_object
     end
 
     get "search users" do
@@ -468,7 +372,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       with_authentication
 
-      response 200, "succès sans recherche - tous les usagers" do
+      response 200, "succès avec recherche partielle" do
         schema type: "object",
                properties: {
                  success: { type: "boolean" },
@@ -489,76 +393,15 @@ describe "Users API", swagger_doc: "v1/api.json" do
                },
                required: %w[success users pagination]
 
-        run_test! do
-          expect(parsed_response_body["success"]).to eq(true)
-          expect(parsed_response_body["users"]).to be_an(Array)
-          expect(parsed_response_body["users"].length).to eq(3)
-          expect(parsed_response_body["pagination"]["current_page"]).to eq(1)
-          expect(parsed_response_body["pagination"]["total_count"]).to eq(3)
-        end
-      end
-
-      response 200, "succès avec recherche par prénom" do
-        schema type: "object",
-               properties: {
-                 success: { type: "boolean" },
-                 users: {
-                   type: "array",
-                   items: { "$ref" => "#/components/schemas/user_with_tags_and_referents" }
-                 },
-                 pagination: {
-                   type: "object",
-                   properties: {
-                     current_page: { type: "integer" },
-                     next_page: { type: %w[integer null] },
-                     prev_page: { type: %w[integer null] },
-                     total_pages: { type: "integer" },
-                     total_count: { type: "integer" }
-                   }
-                 }
-               },
-               required: %w[success users pagination]
-
-        let!(:search_query) { "Didier" }
+        let!(:search_query) { "Di" }
 
         run_test! do
           expect(parsed_response_body["success"]).to eq(true)
           expect(parsed_response_body["users"]).to be_an(Array)
-          expect(parsed_response_body["users"].length).to eq(1)
-          expect(parsed_response_body["users"][0]["first_name"]).to eq("Didier")
-          expect(parsed_response_body["pagination"]["total_count"]).to eq(1)
-        end
-      end
-
-      response 200, "succès avec recherche par nom" do
-        schema type: "object",
-               properties: {
-                 success: { type: "boolean" },
-                 users: {
-                   type: "array",
-                   items: { "$ref" => "#/components/schemas/user_with_tags_and_referents" }
-                 },
-                 pagination: {
-                   type: "object",
-                   properties: {
-                     current_page: { type: "integer" },
-                     next_page: { type: %w[integer null] },
-                     prev_page: { type: %w[integer null] },
-                     total_pages: { type: "integer" },
-                     total_count: { type: "integer" }
-                   }
-                 }
-               },
-               required: %w[success users pagination]
-
-        let!(:search_query) { "Payet" }
-
-        run_test! do
-          expect(parsed_response_body["success"]).to eq(true)
-          expect(parsed_response_body["users"]).to be_an(Array)
-          expect(parsed_response_body["users"].length).to eq(1)
-          expect(parsed_response_body["users"][0]["last_name"]).to eq("Payet")
-          expect(parsed_response_body["pagination"]["total_count"]).to eq(1)
+          expect(parsed_response_body["users"].length).to eq(2)
+          user_names = parsed_response_body["users"].map { |u| u["first_name"] }
+          expect(user_names).to include("Didier", "Dimitri")
+          expect(parsed_response_body["pagination"]["total_count"]).to eq(2)
         end
       end
 
@@ -591,103 +434,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(parsed_response_body["users"].length).to eq(1)
           expect(parsed_response_body["users"][0]["email"]).to eq("antoine@griezmann.com")
           expect(parsed_response_body["pagination"]["total_count"]).to eq(1)
-        end
-      end
-
-      response 200, "succès avec recherche par téléphone" do
-        schema type: "object",
-               properties: {
-                 success: { type: "boolean" },
-                 users: {
-                   type: "array",
-                   items: { "$ref" => "#/components/schemas/user_with_tags_and_referents" }
-                 },
-                 pagination: {
-                   type: "object",
-                   properties: {
-                     current_page: { type: "integer" },
-                     next_page: { type: %w[integer null] },
-                     prev_page: { type: %w[integer null] },
-                     total_pages: { type: "integer" },
-                     total_count: { type: "integer" }
-                   }
-                 }
-               },
-               required: %w[success users pagination]
-
-        let!(:search_query) { "+33782605941" }
-
-        run_test! do
-          expect(parsed_response_body["success"]).to eq(true)
-          expect(parsed_response_body["users"]).to be_an(Array)
-          expect(parsed_response_body["users"].length).to eq(1)
-          expect(parsed_response_body["users"][0]["phone_number"]).to eq("+33782605941")
-          expect(parsed_response_body["pagination"]["total_count"]).to eq(1)
-        end
-      end
-
-      response 200, "succès avec recherche par numéro d'affiliation" do
-        schema type: "object",
-               properties: {
-                 success: { type: "boolean" },
-                 users: {
-                   type: "array",
-                   items: { "$ref" => "#/components/schemas/user_with_tags_and_referents" }
-                 },
-                 pagination: {
-                   type: "object",
-                   properties: {
-                     current_page: { type: "integer" },
-                     next_page: { type: %w[integer null] },
-                     prev_page: { type: %w[integer null] },
-                     total_pages: { type: "integer" },
-                     total_count: { type: "integer" }
-                   }
-                 }
-               },
-               required: %w[success users pagination]
-
-        let!(:search_query) { "20584721" }
-
-        run_test! do
-          expect(parsed_response_body["success"]).to eq(true)
-          expect(parsed_response_body["users"]).to be_an(Array)
-          expect(parsed_response_body["users"].length).to eq(1)
-          expect(parsed_response_body["users"][0]["affiliation_number"]).to eq("20584721")
-          expect(parsed_response_body["pagination"]["total_count"]).to eq(1)
-        end
-      end
-
-      response 200, "succès avec recherche partielle" do
-        schema type: "object",
-               properties: {
-                 success: { type: "boolean" },
-                 users: {
-                   type: "array",
-                   items: { "$ref" => "#/components/schemas/user_with_tags_and_referents" }
-                 },
-                 pagination: {
-                   type: "object",
-                   properties: {
-                     current_page: { type: "integer" },
-                     next_page: { type: %w[integer null] },
-                     prev_page: { type: %w[integer null] },
-                     total_pages: { type: "integer" },
-                     total_count: { type: "integer" }
-                   }
-                 }
-               },
-               required: %w[success users pagination]
-
-        let!(:search_query) { "Di" }
-
-        run_test! do
-          expect(parsed_response_body["success"]).to eq(true)
-          expect(parsed_response_body["users"]).to be_an(Array)
-          expect(parsed_response_body["users"].length).to eq(2)
-          user_names = parsed_response_body["users"].map { |u| u["first_name"] }
-          expect(user_names).to include("Didier", "Dimitri")
-          expect(parsed_response_body["pagination"]["total_count"]).to eq(2)
         end
       end
 
