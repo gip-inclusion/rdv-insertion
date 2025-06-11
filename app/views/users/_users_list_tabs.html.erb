@@ -1,4 +1,4 @@
-<div class="d-flex border-bottom align-items-center">
+<div class="d-flex border-bottom align-items-end">
   <ul class="nav nav-tabs d-flex align-items-end border-bottom-0">
     <li class="nav-item pb-0">
       <%= link_to "Tous les contacts", structure_users_path, class: "nav-link #{@current_category_configuration.present? || archived_scope?(@users_scope) ? '' : 'active'}" %>
