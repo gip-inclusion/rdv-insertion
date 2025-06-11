@@ -44,9 +44,9 @@ describe "Agents can visualize active filters on index page", :js do
   end
 
   it "shows a recap of all active filters" do
+    expect(page).to have_content("0 dossier correspondant à votre recherche « coucou »")
     expect(page).to have_content("Orientation : Sociale")
     expect(page).to have_content("Statut : RDV honoré")
-    expect(page).to have_content("correspondant à votre recherche \"coucou\"")
     expect(page).to have_content("Suivi par #{agent}")
     expect(page).to have_content("Convoqué entre le : 03/05/2025 et le 07/05/2025")
     expect(page).to have_content("Créé entre le : 05/05/2025 et le 07/05/2025")

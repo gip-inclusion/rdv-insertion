@@ -1,7 +1,7 @@
 <div class="container mt-5 mb-5">
   <%= render "users_list_header" %>
   <div class="row card-white justify-content-center">
-    <%= render "active_filters_recap" if active_filter_list.any? %>
+    <%= render "user_list_recap" %>
     <% if @all_configurations.empty? %>
       Merci de configurer votre organisation avant de pouvoir inviter des usagers
     <% else %>
