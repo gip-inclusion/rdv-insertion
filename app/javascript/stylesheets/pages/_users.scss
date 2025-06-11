@@ -1,106 +1,106 @@
 .context-block {
-    th,
-    td {
-        min-width: 140px;
-        max-width: 140px;
-    }
+  th,
+  td {
+    min-width: 140px;
+    max-width: 140px;
+  }
 }
 
 .clickable {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .icon-blue {
-    color: $dark-blue;
-    font-size: 0.9rem;
+  color: $dark-blue;
+  font-size: 0.9rem;
 }
 
 .padding-left-15 {
-    padding-left: 15px !important;
+  padding-left: 15px !important;
 }
 
 .icon-sm {
-    font-size: 10px;
-    margin-left: 10px;
-    vertical-align: middle;
+  font-size: 10px;
+  margin-left: 10px;
+  vertical-align: middle;
 }
 
 .icon-btn-sm {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 .fa-level-up-alt {
-    transform: rotate(90deg);
-    font-size: 1.5rem;
-    margin-right: 10px;
-    color: $dark-blue;
+  transform: rotate(90deg);
+  font-size: 1.5rem;
+  margin-right: 10px;
+  color: $dark-blue;
 }
 
 .update-box {
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
 }
 
 .context-header {
-    width: 100%;
-    span {
-        display: block;
-        background-color: $dark-blue;
-        height: 4px;
-        width: 50px;
-        &:nth-child(3) {
-            flex-grow: 1;
-        }
+  width: 100%;
+  span {
+    display: block;
+    background-color: $dark-blue;
+    height: 4px;
+    width: 50px;
+    &:nth-child(3) {
+      flex-grow: 1;
     }
+  }
 }
 
 @media (max-width: 1200px) {
-    .context-block {
-        flex-wrap: wrap;
-    }
-    .rdv-status-block {
-        width: 80%;
-    }
+  .context-block {
+    flex-wrap: wrap;
+  }
+  .rdv-status-block {
+    width: 80%;
+  }
 }
 
 .active-users-recap {
-    >div:first-child {
-        min-width: 85px;
+  >div:first-child {
+    min-width: 85px;
+  }
+  .active-filter-badge {
+    background-color: $light-blue-alt-2;
+    border-radius: 20px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $dark-blue;
+    a {
+      margin-left: 5px;
     }
-    .active-filter-badge {
-        background-color: $light-blue-alt-2;
-        border-radius: 20px;
-        padding: 5px 10px;
-        margin-right: 5px;
-        margin-bottom: 5px;
-        font-size: 14px;
-        font-weight: 600;
-        color: $dark-blue;
-        a {
-            margin-left: 5px;
-        }
-    }
+  }
 }
 
 .filter-active {
-    position: relative;
-    display: inline-block;
-    background-color: $light-blue-alt-2;
-    width: 23px;
-    height: 23px;
-    border-radius: 100%;
-    font-size: 12px;
-    line-height: 21px;
-    left: 5px;
-    &.convocation-date-filter-active {
-        left: -2px;
-    }
+  position: relative;
+  display: inline-block;
+  background-color: $light-blue-alt-2;
+  width: 23px;
+  height: 23px;
+  border-radius: 100%;
+  font-size: 12px;
+  line-height: 21px;
+  left: 5px;
+  &.convocation-date-filter-active {
+    left: -2px;
+  }
 }
 
 .structure-title {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .active-users-actions {
-    min-width: 230px;
+  min-width: 230px;
 }

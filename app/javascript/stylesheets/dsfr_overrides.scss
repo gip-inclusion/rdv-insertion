@@ -7,11 +7,6 @@
     p {
         line-height: normal;
     }
-    input[type=checkbox], input[type=radio], input[type=range] {
-        -webkit-appearance: unset;
-        -moz-appearance: unset;
-        appearance: unset;
-    }
     [href]:not(.fr-link) {
         background-image: none;
     }

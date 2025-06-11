@@ -57,6 +57,12 @@
   label {
     font-size: 15px;
   }
+
+  input[type=checkbox], input[type=radio], input[type=range] {
+    -webkit-appearance: unset;
+    -moz-appearance: unset;
+    appearance: unset;
+  }
 }
 
 .filters-container {
