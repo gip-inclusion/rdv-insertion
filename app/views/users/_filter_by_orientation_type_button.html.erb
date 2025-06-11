@@ -13,7 +13,7 @@
       Type d'orientation
     <% end %>
   </button>
-  <div class="dropdown-menu" style="min-width: 280px;">
+  <div class="dropdown-menu px-2" style="min-width: 280px;">
     <% @orientation_types.each do |orientation_type| %>
       <% selected = params[:orientation_type] == orientation_type.name %>
       <div class="form-check">

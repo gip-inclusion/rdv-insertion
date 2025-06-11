@@ -70,7 +70,7 @@
                 Statut
               <% end %>
             </button>
-            <div class="dropdown-menu" style="min-width: 280px;">
+            <div class="dropdown-menu px-2" style="min-width: 280px;">
               <% options_for_select_status(@statuses_count).each do |label, value| %>
                 <% selected = params[:status].present? && params[:status].include?(value) %>
                 <div class="form-check">
@@ -108,7 +108,7 @@
               Référent
             <% end %>
           </button>
-          <div class="dropdown-menu" style="min-width: 280px;">
+          <div class="dropdown-menu px-2" style="min-width: 280px;">
             <% options_for_select_referent(@referents_list).each do |label, id| %>
               <% selected = params[:referent_id] == id.to_s %>
               <div class="form-check">
@@ -147,7 +147,7 @@
               Tags
             <% end %>
           </button>
-          <div class="dropdown-menu" style="min-width: 280px; max-height: 300px; overflow-y: auto;">
+          <div class="dropdown-menu px-2" style="min-width: 280px; max-height: 300px; overflow-y: auto;">
             <% @tags.each do |tag| %>
               <% selected = params[:tag_ids]&.include?(tag.id.to_s) %>
               <div class="form-check">
