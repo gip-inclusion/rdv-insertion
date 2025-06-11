@@ -19,6 +19,7 @@ module Api
 
       before_action :set_organisation
       before_action :set_users_params, :validate_users_params, only: [:create_and_invite_many, :create_many]
+      before_action :validate_users_invitations_params, only: [:invite_many]
       before_action :validate_user_params, only: [:create_and_invite, :create]
       before_action :set_user, only: [:invite]
 

@@ -27,12 +27,43 @@ module Api
         render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_entity
       end
 
+      def validate_users_invitations_params
+        @params_validation_errors = []
+
+        validate_users_invitations_length
+        validate_users_invitations_exist
+
+        return if @params_validation_errors.empty?
+
+        render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_entity
+      end
+
       def validate_users_length
         return if users_attributes.length <= 25
 
         @params_validation_errors << {
           error_details: "Les usagers doivent être envoyés par lots de 25 maximum"
         }
+      end
+
+      def validate_users_invitations_length
+        return if users_invitations_attributes.length <= 25
+
+        @params_validation_errors << {
+          error_details: "Les invitations doivent être envoyées par lots de 25 maximum"
+        }
+      end
+
+      def validate_users_invitations_exist
+        users_invitations_attributes.each_with_index do |attrs, idx|
+          user_id = attrs[:id]
+          next if @organisation.users.find_by(id: user_id)
+
+          @params_validation_errors << {
+            error_details: "Usager avec l'ID #{user_id} non trouvé dans l'organisation #{@organisation.name}",
+            index: idx
+          }
+        end
       end
 
       def validate_users_attributes

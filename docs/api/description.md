@@ -185,7 +185,7 @@ Il y a plusieurs façons d'inviter les usagers à prendre rdv:
 
 - **Création en lot sans invitation** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_many` - Crée jusqu'à **25** usagers sans les inviter, de manière **asynchrone**
 
-- **Invitation en lot d'usagers existants** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/invite_many` - Invite plusieurs usagers existants de manière **asynchrone**. Chaque usager peut avoir ses **paramètres d'invitation individuels**.
+- **Invitation en lot d'usagers existants** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/invite_many` - Invite jusqu'a **25** usagers existants de manière **asynchrone**. Chaque usager peut avoir ses **paramètres d'invitation individuels**.
 
 Ces endpoints étant asynchrones, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités.
 

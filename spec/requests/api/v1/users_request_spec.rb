@@ -347,7 +347,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       produces "application/json"
       description "Recherche des usagers dans une organisation.
       La recherche s'effectue sur les champs suivants : prénom, nom, email, téléphone et numéro d'affiliation.
-      Les résultats sont paginés avec #{Api::V1::UsersController::USERS_PER_PAGE} utilisateurs par page."
+      Les résultats sont paginés avec #{Api::V1::UsersController::USERS_PER_PAGE} usagers par page."
 
       parameter name: :search_query, in: :query, type: :string,
                 description: "Terme de recherche pour filtrer les usagers",
@@ -503,7 +503,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
                },
                required: %w[success users pagination]
 
-        let!(:search_query) { "UtilisateurInexistant" }
+        let!(:search_query) { "UsagerInexistant" }
 
         run_test! do
           expect(parsed_response_body["success"]).to eq(true)
@@ -785,6 +785,25 @@ describe "Users API", swagger_doc: "v1/api.json" do
         end
       end
 
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "+ de 25 invitations sont envoyées",
+                      true do
+        let!(:invitation_params) do
+          { users: 30.times.map { { id: user1.id } } }
+        end
+      end
+
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "usager inexistant dans l'organisation",
+                      true do
+        let!(:other_user) { create(:user) }
+        let!(:invitation_params) do
+          {
+            users: [
+              { id: other_user.id }
+            ]
+          }
+        end
+      end
+
       it_behaves_like "common API errors"
     end
   end
@@ -885,7 +904,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
         end
       end
 
-      response 200, "succès avec utilisateur sans email" do
+      response 200, "succès avec usager sans email" do
         schema type: "object",
                properties: {
                  success: { type: "boolean" },
