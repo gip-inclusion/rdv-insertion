@@ -1,12 +1,11 @@
 class ContentSecurityPolicyController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:report, :test_endpoint]
+  skip_before_action :verify_authenticity_token, only: [:report]
   skip_before_action :authenticate_agent!
 
   ORIGIN_URI_PREFIXES_TO_IGNORE = [
     # We get a lot of violations from the invitations redirect page because there are translate
     # scripts from google that are loaded from the page. These violations are not important since this is a redirection
-    "#{ENV['HOST']}/invitation",
-    "#{ENV['HOST']}/r/"
+    "#{ENV['HOST']}/invitation", "#{ENV['HOST']}/r/"
   ].freeze
 
   def report
