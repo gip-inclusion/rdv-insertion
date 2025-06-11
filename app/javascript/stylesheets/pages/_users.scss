@@ -63,7 +63,7 @@
     }
 }
 
-.active-filters-recap {
+.active-users-recap {
     >div:first-child {
         min-width: 85px;
     }
@@ -74,6 +74,8 @@
         margin-right: 5px;
         margin-bottom: 5px;
         font-size: 14px;
+        font-weight: 600;
+        color: $dark-blue;
         a {
             margin-left: 5px;
         }
@@ -97,4 +99,8 @@
 
 .structure-title {
     font-size: 1.5rem;
+}
+
+.active-users-actions {
+    min-width: 230px;
 }
