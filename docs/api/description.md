@@ -168,7 +168,7 @@ Cet endpoint permet de **rechercher et lister les usagers** d'une organisation d
 
 ### Pagination
 
-Les résultats sont **automatiquement paginés** avec **30 utilisateurs par page**. La réponse inclut les métadonnées de pagination :
+Les résultats sont **automatiquement paginés** avec **30 usagers par page**. La réponse inclut les métadonnées de pagination :
 - `current_page` : Page actuelle
 - `next_page` : Page suivante (null si dernière page)
 - `prev_page` : Page précédente (null si première page)
