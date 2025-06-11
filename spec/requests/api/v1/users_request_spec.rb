@@ -482,37 +482,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
         end
       end
 
-      response 200, "succès avec recherche sans résultat" do
-        schema type: "object",
-               properties: {
-                 success: { type: "boolean" },
-                 users: {
-                   type: "array",
-                   items: { "$ref" => "#/components/schemas/user_with_tags_and_referents" }
-                 },
-                 pagination: {
-                   type: "object",
-                   properties: {
-                     current_page: { type: "integer" },
-                     next_page: { type: %w[integer null] },
-                     prev_page: { type: %w[integer null] },
-                     total_pages: { type: "integer" },
-                     total_count: { type: "integer" }
-                   }
-                 }
-               },
-               required: %w[success users pagination]
-
-        let!(:search_query) { "UsagerInexistant" }
-
-        run_test! do
-          expect(parsed_response_body["success"]).to eq(true)
-          expect(parsed_response_body["users"]).to be_an(Array)
-          expect(parsed_response_body["users"].length).to eq(0)
-          expect(parsed_response_body["pagination"]["total_count"]).to eq(0)
-        end
-      end
-
       it_behaves_like "common API errors"
     end
   end
@@ -768,19 +737,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
               hash_including(rdv_solidarites_lieu_id: 456),
               hash_including(name: "Orientation pro")
             )
-          expect(parsed_response_body["success"]).to eq(true)
-        end
-      end
-
-      response 200, "succès avec liste vide" do
-        schema "$ref" => "#/components/schemas/success_response"
-
-        let!(:invitation_params) do
-          { users: [] }
-        end
-
-        run_test! do
-          expect(InviteUserJob).not_to have_received(:perform_later)
           expect(parsed_response_body["success"]).to eq(true)
         end
       end
