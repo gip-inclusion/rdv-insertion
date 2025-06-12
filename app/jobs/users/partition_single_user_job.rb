@@ -27,8 +27,6 @@ module Users
     end
 
     def organisation_with_most_recent_activity(user)
-      return user.organisations.first if user.organisations.count <= 1
-
       most_recent_organisation_addition = UsersOrganisation.where(user:).order(created_at: :desc).first
       most_recent_participation = Participation.where(user:).order(created_at: :desc).first
       most_recent_invitation = Invitation.where(user:).order(created_at: :desc).first
@@ -48,6 +46,9 @@ module Users
       else
         Organisation.find(activity.organisations.first.id)
       end
+    rescue StandardError
+      # Happens when activity has no organisations
+      nil
     end
   end
 end
