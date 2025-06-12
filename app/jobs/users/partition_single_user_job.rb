@@ -13,15 +13,17 @@ module Users
 
       return if most_recent_active_department.blank?
 
-      user.update!(department_id: most_recent_active_department.id)
+      user.update_column(:department_id, most_recent_active_department.id)
 
-      return if user.organisations.count <= 1
+      orgs_outside_active_department = UsersOrganisation.joins(:organisation)
+                                                        .where(user:)
+                                                        .where.not(organisations: {
+                                                                     department_id: most_recent_active_department.id
+                                                                   })
 
-      # Remove all organisations that are not in the same department
-      UsersOrganisation.joins(:organisation)
-                       .where(user:)
-                       .where.not(organisations: { department_id: most_recent_active_department.id })
-                       .destroy_all
+      return if orgs_outside_active_department.none?
+
+      orgs_outside_active_department.destroy_all
     end
 
     def organisation_with_most_recent_activity(user)
