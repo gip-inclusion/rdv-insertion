@@ -3,8 +3,8 @@ module FranceTravailApi
     # https://francetravail.io/data/api/rechercher-usager/rdv-partenaire/documentation#/api-reference/
     include Webhooks::ReceiptHandler
 
-    def initialize(participation_id:, timestamp:)
-      @participation = Participation.find(participation_id)
+    def initialize(participation:, timestamp:)
+      @participation = participation
       @timestamp = timestamp
     end
 

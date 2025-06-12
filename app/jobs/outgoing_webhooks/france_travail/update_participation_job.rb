@@ -2,7 +2,11 @@ module OutgoingWebhooks
   module FranceTravail
     class UpdateParticipationJob < BaseJob
       def perform(participation_id:, timestamp:)
-        call_service!(FranceTravailApi::UpdateParticipation, participation_id: participation_id, timestamp: timestamp)
+        participation = Participation.find_by(id: participation_id)
+
+        return unless participation
+
+        call_service!(FranceTravailApi::UpdateParticipation, participation:, timestamp:)
       end
     end
   end
