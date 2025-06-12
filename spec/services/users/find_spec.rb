@@ -159,15 +159,15 @@ describe Users::Find, type: :service do
 
   describe "matching priority order" do
     context "when multiple users match different criteria" do
-      let!(:user_nir) { create(:user, nir: nir) }
+      let!(:user_nir) { create(:user, nir: nir, department:) }
       let!(:user_department_id) do
         create(
-          :user, department_internal_id: department_internal_id,
+          :user, department_internal_id: department_internal_id, department:,
                  organisations: [other_org_inside_the_department]
         )
       end
-      let!(:user_email) { create(:user, email: email, first_name: "JANE") }
-      let!(:user_phone) { create(:user, phone_number: phone_number, first_name: "JANE") }
+      let!(:user_email) { create(:user, email: email, first_name: "JANE", department:) }
+      let!(:user_phone) { create(:user, phone_number: phone_number, first_name: "JANE", department:) }
       let!(:user_role_affiliation) do
         create(
           :user, role: role, affiliation_number: affiliation_number,
