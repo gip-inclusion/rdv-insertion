@@ -619,8 +619,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_140205) do
     t.bigint "old_rdv_solidarites_user_id"
     t.string "created_from_structure_type"
     t.bigint "created_from_structure_id"
+    t.bigint "department_id"
     t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
+    t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
@@ -723,5 +725,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_140205) do
   add_foreign_key "user_list_upload_user_save_attempts", "users"
   add_foreign_key "user_list_uploads", "agents"
   add_foreign_key "user_list_uploads", "category_configurations"
+  add_foreign_key "users", "departments"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

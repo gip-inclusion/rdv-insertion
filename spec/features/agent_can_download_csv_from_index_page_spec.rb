@@ -6,7 +6,8 @@ describe "Agents can download csv from index page", :js do
   let!(:user) do
     create(
       :user,
-      organisations: [organisation], email: "someemail@somecompany.com", phone_number: "0607070707"
+      organisations: [organisation], email: "someemail@somecompany.com", phone_number: "0607070707",
+      department: organisation.department
     )
   end
   let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }

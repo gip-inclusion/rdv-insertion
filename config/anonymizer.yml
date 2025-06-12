@@ -342,6 +342,7 @@ tables:
       - department_internal_id
       - created_from_structure_type
       - created_from_structure_id
+      - department_id
       - uid
       - old_rdv_solidarites_user_id
       - role

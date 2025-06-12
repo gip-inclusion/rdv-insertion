@@ -2,7 +2,7 @@ describe "Agent can see rdv dates on users index", :js do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department:) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:user) { create(:user, organisations: [organisation]) }
+  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
   let!(:motif_category) { create(:motif_category) }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)

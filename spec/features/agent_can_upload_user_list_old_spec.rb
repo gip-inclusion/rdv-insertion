@@ -19,7 +19,6 @@ describe "Agents can upload user list", :js do
 
   let!(:other_org_from_same_department) { create(:organisation, department:) }
   let!(:other_department) { create(:department) }
-  let!(:other_org_from_other_department) { create(:organisation, department: other_department) }
 
   let!(:now) { Time.zone.parse("05/10/2022") }
 
@@ -275,7 +274,7 @@ describe "Agents can upload user list", :js do
             create(
               :user,
               nir: "180333147687266", last_name: "Crespa",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+              organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -418,26 +417,6 @@ describe "Agents can upload user list", :js do
             end
           end
         end
-
-        context "when the user is in another org common with the agent in another department" do
-          let!(:agent) { create(:agent, organisations: [organisation, other_org_from_other_department]) }
-          let!(:user) do
-            create(
-              :user,
-              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "does not match the user" do
-            visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
-
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
-                        make_visible: true)
-
-            expect(page).to have_content("Créer compte")
-          end
-        end
       end
 
       describe "department_internal_id matching" do
@@ -502,25 +481,6 @@ describe "Agents can upload user list", :js do
             end
           end
         end
-
-        context "in another department" do
-          let!(:user) do
-            create(
-              :user,
-              department_internal_id: "8383", last_name: "Crespa",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "does not match the user" do
-            visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
-
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
-                        make_visible: true)
-
-            expect(page).to have_content("Créer compte")
-          end
-        end
       end
 
       describe "email matching" do
@@ -550,7 +510,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
-                     organisations: [other_org_from_other_department],
+                     organisations: [other_org_from_same_department],
                      rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -612,7 +572,7 @@ describe "Agents can upload user list", :js do
             create(
               :user,
               phone_number: "0620022002", first_name: "hernan",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+              organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -920,7 +880,7 @@ describe "Agents can upload user list", :js do
             create(
               :user,
               nir: "180333147687266", last_name: "Crespa",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+              organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -1063,26 +1023,6 @@ describe "Agents can upload user list", :js do
             end
           end
         end
-
-        context "when the user is in another org common with the agent in another department" do
-          let!(:agent) { create(:agent, organisations: [organisation, other_org_from_other_department]) }
-          let!(:user) do
-            create(
-              :user,
-              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "does not match the user" do
-            visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
-
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
-                        make_visible: true)
-
-            expect(page).to have_content("Créer compte")
-          end
-        end
       end
 
       describe "department_internal_id matching" do
@@ -1147,25 +1087,6 @@ describe "Agents can upload user list", :js do
             end
           end
         end
-
-        context "in another department" do
-          let!(:user) do
-            create(
-              :user,
-              department_internal_id: "8383", last_name: "Crespa",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "does not match the user" do
-            visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
-
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
-                        make_visible: true)
-
-            expect(page).to have_content("Créer compte")
-          end
-        end
       end
 
       describe "email matching" do
@@ -1195,7 +1116,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
-                     organisations: [other_org_from_other_department],
+                     organisations: [other_org_from_same_department],
                      rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -1274,7 +1195,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user, phone_number: "0620022002", first_name: "hernan",
-                     organisations: [other_org_from_other_department],
+                     organisations: [other_org_from_same_department],
                      rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end

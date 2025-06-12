@@ -7,7 +7,7 @@ describe InviteUser, type: :service do
 
   let!(:check_creneaux_availability) { true }
   let!(:department) { create(:department) }
-  let!(:user) { create(:user, organisations: [organisation]) }
+  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
   let!(:organisation) { create(:organisation, department:, category_configurations: [category_configuration]) }
   let!(:organisations) { [organisation] }
   let!(:category_configuration) do
