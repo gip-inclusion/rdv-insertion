@@ -1,13 +1,14 @@
 class InvitationsController < ApplicationController
+  layout "invited_user", only: [:invitation_code, :redirect]
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
-  before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
+  before_action :set_invitation, :set_organisations_with_contact, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
   def create # rubocop:disable Metrics/AbcSize
     if invite_user.success?
       respond_to do |format|
         format.json { render json: { success: true, invitation: invitation } }
-        format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
+        format.pdf { pdf.present? ? send_pdf_data : handle_pdf_generation_error }
         format.turbo_stream { redirect_to structure_user_follow_ups_path(user_id: @user.id) }
       end
     else
@@ -66,8 +67,36 @@ class InvitationsController < ApplicationController
     )
   end
 
+  def send_pdf_data
+    send_data pdf, filename: pdf_filename, layout: "application/pdf"
+  end
+
+  def handle_pdf_generation_error
+    render json: {
+             success: false,
+             errors: [
+               "Une erreur est survenue lors de la génération du PDF.
+               L'équipe a été notifiée de l'erreur et tente de la résoudre."
+             ]
+           },
+           status: :internal_server_error
+  end
+
   def pdf
-    WickedPdf.new.pdf_from_string(invitation.content, encoding: "utf-8")
+    response = PdfGeneratorClient.generate_pdf(content: invitation.content)
+    if response.success?
+      Base64.decode64(response.body)
+    else
+      Sentry.capture_message(
+        "PDF generation failed",
+        extra: {
+          status: response.status,
+          body: response.body,
+          invitation_id: invitation.id
+        }
+      )
+      nil
+    end
   end
 
   def pdf_filename
@@ -80,6 +109,12 @@ class InvitationsController < ApplicationController
       .preload(:motif_categories, :department, :messages_configuration)
       .where(department_level? ? { department_id: params[:department_id] } : { id: params[:organisation_id] })
       .joins(:motif_categories).where(motif_categories: { id: invitation_params.dig(:motif_category, :id) })
+  end
+
+  def set_organisations_with_contact
+    @organisations_with_contact = @invitation.organisations.select do |org|
+      org.phone_number.present? || org.email.present?
+    end
   end
 
   def set_user

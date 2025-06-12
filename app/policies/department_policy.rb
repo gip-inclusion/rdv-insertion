@@ -10,7 +10,7 @@ class DepartmentPolicy < ApplicationPolicy
   def batch_actions? = access?
 
   def parcours?
-    return false if record.number.in?(ENV.fetch("DEPARTMENTS_WHERE_PARCOURS_DISABLED", "").split(","))
+    return false unless record.with_parcours_access?
 
     pundit_user
       .organisations

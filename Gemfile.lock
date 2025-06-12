@@ -345,7 +345,6 @@ GEM
     omniauth-rails_csrf_protection (1.0.2)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
-    ostruct (0.6.1)
     paper_trail (16.0.0)
       activerecord (>= 6.1)
       request_store (~> 1.4)
@@ -390,7 +389,7 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.1.14)
+    rack (3.1.16)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-protection (4.0.0)
@@ -610,13 +609,9 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    wicked_pdf (2.8.2)
-      activesupport
-      ostruct
     with_advisory_lock (5.1.0)
       activerecord (>= 6.1)
       zeitwerk (>= 2.6)
-    wkhtmltopdf-binary (0.12.6.8)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.7.1)
@@ -705,9 +700,7 @@ DEPENDENCIES
   tzinfo-data
   web-console (>= 3.3.0)
   webmock
-  wicked_pdf
   with_advisory_lock
-  wkhtmltopdf-binary
 
 RUBY VERSION
    ruby 3.4.2p28

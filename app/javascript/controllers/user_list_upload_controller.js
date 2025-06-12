@@ -10,6 +10,7 @@ export default class extends Controller {
   connect() {
     this.fileConfigurationColumnAttributes = JSON.parse(this.element.dataset.fileConfigurationColumnAttributes)
     this.fileConfigurationSheetName = this.element.dataset.fileConfigurationSheetName
+    this.categoryConfigurationId = this.element.dataset.categoryConfigurationId
   }
 
   handleDragOver(event) {
@@ -58,42 +59,40 @@ export default class extends Controller {
 
     this.userList = this.#transformRowsInUserList(this.rows)
 
-    form.querySelector("input[name='file_name']").value = this.fileNameTarget.textContent
+    const payload = {
+      file_name: this.fileNameTarget.textContent,
+      category_configuration_id: this.categoryConfigurationId,
+      user_rows_attributes: this.userList
+    }
 
-    // First, remove any existing hidden inputs from previous submissions
-    const existingInputs = form.querySelectorAll("input[name^='user_rows_attributes[']")
-    existingInputs.forEach(input => input.remove())
-
-    this.#addInputsToForm(form)
-
-
-    form.addEventListener("turbo:submit-end", (e) => {
-      this.#onSubmitEnd(e)
-    })
-
-    form.requestSubmit()
-  }
-
-  #addInputsToForm(form) {
-    this.userList.forEach((user) => {
-      Object.entries(user).forEach(([attribute, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((item) => {
-            const input = document.createElement("input")
-            input.type = "hidden"
-            input.name = `user_rows_attributes[][${attribute}][]`
-            input.value = item || ""
-            form.appendChild(input)
-          })
-        } else {
-          const input = document.createElement("input")
-          input.type = "hidden"
-          input.name = `user_rows_attributes[][${attribute}]`
-          input.value = value || ""
-          form.appendChild(input)
-        }
+    // Here we send the form as JSON instead of native form data 
+    // Because natively form data have a size limit that makes
+    // upload fail whenever too many users are sent
+    //
+    // Sending this as JSON makes the payload sligthly 
+    // smaller and allows for any number of users to be sent
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "text/vnd.turbo-stream.html",
+          "X-CSRF-Token": document.querySelector("meta[name=\"csrf-token\"]").content,
+        },
+        body: JSON.stringify(payload)
       })
-    })
+
+      if (response.status === 200) {
+        const { location } = await response.json()
+        window.Turbo.visit(location)
+      } else {
+        const html = await response.text()
+        window.Turbo.renderStreamMessage(html)
+        this.#resetForm()
+      }
+    } catch (err) {
+      this.#resetForm()
+    }
   }
 
   async #setLoadingButton(button) {
@@ -113,15 +112,12 @@ export default class extends Controller {
     button.remove()
   }
 
-  #onSubmitEnd(event) {
-    const { success } = event.detail
-    if (!success) {
-      this.handleFileRemove()
-      if (this.loadingButton) {
-        this.loadingButton.parentElement.appendChild(this.originalButton)
-        this.originalButton.classList.add("disabled")
-        this.loadingButton.remove()
-      }
+  #resetForm() {
+    this.handleFileRemove()
+    if (this.loadingButton) {
+      this.loadingButton.parentElement.appendChild(this.originalButton)
+      this.originalButton.classList.add("disabled")
+      this.loadingButton.remove()
     }
   }
 

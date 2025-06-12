@@ -369,6 +369,118 @@ describe "Agents can upload user list", :js do
       expect(page).to have_current_path(organisation_users_path(organisation_id: organisation.id))
     end
 
+    context "CNAF data enrichment with NIR priority" do
+      it "prioritizes NIR matching over MATRICULE matching" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+        choose(motif_category.name)
+        click_button("Valider")
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+
+        expect(hernan_row.phone_number).to be_nil
+        expect(hernan_row.email).to eq("hernan@crespo.com")
+        expect(hernan_row.cnaf_data).to eq({})
+
+        hernan_row.update!(nir: "180444588799777")
+        # Refresh the page to ensure the new NIR is loaded
+        page.refresh
+
+        attach_file(
+          "enrich_with_cnaf_data_file_input",
+          Rails.root.join("spec/fixtures/fichier_contact_test_priorite_nir.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("+33111111111")
+        expect(page).to have_content("nir.priority@example.fr")
+        expect(hernan_row.reload.cnaf_data["phone_number"]).to eq("+33111111111")
+        expect(hernan_row.reload.cnaf_data["email"]).to eq("nir.priority@example.fr")
+
+        expect(page).to have_no_content("matricule.fallback@example.fr")
+      end
+
+      it "falls back to MATRICULE matching when NIR doesn't match" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+        choose(motif_category.name)
+        click_button("Valider")
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+
+        hernan_row.update!(affiliation_number: "ISQCJQO")
+        # Refresh the page to ensure the new affiliation number is loaded
+        page.refresh
+
+        attach_file(
+          "enrich_with_cnaf_data_file_input",
+          Rails.root.join("spec/fixtures/fichier_contact_test_priorite_nir.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("+33222222222")
+        expect(page).to have_content("matricule.fallback@example.fr")
+        expect(hernan_row.reload.cnaf_data["phone_number"]).to eq("+33222222222")
+        expect(hernan_row.reload.cnaf_data["email"]).to eq("matricule.fallback@example.fr")
+
+        expect(page).to have_no_content("nir.priority@example.fr")
+      end
+
+      it "enriches multiple users with different matching criteria" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+        choose(motif_category.name)
+        click_button("Valider")
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/new_fichier_usager_test.xlsx"),
+          make_visible: true
+        )
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Hernan", wait: 5)
+        expect(page).to have_content("Christian", wait: 5)
+
+        user_list_upload = UserListUpload.last
+        hernan_row = user_list_upload.user_rows.find { |row| row.first_name == "Hernan" }
+        christian_row = user_list_upload.user_rows.find { |row| row.first_name == "Christian" }
+        hernan_row.update!(nir: "180444588799777", affiliation_number: "ISQCJQO")
+        christian_row.update!(nir: "777777777777777", affiliation_number: "ISQCJQO")
+        # Refresh the page to ensure the new NIR and affiliation numbers are loaded
+        page.refresh
+
+        attach_file(
+          "enrich_with_cnaf_data_file_input",
+          Rails.root.join("spec/fixtures/fichier_contact_test_priorite_nir.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("+33111111111")
+        expect(page).to have_content("nir.priority@example.fr")
+        expect(hernan_row.reload.cnaf_data["email"]).to eq("nir.priority@example.fr")
+        expect(hernan_row.cnaf_data["phone_number"]).to eq("+33111111111")
+        expect(page).to have_content("+33222222222")
+        expect(page).to have_content("matricule.fallback@example.fr")
+        expect(christian_row.reload.cnaf_data["email"]).to eq("matricule.fallback@example.fr")
+        expect(christian_row.cnaf_data["phone_number"]).to eq("+33222222222")
+      end
+    end
+
     context "with existing matching user" do
       context "matching criteria tests" do
         it "matches an existing user by NIR" do
@@ -629,6 +741,93 @@ describe "Agents can upload user list", :js do
 
           expect(page).to have_content("Mis à jour")
         end
+      end
+    end
+
+    context "with a large file" do
+      let!(:file_configuration_for_large_file) do
+        create(
+          :file_configuration,
+          title_column: "Civilité",
+          first_name_column: "Prénom bénéficiaire",
+          last_name_column: "Nom bénéficiaire",
+          email_column: "Adresses Mails",
+          phone_number_column: "N° Téléphones",
+          birth_date_column: "Date de Naissance",
+          address_first_field_column: "CP Ville",
+          address_second_field_column: nil,
+          address_third_field_column: nil,
+          address_fourth_field_column: nil,
+          address_fifth_field_column: nil,
+          affiliation_number_column: "N° CAF",
+          department_internal_id_column: "ID Iodas",
+          referent_email_column: "Référent",
+          tags_column: "Role",
+          nir_column: nil,
+          france_travail_id_column: nil
+        )
+      end
+
+      before do
+        category_configuration.update!(file_configuration: file_configuration_for_large_file)
+      end
+
+      it "can upload list of users with 600 rows" do
+        visit new_organisation_user_list_uploads_category_selection_path(organisation)
+
+        expect(page).to have_content("Sélectionnez la catégorie de suivi sur laquelle importer les usagers")
+        expect(page).to have_content("Charger un fichier usagers")
+        expect(page).to have_content(motif_category.name)
+        expect(page).to have_content("Aucune catégorie de suivi")
+
+        choose(motif_category.name)
+
+        click_button("Valider")
+
+        expect(page).to have_content("Choisissez un fichier usagers à charger")
+        expect(page).to have_content(motif_category.name)
+        expect(page).to have_content(organisation.name)
+
+        attach_file(
+          "user_list_upload_file",
+          Rails.root.join("spec/fixtures/fichier_usager_600_lignes.csv"),
+          make_visible: true
+        )
+
+        expect(page).to have_content("fichier_usager_600_lignes.csv")
+        expect(page).to have_content("600 usagers à importer")
+        expect(page).to have_content("Changer de fichier")
+        expect(page).to have_content("Votre fichier contient plus de 500 lignes")
+
+        click_button("Charger les données usagers")
+
+        expect(page).to have_content("Civilité", wait: 20)
+
+        expect(UserListUpload.count).to eq(1)
+        expect(UserListUpload::UserRow.count).to eq(600)
+
+        user_list_upload = UserListUpload.last
+
+        expect(page).to have_current_path(user_list_upload_path(user_list_upload))
+        expect(user_list_upload.user_rows.count).to eq(600)
+
+        first_row_data = user_list_upload.user_rows.first
+        expect(page).to have_content(first_row_data.first_name)
+        expect(page).to have_content(first_row_data.last_name)
+
+        expect(page).to have_content("il y a 161 dossiers en erreurs")
+        expect(page).to have_content("439 usagers sélectionnés")
+        expect(page).to have_content("Tous les usagers chargés 600")
+
+        perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
+          click_button("Créer et mettre à jour les dossiers")
+        end
+
+        expect(page).to have_current_path(
+          user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+        )
+
+        expect(UserListUpload.last.user_rows.count).to eq(600)
       end
     end
   end
