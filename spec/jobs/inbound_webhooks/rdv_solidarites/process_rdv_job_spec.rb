@@ -290,24 +290,29 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             end
 
             let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
+            let!(:new_follow_up) { build(:follow_up, motif_category: motif_category, user: new_user) }
 
             before do
-              allow(FollowUp).to receive(:find_or_create_by!).and_call_original
+              allow(User).to receive(:create!).and_return(new_user)
+              allow(FollowUp).to receive(:find_or_create_by!)
+                .with(user: new_user, motif_category: motif_category)
+                .and_return(new_follow_up)
             end
 
             it "creates the user with notification_email converted to email field" do
-              subject
-              expect(User.last).to have_attributes(
+              expect(User).to receive(:create!).with(
                 rdv_solidarites_user_id: user_id1,
+                organisations: [organisation],
                 first_name: "James",
                 last_name: "Cameron",
                 address: "50 rue Victor Hugo 93500 Pantin",
-                phone_number: "+33755929249",
+                phone_number: "0755929249",
                 email: "james@cameron.com",
                 created_through: "rdv_solidarites_webhook",
                 created_from_structure: organisation,
                 department: organisation.department
               )
+              subject
             end
 
             it "still upserts the rdv with the right attributes" do
