@@ -289,6 +289,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               }]
             end
 
+            let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
+
             before do
               allow(FollowUp).to receive(:find_or_create_by!).and_call_original
             end
