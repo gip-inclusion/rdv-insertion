@@ -1,8 +1,8 @@
-<% if show_rdv_organisation_selection_for?(@user, current_agent, @department) %>
+<% if show_rdv_organisation_selection_for?(@user, current_agent, current_department) %>
   <div class="dropdown me-2 d-inline" data-controller="dropdown-menu">
     <button class="btn btn-blue dropdown-toggle accessible" type="button" data-action="click->dropdown-menu#toggle" data-dropdown-menu-target="button" aria-haspopup="true" aria-expanded="false">Trouver un RDV</button>
     <div data-dropdown-menu-target="dropdown" class="dropdown-menu">
-      <% mutual_department_organisations(@user, current_agent, @department).each do |organisation| %>
+      <% mutual_department_organisations(@user, current_agent, current_department).each do |organisation| %>
         <%= link_to new_user_rdv_path(@user, organisation_id: organisation.id), target: "_blank", class: "dropdown-item py-3 d-flex justify-content-between", **with_rdv_solidarites_impersonation_warning do %>
           <%= render "common/rdvs_impersonation_warning", url: new_user_rdv_path(@user, organisation_id: organisation.id) if agent_impersonated? %>
           <button <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
@@ -14,8 +14,8 @@
     </div>
   </div>
 <% else %>
-  <%= link_to new_user_rdv_path(@user, organisation_id: current_or_mutual_organisation_id(@user, current_agent, @department)), target: "_blank", **with_rdv_solidarites_impersonation_warning do %>
-    <%= render "common/rdvs_impersonation_warning", url: new_user_rdv_path(@user, organisation_id: current_or_mutual_organisation_id(@user, current_agent, @department)) if agent_impersonated? %>
+  <%= link_to new_user_rdv_path(@user, organisation_id: current_or_mutual_organisation_id(@user, current_agent, current_department)), target: "_blank", **with_rdv_solidarites_impersonation_warning do %>
+    <%= render "common/rdvs_impersonation_warning", url: new_user_rdv_path(@user, organisation_id: current_or_mutual_organisation_id(@user, current_agent, current_department)) if agent_impersonated? %>
     <button class="btn btn-blue me-2" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>Trouver un RDV<i class="ri-external-link-line ms-1"></i></button>
   <% end %>
 <% end %>

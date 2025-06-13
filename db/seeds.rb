@@ -398,7 +398,8 @@ user_to_convoc = User.create!(
   address: "60 avenue de Chabeuil 26000 Valence",
   phone_number: "0601020304",
   created_from_structure: drome1_organisation,
-  created_through: "rdv_insertion_api"
+  created_through: "rdv_insertion_api",
+  department: drome
 )
 
 follow_up_for_jean = FollowUp.create!(user: user_to_convoc, motif_category: orientation_category)
@@ -432,7 +433,8 @@ User.create!(
   last_name: "RSAAuxerre",
   title: "monsieur",
   created_from_structure: yonne_organisation,
-  created_through: "rdv_insertion_api"
+  created_through: "rdv_insertion_api",
+  department: yonne
 )
 
 Motif.create!(

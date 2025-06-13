@@ -10,10 +10,10 @@
           <h4>Ressources</h4>
           <ul class="footer-top-list">
             <li>
-              <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank %>
+              <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, id: "rdvi_footer_help-center" %>
             </li>
             <li>
-              <%= link_to "Statistiques", stats_path %>
+              <%= link_to "Statistiques", stats_path, id: "rdvi_footer_stats-link" %>
             </li>
             <li>
             </li>
@@ -23,10 +23,10 @@
           <h4>Nos partenaires</h4>
           <ul class="footer-top-list">
             <li>
-              <%= link_to "RDV-Solidarités", "https://www.rdv-solidarites.fr/", target: :blank %>
+              <%= link_to "RDV-Solidarités", "https://www.rdv-solidarites.fr/", target: :blank, id: "rdvi_footer_rdvs-redirection" %>
             </li>
             <li>
-              <%= link_to "Plateforme de l'inclusion", "https://inclusion.beta.gouv.fr/qui-sommes-nous/", target: :blank %>
+              <%= link_to "Plateforme de l'inclusion", "https://inclusion.beta.gouv.fr/qui-sommes-nous/", target: :blank, id: "rdvi_footer_pdi-redirection" %>
             </li>
           </ul>
         </div>
@@ -35,21 +35,21 @@
     <div class="footer-bottom">
       <ul class="footer-bottom-list">
         <li class="footer-bottom-list-item">
-          <%= link_to 'Mentions légales', mentions_legales_path %>
+          <%= link_to 'Mentions légales', mentions_legales_path, id: "rdvi_footer_legal-notice-link" %>
         </li>
         <li class="footer-bottom-list-item">
-          <%= link_to 'C.G.U.', cgu_path %>
+          <%= link_to 'C.G.U.', cgu_path, id: "rdvi_footer_CGU-link" %>
         </li>
         <li class="footer-bottom-list-item">
-          <%= link_to "https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/20241209-rdv-insertion-DPAv0.3.pdf", target: "_blank", title: "Télécharger le DPA (Convention de sous-traitance) au format PDF" do %>
+          <%= link_to "https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/20241209-rdv-insertion-DPAv0.3.pdf", target: "_blank", title: "Télécharger le DPA (Convention de sous-traitance) au format PDF", id: "rdvi_footer_DPA-link" do %>
            D.P.A <i class="ri-file-pdf-2-line"></i>
           <% end %>
         </li>
         <li class="footer-bottom-list-item">
-          <%= link_to 'Politique de confidentialité', politique_de_confidentialite_path %>
+          <%= link_to 'Politique de confidentialité', politique_de_confidentialite_path, id: "rdvi_footer_privacy-link" %>
         </li>
         <li class="footer-bottom-list-item">
-          <%= link_to "Accessibilité: non conforme", accessibilite_path %>
+          <%= link_to "Accessibilité: non conforme", accessibilite_path, id: "rdvi_footer_accessibility-link" %>
         </li>
       </ul>
       <div>

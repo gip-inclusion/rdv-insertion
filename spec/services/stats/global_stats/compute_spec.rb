@@ -5,8 +5,8 @@ describe Stats::GlobalStats::Compute, type: :service do
 
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
-  let!(:user1) { create(:user, organisations: [organisation]) }
-  let!(:user2) { create(:user, organisations: [organisation]) }
+  let!(:user1) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user2) { create(:user, department: organisation.department, organisations: [organisation]) }
   let!(:rdv1) { create(:rdv, organisation: organisation) }
   let!(:rdv2) { create(:rdv, organisation: organisation) }
   let!(:participation1) { create(:participation, rdv: rdv1) }
@@ -45,7 +45,7 @@ describe Stats::GlobalStats::Compute, type: :service do
       allow(Stats::ComputeFollowUpSeenRateWithinDelays).to receive(:call)
         .with(
           follow_ups: stat.users_first_accompaniement_follow_up,
-          target_delay_days: 15,
+          target_delay_days: 30,
           consider_orientation_rdv_as_start: true
         )
         .and_return(OpenStruct.new(success?: true, value: 25.0))
@@ -65,7 +65,7 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.rate_of_no_show).to be_a(Float)
       expect(subject.average_time_between_invitation_and_rdv_in_days).to be_a(Float)
       expect(subject.rate_of_users_oriented_in_less_than_45_days).to be_a(Float)
-      expect(subject.rate_of_users_accompanied_in_less_than_15_days).to be_a(Float)
+      expect(subject.rate_of_users_accompanied_in_less_than_30_days).to be_a(Float)
       expect(subject.rate_of_users_oriented).to be_a(Float)
       expect(subject.rate_of_autonomous_users).to be_a(Float)
       expect(subject.agents_count).to be_a(Integer)
@@ -125,11 +125,11 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.rate_of_users_oriented_in_less_than_45_days).to eq(50.0)
     end
 
-    it "computes the percentage of users with accompanied follow up and rdv seen in less than 15 days" do
+    it "computes the percentage of users with accompanied follow up and rdv seen in less than 30 days" do
       expect(stat).to receive(:users_first_accompaniement_follow_up)
       expect(Stats::ComputeFollowUpSeenRateWithinDelays).to receive(:call)
-        .with(follow_ups: [follow_up1, follow_up2], target_delay_days: 15, consider_orientation_rdv_as_start: true)
-      expect(subject.rate_of_users_accompanied_in_less_than_15_days).to eq(25.0)
+        .with(follow_ups: [follow_up1, follow_up2], target_delay_days: 30, consider_orientation_rdv_as_start: true)
+      expect(subject.rate_of_users_accompanied_in_less_than_30_days).to eq(25.0)
     end
 
     it "computes the percentage of users oriented" do

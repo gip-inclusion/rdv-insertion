@@ -1,0 +1,4 @@
+<div class="mb-2 active-filters-recap align-items-start d-flex">
+  <%= render "users_count", users_count: @users_count, motif_category: @current_motif_category %>
+  <%= render "active_filters_recap" if active_filter_list.any? %>
+</div>

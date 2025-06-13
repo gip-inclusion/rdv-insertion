@@ -20,7 +20,7 @@ describe UsersController do
   end
   let!(:agent) { create(:agent, basic_role_in_organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 888 }
-  let(:user) { create(:user, organisations: [organisation]) }
+  let(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
 
   render_views
 
@@ -146,7 +146,7 @@ describe UsersController do
       end
 
       context "when the creation succeeds" do
-        let!(:user) { create(:user, organisations: [organisation]) }
+        let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
 
         it "is a success" do
           post :create, params: user_params
@@ -203,7 +203,7 @@ describe UsersController do
     end
 
     context "when user is archived" do
-      let!(:user) { create(:user, organisations: [organisation]) }
+      let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
       let!(:archive) do
         create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("03/10/2024"))
       end
@@ -232,7 +232,9 @@ describe UsersController do
       context "when user is archived" do
         let!(:other_organisation) { create(:organisation, department:) }
         let!(:agent) { create(:agent, basic_role_in_organisations: [organisation, other_organisation]) }
-        let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
+        let!(:user) do
+          create(:user, department: organisation.department, organisations: [organisation, other_organisation])
+        end
         let!(:archive) do
           create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("05/10/2024"))
         end
@@ -253,7 +255,9 @@ describe UsersController do
       context "when user is partially archived" do
         let!(:other_organisation) { create(:organisation, department:) }
         let!(:agent) { create(:agent, basic_role_in_organisations: [organisation, other_organisation]) }
-        let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
+        let!(:user) do
+          create(:user, department: organisation.department, organisations: [organisation, other_organisation])
+        end
         let!(:archive) do
           create(:archive, user: user, organisation: organisation, created_at: Time.zone.parse("05/10/2024"))
         end
@@ -435,6 +439,7 @@ describe UsersController do
       expect(response.body).not_to match(/Darmon/)
       expect(response.body).not_to match(/Barthelemy/)
       expect(response.body).to match(/Rouve/)
+      expect(response.body).to match(/3 dossiers usagers dans « <strong>RSA orientation<\/strong> »/)
     end
 
     it "does not display the configure organisation option" do
@@ -490,6 +495,7 @@ describe UsersController do
         expect(response.body).to match(/Darmon/)
         expect(response.body).to match(/Barthelemy/)
         expect(response.body).to match(/Rouve/)
+        expect(unescaped_response_body).to match(/5 dossiers usagers dans l'organisation/)
       end
 
       it "displays the users creation date and the corresponding filter" do
@@ -959,7 +965,7 @@ describe UsersController do
   end
 
   describe "#edit" do
-    let!(:user) { create(:user, organisations: [organisation]) }
+    let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
 
     context "when organisation_level" do
       let!(:edit_params) { { id: user.id, organisation_id: organisation.id } }
@@ -988,7 +994,7 @@ describe UsersController do
   end
 
   describe "#update" do
-    let!(:user) { create(:user, organisations: [organisation]) }
+    let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
     let!(:update_params) do
       { id: user.id, organisation_id: organisation.id, user: { birth_date: "20/12/1988" } }
     end

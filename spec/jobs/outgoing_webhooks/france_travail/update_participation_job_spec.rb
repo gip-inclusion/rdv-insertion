@@ -11,7 +11,7 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
   describe "callbacks" do
     context "when the organisation is eligible for France Travail webhooks" do
       context "when user has a valid nir" do
-        let!(:user) { create(:user, :with_valid_nir) }
+        let!(:user) { create(:user, :with_valid_nir, department:) }
         let!(:rdv) { build(:rdv) }
 
         context "when participation has a france_travail_id" do
@@ -46,7 +46,7 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
       end
 
       context "when user has no nir" do
-        let!(:user) { create(:user) }
+        let!(:user) { create(:user, department:) }
         let!(:rdv) { build(:rdv) }
         let!(:participation) { build(:participation, rdv: rdv, user: user, organisation: organisation) }
 
@@ -61,7 +61,7 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
 
     context "when organisation is not eligible for France Travail webhooks" do
       let!(:organisation) { create(:organisation, organisation_type: "autre", department: department) }
-      let!(:user) { create(:user, :with_valid_nir) }
+      let!(:user) { create(:user, :with_valid_nir, department:) }
       let!(:rdv) { build(:rdv) }
       let!(:participation) do
         create(:participation, rdv: rdv, user: user, organisation: organisation)
@@ -115,6 +115,12 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
     end
 
     context "when service fails with NoMatchingUser error" do
+      let!(:user) { create(:user, :with_valid_nir, department:) }
+      let!(:rdv) { build(:rdv) }
+      let!(:participation) do
+        create(:participation, rdv: rdv, user: user, organisation: organisation)
+      end
+
       before do
         allow(service).to receive(:call)
           .and_raise(FranceTravailApi::RetrieveUserToken::NoMatchingUser, "Aucun usager trouvé")
@@ -130,7 +136,9 @@ describe OutgoingWebhooks::FranceTravail::UpdateParticipationJob do
           end
         end.not_to raise_error # Le job est discard quand il y a une erreur NoMatchingUser
 
-        assert_no_enqueued_jobs
+        expect(
+          ActiveJob::Base.queue_adapter.enqueued_jobs
+        ).not_to include(hash_including("job_class" => described_class))
       end
     end
   end

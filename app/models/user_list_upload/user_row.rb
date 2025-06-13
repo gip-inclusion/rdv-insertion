@@ -22,7 +22,7 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
-  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
+  delegate :department, :department_number, :restricted_user_attributes, :department_level?,
            to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
@@ -168,12 +168,10 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def will_change_matching_user?
-    return false unless matching_user
+    return false unless user == matching_user
 
-    matching_user.changed? ||
-      matching_user.organisations != organisations ||
-      matching_user.motif_categories != motif_categories ||
-      matching_user.referents != referents || matching_user.tags != tags
+    user.changed? || user.organisations != organisations || user.motif_categories != motif_categories ||
+      user.referents != referents || user.tags != tags
   end
 
   def select_for_user_save!
@@ -278,7 +276,11 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def user_attributes
-    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES)
+    symbolized_attributes
+      .compact_blank
+      .merge(cnaf_data.symbolize_keys)
+      .slice(*USER_ATTRIBUTES)
+      .merge(department_id: department.id)
   end
 
   def user_creation_origin_attributes

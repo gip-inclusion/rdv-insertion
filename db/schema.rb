@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_02_140205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -186,6 +186,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
+    t.boolean "parcours_enabled", default: true
     t.boolean "disable_ft_webhooks", default: false
   end
 
@@ -357,6 +358,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.string "safir_code"
     t.string "organisation_type"
     t.datetime "archived_at"
+    t.boolean "display_in_stats", default: true
     t.index ["archived_at"], name: "index_organisations_on_archived_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
@@ -478,8 +480,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.json "rate_of_no_show_grouped_by_month"
     t.float "rate_of_users_oriented_in_less_than_45_days"
     t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
-    t.float "rate_of_users_accompanied_in_less_than_15_days"
-    t.json "rate_of_users_accompanied_in_less_than_15_days_by_month"
+    t.float "rate_of_users_accompanied_in_less_than_30_days"
+    t.json "rate_of_users_accompanied_in_less_than_30_days_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -617,8 +619,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
     t.bigint "old_rdv_solidarites_user_id"
     t.string "created_from_structure_type"
     t.bigint "created_from_structure_id"
+    t.bigint "department_id"
     t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
+    t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
@@ -721,5 +725,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_05_143805) do
   add_foreign_key "user_list_upload_user_save_attempts", "users"
   add_foreign_key "user_list_uploads", "agents"
   add_foreign_key "user_list_uploads", "category_configurations"
+  add_foreign_key "users", "departments"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end
