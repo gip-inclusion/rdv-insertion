@@ -54,8 +54,8 @@ module Users
     end
 
     def users_from_same_departments
-      @users_from_same_departments ||= User.active.where(
-        department_id: @user.department_id
+      @users_from_same_departments ||= User.active.joins(:organisations).where(
+        organisations: { department_id: @user.department_ids.push(@organisation&.department_id).compact.uniq }
       )
     end
 
@@ -73,7 +73,7 @@ module Users
 
     def users_with_same_email_and_first_name
       @users_with_same_email_and_first_name ||=
-        users_from_same_departments.where(email: @user.email).select do |user|
+        User.active.where(email: @user.email).select do |user|
           user.id != @user.id &&
             user.first_name.split.first.downcase == @user.first_name.split.first.downcase
         end
@@ -81,7 +81,7 @@ module Users
 
     def users_with_same_phone_number_and_first_name
       @users_with_same_phone_number_and_first_name ||=
-        users_from_same_departments.where(phone_number: @user.phone_number_formatted).select do |user|
+        User.active.where(phone_number: @user.phone_number_formatted).select do |user|
           user.id != @user.id &&
             user.first_name.split.first.downcase == @user.first_name.split.first.downcase
         end

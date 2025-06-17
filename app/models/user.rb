@@ -48,8 +48,6 @@ class User < ApplicationRecord
 
   before_save :format_phone_number
 
-  belongs_to :department
-
   has_many :follow_ups, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
@@ -68,6 +66,7 @@ class User < ApplicationRecord
   has_many :notifications, through: :participations
   has_many :category_configurations, through: :organisations
   has_many :motif_categories, through: :follow_ups
+  has_many :departments, -> { distinct }, through: :organisations
   has_many :tags, through: :tag_users
   has_many :user_rows, class_name: "UserListUpload::UserRow", foreign_key: :matching_user_id, dependent: :destroy,
                        inverse_of: :matching_user
@@ -81,12 +80,8 @@ class User < ApplicationRecord
   validates :last_name, :first_name, presence: true
   validates :title, presence: true, if: :require_title_presence
   validates :email, allow_blank: true, format: { with: EMAIL_REGEXP }
-
-  validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
-  validates :nir, :france_travail_id, uniqueness: { scope: :department_id }, allow_nil: true,
-                                      unless: :skip_uniqueness_validations
-
-  validates :department_id, presence: true, on: :create
+  validates :rdv_solidarites_user_id, :nir, :france_travail_id,
+            uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
   validates :phone_number, phone_number: true
 
@@ -186,6 +181,22 @@ class User < ApplicationRecord
 
   def first_orientation_follow_up
     follow_ups.select(&:orientation?).min_by(&:created_at)
+  end
+
+  def in_many_departments?
+    organisations.map(&:department_id).uniq.length > 1
+  end
+
+  def current_department
+    return if in_many_departments?
+
+    departments.first
+  end
+
+  def address_department
+    return if parsed_post_code.blank?
+
+    departments.find { |d| parsed_post_code.include?(d.number) }
   end
 
   def belongs_to_org?(organisation_id)

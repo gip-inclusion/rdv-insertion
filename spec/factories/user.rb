@@ -22,9 +22,5 @@ FactoryBot.define do
       nir { "185027800608443" }
       title { "monsieur" }
     end
-
-    after(:build) do |user|
-      user.department ||= user.organisations.last&.department || create(:department)
-    end
   end
 end

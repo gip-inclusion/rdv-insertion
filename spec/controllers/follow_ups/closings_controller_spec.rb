@@ -6,7 +6,7 @@ describe FollowUps::ClosingsController do
   let!(:organisation) do
     create(:organisation, department: department, category_configurations: [category_configuration])
   end
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
   let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category) }
 
   before do

@@ -39,7 +39,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
     end
 
     context "when the user has more than one organisation" do
-      let!(:organisation2) { create(:organisation, department: organisation.department) }
+      let!(:organisation2) { create(:organisation) }
       let!(:user) do
         create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id,
                       organisations: [organisation, organisation2])
@@ -115,15 +115,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       context "when the user does not belong to the org" do
-        let!(:other_org) { create(:organisation, department: organisation.department) }
+        let!(:other_org) { create(:organisation) }
         let!(:user) do
-          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org],
-                        department: organisation.department)
+          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org])
         end
 
         it "adds the user to the org" do
           subject
-          expect(user.reload.organisations.ids.sort).to eq([other_org.id, organisation.id].sort)
+          expect(user.reload.organisations.ids).to eq([other_org.id, organisation.id])
         end
 
         it "does not enqueue a delete user job" do
@@ -150,15 +149,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       context "when the user does not belong to the org" do
-        let!(:other_org) { create(:organisation, department: organisation.department) }
+        let!(:other_org) { create(:organisation) }
         let!(:user) do
-          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org],
-                        department: organisation.department)
+          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org])
         end
 
         it "adds the user to the org" do
           subject
-          expect(user.reload.organisations.ids.sort).to eq([other_org.id, organisation.id].sort)
+          expect(user.reload.organisations.ids).to eq([other_org.id, organisation.id])
         end
 
         it "does not enqueue a delete user job" do

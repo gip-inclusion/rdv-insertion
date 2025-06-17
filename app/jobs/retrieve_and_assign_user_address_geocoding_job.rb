@@ -15,10 +15,25 @@ class RetrieveAndAssignUserAddressGeocodingJob < ApplicationJob
   private
 
   def retrieve_address_geocoding_params
+    if matching_department
+      retrieve_address_geocoding_params_for(address: @user.address, department_number: matching_department.number)
+    else
+      @user.departments.find do |department|
+        geo_params = retrieve_address_geocoding_params_for(address: @user.address, department_number: department.number)
+        break geo_params if geo_params
+      end
+    end
+  end
+
+  def retrieve_address_geocoding_params_for(address:, department_number:)
     call_service!(
       RetrieveAddressGeocodingParams,
-      address: @user.address,
-      department_number: @user.department.number
+      address:,
+      department_number:
     ).geocoding_params
+  end
+
+  def matching_department
+    @user.current_department || @user.address_department
   end
 end

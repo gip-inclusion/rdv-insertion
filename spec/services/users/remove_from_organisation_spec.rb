@@ -4,7 +4,7 @@ describe Users::RemoveFromOrganisation, type: :service do
   end
 
   let!(:organisation) { create(:organisation) }
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
 
   describe "#call" do
     before do
@@ -44,10 +44,8 @@ describe Users::RemoveFromOrganisation, type: :service do
     end
 
     context "when the user is attached to more than one org" do
-      let!(:other_organisation) { create(:organisation, department: organisation.department) }
-      let!(:user) do
-        create(:user, department: organisation.department, organisations: [organisation, other_organisation])
-      end
+      let!(:other_organisation) { create(:organisation) }
+      let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
 
       it "does not delete the user" do
         subject

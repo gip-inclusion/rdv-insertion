@@ -13,12 +13,11 @@ describe Users::TransferOrganisation do
     )
   end
   let!(:agent) { create(:agent) }
-  let(:department) { create(:department) }
-  let(:user) { create(:user, department:) }
-  let(:source_organisation) { create(:organisation, department:) }
-  let(:target_organisation) { create(:organisation, department:) }
+  let(:user) { create(:user) }
+  let(:source_organisation) { create(:organisation) }
+  let(:target_organisation) { create(:organisation) }
   let(:motif_category) { create(:motif_category) }
-  let!(:follow_up) { create(:follow_up, user:, motif_category:) }
+  let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category) }
 
   before do
     source_organisation.users << user
