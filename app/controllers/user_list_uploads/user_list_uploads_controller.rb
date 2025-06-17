@@ -21,10 +21,12 @@ module UserListUploads
 
       cnaf_data = enrich_with_cnaf_data_params
 
-      if cnaf_data.empty?
-        flash[:success] = no_cnaf_data_enriched_message
-      elsif @user_list_upload.update_rows(cnaf_data)
-        flash[:success] = cnaf_data_enriched_message
+      if @user_list_upload.update_rows(cnaf_data)
+        flash[:success] = if @user_list_upload.user_rows_enriched_with_cnaf_data.any?
+                            cnaf_data_enriched_message
+                          else
+                            no_changes_message
+                          end
       else
         turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
         return
@@ -78,10 +80,6 @@ module UserListUploads
     end
 
     def enrich_with_cnaf_data_params
-      # Guard clause: when no CNAF matches are found, Stimulus controller creates no form inputs,
-      # causing "param is missing" error with params.expect(). Return empty array to avoid this.
-      return [] if params[:rows_cnaf_data].blank?
-
       params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }]])
     end
 
@@ -95,12 +93,13 @@ module UserListUploads
         end
     end
 
-    def no_cnaf_data_enriched_message
-      "Fichier CNAF chargé avec succès. Aucun dossier n'est concerné par les données de ce fichier."
-    end
-
     def cnaf_data_enriched_message
       "Fichier CNAF chargé avec succès. Les nouvelles données ont été intégrées aux dossiers usagers ci-dessous."
+    end
+
+    def no_changes_message
+      "Fichier CNAF chargé avec succès. Les données correspondent aux usagers mais aucune modification
+        n'a été apportée (les informations étaient déjà à jour)."
     end
   end
 end

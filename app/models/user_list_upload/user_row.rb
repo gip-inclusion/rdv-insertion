@@ -7,7 +7,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   USER_ATTRIBUTES = %i[
     email phone_number title first_name last_name affiliation_number nir birth_date department_internal_id
-    france_travail_id role address
+    france_travail_id role address rights_opening_date
   ].freeze
 
   encrypts :nir
@@ -57,8 +57,13 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def cnaf_data_changed_matching_user_attribute?(attribute)
-    cnaf_data[attribute.to_s] && matching_user &&
-      cnaf_data[attribute.to_s] != matching_user.attribute_in_database(attribute.to_s)
+    return false unless cnaf_data[attribute.to_s] && matching_user
+
+    cnaf_value = cnaf_data[attribute.to_s]
+    matching_value = matching_user.attribute_in_database(attribute.to_s)
+
+    # Normalize with to_s to handle type differences (Date vs String, etc.)
+    cnaf_value.to_s != matching_value.to_s
   end
 
   def cnaf_data_changed_row_attribute?(attribute)
@@ -288,11 +293,21 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def format_cnaf_data(cnaf_data)
-    {
+    formatted_data = {
       "phone_number" => PhoneNumberHelper.format_phone_number(cnaf_data["phone_number"]),
-      "email" => cnaf_data["email"],
-      "rights_opening_date" => cnaf_data["rights_opening_date"]
-    }.compact_blank.transform_values(&:squish)
+      "email" => cnaf_data["email"]&.squish,
+      "rights_opening_date" => parse_and_format_cnaf_date(cnaf_data["rights_opening_date"])
+    }
+
+    formatted_data.compact_blank
+  end
+
+  def parse_and_format_cnaf_date(date_string)
+    return nil if date_string.blank?
+
+    Date.strptime(date_string, "%d/%m/%Y").to_s
+  rescue Date::Error
+    nil
   end
 
   def retrieve_organisation_by_id(organisation_id)

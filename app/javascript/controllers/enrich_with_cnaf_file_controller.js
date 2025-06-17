@@ -48,6 +48,18 @@ export default class extends Controller {
       return
     }
 
+    if (this.matchedCnafData.length === 0) {
+      safeSwal({
+        title: "Aucune correspondance trouvée",
+        text: "Le fichier CNAF ne contient aucune donnée correspondant aux usagers de votre liste",
+        icon: "warning",
+        confirmButtonText: "OK"
+      })
+      this.inputTarget.value = ""
+      this.#setLoadingState(false)
+      return
+    }
+
     this.#insertFormInputs()
 
     await this.formTarget.requestSubmit()
