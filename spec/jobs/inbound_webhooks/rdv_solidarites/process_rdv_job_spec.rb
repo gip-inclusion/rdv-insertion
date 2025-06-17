@@ -261,8 +261,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 phone_number: "+33755929249",
                 email: "james@cameron.com",
                 created_through: "rdv_solidarites_webhook",
-                created_from_structure: organisation,
-                department: organisation.department
+                created_from_structure: organisation
               )
             end
           end
@@ -309,8 +308,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 phone_number: "0755929249",
                 email: "james@cameron.com",
                 created_through: "rdv_solidarites_webhook",
-                created_from_structure: organisation,
-                department: organisation.department
+                created_from_structure: organisation
               )
               subject
             end
