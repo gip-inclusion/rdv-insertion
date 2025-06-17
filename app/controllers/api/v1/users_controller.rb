@@ -18,8 +18,7 @@ module Api
       SEARCHABLE_FIELDS = %w[first_name last_name email phone_number affiliation_number].freeze
 
       before_action :set_organisation
-      before_action :set_users_params, :validate_users_params, only: [:create_and_invite_many, :create_many]
-      before_action :validate_users_invitations_params, only: [:invite_many]
+      before_action :set_users_params, :validate_users_params, only: [:create_and_invite_many]
       before_action :validate_user_params, only: [:create_and_invite, :create]
       before_action :set_user, only: [:invite]
 
@@ -51,30 +50,6 @@ module Api
             motif_category_attributes
           )
         end
-        render json: { success: true }
-      end
-
-      def create_many
-        users_attributes.each do |attrs|
-          user_attributes = attrs.except(:invitation)
-
-          CreateUserJob.perform_later(
-            @organisation.id,
-            user_attributes.merge(creation_origin_attributes)
-          )
-        end
-        render json: { success: true }
-      end
-
-      def invite_many
-        users_invitations_attributes.each do |attrs|
-          user_id = attrs[:id]
-          invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
-          motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
-
-          InviteUserJob.perform_later(user_id, @organisation.id, invitation_attributes, motif_category_attributes)
-        end
-
         render json: { success: true }
       end
 
@@ -228,18 +203,6 @@ module Api
         # we want POST applicants/create_and_invite_many to behave like users/create_and_invite_many,
         # so we're changing the payload to have users instead of applicants
         params[:users] ||= params[:applicants]
-      end
-
-      def users_invitations_attributes
-        users_invitations_params.map do |user_invitation_attributes|
-          user_invitation_attributes.to_h.deep_symbolize_keys.tap { |attrs| attrs[:invitation] ||= {} }
-        end
-      end
-
-      def users_invitations_params
-        params.permit(users: [:id,
-                              { invitation: [:rdv_solidarites_lieu_id,
-                                             { motif_category: [:name, :short_name] }] }])[:users] || []
       end
 
       def invitation_params

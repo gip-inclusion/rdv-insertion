@@ -239,8 +239,6 @@ Rails.application.routes.draw do
             collection do
               post :create_and_invite_many
               post :create_and_invite
-              post :create_many
-              post :invite_many
             end
             member do
               post :invite
