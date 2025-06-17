@@ -2,7 +2,7 @@ describe "Agents can archive and unarchive user", :js do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department:) }
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
 
   before { setup_agent_session(agent) }
 

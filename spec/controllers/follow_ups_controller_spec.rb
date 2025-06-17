@@ -1,7 +1,7 @@
 describe FollowUpsController do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
-  let(:user) { create(:user, department: department, organisations: [organisation]) }
+  let(:user) { create(:user, organisations: [organisation]) }
   let!(:category_orientation) do
     create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
   end
@@ -33,7 +33,7 @@ describe FollowUpsController do
 
     context "when not authorized" do
       let!(:another_organisation) { create(:organisation) }
-      let(:user) { create(:user, department: another_organisation.department, organisations: [another_organisation]) }
+      let(:user) { create(:user, organisations: [another_organisation]) }
 
       it "is forbidden" do
         post :create, params: follow_up_params.merge(format: "turbo_stream")

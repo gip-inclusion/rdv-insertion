@@ -4,9 +4,8 @@ describe Users::ImportAssociationsFromRdvSolidarites, type: :service do
   end
 
   let(:user) { create(:user, organisations: [organisation], referents: []) }
-  let(:department) { create(:department) }
-  let(:organisation) { create(:organisation, department:) }
-  let(:other_organisation) { create(:organisation, department:) }
+  let(:organisation) { create(:organisation) }
+  let(:other_organisation) { create(:organisation) }
   let(:referent) { create(:agent) }
 
   before do

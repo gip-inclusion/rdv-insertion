@@ -1,7 +1,7 @@
 describe FollowUps::Save do
   subject { described_class.call(follow_up:) }
 
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
   let!(:organisation) { create(:organisation, category_configurations: [category_configuration]) }
   let!(:category_configuration) { create(:category_configuration, motif_category: motif_category) }
   let!(:motif_category) { create(:motif_category) }

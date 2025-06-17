@@ -35,7 +35,7 @@ describe Users::Find, type: :service do
     it("is a success") { is_a_success }
 
     context "when an user with the same nir is found" do
-      let!(:user) { create(:user, nir: nir, department: department) }
+      let!(:user) { create(:user, nir: nir) }
 
       it "returns the found user" do
         expect(subject.user).to eq(user)
@@ -46,9 +46,7 @@ describe Users::Find, type: :service do
       context "when the user is in the same department" do
         let!(:user) do
           create(
-            :user, department_internal_id: department_internal_id,
-                   department: department,
-                   organisations: [other_org_inside_the_department]
+            :user, department_internal_id: department_internal_id, organisations: [other_org_inside_the_department]
           )
         end
 
@@ -60,7 +58,6 @@ describe Users::Find, type: :service do
           let!(:user) do
             create(
               :user, department_internal_id: department_internal_id,
-                     department: another_department,
                      organisations: [other_org_outside_the_department]
             )
           end
@@ -79,7 +76,6 @@ describe Users::Find, type: :service do
         let!(:user) do
           create(
             :user, role: role, affiliation_number: affiliation_number,
-                   department: department,
                    organisations: [other_org_inside_the_department]
           )
         end
@@ -93,7 +89,6 @@ describe Users::Find, type: :service do
         let!(:user) do
           create(
             :user, role: role, affiliation_number: affiliation_number,
-                   department: another_department,
                    organisations: [other_org_outside_the_department]
           )
         end
@@ -108,7 +103,7 @@ describe Users::Find, type: :service do
 
     context "when the user with the same email is found" do
       let!(:user) do
-        create(:user, email: email, department: department)
+        create(:user, email: email)
       end
 
       context "when the first name matches" do
@@ -130,7 +125,7 @@ describe Users::Find, type: :service do
 
     context "when the user with the same phone is found" do
       let!(:user) do
-        create(:user, phone_number: phone_number, department: department)
+        create(:user, phone_number: phone_number)
       end
 
       context "when the first name matches" do
@@ -159,15 +154,15 @@ describe Users::Find, type: :service do
 
   describe "matching priority order" do
     context "when multiple users match different criteria" do
-      let!(:user_nir) { create(:user, nir: nir, department:) }
+      let!(:user_nir) { create(:user, nir: nir) }
       let!(:user_department_id) do
         create(
-          :user, department_internal_id: department_internal_id, department:,
+          :user, department_internal_id: department_internal_id,
                  organisations: [other_org_inside_the_department]
         )
       end
-      let!(:user_email) { create(:user, email: email, first_name: "JANE", department:) }
-      let!(:user_phone) { create(:user, phone_number: phone_number, first_name: "JANE", department:) }
+      let!(:user_email) { create(:user, email: email, first_name: "JANE") }
+      let!(:user_phone) { create(:user, phone_number: phone_number, first_name: "JANE") }
       let!(:user_role_affiliation) do
         create(
           :user, role: role, affiliation_number: affiliation_number,

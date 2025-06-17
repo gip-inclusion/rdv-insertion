@@ -13,8 +13,7 @@ describe InvitationsController do
       create(
         :user,
         first_name: "JANE", last_name: "DOE", title: "madame",
-        id: user_id, organisations: [organisation],
-        department: department
+        id: user_id, organisations: [organisation]
       )
     end
     let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
@@ -73,8 +72,7 @@ describe InvitationsController do
 
       it "calls the service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations: contain_exactly(organisation,
-                                                      other_org), invitation_attributes:, motif_category_attributes:)
+          .with(user:, organisations: [organisation, other_org], invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
 

@@ -59,8 +59,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
     }.deep_symbolize_keys
   end
 
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
-  let!(:user2) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
+  let!(:user2) { create(:user, organisations: [organisation]) }
 
   let!(:agent) { create(:agent) }
 
