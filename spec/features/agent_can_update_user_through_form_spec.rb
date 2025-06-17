@@ -141,7 +141,7 @@ describe "Agents can update user through form", :js do
 
     context "when there is a conflict with the mail and the first name" do
       let!(:other_user) do
-        create(:user, id: 22, email: email, first_name: "milla", department:)
+        create(:user, id: 22, email: email, first_name: "milla")
       end
 
       it "cannot update the user" do
@@ -160,7 +160,7 @@ describe "Agents can update user through form", :js do
 
     context "when there is a conflict with the phone_number and the first name" do
       let!(:other_user) do
-        create(:user, id: 22, phone_number: phone_number, first_name: "milla", department:)
+        create(:user, id: 22, phone_number: phone_number, first_name: "milla")
       end
 
       it "cannot update the user" do

@@ -59,8 +59,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
     }.deep_symbolize_keys
   end
 
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
-  let!(:user2) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
+  let!(:user2) { create(:user, organisations: [organisation]) }
 
   let!(:agent) { create(:agent) }
 
@@ -261,8 +261,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 phone_number: "+33755929249",
                 email: "james@cameron.com",
                 created_through: "rdv_solidarites_webhook",
-                created_from_structure: organisation,
-                department: organisation.department
+                created_from_structure: organisation
               )
             end
           end
@@ -309,8 +308,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 phone_number: "0755929249",
                 email: "james@cameron.com",
                 created_through: "rdv_solidarites_webhook",
-                created_from_structure: organisation,
-                department: organisation.department
+                created_from_structure: organisation
               )
               subject
             end

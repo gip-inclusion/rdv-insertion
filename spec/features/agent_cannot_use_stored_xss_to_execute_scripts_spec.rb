@@ -1,6 +1,6 @@
 describe "Agent cannot use stored XSS to execute malicious script", :js do
   let!(:department) { create(:department) }
-  let!(:user) { create(:user, department: organisation.department, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation, department:) }
 

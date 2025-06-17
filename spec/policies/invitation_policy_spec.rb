@@ -1,9 +1,8 @@
 describe InvitationPolicy, type: :policy do
   subject { described_class }
 
-  let!(:department) { create(:department) }
-  let!(:organisation) { create(:organisation, department:) }
-  let!(:organisation2) { create(:organisation, department:) }
+  let!(:organisation) { create(:organisation) }
+  let!(:organisation2) { create(:organisation) }
   let!(:invitation) { create(:invitation, user: user) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
 

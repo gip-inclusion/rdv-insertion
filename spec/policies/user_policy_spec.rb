@@ -1,9 +1,8 @@
 describe UserPolicy, type: :policy do
   subject { described_class }
 
-  let!(:department) { create(:department) }
-  let!(:organisation) { create(:organisation, department:) }
-  let!(:organisation2) { create(:organisation, department:) }
+  let!(:organisation) { create(:organisation) }
+  let!(:organisation2) { create(:organisation) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
 
   describe "#show?" do

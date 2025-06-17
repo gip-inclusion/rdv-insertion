@@ -30,9 +30,7 @@ module UserListUploads
 
     def create
       @user_list_upload = UserListUpload.new(
-        agent: current_agent,
-        structure: current_structure,
-        **user_list_upload_params
+        agent: current_agent, structure: current_structure, **user_list_upload_params
       )
       authorize @user_list_upload
 
