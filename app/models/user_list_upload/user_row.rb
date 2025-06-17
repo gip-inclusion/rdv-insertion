@@ -303,6 +303,8 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def parse_and_format_cnaf_date(date_string)
+    return nil if date_string.blank?
+
     Date.parse(date_string)&.to_s
   rescue Date::Error
     nil
