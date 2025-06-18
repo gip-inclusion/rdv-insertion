@@ -130,7 +130,7 @@
             <button class="btn btn-blue-out">Configurer une organisation</button>
           <% end %>
         <% else %>
-          <%= link_to(organisation_category_configurations_path(@organisation), class: "btn btn-blue-out mb-2", id: "rdvi_index-nav_config-orga") do %>
+          <%= link_to(organisation_configuration_path(@organisation), class: "btn btn-blue-out mb-2", id: "rdvi_index-nav_config-orga") do %>
             Configurer l'organisation
           <% end %>
         <% end %>
