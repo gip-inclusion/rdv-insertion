@@ -33,20 +33,20 @@
         <p><%= @organisation.agents.count %> agents</p>
       </div>
       <div class="col-6">
-        <h5>Niveaux de permission</h5>
+        <h5>Niveaux de permissions</h5>
         <p><%= @agent_roles.count(&:admin?) %> agents administrateurs, <%= @agent_roles.count(&:basic?) %> agents basiques</p>
       </div>
     </div>
     <div class="d-flex justify-content-end mt-2 me-2">
       <%= link_to(agents_index_url(@organisation), target: "_blank", **with_rdv_solidarites_impersonation_warning) do %>
         <button class="btn btn-blue-out me-2" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
-          <i class="ri-external-link-line ms-1"></i>Voir les agents
+          <i class="ri-external-link-line mx-1"></i>Voir les agents
         </button>
         <%= render "common/rdvs_impersonation_warning", url: agents_index_url(@organisation) if agent_impersonated? %>
       <% end %>
       <%= link_to(add_agent_url(@organisation), target: "_blank", **with_rdv_solidarites_impersonation_warning) do %>
         <button class="btn btn-blue" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
-          <i class="ri-add-line ms-1"></i>Ajouter un agent
+          <i class="ri-add-line mx-1"></i>Ajouter un agent
         </button>
         <%= render "common/rdvs_impersonation_warning", url: add_agent_url(@organisation) if agent_impersonated? %>
       <% end %>
