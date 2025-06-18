@@ -1,6 +1,5 @@
 describe FranceTravailClient do
-  let(:user) { create(:user) }
-  let(:payload) { { some: "data" } }
+  let(:payload) { { nir: "1900167890123", dateNaissance: "1990-01-01" } }
   let(:france_travail_id) { "ft-123" }
   let(:headers) do
     { "Authorization" => "Bearer token", "Content-Type" => "application/json", "Accept" => "application/json",
