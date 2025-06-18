@@ -308,39 +308,36 @@ describe Participation do
 
     before do
       travel_to now
-      allow(OutgoingWebhooks::FranceTravail::CreateParticipationJob).to receive(:perform_later)
-      allow(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).to receive(:perform_later)
+      allow(OutgoingWebhooks::FranceTravail::UpsertParticipationJob).to receive(:perform_later)
     end
 
-    context "when participation becomes newly eligible on update" do
+    context "when participation has a france_travail_id" do
       let!(:participation) do
         create(:participation, rdv: rdv, user: user, organisation: organisation, france_travail_id: nil)
       end
 
-      it "triggers CreateParticipationJob instead of UpdateParticipationJob" do
-        expect(OutgoingWebhooks::FranceTravail::CreateParticipationJob).to receive(:perform_later)
+      it "triggers UpsertParticipationJob" do
+        expect(OutgoingWebhooks::FranceTravail::UpsertParticipationJob).to receive(:perform_later)
           .with(
             participation_id: participation.id,
             timestamp: now
           )
-        expect(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).not_to receive(:perform_later)
 
         participation.save
       end
     end
 
-    context "when participation is already eligible and has france_travail_id" do
+    context "when participation has no france_travail_id" do
       let!(:participation) do
         create(:participation, rdv: rdv, user: user, organisation: organisation, france_travail_id: "ft-123")
       end
 
-      it "triggers UpdateParticipationJob" do
-        expect(OutgoingWebhooks::FranceTravail::UpdateParticipationJob).to receive(:perform_later)
+      it "triggers UpsertParticipationJob" do
+        expect(OutgoingWebhooks::FranceTravail::UpsertParticipationJob).to receive(:perform_later)
           .with(
             participation_id: participation.id,
             timestamp: now
           )
-        expect(OutgoingWebhooks::FranceTravail::CreateParticipationJob).not_to receive(:perform_later)
 
         participation.save
       end

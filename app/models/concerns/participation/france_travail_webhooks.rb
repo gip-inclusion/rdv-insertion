@@ -4,8 +4,7 @@ module Participation::FranceTravailWebhooks
   extend ActiveSupport::Concern
 
   included do
-    after_commit :send_france_travail_create_webhook, on: :create, if: :eligible_for_france_travail_webhook?
-    after_commit :send_france_travail_update_webhook, on: :update, if: :eligible_for_france_travail_webhook?
+    after_commit :send_france_travail_upsert_webhook, on: [:create, :update], if: :eligible_for_france_travail_webhook?
     before_destroy :send_france_travail_delete_webhook, if: :france_travail_webhook_updatable?
   end
 
@@ -21,22 +20,11 @@ module Participation::FranceTravailWebhooks
 
   private
 
-  def send_france_travail_create_webhook
-    OutgoingWebhooks::FranceTravail::CreateParticipationJob.perform_later(
-      participation_id: id, timestamp: created_at
+  def send_france_travail_upsert_webhook
+    OutgoingWebhooks::FranceTravail::UpsertParticipationJob.perform_later(
+      participation_id: id,
+      timestamp: france_travail_id? ? updated_at : created_at
     )
-  end
-
-  def send_france_travail_update_webhook
-    if france_travail_id?
-      OutgoingWebhooks::FranceTravail::UpdateParticipationJob.perform_later(
-        participation_id: id, timestamp: updated_at
-      )
-    else
-      OutgoingWebhooks::FranceTravail::CreateParticipationJob.perform_later(
-        participation_id: id, timestamp: updated_at
-      )
-    end
   end
 
   def send_france_travail_delete_webhook
@@ -49,17 +37,17 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_user_for_france_travail_webhook?
-    (valid_nir_for_webhook? || valid_france_travail_id_for_webhook?) && !user.marked_for_rgpd_destruction?
+    (user_has_a_valid_nir? || user_has_a_valid_france_travail_id?) && !user.marked_for_rgpd_destruction?
   end
 
-  def valid_france_travail_id_for_webhook?
+  def user_has_a_valid_france_travail_id?
     return false if user.france_travail_id.blank?
 
     # Valid France Travail ID is exactly 11 digits
     user.france_travail_id.match?(/\A\d{11}\z/)
   end
 
-  def valid_nir_for_webhook?
+  def user_has_a_valid_nir?
     user.birth_date? && user.nir?
   end
 
