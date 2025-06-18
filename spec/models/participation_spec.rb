@@ -273,6 +273,30 @@ describe Participation do
         expect(subject).to eq(false)
       end
     end
+
+    context "when the user has no nir but has valid France Travail ID" do
+      let!(:user) { create(:user, france_travail_id: "12345678901") }
+
+      it "is eligible" do
+        expect(subject).to eq(true)
+      end
+    end
+
+    context "when the user has invalid France Travail ID (less than 11 digits)" do
+      let!(:user) { create(:user, france_travail_id: "123456789") }
+
+      it "is not eligible" do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context "when the user has neither nir nor valid France Travail ID" do
+      let!(:user) { create(:user, nir: nil, france_travail_id: nil) }
+
+      it "is not eligible" do
+        expect(subject).to eq(false)
+      end
+    end
   end
 
   describe "france travail webhook callbacks on update" do

@@ -64,6 +64,36 @@ describe OutgoingWebhooks::FranceTravail::DeleteParticipationJob do
           end
         end
       end
+
+      context "when user has a valid France Travail ID" do
+        let!(:user) { create(:user, france_travail_id: "12345678901") }
+        let!(:rdv) { build(:rdv) }
+        let!(:participation) do
+          create(:participation, rdv: rdv, user: user, organisation: organisation, france_travail_id: "123456")
+        end
+
+        context "on deletion" do
+          it "notifies the deletion" do
+            expect(described_class).to receive(:perform_later)
+            participation.destroy
+          end
+        end
+      end
+
+      context "when user has an invalid France Travail ID" do
+        let!(:user) { create(:user, france_travail_id: "12345671") }
+        let!(:rdv) { build(:rdv) }
+        let!(:participation) do
+          create(:participation, rdv: rdv, user: user, organisation: organisation, france_travail_id: "123456")
+        end
+
+        context "on deletion" do
+          it "does not send webhook" do
+            expect(described_class).not_to receive(:perform_later)
+            participation.destroy
+          end
+        end
+      end
     end
 
     context "when organisation is not eligible for France Travail webhooks" do

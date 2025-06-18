@@ -24,8 +24,14 @@ class FranceTravailClient
   end
 
   def self.retrieve_user_token(payload:, headers:)
+    endpoint_path = if payload.key?(:nir)
+                      "/partenaire/rechercher-usager/v2/usagers/par-datenaissance-et-nir"
+                    else
+                      "/partenaire/rechercher-usager/v2/usagers/par-numero-francetravail"
+                    end
+
     Faraday.post(
-      "#{ENV['FRANCE_TRAVAIL_API_URL']}/partenaire/rechercher-usager/v2/usagers/par-datenaissance-et-nir",
+      "#{ENV['FRANCE_TRAVAIL_API_URL']}#{endpoint_path}",
       payload.to_json,
       headers
     )

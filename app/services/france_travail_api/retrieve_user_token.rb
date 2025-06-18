@@ -32,10 +32,16 @@ module FranceTravailApi
     end
 
     def user_payload
-      {
-        dateNaissance: @user.birth_date.to_s,
-        nir: @user.nir
-      }
+      if @user.nir.present? && @user.birth_date.present?
+        {
+          dateNaissance: @user.birth_date.to_s,
+          nir: @user.nir
+        }
+      elsif @user.france_travail_id.present?
+        {
+          numeroFranceTravail: @user.france_travail_id
+        }
+      end
     end
 
     def headers

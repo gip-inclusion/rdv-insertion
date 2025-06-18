@@ -34,6 +34,28 @@ describe OutgoingWebhooks::FranceTravail::CreateParticipationJob do
           end
         end
       end
+
+      context "when user has a valid France Travail ID" do
+        let!(:user) { create(:user, france_travail_id: "12345678901") }
+
+        context "on creation" do
+          it "notifies the creation" do
+            expect(described_class).to receive(:perform_later)
+            participation.save
+          end
+        end
+      end
+
+      context "when user has no nir and an invalid France Travail ID" do
+        let!(:user) { create(:user, france_travail_id: "12345671") }
+
+        context "on creation" do
+          it "does not send webhook" do
+            expect(described_class).not_to receive(:perform_later)
+            participation.save
+          end
+        end
+      end
     end
 
     context "when organisation is not eligible for France Travail webhooks" do

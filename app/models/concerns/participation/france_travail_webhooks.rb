@@ -49,7 +49,18 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_user_for_france_travail_webhook?
-    user.birth_date? && user.nir? && !user.marked_for_rgpd_destruction?
+    (valid_nir_for_webhook? || valid_france_travail_id_for_webhook?) && !user.marked_for_rgpd_destruction?
+  end
+
+  def valid_france_travail_id_for_webhook?
+    return false if user.france_travail_id.blank?
+
+    # Valid France Travail ID is exactly 11 digits
+    user.france_travail_id.match?(/\A\d{11}\z/)
+  end
+
+  def valid_nir_for_webhook?
+    user.birth_date? && user.nir?
   end
 
   def eligible_organisation_for_france_travail_webhook?
