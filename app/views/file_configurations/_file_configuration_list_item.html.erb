@@ -7,14 +7,11 @@
   %>
   <div class="background-blue-light d-flex justify-content-between px-4 pt-2 rounded flex-grow-1">
     <div class="flex-grow-1 d-flex flex-column justify-content-center">
-      <% department_configurations = file_configuration.category_configurations.select { |category_configuration| category_configuration.department == @department } %>
-      <% if department_configurations.present? %>
-        <p class="mb-0">Utilisé pour :</p>
-        <% department_configurations.group_by(&:motif_category).each do |motif_category, category_configurations| %>
-          <p class="mb-2">- <strong><%= motif_category.name %></strong> par <strong><%= category_configurations.map(&:organisation).join(', ') %></strong></p>
-        <% end %>
-      <% elsif department_configurations.blank? %>
-        <p>Nouvelle category_configuration</p>
+      <p class="mb-0">Utilisé pour :</p>
+      <% file_configuration.category_configurations
+                           .select { |category_configuration| category_configuration.department_id == department.id && policy(category_configuration).show? }
+                           .group_by(&:motif_category).each do |motif_category, category_configurations| %>
+        <p class="mb-2">- <strong><%= motif_category.name %></strong> par <strong><%= category_configurations.map(&:organisation).join(', ') %></strong></p>
       <% end %>
     </div>
     <div class="d-flex flex-column justify-content-center">

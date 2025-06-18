@@ -26,7 +26,7 @@ class CategoryConfiguration < ApplicationRecord
 
   delegate :name, :short_name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration
-  delegate :department, :rdv_solidarites_organisation_id, to: :organisation
+  delegate :department, :department_id, :rdv_solidarites_organisation_id, to: :organisation
   delegate :template, to: :motif_category
 
   def self.template_override_attributes

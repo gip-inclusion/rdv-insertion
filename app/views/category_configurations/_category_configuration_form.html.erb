@@ -58,7 +58,7 @@
       <div class="mb-4 px-5">
         <%= turbo_frame_tag "file_configurations_list" do %>
           <% @file_configurations.each do |file_configuration| %>
-            <%= render "file_configurations/file_configuration_list_item", file_configuration: file_configuration, current_file_configuration: current_file_configuration, organisation: organisation %>
+            <%= render "file_configurations/file_configuration_list_item", file_configuration: file_configuration, current_file_configuration: current_file_configuration, organisation: organisation, department: department %>
           <% end %>
         <% end %>
       </div>
