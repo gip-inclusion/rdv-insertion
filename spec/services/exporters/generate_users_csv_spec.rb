@@ -234,6 +234,17 @@ describe Exporters::GenerateUsersCsv, type: :service do
         end
       end
 
+      context "when the user belongs to organisations in different departments" do
+        let!(:other_department) do
+          create(:department, name: "Ain", number: "01")
+        end
+        let!(:other_organisation) { create(:organisation, name: "CD 01", department: other_department, users: [user1]) }
+
+        it "displays the name of the organisations saying it is another department" do
+          expect(subject.csv).to include("CD 01 (Organisation d'un autre départment : 01 - Ain)")
+        end
+      end
+
       context "when the user has multiple tags in different organisations" do
         let!(:tag) { create(:tag, value: "cacahuète", users: [user1], organisations: [organisation]) }
         let!(:other_tag) { create(:tag, value: "pistache", users: [user1], organisations: [other_organisation]) }
@@ -325,6 +336,18 @@ describe Exporters::GenerateUsersCsv, type: :service do
             expect(subject.csv).not_to include("30/06/2022")
             expect(subject.csv).not_to include("Autre drome RSA")
           end
+        end
+      end
+
+      context "when the user is in many departments" do
+        let!(:other_department) { create(:department, name: "Gironde", number: "33") }
+
+        let!(:other_organisation) do
+          create(:organisation, name: "Gironde RSA", department: other_department, users: [user1])
+        end
+
+        it "cannot calculate if the user has been oriented in less than X days" do
+          expect(subject.csv).to include("Non calculable").twice
         end
       end
 

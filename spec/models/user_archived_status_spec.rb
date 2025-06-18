@@ -1,9 +1,8 @@
 describe UserArchivedStatus do
   let!(:user_archived_status) { described_class.new(user, organisations) }
-  let(:department) { create(:department) }
-  let(:user) { create(:user, organisations: [organisation1, organisation2]) }
-  let(:organisation1) { create(:organisation, department:) }
-  let(:organisation2) { create(:organisation, department:) }
+  let(:user) { create(:user, organisations:) }
+  let(:organisation1) { create(:organisation) }
+  let(:organisation2) { create(:organisation) }
   let(:organisations) { [organisation1, organisation2] }
   let!(:archive1) { create(:archive, organisation: organisation1, user:) }
   let!(:archive2) { create(:archive, organisation: organisation2, user:) }
