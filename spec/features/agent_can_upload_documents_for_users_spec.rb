@@ -38,11 +38,7 @@ describe "Agents can upload documents for users", :js do
     end
 
     context "on a department that is not authorized to see the parcours" do
-      let!(:department) { create(:department, number: "75") }
-
-      before do
-        stub_const "ENV", ENV.to_h.merge("DEPARTMENTS_WHERE_PARCOURS_DISABLED" => "75")
-      end
+      let!(:department) { create(:department, number: "75", parcours_enabled: false) }
 
       it "redirects right away" do
         visit department_user_parcours_path(user_id: user.id, department_id: department.id)
@@ -70,11 +66,7 @@ describe "Agents can upload documents for users", :js do
     end
 
     context "on a department that is not authorized to see the parcours" do
-      let!(:department) { create(:department, number: "75") }
-
-      before do
-        stub_const "ENV", ENV.to_h.merge("DEPARTMENTS_WHERE_PARCOURS_DISABLED" => "75")
-      end
+      let!(:department) { create(:department, number: "75", parcours_enabled: false) }
 
       it "cannot see the parcours tab" do
         visit organisation_user_path(organisation_id: organisation.id, id: user.id)

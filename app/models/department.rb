@@ -30,4 +30,8 @@ class Department < ApplicationRecord
   def category_configurations_sorted
     category_configurations.order(:department_position)
   end
+
+  def with_parcours_access?
+    parcours_enabled
+  end
 end

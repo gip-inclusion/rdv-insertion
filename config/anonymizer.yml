@@ -128,6 +128,7 @@ tables:
       - updated_at
       - display_in_stats
       - disable_ft_webhooks
+      - parcours_enabled
 
   - table_name: dpa_agreements
     anonymized_column_names:
@@ -407,8 +408,8 @@ tables:
       - rate_of_users_oriented_grouped_by_month
       - users_with_rdv_count
       - users_with_rdv_count_grouped_by_month
-      - rate_of_users_accompanied_in_less_than_15_days
-      - rate_of_users_accompanied_in_less_than_15_days_by_month
+      - rate_of_users_accompanied_in_less_than_30_days
+      - rate_of_users_accompanied_in_less_than_30_days_by_month
 
   - table_name: tag_organisations
     non_anonymized_column_names:
@@ -456,6 +457,7 @@ tables:
       - name
       - slug
       - organisation_type
+      - display_in_stats
       - rdv_solidarites_organisation_id
       - created_at
       - updated_at

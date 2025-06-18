@@ -23,9 +23,9 @@ describe "Agents can sort users on index page", :js do
     it "shows the organisation navigation button in header" do
       visit(page_path)
 
-      navigation_button = find_button("btn-organisation-navigation")
+      navigation_button = find_button("rdvi_header_organisation-nav")
       expect(navigation_button).to have_content(current_structure.name)
-      click_button("btn-organisation-navigation")
+      click_button("rdvi_header_organisation-nav")
 
       within("#organisation-navigation") do
         within("#organisation-navigation-dropdown") do
@@ -46,7 +46,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit root_path
 
-        expect(page).to have_no_css("button#btn-organisation-navigation")
+        expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
 
@@ -54,7 +54,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit stats_path
 
-        expect(page).to have_no_css("button#btn-organisation-navigation")
+        expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
   end
@@ -68,7 +68,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit organisations_path
 
-        expect(page).to have_no_css("button#btn-organisation-navigation")
+        expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
 
@@ -145,7 +145,7 @@ describe "Agents can sort users on index page", :js do
         it "does not show the organisation navigation button in header" do
           visit stats_path
 
-          expect(page).to have_no_css("button#btn-organisation-navigation")
+          expect(page).to have_no_css("button#rdvi_header_organisation-nav")
         end
       end
     end
@@ -235,7 +235,7 @@ describe "Agents can sort users on index page", :js do
         it "does not show the organisation navigation button in header" do
           visit stats_path
 
-          expect(page).to have_no_css("button#btn-organisation-navigation")
+          expect(page).to have_no_css("button#rdvi_header_organisation-nav")
         end
       end
     end

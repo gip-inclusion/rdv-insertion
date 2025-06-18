@@ -6,7 +6,8 @@
           select(
             "user", "status", options_for_select_status(@statuses_count),
             { prompt: "Filtrer par statut" },
-            class: "form-select js-status-selector"
+            class: "form-select js-status-selector",
+            id: "rdvi_index-nav_filter-status"
           )
         %>
         <% selected_status = options_for_select_status(@statuses_count).find { |statut| statut[1] == params[:status] }%>
@@ -29,7 +30,8 @@
           "referent_id",
           options_for_select_referent(@referents_list),
           { prompt: "Filtrer par référent" },
-          class: "form-select js-referent-selector"
+          class: "form-select js-referent-selector",
+          id: "rdvi_index-nav_filter-referent"
         )
       %>
       <% selected_referent = @referents_list.find { |referent| referent.id == params[:referent_id].to_i }%>
@@ -56,7 +58,7 @@
         <% end %>
         <% if @current_category_configuration.present? %>
           <div class="mt-1">
-            <input type="checkbox" name="action_required" class="form-check-input"></input> Usagers avec intervention nécessaire
+            <input type="checkbox" name="action_required" class="form-check-input" id="rdvi_index-nav_filter-alarming-status"></input> Usagers avec intervention nécessaire
             <small>
               <i
                 class="ri-question-line"
@@ -68,7 +70,7 @@
         <% end %>
         <% @tags.sort_by(&:value).each do |tag| %>
           <div>
-            <input type="checkbox" name="tag_ids[]" <%= "checked" if params[:tag_ids]&.include?(tag.id.to_s) %> value="<%= tag.id %>" class="form-check-input"></input>
+            <input id="rdvi_index-nav_filter-tag-<%= tag.value.parameterize %>" type="checkbox" name="tag_ids[]" <%= "checked" if params[:tag_ids]&.include?(tag.id.to_s) %> value="<%= tag.id %>" class="form-check-input"></input>
             <%= tag.value %>
           </div>
         <% end if @tags.present? %>
@@ -96,7 +98,7 @@
     </h4>
 
     <div class="mt-2">
-      <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning) do %>
+      <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning, id: "rdvi_index-nav_redirect-rdvs") do %>
         <button class="btn btn-blue" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
           Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i>
         </button>
@@ -107,21 +109,18 @@
 
   <div class="col-4 d-flex flex-column justify-content-around align-items-end">
     <div class="d-flex flex-column align-items-end dropdown">
-      <button class="btn btn-blue dropdown-toggle mb-2" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+      <button class="btn btn-blue dropdown-toggle mb-2" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" id="rdvi_index-nav_create-user">
         Créer usager(s)
       </button>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
         <li>
-          <%= link_to(new_structure_user_path, class: "dropdown-item") do %>
+          <%= link_to(new_structure_user_path, class: "dropdown-item", id: "rdvi_index-nav_create-one-user") do %>
             Créer un usager
           <% end %>
         </li>
         <li>
-          <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "dropdown-item") do %>
+          <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "dropdown-item", id: "rdvi_index-nav_upload-users") do %>
             Charger fichier usagers
-            <span class="badge background-violet ms-2">
-              Nouveau
-            </span>
           <% end %>
         </li>
       </ul>
@@ -131,7 +130,7 @@
             <button class="btn btn-blue-out">Configurer une organisation</button>
           <% end %>
         <% else %>
-          <%= link_to(organisation_category_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
+          <%= link_to(organisation_category_configurations_path(@organisation), class: "btn btn-blue-out mb-2", id: "rdvi_index-nav_config-orga") do %>
             Configurer l'organisation
           <% end %>
         <% end %>
@@ -139,7 +138,7 @@
     </div>
     <% if @current_category_configuration.present? %>
       <div class="d-flex flex-column align-items-end dropdown">
-        <%= link_to(new_structure_batch_action_path(motif_category_id: @current_motif_category.id), class: "btn btn-blue") do %>
+        <%= link_to(new_structure_batch_action_path(motif_category_id: @current_motif_category.id), class: "btn btn-blue", id: "rdvi_index-nav_send-invitations-uninvited") do %>
           Envoyer des invitations aux non-invités
         <% end %>
       </div>
