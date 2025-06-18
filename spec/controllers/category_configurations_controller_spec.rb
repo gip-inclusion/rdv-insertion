@@ -141,18 +141,43 @@ describe CategoryConfigurationsController do
       expect(response.body).to match(/Créer configuration/)
     end
 
-    it "displays the file_configurations of the department" do
-      get :new, params: new_params
+    describe "file_configurations" do
+      let!(:organisation_agent_belongs_to) { create(:organisation, department: department, agents: [agent]) }
+      let!(:organisation_agent_belongs_to_another_department) do
+        create(:organisation, department: create(:department), agents: [agent])
+      end
+      let!(:organisation_agent_does_not_belong_to) { create(:organisation, department: create(:department)) }
+      let!(:config_of_organisation_agent_belongs_to) do
+        create(:category_configuration, organisation: organisation_agent_belongs_to)
+      end
+      let!(:config_of_organisation_agent_belongs_to_another_department) do
+        create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
+      end
+      let!(:config_of_organisation_agent_does_not_belong_to) do
+        create(:category_configuration, organisation: organisation_agent_does_not_belong_to)
+      end
 
-      expect(response.body).to match(
-        "category_configuration_file_configuration_#{category_configuration.file_configuration.id}"
-      )
-      expect(response.body).to match(
-        "category_configuration_file_configuration_#{another_configuration.file_configuration.id}"
-      )
-      expect(response.body).not_to match(
-        "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
-      )
+      it "displays the file_configurations of the department" do
+        get :new, params: new_params
+
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{category_configuration.file_configuration.id}"
+        )
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{config_of_organisation_agent_belongs_to.file_configuration.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{
+            config_of_organisation_agent_belongs_to_another_department.file_configuration.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{
+            config_of_organisation_agent_does_not_belong_to.file_configuration.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
+        )
+      end
     end
 
     context "when not authorized because not admin" do
@@ -194,18 +219,43 @@ describe CategoryConfigurationsController do
       expect(unescaped_response_body).to include("Modifier \"#{category_configuration.motif_category_name}\"")
     end
 
-    it "displays the file_configurations of the department" do
-      get :edit, params: edit_params
+    describe "file_configurations" do
+      let!(:organisation_agent_belongs_to) { create(:organisation, department: department, agents: [agent]) }
+      let!(:organisation_agent_belongs_to_another_department) do
+        create(:organisation, department: create(:department), agents: [agent])
+      end
+      let!(:organisation_agent_does_not_belong_to) { create(:organisation, department: create(:department)) }
+      let!(:config_of_organisation_agent_belongs_to) do
+        create(:category_configuration, organisation: organisation_agent_belongs_to)
+      end
+      let!(:config_of_organisation_agent_belongs_to_another_department) do
+        create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
+      end
+      let!(:config_of_organisation_agent_does_not_belong_to) do
+        create(:category_configuration, organisation: organisation_agent_does_not_belong_to)
+      end
 
-      expect(response.body).to match(
-        "category_configuration_file_configuration_#{category_configuration.file_configuration.id}"
-      )
-      expect(response.body).to match(
-        "category_configuration_file_configuration_#{another_configuration.file_configuration.id}"
-      )
-      expect(response.body).not_to match(
-        "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
-      )
+      it "displays the file_configurations of the department" do
+        get :edit, params: edit_params
+
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{category_configuration.file_configuration.id}"
+        )
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{config_of_organisation_agent_belongs_to.file_configuration.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{
+            config_of_organisation_agent_belongs_to_another_department.file_configuration.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{
+            config_of_organisation_agent_does_not_belong_to.file_configuration.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
+        )
+      end
     end
 
     context "when not authorized because not admin" do
