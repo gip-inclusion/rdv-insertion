@@ -57,9 +57,8 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def cnaf_data_changed_matching_user_attribute?(attribute)
-    return false unless cnaf_data[attribute.to_s] && matching_user
-
-    cnaf_data[attribute.to_s] != matching_user.attribute_in_database(attribute.to_s)
+    cnaf_data[attribute.to_s] && matching_user &&
+      cnaf_data[attribute.to_s] != matching_user.attribute_in_database(attribute.to_s)
   end
 
   def cnaf_data_changed_row_attribute?(attribute)
@@ -289,12 +288,10 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def format_cnaf_data(cnaf_data)
-    formatted_data = {
+    {
       "phone_number" => PhoneNumberHelper.format_phone_number(cnaf_data["phone_number"]),
-      "email" => cnaf_data["email"]&.squish
-    }
-
-    formatted_data.compact_blank
+      "email" => cnaf_data["email"]
+    }.compact_blank.transform_values(&:squish)
   end
 
   def retrieve_organisation_by_id(organisation_id)
