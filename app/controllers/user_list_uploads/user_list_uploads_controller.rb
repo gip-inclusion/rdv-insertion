@@ -76,7 +76,7 @@ module UserListUploads
     end
 
     def enrich_with_cnaf_data_params
-      params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }]])
+      params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number] }]])
     end
 
     def set_file_configuration

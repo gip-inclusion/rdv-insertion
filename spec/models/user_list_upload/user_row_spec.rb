@@ -282,8 +282,7 @@ describe UserListUpload::UserRow do
         tag_values: [" tag1 ", "tag2 "],
         cnaf_data: {
           "phone_number" => "0687654321",
-          "email" => "test@example.com",
-          "rights_opening_date" => "2023-01-01"
+          "email" => "test@example.com"
         }
       )
     end
@@ -316,8 +315,7 @@ describe UserListUpload::UserRow do
     it "formats cnaf data" do
       expect(user_row.reload.cnaf_data).to include(
         "phone_number" => "+33687654321",
-        "email" => "test@example.com",
-        "rights_opening_date" => "2023-01-01"
+        "email" => "test@example.com"
       )
     end
   end

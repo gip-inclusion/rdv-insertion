@@ -92,15 +92,9 @@ export default class extends Controller {
       phoneInput.name = "rows_cnaf_data[][cnaf_data][phone_number]"
       phoneInput.value = row.cnaf_data.phone_number
 
-      const dateInput = document.createElement("input")
-      dateInput.type = "hidden"
-      dateInput.name = "rows_cnaf_data[][cnaf_data][rights_opening_date]"
-      dateInput.value = row.cnaf_data.rights_opening_date
-
       this.formTarget.appendChild(idInput)
       this.formTarget.appendChild(emailInput)
       this.formTarget.appendChild(phoneInput)
-      this.formTarget.appendChild(dateInput)
     })
 
   }
@@ -127,8 +121,7 @@ export default class extends Controller {
           id: userRow.id,
           cnaf_data: {
             email: parsedCnafData.email || "",
-            phone_number: parsedCnafData.phoneNumber || "",
-            rights_opening_date: parsedCnafData.rightsOpeningDate || ""
+            phone_number: parsedCnafData.phoneNumber || ""
           }
         })
       }
@@ -155,7 +148,6 @@ export default class extends Controller {
   #readFile(file) {
     const expectedContactsColumnNames = [
       "MATRICULE",
-      "DATE DEBUT DROITS - DEVOIRS",
       "NUMERO TELEPHONE DOSSIER",
       "NUMERO TELEPHONE 2 DOSSIER",
       "ADRESSE ELECTRONIQUE DOSSIER",
