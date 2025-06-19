@@ -128,8 +128,9 @@
   width: calc(100% - 2px);
   height: calc(100% - 10px);
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  padding-left: 10px;
 
   i {
     position: absolute;

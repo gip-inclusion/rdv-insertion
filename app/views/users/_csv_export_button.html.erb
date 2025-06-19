@@ -1,5 +1,5 @@
 <button class="btn btn-blue-out dropdown-toggle mb-2" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
-  <i class="ri-download-line"></i> Exporter au format CSV
+  Exporter
 </button>
 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton" data-turbo-prefetch="false">
   <li>
@@ -8,7 +8,7 @@
           class: "dropdown-item",
           **tooltip_attributes(content: "Les usagers correspondant aux filtres actuels seront exportés", placement: "bottom")
         ) do %>
-      Export des usagers
+      Exporter les données des usagers (.CSV)
     <% end %>
   </li>
   <li>
@@ -17,7 +17,7 @@
           class: "dropdown-item",
           **tooltip_attributes(content: "Les rendez-vous des usagers correspondant aux filtres actuels seront exportés", placement: "bottom")
         ) do %>
-      Export des rendez-vous des usagers
+      Exporter les rendez-vous des usagers (.CSV)
     <% end %>
   </li>
 </ul>

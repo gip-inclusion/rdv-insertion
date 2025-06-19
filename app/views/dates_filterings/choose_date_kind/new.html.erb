@@ -4,7 +4,7 @@
       <div class="mt-2 input radio_button">
         <span class="radio w-100">
           <%= form.label "url", for: "url_invitation", class: "d-flex align-items-center" do %>
-            <%= form.radio_button "url", new_structure_invitation_dates_filtering_path(**url_params), id: "url_invitation", class: "radio_buttons big", checked: "checked" %>
+            <%= form.radio_button "url", new_structure_invitation_dates_filtering_path(**url_params), id: "url_invitation", class: "radio_buttons form-check-input big", checked: "checked" %>
             Filtrer par date d'invitation
           <% end %>
         </span>
@@ -12,7 +12,7 @@
       <div class="mt-2 input radio_button">
         <span class="radio w-100">
           <%= form.label "url", for: "url_convocation", class: "d-flex align-items-center" do %>
-            <%= form.radio_button "url", new_structure_convocation_dates_filtering_path(**url_params), id: "url_convocation", class: "radio_buttons big" %>
+            <%= form.radio_button "url", new_structure_convocation_dates_filtering_path(**url_params), id: "url_convocation", class: "radio_buttons form-check-input big" %>
             Filtrer par date de convocation
           <% end %>
         </span>
