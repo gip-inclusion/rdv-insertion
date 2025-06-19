@@ -15,6 +15,10 @@ class OrganisationPolicy < ApplicationPolicy
     configure?
   end
 
+  def edit?
+    configure?
+  end
+
   def create_and_invite_users?
     access?
   end

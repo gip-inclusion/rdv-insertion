@@ -8,19 +8,16 @@ class CategoryConfigurationsController < ApplicationController
     :email_to_notify_no_available_slots, :email_to_notify_rdv_changes
   ].freeze
 
-  include BackToListConcern
-
-  before_action :set_organisation, :authorize_organisation_category_configuration,
-                only: [:index, :new, :create, :show, :edit, :update, :destroy]
+  before_action :set_organisation, :authorize_organisation_configuration,
+                only: [:new, :create, :show, :edit, :update, :destroy]
   before_action :set_category_configuration, :set_file_configuration, :set_template,
                 only: [:show, :edit, :update, :destroy]
   before_action :set_department, :set_file_configurations, :set_authorized_motif_categories,
                 only: [:new, :create, :edit, :update]
-  before_action :set_back_to_users_list_url, :set_messages_configuration, :set_category_configurations, only: [:index]
 
   def index
-    @available_tags = (@department || @organisation.department).tags.distinct
-    @user_count_by_tag_id = user_count_by_tag_id
+    # We keep this action to redirect to the new /configuration page in case this url was saved by the agent
+    redirect_to organisation_configuration_path(params[:organisation_id])
   end
 
   def show; end
@@ -80,14 +77,6 @@ class CategoryConfigurationsController < ApplicationController
     @category_configuration = @organisation.category_configurations.find(params[:id])
   end
 
-  def set_category_configurations
-    @category_configurations = @organisation.category_configurations.includes([:motif_category])
-  end
-
-  def set_messages_configuration
-    @messages_configuration = @organisation.messages_configuration
-  end
-
   def set_file_configuration
     @file_configuration = @category_configuration.file_configuration
   end
@@ -112,17 +101,7 @@ class CategoryConfigurationsController < ApplicationController
     @authorized_motif_categories = MotifCategoryPolicy.authorized_for_organisation(@organisation)
   end
 
-  def user_count_by_tag_id
-    User.joins(:tags,
-               :organisations)
-        .where(tags: { id: @available_tags.pluck(:id) })
-        .where(organisations: { id: @organisation.id })
-        .distinct
-        .group(:tag_id)
-        .count
-  end
-
-  def authorize_organisation_category_configuration
+  def authorize_organisation_configuration
     authorize @organisation, :configure?
   end
 end
