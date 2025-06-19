@@ -32,14 +32,26 @@ export default class extends Controller {
       return
     }
 
-    this.rowsCnafData = []
+    this.matchedCnafData = []
 
-    this.#retrieveRowsCnafData()
+    this.#retrieveMatchedCnafData()
 
-    if (this.rowsCnafData.length === 0) {
+    if (this.cnafFileData.length === 0) {
       safeSwal({
-        title: "Aucun usager trouvé",
-        text: "Aucun usager trouvé dans le fichier CNAF",
+        title: "Fichier CNAF vide",
+        text: "Le fichier CNAF ne contient aucune donnée",
+        icon: "warning",
+        confirmButtonText: "OK"
+      })
+      this.inputTarget.value = ""
+      this.#setLoadingState(false)
+      return
+    }
+
+    if (this.matchedCnafData.length === 0) {
+      safeSwal({
+        title: "Aucune correspondance trouvée",
+        text: "Le fichier CNAF ne contient aucune donnée correspondant aux usagers de votre liste",
         icon: "warning",
         confirmButtonText: "OK"
       })
@@ -63,7 +75,7 @@ export default class extends Controller {
     // we make sure to remove existing inputs from previous submissions
     this.#removeExistingInputs()
 
-    this.rowsCnafData.forEach((row) => {
+    this.matchedCnafData.forEach((row) => {
       const idInput = document.createElement("input")
       idInput.type = "hidden"
       idInput.name = "rows_cnaf_data[][id]"
@@ -80,15 +92,9 @@ export default class extends Controller {
       phoneInput.name = "rows_cnaf_data[][cnaf_data][phone_number]"
       phoneInput.value = row.cnaf_data.phone_number
 
-      const dateInput = document.createElement("input")
-      dateInput.type = "hidden"
-      dateInput.name = "rows_cnaf_data[][cnaf_data][rights_opening_date]"
-      dateInput.value = row.cnaf_data.rights_opening_date
-
       this.formTarget.appendChild(idInput)
       this.formTarget.appendChild(emailInput)
       this.formTarget.appendChild(phoneInput)
-      this.formTarget.appendChild(dateInput)
     })
 
   }
@@ -102,22 +108,20 @@ export default class extends Controller {
     return this.inputTarget.accept.split(",").map((format) => format.trim())
   }
 
-  #retrieveRowsCnafData() {
+  #retrieveMatchedCnafData() {
     this.userRows.forEach((userRow) => {
       if (!userRow.affiliation_number && !userRow.nir) {
         return
       }
-
       const matchingCnafDataRow = this.#findCnafDataByNir(userRow.nir) || this.#findCnafDataByAffiliationNumber(userRow.affiliation_number);
 
       if (matchingCnafDataRow) {
         const parsedCnafData = parseContactsData(matchingCnafDataRow)
-        this.rowsCnafData.push({
+        this.matchedCnafData.push({
           id: userRow.id,
           cnaf_data: {
             email: parsedCnafData.email || "",
-            phone_number: parsedCnafData.phoneNumber || "",
-            rights_opening_date: parsedCnafData.rightsOpeningDate || ""
+            phone_number: parsedCnafData.phoneNumber || ""
           }
         })
       }
@@ -127,24 +131,23 @@ export default class extends Controller {
   #findCnafDataByNir(nir) {
     if (!nir) return null;
 
-    return this.cnafDataRows.find((cnafDataRow) =>
-      cnafDataRow.NIR && nir.slice(0, 13) === cnafDataRow.NIR.slice(0, 13)
+    return this.cnafFileData.find((cnafFileDataRow) =>
+      cnafFileDataRow.NIR && nir.slice(0, 13) === cnafFileDataRow.NIR.slice(0, 13)
     );
   }
 
   #findCnafDataByAffiliationNumber(affiliationNumber) {
     if (!affiliationNumber) return null;
 
-    return this.cnafDataRows.find((cnafDataRow) =>
-      cnafDataRow.MATRICULE &&
-      affiliationNumber.toString().padStart(7, "0") === cnafDataRow.MATRICULE.toString().padStart(7, "0")
+    return this.cnafFileData.find((cnafFileDataRow) =>
+      cnafFileDataRow.MATRICULE &&
+      affiliationNumber.toString().padStart(7, "0") === cnafFileDataRow.MATRICULE.toString().padStart(7, "0")
     );
   }
 
   #readFile(file) {
     const expectedContactsColumnNames = [
       "MATRICULE",
-      "DATE DEBUT DROITS - DEVOIRS",
       "NUMERO TELEPHONE DOSSIER",
       "NUMERO TELEPHONE 2 DOSSIER",
       "ADRESSE ELECTRONIQUE DOSSIER",
@@ -164,7 +167,7 @@ export default class extends Controller {
           displayMissingColumnsWarning(missingColumnNames);
           resolve(false);
         } else {
-          this.cnafDataRows = XLSX.utils.sheet_to_json(sheet, { raw: false });
+          this.cnafFileData = XLSX.utils.sheet_to_json(sheet, { raw: false });
           resolve(true);
         }
       };

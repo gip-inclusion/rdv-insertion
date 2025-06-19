@@ -1,5 +1,5 @@
 const updateExistingUserContactsData = async (user, parsedUserContactsData) => {
-  ["email", "rightsOpeningDate"].forEach((attributeName) => {
+  ["email"].forEach((attributeName) => {
     const attribute = parsedUserContactsData[attributeName];
     if (attribute && user[attributeName] !== attribute) {
       user[`${attributeName}New`] = attribute;
@@ -17,11 +17,9 @@ const updateExistingUserContactsData = async (user, parsedUserContactsData) => {
 const updateNewUserContactsData = (user, parsedUserContactsData) => {
   const { phoneNumber } = parsedUserContactsData;
   const { email } = parsedUserContactsData;
-  const { rightsOpeningDate } = parsedUserContactsData;
 
   if (phoneNumber) user.updatePhoneNumber(phoneNumber);
   if (email) user.email = email;
-  if (rightsOpeningDate) user.rightsOpeningDate = rightsOpeningDate;
 
   return user;
 };
