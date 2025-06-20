@@ -231,6 +231,10 @@ class User < ApplicationRecord
     super
   end
 
+  def retrievable_in_france_travail?
+    user_has_nir_and_birth_date? || user_has_a_valid_france_travail_id?
+  end
+
   private
 
   def import_associations_from_rdv_solidarites
@@ -260,10 +264,6 @@ class User < ApplicationRecord
 
   def format_nir
     self.nir = NirHelper.format_nir(nir)
-  end
-
-  def retrievable_in_france_travail?
-    user_has_nir_and_birth_date? || user_has_a_valid_france_travail_id?
   end
 
   def user_has_a_valid_france_travail_id?
