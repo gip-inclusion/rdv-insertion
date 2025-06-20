@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   include CrispConcern
   include NotificationCenterConcern
   include PaperTrailConcern
+  include AgentLoggingConcern
 
   protect_from_forgery with: :exception
   before_action :set_sentry_context
