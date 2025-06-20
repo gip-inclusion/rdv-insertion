@@ -37,7 +37,7 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_user_for_france_travail_webhook?
-    user.user_retrievable_in_france_travail? && !user.marked_for_rgpd_destruction?
+    user.retrievable_in_france_travail? && !user.marked_for_rgpd_destruction?
   end
 
   def eligible_organisation_for_france_travail_webhook?
