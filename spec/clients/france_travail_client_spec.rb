@@ -82,7 +82,9 @@ describe FranceTravailClient do
     end
 
     it "sends a POST request to France Travail API with France Travail ID endpoint" do
-      response = described_class.retrieve_user_token_by_france_travail_id(payload: payload_with_france_travail_id, headers: headers)
+      response = described_class.retrieve_user_token_by_france_travail_id(
+        payload: payload_with_france_travail_id, headers: headers
+      )
       expect(response.status).to eq(200)
     end
   end
