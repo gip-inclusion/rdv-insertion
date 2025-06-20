@@ -294,7 +294,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       produces "application/json"
       description "Recherche des usagers dans une organisation.
       La recherche s'effectue sur les champs suivants : prénom, nom, email, téléphone et numéro d'affiliation.
-      Les résultats sont paginés avec #{Api::V1::UsersController::USERS_PER_PAGE} usagers par page."
+      Les résultats sont paginés avec 30 usagers par page."
 
       parameter name: :search_query, in: :query, type: :string,
                 description: "Terme de recherche pour filtrer les usagers",

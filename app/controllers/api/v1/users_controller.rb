@@ -14,9 +14,6 @@ module Api
         }
       ].freeze
 
-      USERS_PER_PAGE = 30
-      SEARCHABLE_FIELDS = %w[first_name last_name email phone_number affiliation_number].freeze
-
       before_action :set_organisation
       before_action :set_users_params, :validate_users_params, only: [:create_and_invite_many]
       before_action :validate_user_params, only: [:create_and_invite, :create]
@@ -85,8 +82,8 @@ module Api
       # this endpoint allows to invite a user synchronously
       def invite
         @invitations, @invitation_errors = [[], []]
-        invite_user_from_request("sms") if @user.phone_number_is_mobile?
-        invite_user_from_request("email") if @user.email?
+        invite_user_by("sms") if @user.phone_number_is_mobile?
+        invite_user_by("email") if @user.email?
         return render_errors(@invitation_errors) unless @invitation_errors.empty?
 
         render json: {
@@ -100,20 +97,8 @@ module Api
 
       def search_users
         users = @organisation.users.active
-        users = apply_search_filter(users) if search_params[:search_query].present?
-        users.page(search_params[:page]).per(USERS_PER_PAGE)
-      end
-
-      def apply_search_filter(users)
-        query = "%#{search_params[:search_query]}%"
-        search_conditions = SEARCHABLE_FIELDS.map { |field| "#{field} ILIKE ?" }.join(" OR ")
-        search_values = Array.new(SEARCHABLE_FIELDS.length, query)
-
-        users.where(search_conditions, *search_values)
-      end
-
-      def search_params
-        params.permit(:search_query, :page)
+        users = users.search_by_text(params[:search_query]).reorder("") if params[:search_query].present?
+        users.page(params[:page]).per(30)
       end
 
       def set_user
@@ -128,19 +113,6 @@ module Api
 
       def invite_user_by(format)
         invite_user_service = call_invite_user_service_by(format)
-        unless invite_user_service.success?
-          @invitation_errors <<
-            "Erreur en envoyant l'invitation par #{format}: #{invite_user_service.errors.join(', ')}"
-        end
-        @invitations << invite_user_service.invitation
-      end
-
-      def invite_user_from_request(format)
-        invitation_attrs = (invitation_params[:invitation] || {}).except(:motif_category)
-        motif_category_attrs = invitation_params.dig(:invitation, :motif_category) || {}
-
-        invite_user_service = call_invite_user_service_by(format, invitation_attrs, motif_category_attrs)
-
         unless invite_user_service.success?
           @invitation_errors <<
             "Erreur en envoyant l'invitation par #{format}: #{invite_user_service.errors.join(', ')}"
@@ -179,11 +151,13 @@ module Api
       end
 
       def invitation_attributes
-        (user_params[:invitation] || {}).except(:motif_category)
+        source_params = defined?(invitation_params) && invitation_params.present? ? invitation_params : user_params
+        (source_params[:invitation] || {}).except(:motif_category)
       end
 
       def motif_category_attributes
-        user_params.dig(:invitation, :motif_category) || {}
+        source_params = defined?(invitation_params) && invitation_params.present? ? invitation_params : user_params
+        source_params.dig(:invitation, :motif_category) || {}
       end
 
       def user_params
