@@ -35,7 +35,7 @@ describe FranceTravailApi::RetrieveUserToken do
         let(:response_body) { { "jetonUsager" => user_token, "codeRetour" => "S001" }.to_json }
 
         before do
-          allow(france_travail_client).to receive(:retrieve_user_token)
+          allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
             .with(payload: expected_payload, headers: headers)
             .and_return(OpenStruct.new(success?: true, body: response_body))
         end
@@ -58,7 +58,7 @@ describe FranceTravailApi::RetrieveUserToken do
         let(:response_body) { { "jetonUsager" => nil, "codeRetour" => "R001" }.to_json }
 
         before do
-          allow(france_travail_client).to receive(:retrieve_user_token)
+          allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
             .with(payload: expected_payload, headers: headers)
             .and_return(OpenStruct.new(success?: false, status: 400, body: response_body))
         end
@@ -84,7 +84,7 @@ describe FranceTravailApi::RetrieveUserToken do
         let(:response_body) { { "jetonUsager" => user_token, "codeRetour" => "S001" }.to_json }
 
         before do
-          allow(france_travail_client).to receive(:retrieve_user_token)
+          allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
             .with(payload: expected_payload, headers: headers)
             .and_return(OpenStruct.new(success?: true, body: response_body))
         end
@@ -109,7 +109,7 @@ describe FranceTravailApi::RetrieveUserToken do
         let(:response_body) { { "jetonUsager" => user_token, "codeRetour" => "S001" }.to_json }
 
         before do
-          allow(france_travail_client).to receive(:retrieve_user_token)
+          allow(france_travail_client).to receive(:retrieve_user_token_by_france_travail_id)
             .with(payload: expected_payload, headers: headers)
             .and_return(OpenStruct.new(success?: true, body: response_body))
         end

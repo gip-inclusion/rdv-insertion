@@ -261,5 +261,18 @@ class User < ApplicationRecord
   def format_nir
     self.nir = NirHelper.format_nir(nir)
   end
+
+  def retrievable_in_france_travail?
+    user_has_nir_and_birth_date? || user_has_a_valid_france_travail_id?
+  end
+
+  def user_has_a_valid_france_travail_id?
+    # Valid France Travail ID is exactly 11 digits
+    france_travail_id? && france_travail_id.match?(/\A\d{11}\z/)
+  end
+
+  def user_has_nir_and_birth_date?
+    birth_date? && nir?
+  end
 end
 # rubocop:enable Metrics/ClassLength

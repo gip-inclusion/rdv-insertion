@@ -23,7 +23,7 @@ module Participation::FranceTravailWebhooks
   def send_france_travail_upsert_webhook
     OutgoingWebhooks::FranceTravail::UpsertParticipationJob.perform_later(
       participation_id: id,
-      timestamp: france_travail_id? ? updated_at : created_at
+      timestamp: updated_at
     )
   end
 
@@ -37,18 +37,7 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_user_for_france_travail_webhook?
-    (user_has_a_valid_nir? || user_has_a_valid_france_travail_id?) && !user.marked_for_rgpd_destruction?
-  end
-
-  def user_has_a_valid_france_travail_id?
-    return false if user.france_travail_id.blank?
-
-    # Valid France Travail ID is exactly 11 digits
-    user.france_travail_id.match?(/\A\d{11}\z/)
-  end
-
-  def user_has_a_valid_nir?
-    user.birth_date? && user.nir?
+    user.user_retrievable_in_france_travail? && !user.marked_for_rgpd_destruction?
   end
 
   def eligible_organisation_for_france_travail_webhook?

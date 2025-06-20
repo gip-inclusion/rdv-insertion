@@ -16,7 +16,7 @@ module FranceTravailApi
     private
 
     def send_request!
-      response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers: headers)
+      response = retrieve_user_token
       @response_body = JSON.parse(response.body.force_encoding("UTF-8"))
 
       if response.success? && !no_matching_user?(response)
@@ -28,6 +28,14 @@ module FranceTravailApi
           "Erreur lors de l'appel à l'api recherche-usager FT.\n" \
           "Status: #{response.status}\n Body: #{response.body.force_encoding('UTF-8')}"
         )
+      end
+    end
+
+    def retrieve_user_token
+      if @user.nir.present? && @user.birth_date.present?
+        FranceTravailClient.retrieve_user_token_by_nir(payload: user_payload, headers: headers)
+      else
+        FranceTravailClient.retrieve_user_token_by_france_travail_id(payload: user_payload, headers: headers)
       end
     end
 

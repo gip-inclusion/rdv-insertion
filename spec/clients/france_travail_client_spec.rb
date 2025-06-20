@@ -53,7 +53,7 @@ describe FranceTravailClient do
     end
   end
 
-  describe "#user_token" do
+  describe "#retrieve_user_token_by_nir" do
     before do
       stub_request(
         :post,
@@ -63,8 +63,26 @@ describe FranceTravailClient do
         .to_return(status: 200, body: "", headers: {})
     end
 
-    it "sends a POST request to France Travail API" do
-      response = described_class.retrieve_user_token(payload: payload, headers: headers)
+    it "sends a POST request to France Travail API with NIR endpoint" do
+      response = described_class.retrieve_user_token_by_nir(payload: payload, headers: headers)
+      expect(response.status).to eq(200)
+    end
+  end
+
+  describe "#retrieve_user_token_by_france_travail_id" do
+    let(:payload_with_france_travail_id) { { numeroFranceTravail: "12345678901" } }
+
+    before do
+      stub_request(
+        :post,
+        "#{ENV['FRANCE_TRAVAIL_API_URL']}/partenaire/rechercher-usager/v2/usagers/par-numero-francetravail"
+      )
+        .with(body: payload_with_france_travail_id.to_json, headers: headers)
+        .to_return(status: 200, body: "", headers: {})
+    end
+
+    it "sends a POST request to France Travail API with France Travail ID endpoint" do
+      response = described_class.retrieve_user_token_by_france_travail_id(payload: payload_with_france_travail_id, headers: headers)
       expect(response.status).to eq(200)
     end
   end
