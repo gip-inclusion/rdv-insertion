@@ -51,7 +51,7 @@ describe "Admins can authorize basic agents to export csvs", :js do
       )
       expect(basic_agent.reload.agent_roles).to all(have_attributes(authorized_to_export_csv: false))
 
-      expect(page).to have_current_path(organisation_category_configurations_path(organisation))
+      expect(page).to have_current_path(organisation_configuration_path(organisation))
     end
   end
 end
