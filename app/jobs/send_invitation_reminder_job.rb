@@ -41,7 +41,12 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def invitation_already_sent_today?
-    @follow_up.invitations.where(format: @invitation_format).delivered.where("created_at > ?", 24.hours.ago).present?
+    @follow_up
+      .invitations
+      .pending_or_delivered
+      .where(format: @invitation_format)
+      .where("created_at > ?", 24.hours.ago)
+      .present?
   end
 
   def notify_non_eligible_for_reminder
