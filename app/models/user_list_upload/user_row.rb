@@ -7,7 +7,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   USER_ATTRIBUTES = %i[
     email phone_number title first_name last_name affiliation_number nir birth_date department_internal_id
-    france_travail_id role address
+    france_travail_id role address rights_opening_date
   ].freeze
 
   encrypts :nir
@@ -290,8 +290,7 @@ class UserListUpload::UserRow < ApplicationRecord
   def format_cnaf_data(cnaf_data)
     {
       "phone_number" => PhoneNumberHelper.format_phone_number(cnaf_data["phone_number"]),
-      "email" => cnaf_data["email"],
-      "rights_opening_date" => cnaf_data["rights_opening_date"]
+      "email" => cnaf_data["email"]
     }.compact_blank.transform_values(&:squish)
   end
 

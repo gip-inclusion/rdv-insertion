@@ -20,8 +20,11 @@ module UserListUploads
       authorize @user_list_upload
 
       if @user_list_upload.update_rows(enrich_with_cnaf_data_params)
-        flash[:success] = "Les données de #{@user_list_upload.user_rows_enriched_with_cnaf_data.count} usagers" \
-                          " ont été mises à jour avec les données du fichier importé"
+        flash[:success] = if @user_list_upload.user_rows_enriched_with_cnaf_data.any?
+                            cnaf_data_enriched_message
+                          else
+                            no_changes_message
+                          end
         turbo_stream_redirect(user_list_upload_path(@user_list_upload))
       else
         turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
@@ -73,7 +76,7 @@ module UserListUploads
     end
 
     def enrich_with_cnaf_data_params
-      params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number, :rights_opening_date] }]])
+      params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number] }]])
     end
 
     def set_file_configuration
@@ -84,6 +87,15 @@ module UserListUploads
           # we take the file_configuration linked to the largest number of category_configurations in this case
           @all_configurations.map(&:file_configuration).tally.max_by { |_file_config, count| count }.first
         end
+    end
+
+    def cnaf_data_enriched_message
+      "Fichier CNAF chargé avec succès. Les nouvelles données ont été intégrées aux dossiers usagers ci-dessous."
+    end
+
+    def no_changes_message
+      "Fichier CNAF chargé avec succès. Les données correspondent aux usagers mais aucune modification
+        n'a été apportée (les informations étaient déjà à jour)."
     end
   end
 end
