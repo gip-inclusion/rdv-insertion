@@ -39,7 +39,7 @@ module Invitations
     end
 
     def invitation_already_sent_today?
-      follow_up.invitations.where(format: invitation.format).where("created_at > ?", 24.hours.ago).any?
+      follow_up.invitations.delivered.where(format: invitation.format).where("created_at > ?", 24.hours.ago).any?
     end
 
     def validate_user_title_presence

@@ -125,16 +125,18 @@ describe SendInvitationReminderJob do
   end
 
   context "when an invitation has already been sent in the last 24hrs in the same format" do
-    let!(:invitation) { create(:invitation, created_at: Time.zone.parse("2022-05-04 08:00"), follow_up: follow_up) }
+    let!(:invitation) { create(:invitation, :delivered, created_at: Time.zone.parse("2022-05-04 08:00"), follow_up: follow_up) }
 
-    it "does not instanciate an invitation" do
-      expect(Invitation).not_to receive(:new)
-      subject
-    end
-
-    it "does not save and send the invitation" do
-      expect(Invitations::SaveAndSend).not_to receive(:call)
-      subject
+    context "when the invitation is delivered" do
+      it "does not instanciate an invitation" do
+        expect(Invitation).not_to receive(:new)
+        subject
+      end
+  
+      it "does not save and send the invitation" do
+        expect(Invitations::SaveAndSend).not_to receive(:call)
+        subject
+      end
     end
   end
 

@@ -203,11 +203,11 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def previously_invited?
-    previous_invitations.any?
+    previous_invitations.delivered.any?
   end
 
   def previously_invited_at
-    previous_invitations.max_by(&:created_at).created_at
+    previous_invitations.delivered.max_by(&:created_at).created_at
   end
 
   def previous_invitations

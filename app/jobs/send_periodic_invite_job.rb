@@ -42,6 +42,7 @@ class SendPeriodicInviteJob < ApplicationJob
 
   def invitation_already_sent_today?
     @invitation.follow_up.invitations
+               .delivered
                .where(format: @format)
                .where("created_at > ?", 24.hours.ago)
                .any?

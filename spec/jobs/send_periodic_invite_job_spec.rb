@@ -72,8 +72,8 @@ describe SendPeriodicInviteJob do
         end
       end
 
-      context "when the user has already been invited in this category less than 1 day ago" do
-        let!(:other_invitation) { create(:invitation, follow_up:, format:, created_at: 2.hours.ago) }
+      context "when the user has already received an invitation in this category less than 1 day ago" do
+        let!(:other_invitation) { create(:invitation, :delivered, follow_up:, format:, created_at: 2.hours.ago) }
 
         it "does not send an invitation" do
           expect(Invitations::SaveAndSend).not_to receive(:call)
