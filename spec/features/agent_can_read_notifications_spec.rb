@@ -76,7 +76,8 @@ describe "Agents can read notifications", :js do
 
   context "category configuration has rdv_with_referents set to true" do
     let!(:category_configuration) do
-      create(:category_configuration, organisation: organisation, motif_category: motif_category, rdv_with_referents: true)
+      create(:category_configuration, organisation: organisation, motif_category: motif_category,
+                                      rdv_with_referents: true)
     end
 
     before do
