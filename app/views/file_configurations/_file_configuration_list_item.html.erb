@@ -15,11 +15,19 @@
       <% end %>
     </div>
     <div class="d-flex flex-column justify-content-center">
-      <%= link_to(organisation_file_configuration_path(organisation, file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
+      <%= link_to(file_configuration_path(file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
         <button class="btn btn-blue file-configuration-modal-button mt-2 mb-3">Voir le détail</button>
       <% end %>
-      <%= link_to(edit_organisation_file_configuration_path(organisation, file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
-        <button class="btn btn-blue file-configuration-modal-button mt-2 mb-3">Modifier</button>
+      <% if policy(file_configuration).edit? %>
+        <%= link_to(edit_file_configuration_path(file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
+          <button class="btn btn-blue file-configuration-modal-button mt-2 mb-3">Modifier</button>
+        <% end %>
+      <% else %>
+        <div <%= tooltip(content: "Vous n'avez pas les droits pour modifier ce template de fichier car vous n'êtes pas administrateur de toutes les organisations qui l'utilisent") %>>
+          <button class="btn btn-blue file-configuration-modal-button mt-2 mb-3" disabled>
+            Modifier
+          </button>
+        </div>
       <% end %>
     </div>
   </div>
