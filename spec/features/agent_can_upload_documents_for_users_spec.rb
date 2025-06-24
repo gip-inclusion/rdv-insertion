@@ -33,7 +33,7 @@ describe "Agents can upload documents for users", :js do
 
       it "redirects right away" do
         visit department_user_parcours_path(user_id: user.id, department_id: department.id)
-        expect(page).to have_current_path(organisation_users_path(organisation))
+        expect(page).to have_current_path(department_users_path(department))
       end
     end
 
@@ -42,7 +42,7 @@ describe "Agents can upload documents for users", :js do
 
       it "redirects right away" do
         visit department_user_parcours_path(user_id: user.id, department_id: department.id)
-        expect(page).to have_current_path(organisation_users_path(organisation))
+        expect(page).to have_current_path(department_users_path(department))
       end
     end
 

@@ -22,7 +22,7 @@ module Users
       return if DepartmentPolicy.new(pundit_user, current_structure).parcours?(user: @user)
 
       flash[:error] = "Votre compte ne vous permet pas d'effectuer cette action"
-      redirect_to structure_user_path(@user.id)
+      redirect_to structure_users_path
     end
 
     def set_user
