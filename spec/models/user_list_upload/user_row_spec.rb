@@ -320,6 +320,27 @@ describe UserListUpload::UserRow do
     end
   end
 
+  describe "#nullify_edited_to_nil_values" do
+    let!(:matching_user) { create(:user, phone_number: "0612345678", email: "test@example.com") }
+
+    it "nullifies edited to nil values" do
+      create(
+        :user_row,
+        matching_user: matching_user,
+        phone_number: "[EDITED TO NULL]",
+        email: "[EDITED TO NULL]",
+        affiliation_number: "[EDITED TO NULL]"
+      )
+      user_row = described_class.last
+      expect(user_row.phone_number).to eq("[EDITED TO NULL]")
+      expect(user_row.email).to eq("[EDITED TO NULL]")
+      expect(user_row.affiliation_number).to eq("[EDITED TO NULL]")
+      expect(user_row.user.phone_number).to be_nil
+      expect(user_row.user.email).to be_nil
+      expect(user_row.user.affiliation_number).to be_nil
+    end
+  end
+
   describe "status methods" do
     let(:user_list_upload) { create(:user_list_upload) }
     let(:user_row) { create(:user_row, user_list_upload: user_list_upload) }
