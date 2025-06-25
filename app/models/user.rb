@@ -235,7 +235,6 @@ class User < ApplicationRecord
     nir_and_birth_date? || valid_france_travail_id?
   end
 
-
   def valid_france_travail_id?
     # Valid France Travail ID is exactly 11 digits
     france_travail_id? && france_travail_id.match?(/\A\d{11}\z/)
