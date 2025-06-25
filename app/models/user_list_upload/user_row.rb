@@ -203,15 +203,15 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def previously_invited?
-    previous_invitations.pending_or_delivered.any?
+    previous_invitations.any?
   end
 
   def previously_invited_at
-    previous_invitations.pending_or_delivered.max_by(&:created_at).created_at
+    previous_invitations.max_by(&:created_at).created_at
   end
 
   def previous_invitations
-    @previous_invitations ||= user.invitations.select do |invitation|
+    @previous_invitations ||= user.invitations.reject(&:delivery_failed?).select do |invitation|
       # we don't consider the user as invited here if the invitation has not been sent by email or sms
       invitation.format.in?(%w[email sms]) && invitation.motif_category_id == user_list_upload.motif_category_id
     end
