@@ -98,7 +98,7 @@ module Api
       def search_users
         users = @organisation.users.active
         users = users.search_by_text(params[:search_query]).reorder("") if params[:search_query].present?
-        users.page(params[:page]).per(30)
+        users.page(params[:page])
       end
 
       def set_user
@@ -120,15 +120,12 @@ module Api
         @invitations << invite_user_service.invitation
       end
 
-      def call_invite_user_service_by(format, custom_invitation_attrs = nil, custom_motif_category_attrs = nil)
-        invite_attrs = custom_invitation_attrs || invitation_attributes
-        motif_attrs = custom_motif_category_attrs || motif_category_attributes
-
+      def call_invite_user_service_by(format)
         InviteUser.call(
           user: @user,
           organisations: [@organisation],
-          motif_category_attributes: motif_attrs,
-          invitation_attributes: invite_attrs.merge(format: format)
+          motif_category_attributes: motif_category_attributes,
+          invitation_attributes: invitation_attributes.merge(format: format)
         )
       end
 
@@ -151,12 +148,12 @@ module Api
       end
 
       def invitation_attributes
-        source_params = defined?(invitation_params) && invitation_params.present? ? invitation_params : user_params
+        source_params = action_name == "invite" ? invitation_params : user_params
         (source_params[:invitation] || {}).except(:motif_category)
       end
 
       def motif_category_attributes
-        source_params = defined?(invitation_params) && invitation_params.present? ? invitation_params : user_params
+        source_params = action_name == "invite" ? invitation_params : user_params
         source_params.dig(:invitation, :motif_category) || {}
       end
 
