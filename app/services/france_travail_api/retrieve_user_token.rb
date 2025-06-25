@@ -33,23 +33,27 @@ module FranceTravailApi
 
     def retrieve_user_token
       if @user.nir.present? && @user.birth_date.present?
-        FranceTravailClient.retrieve_user_token_by_nir(payload: user_payload, headers: headers)
+        FranceTravailClient.retrieve_user_token_by_nir(payload: user_payload_by_nir, headers: headers)
+      elsif @user.france_travail_id.present?
+        FranceTravailClient.retrieve_user_token_by_france_travail_id(
+          payload: user_payload_by_france_travail_id, headers: headers
+        )
       else
-        FranceTravailClient.retrieve_user_token_by_france_travail_id(payload: user_payload, headers: headers)
+        raise "User #{@user.id} is not retrievable in France Travail"
       end
     end
 
-    def user_payload
-      if @user.nir.present? && @user.birth_date.present?
-        {
-          dateNaissance: @user.birth_date.to_s,
-          nir: @user.nir
-        }
-      elsif @user.france_travail_id.present?
-        {
-          numeroFranceTravail: @user.france_travail_id
-        }
-      end
+    def user_payload_by_nir
+      {
+        dateNaissance: @user.birth_date.to_s,
+        nir: @user.nir
+      }
+    end
+
+    def user_payload_by_france_travail_id
+      {
+        numeroFranceTravail: @user.france_travail_id
+      }
     end
 
     def headers
