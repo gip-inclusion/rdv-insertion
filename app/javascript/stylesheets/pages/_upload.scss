@@ -25,6 +25,31 @@
 .user-list-upload-table-container {
   max-height: 60vh;
   overflow-y: auto;
+
+  @media (min-height: 765px) {
+    max-height: 40vh;
+  }
+
+  @media (min-height: 815px) {
+    max-height: 45vh;
+  }
+
+  @media (min-height: 895px) {
+    max-height: 50vh;
+  }
+
+  @media (min-height: 1010px) {
+    max-height: 55vh;
+  }
+
+  @media (min-height: 1160px) {
+    max-height: 60vh;
+  }
+
+  @media (min-height: 1275px) {
+    max-height: 65vh;
+  }
+
 }
 
 .no-errors-user-rows-container {
