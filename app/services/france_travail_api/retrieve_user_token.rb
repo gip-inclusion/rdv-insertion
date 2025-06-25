@@ -32,7 +32,7 @@ module FranceTravailApi
     end
 
     def retrieve_user_token
-      if @user.nir.present? && @user.birth_date.present?
+      if @user.nir_and_birth_date?
         FranceTravailClient.retrieve_user_token_by_nir(payload: user_payload_by_nir, headers: headers)
       elsif @user.france_travail_id.present?
         FranceTravailClient.retrieve_user_token_by_france_travail_id(
