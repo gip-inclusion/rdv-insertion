@@ -9,6 +9,7 @@ module Api
 
       include AuthorizationConcern
       include Api::V1::PaperTrailConcern
+      include AgentLoggingConcern
 
       private
 
