@@ -32,6 +32,7 @@ class NotificationCenterController < ApplicationController
                                  .joins(:category_configuration)
                                  .preload(category_configuration: :motif_category)
                                  .where(category_configuration: { organisation_id: current_organisation_id })
+                                 .where(category_configuration: { rdv_with_referents: false })
                                  .with_rsa_related_motif
                                  .with_pending_invitations
                                  .order(created_at: :desc)

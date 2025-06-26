@@ -3,7 +3,7 @@ module Creneaux
     def perform
       CategoryConfiguration
         .joins(:organisation)
-        .where(organisations: { archived_at: nil })
+        .where(rdv_with_referents: false, organisations: { archived_at: nil })
         .find_each do |category_configuration|
         Creneaux::StoreNumberOfCreneauxAvailableJob.perform_later(category_configuration.id)
       end
