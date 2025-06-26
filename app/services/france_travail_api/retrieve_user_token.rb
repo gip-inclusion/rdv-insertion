@@ -34,7 +34,7 @@ module FranceTravailApi
     def retrieve_user_token
       if @user.nir_and_birth_date?
         FranceTravailClient.retrieve_user_token_by_nir(payload: user_payload_by_nir, headers: headers)
-      elsif @user.france_travail_id.present?
+      elsif @user.valid_france_travail_id?
         FranceTravailClient.retrieve_user_token_by_france_travail_id(
           payload: user_payload_by_france_travail_id, headers: headers
         )
