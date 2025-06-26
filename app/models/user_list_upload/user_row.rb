@@ -41,6 +41,8 @@ class UserListUpload::UserRow < ApplicationRecord
     @user ||= (saved_user || matching_user || User.new(user_creation_origin_attributes)).tap do |user|
       user.assign_attributes(user_attributes)
       user.require_title_presence = true
+      # Skip uniqueness validations for display purposes to avoid N+1 queries
+      user.skip_uniqueness_validations = true
     end
   end
 

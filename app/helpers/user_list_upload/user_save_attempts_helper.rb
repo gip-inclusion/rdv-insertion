@@ -31,9 +31,6 @@ module UserListUpload::UserSaveAttemptsHelper
   end
 
   def user_save_background_color_for_attribute(user_row, attribute)
-    # Skip uniqueness validations for display purposes to avoid N+1 queries
-    user_row.user.skip_uniqueness_validations = true
-
     return if user_row.user.valid?
 
     "alert-danger" if user_row.user_errors.attribute_names.include?(attribute)
