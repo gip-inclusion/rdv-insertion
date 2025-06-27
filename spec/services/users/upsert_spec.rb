@@ -7,6 +7,8 @@ describe Users::Upsert, type: :service do
   let!(:organisation) { create(:organisation, department:) }
   let!(:department) { create(:department) }
   let!(:user) { create(:user) }
+  let!(:flux_tag) { create(:tag, value: "Flux") }
+  let!(:tag_organisation) { create(:tag_organisation, tag: flux_tag, organisation: organisation) }
 
   describe "#call" do
     before do
@@ -88,6 +90,47 @@ describe Users::Upsert, type: :service do
       it "returns the error" do
         expect(subject.errors).to eq(["something else happened"])
       end
+    end
+  end
+
+  describe "tags assignment during user creation" do
+    let!(:agent) { create(:agent, organisations: [organisation]) }
+
+    let(:user_attributes) do
+      {
+        first_name: "Noah",
+        last_name: "Baumbach",
+        title: "monsieur",
+        affiliation_number: "11111111111",
+        role: "demandeur",
+        email: "noah.baumbach@gmail.com",
+        birth_date: "24/01/1998",
+        address: "99999 rue de la République 75027 Paris",
+        department_internal_id: "11111111111",
+        france_travail_id: "11111111111",
+        created_through: "rdv_insertion_api",
+        created_from_structure_type: "Organisation",
+        created_from_structure_id: organisation.id,
+        tags_to_add: [{ value: "Flux" }]
+      }
+    end
+
+    before do
+      allow(UserPolicy).to receive(:restricted_user_attributes_for).and_return([])
+      allow_any_instance_of(Users::PushToRdvSolidarites).to receive(:call).and_return(
+        OpenStruct.new(success?: true)
+      )
+    end
+
+    it "assigns tags correctly to newly created user" do
+      expect do
+        result = described_class.call(user_attributes: user_attributes, organisation: organisation)
+        expect(result.success?).to be true
+      end.to change(User, :count).by(1)
+
+      created_user = User.last
+      expect(created_user.tags.map(&:value)).to include("Flux")
+      expect(created_user.organisations).to include(organisation)
     end
   end
 end
