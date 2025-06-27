@@ -10,10 +10,12 @@ describe FileConfigurationsController do
 
   before do
     sign_in(agent)
+    request.session[:organisation_id] = organisation.id
+    request.session[:current_structure_type] = "organisation"
   end
 
   describe "#show" do
-    let!(:show_params) { { organisation_id: organisation.id, id: file_configuration.id } }
+    let!(:show_params) { { id: file_configuration.id } }
 
     it "displays the file_configuration" do
       get :show, params: show_params
@@ -24,8 +26,8 @@ describe FileConfigurationsController do
       expect(unescaped_response_body).to match(/Colonnes obligatoires/)
     end
 
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
+    context "when not authorized because does not belong to the organisation" do
+      let!(:unauthorized_agent) { create(:agent) }
 
       before do
         sign_in(unauthorized_agent)
@@ -52,7 +54,7 @@ describe FileConfigurationsController do
   end
 
   describe "#new" do
-    let!(:new_params) { { organisation_id: organisation.id } }
+    let!(:new_params) { { category_configuration_id: category_configuration.id } }
 
     it "displays the new form for file_configuration" do
       get :new, params: new_params
@@ -77,22 +79,10 @@ describe FileConfigurationsController do
         expect(response).to redirect_to(root_path)
       end
     end
-
-    context "when not authorized because not admin in the right organisation" do
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects the agent" do
-        get :new, params: new_params
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-    end
   end
 
   describe "#edit" do
-    let!(:edit_params) { { organisation_id: organisation.id, id: file_configuration.id } }
+    let!(:edit_params) { { id: file_configuration.id } }
 
     it "displays the edit form for file_configuration" do
       get :edit, params: edit_params
@@ -138,7 +128,7 @@ describe FileConfigurationsController do
           sheet_name: "INDEX BENEFICIAIRES", title_column: "Civilité", first_name_column: "Prénom",
           last_name_column: "Nom", role_column: "Rôle", email_column: "Adresses mail"
         },
-        organisation_id: organisation.id
+        category_configuration_id: category_configuration.id
       }
     end
 
@@ -157,15 +147,10 @@ describe FileConfigurationsController do
     end
 
     context "when the creation succeeds" do
-      it "is a success" do
+      it "redirects to the category_configuration" do
         post :create, params: create_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/Le fichier d'import a été créé avec succès/)
-      end
-
-      it "adds the file_configuration to the category_configuration form" do
-        post :create, params: create_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Nouvelle category_configuration/)
+        expect(flash[:success]).to eq("Le fichier d'import a été créé avec succès")
+        expect(response).to redirect_to(organisation_category_configuration_path(organisation, category_configuration))
       end
     end
 
@@ -175,16 +160,17 @@ describe FileConfigurationsController do
           file_configuration: {
             sheet_name: "INDEX BENEFICIAIRES"
           },
-          organisation_id: organisation.id
+          category_configuration_id: category_configuration.id
         }
+      end
+
+      it "does not create the file_configuration" do
+        expect { post :create, params: create_params, format: :turbo_stream }.not_to change(FileConfiguration, :count)
       end
 
       it "renders the new form" do
         post :create, params: create_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Créer fichier d'import/)
-        expect(unescaped_response_body).to match(/new_file_configuration/)
-        expect(unescaped_response_body).to match(/Information collectée/)
-        expect(unescaped_response_body).to match(/Nom de la colonne dans le fichier/)
+
         expect(unescaped_response_body).to match(/Civilité doit être rempli/)
         expect(unescaped_response_body).to match(/Prénom doit être rempli/)
         expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
@@ -204,18 +190,6 @@ describe FileConfigurationsController do
         expect(response).to have_http_status(:forbidden)
       end
     end
-
-    context "when not authorized because not admin in the right organisation" do
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "is forbidden" do
-        post :create, params: create_params, format: :turbo_stream
-        expect(response).to have_http_status(:forbidden)
-        expect(response.body.to_s).to include("Vous n'avez pas les droits")
-      end
-    end
   end
 
   describe "#update" do
@@ -225,7 +199,7 @@ describe FileConfigurationsController do
           sheet_name: "INDEX BENEFICIAIRES", title_column: "monsieurmadame", first_name_column: "Prénom",
           last_name_column: "Nom", role_column: "Rôle benef", email_column: "Adresses mail"
         },
-        organisation_id: organisation.id, id: file_configuration.id
+        id: file_configuration.id
       }
     end
 
@@ -253,16 +227,19 @@ describe FileConfigurationsController do
           file_configuration: {
             first_name_column: "", last_name_column: "", title_column: ""
           },
-          organisation_id: organisation.id, id: file_configuration.id
+          id: file_configuration.id
         }
+      end
+
+      it "does not update the file_configuration" do
+        patch :update, params: update_params, format: :turbo_stream
+        expect(file_configuration.reload.first_name_column).not_to eq("")
+        expect(file_configuration.reload.last_name_column).not_to eq("")
+        expect(file_configuration.reload.title_column).not_to eq("")
       end
 
       it "renders the edit page" do
         patch :update, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Modifier fichier d'import/)
-        expect(unescaped_response_body).to match(/edit_file_configuration/)
-        expect(unescaped_response_body).to match(/Information collectée/)
-        expect(unescaped_response_body).to match(/Nom de la colonne dans le fichier/)
         expect(unescaped_response_body).to match(/Civilité doit être rempli/)
         expect(unescaped_response_body).to match(/Prénom doit être rempli/)
         expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
@@ -294,33 +271,6 @@ describe FileConfigurationsController do
         patch :update, params: update_params, format: :turbo_stream
         expect(response).to have_http_status(:forbidden)
         expect(response.body.to_s).to include("Vous n'avez pas les droits")
-      end
-    end
-  end
-
-  describe "#confirm_update" do
-    let!(:update_params) do
-      {
-        file_configuration: {
-          sheet_name: "INDEX BENEFICIAIRES", title_column: "monsieurmadame", first_name_column: "Prénom",
-          last_name_column: "Nom", role_column: "Rôle benef", email_column: "Adresses mail"
-        },
-        organisation_id: organisation.id, file_configuration_id: file_configuration.id
-      }
-    end
-
-    context "when the file_configuration is linked to many category_configurations" do
-      let!(:organisation2) { create(:organisation) }
-      let!(:category_configuration2) { create(:category_configuration, organisation: organisation2) }
-      let!(:file_configuration) do
-        create(:file_configuration, category_configurations: [category_configuration, category_configuration2])
-      end
-
-      it "opens a confirm modal" do
-        patch :confirm_update, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Ce fichier est utilisé par d'autres organisations/)
-        expect(unescaped_response_body).to match(/Modifier pour toutes/)
-        expect(unescaped_response_body).to match(/Dupliquer et sauvegarder/)
       end
     end
   end

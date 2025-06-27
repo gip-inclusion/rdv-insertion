@@ -2,7 +2,7 @@
   <div class="row card-white d-flex justify-content-between mb-5">
     <%= render "common/attribute_display", record: file_configuration, attribute: :sheet_name %>
     <div class="col-6 text-align-right">
-      <%= link_to organisation_file_configuration_download_template_path(file_configuration_id: file_configuration.id), download: true do %>
+      <%= link_to file_configuration_download_template_path(file_configuration), download: true do %>
         <button class="btn btn-blue-out">
           <i class="ri-download-line"></i> Télécharger le modèle de fichier
         </button>
