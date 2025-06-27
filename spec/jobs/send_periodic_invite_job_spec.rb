@@ -1,11 +1,7 @@
 describe SendPeriodicInviteJob do
-  subject do
-    described_class.new.perform
-  end
-
   describe "#perform" do
     subject do
-      described_class.new.perform(invitation.id, category_configuration.id, format)
+      described_class.new.perform(invitation.id, format)
     end
 
     let!(:format) { "email" }
@@ -35,24 +31,10 @@ describe SendPeriodicInviteJob do
       allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
         OpenStruct.new(success?: true, creneau_availability: true)
       )
+      allow(Invitations::SaveAndSend).to receive(:call).and_return(OpenStruct.new(success?: true))
     end
 
     describe "#perform" do
-      it "duplicates previous invitation" do
-        expect { subject }.to change(Invitation, :count).by(1)
-        invitation = Invitation.last
-
-        expect(invitation).to have_attributes(
-          follow_up: invitation.follow_up,
-          motif_category: invitation.motif_category,
-          user: invitation.user,
-          format: "email",
-          trigger: "periodic"
-        )
-
-        expect(invitation.expires_at).to eq(category_configuration.number_of_days_before_invitations_expire)
-      end
-
       it "sends invitation" do
         expect(Invitations::SaveAndSend).to receive(:call).once
 
@@ -72,12 +54,12 @@ describe SendPeriodicInviteJob do
         end
       end
 
-      context "when the user has already been invited in this category less than 1 day ago" do
-        let!(:other_invitation) { create(:invitation, follow_up:, format:, created_at: 2.hours.ago) }
+      context "when the invitation is not eligible to be sent again" do
+        before { invitation.update!(created_at: 10.days.ago) }
 
         it "does not send an invitation" do
           expect(Invitations::SaveAndSend).not_to receive(:call)
-          expect { subject }.not_to change(Invitation, :count)
+          subject
         end
       end
 
@@ -111,7 +93,7 @@ describe SendPeriodicInviteJob do
             subject
 
             expect(RdvSolidaritesApi::RetrieveCreneauAvailability).not_to receive(:call)
-            described_class.new.perform(other_invitation.id, category_configuration.id, format)
+            described_class.new.perform(other_invitation.id, format)
           end
         end
       end
