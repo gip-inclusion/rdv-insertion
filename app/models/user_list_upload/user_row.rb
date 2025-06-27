@@ -276,7 +276,17 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def user_attributes
-    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES)
+    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES).tap do |attributes|
+      nullify_edited_to_nil_values(attributes)
+    end
+  end
+
+  def nullify_edited_to_nil_values(attributes)
+    attributes.each do |key, value|
+      # To differentiate between a value that has been edited to nil and a value that was nil in the first
+      # place on the user list upload, we use the string "[EDITED TO NULL]"
+      attributes[key] = nil if value == "[EDITED TO NULL]"
+    end
   end
 
   def user_creation_origin_attributes
