@@ -9,6 +9,10 @@ module Users
       @user = find_or_initialize_user.user
       result.user = @user
       filter_origin_attributes if @user.persisted?
+
+      # Assign organisation first to ensure dependent attributes can access organisation context (tags)
+      assign_organisation_if_new_user
+
       @user.assign_attributes(@user_attributes.except(*restricted_user_attributes))
       save_user!
     end
@@ -31,6 +35,12 @@ module Users
 
     def filter_origin_attributes
       @user_attributes.except!(*User::ORIGIN_ATTRIBUTES)
+    end
+
+    def assign_organisation_if_new_user
+      return if @user.persisted?
+
+      @user.organisations = [@organisation]
     end
 
     def save_user!
