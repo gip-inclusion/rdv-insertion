@@ -45,7 +45,7 @@ module UserListUpload::InvitationAttemptsHelper
   end
 
   def user_invitable_by_formats_sentence(user_row)
-    user_row.user_invitable_by_formats.map do |format|
+    user_row.invitable_by_formats.map do |format|
       I18n.t("activerecord.attributes.invitation.formats.#{format}")
     end.to_sentence(last_word_connector: " ou ", two_words_connector: " ou ")
   end
@@ -65,7 +65,7 @@ module UserListUpload::InvitationAttemptsHelper
   end
 
   def tooltip_content_for_user_row_before_invitation_not_invitable(user_row)
-    case user_row.user_invitable_by_formats
+    case user_row.invitable_by_formats
     when []
       safe_join(
         [
@@ -129,7 +129,7 @@ module UserListUpload::InvitationAttemptsHelper
 
   def disable_invitation_for_user_row?(user_row)
     !user_row.invitable? ||
-      selected_invitation_formats(user_row.user_list_upload_id).none? { |format| user_row.invitable_by?(format) }
+      selected_invitation_formats(user_row.user_list_upload_id).none? { |format| user_row.can_be_invited_through?(format) }
   end
 
   def invitation_format_checked?(format, user_list_upload_id)

@@ -24,7 +24,9 @@ class UserListUpload::UserRow < ApplicationRecord
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
   delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
            to: :user_list_upload
-  delegate :valid?, :errors, :invitable_by_formats, to: :user, prefix: true
+  delegate :valid?, :errors, to: :user, prefix: true
+  # without prefix
+  delegate :can_be_invited_through?, :invitable_by_formats, to: :user
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
@@ -217,17 +219,13 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def invitable_by?(format)
-    user.can_be_invited_through?(format)
-  end
-
   def invite_user_by(format)
     UserListUpload::InvitationAttempt.create_from_row(user_row: self, format:)
   end
 
   def invite_user
-    invite_user_by("email") if invitable_by?("email")
-    invite_user_by("sms") if invitable_by?("sms")
+    invite_user_by("email") if can_be_invited_through?("email")
+    invite_user_by("sms") if can_be_invited_through?("sms")
   end
 
   def invitation_attempted?

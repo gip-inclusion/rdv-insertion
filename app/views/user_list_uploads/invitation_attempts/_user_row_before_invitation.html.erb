@@ -40,7 +40,7 @@
       <button type="submit"
               id="rdvi_upload_users-invit_user-download-<%= user_row.id %>"
               data-action="click->invitation-button#generatePostalInvitation"
-              <%= "disabled" unless user_row.invitable_by?("postal") %>>
+              <%= "disabled" unless user_row.can_be_invited_through?("postal") %>>
         <i class="ri-download-line"></i>
       </button>
   </td>
