@@ -129,7 +129,9 @@ module UserListUpload::InvitationAttemptsHelper
 
   def disable_invitation_for_user_row?(user_row)
     !user_row.invitable? ||
-      selected_invitation_formats(user_row.user_list_upload_id).none? { |format| user_row.can_be_invited_through?(format) }
+      selected_invitation_formats(user_row.user_list_upload_id).none? do |format|
+        user_row.can_be_invited_through?(format)
+      end
   end
 
   def invitation_format_checked?(format, user_list_upload_id)
