@@ -96,4 +96,38 @@ describe CategoryConfiguration do
       end
     end
   end
+
+  describe "#periodic_invite_should_be_sent?" do
+    context "day_of_the_month_periodic_invites is set" do
+      let(:category_configuration) do
+        build(:category_configuration, organisation: create(:organisation), day_of_the_month_periodic_invites: 15)
+      end
+
+      context "today is the 15th of the month" do
+        before { travel_to(Time.zone.local(2025, 6, 15, 12, 0, 0)) }
+
+        it { expect(category_configuration.periodic_invite_should_be_sent?(20.days.ago)).to eq(true) }
+      end
+
+      context "today is not the 15th of the month" do
+        before { travel_to(Time.zone.local(2025, 6, 16, 12, 0, 0)) }
+
+        it { expect(category_configuration.periodic_invite_should_be_sent?(20.days.ago)).to eq(false) }
+      end
+    end
+
+    context "number_of_days_between_periodic_invites is set" do
+      let(:category_configuration) do
+        build(:category_configuration, organisation: create(:organisation), number_of_days_between_periodic_invites: 15)
+      end
+
+      it "returns false if the invitation was sent the number of days between periodic invites" do
+        expect(category_configuration.periodic_invite_should_be_sent?(10.days.ago)).to eq(false)
+      end
+
+      it "returns true if the invitation was sent the number of days between periodic invites" do
+        expect(category_configuration.periodic_invite_should_be_sent?(15.days.ago)).to eq(true)
+      end
+    end
+  end
 end
