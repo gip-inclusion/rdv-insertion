@@ -1,16 +1,15 @@
  <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
-      data-controller="filter" 
-      data-filter-param-name-value="orientation_type">
+      data-controller="users-list-filter" 
+      data-users-list-filter-param-name-value="orientation_type">
   <% selected_orientation_type = params[:orientation_type] %>
   <button type="button"
-          class="btn btn-grey dropdown-toggle <% if selected_orientation_type.present? %>border-blue<% end %>"
+          class="btn btn-grey dropdown-toggle <%= "border-blue" if selected_orientation_type.present? %>"
           data-bs-toggle="dropdown"
           aria-expanded="false"
           id="rdvi_index-nav_filter-orientation-type-button">
+    Type d'orientation 
     <% if selected_orientation_type.present? %>
-      Type d'orientation <span class="filter-active ms-1">1</span>
-    <% else %>
-      Type d'orientation
+      <span class="filter-active ms-1">1</span>
     <% end %>
   </button>
   <div class="dropdown-menu px-2" style="min-width: 280px;">
@@ -22,7 +21,7 @@
                 name="orientation_type"
                 value="<%= orientation_type.name %>"
                 id="orientation_type_<%= orientation_type.name %>"
-                data-filter-target="checkbox"
+                data-users-list-filter-target="input"
                 <%= 'checked' if selected %>>
         <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="orientation_type_<%= orientation_type.name %>">
           <%= orientation_type.name %>
@@ -30,7 +29,7 @@
       </div>
     <% end %>
     <div class="mt-3">
-      <button type="button" class="btn btn-blue" data-action="filter#apply">
+      <button type="button" class="btn btn-blue" data-action="users-list-filter#apply">
         Appliquer
       </button>
     </div>

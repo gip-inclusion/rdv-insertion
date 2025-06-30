@@ -1,14 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "checkbox" ]
+  static targets = [ "input" ]
 
   static values = { paramName: String }
 
   apply() {
-    const selectedValues = this.checkboxTargets
-      .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value)
+    const selectedValues = this.inputTargets
+      .filter(input => input.checked)
+      .map(input => input.value)
 
     const url = new URL(window.location.href)
     url.searchParams.delete(this.paramNameValue)
@@ -22,6 +22,6 @@ export default class extends Controller {
   }
   
   isMultiple() {
-    return this.checkboxTargets[0].type === "checkbox"
+    return this.inputTargets[0].type === "checkbox"
   }
 } 

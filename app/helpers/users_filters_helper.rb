@@ -45,4 +45,8 @@ module UsersFiltersHelper
 
     active_filters_count
   end
+
+  def any_active_invitation_or_convocation_filters?
+    params[:convocation_date_after].present? || params[:convocation_date_before].present? || params[:first_invitation_date_after].present? || params[:first_invitation_date_before].present? || params[:last_invitation_date_after].present? || params[:last_invitation_date_before].present?
+  end
 end

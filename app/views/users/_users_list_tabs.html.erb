@@ -1,6 +1,6 @@
 <div class="d-flex border-bottom align-items-start">
   <div class="d-flex flex-column justify-content-between h-100">
-    <%= render "active_users_recap" %>
+    <%= render "users_list_recap" %>
     <ul class="nav nav-tabs d-flex align-items-end border-bottom-0 mt-0">
       <li class="nav-item pb-0">
         <%= link_to "Tous les contacts", structure_users_path, class: "nav-link #{@current_category_configuration.present? || archived_scope?(@users_scope) ? '' : 'active'}" %>
@@ -31,7 +31,7 @@
   <div class="ms-auto d-flex active-users-actions">
     <div class="d-flex flex-column align-items-end pb-2 w-100 h-100">
       <% if authorized_all?(current_organisations, :export_csv) %>
-          <%= render "csv_export_button" %>
+        <%= render "csv_export_button" %>
       <% end %>
       <% if @current_category_configuration.present? %>
         <%= link_to(new_structure_batch_action_path(motif_category_id: @current_category_configuration.motif_category_id), class: "btn btn-blue-out", id: "rdvi_index-nav_send-invitations-uninvited") do %>

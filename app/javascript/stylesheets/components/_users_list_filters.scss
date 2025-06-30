@@ -1,0 +1,24 @@
+
+
+.users-list-filters {
+  border-top: 0.5px solid #E3E4E6;
+
+  .btn-grey.dropdown-toggle[aria-expanded="true"] {
+    border-color: $dark-blue;
+    color: $dark-blue;
+  }
+
+  .filter-label-checked {
+    font-weight: bold;
+  }
+
+  label {
+    font-size: 15px;
+  }
+
+  input[type=checkbox], input[type=radio], input[type=range] {
+    -webkit-appearance: unset;
+    -moz-appearance: unset;
+    appearance: unset;
+  }
+}
