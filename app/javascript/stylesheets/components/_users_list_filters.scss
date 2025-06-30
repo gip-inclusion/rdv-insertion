@@ -21,4 +21,10 @@
     -moz-appearance: unset;
     appearance: unset;
   }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 40px;
+    left: 0px;
+  }
 }
