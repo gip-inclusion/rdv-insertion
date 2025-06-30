@@ -7,7 +7,7 @@
         <span class="d-flex align-items-center me-2 ">Filtrer par :</span>
         <%= render "filter_by_follow_up_statuses_button" if @current_category_configuration.present? %>
         <%= render "filter_by_referent_button" %>
-        <%= render "filter_by_tags_button" if @tags.any? || @current_category_configuration.present? %>
+        <%= render "filter_by_tags_button" if @tags.any? %>
         <%= render "filter_by_orientation_type_button" if show_orientations_filter? %>
         <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
         <%= render "filter_by_invitation_or_convocation_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
