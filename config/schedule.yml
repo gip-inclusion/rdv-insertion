@@ -22,12 +22,18 @@ send_convocation_reminders_job:
   class: "SendConvocationRemindersJob"
 <% end %>
 
+# We compute global stats once a week, the saturday at 22:00
 upsert_global_stats_job:
-  cron: "0 22 * * 6" # we compute global stats once a week, the saturday at 22:00
+  cron: "0 22 * * 6" 
   class: "Stats::GlobalStats::UpsertStatsJob"
+
+# We compute monthly stats once a week on Friday at 22:00
+# This task takes several hours to run, so we schedule it for the start of the weekend
+# to avoid overlapping with the week load
 upsert_monthly_stats_job:
-  cron: "0 22 * * 7" # we compute monthly stats once a week, the sunday at 22:00
+  cron: "0 22 * * 5" 
   class: "Stats::MonthlyStats::UpsertStatsJob"
+
 refresh_out_of_date_follow_up_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
   class: "RefreshOutOfDateFollowUpStatusesJob"
