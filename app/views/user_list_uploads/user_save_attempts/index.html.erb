@@ -61,13 +61,7 @@
                 @user_list_upload.structure_users_path,
                 class: "btn btn-blue-out #{'link-disabled' unless @all_saves_attempted}",
                 id: "rdvi_upload_users-data_end-course",
-                data: {
-                  turbo_frame: "_top",
-                  controller: "tally",
-                  "tally-form-id": ENV["TALLY_NEW_UPLOAD_FORM_ID"],
-                  "tally-delay-in-ms": 1000,
-                  action: "click->tally#showPopup"
-                }
+                data: { turbo_frame: "_top" }
               )
             %>
           </div>

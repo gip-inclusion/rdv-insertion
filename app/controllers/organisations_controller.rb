@@ -4,7 +4,7 @@ class OrganisationsController < ApplicationController
     :department_id, :safir_code
   ].freeze
 
-  before_action :set_organisation, :set_department, :authorize_organisation_category_configuration,
+  before_action :set_organisation, :set_department, :authorize_organisation_edit,
                 only: [:show, :edit, :update]
 
   def index
@@ -118,7 +118,7 @@ class OrganisationsController < ApplicationController
     @update_organisation ||= Organisations::Update.call(organisation: @organisation)
   end
 
-  def authorize_organisation_category_configuration
-    authorize @organisation, :configure?
+  def authorize_organisation_edit
+    authorize @organisation, :edit?
   end
 end

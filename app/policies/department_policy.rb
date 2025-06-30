@@ -9,13 +9,12 @@ class DepartmentPolicy < ApplicationPolicy
 
   def batch_actions? = access?
 
-  def parcours?
+  def parcours?(user:)
     return false unless record.with_parcours_access?
 
-    pundit_user
-      .organisations
-      .pluck(:organisation_type)
-      .intersect?(Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+    user.organisations.any? do |organisation|
+      OrganisationPolicy.new(pundit_user, organisation).parcours?
+    end
   end
 
   class Scope < Scope

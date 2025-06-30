@@ -282,8 +282,7 @@ describe UserListUpload::UserRow do
         tag_values: [" tag1 ", "tag2 "],
         cnaf_data: {
           "phone_number" => "0687654321",
-          "email" => "test@example.com",
-          "rights_opening_date" => "2023-01-01"
+          "email" => "test@example.com"
         }
       )
     end
@@ -316,9 +315,29 @@ describe UserListUpload::UserRow do
     it "formats cnaf data" do
       expect(user_row.reload.cnaf_data).to include(
         "phone_number" => "+33687654321",
-        "email" => "test@example.com",
-        "rights_opening_date" => "2023-01-01"
+        "email" => "test@example.com"
       )
+    end
+  end
+
+  describe "#nullify_edited_to_nil_values" do
+    let!(:matching_user) { create(:user, phone_number: "0612345678", email: "test@example.com") }
+
+    it "nullifies edited to nil values" do
+      create(
+        :user_row,
+        matching_user: matching_user,
+        phone_number: "[EDITED TO NULL]",
+        email: "[EDITED TO NULL]",
+        affiliation_number: "[EDITED TO NULL]"
+      )
+      user_row = described_class.last
+      expect(user_row.phone_number).to eq("[EDITED TO NULL]")
+      expect(user_row.email).to eq("[EDITED TO NULL]")
+      expect(user_row.affiliation_number).to eq("[EDITED TO NULL]")
+      expect(user_row.user.phone_number).to be_nil
+      expect(user_row.user.email).to be_nil
+      expect(user_row.user.affiliation_number).to be_nil
     end
   end
 

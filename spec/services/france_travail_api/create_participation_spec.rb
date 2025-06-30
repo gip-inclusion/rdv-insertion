@@ -1,6 +1,6 @@
 describe FranceTravailApi::CreateParticipation, type: :service do
   subject do
-    described_class.call(participation_id: participation.id, timestamp: timestamp)
+    described_class.call(participation: participation, timestamp: timestamp)
   end
 
   let(:participation) { create(:participation) }

@@ -66,8 +66,12 @@ module UsersHelper
     end
   end
 
-  def show_parcours?
-    policy(current_structure).parcours?
+  def show_parcours?(user:)
+    if current_structure.is_a?(Organisation)
+      policy(current_structure).parcours?
+    else
+      policy(current_structure).parcours?(user:)
+    end
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)
