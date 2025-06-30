@@ -100,7 +100,7 @@ describe "Agent can invite users by batch from index" do
       click_button("Retour au suivi")
 
       expect(page).to have_current_path(
-        organisation_users_path(organisation, motif_category_id: motif_category.id, follow_up_statuses: ["not_invited"])
+        organisation_users_path(organisation, follow_up_statuses: ["not_invited"], motif_category_id: motif_category.id)
       )
     end
   end
@@ -158,7 +158,7 @@ describe "Agent can invite users by batch from index" do
       click_button("Retour au suivi")
 
       expect(page).to have_current_path(
-        department_users_path(department, motif_category_id: motif_category.id, follow_up_statuses: ["not_invited"])
+        department_users_path(department, follow_up_statuses: ["not_invited"], motif_category_id: motif_category.id)
       )
     end
   end
