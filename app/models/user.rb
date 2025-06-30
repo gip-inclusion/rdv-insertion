@@ -140,6 +140,10 @@ class User < ApplicationRecord
     can_be_invited_through?("sms") || can_be_invited_through?("email")
   end
 
+  def invitable_by_formats
+    %w[sms email postal].select { |format| can_be_invited_through?(format) }
+  end
+
   def soft_delete
     update_columns(
       last_name: "[Usager supprimé]",

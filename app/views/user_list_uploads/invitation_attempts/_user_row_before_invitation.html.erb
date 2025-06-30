@@ -22,7 +22,9 @@
 
   <td class="border-light">
     <div class="d-flex justify-content-between align-items-center">
-      <span class="badge rounded-pill <%= user_row_before_invitation_badge_class(user_row) %>">
+      <span class="badge rounded-pill <%= user_row_before_invitation_badge_class(user_row) %>"
+            <%= tooltip(content: tooltip_content_for_user_row_before_invitation(user_row)) %>
+      >
         <%= user_row_before_invitation_status_text(user_row) %>
       </span>
     </div>
@@ -37,7 +39,8 @@
   >
       <button type="submit"
               id="rdvi_upload_users-invit_user-download-<%= user_row.id %>"
-              data-action="click->invitation-button#generatePostalInvitation">
+              data-action="click->invitation-button#generatePostalInvitation"
+              <%= "disabled" unless user_row.invitable_by?("postal") %>>
         <i class="ri-download-line"></i>
       </button>
   </td>

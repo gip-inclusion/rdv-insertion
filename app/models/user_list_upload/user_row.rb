@@ -24,7 +24,7 @@ class UserListUpload::UserRow < ApplicationRecord
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
   delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
            to: :user_list_upload
-  delegate :valid?, :errors, to: :user, prefix: true
+  delegate :valid?, :errors, :invitable_by_formats, to: :user, prefix: true
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
@@ -218,7 +218,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def invitable_by?(format)
-    invitable? && user.can_be_invited_through?(format)
+    user.can_be_invited_through?(format)
   end
 
   def invite_user_by(format)
