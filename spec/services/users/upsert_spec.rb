@@ -93,7 +93,7 @@ describe Users::Upsert, type: :service do
     end
   end
 
-  describe "tags assignment during user creation" do
+  describe "tags assignment via tag_users_attributes during user creation" do
     let!(:agent) { create(:agent, organisations: [organisation]) }
 
     let(:user_attributes) do
@@ -111,7 +111,7 @@ describe Users::Upsert, type: :service do
         created_through: "rdv_insertion_api",
         created_from_structure_type: "Organisation",
         created_from_structure_id: organisation.id,
-        tags_to_add: [{ value: "Flux" }]
+        tag_users_attributes: [{ tag_id: flux_tag.id }]
       }
     end
 

@@ -37,6 +37,7 @@ module Api
       def create_and_invite_many
         users_attributes.each do |attrs|
           user_attributes = attrs.except(:invitation)
+          convert_tags_for_upsert_service!(user_attributes)
           invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
@@ -106,8 +107,10 @@ module Api
       end
 
       def upsert_user
+        attrs = convert_tags_for_upsert_service!(user_attributes)
+
         @upsert_user ||= Users::Upsert.call(
-          user_attributes: user_attributes.merge(creation_origin_attributes), organisation: @organisation
+          user_attributes: attrs.merge(creation_origin_attributes), organisation: @organisation
         )
       end
 
@@ -137,6 +140,13 @@ module Api
 
       def user_attributes
         user_params.except(:invitation)
+      end
+
+      def convert_tags_for_upsert_service!(attrs)
+        return attrs if attrs[:tags_to_add].blank?
+
+        convert_tags_to_add_to_tag_users_attributes(attrs)
+        attrs
       end
 
       def creation_origin_attributes
@@ -178,6 +188,19 @@ module Api
 
       def invitation_params
         params.permit(invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name] }])
+      end
+
+      def convert_tags_to_add_to_tag_users_attributes(attrs)
+        # Convert tags_to_add to tag_users_attributes to avoid transaction issues
+        # This bypasses the need for organisation_ids in User::Tags#find_tag_in_organisations
+        # and reuses the existing tag_users_attributes= method which works with tag IDs directly
+        tag_users_attributes = attrs[:tags_to_add].map do |tag_attributes|
+          tag = @organisation.tags.find_by(value: tag_attributes[:value])
+          { tag_id: tag.id }
+        end.compact
+
+        attrs[:tag_users_attributes] = tag_users_attributes
+        attrs.delete(:tags_to_add)
       end
     end
     # rubocop: enable Metrics/ClassLength
