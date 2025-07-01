@@ -138,5 +138,15 @@ describe SendPeriodicInvitesJob do
         subject
       end
     end
+
+    context "when the follow up is closed" do
+      let!(:follow_up) { create(:follow_up, closed_at: Time.zone.today) }
+
+      it "does not send periodic invites" do
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "sms")
+        subject
+      end
+    end
   end
 end
