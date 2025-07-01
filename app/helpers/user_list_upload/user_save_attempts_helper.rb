@@ -31,7 +31,7 @@ module UserListUpload::UserSaveAttemptsHelper
   end
 
   def user_save_background_color_for_attribute(user_row, attribute)
-    return if user_row.user.valid?
+    return if user_row.user_for_display.valid?
 
     "alert-danger" if user_row.user_errors.attribute_names.include?(attribute)
   end
