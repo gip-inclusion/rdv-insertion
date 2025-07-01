@@ -211,9 +211,11 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def previous_invitations
-    @previous_invitations ||= user.invitations.reject(&:delivery_failed?).select do |invitation|
+    @previous_invitations ||= user.invitations.select do |invitation|
       # we don't consider the user as invited here if the invitation has not been sent by email or sms
-      invitation.format.in?(%w[email sms]) && invitation.motif_category_id == user_list_upload.motif_category_id
+      invitation.format.in?(%w[email sms]) &&
+        invitation.motif_category_id == user_list_upload.motif_category_id &&
+        !invitation.delivery_failed?
     end
   end
 

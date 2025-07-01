@@ -9,7 +9,7 @@ module Deliverable
     validates :last_brevo_webhook_received_at, presence: true, if: -> { delivery_status.present? }
 
     scope :pending_or_delivered, lambda {
-      where.not(delivery_status: FAILED_DELIVERY_STATUS).or(where(delivery_status: nil))
+      where(delivery_status: DELIVERED_STATUS).or(where(delivery_status: nil))
     }
   end
 
