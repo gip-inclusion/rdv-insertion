@@ -14,7 +14,7 @@ describe SendPeriodicInvitesJob do
     end
 
     let!(:motif_category) { create(:motif_category) }
-    let!(:follow_up) { create(:follow_up, motif_category: motif_category) }
+    let!(:follow_up) { create(:follow_up, motif_category: motif_category, status: "invitation_pending") }
     let!(:invitation) do
       create(
         :invitation,
