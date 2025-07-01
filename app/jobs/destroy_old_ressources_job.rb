@@ -32,11 +32,13 @@ class DestroyOldRessourcesJob < ApplicationJob
 
     inactive_users.find_each(&:mark_for_rgpd_destruction)
 
+    inactive_user_ids = inactive_users.pluck(:id)
+
     inactive_users.destroy_all
 
     MattermostClient.send_to_notif_channel(
       "🚮 Les usagers suivants ont été supprimés pour inactivité : " \
-      "#{inactive_users.pluck(:id).join(', ')}"
+      "#{inactive_user_ids.join(', ')}"
     )
   end
 
