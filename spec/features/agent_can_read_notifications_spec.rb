@@ -74,6 +74,22 @@ describe "Agents can read notifications", :js do
     end
   end
 
+  context "category configuration has rdv_with_referents set to true" do
+    let!(:category_configuration) do
+      create(:category_configuration, organisation: organisation, motif_category: motif_category,
+                                      rdv_with_referents: true)
+    end
+
+    before do
+      setup_agent_session(agent)
+      visit organisation_users_path(organisation)
+    end
+
+    it "doesn't show notification center" do
+      expect(page).to have_no_css("#btn-notification-center")
+    end
+  end
+
   context "agent has notifications but the last one is not important" do
     let!(:creneau_availability) do
       create(:creneau_availability,
