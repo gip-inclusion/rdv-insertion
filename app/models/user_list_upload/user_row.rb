@@ -49,6 +49,10 @@ class UserListUpload::UserRow < ApplicationRecord
     user.tap { |u| u.skip_uniqueness_validations = true }
   end
 
+  def user_errors_for_display
+    user_for_display.errors
+  end
+
   def saved_user
     user_save_attempts.last&.user
   end
@@ -263,10 +267,10 @@ class UserListUpload::UserRow < ApplicationRecord
     self.cnaf_data = format_cnaf_data(cnaf_data) if cnaf_data.present?
     # we allow only the permitted attributes
     restricted_user_attributes.each { |attribute| send("#{attribute}=", nil) }
-  end
-  # rubocop:enable Metrics/AbcSize
+      end
+    # rubocop:enable Metrics/AbcSize
 
-  private
+    private
 
   def enqueue_save_user_job
     UserListUpload::SaveUserJob.perform_later(id)

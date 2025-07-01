@@ -33,16 +33,16 @@ module UserListUpload::UserSaveAttemptsHelper
   def user_save_background_color_for_attribute(user_row, attribute)
     return if user_row.user_for_display.valid?
 
-    "alert-danger" if user_row.user_errors.attribute_names.include?(attribute)
+    "alert-danger" if user_row.user_errors_for_display.attribute_names.include?(attribute)
   end
 
   def user_save_icon_for_attribute(user_row, attribute)
-    return if user_row.user_errors.attribute_names.exclude?(attribute)
+    return if user_row.user_errors_for_display.attribute_names.exclude?(attribute)
 
     content_tag(
       :i, nil, class: "ri-alert-line text-end", **tooltip_errors_attributes(
         title: "Erreur sur cette donnée",
-        errors: user_row.user_errors.full_messages_for(attribute)
+        errors: user_row.user_errors_for_display.full_messages_for(attribute)
       )
     )
   end
