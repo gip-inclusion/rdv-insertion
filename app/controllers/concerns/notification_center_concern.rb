@@ -14,6 +14,7 @@ module NotificationCenterConcern
                                           .with_rsa_related_motif
                                           .joins(:category_configuration)
                                           .where(category_configuration: { organisation_id: current_organisation_id })
+                                          .where(category_configuration: { rdv_with_referents: false })
                                           .where(created_at: notifications_read_at...)
                                           # If organisation has 2 valid motif_categories it will receive 2 notifications
                                           # Any of the notifications created today may be important, not just the last
@@ -46,7 +47,9 @@ module NotificationCenterConcern
 
   def organisation_has_expected_motifs_for_notification_center?
     current_organisation
-      .motif_categories
-      .exists?(motif_category_type: MotifCategory::RSA_RELATED_TYPES)
+      .category_configurations
+      .where(rdv_with_referents: false)
+      .joins(:motif_category)
+      .exists?(motif_categories: { motif_category_type: MotifCategory::RSA_RELATED_TYPES })
   end
 end

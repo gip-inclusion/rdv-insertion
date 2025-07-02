@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
+  static targets = ["textInput"]
+
   setLoading() {
     this.element.innerHTML = "<div class='spinner-border spinner-border-sm text-center' role='status'></div>"
   }
@@ -19,6 +21,16 @@ export default class extends Controller {
       this.element.style.padding = "0px"
       this.#focusNewlyAddedInput()
     }
+  }
+
+  async submit() {
+    const input = this.textInputTarget;
+
+    if (input && input.value.trim() === "") {
+      input.value = "[EDITED TO NULL]";
+    }
+
+    this.element.requestSubmit();
   }
 
   #focusNewlyAddedInput() {

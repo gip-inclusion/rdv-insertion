@@ -7,7 +7,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   USER_ATTRIBUTES = %i[
     email phone_number title first_name last_name affiliation_number nir birth_date department_internal_id
-    france_travail_id role address
+    france_travail_id role address rights_opening_date
   ].freeze
 
   encrypts :nir
@@ -276,7 +276,17 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def user_attributes
-    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES)
+    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES).tap do |attributes|
+      nullify_edited_to_nil_values(attributes)
+    end
+  end
+
+  def nullify_edited_to_nil_values(attributes)
+    attributes.each do |key, value|
+      # To differentiate between a value that has been edited to nil and a value that was nil in the first
+      # place on the user list upload, we use the string "[EDITED TO NULL]"
+      attributes[key] = nil if value == "[EDITED TO NULL]"
+    end
   end
 
   def user_creation_origin_attributes
@@ -290,8 +300,7 @@ class UserListUpload::UserRow < ApplicationRecord
   def format_cnaf_data(cnaf_data)
     {
       "phone_number" => PhoneNumberHelper.format_phone_number(cnaf_data["phone_number"]),
-      "email" => cnaf_data["email"],
-      "rights_opening_date" => cnaf_data["rights_opening_date"]
+      "email" => cnaf_data["email"]
     }.compact_blank.transform_values(&:squish)
   end
 

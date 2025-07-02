@@ -29,6 +29,10 @@ module Deliverable
     delivery_status.in?(DELIVERED_STATUS)
   end
 
+  def delivery_status_retrievable?
+    format_email? || sms_sent_with_brevo?
+  end
+
   def creation_date
     created_at.strftime("%d/%m/%Y")
   end

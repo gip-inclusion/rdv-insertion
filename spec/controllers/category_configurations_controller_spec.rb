@@ -20,69 +20,6 @@ describe CategoryConfigurationsController do
     sign_in(agent)
   end
 
-  describe "#index" do
-    let!(:index_params) { { organisation_id: organisation.id } }
-
-    it "renders the index page" do
-      get :index, params: index_params
-
-      expect(response).to be_successful
-      expect(response.body).to match(/Détails de l'organisation/)
-      expect(response.body).to match(/Catégories de motifs configurés/)
-      expect(response.body).to match(/Configuration des messages/)
-    end
-
-    it "displays the organisation" do
-      get :index, params: index_params
-
-      expect(response.body).to match(/Nom/)
-      expect(response.body).to match(/PIE Pantin/)
-      expect(response.body).to match(/Email/)
-      expect(response.body).to match(/pie@pantin.fr/)
-      expect(response.body).to match(/Numéro de téléphone/)
-      expect(response.body).to match(/0102030405/)
-      expect(response.body).to match(/Oui/)
-      expect(response.body).to match(/Logo/)
-      expect(response.body).to match(/Désignation dans le fichier usagers/)
-      expect(response.body).to match(/pie-pantin/)
-    end
-
-    it "displays the category_configurations of the organisation" do
-      get :index, params: index_params
-
-      expect(response.body).to match(/turbo-frame id="category_configuration_#{category_configuration.id}"/)
-      expect(response.body).not_to match(/turbo-frame id="category_configuration_#{another_configuration.id}"/)
-    end
-
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        get :index, params: index_params
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
-    context "when not authorized because not admin in the right organisation" do
-      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [another_organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects the agent" do
-        get :index, params: index_params
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-    end
-  end
-
   describe "#show" do
     let!(:show_params) { { id: category_configuration.id, organisation_id: organisation.id } }
 
