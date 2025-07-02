@@ -443,7 +443,7 @@ describe User do
 
     context "when the tag does not exist" do
       it "fails to save user with invalid tag_id" do
-        user.tag_users_attributes = [{ tag_id: 99999 }]
+        user.tag_users_attributes = [{ tag_id: 99_999 }]
         expect(subject).to be_falsey
         expect(user.errors).to be_present
       end
