@@ -58,12 +58,8 @@ a {
   }
 }
 
-p {
-  margin-bottom: 1rem !important;
-}
-
 body {
-  background-color: $light !important;
+  background-color: $light;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
