@@ -58,8 +58,14 @@ module ParticipationsHelper
       "prescripteur" => "un prescripteur",
       "agent" => "un agent",
       "user" => "l'usager"
-    }[participation.created_by]
+    }[participation.created_by_type]
 
-    "Rendez-vous pris par #{author} le #{participation.created_at.strftime('%d/%m/%Y à %H:%M')}"
+    author_info = if participation.created_by_agent_prescripteur?
+                    " (#{participation.created_by.full_name})"
+                  else
+                    ""
+                  end
+
+    "Rendez-vous pris par #{author}#{author_info} le #{participation.created_at.strftime('%d/%m/%Y à %H:%M')}"
   end
 end
