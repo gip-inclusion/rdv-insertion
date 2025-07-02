@@ -227,6 +227,7 @@ describe UserListUpload::UserRow do
         before do
           create(
             :invitation,
+            :delivered,
             user: saved_user,
             created_at: 2.weeks.ago,
             format: "email",
