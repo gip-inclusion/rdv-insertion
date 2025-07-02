@@ -192,7 +192,7 @@ module Api
         # This uses the existing tag_users_attributes= method which works with tag IDs directly
         tag_users_attributes = attrs[:tags_to_add].map do |tag_attributes|
           tag = @organisation.tags.find_by!(value: tag_attributes[:value])
-          { tag_id: tag.id } if tag
+          { tag_id: tag.id }
         end.compact
 
         attrs[:tag_users_attributes] = tag_users_attributes
