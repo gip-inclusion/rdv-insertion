@@ -60,8 +60,8 @@ module ParticipationsHelper
       "user" => "l'usager"
     }[participation.created_by_type]
 
-    author_info = if participation.created_by_agent_prescripteur?
-                    " (#{participation.created_by.full_name})"
+    author_info = if participation.created_by_agent?
+                    " (#{participation.created_by})"
                   else
                     ""
                   end
