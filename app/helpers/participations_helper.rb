@@ -56,12 +56,12 @@ module ParticipationsHelper
   def participation_created_by_tooltip_content(participation)
     author = {
       "prescripteur" => "un prescripteur",
-      "agent" => "un agent",
+      "agent" => "l'agent",
       "user" => "l'usager"
     }[participation.created_by_type]
 
     author_info = if participation.created_by_agent?
-                    " (#{participation.created_by})"
+                    " #{participation.created_by} (#{participation.created_by.email})"
                   else
                     ""
                   end
