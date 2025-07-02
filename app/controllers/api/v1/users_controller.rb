@@ -42,7 +42,7 @@ module Api
 
           CreateAndInviteUserJob.perform_later(
             @organisation.id,
-            user_attributes.merge(creation_origin_attributes),
+            user_attributes,
             invitation_attributes,
             motif_category_attributes
           )
@@ -107,7 +107,7 @@ module Api
 
       def upsert_user
         @upsert_user ||= Users::Upsert.call(
-          user_attributes: user_attributes.merge(creation_origin_attributes), organisation: @organisation
+          user_attributes: user_attributes, organisation: @organisation
         )
       end
 
@@ -131,12 +131,17 @@ module Api
 
       def users_attributes
         users_params.map do |user_attributes|
-          user_attributes.to_h.deep_symbolize_keys.tap { |attrs| attrs[:invitation] ||= {} }
+          user_attributes.to_h.deep_symbolize_keys.merge(creation_origin_attributes).tap do |attrs|
+            attrs[:invitation] ||= {}
+            convert_tags_to_add_to_tag_users_attributes(attrs)
+          end
         end
       end
 
       def user_attributes
-        user_params.except(:invitation)
+        user_params.except(:invitation).merge(creation_origin_attributes).tap do |attrs|
+          convert_tags_to_add_to_tag_users_attributes(attrs)
+        end
       end
 
       def creation_origin_attributes
@@ -178,6 +183,20 @@ module Api
 
       def invitation_params
         params.permit(invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name] }])
+      end
+
+      def convert_tags_to_add_to_tag_users_attributes(attrs)
+        return if attrs[:tags_to_add].blank?
+
+        # Convert tags_to_add to tag_users_attributes for direct tag assignment
+        # This uses the existing tag_users_attributes= method which works with tag IDs directly
+        tag_users_attributes = attrs[:tags_to_add].map do |tag_attributes|
+          tag = @organisation.tags.find_by!(value: tag_attributes[:value])
+          { tag_id: tag.id }
+        end.compact
+
+        attrs[:tag_users_attributes] = tag_users_attributes
+        attrs.delete(:tags_to_add)
       end
     end
     # rubocop: enable Metrics/ClassLength
