@@ -251,7 +251,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       let!(:user_attributes) do
         {
-          **user1_params,
+          **user1_params.except(:tags_to_add)
+                        .merge(tag_users_attributes: [{ tag_id: organisation.tags.find_by(value: "A relancer").id }]),
           created_through: "rdv_insertion_api",
           created_from_structure_type: "Organisation",
           created_from_structure_id: organisation.id
@@ -461,8 +462,10 @@ describe "Users API", swagger_doc: "v1/api.json" do
       }
 
       let!(:user_attributes) do
+        tag_a_relancer = organisation.tags.find_by(value: "A relancer")
         {
-          **user1_params,
+          **user1_params.except(:tags_to_add),
+          **(tag_a_relancer ? { tag_users_attributes: [{ tag_id: tag_a_relancer.id }] } : {}),
           created_through: "rdv_insertion_api",
           created_from_structure_type: "Organisation",
           created_from_structure_id: organisation.id

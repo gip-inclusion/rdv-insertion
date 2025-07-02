@@ -420,7 +420,7 @@ describe User do
     end
   end
 
-  describe "#tags_to_add=" do
+  describe "tag assignment via tag_users_attributes" do
     subject { user.save }
 
     let!(:user) { build(:user, organisations: [organisation]) }
@@ -435,33 +435,25 @@ describe User do
       create(:tag_organisation, tag: other_tag, organisation: organisation)
     end
 
-    it "assigns the tags" do
-      user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+    it "assigns the tags using tag_users_attributes" do
+      user.tag_users_attributes = [{ tag_id: tag.id }, { tag_id: other_tag.id }]
       expect { subject }.to change(TagUser, :count).by(2)
       expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
     end
 
-    context "when the value does not match an existing tag" do
-      it "does not assign the tag" do
-        user.tags_to_add = [{ value: "DoesNotExist" }]
-        expect { subject }.not_to change(TagUser, :count)
-        expect(user.reload.tags).to eq([])
-      end
-    end
-
-    context "when the value does not match an existing tag in the organisation" do
-      it "does not assign the tag" do
-        user.tags_to_add = [{ value: "Non prioritaire" }]
-        expect { subject }.not_to change(TagUser, :count)
-        expect(user.reload.tags).to eq([])
+    context "when the tag does not exist" do
+      it "fails to save user with invalid tag_id" do
+        user.tag_users_attributes = [{ tag_id: 99999 }]
+        expect(subject).to be_falsey
+        expect(user.errors).to be_present
       end
     end
 
     context "when the tag is already assigned" do
       let!(:user) { create(:user, organisations: [organisation], tags: [tag]) }
 
-      it "does not reassign the assigned tag" do
-        user.tags_to_add = [{ value: "A relancer" }, { value: "Prioritaire" }]
+      it "does not create duplicate tag assignments" do
+        user.tag_users_attributes = [{ tag_id: tag.id }, { tag_id: other_tag.id }]
         expect { subject }.to change(TagUser, :count).by(1)
         expect(user.reload.tag_ids).to contain_exactly(tag.id, other_tag.id)
       end

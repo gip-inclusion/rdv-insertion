@@ -37,13 +37,12 @@ module Api
       def create_and_invite_many
         users_attributes.each do |attrs|
           user_attributes = attrs.except(:invitation)
-          convert_tags_for_upsert_service!(user_attributes)
           invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
           CreateAndInviteUserJob.perform_later(
             @organisation.id,
-            user_attributes.merge(creation_origin_attributes),
+            user_attributes,
             invitation_attributes,
             motif_category_attributes
           )
@@ -107,10 +106,8 @@ module Api
       end
 
       def upsert_user
-        attrs = convert_tags_for_upsert_service!(user_attributes)
-
         @upsert_user ||= Users::Upsert.call(
-          user_attributes: attrs.merge(creation_origin_attributes), organisation: @organisation
+          user_attributes: user_attributes, organisation: @organisation
         )
       end
 
@@ -134,19 +131,17 @@ module Api
 
       def users_attributes
         users_params.map do |user_attributes|
-          user_attributes.to_h.deep_symbolize_keys.tap { |attrs| attrs[:invitation] ||= {} }
+          user_attributes.to_h.deep_symbolize_keys.merge(creation_origin_attributes).tap do |attrs|
+            attrs[:invitation] ||= {}
+            convert_tags_to_add_to_tag_users_attributes(attrs)
+          end
         end
       end
 
       def user_attributes
-        user_params.except(:invitation)
-      end
-
-      def convert_tags_for_upsert_service!(attrs)
-        return attrs if attrs[:tags_to_add].blank?
-
-        convert_tags_to_add_to_tag_users_attributes(attrs)
-        attrs
+        user_params.except(:invitation).merge(creation_origin_attributes).tap do |attrs|
+          convert_tags_to_add_to_tag_users_attributes(attrs)
+        end
       end
 
       def creation_origin_attributes
@@ -191,12 +186,13 @@ module Api
       end
 
       def convert_tags_to_add_to_tag_users_attributes(attrs)
-        # Convert tags_to_add to tag_users_attributes to avoid transaction issues
-        # This bypasses the need for organisation_ids in User::Tags#find_tag_in_organisations
-        # and reuses the existing tag_users_attributes= method which works with tag IDs directly
+        return if attrs[:tags_to_add].blank?
+
+        # Convert tags_to_add to tag_users_attributes for direct tag assignment
+        # This uses the existing tag_users_attributes= method which works with tag IDs directly
         tag_users_attributes = attrs[:tags_to_add].map do |tag_attributes|
-          tag = @organisation.tags.find_by(value: tag_attributes[:value])
-          { tag_id: tag.id }
+          tag = @organisation.tags.find_by!(value: tag_attributes[:value])
+          { tag_id: tag.id } if tag
         end.compact
 
         attrs[:tag_users_attributes] = tag_users_attributes
