@@ -44,6 +44,15 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
+  def user_for_display
+    # Skip uniqueness validations for display purposes to avoid N+1 queries
+    user.tap { |u| u.skip_uniqueness_validations = true }
+  end
+
+  def user_errors_for_display
+    user_for_display.errors
+  end
+
   def saved_user
     user_save_attempts.last&.user
   end
