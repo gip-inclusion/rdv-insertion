@@ -5,7 +5,7 @@ module UserListUpload::InvitationAttemptsHelper
 
   def user_row_before_invitation_badge_class(user_row)
     {
-      already_invited: "background-very-light-grey text-very-dark-grey",
+      already_invited: "background-very-light-grey text-dark-grey",
       not_invited: "background-blue-light text-info"
     }[user_row.before_invitation_status]
   end

@@ -61,8 +61,8 @@ button, input[type="button"] {
     min-width: 90px;
     &:hover, &:disabled {
       color: white;
-      border-color: $info;
-      background-color: $info;
+      border-color: $light-blue;
+      background-color: $light-blue;
     }
     &.show-referent-button {
       min-width: 0;
@@ -118,4 +118,8 @@ button, input[type="button"] {
   margin-bottom: 0.5em;
   font-size: 0.85em;
   font-weight: 600;
+
+  &.background-blue-light {
+    border: 1px solid $dark-blue;
+  }
 }

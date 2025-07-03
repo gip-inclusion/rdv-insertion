@@ -3,7 +3,7 @@ module UsersFiltersHelper
     [
       :search_query,
       :tag_ids,
-      :status,
+      :follow_up_statuses,
       :orientation_type,
       :action_required,
       :referent_id,

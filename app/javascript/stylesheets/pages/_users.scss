@@ -1,3 +1,9 @@
+.map-container {
+  img {
+    transform: scale(1.5);
+  }
+}
+
 .context-block {
   th,
   td {
@@ -108,4 +114,15 @@
 .users-count-recap {
   font-size: 18px;
   font-weight: 500;
+}
+
+.nav {
+  .nav-link {
+    color: $alt-grey;
+  
+    &.active {
+      color: $dark-blue;
+      font-weight: 600;
+    }
+  }
 }
