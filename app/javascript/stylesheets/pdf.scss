@@ -169,8 +169,9 @@ u {
   }
 
   // Ajustements en fonction du nombre de logos
+  &:has(div:first-child:nth-last-child(1)),
   &:has(div:first-child:nth-last-child(2)) {
-    // 2 logos
+    // 1 ou 2 logos
     div img {
       height: 50px;
     }
