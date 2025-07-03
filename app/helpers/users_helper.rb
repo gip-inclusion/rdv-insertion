@@ -15,6 +15,10 @@ module UsersHelper
     users.empty? && params[:search_query].present?
   end
 
+  def no_users_matching_filters?(users)
+    users.empty? && active_filter_list.any?
+  end
+
   def options_for_select_status(statuses_count)
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
@@ -62,10 +66,12 @@ module UsersHelper
     end
   end
 
-  def show_parcours?(department, organisation)
-    return policy(department).parcours? if department_level?
-
-    policy(department).parcours? && (organisation.blank? || policy(organisation).parcours?)
+  def show_parcours?(user:)
+    if current_structure.is_a?(Organisation)
+      policy(current_structure).parcours?
+    else
+      policy(current_structure).parcours?(user:)
+    end
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)

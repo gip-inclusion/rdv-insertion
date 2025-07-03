@@ -2,7 +2,7 @@
   <% @filtered_tags.each do |tag| %>
     <span class="d-flex me-2 active-filter-badge">
       <%= tag.value %>
-      <%= link_to structure_users_path(url_params.merge(tag_ids: params[:tag_ids] - [tag.id.to_s])) do %>
+      <%= link_to structure_users_path(url_params.merge(tag_ids: params[:tag_ids].map(&:to_i) - [tag.id])) do %>
         <i class="ri-close-line"></i>
       <% end %>
     </span>

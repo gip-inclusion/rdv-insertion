@@ -1,12 +1,7 @@
-<div class="mb-2 active-filters-recap align-items-start d-flex">
-  <div class="me-2">
-    <%= @users.total_count %> dossier(s) 
-    <% if params[:search_query].present? %>
-    correspondant à votre recherche "<strong><%= params[:search_query] %></strong>"
-    <% end %>
-  </div>
-  <div class="active-filters-container d-flex flex-wrap">
-    <% ([:status, :orientation_type, :action_required, :referent_id] & active_filter_list).each do |filter| %>
+<div class="active-users-recap align-items-center d-flex flex-wrap">
+  <%= render "users_count", users_count: @users_count, motif_category: @current_motif_category %>
+  <%  if active_filter_list.any? %>
+    <% active_filters_without_specific_display.each do |filter| %>
       <span class="d-flex me-2 active-filter-badge">
         <% if filter == :referent_id %>
           Suivi par <%= @referent %>
@@ -14,8 +9,6 @@
           Orientation : <%= params[filter] %>
         <% elsif filter == :action_required %>
           Intervention nécessaire
-        <% elsif filter == :status %>
-          Statut : <%= I18n.t("activerecord.attributes.follow_up.statuses.#{params[filter]}") %>
         <% end %>
         <%= link_to structure_users_path(url_params.except(filter)) do %>
           <i class="ri-close-line"></i>
@@ -23,14 +16,14 @@
       </span>
     <% end %>
     <%= render "users/active_filters_recap/tag_ids" %>
+    <%= render "users/active_filters_recap/status" %>
     <%= render "users/active_filters_recap/creation_date" %>
     <%= render "users/active_filters_recap/convocation_date" %>
     <%= render "users/active_filters_recap/first_invitation_date" %>
     <%= render "users/active_filters_recap/last_invitation_date" %>
-    <%= link_to structure_users_path(url_params.except(*active_filter_list)) do %>
+    <%= link_to structure_users_path(url_params.except(*active_filter_list)), class: "fr-link mb-2 ms-2" do %>
       <i class="ri-arrow-go-back-line"></i>
-      <span class="btn-link">Réinitialiser</span>
+      <span>Réinitialiser</span>
     <% end %>
-  </div>
-
+  <% end %>
 </div>

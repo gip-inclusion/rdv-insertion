@@ -1,7 +1,7 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_department, :set_user_tags, :set_back_to_users_list_url,
-                  only: [:show]
+    before_action :set_user, :set_user_tags, :set_back_to_users_list_url,
+                  :ensure_has_access_to_parcours, only: [:show]
 
     include BackToListConcern
     include Users::Taggable
@@ -10,15 +10,19 @@ module Users
       @orientations = policy_scope(@user.orientations)
                       .where(organisation: { department_id: current_department_id })
                       .includes(:agent, :organisation, :orientation_type).order(starts_at: :asc)
-      @diagnostics = @user.diagnostics.where(department: @department).order(document_date: :desc, id: :desc)
-      @contracts = @user.contracts.where(department: @department).order(document_date: :desc, id: :desc)
+      @diagnostics = @user.diagnostics.where(department_id: current_department_id).order(document_date: :desc,
+                                                                                         id: :desc)
+      @contracts = @user.contracts.where(department_id: current_department_id).order(document_date: :desc, id: :desc)
     end
 
     private
 
-    def set_department
-      @department = current_department
-      authorize(@department, :parcours?)
+    def ensure_has_access_to_parcours
+      return authorize(current_structure, :parcours?) if current_structure.is_a?(Organisation)
+      return if DepartmentPolicy.new(pundit_user, current_structure).parcours?(user: @user)
+
+      flash[:error] = "Votre compte ne vous permet pas d'effectuer cette action"
+      redirect_to structure_users_path
     end
 
     def set_user

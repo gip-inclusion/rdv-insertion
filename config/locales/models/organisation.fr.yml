@@ -18,4 +18,4 @@ fr:
           france_travail: "France Travail"
           siae: "SIAE"
           autre: "Autre"
-
+        display_in_stats: Afficher dans les statistiques

@@ -19,9 +19,9 @@ describe DepartmentOrganisationsController do
       get :index, params: { department_id: department.id }
 
       expect(response).to be_successful
-      expect(response.body).to match(/category_configurations">Marseille/)
-      expect(response.body).not_to match(/category_configurations">Aix-en-Provence/)
-      expect(response.body).not_to match(/category_configurations">Montpellier/)
+      expect(response.body).to have_link("Marseille", href: organisation_configuration_path(organisation1))
+      expect(response.body).to have_no_link("Aix-en-Provence", href: organisation_configuration_path(organisation2))
+      expect(response.body).to have_no_link("Montpellier", href: organisation_configuration_path(organisation3))
     end
   end
 end

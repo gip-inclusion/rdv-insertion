@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     namespace :user_list_uploads do
       resources :category_selections, only: [:new]
     end
+    resource :configuration, only: [:show]
     resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
@@ -235,9 +236,14 @@ Rails.application.routes.draw do
       resources :rdvs, param: "uuid", only: [:show]
       resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
         member do
-          resources :users, only: [] do
-            post :create_and_invite_many, on: :collection
-            post :create_and_invite, on: :collection
+          resources :users, only: [:index, :create] do
+            collection do
+              post :create_and_invite_many
+              post :create_and_invite
+            end
+            member do
+              post :invite
+            end
           end
           post "applicants/create_and_invite_many", to: "users#create_and_invite_many"
         end

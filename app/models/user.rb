@@ -219,12 +219,29 @@ class User < ApplicationRecord
     archives.find { |a| a.organisation_id == organisation.id }
   end
 
+  def archived_in_organisation?(organisation)
+    !archive_in_organisation(organisation).nil?
+  end
+
   def tag_users_attributes=(attributes)
     attributes.map!(&:with_indifferent_access)
     attributes.uniq! { |attr| attr["tag_id"] }
     attributes.reject! { |attr| tag_users.any? { |tu| tu.tag_id == attr["tag_id"] } }
 
     super
+  end
+
+  def retrievable_in_france_travail?
+    nir_and_birth_date? || valid_france_travail_id?
+  end
+
+  def valid_france_travail_id?
+    # Valid France Travail ID is exactly 11 digits
+    france_travail_id? && france_travail_id.match?(/\A\d{11}\z/)
+  end
+
+  def nir_and_birth_date?
+    birth_date? && nir?
   end
 
   private

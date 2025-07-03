@@ -1,25 +1,38 @@
-<div class="mb-1 position-relative text-center d-flex align-items-center justify-content-center">
-  <%=
-    select(
-      :user,
-      :orientation_type,
-      @orientation_types,
-      { prompt: "Filtrer par type d'orientation" },
-      class: "form-select js-orientation-selector"
-    )
-  %>
-  <% selected_orientation = @orientation_types.find { |orientation_type| orientation_type.name == params[:orientation_type] }%>
-  <span class="label-alt position-absolute bg-white pe-none">
-    <span class="orientation-label-alt">
-      <% if selected_orientation.present? %>
-        Type d'orientation : <%= selected_orientation %>
-      <% else %>
-        Filtrer par type d'orientation
-      <% end %>
-    </span>
-    <% if selected_orientation.present? %>
-      <span class="filter-active">1</span>
+ <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
+      data-controller="users-list-filter dropdown-menu"
+      data-users-list-filter-param-name-value="orientation_type">
+  <% selected_orientation_type = params[:orientation_type] %>
+  <button type="button"
+          class="btn btn-grey dropdown-toggle <%= "border-blue" if selected_orientation_type.present? %>"
+          data-action="dropdown-menu#toggle"
+          data-dropdown-menu-target="button"
+          aria-expanded="false"
+          id="rdvi_index-nav_filter-orientation-type-button">
+    Type d'orientation 
+    <% if selected_orientation_type.present? %>
+      <span class="filter-active ms-1">1</span>
     <% end %>
-    <i class="ri-arrow-down-s-line"></i>
-  </span>
+  </button>
+  <div class="dropdown-menu px-2" data-dropdown-menu-target="dropdown" style="min-width: 280px;">
+    <% @orientation_types.each do |orientation_type| %>
+      <% selected = params[:orientation_type] == orientation_type.name %>
+      <div class="form-check">
+        <input class="form-check-input"
+                type="radio"
+                name="orientation_type"
+                value="<%= orientation_type.name %>"
+                id="orientation_type_<%= orientation_type.name %>"
+                data-users-list-filter-target="input"
+                <%= 'checked' if selected %>>
+        <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="orientation_type_<%= orientation_type.name %>">
+          <%= orientation_type.name %>
+        </label>
+      </div>
+    <% end %>
+    <div class="mt-3">
+      <button type="button" class="btn btn-blue" data-action="users-list-filter#apply">
+        Appliquer
+      </button>
+    </div>
+  </div>
 </div>

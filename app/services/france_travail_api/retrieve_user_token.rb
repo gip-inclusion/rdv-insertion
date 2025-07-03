@@ -16,7 +16,7 @@ module FranceTravailApi
     private
 
     def send_request!
-      response = FranceTravailClient.retrieve_user_token(payload: user_payload, headers: headers)
+      response = retrieve_user_token
       @response_body = JSON.parse(response.body.force_encoding("UTF-8"))
 
       if response.success? && !no_matching_user?(response)
@@ -31,10 +31,28 @@ module FranceTravailApi
       end
     end
 
-    def user_payload
+    def retrieve_user_token
+      if @user.nir_and_birth_date?
+        FranceTravailClient.retrieve_user_token_by_nir(payload: user_payload_by_nir, headers: headers)
+      elsif @user.valid_france_travail_id?
+        FranceTravailClient.retrieve_user_token_by_france_travail_id(
+          payload: user_payload_by_france_travail_id, headers: headers
+        )
+      else
+        raise "User #{@user.id} is not retrievable in France Travail"
+      end
+    end
+
+    def user_payload_by_nir
       {
         dateNaissance: @user.birth_date.to_s,
         nir: @user.nir
+      }
+    end
+
+    def user_payload_by_france_travail_id
+      {
+        numeroFranceTravail: @user.france_travail_id
       }
     end
 

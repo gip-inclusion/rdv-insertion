@@ -1,33 +1,33 @@
 <div id="organisation-navigation" class="dropdown ms-3" data-controller="dropdown-menu">
-  <button id="btn-organisation-navigation" class="dropdown-toggle accessible text-truncate" type="button" data-action="click->dropdown-menu#toggle" data-dropdown-menu-target="button" aria-haspopup="true" aria-expanded="false">
+  <button id="rdvi_header_organisation-nav" class="dropdown-toggle accessible text-truncate" type="button" data-action="click->dropdown-menu#toggle" data-dropdown-menu-target="button" aria-haspopup="true" aria-expanded="false">
     <i class="<%= department_level? ? "ri-building-line" : "ri-building-4-line" %> me-1"></i> <%= structure_name_with_context(current_structure) %>
   </button>
-  <div id="organisation-navigation-dropdown" data-dropdown-menu-target="dropdown" class="dropdown-menu py-0 mt-2" data-controller="list-filter">
+  <div id="organisation-navigation-dropdown" data-dropdown-menu-target="dropdown" class="dropdown-menu py-0 mt-2" data-controller="organisations-list-filter">
     <% if current_agent_department_organisations.length > 10 %>
       <div class="px-3 pt-2 pb-2 border-bottom">
         <div class="position-relative">
           <input type="text"
                  class="form-control form-control-sm pe-4"
                  placeholder="Nom de l'organisation recherchée..."
-                 data-list-filter-target="input"
-                 data-action="input->list-filter#search"
+                 data-organisations-list-filter-target="input"
+                 data-action="input->organisations-list-filter#search"
                  autocomplete="off">
         </div>
       </div>
     <% end %>
 
     <%= link_to department_users_path(current_department), title: "#{current_department_name} - Toutes les organisations" do %>
-      <div class="dropdown-item py-3 text-truncate <%= "navigation-selected-item" if department_level? %>" data-list-filter-target="item">
+      <div class="dropdown-item py-3 text-truncate <%= "navigation-selected-item" if department_level? %>" data-organisations-list-filter-target="item">
         <i class="ri-building-line me-3 <%= department_level? ? "text-white" : "text-dark-blue" %>"></i><%= current_department_name %> - Toutes les organisations
       </div>
     <% end %>
     <% current_agent_department_organisations.sort_by(&:name).each do |organisation| %>
       <%= link_to organisation_users_path(organisation), title: "#{organisation.name}" do %>
-        <div class="dropdown-item py-3 text-truncate <%= "navigation-selected-item" if current_structure == organisation %>" data-list-filter-target="item"><i class="ri-building-4-line me-3 <%= current_structure == organisation ? "text-white" : "text-dark-blue" %>"></i><%= organisation.name %></div>
+        <div class="dropdown-item py-3 text-truncate <%= "navigation-selected-item" if current_structure == organisation %>" data-organisations-list-filter-target="item"><i class="ri-building-4-line me-3 <%= current_structure == organisation ? "text-white" : "text-dark-blue" %>"></i><%= organisation.name %></div>
       <% end %>
     <% end %>
 
-    <div class="dropdown-item py-3 text-muted text-center d-none" data-list-filter-target="noResults">
+    <div class="dropdown-item py-3 text-muted text-center d-none" data-organisations-list-filter-target="noResults">
       Aucun résultat
     </div>
   </div>

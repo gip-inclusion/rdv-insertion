@@ -1,148 +1,51 @@
-<div class="row mb-4 card-white justify-content-center">
-  <div class="col-4 justify-content-center">
-    <% if @current_category_configuration.present? %>
-      <div class="mb-1 position-relative text-center d-flex align-items-center justify-content-center">
-        <%=
-          select(
-            "user", "status", options_for_select_status(@statuses_count),
-            { prompt: "Filtrer par statut" },
-            class: "form-select js-status-selector"
-          )
-        %>
-        <% selected_status = options_for_select_status(@statuses_count).find { |statut| statut[1] == params[:status] }%>
-        <span class="label-alt position-absolute bg-white pe-none">
-          <span class="status-label-alt">
-            <% if selected_status.present? %>
-              Statut : <%= selected_status[0] %> <span class="filter-active">1</span>
+<div class="row mb-4 card-white justify-content-center p-0">
+  <div class="row mb-2 p-4 pb-3">
+    <div class="col-6 d-flex">
+      <div class="map-container me-4 d-flex align-items-center">
+        <% if asset_exists?("maps/#{@department.name.parameterize}.svg") %>
+          <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 80, height: 80) %>
+        <% end %>
+      </div>
+      <div class="col-10 d-flex flex-column justify-content-between">
+        <span class="department-title mb-0 text-dark-blue">
+          <%= department_level? ? "Département" : current_department.name %>
+        </span>
+        <h2 class="structure-title mb-2 text-dark-blue">
+          <%= current_structure.name %>
+        </h2>
+        <div class="d-flex">
+          <% if authorized_any?(current_organisations, :configure) %>
+            <% if department_level? %>
+              <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "fr-link me-4") do %>
+                <span class="ri-settings-5-fill" aria-hidden="true"></span>
+                Configurer
+              <% end %>
             <% else %>
-              Filtrer par statut
+              <%= link_to(organisation_category_configurations_path(@organisation), class: "fr-link me-4") do %>
+              <span class="ri-settings-5-fill" aria-hidden="true"></span>
+                Configurer l'organisation
+              <% end %>
             <% end %>
-          </span>
-          <i class="ri-arrow-down-s-line"></i>
-        </span>
-      </div>
-    <% end %>
-    <div class="mb-1 position-relative text-center d-flex align-items-center justify-content-center">
-      <%=
-        select(
-          "user",
-          "referent_id",
-          options_for_select_referent(@referents_list),
-          { prompt: "Filtrer par référent" },
-          class: "form-select js-referent-selector"
-        )
-      %>
-      <% selected_referent = @referents_list.find { |referent| referent.id == params[:referent_id].to_i }%>
-      <span class="label-alt position-absolute bg-white pe-none">
-        <span class="referent-label-alt">
-          <% if selected_referent.present? %>
-            Suivis par : <%= selected_referent %> <span class="filter-active">1</span>
-          <% else %>
-            Filtrer par référent
           <% end %>
-        </span>
-        <i class="ri-arrow-down-s-line"></i>
-      </span>
-    </div>
-    <%= render "filter_by_orientation_type_button" if show_orientations_filter? %>
-    <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
-    <%= render "filter_by_invitation_or_convocation_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
-    <%= render "search_form", url: structure_users_path %>
-
-    <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
-      <div class="text-left mt-2">
-        <% if @tags.any? || @current_category_configuration.present? %>
-          <i class="ri-filter-line"></i> Filtrer par :
-        <% end %>
-        <% if @current_category_configuration.present? %>
-          <div class="mt-1">
-            <input type="checkbox" name="action_required" class="form-check-input"></input> Usagers avec intervention nécessaire
-            <small>
-              <i
-                class="ri-question-line"
-                <%= tooltip(content: action_required_tooltip_content(@current_category_configuration.number_of_days_before_invitations_expire)) %>
-              >
-              </i>
-            </small>
-          </div>
-        <% end %>
-        <% @tags.sort_by(&:value).each do |tag| %>
-          <div>
-            <input type="checkbox" name="tag_ids[]" <%= "checked" if params[:tag_ids]&.include?(tag.id.to_s) %> value="<%= tag.id %>" class="form-check-input"></input>
-            <%= tag.value %>
-          </div>
-        <% end if @tags.present? %>
-      </div>
-
-      <div class="expand-button-container">
-        <button data-action="index-filters#expand">
-          <i class="ri-arrow-down-line"></i> Voir plus de filtres
-        </button>
-      </div>
-      <div class="collapse-button-container">
-        <button data-action="index-filters#collapse">
-          <i class="ri-arrow-up-line"></i> Voir moins de filtres
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-4 d-flex flex-column justify-content-center align-items-center">
-    <% if asset_exists?("maps/#{@department.name.parameterize}.svg") %>
-      <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
-    <% end %>
-    <h4 class="text-center department-map-title mb-0">
-      <%= current_structure.name %>
-    </h4>
-
-    <div class="mt-2">
-      <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning) do %>
-        <button class="btn btn-blue" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
-          Voir sur RDV-Solidarités<i class="ri-external-link-line ms-1"></i>
-        </button>
-        <%= render "common/rdvs_impersonation_warning", url: structure_rdv_solidarites_url(current_structure) if agent_impersonated? %>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="col-4 d-flex flex-column justify-content-around align-items-end">
-    <div class="d-flex flex-column align-items-end dropdown">
-      <button class="btn btn-blue dropdown-toggle mb-2" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-        Créer usager(s)
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-        <li>
-          <%= link_to(new_structure_user_path, class: "dropdown-item") do %>
-            Créer un usager
-          <% end %>
-        </li>
-        <li>
-          <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "dropdown-item") do %>
-            Charger fichier usagers
-            <span class="badge background-violet ms-2">
-              Nouveau
+          <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning, id: "rdvi_index-nav_redirect-rdvs", class: "fr-link fr-icon-arrow-right-line") do %>
+            <span <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
+              Voir sur RDV-Solidarités
             </span>
+            <%= render "common/rdvs_impersonation_warning", url: structure_rdv_solidarites_url(current_structure) if agent_impersonated? %>
           <% end %>
-        </li>
-      </ul>
-      <% if authorized_any?(current_organisations, :configure) %>
-        <% if department_level? %>
-          <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "mb-2") do %>
-            <button class="btn btn-blue-out">Configurer une organisation</button>
-          <% end %>
-        <% else %>
-          <%= link_to(organisation_category_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
-            Configurer l'organisation
-          <% end %>
-        <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 d-flex justify-content-end align-items-center">
+      <%= link_to(new_structure_user_path, class: "btn btn-blue-out", id: "rdvi_index-nav_create-one-user") do %>
+        <span class="ri-user-add-fill" aria-hidden="true"></span>
+        Ajouter un usager
+      <% end %>
+      <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "btn btn-blue ms-2", id: "rdvi_index-nav_upload-users") do %>
+        <span class="ri-file-add-fill" aria-hidden="true"></span>
+        Importer des usagers
       <% end %>
     </div>
-    <% if @current_category_configuration.present? %>
-      <div class="d-flex flex-column align-items-end dropdown">
-        <%= link_to(new_structure_batch_action_path(motif_category_id: @current_motif_category.id), class: "btn btn-blue") do %>
-          Envoyer des invitations aux non-invités
-        <% end %>
-      </div>
-    <% end %>
   </div>
+  <%= render "users_list_filters" %>
 </div>

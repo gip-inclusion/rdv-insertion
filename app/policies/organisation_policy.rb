@@ -15,6 +15,10 @@ class OrganisationPolicy < ApplicationPolicy
     configure?
   end
 
+  def edit?
+    configure?
+  end
+
   def create_and_invite_users?
     access?
   end
@@ -24,8 +28,7 @@ class OrganisationPolicy < ApplicationPolicy
   end
 
   def parcours?
-    access? && record.organisation_type.in?(Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS) &&
-      !record.department.number.in?(ENV.fetch("DEPARTMENTS_WHERE_PARCOURS_DISABLED", "").split(","))
+    access? && record.with_parcours_access?
   end
 
   def unassign?

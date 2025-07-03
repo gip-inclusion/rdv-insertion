@@ -33,20 +33,16 @@ describe "Agents can upload documents for users", :js do
 
       it "redirects right away" do
         visit department_user_parcours_path(user_id: user.id, department_id: department.id)
-        expect(page).to have_current_path(organisation_users_path(organisation))
+        expect(page).to have_current_path(department_users_path(department))
       end
     end
 
     context "on a department that is not authorized to see the parcours" do
-      let!(:department) { create(:department, number: "75") }
-
-      before do
-        stub_const "ENV", ENV.to_h.merge("DEPARTMENTS_WHERE_PARCOURS_DISABLED" => "75")
-      end
+      let!(:department) { create(:department, number: "75", parcours_enabled: false) }
 
       it "redirects right away" do
         visit department_user_parcours_path(user_id: user.id, department_id: department.id)
-        expect(page).to have_current_path(organisation_users_path(organisation))
+        expect(page).to have_current_path(department_users_path(department))
       end
     end
 
@@ -70,15 +66,41 @@ describe "Agents can upload documents for users", :js do
     end
 
     context "on a department that is not authorized to see the parcours" do
-      let!(:department) { create(:department, number: "75") }
-
-      before do
-        stub_const "ENV", ENV.to_h.merge("DEPARTMENTS_WHERE_PARCOURS_DISABLED" => "75")
-      end
+      let!(:department) { create(:department, number: "75", parcours_enabled: false) }
 
       it "cannot see the parcours tab" do
         visit organisation_user_path(organisation_id: organisation.id, id: user.id)
         expect(page).to have_no_content("Parcours")
+      end
+    end
+
+    context "on a user that only belongs to organisations without parcours access" do
+      let!(:organisation) do
+        create(:organisation, organisation_type: "siae", name: "Asso1", agents: organisation_agents,
+                              department: department)
+      end
+
+      let(:other_organisation) do
+        create(:organisation, organisation_type: "siae", name: "Asso2", agents: organisation_agents,
+                              department: department)
+      end
+
+      # User doesn't belong to this org, but agent does
+      let!(:yet_another_organisation) do
+        create(:organisation, organisation_type: "france_travail", name: "FT", agents: organisation_agents,
+                              department: department)
+      end
+
+      let(:department) { create(:department, number: "26", parcours_enabled: true) }
+
+      it "cannot see the parcours tab" do
+        visit department_user_path(id: user.id, department_id: department.id)
+        expect(page).to have_no_content("Parcours")
+      end
+
+      it "cannot access parcours tab manually" do
+        visit department_user_parcours_path(user_id: user.id, department_id: department.id)
+        expect(page).to have_content("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
 

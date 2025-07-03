@@ -1,7 +1,6 @@
 class OrientationSelector {
   constructor() {
     this.selectElt = document.querySelector(".js-orientation-selector");
-    this.altLabel = document.querySelector(".orientation-label-alt");
     if (this.selectElt === null) return;
 
     this.setInitialValue();
@@ -13,15 +12,6 @@ class OrientationSelector {
     const selectedOrientation = url.searchParams.get("orientation_type");
     if (selectedOrientation) {
       this.selectElt.value = selectedOrientation;
-      this.setAlternativeLabel();
-    }
-  }
-
-  setAlternativeLabel() {
-    if (this.selectElt.value) {
-      this.altLabel.innerText = `Type d'orientation : ${this.selectElt.options[this.selectElt.selectedIndex].text}`;
-    } else {
-      this.altLabel.innerText = "Filtrer par type d'orientation";
     }
   }
 

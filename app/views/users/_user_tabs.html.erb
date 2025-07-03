@@ -9,7 +9,7 @@
       Rendez-vous
     <% end %>
   </li>
-  <% if show_parcours?(@department, @organisation) %>
+  <% if show_parcours?(user:) %>
     <li class="nav-item">
       <%= link_to structure_user_parcours_path(user_id: user.id), class: "nav-link d-flex align-items-center #{tab == "parcours" ? "active" : ""}" do %>
         Parcours
