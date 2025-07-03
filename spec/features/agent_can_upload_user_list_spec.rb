@@ -981,7 +981,8 @@ describe "Agents can upload user list", :js do
       create(:user, first_name: "Hernan", last_name: "Crespo", email: "hernan@crespo.com", phone_number: "+33698943255")
     end
     let!(:christian) do
-      create(:user, first_name: "Christian", last_name: "Vieri", email: "christian@vieri.com", phone_number: nil)
+      create(:user, first_name: "Christian", last_name: "Vieri", email: "christian@vieri.com", phone_number: nil,
+                    address: nil)
     end
     let!(:user_list_upload) do
       create(
@@ -1009,6 +1010,23 @@ describe "Agents can upload user list", :js do
       # expect rows to be checked
       expect(find("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']")).to be_checked
       expect(find("input[type='checkbox'][data-user-row-id='#{christian_row.id}']")).to be_checked
+
+      # status and tooltips
+      hernan_row_element = find("tr", text: "Crespo")
+      within(hernan_row_element) do
+        expect(page).to have_content("Non invité")
+        data_tooltip_content = hernan_row_element.find(".badge.rounded-pill")["data-tooltip-content"]
+        expect(data_tooltip_content).to include("Cette usager n'a pas encore été invité sur cette catégorie de suivi.")
+        expect(data_tooltip_content).to include("Vous pouvez l'inviter par SMS, email ou courrier.")
+      end
+
+      christian_row_element = find("tr", text: "Vieri")
+      within(christian_row_element) do
+        expect(page).to have_content("Non invité")
+        data_tooltip_content = christian_row_element.find(".badge.rounded-pill")["data-tooltip-content"]
+        expect(data_tooltip_content).to include("Cette usager n'a pas encore été invité sur cette catégorie de suivi.")
+        expect(data_tooltip_content).to include("Vous pouvez l'inviter par email.")
+      end
 
       expect(page).to have_button("Envoyer les invitations")
 
@@ -1103,6 +1121,13 @@ describe "Agents can upload user list", :js do
 
         # hernan
         expect(page).to have_content("Invité le 24/01/2025")
+        hernan_row_element = find("tr", text: "Crespo")
+        within(hernan_row_element) do
+          data_tooltip_content = hernan_row_element.find(".badge.rounded-pill")["data-tooltip-content"]
+          expect(data_tooltip_content).to include("Cette usager a déjà été invité sur cette catégorie le 24/01/2025.")
+          expect(data_tooltip_content).not_to include("Attendez 24 heures pour pouvoir lui renvoyer une invitation.")
+        end
+
         # christian
         expect(page).to have_content("Non invité")
 
@@ -1121,6 +1146,13 @@ describe "Agents can upload user list", :js do
 
           # hernan
           expect(page).to have_content("Invité le 29/01/2025")
+          hernan_row_element = find("tr", text: "Crespo")
+          within(hernan_row_element) do
+            data_tooltip_content = hernan_row_element.find(".badge.rounded-pill")["data-tooltip-content"]
+            expect(data_tooltip_content).to include("Cette usager a déjà été invité sur cette catégorie le 29/01/2025.")
+            expect(data_tooltip_content).to include("Attendez 24 heures pour pouvoir lui renvoyer une invitation.")
+          end
+
           # christian
           expect(page).to have_content("Non invité")
 

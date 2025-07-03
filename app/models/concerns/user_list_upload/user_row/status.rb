@@ -24,7 +24,7 @@ module UserListUpload::UserRow::Status
   def before_invitation_status
     return :already_invited if previously_invited?
 
-    :not_invited
+    invitable? ? :invitable : :not_invitable
   end
 
   def after_invitation_status
