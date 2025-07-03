@@ -58,11 +58,11 @@
       <div class="mb-4 px-5">
         <%= turbo_frame_tag "file_configurations_list" do %>
           <% @file_configurations.each do |file_configuration| %>
-            <%= render "file_configurations/file_configuration_list_item", file_configuration: file_configuration, current_file_configuration: current_file_configuration, organisation: organisation %>
+            <%= render "file_configurations/file_configuration_list_item", file_configuration: file_configuration, current_file_configuration: current_file_configuration, category_configuration:, organisation:, department: %>
           <% end %>
         <% end %>
       </div>
-      <%= link_to new_organisation_file_configuration_path(organisation), class: "d-flex justify-content-center mb-4", data: { turbo_frame: 'remote_modal' } do %>
+      <%= link_to new_file_configuration_path(category_configuration_id: category_configuration.id), class: "d-flex justify-content-center mb-4", data: { turbo_frame: 'remote_modal' } do %>
         <button class="btn btn-blue">Créer et utiliser un nouveau fichier d'import</button>
       <% end %>
     </div>

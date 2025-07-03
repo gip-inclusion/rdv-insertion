@@ -7,9 +7,8 @@ class FileConfigurationsController < ApplicationController
     :rights_opening_date_column, :organisation_search_terms_column, :referent_email_column, :france_travail_id_column
   ].freeze
 
-  before_action :set_organisation, only: [:show, :new, :create, :edit, :confirm_update, :update, :download_template]
-  before_action :set_file_configuration, only: [:show, :edit, :confirm_update, :update, :download_template]
-  before_action :set_edit_form_url, :set_edit_form_html_method, only: [:edit, :update]
+  before_action :set_category_configuration, only: [:new, :create]
+  before_action :set_file_configuration, only: [:show, :edit, :update, :download_template]
 
   def show; end
 
@@ -24,40 +23,30 @@ class FileConfigurationsController < ApplicationController
     bom = "\uFEFF"
     csv_data = bom + @file_configuration.column_attributes.values.to_csv
     send_data csv_data,
-              filename: "modele-#{@organisation.name.parameterize}.csv",
+              filename: "modele-#{current_organisation.name.parameterize}.csv",
               type: "text/csv; charset=utf-8",
               disposition: "attachment"
   end
 
-  def confirm_update
-    @file_configuration.assign_attributes(**formatted_params)
-    render turbo_stream: turbo_stream.replace(
-      "remote_modal", partial: "confirm_update", locals: {
-        organisation: @organisation,
-        current_file_configuration: @file_configuration,
-        new_file_configuration: FileConfiguration.new(**formatted_params.compact_blank)
-      }
-    )
-  end
-
   def create
-    @file_configuration = FileConfiguration.new(**formatted_params)
-    if @file_configuration.save
-      flash.now[:success] = "Le fichier d'import a été créé avec succès"
+    @file_configuration = FileConfiguration.new(**file_configuration_params)
+    if @file_configuration.save_with_category_configuration(@category_configuration)
+      flash[:success] = "Le fichier d'import a été créé avec succès"
+      redirect_to organisation_category_configuration_path(
+        @category_configuration.organisation, @category_configuration
+      )
     else
-      render_errors("Créer fichier d'import", :post, organisation_file_configurations_path(@organisation))
+      turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
     end
-    respond_to :turbo_stream
   end
 
   def update
-    @file_configuration.assign_attributes(**formatted_params)
+    @file_configuration.assign_attributes(**file_configuration_params)
     if @file_configuration.save
-      flash.now[:success] = "Le fichier d'import a été modifié avec succès"
+      turbo_stream_prepend_flash_messages(success: "Le fichier d'import a été modifié avec succès")
     else
-      render_errors("Modifier fichier d'import", @edit_form_html_method, @edit_form_url)
+      turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
     end
-    respond_to :turbo_stream
   end
 
   private
@@ -66,51 +55,13 @@ class FileConfigurationsController < ApplicationController
     params.expect(file_configuration: PERMITTED_PARAMS)
   end
 
-  def formatted_params
-    # we nullify blank column names for validations to be accurate
-    file_configuration_params.to_h do |k, v|
-      [k, k.to_s.in?(FileConfiguration.column_attributes_names) ? v.presence : v]
-    end
-  end
-
-  def render_errors(form_title, form_method, form_url)
-    render turbo_stream: turbo_stream.replace(
-      "remote_modal", partial: "file_configuration_form", locals: {
-        organisation: @organisation,
-        file_configuration: @file_configuration,
-        errors: @file_configuration.errors.full_messages,
-        title: form_title,
-        method: form_method,
-        url: form_url
-      }
-    )
-  end
-
-  def set_edit_form_url
-    @edit_form_url =
-      if @file_configuration.category_configurations.length > 1
-        organisation_file_configuration_confirm_update_path(@organisation, @file_configuration)
-      else
-        organisation_file_configuration_path(@organisation, @file_configuration)
-      end
-  end
-
-  def set_edit_form_html_method
-    @edit_form_html_method =
-      if @file_configuration.category_configurations.length > 1
-        :get
-      else
-        :patch
-      end
-  end
-
-  def set_organisation
-    @organisation = current_organisation
-    authorize @organisation, :configure?
+  def set_category_configuration
+    @category_configuration = CategoryConfiguration.find(params[:category_configuration_id])
+    authorize @category_configuration, :edit?
   end
 
   def set_file_configuration
-    file_configuration_id = params[:file_configuration_id].presence || params[:id]
-    @file_configuration = FileConfiguration.find(file_configuration_id)
+    @file_configuration = FileConfiguration.find(params[:id] || params[:file_configuration_id])
+    authorize @file_configuration
   end
 end

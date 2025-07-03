@@ -105,10 +105,6 @@ Rails.application.routes.draw do
                 :convocation_dates_filterings,
                 :creation_dates_filterings, only: [:new]
     end
-    resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
-      get :confirm_update
-      get :download_template
-    end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
     resource :stats, only: [:show], controller: 'website/stats'
   end
@@ -146,6 +142,9 @@ Rails.application.routes.draw do
     end
   end
   resources :accept_cgus, only: [:create]
+  resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
+    get :download_template
+  end
 
   resources :users, module: :users, only: [] do
     resources :rdvs, only: [:new]
