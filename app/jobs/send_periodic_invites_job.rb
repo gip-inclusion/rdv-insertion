@@ -6,6 +6,7 @@ class SendPeriodicInvitesJob < ApplicationJob
       .joins(:invitations)
       .preload(invitations: [{ organisations: :category_configurations }, :user])
       .where(invitations: Invitation.candidates_for_periodic_invite)
+      .where.not(status: %w[rdv_pending closed])
       .distinct
       .find_each do |follow_up|
       send_invite(follow_up)
