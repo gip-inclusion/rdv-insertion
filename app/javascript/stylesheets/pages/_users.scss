@@ -1,5 +1,6 @@
 .context-block {
-  th, td {
+  th,
+  td {
     min-width: 140px;
     max-width: 140px;
   }
@@ -62,8 +63,8 @@
   }
 }
 
-.active-filters-recap {
-  > div:first-child {
+.active-users-recap {
+  >div:first-child {
     min-width: 85px;
   }
   .active-filter-badge {
@@ -73,7 +74,8 @@
     margin-right: 5px;
     margin-bottom: 5px;
     font-size: 14px;
-
+    font-weight: 600;
+    color: $dark-blue;
     a {
       margin-left: 5px;
     }
@@ -90,8 +92,20 @@
   font-size: 12px;
   line-height: 21px;
   left: 5px;
-
   &.convocation-date-filter-active {
     left: -2px;
   }
+}
+
+.structure-title {
+  font-size: 1.5rem;
+}
+
+.active-users-actions {
+  min-width: 230px;
+}
+
+.users-count-recap {
+  font-size: 18px;
+  font-weight: 500;
 }

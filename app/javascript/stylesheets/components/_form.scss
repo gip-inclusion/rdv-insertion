@@ -124,20 +124,6 @@
   font-size: 0.9em;
 }
 
-.label-alt {
-  width: calc(100% - 2px);
-  height: calc(100% - 10px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  i {
-    position: absolute;
-    right: 15px;
-    top: 5px;
-  }
-}
-
 .edit-row-attribute {
   height: 50px;
   background: white;
