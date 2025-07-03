@@ -1,8 +1,8 @@
-<% if params[:status] %>
-  <% params[:status].each do |status| %>
+<% if params[:follow_up_statuses] %>
+  <% params[:follow_up_statuses].each do |status| %>
     <span class="d-flex me-2 active-filter-badge">
       Statut : <%= I18n.t("activerecord.attributes.follow_up.statuses.#{status}") %>
-      <%= link_to structure_users_path(url_params.merge(status: params[:status] - [status])) do %>
+      <%= link_to structure_users_path(url_params.merge(status: params[:follow_up_statuses] - [status])) do %>
         <i class="ri-close-line"></i>
       <% end %>
     </span>

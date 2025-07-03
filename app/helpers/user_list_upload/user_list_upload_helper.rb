@@ -10,7 +10,7 @@ module UserListUpload::UserListUploadHelper
       to_create_with_errors: "alert-danger",
       to_update_with_no_errors: "background-blue-light text-mid-blue",
       to_update_with_errors: "alert-danger",
-      up_to_date: "background-very-light-grey text-very-dark-grey"
+      up_to_date: "background-very-light-grey text-dark-grey"
     }[user_row.before_user_save_status]
   end
 

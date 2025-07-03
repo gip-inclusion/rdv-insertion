@@ -1,3 +1,9 @@
+.map-container {
+  img {
+    transform: scale(1.5);
+  }
+}
+
 .context-block {
   th,
   td {
@@ -68,7 +74,7 @@
     min-width: 85px;
   }
   .active-filter-badge {
-    background-color: $light-blue-alt-2;
+    background-color: $light;
     border-radius: 20px;
     padding: 5px 10px;
     margin-right: 5px;
@@ -85,7 +91,7 @@
 .filter-active {
   position: relative;
   display: inline-block;
-  background-color: $light-blue-alt-2;
+  background-color: $light;
   width: 23px;
   height: 23px;
   border-radius: 100%;
@@ -108,4 +114,15 @@
 .users-count-recap {
   font-size: 18px;
   font-weight: 500;
+}
+
+.nav {
+  .nav-link {
+    color: $alt-grey;
+  
+    &.active {
+      color: $dark-blue;
+      font-weight: 600;
+    }
+  }
 }

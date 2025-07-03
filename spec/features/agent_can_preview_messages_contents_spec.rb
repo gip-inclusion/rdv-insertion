@@ -18,9 +18,9 @@ describe "Agents can preview messages contents", :js do
 
     click_button("Invitations")
 
-    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation", wait: 20)
-    expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
-    expect(page).to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_css("span.text-violet", text: "rendez-vous d'orientation", wait: 20)
+    expect(page).to have_css("span.text-violet", text: "bénéficiaire du RSA")
+    expect(page).to have_css("span.text-violet", text: "démarrer un parcours d'accompagnement")
 
     find("button.btn-close").click
 
@@ -29,10 +29,10 @@ describe "Agents can preview messages contents", :js do
 
     click_button("Convocations")
 
-    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation téléphonique", wait: 20)
-    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation")
-    expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
-    expect(page).to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_css("span.text-violet", text: "rendez-vous d'orientation téléphonique", wait: 20)
+    expect(page).to have_css("span.text-violet", text: "rendez-vous d'orientation")
+    expect(page).to have_css("span.text-violet", text: "bénéficiaire du RSA")
+    expect(page).to have_css("span.text-violet", text: "démarrer un parcours d'accompagnement")
 
     expect(page).to have_css("button.btn-close")
     find("button.btn-close").click
@@ -52,13 +52,13 @@ describe "Agents can preview messages contents", :js do
 
     click_button("Invitations")
 
-    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 20)
-    expect(page).to have_css("span.text-purple", text: "une personne remarquable")
-    expect(page).to have_css("span.text-purple", text: "vous rencontrer")
+    expect(page).to have_css("span.text-violet", text: "nouveau type de rendez-vous", wait: 20)
+    expect(page).to have_css("span.text-violet", text: "une personne remarquable")
+    expect(page).to have_css("span.text-violet", text: "vous rencontrer")
 
-    expect(page).to have_no_css("span.text-purple", text: "rendez-vous d'orientation")
-    expect(page).to have_no_css("span.text-purple", text: "bénéficiaire du RSA")
-    expect(page).to have_no_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_no_css("span.text-violet", text: "rendez-vous d'orientation")
+    expect(page).to have_no_css("span.text-violet", text: "bénéficiaire du RSA")
+    expect(page).to have_no_css("span.text-violet", text: "démarrer un parcours d'accompagnement")
 
     find("button.btn-close").click
 
@@ -66,15 +66,15 @@ describe "Agents can preview messages contents", :js do
 
     click_button("Convocations")
 
-    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 20)
-    expect(page).to have_css("span.text-purple", text: "nouveau coup de téléphone")
-    expect(page).to have_css("span.text-purple", text: "une personne remarquable")
-    expect(page).to have_css("span.text-purple", text: "vous rencontrer")
+    expect(page).to have_css("span.text-violet", text: "nouveau type de rendez-vous", wait: 20)
+    expect(page).to have_css("span.text-violet", text: "nouveau coup de téléphone")
+    expect(page).to have_css("span.text-violet", text: "une personne remarquable")
+    expect(page).to have_css("span.text-violet", text: "vous rencontrer")
 
-    expect(page).to have_no_css("span.text-purple", text: "rendez-vous d'orientation téléphonique")
-    expect(page).to have_no_css("span.text-purple", text: "rendez-vous d'orientation")
-    expect(page).to have_no_css("span.text-purple", text: "bénéficiaire du RSA")
-    expect(page).to have_no_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_no_css("span.text-violet", text: "rendez-vous d'orientation téléphonique")
+    expect(page).to have_no_css("span.text-violet", text: "rendez-vous d'orientation")
+    expect(page).to have_no_css("span.text-violet", text: "bénéficiaire du RSA")
+    expect(page).to have_no_css("span.text-violet", text: "démarrer un parcours d'accompagnement")
   end
 
   context "when the category does not require all the template variables and has no reminder" do
@@ -90,7 +90,7 @@ describe "Agents can preview messages contents", :js do
 
       click_button("Invitations")
 
-      expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA", wait: 20)
+      expect(page).to have_css("span.text-violet", text: "bénéficiaire du RSA", wait: 20)
       expect(page).to have_content("atelier")
 
       find("button.btn-close").click
@@ -100,9 +100,9 @@ describe "Agents can preview messages contents", :js do
 
       click_button("Convocations")
 
-      expect(page).to have_css("span.text-purple", text: "atelier", wait: 20)
-      expect(page).to have_css("span.text-purple", text: "atelier téléphonique")
-      expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
+      expect(page).to have_css("span.text-violet", text: "atelier", wait: 20)
+      expect(page).to have_css("span.text-violet", text: "atelier téléphonique")
+      expect(page).to have_css("span.text-violet", text: "bénéficiaire du RSA")
     end
   end
 end

@@ -16,23 +16,23 @@
     }
     .btn-blue-out {
         &:hover {
-            background-color: $dark-blue !important;
-            color: white;
+            background-color: $light-grey-2 !important;
+            color: $dark-blue;
         }
 
         &:disabled {
-            color: $dark-blue-dim;
+            color: $dark-blue;
         }
     }
     .btn-primary {
         &:hover {
-            background-color: $dark-blue !important;
+            background-color: $light-blue !important;
         }
-    }
-    .btn-primary {
-        &:hover,
+
         &:disabled {
-            background-color: $dark-blue !important;
+            background-color: $light-grey-2 !important;
+            color: $dark-blue;
+            border-color: $dark-grey;
         }
     }
 }

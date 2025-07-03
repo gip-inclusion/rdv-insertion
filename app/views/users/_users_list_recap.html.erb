@@ -1,6 +1,6 @@
 <div class="active-users-recap align-items-center d-flex flex-wrap">
   <%= render "users_count", users_count: @users_count, motif_category: @current_motif_category %>
-  <%  if active_filter_list.any? %>
+  <% if active_filter_list.any? %>
     <% active_filters_without_specific_display.each do |filter| %>
       <span class="d-flex me-2 active-filter-badge">
         <% if filter == :referent_id %>
@@ -16,7 +16,7 @@
       </span>
     <% end %>
     <%= render "users/active_filters_recap/tag_ids" %>
-    <%= render "users/active_filters_recap/status" %>
+    <%= render "users/active_filters_recap/follow_up_statuses" %>
     <%= render "users/active_filters_recap/creation_date" %>
     <%= render "users/active_filters_recap/convocation_date" %>
     <%= render "users/active_filters_recap/first_invitation_date" %>
