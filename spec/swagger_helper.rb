@@ -571,7 +571,7 @@ RSpec.configure do |config|
           description: "Serveur de développement"
         },
         {
-          url: "https://www.rdv-insertion-demo.fr",
+          url: "https://demo.rdv-insertion.fr",
           description: "Serveur de démo"
         },
         {
