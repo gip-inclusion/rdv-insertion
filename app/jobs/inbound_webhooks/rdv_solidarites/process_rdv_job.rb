@@ -169,12 +169,12 @@ module InboundWebhooks
         attributes = {
           id: existing_participation&.id,
           status: rdv_solidarites_participation.status,
-          created_by: rdv_solidarites_participation.created_by,
+          created_by_type: rdv_solidarites_participation.created_by_type,
+          rdv_solidarites_created_by_id: rdv_solidarites_participation.created_by_id,
+          created_by_agent_prescripteur: rdv_solidarites_participation.created_by_agent_prescripteur,
           user_id: user.id,
           rdv_solidarites_participation_id: rdv_solidarites_participation.id,
-          follow_up_id: follow_up_for(user).id,
-          rdv_solidarites_agent_prescripteur_id:
-            retrieve_rdv_solidarites_agent_prescripteur_id(rdv_solidarites_participation)
+          follow_up_id: follow_up_for(user).id
         }
 
         # convocable attribute can be set only once
@@ -183,16 +183,6 @@ module InboundWebhooks
         end
 
         attributes
-      end
-
-      def retrieve_rdv_solidarites_agent_prescripteur_id(rdv_solidarites_participation)
-        # Nous avons choisi de ne pas implémenter le polymorphisme des created_by de rdvs tant qu'on en a pas besoin
-        # - created_by_agent_prescripteur est un boolean qui indique
-        # si la participation a été créée par un agent prescripteur
-        # - created_by_id est l'id de l'agent qui a prescrit la participation
-        return unless rdv_solidarites_participation.created_by_agent_prescripteur
-
-        rdv_solidarites_participation.created_by_id
       end
 
       def follow_up_for(user)

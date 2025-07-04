@@ -1,7 +1,7 @@
 module RdvSolidarites
   class Participation < Base
     RECORD_ATTRIBUTES = [
-      :id, :status, :created_by, :created_by_agent_prescripteur, :created_by_id
+      :id, :status, :created_by_type, :created_by, :created_by_agent_prescripteur, :created_by_id
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
 
