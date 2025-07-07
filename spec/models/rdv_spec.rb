@@ -188,4 +188,22 @@ describe Rdv do
       end
     end
   end
+
+  describe "france travail webhooks" do
+    let!(:rdv) { create(:rdv) }
+    let!(:participation) { rdv.participations.first }
+    let!(:updated_at) { 2.minutes.from_now }
+
+    before do
+      allow(participation).to receive(:eligible_for_france_travail_webhook?).and_return(true)
+    end
+
+    it "enqueues a job to notify france travail" do
+      expect(OutgoingWebhooks::FranceTravail::UpsertParticipationJob).to receive(:perform_later).with(
+        participation_id: participation.id,
+        timestamp: updated_at
+      )
+      rdv.update!(starts_at: 1.day.from_now, updated_at:)
+    end
+  end
 end

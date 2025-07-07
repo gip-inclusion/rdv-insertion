@@ -10,6 +10,7 @@ class Rdv < ApplicationRecord
   include HasCurrentCategoryConfiguration
 
   after_commit :notify_participations_to_users, on: :update, if: :should_notify_users?
+  after_commit :notify_update_to_france_travail, on: :update
   after_commit :notify_changes_to_external, on: [:update], if: :should_notify_external?
   after_commit :refresh_follow_up_statuses, on: [:create, :update]
 
@@ -106,15 +107,21 @@ class Rdv < ApplicationRecord
     NotifyRdvChangesToExternalOrganisationEmailJob.perform_later(participation_ids, id, :updated)
   end
 
+  def notify_update_to_france_travail
+    participations.each do |participation|
+      participation.send_update_to_france_travail_if_eligible(updated_at)
+    end
+  end
+
   def should_notify_users?
-    in_the_future? && notifiable_participations.any? && reason_to_notify?
+    in_the_future? && notifiable_participations.any? && reason_to_notify_user?
   end
 
   def should_notify_external?
-    in_the_future? && reason_to_notify? && current_category_configuration&.notify_rdv_changes?
+    in_the_future? && reason_to_notify_user? && current_category_configuration&.notify_rdv_changes?
   end
 
-  def reason_to_notify?
+  def reason_to_notify_user?
     address_previously_changed? || starts_at_previously_changed?
   end
 
