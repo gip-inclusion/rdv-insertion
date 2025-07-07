@@ -29,10 +29,8 @@ describe SendPeriodicInvitesJob do
       context "number_of_days_between_periodic_invites is set" do
         context "when renewing is due" do
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                          "email")
-            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                          "sms")
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, "email")
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, "sms")
             subject
           end
         end
@@ -49,10 +47,8 @@ describe SendPeriodicInvitesJob do
           end
 
           it "does not send periodic invites" do
-            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                              "email")
-            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                              "sms")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "sms")
             subject
           end
         end
@@ -69,10 +65,8 @@ describe SendPeriodicInvitesJob do
 
         context "when renewing is due" do
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                          "email")
-            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                          "sms")
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, "email")
+            expect(SendPeriodicInviteJob).to receive(:perform_later).with(invitation.id, "sms")
             subject
           end
         end
@@ -87,10 +81,8 @@ describe SendPeriodicInvitesJob do
           end
 
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                              "email")
-            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                              "sms")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "sms")
             subject
           end
         end
@@ -105,10 +97,8 @@ describe SendPeriodicInvitesJob do
           end
 
           it "does not send periodic invites" do
-            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                              "email")
-            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                              "sms")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "sms")
             subject
           end
         end
@@ -126,10 +116,8 @@ describe SendPeriodicInvitesJob do
         end
 
         it "does not send periodic invites" do
-          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                            "email")
-          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                            "sms")
+          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
+          expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "sms")
           subject
         end
       end
@@ -145,10 +133,8 @@ describe SendPeriodicInvitesJob do
       end
 
       it "does not send periodic invites" do
-        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                          "email")
-        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, category_configuration.id,
-                                                                          "sms")
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "sms")
         subject
       end
     end
