@@ -78,12 +78,11 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   end
   let!(:participation_rdv_prescrit) do
     create(:participation,
-      user: user2,
-      status: "seen",
-      rdv_solidarites_created_by_id: 123,
-      created_by_type: "Agent",
-      created_by_agent_prescripteur: true
-    )
+           user: user2,
+           status: "seen",
+           rdv_solidarites_created_by_id: 123,
+           created_by_type: "Agent",
+           created_by_agent_prescripteur: true)
   end
   let!(:first_invitation) do
     create(:invitation, user: user1, format: "email", created_at: Time.zone.parse("2022-05-21"))

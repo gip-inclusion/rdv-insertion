@@ -44,7 +44,10 @@ RSpec.describe OrganisationMailer do
     end
     let(:follow_up) { create(:follow_up, motif_category_id: category_configuration.motif_category_id) }
     let(:agent_prescripteur) { create(:agent, first_name: "Jean", last_name: "Pierre") }
-    let(:participation) { create(:participation, organisation:, follow_up:, agent_prescripteur:) }
+    let(:participation) do
+      create(:participation,
+             organisation:, follow_up:, created_by_agent_prescripteur: true, created_by_id: agent_prescripteur.id)
+    end
     let!(:rdv) { create(:rdv, participations: [participation], organisation:) }
 
     it "sends the email" do
