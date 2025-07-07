@@ -46,7 +46,10 @@ RSpec.describe OrganisationMailer do
     let(:agent_prescripteur) { create(:agent, first_name: "Jean", last_name: "Pierre") }
     let(:participation) do
       create(:participation,
-             organisation:, follow_up:, created_by_agent_prescripteur: true, created_by_id: agent_prescripteur.id)
+             organisation:, follow_up:,
+             created_by_agent_prescripteur: true,
+             rdv_solidarites_created_by_id: agent_prescripteur.rdv_solidarites_agent_id,
+             created_by_type: "agent")
     end
     let!(:rdv) { create(:rdv, participations: [participation], organisation:) }
 
