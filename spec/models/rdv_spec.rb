@@ -196,6 +196,7 @@ describe Rdv do
 
     before do
       allow(participation).to receive(:eligible_for_france_travail_webhook?).and_return(true)
+      allow(rdv).to receive(:updated_at).and_return(updated_at)
     end
 
     it "enqueues a job to notify france travail" do
@@ -203,7 +204,7 @@ describe Rdv do
         participation_id: participation.id,
         timestamp: updated_at
       )
-      rdv.update!(starts_at: 1.day.from_now, updated_at:)
+      rdv.update!(starts_at: 1.day.from_now)
     end
   end
 end
