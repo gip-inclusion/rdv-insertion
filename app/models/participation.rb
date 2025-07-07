@@ -45,6 +45,10 @@ class Participation < ApplicationRecord
     end
   end
 
+  def agent_prescripteur
+    created_by if created_by_agent_prescripteur?
+  end
+
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])
   end
