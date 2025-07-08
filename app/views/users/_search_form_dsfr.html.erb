@@ -1,0 +1,11 @@
+<div class="fr-search-bar fr-search-bar--lg mb-4 mt-2" id="search-2" role="search">   
+  <%= form_with method: :get, url: url, local: true, class: "d-flex w-100" do |form| %>
+    <%= render "common/url_query_params_as_form_inputs", form:, omit: [:search_query, :motif_category_id] %>
+    <label class="fr-label" for="search-787-input"> Rechercher un usager par prénom, nom, numéro CAF, ...</label>  
+    <%= form.text_field :search_query, placeholder: "Rechercher un usager par prénom, nom, numéro CAF, ...", class: "fr-input", value: params[:search_query] %>
+    <button class="btn btn-blue d-flex ms-2 pe-5" type="submit">
+      <span class="ri-search-line" aria-hidden="true"></span>
+      <span class="ms-2">Rechercher</span>
+    </button>
+  <% end %>
+</div>
