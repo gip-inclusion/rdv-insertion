@@ -34,60 +34,6 @@ module UserListUpload::InvitationAttemptsHelper
     end
   end
 
-  def tooltip_content_for_user_row_before_invitation_invitable(user_row)
-    safe_join(
-      [
-        tag.b("Cette usager n'a pas encore été invité sur cette catégorie de suivi."),
-        tag.br,
-        "Vous pouvez l'inviter par #{user_invitable_by_formats_sentence(user_row)}."
-      ]
-    )
-  end
-
-  def user_invitable_by_formats_sentence(user_row)
-    user_row.invitable_by_formats.map do |format|
-      I18n.t("activerecord.attributes.invitation.formats.#{format}")
-    end.to_sentence(last_word_connector: " ou ", two_words_connector: " ou ")
-  end
-
-  def tooltip_content_for_user_row_before_invitation_already_invited(user_row)
-    content_array = [
-      tag.b("Cette usager a déjà été invité sur cette catégorie" \
-            " le #{user_row.previously_invited_at.strftime('%d/%m/%Y')}.")
-    ]
-
-    if user_row.invited_less_than_24_hours_ago?
-      content_array << tag.br
-      content_array << "Attendez 24 heures pour pouvoir lui renvoyer une invitation."
-    end
-
-    safe_join(content_array)
-  end
-
-  def tooltip_content_for_user_row_before_invitation_not_invitable(user_row)
-    case user_row.invitable_by_formats
-    when []
-      safe_join(
-        [
-          tag.b("Cette usager ne peut pas être invité."),
-          tag.br,
-          "Il faut au moins une donnée de contact (téléphone, email ou adresse postale)."
-        ]
-      )
-    when %w[postal]
-      safe_join(
-        [
-          tag.b("Cette usager ne peut pas être invité numériquement."),
-          tag.br,
-          "Il faut au moins un numéro de téléphone ou une adresse email."
-        ]
-      )
-    # should never happen
-    else
-      "Cette usager ne peut pas être invité."
-    end
-  end
-
   def user_row_status_after_invitation_text(after_invitation_status)
     {
       invited: "Invitations envoyées",
@@ -145,6 +91,62 @@ module UserListUpload::InvitationAttemptsHelper
   rescue JSON::ParserError
     Sentry.capture_exception(JSON::ParserError, extra: { cookies: cookies["user_list_uploads"] })
     %w[sms email]
+  end
+
+  private
+
+  def tooltip_content_for_user_row_before_invitation_invitable(user_row)
+    safe_join(
+      [
+        tag.b("Cette usager n'a pas encore été invité sur cette catégorie de suivi."),
+        tag.br,
+        "Vous pouvez l'inviter par #{user_invitable_by_formats_sentence(user_row)}."
+      ]
+    )
+  end
+
+  def user_invitable_by_formats_sentence(user_row)
+    user_row.invitable_by_formats.map do |format|
+      I18n.t("activerecord.attributes.invitation.formats.#{format}")
+    end.to_sentence(last_word_connector: " ou ", two_words_connector: " ou ")
+  end
+
+  def tooltip_content_for_user_row_before_invitation_already_invited(user_row)
+    content_array = [
+      tag.b("Cette usager a déjà été invité sur cette catégorie" \
+            " le #{user_row.previously_invited_at.strftime('%d/%m/%Y')}.")
+    ]
+
+    if user_row.invited_less_than_24_hours_ago?
+      content_array << tag.br
+      content_array << "Attendez 24 heures pour pouvoir lui renvoyer une invitation."
+    end
+
+    safe_join(content_array)
+  end
+
+  def tooltip_content_for_user_row_before_invitation_not_invitable(user_row)
+    case user_row.invitable_by_formats
+    when []
+      safe_join(
+        [
+          tag.b("Cette usager ne peut pas être invité."),
+          tag.br,
+          "Il faut au moins une donnée de contact (téléphone, email ou adresse postale)."
+        ]
+      )
+    when %w[postal]
+      safe_join(
+        [
+          tag.b("Cette usager ne peut pas être invité numériquement."),
+          tag.br,
+          "Il faut au moins un numéro de téléphone ou une adresse email."
+        ]
+      )
+    # should never happen
+    else
+      "Cette usager ne peut pas être invité."
+    end
   end
 end
 # rubocop:enable Metrics/ModuleLength
