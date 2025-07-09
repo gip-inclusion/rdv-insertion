@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 class Organisations::RgpdCleanup < BaseService
-  def initialize(organisation)
+  def initialize(organisation:)
     @organisation = organisation
     @date_limit = organisation.data_retention_duration.months.ago
   end
