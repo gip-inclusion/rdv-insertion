@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_17_131753) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_09_093142) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -361,6 +361,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_17_131753) do
     t.string "organisation_type"
     t.datetime "archived_at"
     t.boolean "display_in_stats", default: true
+    t.integer "data_retention_duration", default: 24, null: false
     t.index ["archived_at"], name: "index_organisations_on_archived_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
@@ -451,6 +452,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_17_131753) do
   create_table "referent_assignations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id", "agent_id"], name: "index_referent_assignations_on_user_id_and_agent_id", unique: true
   end
 

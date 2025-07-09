@@ -12,6 +12,8 @@ class Organisation < ApplicationRecord
   validates :name, :organisation_type, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
   validates :phone_number, phone_number: { allow_4_digits_numbers: true }
+  validates :data_retention_duration, presence: true
+  validate :data_retention_duration_bounds
 
   belongs_to :department
   has_one :stat, as: :statable, dependent: :destroy
@@ -77,5 +79,15 @@ class Organisation < ApplicationRecord
 
   def requires_dpa_acceptance?
     dpa_agreement.nil?
+  end
+
+  private
+
+  def data_retention_duration_bounds
+    if data_retention_duration < 1
+      errors.add(:data_retention_duration, "doit être au minimum de 1 mois")
+    elsif data_retention_duration > 36
+      errors.add(:data_retention_duration, "doit être au maximum de 3 ans")
+    end
   end
 end
