@@ -7,7 +7,7 @@ FactoryBot.define do
 
     after(:build) do |participation|
       participation.status = participation.rdv.status if participation.status.blank?
-      participation.created_by = (participation.rdv.created_by || "user") if participation.created_by.blank?
+      participation.created_by_type = (participation.rdv.created_by || "user") if participation.created_by_type.blank?
     end
   end
 end

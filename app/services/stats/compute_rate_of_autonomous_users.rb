@@ -18,7 +18,7 @@ module Stats
     end
 
     def autonomous_users
-      @autonomous_users ||= @users.joins(:participations).where(participations: { created_by: "user" })
+      @autonomous_users ||= @users.joins(:participations).where(participations: { created_by_type: "User" })
     end
   end
 end
