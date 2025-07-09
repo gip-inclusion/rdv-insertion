@@ -1,43 +1,26 @@
 # rubocop:disable Metrics/ClassLength
-class Users::RgpdCleanupOrganisationService < BaseService
+class Organisations::RgpdCleanup < BaseService
   def initialize(organisation)
     @organisation = organisation
     @date_limit = organisation.data_retention_duration.months.ago
   end
 
   def call
-    destroy_inactive_users # destroy users for rgpd reasons
+    process_inactive_users # process users for rgpd reasons (destroy or remove from org)
     destroy_useless_rdvs # destroying users will destroy participations ; rdvs with no participations are useless for us
     destroy_useless_notifications
   end
 
   private
 
-  def destroy_inactive_users
+  def process_inactive_users
     inactive_users = find_inactive_users
     return if inactive_users.empty?
 
-    users_to_delete = []
-    users_to_remove_from_org = []
+    users_to_delete, users_to_remove_from_org = categorize_inactive_users(inactive_users)
 
-    inactive_users.each do |user|
-      remove_user_from_current_organisation(user)
-
-      if user.organisations.reload.empty?
-        users_to_delete << user
-      else
-        users_to_remove_from_org << user
-      end
-    end
-
-    if users_to_delete.any?
-      cleanup_user_data(users_to_delete)
-      notify_user_deletions(users_to_delete.pluck(:id))
-    end
-
-    return unless users_to_remove_from_org.any?
-
-    notify_user_removals(users_to_remove_from_org.pluck(:id))
+    process_users_to_delete(users_to_delete)
+    process_users_to_remove_from_org(users_to_remove_from_org)
   end
 
   def find_inactive_users
@@ -86,6 +69,40 @@ class Users::RgpdCleanupOrganisationService < BaseService
     )", @date_limit]
   end
 
+  def categorize_inactive_users(inactive_users)
+    users_to_delete = []
+    users_to_remove_from_org = []
+
+    inactive_users.each do |user|
+      remove_user_from_current_organisation(user)
+
+      if user.organisations.reload.empty?
+        users_to_delete << user
+      else
+        users_to_remove_from_org << user
+      end
+    end
+
+    [users_to_delete, users_to_remove_from_org]
+  end
+
+  def remove_user_from_current_organisation(user)
+    user.users_organisations.find_by!(organisation: @organisation).destroy
+  end
+
+  def process_users_to_delete(users_to_delete)
+    return if users_to_delete.empty?
+
+    cleanup_user_data(users_to_delete)
+    notify_user_deletions(users_to_delete.pluck(:id))
+  end
+
+  def process_users_to_remove_from_org(users_to_remove_from_org)
+    return if users_to_remove_from_org.empty?
+
+    notify_user_removals(users_to_remove_from_org.pluck(:id))
+  end
+
   def cleanup_user_data(users)
     # this will also destroy participations and invitations
     users.each do |user|
@@ -99,10 +116,6 @@ class Users::RgpdCleanupOrganisationService < BaseService
       "🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
       "#{@organisation.name} : #{user_ids.join(', ')}"
     )
-  end
-
-  def remove_user_from_current_organisation(user)
-    user.users_organisations.find_by!(organisation: @organisation).destroy
   end
 
   def notify_user_removals(user_ids)
