@@ -6,7 +6,7 @@ class RemoveOrganisationUserForExpiredArchiveJob < ApplicationJob
 
     return no_agent_found unless @organisation.agents.any?
 
-    remove_user_from_organisation
+    remove_user_from_organisation unless user_has_recent_activity_in_organisation?
   end
 
   private
@@ -25,5 +25,9 @@ class RemoveOrganisationUserForExpiredArchiveJob < ApplicationJob
         organisation: @organisation
       )
     end
+  end
+
+  def user_has_recent_activity_in_organisation?
+    Users::ActivityChecker.new(organisation: @organisation).user_has_recent_activity?(@user)
   end
 end

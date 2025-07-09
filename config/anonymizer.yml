@@ -464,6 +464,7 @@ tables:
       - department_id
       - last_webhook_update_received_at
       - archived_at
+      - data_retention_duration
 
   - table_name: blocked_invitations_counters
     anonymized_column_names: []
