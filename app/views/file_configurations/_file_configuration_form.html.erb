@@ -1,8 +1,6 @@
 <%= render "common/remote_modal", title: title, size: :large do %>
   <%= form_for(file_configuration, url: url, method: method) do |f| %>
-    <% if local_assigns[:errors].present? %>
-      <%= render "common/error_list", errors: errors %>
-    <% end %>
+    <%= turbo_frame_tag "error_list" %>
     <div class="container rdv-insertion-form text-dark-blue h4-as-labels mt-4">
       <div class="mb-4">
         <h4>Nom de l'onglet Excel</h4>

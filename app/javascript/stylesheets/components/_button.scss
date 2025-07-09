@@ -123,3 +123,7 @@ button, input[type="button"] {
     border: 1px solid $dark-blue;
   }
 }
+
+button:disabled {
+  cursor: not-allowed !important;
+}

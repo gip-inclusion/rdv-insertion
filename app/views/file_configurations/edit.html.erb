@@ -1,5 +1,4 @@
 <%= render "file_configuration_form", title: "Modifier fichier d'import",
                                       file_configuration: @file_configuration,
-                                      organisation: @organisation,
-                                      url: @edit_form_url,
-                                      method: @edit_form_html_method %>
+                                      url: file_configuration_path(@file_configuration),
+                                      method: :patch %>

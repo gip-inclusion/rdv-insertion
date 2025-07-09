@@ -7,6 +7,10 @@ module Deliverable
   included do
     enum :delivery_status, (FAILED_DELIVERY_STATUS + DELIVERED_STATUS).index_by(&:itself)
     validates :last_brevo_webhook_received_at, presence: true, if: -> { delivery_status.present? }
+
+    scope :pending_or_delivered, lambda {
+      where(delivery_status: DELIVERED_STATUS).or(where(delivery_status: nil))
+    }
   end
 
   def human_delivery_status_and_date

@@ -8,6 +8,10 @@ module Participation::FranceTravailWebhooks
     before_destroy :send_france_travail_delete_webhook, if: :france_travail_webhook_updatable?
   end
 
+  def send_update_to_france_travail_if_eligible(timestamp)
+    send_france_travail_upsert_webhook(timestamp) if eligible_for_france_travail_webhook?
+  end
+
   def eligible_for_france_travail_webhook?
     eligible_user_for_france_travail_webhook? &&
       eligible_organisation_for_france_travail_webhook? &&
@@ -20,10 +24,10 @@ module Participation::FranceTravailWebhooks
 
   private
 
-  def send_france_travail_upsert_webhook
+  def send_france_travail_upsert_webhook(timestamp = updated_at)
     OutgoingWebhooks::FranceTravail::UpsertParticipationJob.perform_later(
       participation_id: id,
-      timestamp: updated_at
+      timestamp: timestamp
     )
   end
 

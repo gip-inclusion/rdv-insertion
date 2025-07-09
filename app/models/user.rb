@@ -29,7 +29,6 @@ class User < ApplicationRecord
   include User::BirthDateValidation
   include User::AffiliationNumber
   include User::Referents
-  include User::Tags
   include User::CreationOrigin
   include User::Geocodable
 
@@ -138,6 +137,10 @@ class User < ApplicationRecord
 
   def can_be_invited_through_phone_or_email?
     can_be_invited_through?("sms") || can_be_invited_through?("email")
+  end
+
+  def invitable_by_formats
+    %w[sms email postal].select { |format| can_be_invited_through?(format) }
   end
 
   def soft_delete

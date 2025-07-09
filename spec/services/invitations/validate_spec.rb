@@ -153,7 +153,7 @@ describe Invitations::Validate, type: :service do
     end
 
     context "when there is already a sent invitation today" do
-      let!(:existing_invitation) { create(:invitation, format: "sms", created_at: 4.hours.ago, follow_up:) }
+      let!(:existing_invitation) { create(:invitation, :delivered, format: "sms", created_at: 4.hours.ago, follow_up:) }
 
       it "is a failure" do
         is_a_failure
@@ -164,7 +164,9 @@ describe Invitations::Validate, type: :service do
       end
 
       context "when the format is postal" do
-        let!(:existing_invitation) { create(:invitation, format: "postal", created_at: 4.hours.ago, follow_up:) }
+        let!(:existing_invitation) do
+          create(:invitation, :delivered, format: "postal", created_at: 4.hours.ago, follow_up:)
+        end
 
         it "is a success" do
           is_a_success
