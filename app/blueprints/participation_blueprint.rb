@@ -1,7 +1,6 @@
 class ParticipationBlueprint < ApplicationBlueprint
   identifier :id
-  fields :status, :created_at, :starts_at, :created_by_type, :created_by_agent_prescripteur,
-         :rdv_solidarites_created_by_id
+  fields :status, :created_at, :starts_at
   association :user, blueprint: UserBlueprint
 
   # Retrocompatibility with the old API format for created_by
