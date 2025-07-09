@@ -2,8 +2,8 @@
   <div class="row mb-2 p-4 pb-3">
     <div class="col-6 d-flex">
       <div class="map-container me-4 d-flex align-items-center">
-        <% if asset_exists?("maps/#{@department.name.parameterize}.svg") %>
-          <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 80, height: 80) %>
+        <% if asset_exists?("maps/#{@department.name.parameterize}.png") %>
+          <%= image_tag("maps/#{@department.name.parameterize}.png", alt: @department.name.parameterize, height: 80) %>
         <% end %>
       </div>
       <div class="col-10 d-flex flex-column justify-content-between">
