@@ -227,6 +227,7 @@ describe UserListUpload::UserRow do
         before do
           create(
             :invitation,
+            :delivered,
             user: saved_user,
             created_at: 2.weeks.ago,
             format: "email",
@@ -443,9 +444,26 @@ describe UserListUpload::UserRow do
         expect(user_row.before_invitation_status).to eq(:already_invited)
       end
 
-      it "returns :not_invited when not previously invited" do
-        allow(user_row).to receive(:previously_invited?).and_return(false)
-        expect(user_row.before_invitation_status).to eq(:not_invited)
+      context "when not previously invited" do
+        context "when invitable" do
+          before do
+            allow(user_row).to receive(:invitable?).and_return(true)
+          end
+
+          it "returns :invitable" do
+            expect(user_row.before_invitation_status).to eq(:invitable)
+          end
+        end
+
+        context "when not invitable" do
+          before do
+            allow(user_row).to receive(:invitable?).and_return(false)
+          end
+
+          it "returns :not_invitable" do
+            expect(user_row.before_invitation_status).to eq(:not_invitable)
+          end
+        end
       end
     end
 

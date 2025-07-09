@@ -4,8 +4,5 @@ class SoftDeleteUserJob < ApplicationJob
     return if user.blank? || user.deleted?
 
     user.soft_delete
-    MattermostClient.send_to_notif_channel(
-      "RDV Solidarites user #{rdv_solidarites_user_id} deleted"
-    )
   end
 end

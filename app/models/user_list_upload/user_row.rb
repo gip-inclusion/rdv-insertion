@@ -25,6 +25,8 @@ class UserListUpload::UserRow < ApplicationRecord
   delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
            to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
+  # without prefix
+  delegate :can_be_invited_through?, :invitable_by_formats, to: :user
   delegate :no_organisation_to_assign?, to: :last_user_save_attempt, allow_nil: true
 
   squishes :first_name, :last_name, :affiliation_number, :department_internal_id, :address
@@ -213,12 +215,10 @@ class UserListUpload::UserRow < ApplicationRecord
   def previous_invitations
     @previous_invitations ||= user.invitations.select do |invitation|
       # we don't consider the user as invited here if the invitation has not been sent by email or sms
-      invitation.format.in?(%w[email sms]) && invitation.motif_category_id == user_list_upload.motif_category_id
+      invitation.format.in?(%w[email sms]) &&
+        invitation.motif_category_id == user_list_upload.motif_category_id &&
+        !invitation.delivery_failed?
     end
-  end
-
-  def invitable_by?(format)
-    invitable? && user.can_be_invited_through?(format)
   end
 
   def invite_user_by(format)
@@ -226,8 +226,8 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def invite_user
-    invite_user_by("email") if invitable_by?("email")
-    invite_user_by("sms") if invitable_by?("sms")
+    invite_user_by("email") if can_be_invited_through?("email")
+    invite_user_by("sms") if can_be_invited_through?("sms")
   end
 
   def invitation_attempted?

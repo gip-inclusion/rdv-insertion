@@ -296,12 +296,11 @@ CategoryConfiguration.create!(
   organisation: drome1_organisation
 )
 
-MessagesConfiguration.create!(
+drome1_organisation.messages_configuration.update!(
   direction_names:
     ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
     "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
-    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"],
-  organisation: drome1_organisation
+    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"]
 )
 
 drome2_organisation = Organisation.create!(
@@ -331,12 +330,11 @@ CategoryConfiguration.create!(
   organisation: drome2_organisation
 )
 
-MessagesConfiguration.create!(
+drome2_organisation.messages_configuration.update!(
   direction_names:
     ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
     "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
-    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"],
-  organisation: drome2_organisation
+    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"]
 )
 
 yonne_organisation = Organisation.create!(
@@ -357,12 +355,11 @@ CategoryConfiguration.create!(
   organisation: yonne_organisation
 )
 
-MessagesConfiguration.create!(
+yonne_organisation.messages_configuration.update!(
   direction_names:
     ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
     "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
-    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"],
-  organisation: yonne_organisation
+    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"]
 )
 
 OrientationType.create!(casf_category: "social", name: "Sociale")

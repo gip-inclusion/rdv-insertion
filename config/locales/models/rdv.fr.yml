@@ -16,7 +16,7 @@ fr:
             seen: L’usager s’est présenté à son rendez-vous et a été reçu
             excused: L’usager a pu prévenir de son absence
             revoked: Le rendez-vous a du être annulé par le service
-            noshow: L’usager ne s’est pas présenté a son rendez-vous
+            noshow: L’usager ne s’est pas présenté à son rendez-vous
         unknown_statuses:
           pending: RDV à venir
           needs_status_update: Statut du RDV à préciser

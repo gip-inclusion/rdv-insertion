@@ -14,7 +14,7 @@ describe SendPeriodicInvitesJob do
     end
 
     let!(:motif_category) { create(:motif_category) }
-    let!(:follow_up) { create(:follow_up, motif_category: motif_category) }
+    let!(:follow_up) { create(:follow_up, motif_category: motif_category, status: "invitation_pending") }
     let!(:invitation) do
       create(
         :invitation,
@@ -131,6 +131,16 @@ describe SendPeriodicInvitesJob do
                day_of_the_month_periodic_invites: nil,
                motif_category: motif_category)
       end
+
+      it "does not send periodic invites" do
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
+        expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "sms")
+        subject
+      end
+    end
+
+    context "when the follow up is closed" do
+      let!(:follow_up) { create(:follow_up, closed_at: Time.zone.today) }
 
       it "does not send periodic invites" do
         expect(SendPeriodicInviteJob).not_to receive(:perform_later).with(invitation.id, "email")
