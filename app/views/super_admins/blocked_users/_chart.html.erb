@@ -1,4 +1,4 @@
-<%= line_chart(blocked_users_grouped_by_day, colors: ["#083b66"]) %>
+<%= line_chart(blocked_users_grouped_by_day, colors: ["#000091"]) %>
 <%= form_with method: :get, local: true, class: "chart-actions" do |f| %>
   <span> Afficher seulement du </span>
   <%= f.date_field :starts_at, value: starts_at, class: "form-control" %>

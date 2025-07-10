@@ -7,7 +7,7 @@ module Users::Filterable
     filter_users_by_search_query
     filter_users_by_action_required
     filter_users_by_referent
-    filter_users_by_status
+    filter_users_by_follow_up_statuses
     filter_users_by_orientation_type
     filter_users_by_creation_date_after
     filter_users_by_creation_date_before
@@ -38,10 +38,10 @@ module Users::Filterable
     @users = @users.where(id: user_ids)
   end
 
-  def filter_users_by_status
-    return if params[:status].blank?
+  def filter_users_by_follow_up_statuses
+    return if params[:follow_up_statuses].blank?
 
-    @users = @users.joins(:follow_ups).where(follow_ups: @follow_ups.status(params[:status]))
+    @users = @users.joins(:follow_ups).where(follow_ups: @follow_ups.status(params[:follow_up_statuses]))
   end
 
   def filter_users_by_orientation_type

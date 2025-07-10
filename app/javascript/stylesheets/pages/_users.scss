@@ -1,5 +1,12 @@
+.map-container {
+  img {
+    transform: scale(1.3);
+  }
+}
+
 .context-block {
-  th, td {
+  th,
+  td {
     min-width: 140px;
     max-width: 140px;
   }
@@ -62,18 +69,19 @@
   }
 }
 
-.active-filters-recap {
-  > div:first-child {
+.active-users-recap {
+  >div:first-child {
     min-width: 85px;
   }
   .active-filter-badge {
-    background-color: $light-blue-alt-2;
+    background-color: $light;
     border-radius: 20px;
     padding: 5px 10px;
     margin-right: 5px;
     margin-bottom: 5px;
     font-size: 14px;
-
+    font-weight: 600;
+    color: $dark-blue;
     a {
       margin-left: 5px;
     }
@@ -83,15 +91,44 @@
 .filter-active {
   position: relative;
   display: inline-block;
-  background-color: $light-blue-alt-2;
+  background-color: $light;
   width: 23px;
   height: 23px;
   border-radius: 100%;
   font-size: 12px;
   line-height: 21px;
   left: 5px;
-
   &.convocation-date-filter-active {
     left: -2px;
+  }
+}
+
+.structure-title {
+  font-size: 1.5rem;
+}
+
+.configure-actions {
+  a:hover {
+    color: $dark-blue;
+  }
+}
+
+.active-users-actions {
+  min-width: 230px;
+}
+
+.users-count-recap {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.nav {
+  .nav-link {
+    color: $alt-grey;
+  
+    &.active {
+      color: $dark-blue;
+      font-weight: 600;
+    }
   }
 }

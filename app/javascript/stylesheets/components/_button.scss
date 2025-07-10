@@ -61,8 +61,8 @@ button, input[type="button"] {
     min-width: 90px;
     &:hover, &:disabled {
       color: white;
-      border-color: $dark-blue-dim;
-      background-color: $dark-blue-dim;
+      border-color: $light-blue;
+      background-color: $light-blue;
     }
     &.show-referent-button {
       min-width: 0;
@@ -79,18 +79,6 @@ button, input[type="button"] {
     }
   }
   
-  .btn-danger {
-    background-color: $danger;
-    border-color: $danger;
-    color: white;
-    min-width: 90px;
-    &:hover, &:disabled {
-      color: white;
-      border-color: $orange-light;
-      background-color: $orange-light;
-    }
-  }
-  
   .btn-grey {
     border-color: $light-grey;
     background-color: white;
@@ -100,6 +88,18 @@ button, input[type="button"] {
   .btn-sm {
     min-width: 105px !important;
     padding: 0.25rem;
+  }
+}
+
+.btn-danger {
+  background-color: $danger;
+  border-color: $danger;
+  color: white !important;
+  min-width: 90px;
+  &:hover, &:disabled {
+    color: white;
+    border-color: $orange-light;
+    background-color: $orange-light !important;
   }
 }
 
@@ -118,6 +118,10 @@ button, input[type="button"] {
   margin-bottom: 0.5em;
   font-size: 0.85em;
   font-weight: 600;
+
+  &.background-blue-light {
+    border: 1px solid $dark-blue;
+  }
 }
 
 button:disabled {

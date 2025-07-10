@@ -3,7 +3,7 @@
 
   <%= render "archived_banner" if user_archived_in?(@user, current_organisations) %>
 
-  <div class="container text-dark-blue h4-as-labels mt-4">
+  <div class="container h4-as-labels mt-4">
     <%= render "user_page_header" %>
 
     <%= render "user_tabs", user: @user, tab: "infos" %>

@@ -5,7 +5,7 @@
         <p class="mb-2"> <%= "Référent".pluralize(assigned_referents.size) %> déjà <%= "assigné".pluralize(assigned_referents.size) %></p>
         <div class="flex-wrap d-flex">
           <% assigned_referents.each do |referent| %>
-            <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey-alt me-2 d-flex text-truncate">
+            <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey me-2 d-flex text-truncate">
               <span class="text-truncate">
                 <%= referent %>
               </span>
