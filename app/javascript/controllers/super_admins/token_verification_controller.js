@@ -13,11 +13,6 @@ export default class extends Controller {
     const value = event.target.value
     const index = parseInt(event.target.dataset.index, 10)
 
-    if (!/^\d$/.test(value)) {
-      event.target.value = ""
-      return
-    }
-
     if (value && index < this.digitInputTargets.length - 1) {
       this.digitInputTargets[index + 1].focus()
       return

@@ -568,3 +568,12 @@ tables:
       - user_id
       - created_at
       - updated_at
+  - table_name: super_admin_authentication_requests
+    anonymized_column_names:
+      - token
+    non_anonymized_column_names:
+      - agent_id
+      - created_at
+      - updated_at
+      - verified_at
+      - invalidated_at

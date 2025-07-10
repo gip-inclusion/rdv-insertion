@@ -60,7 +60,7 @@ describe "Super admin can log in as another agent", :js do
     end
 
     context "when the agent impersonated is a super_admin" do
-      let!(:agent) { create(:agent, :super_admin, organisations: [agent_organisation1, agent_organisation2]) }
+      let!(:agent) { create(:agent, :super_admin_verified, organisations: [agent_organisation1, agent_organisation2]) }
       let!(:other_agent) { create(:agent) }
 
       it "cannot impersonate while impersonating" do
