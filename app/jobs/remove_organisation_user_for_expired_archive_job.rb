@@ -4,14 +4,14 @@ class RemoveOrganisationUserForExpiredArchiveJob < ApplicationJob
     @organisation = @archive.organisation
     @user = @archive.user
 
-    return no_agent_found unless @organisation.agents.any?
+    return log_no_agent_found unless @organisation.agents.any?
 
-    remove_user_from_organisation unless user_has_recent_activity_in_organisation?
+    remove_user_from_organisation
   end
 
   private
 
-  def no_agent_found
+  def log_no_agent_found
     Sentry.capture_message(
       "No agent found for organisation #{@organisation.id} when trying to remove user #{@user.id}"
     )
@@ -25,9 +25,5 @@ class RemoveOrganisationUserForExpiredArchiveJob < ApplicationJob
         organisation: @organisation
       )
     end
-  end
-
-  def user_has_recent_activity_in_organisation?
-    Users::ActivityChecker.new(organisation: @organisation).user_has_recent_activity?(@user)
   end
 end

@@ -28,6 +28,31 @@ describe RemoveOrganisationUsersForExpiredArchivesJob do
       end
     end
 
+    context "with expired archives but users with recent RDVs" do
+      let!(:user_with_recent_rdv) { create(:user) }
+      let!(:user_without_recent_rdv) { create(:user) }
+      let!(:expired_archive_with_recent_rdv) do
+        create(:archive, organisation: org1, user: user_with_recent_rdv, created_at: 25.months.ago)
+      end
+      let!(:expired_archive_without_recent_rdv) do
+        create(:archive, organisation: org1, user: user_without_recent_rdv, created_at: 25.months.ago)
+      end
+
+      before do
+        rdv = create(:rdv, organisation: org1)
+        create(:participation, user: user_with_recent_rdv, rdv: rdv, created_at: 1.month.ago)
+      end
+
+      it "only schedules cleanup jobs for users without recent RDVs" do
+        expect(RemoveOrganisationUserForExpiredArchiveJob).not_to receive(:perform_later)
+          .with(expired_archive_with_recent_rdv.id)
+        expect(RemoveOrganisationUserForExpiredArchiveJob).to receive(:perform_later)
+          .with(expired_archive_without_recent_rdv.id)
+
+        subject
+      end
+    end
+
     context "with no expired archives" do
       let!(:recent_archive) { create(:archive, organisation: org1, created_at: 1.month.ago) }
 

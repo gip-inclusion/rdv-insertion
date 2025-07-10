@@ -8,10 +8,6 @@ class Users::ActivityChecker < BaseService
     result.inactive_users = find_inactive_users
   end
 
-  def user_has_recent_activity?(user)
-    !find_inactive_users.exists?(id: user.id)
-  end
-
   def find_inactive_users
     @organisation.users.where(users: { created_at: ...@date_limit })
                  .where(invitations_not_recent_condition)

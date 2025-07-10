@@ -1,21 +1,18 @@
 class RemoveOrganisationUsersForExpiredArchivesJob < ApplicationJob
   def perform
-    expired_archives_count = 0
+    removed_users_count = 0
 
     Organisation.find_each do |organisation|
-      date_limit = organisation.data_retention_duration.months.ago
+      @organisation = organisation
+      @date_limit = organisation.data_retention_duration.months.ago
 
-      organisation_expired_archives = Archive.joins(:organisation)
-                                             .where(organisation: organisation)
-                                             .where(archives: { created_at: ...date_limit })
-
-      organisation_expired_archives.find_each do |archive|
+      expired_archives_without_recent_rdvs.find_each do |archive|
         RemoveOrganisationUserForExpiredArchiveJob.perform_later(archive.id)
-        expired_archives_count += 1
+        removed_users_count += 1
       end
     end
 
-    notify_on_mattermost(expired_archives_count) if expired_archives_count.positive?
+    notify_on_mattermost(removed_users_count) if removed_users_count.positive?
   end
 
   private
@@ -24,5 +21,19 @@ class RemoveOrganisationUsersForExpiredArchivesJob < ApplicationJob
     MattermostClient.send_to_notif_channel(
       "🧹 #{count} usagers archivés ont été retirés de leurs organisations selon leur durée de conservation"
     )
+  end
+
+  def expired_archives_without_recent_rdvs
+    Archive.joins(:organisation)
+           .where(organisation: @organisation)
+           .where(archives: { created_at: ...@date_limit })
+           .reject { |archive| user_has_recent_rdvs?(archive.user) }
+  end
+
+  def user_has_recent_rdvs?(user)
+    Participation.joins(:rdv)
+                 .where(user: user)
+                 .where(rdvs: { organisation: @organisation })
+                 .exists?(participations: { created_at: @date_limit.. })
   end
 end
