@@ -576,4 +576,5 @@ tables:
       - created_at
       - updated_at
       - verified_at
+      - verification_attempts
       - invalidated_at
