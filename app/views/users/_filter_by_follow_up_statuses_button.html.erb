@@ -1,7 +1,7 @@
 <div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
       data-controller="users-list-filter dropdown-menu"
       data-users-list-filter-param-name-value="follow_up_statuses">
-  <% selected_values_count = params[:follow_up_statuses]&.split(',')&.count || 0 %>
+  <% selected_values_count = params[:follow_up_statuses]&.size || 0 %>
   <button type="button"
           class="btn btn-grey dropdown-toggle <%= "border-blue" if selected_values_count > 0 %>"
           data-action="dropdown-menu#toggle"

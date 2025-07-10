@@ -107,6 +107,12 @@
   font-size: 1.5rem;
 }
 
+.configure-actions {
+  a:hover {
+    color: $dark-blue;
+  }
+}
+
 .active-users-actions {
   min-width: 230px;
 }

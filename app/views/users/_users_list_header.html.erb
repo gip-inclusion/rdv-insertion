@@ -13,7 +13,7 @@
         <h2 class="structure-title mb-2 text-dark-blue">
           <%= current_structure.name %>
         </h2>
-        <div class="d-flex">
+        <div class="d-flex configure-actions">
           <% if authorized_any?(current_organisations, :configure) %>
             <% if department_level? %>
               <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "fr-link me-4") do %>
@@ -27,11 +27,11 @@
               <% end %>
             <% end %>
           <% end %>
-          <%= link_to(structure_rdv_solidarites_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning, id: "rdvi_index-nav_redirect-rdvs", class: "fr-link fr-icon-arrow-right-line") do %>
+          <%= link_to(structure_rdv_solidarites_configuration_url(current_structure), target: "_blank", **with_rdv_solidarites_impersonation_warning, id: "rdvi_index-nav_redirect-rdvs", class: "fr-link fr-icon-arrow-right-line") do %>
             <span <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
               Voir sur RDV-Solidarités
             </span>
-            <%= render "common/rdvs_impersonation_warning", url: structure_rdv_solidarites_url(current_structure) if agent_impersonated? %>
+            <%= render "common/rdvs_impersonation_warning", url: structure_rdv_solidarites_configuration_url(current_structure) if agent_impersonated? %>
           <% end %>
         </div>
       </div>

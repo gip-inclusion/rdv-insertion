@@ -79,18 +79,6 @@ button, input[type="button"] {
     }
   }
   
-  .btn-danger {
-    background-color: $danger;
-    border-color: $danger;
-    color: white;
-    min-width: 90px;
-    &:hover, &:disabled {
-      color: white;
-      border-color: $orange-light;
-      background-color: $orange-light;
-    }
-  }
-  
   .btn-grey {
     border-color: $light-grey;
     background-color: white;
@@ -100,6 +88,18 @@ button, input[type="button"] {
   .btn-sm {
     min-width: 105px !important;
     padding: 0.25rem;
+  }
+}
+
+.btn-danger {
+  background-color: $danger;
+  border-color: $danger;
+  color: white !important;
+  min-width: 90px;
+  &:hover, &:disabled {
+    color: white;
+    border-color: $orange-light;
+    background-color: $orange-light !important;
   }
 }
 

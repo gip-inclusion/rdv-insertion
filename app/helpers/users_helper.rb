@@ -58,11 +58,11 @@ module UsersHelper
       "agent_searches?#{params.to_query}"
   end
 
-  def structure_rdv_solidarites_url(structure)
+  def structure_rdv_solidarites_configuration_url(structure)
     if structure.is_a?(Department)
       "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations"
     else
-      structure.rdv_solidarites_url
+      structure.rdv_solidarites_configuration_url
     end
   end
 
