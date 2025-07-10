@@ -121,5 +121,4 @@ describe Users::ActivityChecker, type: :service do
       end
     end
   end
-
 end
