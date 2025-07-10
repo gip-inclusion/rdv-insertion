@@ -1,0 +1,20 @@
+fr:
+  activerecord:
+    models:
+      super_admin_authentication_request:
+        one: "Demande d'authentification"
+        other: "Demandes d'authentification"
+    attributes:
+      super_admin_authentication_request:
+        token: "Code"
+        verified_at: "Date de vérification"
+        invalidated_at: "Date d'invalidation"
+    errors:
+      models:
+        super_admin_authentication_request:
+          attributes:
+            base:
+              invalidated: "La demande d'authentification n'est plus valide. Veuillez en générer une nouvelle."
+              expired: "Le code d'authentification a expiré. Veuillez en générer un nouveau."
+              token_invalid: "Le code d'authentification est invalide. Veuillez réessayer."
+              not_super_admin: "Vous n'êtes pas un super admin."

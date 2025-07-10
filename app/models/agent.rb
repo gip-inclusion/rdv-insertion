@@ -3,6 +3,7 @@ class Agent < ApplicationRecord
 
   include Agent::RdvSolidaritesClient
   include Agent::Signature
+  include Agent::SuperAdminAuthentication
 
   has_many :agent_roles, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy

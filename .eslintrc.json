@@ -11,13 +11,26 @@
     "ecmaVersion": 13,
     "sourceType": "module"
   },
-  "plugins": ["react", "no-unsanitized", "rdv-insertion"],
+  "plugins": [
+    "react",
+    "no-unsanitized",
+    "rdv-insertion"
+  ],
   "rules": {
-    "quotes": ["error", "double"],
+    "quotes": [
+      "error",
+      "double"
+    ],
     "react/prop-types": 0,
     "react/no-unescaped-entities": 0,
-    "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allowAfterThis": true
+      }
+    ],
     "no-param-reassign": "off",
+    "prefer-destructuring": "off",
     "class-methods-use-this": "off",
     "no-nested-ternary": "off",
     "no-use-before-define": "off",
@@ -27,21 +40,33 @@
     "react/no-danger": "error",
     "rdv-insertion/enforce-safe-swal": "error",
     "rdv-insertion/enforce-safe-tippy": "error",
-    "no-unsanitized/method": ["error", {
-      "escape": {
-        "methods": ["DOMPurify.sanitize"]
+    "no-unsanitized/method": [
+      "error",
+      {
+        "escape": {
+          "methods": [
+            "DOMPurify.sanitize"
+          ]
+        }
       }
-    }],
-    "no-unsanitized/property": ["error", {
-      "escape": {
-        "methods": ["DOMPurify.sanitize"]
+    ],
+    "no-unsanitized/property": [
+      "error",
+      {
+        "escape": {
+          "methods": [
+            "DOMPurify.sanitize"
+          ]
+        }
       }
-    }]
+    ]
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["app/javascript"]
+        "paths": [
+          "app/javascript"
+        ]
       }
     }
   }
