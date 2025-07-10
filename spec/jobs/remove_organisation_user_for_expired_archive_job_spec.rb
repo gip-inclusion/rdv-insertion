@@ -31,8 +31,7 @@ describe RemoveOrganisationUserForExpiredArchiveJob do
           create(:rdv,
                  organisation: organisation2,
                  participations: [build(:participation, user: archived_user)],
-                 created_at: 1.month.ago,
-                 created_by: agent)
+                 created_at: 1.month.ago)
         end
 
         it "still removes the user from organisation1 (activity in other organisation should not prevent removal)" do

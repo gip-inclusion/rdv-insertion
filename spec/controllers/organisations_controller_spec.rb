@@ -372,4 +372,43 @@ describe OrganisationsController do
       end
     end
   end
+
+  describe "#update with data_retention_duration" do
+    let!(:admin_agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+    before do
+      sign_in(admin_agent)
+      allow(Organisations::Update).to receive(:call).and_return(OpenStruct.new(success?: true))
+    end
+
+    context "when valid duration" do
+      it "updates the data retention duration" do
+        expect(Organisations::Update).to receive(:call).with(organisation: organisation)
+
+        patch :update, params: {
+          id: organisation.id,
+          organisation: { data_retention_duration: 12 }
+        }
+
+        expect(response).to be_successful
+      end
+    end
+
+    context "when invalid duration" do
+      before do
+        allow(Organisations::Update).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+      end
+
+      it "does not update" do
+        patch :update, params: {
+          id: organisation.id,
+          organisation: { data_retention_duration: 0 }
+        }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(organisation.reload.data_retention_duration).to eq(24)
+      end
+    end
+  end
 end
