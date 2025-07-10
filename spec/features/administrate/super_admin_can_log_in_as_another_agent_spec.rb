@@ -3,7 +3,7 @@ describe "Super admin can log in as another agent", :js do
   let!(:super_admin_organisation1) { create(:organisation, department: super_admin_department) }
   let!(:super_admin_organisation2) { create(:organisation, department: super_admin_department) }
   let!(:super_admin) do
-    create(:agent, :super_admin, organisations: [super_admin_organisation1, super_admin_organisation2])
+    create(:agent, :super_admin_verified, organisations: [super_admin_organisation1, super_admin_organisation2])
   end
   let!(:agent_department) { create(:department) }
   let!(:agent_organisation1) { create(:organisation, department: agent_department) }
