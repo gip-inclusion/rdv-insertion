@@ -23,7 +23,7 @@ class Organisations::RgpdCleanup < BaseService
   end
 
   def find_inactive_users
-    call_service!(Users::ActivityChecker, organisation: @organisation)
+    Users::ActivityChecker.call(organisation: @organisation).inactive_users
   end
 
   def categorize_inactive_users(inactive_users)

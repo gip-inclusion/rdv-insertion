@@ -92,17 +92,17 @@ describe Organisations::RgpdCleanup, type: :service do
       rdv
     end
 
-    it "destroys old rdvs without participations" do
+    before do
       allow(MattermostClient).to receive(:send_to_notif_channel)
+    end
 
+    it "destroys old rdvs without participations" do
       expect { service.call }.to change(Rdv, :count).by(-1)
       expect(Rdv.exists?(useless_rdv.id)).to be false
       expect(Rdv.exists?(recent_rdv.id)).to be true
     end
 
     it "sends notification when rdvs are deleted" do
-      allow(MattermostClient).to receive(:send_to_notif_channel)
-
       service.call
 
       expect(MattermostClient).to have_received(:send_to_notif_channel).with(
@@ -127,17 +127,17 @@ describe Organisations::RgpdCleanup, type: :service do
       notification
     end
 
-    it "destroys old notifications without participations" do
+    before do
       allow(MattermostClient).to receive(:send_to_notif_channel)
+    end
 
+    it "destroys old notifications without participations" do
       expect { service.call }.to change(Notification, :count).by(-1)
       expect(Notification.exists?(useless_notification.id)).to be false
       expect(Notification.exists?(recent_notification.id)).to be true
     end
 
     it "sends notification when notifications are deleted" do
-      allow(MattermostClient).to receive(:send_to_notif_channel)
-
       service.call
 
       expect(MattermostClient).to have_received(:send_to_notif_channel).with(
