@@ -4,9 +4,12 @@ module Participation::FranceTravailWebhooks
   extend ActiveSupport::Concern
 
   included do
-    after_commit :send_france_travail_create_webhook, on: :create, if: :eligible_for_france_travail_webhook?
-    after_commit :send_france_travail_update_webhook, on: :update, if: :eligible_for_france_travail_webhook?
+    after_commit :send_france_travail_upsert_webhook, on: [:create, :update], if: :eligible_for_france_travail_webhook?
     before_destroy :send_france_travail_delete_webhook, if: :france_travail_webhook_updatable?
+  end
+
+  def send_update_to_france_travail_if_eligible(timestamp)
+    send_france_travail_upsert_webhook(timestamp) if eligible_for_france_travail_webhook?
   end
 
   def eligible_for_france_travail_webhook?
@@ -21,22 +24,11 @@ module Participation::FranceTravailWebhooks
 
   private
 
-  def send_france_travail_create_webhook
-    OutgoingWebhooks::FranceTravail::CreateParticipationJob.perform_later(
-      participation_id: id, timestamp: created_at
+  def send_france_travail_upsert_webhook(timestamp = updated_at)
+    OutgoingWebhooks::FranceTravail::UpsertParticipationJob.perform_later(
+      participation_id: id,
+      timestamp: timestamp
     )
-  end
-
-  def send_france_travail_update_webhook
-    if france_travail_id?
-      OutgoingWebhooks::FranceTravail::UpdateParticipationJob.perform_later(
-        participation_id: id, timestamp: updated_at
-      )
-    else
-      OutgoingWebhooks::FranceTravail::CreateParticipationJob.perform_later(
-        participation_id: id, timestamp: updated_at
-      )
-    end
   end
 
   def send_france_travail_delete_webhook
@@ -49,7 +41,7 @@ module Participation::FranceTravailWebhooks
   end
 
   def eligible_user_for_france_travail_webhook?
-    user.birth_date? && user.nir? && !user.marked_for_rgpd_destruction?
+    user.retrievable_in_france_travail? && !user.marked_for_rgpd_destruction?
   end
 
   def eligible_organisation_for_france_travail_webhook?

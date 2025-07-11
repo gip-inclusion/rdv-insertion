@@ -14,9 +14,8 @@ const retrieveContactPhoneNumber = (userContactsData) => {
 const parseContactsData = (userContactsData) => {
   const phoneNumber = retrieveContactPhoneNumber(userContactsData);
   const email = userContactsData["ADRESSE ELECTRONIQUE DOSSIER"]?.replace(/\s+/g, "")?.toLowerCase();
-  const rightsOpeningDate = userContactsData["DATE DEBUT DROITS - DEVOIRS"];
 
-  return { phoneNumber, email, rightsOpeningDate };
+  return { phoneNumber, email };
 };
 
 export default parseContactsData;

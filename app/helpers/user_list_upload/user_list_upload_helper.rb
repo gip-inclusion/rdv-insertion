@@ -91,18 +91,18 @@ module UserListUpload::UserListUploadHelper
     end
   end
 
-  def tooltip_for_user_row(user_row)
-    if user_row.user_for_display_errors.any?
+  def tooltip_for_user_row_before_save(user_row)
+    if user_row.user_errors.any?
       tooltip_errors(
         title: "Erreurs des données du dossier",
         errors: user_row.user_for_display_errors.full_messages
       )
     else
-      tooltip(content: tooltip_content_for_user_row(user_row))
+      tooltip(content: tooltip_content_for_user_row_before_save(user_row))
     end
   end
 
-  def tooltip_content_for_user_row(user_row)
+  def tooltip_content_for_user_row_before_save(user_row)
     tooltip_content_array = []
     tooltip_content_array << tooltip_content_for_user_row_archived(user_row) if user_row.archived?
     tooltip_content_array << tooltip_content_for_user_row_follow_up_closed if user_row.matching_user_follow_up_closed?

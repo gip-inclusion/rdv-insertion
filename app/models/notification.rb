@@ -3,6 +3,7 @@ class Notification < ApplicationRecord
   include Templatable
   include Sendable
   include Deliverable
+  include HasSmsProvider
 
   attr_accessor :content
 

@@ -26,7 +26,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.frame_ancestors :self, rdv_solidarites, matomo
   policy.worker_src      :self, :blob
   # Specify URI for violation reports
-  policy.report_uri "/csp-violation-report"
+  # policy.report_uri "/csp-violation-report"
 end
 
 # If you are using UJS then enable automatic nonce generation

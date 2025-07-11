@@ -119,3 +119,7 @@ button, input[type="button"] {
   font-size: 0.85em;
   font-weight: 600;
 }
+
+button:disabled {
+  cursor: not-allowed !important;
+}

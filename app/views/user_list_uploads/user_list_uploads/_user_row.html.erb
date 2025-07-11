@@ -28,7 +28,7 @@
   <td>
     <div class="d-flex justify-content-between align-items-center">
       <span class="badge rounded-pill <%= user_row_status_badge_class(user_row) %>"
-        <%= tooltip_for_user_row(user_row) %>
+        <%= tooltip_for_user_row_before_save(user_row) %>
       >
         <%= user_row_status_text(user_row.before_user_save_status) %>
         <%= user_row_icon_for_status(user_row.user_for_display_errors) %>

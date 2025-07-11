@@ -10,5 +10,10 @@ FactoryBot.define do
     follow_up
     rdv_with_referents { false }
     organisations { [create(:organisation)] }
+
+    trait :delivered do
+      delivery_status { "delivered" }
+      last_brevo_webhook_received_at { Time.zone.now }
+    end
   end
 end

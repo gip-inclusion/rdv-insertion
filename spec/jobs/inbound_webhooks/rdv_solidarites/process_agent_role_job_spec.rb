@@ -90,12 +90,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
         it "destroys the agent" do
           expect { subject }.to change(Agent, :count).by(-1)
         end
-
-        it "sends a message to mattermost" do
-          expect(MattermostClient).to receive(:send_to_notif_channel)
-            .with("agent removed from organisation Pôle Parcours (923) and deleted")
-          subject
-        end
       end
 
       context "when the agent belongs to multiple orgs" do

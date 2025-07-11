@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     namespace :user_list_uploads do
       resources :category_selections, only: [:new]
     end
+    resource :configuration, only: [:show]
     resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
@@ -103,10 +104,6 @@ Rails.application.routes.draw do
                 :invitation_dates_filterings,
                 :convocation_dates_filterings,
                 :creation_dates_filterings, only: [:new]
-    end
-    resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
-      get :confirm_update
-      get :download_template
     end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
     resource :stats, only: [:show], controller: 'website/stats'
@@ -145,6 +142,9 @@ Rails.application.routes.draw do
     end
   end
   resources :accept_cgus, only: [:create]
+  resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
+    get :download_template
+  end
 
   resources :users, module: :users, only: [] do
     resources :rdvs, only: [:new]
@@ -235,9 +235,14 @@ Rails.application.routes.draw do
       resources :rdvs, param: "uuid", only: [:show]
       resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
         member do
-          resources :users, only: [] do
-            post :create_and_invite_many, on: :collection
-            post :create_and_invite, on: :collection
+          resources :users, only: [:index, :create] do
+            collection do
+              post :create_and_invite_many
+              post :create_and_invite
+            end
+            member do
+              post :invite
+            end
           end
           post "applicants/create_and_invite_many", to: "users#create_and_invite_many"
         end

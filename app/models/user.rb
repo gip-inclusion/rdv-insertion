@@ -29,7 +29,6 @@ class User < ApplicationRecord
   include User::BirthDateValidation
   include User::AffiliationNumber
   include User::Referents
-  include User::Tags
   include User::CreationOrigin
   include User::Geocodable
 
@@ -140,6 +139,10 @@ class User < ApplicationRecord
     can_be_invited_through?("sms") || can_be_invited_through?("email")
   end
 
+  def invitable_by_formats
+    %w[sms email postal].select { |format| can_be_invited_through?(format) }
+  end
+
   def soft_delete
     update_columns(
       last_name: "[Usager supprimé]",
@@ -229,6 +232,19 @@ class User < ApplicationRecord
     attributes.reject! { |attr| tag_users.any? { |tu| tu.tag_id == attr["tag_id"] } }
 
     super
+  end
+
+  def retrievable_in_france_travail?
+    nir_and_birth_date? || valid_france_travail_id?
+  end
+
+  def valid_france_travail_id?
+    # Valid France Travail ID is exactly 11 digits
+    france_travail_id? && france_travail_id.match?(/\A\d{11}\z/)
+  end
+
+  def nir_and_birth_date?
+    birth_date? && nir?
   end
 
   private
