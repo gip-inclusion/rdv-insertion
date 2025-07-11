@@ -7,7 +7,6 @@ class Organisations::RgpdCleanup < BaseService
   def call
     process_inactive_users # process users for rgpd reasons (destroy or remove from org)
     destroy_useless_rdvs # destroying users will destroy participations ; rdvs with no participations are useless for us
-    destroy_useless_notifications
   end
 
   private
@@ -86,9 +85,11 @@ class Organisations::RgpdCleanup < BaseService
     useless_rdvs = find_useless_rdvs
     return if useless_rdvs.empty?
 
+    useless_rdvs_ids = useless_rdvs.pluck(:id)
+
     configure_webhooks_for_department_thirteen(useless_rdvs)
     useless_rdvs.destroy_all
-    notify_rdv_deletions(useless_rdvs.pluck(:id))
+    notify_rdv_deletions(useless_rdvs_ids)
   end
 
   def find_useless_rdvs
@@ -110,26 +111,6 @@ class Organisations::RgpdCleanup < BaseService
     MattermostClient.send_to_notif_channel(
       "🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
       "#{@organisation.name} : #{rdv_ids.join(', ')}"
-    )
-  end
-
-  def destroy_useless_notifications
-    # notifications with no participation_id are useless code-wise, so we can clean them manually
-    useless_notifications = Notification.joins(
-      "JOIN rdvs ON rdvs.rdv_solidarites_rdv_id = notifications.rdv_solidarites_rdv_id"
-    )
-                                        .where(participation_id: nil)
-                                        .where(created_at: ...@date_limit)
-                                        .where(rdvs: { organisation_id: @organisation.id })
-
-    return if useless_notifications.empty?
-
-    useless_notifications_ids = useless_notifications.pluck(:id)
-    useless_notifications.destroy_all
-
-    MattermostClient.send_to_notif_channel(
-      "🚮 Les notifications suivantes ont été supprimées automatiquement pour l'organisation " \
-      "#{@organisation.name} : #{useless_notifications_ids.join(', ')}"
     )
   end
 end

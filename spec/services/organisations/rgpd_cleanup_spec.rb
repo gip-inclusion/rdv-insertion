@@ -6,13 +6,11 @@ describe Organisations::RgpdCleanup, type: :service do
     it "calls all cleanup methods" do
       allow(service).to receive(:process_inactive_users)
       allow(service).to receive(:destroy_useless_rdvs)
-      allow(service).to receive(:destroy_useless_notifications)
 
       service.call
 
       expect(service).to have_received(:process_inactive_users)
       expect(service).to have_received(:destroy_useless_rdvs)
-      expect(service).to have_received(:destroy_useless_notifications)
     end
   end
 
@@ -104,48 +102,6 @@ describe Organisations::RgpdCleanup, type: :service do
 
       expect(MattermostClient).to have_received(:send_to_notif_channel).with(
         match(/Les rdvs suivants ont été supprimés automatiquement pour l'organisation #{organisation.name}/)
-      )
-    end
-  end
-
-  describe "#destroy_useless_notifications" do
-    let(:old_date) { 25.months.ago }
-    let(:recent_date) { 1.month.ago }
-
-    let!(:useless_notification) do
-      rdv = create(:rdv, organisation: organisation)
-      participation = create(:participation, rdv: rdv)
-      notification = create(:notification,
-                            participation: participation,
-                            rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id,
-                            created_at: old_date)
-      notification.update_column(:participation_id, nil)
-      notification
-    end
-
-    let!(:recent_notification) do
-      rdv = create(:rdv, organisation: organisation)
-      participation = create(:participation, rdv: rdv)
-      notification = create(:notification,
-                            participation: participation,
-                            rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id,
-                            created_at: recent_date)
-      notification.update_column(:participation_id, nil)
-      notification
-    end
-
-    it "destroys old notifications without participations" do
-      expect { service.call }.to change(Notification, :count).by(-1)
-      expect(Notification.exists?(useless_notification.id)).to be false
-      expect(Notification.exists?(recent_notification.id)).to be true
-    end
-
-    it "sends notification when notifications are deleted" do
-      allow(MattermostClient).to receive(:send_to_notif_channel)
-      service.call
-
-      expect(MattermostClient).to have_received(:send_to_notif_channel).with(
-        match(/Les notifications suivantes ont été supprimées automatiquement/)
       )
     end
   end
