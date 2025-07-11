@@ -115,15 +115,21 @@ class Organisations::RgpdCleanup < BaseService
 
   def destroy_useless_notifications
     # notifications with no participation_id are useless code-wise, so we can clean them manually
-    useless_notifications = Notification.where(participation_id: nil).where(created_at: ...@date_limit)
+    useless_notifications = Notification.joins(
+      "JOIN rdvs ON rdvs.rdv_solidarites_rdv_id = notifications.rdv_solidarites_rdv_id"
+    )
+                                        .where(participation_id: nil)
+                                        .where(created_at: ...@date_limit)
+                                        .where(rdvs: { organisation_id: @organisation.id })
 
     return if useless_notifications.empty?
 
+    useless_notifications_ids = useless_notifications.pluck(:id)
     useless_notifications.destroy_all
 
     MattermostClient.send_to_notif_channel(
-      "🚮 Les notifications suivantes ont été supprimées automatiquement " \
-      ": #{useless_notifications.pluck(:id).join(', ')}"
+      "🚮 Les notifications suivantes ont été supprimées automatiquement pour l'organisation " \
+      "#{@organisation.name} : #{useless_notifications_ids.join(', ')}"
     )
   end
 end

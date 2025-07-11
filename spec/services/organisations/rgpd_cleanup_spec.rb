@@ -116,13 +116,19 @@ describe Organisations::RgpdCleanup, type: :service do
     let(:recent_date) { 1.month.ago }
 
     let!(:useless_notification) do
-      notification = create(:notification, participation: create(:participation), created_at: old_date)
+      rdv = create(:rdv, organisation: organisation)
+      participation = create(:participation, rdv: rdv)
+      notification = create(:notification, participation: participation,
+                             rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id, created_at: old_date)
       notification.update_column(:participation_id, nil)
       notification
     end
 
     let!(:recent_notification) do
-      notification = create(:notification, participation: create(:participation), created_at: recent_date)
+      rdv = create(:rdv, organisation: organisation)
+      participation = create(:participation, rdv: rdv)
+      notification = create(:notification, participation: participation,
+                             rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id, created_at: recent_date)
       notification.update_column(:participation_id, nil)
       notification
     end
