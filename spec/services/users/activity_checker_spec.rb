@@ -3,30 +3,22 @@ describe Users::ActivityChecker, type: :service do
   let(:service) { described_class.new(organisation: organisation) }
   let(:old_date) { 25.months.ago }
   let(:recent_date) { 1.month.ago }
+  let!(:inactive_user) { create(:user, created_at: old_date) }
+  let!(:active_user) { create(:user, created_at: recent_date) }
+  let!(:inactive_user_organisation) do
+    create(:users_organisation, user: inactive_user, organisation: organisation, created_at: old_date)
+  end
+  let!(:active_user_organisation) do
+    create(:users_organisation, user: active_user, organisation: organisation, created_at: recent_date)
+  end
 
   describe "#call" do
-    let!(:inactive_user) { create(:user, created_at: old_date) }
-    let!(:active_user) { create(:user, created_at: recent_date) }
-
-    before do
-      create(:users_organisation, user: inactive_user, organisation: organisation, created_at: old_date)
-      create(:users_organisation, user: active_user, organisation: organisation, created_at: recent_date)
-    end
-
     it "returns inactive users" do
       expect(described_class.call(organisation: organisation).inactive_users).to contain_exactly(inactive_user)
     end
   end
 
   describe "#find_inactive_users" do
-    let!(:inactive_user) { create(:user, created_at: old_date) }
-    let!(:active_user) { create(:user, created_at: recent_date) }
-
-    before do
-      create(:users_organisation, user: inactive_user, organisation: organisation, created_at: old_date)
-      create(:users_organisation, user: active_user, organisation: organisation, created_at: recent_date)
-    end
-
     context "when user has no recent activity" do
       it "includes the user in inactive users" do
         expect(service.find_inactive_users).to contain_exactly(inactive_user)

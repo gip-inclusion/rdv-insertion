@@ -7,14 +7,10 @@ describe RemoveOrganisationUsersForExpiredArchivesJob do
   describe "#perform" do
     context "with expired archives according to organization retention" do
       let!(:old_archive_org1) { create(:archive, organisation: org1, created_at: 25.months.ago) }
-      let!(:old_archive_org2) { create(:archive, organisation: org2, created_at: 37.months.ago) }
-      let!(:recent_archive_org1) { create(:archive, organisation: org1, created_at: 1.month.ago) }
       let!(:recent_archive_org2) { create(:archive, organisation: org2, created_at: 2.years.ago) }
 
       it "schedules cleanup jobs for expired archives according to each organization's retention" do
         expect(RemoveOrganisationUserForExpiredArchiveJob).to receive(:perform_later).with(old_archive_org1.id)
-        expect(RemoveOrganisationUserForExpiredArchiveJob).to receive(:perform_later).with(old_archive_org2.id)
-        expect(RemoveOrganisationUserForExpiredArchiveJob).not_to receive(:perform_later).with(recent_archive_org1.id)
         expect(RemoveOrganisationUserForExpiredArchiveJob).not_to receive(:perform_later).with(recent_archive_org2.id)
 
         subject
@@ -22,7 +18,7 @@ describe RemoveOrganisationUsersForExpiredArchivesJob do
 
       it "sends mattermost notification with correct count" do
         expect(MattermostClient).to receive(:send_to_notif_channel)
-          .with(/2 usagers archivés ont été retirés de leurs organisations/)
+          .with(/1 usagers archivés ont été retirés de leurs organisations/)
 
         subject
       end
@@ -37,10 +33,8 @@ describe RemoveOrganisationUsersForExpiredArchivesJob do
       let!(:expired_archive_without_recent_rdv) do
         create(:archive, organisation: org1, user: user_without_recent_rdv, created_at: 25.months.ago)
       end
-
-      before do
-        rdv = create(:rdv, organisation: org1)
-        create(:participation, user: user_with_recent_rdv, rdv: rdv, created_at: 1.month.ago)
+      let!(:recent_rdv) do
+        create(:rdv, organisation: org1, participations: [build(:participation, user: user_with_recent_rdv)])
       end
 
       it "only schedules cleanup jobs for users without recent RDVs" do

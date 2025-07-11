@@ -22,9 +22,10 @@ describe Organisations::RgpdCleanup, type: :service do
 
     let!(:inactive_user) { create(:user, created_at: old_date) }
     let!(:active_user) { create(:user, created_at: recent_date) }
-
-    before do
+    let!(:inactive_user_organisation) do
       create(:users_organisation, user: inactive_user, organisation: organisation, created_at: old_date)
+    end
+    let!(:active_user_organisation) do
       create(:users_organisation, user: active_user, organisation: organisation, created_at: recent_date)
     end
 
@@ -50,8 +51,7 @@ describe Organisations::RgpdCleanup, type: :service do
 
     context "when user is in multiple organisations" do
       let(:other_organisation) { create(:organisation, data_retention_duration: 24) }
-
-      before do
+      let!(:inactive_user_organisation_other_organisation) do
         create(:users_organisation, user: inactive_user, organisation: other_organisation, created_at: old_date)
       end
 
@@ -92,10 +92,6 @@ describe Organisations::RgpdCleanup, type: :service do
       rdv
     end
 
-    before do
-      allow(MattermostClient).to receive(:send_to_notif_channel)
-    end
-
     it "destroys old rdvs without participations" do
       expect { service.call }.to change(Rdv, :count).by(-1)
       expect(Rdv.exists?(useless_rdv.id)).to be false
@@ -103,6 +99,7 @@ describe Organisations::RgpdCleanup, type: :service do
     end
 
     it "sends notification when rdvs are deleted" do
+      allow(MattermostClient).to receive(:send_to_notif_channel)
       service.call
 
       expect(MattermostClient).to have_received(:send_to_notif_channel).with(
@@ -118,8 +115,10 @@ describe Organisations::RgpdCleanup, type: :service do
     let!(:useless_notification) do
       rdv = create(:rdv, organisation: organisation)
       participation = create(:participation, rdv: rdv)
-      notification = create(:notification, participation: participation,
-                             rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id, created_at: old_date)
+      notification = create(:notification,
+                            participation: participation,
+                            rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id,
+                            created_at: old_date)
       notification.update_column(:participation_id, nil)
       notification
     end
@@ -127,14 +126,12 @@ describe Organisations::RgpdCleanup, type: :service do
     let!(:recent_notification) do
       rdv = create(:rdv, organisation: organisation)
       participation = create(:participation, rdv: rdv)
-      notification = create(:notification, participation: participation,
-                             rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id, created_at: recent_date)
+      notification = create(:notification,
+                            participation: participation,
+                            rdv_solidarites_rdv_id: rdv.rdv_solidarites_rdv_id,
+                            created_at: recent_date)
       notification.update_column(:participation_id, nil)
       notification
-    end
-
-    before do
-      allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
     it "destroys old notifications without participations" do
@@ -144,6 +141,7 @@ describe Organisations::RgpdCleanup, type: :service do
     end
 
     it "sends notification when notifications are deleted" do
+      allow(MattermostClient).to receive(:send_to_notif_channel)
       service.call
 
       expect(MattermostClient).to have_received(:send_to_notif_channel).with(
