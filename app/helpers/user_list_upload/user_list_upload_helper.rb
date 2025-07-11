@@ -39,7 +39,7 @@ module UserListUpload::UserListUploadHelper
   end
 
   def user_row_background_color_for_attribute(user_row, attribute)
-    if user_row.user_errors_for_display.attribute_names.include?(attribute)
+    if user_row.user_for_display_errors.attribute_names.include?(attribute)
       "alert-danger"
     elsif attribute_to_highlight?(user_row, attribute)
       "alert-success"
@@ -49,11 +49,11 @@ module UserListUpload::UserListUploadHelper
   end
 
   def user_row_icon_for_attribute(user_row, attribute)
-    if user_row.user_errors_for_display.attribute_names.include?(attribute)
+    if user_row.user_for_display_errors.attribute_names.include?(attribute)
       content_tag(
         :i, nil, class: "ri-alert-line text-end", **tooltip_errors_attributes(
           title: "Erreur sur cette donnée",
-          errors: user_row.user_errors_for_display.full_messages_for(attribute)
+          errors: user_row.user_for_display_errors.full_messages_for(attribute)
         )
       )
     elsif attribute_to_highlight?(user_row, attribute)
@@ -92,10 +92,10 @@ module UserListUpload::UserListUploadHelper
   end
 
   def tooltip_for_user_row(user_row)
-    if user_row.user_errors_for_display.any?
+    if user_row.user_for_display_errors.any?
       tooltip_errors(
         title: "Erreurs des données du dossier",
-        errors: user_row.user_errors_for_display.full_messages
+        errors: user_row.user_for_display_errors.full_messages
       )
     else
       tooltip(content: tooltip_content_for_user_row(user_row))
