@@ -23,11 +23,11 @@
 
       <%# We set the file input outside the form because we don't want to submit the file itself %>
       <input type="file"
-              class="d-none"
-              id="user_list_upload_file"
-              data-user-list-upload-target="input"
-              data-action="change->user-list-upload#handleFileSelect"
-              accept=".csv, .xlsx, .xls, .ods">
+             class="d-none"
+             id="user_list_upload_file"
+             data-user-list-upload-target="input"
+             data-action="change->user-list-upload#handleFileSelect"
+             accept=".csv, .xlsx, .xls, .ods">
 
       <%= form_with(url: structure_user_list_uploads_path, local: true, class: "upload-form") do |f| %>
 

@@ -21,6 +21,14 @@ FactoryBot.define do
       end
     end
 
+    trait :super_admin_verified do
+      to_create do |instance|
+        instance.super_admin = true
+        instance.save(validate: false)
+        instance.super_admin_authentication_requests.create!(verified_at: Time.current, token: "123456")
+      end
+    end
+
     after(:create) do |agent, evaluator|
       evaluator.basic_role_in_organisations.each do |organisation|
         create(:agent_role, agent: agent, organisation: organisation)

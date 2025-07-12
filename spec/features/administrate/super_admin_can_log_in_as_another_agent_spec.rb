@@ -3,7 +3,7 @@ describe "Super admin can log in as another agent", :js do
   let!(:super_admin_organisation1) { create(:organisation, department: super_admin_department) }
   let!(:super_admin_organisation2) { create(:organisation, department: super_admin_department) }
   let!(:super_admin) do
-    create(:agent, :super_admin, organisations: [super_admin_organisation1, super_admin_organisation2])
+    create(:agent, :super_admin_verified, organisations: [super_admin_organisation1, super_admin_organisation2])
   end
   let!(:agent_department) { create(:department) }
   let!(:agent_organisation1) { create(:organisation, department: agent_department) }
@@ -60,7 +60,7 @@ describe "Super admin can log in as another agent", :js do
     end
 
     context "when the agent impersonated is a super_admin" do
-      let!(:agent) { create(:agent, :super_admin, organisations: [agent_organisation1, agent_organisation2]) }
+      let!(:agent) { create(:agent, :super_admin_verified, organisations: [agent_organisation1, agent_organisation2]) }
       let!(:other_agent) { create(:agent) }
 
       it "cannot impersonate while impersonating" do
