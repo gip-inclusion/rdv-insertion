@@ -1,0 +1,7 @@
+<%= render "common/remote_modal", title: "Aperçu de la signature" do %>
+  <div class="text-center">
+    <%= image_tag rails_blob_path(@messages_configuration.signature_image, disposition: "inline"), 
+                  class: "img-fluid", 
+                  style: "max-width: 100%; height: auto;" %>
+  </div>
+<% end %>

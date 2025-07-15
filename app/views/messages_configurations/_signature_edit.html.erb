@@ -1,0 +1,30 @@
+<%= render "common/attribute_input", f: f, attribute: :signature_lines, as: :array, padding: false, columns: false %>
+
+<div class="my-3" data-controller="signature-upload">
+  <div class="d-flex align-items-center mb-2 <%= 'd-none' unless f.object.signature_image.attached? %>" data-signature-upload-target="attachedSection">
+    <strong>Signature jointe :</strong>
+    <% if f.object.signature_image.attached? %>
+      <%= link_to f.object.signature_image.filename,
+                 previews_signature_path(id: f.object.id),
+                 class: "mx-2",
+                 data: { signature_upload_target: "originalLink", turbo_frame: "remote_modal" } %>
+    <% end %>
+    <span class="mx-2 d-none" data-signature-upload-target="filename"></span>
+    <span class="ms-1"
+          style="cursor: pointer; font-weight: bold;"
+          data-action="click->signature-upload#removeSignature">×</span>
+  </div>
+
+  <div class="d-flex align-items-center mb-2 <%= 'd-none' if f.object.signature_image.attached? %>" data-signature-upload-target="notAttachedSection">
+    <strong>Signature jointe :</strong>
+    <%= label_tag :signature_image, "+ Joindre une signature",
+                  class: "btn btn-outline-primary btn-sm mx-2",
+                  for: "messages_configuration_signature_image" %>
+  </div>
+
+  <%= f.file_field :signature_image,
+                   class: "d-none",
+                   data: { signature_upload_target: "fileInput" },
+                   accept: MessagesConfiguration::SIGNATURE_MIME_TYPES.join(', ') %>
+  <%= f.hidden_field :remove_signature, data: { signature_upload_target: "removeField" } %>
+</div>

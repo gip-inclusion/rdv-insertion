@@ -15,7 +15,7 @@
 <%# mandatory: adds a star to the label %>
 <%# tooltip: adds a tooltip next to the label ; it is hash that must contain a content key %>
 
-<div class="col-12 col-md-6 <%= local_assigns[:padding] == false ? '' : 'px-5' %>">
+<div class="<%= local_assigns[:columns] == false ? '' : 'col-12 col-md-6' %> <%= local_assigns[:padding] == false ? '' : 'px-5' %>">
   <h4>
     <%= f.object.class.human_attribute_name(attribute) %><%= " *" if local_assigns[:mandatory] %>
     <% if local_assigns[:tooltip].is_a?(Hash) %>
