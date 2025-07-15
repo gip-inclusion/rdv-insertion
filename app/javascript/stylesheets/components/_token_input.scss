@@ -1,0 +1,17 @@
+.token-inputs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.token-input {
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+}
+
+.token-input:focus {
+  border-color: #007bff;
+  outline: none;
+}

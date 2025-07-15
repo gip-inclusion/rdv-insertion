@@ -123,5 +123,14 @@ describe SessionsController do
       expect(response).to redirect_to(/www.rdv-solidarites-test/)
       expect(flash[:notice]).to eq("Déconnexion réussie")
     end
+
+    context "when the agent is a super admin" do
+      let!(:agent) { create(:agent, :super_admin_verified) }
+
+      it "invalidates the super admin authentication request" do
+        delete :destroy
+        expect(agent.reload.last_super_admin_authentication_request.invalidated_at).to be_present
+      end
+    end
   end
 end

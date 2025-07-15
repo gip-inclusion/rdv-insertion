@@ -1,0 +1,35 @@
+<div class="container mt-5 mb-5 text-center">
+  <h2 class="mb-3">Vérification Super Admin</h2>
+  <p>Un code de vérification a été envoyé à l'adresse email <strong><%= current_agent.email %></strong>.</p>
+
+  <p>Veuillez entrer le code à 6 chiffres pour continuer.</p>
+
+  <%= form_with(url: super_admin_authentication_request_verifications_path, method: :post, data: { controller: "super-admins--token-verification" }) do |form| %>
+    <%= form.hidden_field :token, data: { "super-admins--token-verification-target": "tokenInput" } %>
+    <div>
+      <%= form.label :token, "Code de vérification" %>
+      <div class="token-inputs d-flex justify-content-center my-2">
+        <% 6.times do |i| %>
+          <input type="text"
+                maxlength="1"
+                class="token-input"
+                data-action="input->super-admins--token-verification#handleInput keydown->super-admins--token-verification#handleKeydown paste->super-admins--token-verification#handlePaste"
+                data-super-admins--token-verification-target="digitInput"
+                data-index="<%= i %>"
+                autocomplete="off"
+                inputmode="numeric">
+        <% end %>
+      </div>
+    </div>
+
+    <div class="d-none">
+      <%= form.submit "Vérifier" %>
+    </div>
+  <% end %>
+
+  <div class="mt-3">
+    <%= link_to super_admin_authentication_requests_path, method: :post, class: "btn btn-primary" do %>
+      Cliquez ici pour renvoyer un nouveau code de vérification
+    <% end %>
+  </div>
+</div>

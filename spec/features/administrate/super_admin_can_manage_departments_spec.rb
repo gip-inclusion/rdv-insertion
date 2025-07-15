@@ -1,5 +1,5 @@
 describe "Super admin can manage departments" do
-  let!(:super_admin) { create(:agent, :super_admin) }
+  let!(:super_admin) { create(:agent, :super_admin_verified) }
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
 
