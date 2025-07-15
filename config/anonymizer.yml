@@ -256,9 +256,9 @@ tables:
       - motif_category_id
 
   - table_name: notifications
-    anonymized_column_names:
-      - event
+    anonymized_column_names: []
     non_anonymized_column_names:
+      - event
       - sent_at
       - created_at
       - delivery_status
