@@ -1,13 +1,25 @@
-<div class="container legal-notice mt-5 mb-5">
-  <div class="row d-flex flex-row justify-content-center align-items-center mt-2">
-    <div class="col-5 me-5">
-      <%= image_tag "illustrations/error.svg", class: "error-illustration mb-3", alt: "Image d'illustration calendrier" %>
+<div class="container legal-notice m-4">
+  <div class="d-flex justify-content-center align-items-center">
+    <div class="text-center">
+      <%= image_tag "illustrations/not_found.png", class: "error-illustration mb-3 w-75", alt: "Image d'illustration de recherche non trouvée" %>
     </div>
-    <div class="col-5">
-      <h1 class="text-center">Oups !</h1>
-      <p class="text-center">404 - La page que vous recherchez semble introuvable</p>
-      <%= link_to root_path do %>
-        <button class="btn btn-blue w-100 ">Retour à l'accueil</button>
+    <div>
+      <h3 class="mb-4">Oups ! 404 - Cette page est introuvable</h3>
+      <p>La page que vous recherchez semble introuvable. Elle a peut-être été déplacée, renommée ou supprimée.</p>
+      <p>Vous pouvez quitter cette page en revenant à l'accueil.</p>
+
+      <%= link_to root_path, class: "my-3" do %>
+        <button class="btn btn-blue">Revenir à l'accueil</button>
+      <% end %>
+
+      <% if logged_in? %>
+        <div class="border py-4 px-2 my-3">
+          <h4 class="mb-3">Le problème persiste ? Contactez le support de rdv-insertion</h4>
+          <ul>
+            <li> Par Crisp, messagerie instantanée située en bas à droite de votre écran</li>
+            <li> Par mail, à l'adresse : <a href="mailto:support@rdv-insertion.fr" class="text-underline text-dark-blue">support@rdv-insertion.fr</a></li>
+          </ul>
+        </div>
       <% end %>
     </div>
   </div>
