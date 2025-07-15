@@ -1,38 +1,38 @@
 .reset-dsfr-overrides {
-    a {
-        &::after {
-            display: none;
-        }
+  a {
+    &::after {
+        display: none;
     }
-    p {
-        line-height: normal;
+  }
+  p {
+    line-height: normal;
+  }
+  [href]:not(.fr-link) {
+    background-image: none;
+  }
+  a[href]:not(.fr-link):active,
+  a[href]:not(.fr-link):hover {
+    --underline-hover-width: unset;
+  }
+  .btn-blue-out {
+    &:hover {
+      background-color: $light-grey-2 !important;
+      color: $dark-blue;
     }
-    [href]:not(.fr-link) {
-        background-image: none;
-    }
-    a[href]:not(.fr-link):active,
-    a[href]:not(.fr-link):hover {
-        --underline-hover-width: unset;
-    }
-    .btn-blue-out {
-        &:hover {
-            background-color: $light-grey-2 !important;
-            color: $dark-blue;
-        }
 
-        &:disabled {
-            color: $dark-blue;
-        }
+    &:disabled {
+      color: $dark-blue;
     }
-    .btn-primary {
-        &:hover {
-            background-color: $light-blue !important;
-        }
+  }
+  .btn-primary {
+    &:hover {
+      background-color: $light-blue !important;
+    }
 
-        &:disabled {
-            background-color: $light-grey-2 !important;
-            color: $dark-blue;
-            border-color: $dark-grey;
-        }
+    &:disabled {
+      background-color: $light-grey-2 !important;
+      color: $dark-blue;
+      border-color: $dark-grey;
     }
+  }
 }

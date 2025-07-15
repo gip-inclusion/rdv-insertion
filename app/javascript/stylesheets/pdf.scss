@@ -1,5 +1,4 @@
 @import "./_variables";
-// note: flexbox is not working with wkhtmltopdf/wicked-pdf ; hence, the dirty css to keep everything centered/aligned
 
 // Chrome headless (use by Grover) does'nt have access to assets so we need to encode Marianne font in base64 to use it in the PDF
 @font-face {
