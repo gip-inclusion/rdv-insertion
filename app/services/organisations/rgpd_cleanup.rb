@@ -12,34 +12,21 @@ class Organisations::RgpdCleanup < BaseService
   private
 
   def process_inactive_users
-    inactive_users = find_inactive_users
+    inactive_users = @organisation.inactive_users
     return if inactive_users.empty?
 
-    users_to_delete, users_to_remove_from_org = categorize_inactive_users(inactive_users)
+    remove_users_from_org(inactive_users)
+
+    users_to_delete, users_to_remove_from_org = inactive_users.partition { |user| user.organisations.reload.empty? }
 
     process_users_to_delete(users_to_delete)
-    process_users_to_remove_from_org(users_to_remove_from_org)
+    notify_user_removals(users_to_remove_from_org.pluck(:id))
   end
 
-  def find_inactive_users
-    Users::ActivityChecker.call(organisation: @organisation).inactive_users
-  end
-
-  def categorize_inactive_users(inactive_users)
-    users_to_delete = []
-    users_to_remove_from_org = []
-
-    inactive_users.each do |user|
+  def remove_users_from_org(users)
+    users.each do |user|
       remove_user_from_current_organisation(user)
-
-      if user.organisations.reload.empty?
-        users_to_delete << user
-      else
-        users_to_remove_from_org << user
-      end
     end
-
-    [users_to_delete, users_to_remove_from_org]
   end
 
   def remove_user_from_current_organisation(user)
@@ -51,12 +38,6 @@ class Organisations::RgpdCleanup < BaseService
 
     cleanup_user_data(users_to_delete)
     notify_user_deletions(users_to_delete.pluck(:id))
-  end
-
-  def process_users_to_remove_from_org(users_to_remove_from_org)
-    return if users_to_remove_from_org.empty?
-
-    notify_user_removals(users_to_remove_from_org.pluck(:id))
   end
 
   def cleanup_user_data(users)
@@ -72,13 +53,19 @@ class Organisations::RgpdCleanup < BaseService
       "🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
       "#{@organisation.name} : #{user_ids.join(', ')}"
     )
+    Rails.logger.info("🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
+                      "#{@organisation.name} : #{user_ids.join(', ')}")
   end
 
   def notify_user_removals(user_ids)
+    return if user_ids.empty?
+
     MattermostClient.send_to_notif_channel(
       "↩️ Les usagers suivants ont été retirés de l'organisation " \
       "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}"
     )
+    Rails.logger.info("↩️ Les usagers suivants ont été retirés de l'organisation " \
+                      "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}")
   end
 
   def destroy_useless_rdvs
@@ -112,5 +99,7 @@ class Organisations::RgpdCleanup < BaseService
       "🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
       "#{@organisation.name} : #{rdv_ids.join(', ')}"
     )
+    Rails.logger.info("🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
+                      "#{@organisation.name} : #{rdv_ids.join(', ')}")
   end
 end

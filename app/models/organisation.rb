@@ -81,6 +81,10 @@ class Organisation < ApplicationRecord
     dpa_agreement.nil?
   end
 
+  def inactive_users
+    Organisation::UsersRetriever.new(organisation: self).inactive_users
+  end
+
   private
 
   def data_retention_duration_bounds

@@ -1,14 +1,10 @@
-class Users::ActivityChecker < BaseService
+class Organisation::UsersRetriever
   def initialize(organisation:)
     @organisation = organisation
-    @date_limit = @organisation.data_retention_duration.months.ago
+    @date_limit = organisation.data_retention_duration.months.ago
   end
 
-  def call
-    result.inactive_users = find_inactive_users
-  end
-
-  def find_inactive_users
+  def inactive_users
     @organisation.users.where(users: { created_at: ...@date_limit })
                  .where.not(id: users_with_recent_invitations)
                  .where.not(id: users_with_recent_participations)

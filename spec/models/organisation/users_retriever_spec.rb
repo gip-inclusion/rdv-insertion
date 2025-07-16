@@ -1,6 +1,6 @@
-describe Users::ActivityChecker, type: :service do
+describe Organisation::UsersRetriever, type: :model do
   let(:organisation) { create(:organisation, data_retention_duration: 24) }
-  let(:service) { described_class.new(organisation: organisation) }
+  let(:retriever) { described_class.new(organisation: organisation) }
   let(:old_date) { 25.months.ago }
   let(:recent_date) { 1.month.ago }
   let!(:inactive_user) { create(:user, created_at: old_date) }
@@ -12,16 +12,10 @@ describe Users::ActivityChecker, type: :service do
     create(:users_organisation, user: active_user, organisation: organisation, created_at: recent_date)
   end
 
-  describe "#call" do
-    it "returns inactive users" do
-      expect(described_class.call(organisation: organisation).inactive_users).to contain_exactly(inactive_user)
-    end
-  end
-
-  describe "#find_inactive_users" do
+  describe "#inactive_users" do
     context "when user has no recent activity" do
       it "includes the user in inactive users" do
-        expect(service.find_inactive_users).to contain_exactly(inactive_user)
+        expect(retriever.inactive_users).to contain_exactly(inactive_user)
       end
     end
 
@@ -31,7 +25,7 @@ describe Users::ActivityChecker, type: :service do
       end
 
       it "excludes the user from inactive users" do
-        expect(service.find_inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).not_to include(inactive_user)
       end
     end
 
@@ -42,7 +36,7 @@ describe Users::ActivityChecker, type: :service do
       end
 
       it "excludes the user from inactive users" do
-        expect(service.find_inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).not_to include(inactive_user)
       end
     end
 
@@ -51,7 +45,7 @@ describe Users::ActivityChecker, type: :service do
       let!(:recent_tag_user) { create(:tag_user, user: inactive_user, tag: tag, created_at: recent_date) }
 
       it "excludes the user from inactive users" do
-        expect(service.find_inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).not_to include(inactive_user)
       end
     end
 
@@ -62,7 +56,7 @@ describe Users::ActivityChecker, type: :service do
       end
 
       it "excludes the user from inactive users" do
-        expect(service.find_inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).not_to include(inactive_user)
       end
     end
 
@@ -75,7 +69,7 @@ describe Users::ActivityChecker, type: :service do
         end
 
         it "still includes the user in inactive users" do
-          expect(service.find_inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to include(inactive_user)
         end
       end
 
@@ -86,7 +80,7 @@ describe Users::ActivityChecker, type: :service do
         end
 
         it "still includes the user in inactive users" do
-          expect(service.find_inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to include(inactive_user)
         end
       end
 
@@ -97,7 +91,7 @@ describe Users::ActivityChecker, type: :service do
         end
 
         it "still includes the user in inactive users" do
-          expect(service.find_inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to include(inactive_user)
         end
       end
 
@@ -108,7 +102,7 @@ describe Users::ActivityChecker, type: :service do
         end
 
         it "still includes the user in inactive users" do
-          expect(service.find_inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to include(inactive_user)
         end
       end
     end
