@@ -123,7 +123,7 @@ describe Rdv do
       let!(:participation_attributes) do
         {
           id: nil, user: user, follow_up: follow_up,
-          created_by: "agent", rdv_solidarites_participation_id: 17
+          created_by_type: "agent", rdv_solidarites_participation_id: 17
         }
       end
       let!(:rdv) { create(:rdv, participations_attributes: participation_attributes) }
@@ -141,7 +141,7 @@ describe Rdv do
       let!(:participation_attributes) do
         {
           id: nil, user: user, follow_up: follow_up,
-          created_by: "agent", rdv_solidarites_participation_id: 18
+          created_by_type: "agent", rdv_solidarites_participation_id: 18
         }
       end
       let!(:rdv_count_before) { described_class.count }
@@ -160,7 +160,7 @@ describe Rdv do
     context "when participation id is present" do
       let!(:rdv) { create(:rdv) }
       let!(:participation) { rdv.participations.first }
-      let!(:participation_attributes) { { id: participation.id, created_by: "agent" } }
+      let!(:participation_attributes) { { id: participation.id, created_by_type: "agent" } }
       let!(:participation_count_before) { Participation.count }
 
       before do
@@ -169,7 +169,7 @@ describe Rdv do
 
       it "updates the existing participation" do
         expect(Participation.count).to eq(participation_count_before)
-        expect(participation.reload.created_by).to eq("agent")
+        expect(participation.reload.created_by_type).to eq("agent")
       end
     end
 

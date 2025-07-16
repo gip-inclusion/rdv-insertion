@@ -43,7 +43,7 @@ describe Participation::FranceTravailPayload, type: :concern do
     end
 
     context "when participation is not created by user" do
-      before { participation.update(created_by: "agent") }
+      before { participation.update(created_by_type: "agent") }
 
       it "returns PARTENAIRE" do
         expect(payload[:initiateur]).to eq("PARTENAIRE")
