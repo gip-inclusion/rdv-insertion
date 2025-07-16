@@ -318,8 +318,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
     parsed_cnaf_phone_number = PhoneNumberHelper.parsed_number(cnaf_phone_number)
 
-    case parsed_cnaf_phone_number.type
-    when :fixed_line
+    if parsed_cnaf_phone_number.type == :fixed_line
       phone_number.presence || parsed_cnaf_phone_number.e164
     else
       parsed_cnaf_phone_number.e164
