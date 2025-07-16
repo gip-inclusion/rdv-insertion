@@ -118,6 +118,7 @@ button, input[type="button"] {
   margin-bottom: 0.5em;
   font-size: 0.85em;
   font-weight: 600;
+  min-height: 37px;
 
   &.background-blue-light {
     border: 1px solid $dark-blue;
