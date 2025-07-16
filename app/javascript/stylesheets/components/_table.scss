@@ -1,5 +1,8 @@
 .table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: $light !important;
+  .bg-danger {
+    color: white;
+  }
 }
 
 

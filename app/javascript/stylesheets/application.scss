@@ -28,9 +28,9 @@
 @import "./components/qr_code_scanner";
 @import "./components/agreement_modal";
 @import "./components/rdv_insertion_instance_name";
+@import "./reset_dsfr_overrides.scss";
 @import "tippy.js/dist/tippy.css";
 @import "remixicon/fonts/remixicon.css";
-@import "./dsfr_overrides.scss";
 
 @font-face {
   font-family: 'Marianne';

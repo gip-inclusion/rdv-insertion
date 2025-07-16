@@ -72,7 +72,7 @@ module UserListUpload::UserListUploadHelper
       if user_row.archives.map(&:organisation_id).include?(organisation.id)
         "background-brown-light text-brown"
       else
-        "background-blue-light text-dark-blue"
+        "background-blue-light text-dark-blue border-blue border"
       end
     else
       "background-green-light text-dark-green"
@@ -84,7 +84,7 @@ module UserListUpload::UserListUploadHelper
       if user_row.user.follow_up_for(motif_category)&.closed?
         "background-dark-green text-white"
       else
-        "background-blue-light text-dark-blue"
+        "background-blue-light text-dark-blue border-blue border"
       end
     else
       "background-green-light text-dark-green"
