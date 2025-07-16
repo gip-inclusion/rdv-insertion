@@ -6,11 +6,11 @@ module UserListUpload::UserListUploadHelper
 
   def user_row_status_badge_class(user_row)
     {
-      to_create_with_no_errors: "background-blue-light text-mid-blue",
+      to_create_with_no_errors: "alert-info",
       to_create_with_errors: "alert-danger",
-      to_update_with_no_errors: "background-blue-light text-mid-blue",
+      to_update_with_no_errors: "alert-info",
       to_update_with_errors: "alert-danger",
-      up_to_date: "background-very-light-grey text-very-dark-grey"
+      up_to_date: "alert-success"
     }[user_row.before_user_save_status]
   end
 
@@ -72,7 +72,7 @@ module UserListUpload::UserListUploadHelper
       if user_row.archives.map(&:organisation_id).include?(organisation.id)
         "background-brown-light text-brown"
       else
-        "background-blue-light text-dark-blue"
+        "background-blue-light text-dark-blue border-blue border"
       end
     else
       "background-green-light text-dark-green"
@@ -84,7 +84,7 @@ module UserListUpload::UserListUploadHelper
       if user_row.user.follow_up_for(motif_category)&.closed?
         "background-dark-green text-white"
       else
-        "background-blue-light text-dark-blue"
+        "background-blue-light text-dark-blue border-blue border"
       end
     else
       "background-green-light text-dark-green"

@@ -9,97 +9,15 @@ button, input[type="button"] {
   outline: inherit;
 }
 
-/*
-*
-* DSFR adds styles that are applied as a global scope.
-* Scoping those overrides makes them prevail over the DSFR styles and ensure
-* the buttons are styled as expected.
-*
-*/
-.reset-dsfr-overrides {
-  #btn-notification-center {
-    @extend .btn;
-    @extend .btn-header;
-    @extend .btn-blue-out;
-    position: relative;
-    width: 50px;
-    min-width: 50px !important;
-    height: 50px;
-  
-    &.has-notification {
-      @extend .btn-blue;
-  
-      &::after {
-        content: "";
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background-color: $danger;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-      }
-    }
-  }
-  
-  .btn-header {
-    height: 50px;
-    max-width: 350px;
-  }
-  
-  #rdvi_header_organisation-nav {
-    @extend .btn;
-    @extend .btn-header;
-    @extend .btn-blue-out;
-    min-width: 200px;
-  }
-  
-  .btn-blue {
-    background-color: $dark-blue;
-    border-color: $dark-blue;
+.btn-danger {
+  background-color: $danger;
+  border-color: $danger;
+  color: white !important;
+  min-width: 90px;
+  &:hover, &:disabled {
     color: white;
-    min-width: 90px;
-    &:hover, &:disabled {
-      color: white;
-      border-color: $dark-blue-dim;
-      background-color: $dark-blue-dim;
-    }
-    &.show-referent-button {
-      min-width: 0;
-    }
-  }
-  
-  .btn-blue-out {
-    border-color: $dark-blue;
-    background-color: white;
-    color: $dark-blue;
-    &:hover {
-      background-color: $dark-blue;
-      color: white;
-    }
-  }
-  
-  .btn-danger {
-    background-color: $danger;
-    border-color: $danger;
-    color: white;
-    min-width: 90px;
-    &:hover, &:disabled {
-      color: white;
-      border-color: $orange-light;
-      background-color: $orange-light;
-    }
-  }
-  
-  .btn-grey {
-    border-color: $light-grey;
-    background-color: white;
-    color: black;
-  }
-  
-  .btn-sm {
-    min-width: 105px !important;
-    padding: 0.25rem;
+    border-color: $orange-light;
+    background-color: $orange-light !important;
   }
 }
 
@@ -118,6 +36,7 @@ button, input[type="button"] {
   margin-bottom: 0.5em;
   font-size: 0.85em;
   font-weight: 600;
+  line-height: 16px;
 }
 
 button:disabled {

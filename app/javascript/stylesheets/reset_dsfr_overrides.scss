@@ -1,0 +1,117 @@
+/*
+*
+* DSFR adds styles that are applied as a global scope.
+* Scoping those overrides makes them prevail over the DSFR styles and ensure
+* the buttons are styled as expected.
+*
+*/
+.reset-dsfr-overrides {
+  a {
+    &::after {
+        display: none;
+    }
+  }
+  p {
+    line-height: normal;
+  }
+  [href]:not(.fr-link) {
+    background-image: none;
+  }
+  a[href]:not(.fr-link):active,
+  a[href]:not(.fr-link):hover {
+    --underline-hover-width: unset;
+  }
+  .btn-blue-out {
+    &:hover {
+      background-color: $light-grey-2 !important;
+      color: $dark-blue;
+    }
+
+    &:disabled {
+      color: $dark-blue;
+    }
+  }
+  .btn-primary {
+    &:hover {
+      background-color: $light-blue !important;
+    }
+
+    &:disabled {
+      background-color: $light-grey-2 !important;
+      color: $dark-blue;
+      border-color: $dark-grey;
+    }
+  }
+
+  #btn-notification-center {
+    @extend .btn;
+    @extend .btn-header;
+    @extend .btn-blue-out;
+    position: relative;
+    width: 50px;
+    min-width: 50px !important;
+    height: 50px;
+  
+    &.has-notification {
+      @extend .btn-blue;
+  
+      &::after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: $danger;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+    }
+  }
+  
+  .btn-header {
+    height: 50px;
+    max-width: 350px;
+  }
+  
+  #rdvi_header_organisation-nav {
+    @extend .btn;
+    @extend .btn-header;
+    @extend .btn-blue-out;
+    min-width: 200px;
+  }
+  
+  .btn-blue {
+    background-color: $dark-blue;
+    border-color: $dark-blue;
+    color: white;
+    min-width: 90px;
+    &:hover, &:disabled {
+      color: white;
+      border-color: $light-blue;
+      background-color: $light-blue;
+    }
+    &.show-referent-button {
+      min-width: 0;
+    }
+  }
+  
+  .btn-blue-out {
+    border-color: $dark-blue;
+    background-color: white;
+    color: $dark-blue;
+    &:hover {
+      background-color: $dark-blue;
+    }
+  }
+  
+  .btn-grey {
+    border-color: $light-grey;
+    background-color: white;
+    color: black;
+  }
+  
+  .btn-sm {
+    min-width: 105px !important;
+    padding: 0.25rem;
+  }
+}
