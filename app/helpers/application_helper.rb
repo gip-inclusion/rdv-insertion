@@ -44,7 +44,7 @@ module ApplicationHelper
   end
 
   def custom_pluralize(count, word, with_count: true)
-    word = ActiveSupport::Inflector.pluralize(word) if count > 1
+    word = ActiveSupport::Inflector.pluralize(word) unless count == 1
     with_count ? "#{count} #{word}" : word
   end
 
