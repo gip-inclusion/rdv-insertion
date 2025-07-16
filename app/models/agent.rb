@@ -13,6 +13,8 @@ class Agent < ApplicationRecord
   has_many :dpa_agreements, dependent: :nullify
   has_many :user_list_uploads, dependent: :destroy
 
+  has_one :cookies_consent, dependent: :destroy
+
   has_many :organisations, through: :agent_roles
   has_many :departments, -> { distinct }, through: :organisations
   has_many :category_configurations, through: :organisations

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_01_140708) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_16_125833) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -150,6 +150,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_01_140708) do
     t.index ["file_configuration_id"], name: "index_category_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_category_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
+  end
+
+  create_table "cookies_consents", force: :cascade do |t|
+    t.boolean "support_accepted", default: false
+    t.boolean "tracking_accepted", default: false
+    t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_cookies_consents_on_agent_id"
   end
 
   create_table "creneau_availabilities", force: :cascade do |t|
@@ -686,6 +695,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_01_140708) do
   add_foreign_key "category_configurations", "file_configurations"
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
+  add_foreign_key "cookies_consents", "agents"
   add_foreign_key "creneau_availabilities", "category_configurations"
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "dpa_agreements", "agents"

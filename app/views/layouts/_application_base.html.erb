@@ -12,6 +12,7 @@
       <%= render 'common/accept_cgu_modal' if @should_display_accept_cgu %>
       <%= render 'common/accept_dpa_modal' if @should_display_accept_dpa %>
       <%= render 'common/crisp' %>
+      <%= render 'common/cookies_consent' if @should_display_cookies_consent %>
     </div>
     <%= content_for :footer %>
   </body>
