@@ -37,6 +37,9 @@ class Participation < ApplicationRecord
   alias_method :created_by_prescripteur?, :created_by_type_prescripteur?
   alias_method :created_by_user?, :created_by_type_user?
 
+  # rdv_solidarites_created_by_id are not entirely synced
+  # with rdv-solidarités as we added them later without backfilling
+  # the data.
   def created_by
     if created_by_agent?
       Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id)
@@ -46,7 +49,7 @@ class Participation < ApplicationRecord
   end
 
   def agent_prescripteur
-    created_by if created_by_agent_prescripteur?
+    Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id) if created_by_agent_prescripteur?
   end
 
   def notifiable?
