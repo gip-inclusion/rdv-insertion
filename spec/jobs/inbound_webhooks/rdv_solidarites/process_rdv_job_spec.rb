@@ -13,8 +13,10 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
   let!(:rdv_solidarites_motif_id) { 53 }
   let!(:participations_attributes) do
     [
-      { id: 998, status: "unknown", created_by: "user", user: { id: user_id1 } },
-      { id: 999, status: "unknown", created_by: "user", user: { id: user_id2 } }
+      { id: 998, status: "unknown", created_by: "user", created_by_type: "User", created_by_agent_prescripteur: false,
+        created_by_id: user_id1, user: { id: user_id1 } },
+      { id: 999, status: "unknown", created_by: "user", created_by_type: "User", created_by_agent_prescripteur: false,
+        created_by_id: user_id2, user: { id: user_id2 } }
     ]
   end
   let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur" } }
@@ -146,22 +148,24 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           {
             id: nil,
             status: "unknown",
-            created_by: "user",
+            created_by_type: "User",
+            created_by_agent_prescripteur: false,
+            rdv_solidarites_created_by_id: user_id1,
             user_id: user.id,
             rdv_solidarites_participation_id: 998,
             follow_up_id: follow_up.id,
-            convocable: false,
-            rdv_solidarites_agent_prescripteur_id: nil
+            convocable: false
           },
           {
             id: nil,
             status: "unknown",
-            created_by: "user",
+            created_by_type: "User",
+            created_by_agent_prescripteur: false,
+            rdv_solidarites_created_by_id: user_id2,
             user_id: user2.id,
             rdv_solidarites_participation_id: 999,
             follow_up_id: follow_up2.id,
-            convocable: false,
-            rdv_solidarites_agent_prescripteur_id: nil
+            convocable: false
           }
         ]
       end
@@ -323,22 +327,24 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                       {
                         id: nil,
                         status: "unknown",
-                        created_by: "user",
+                        created_by_type: "User",
+                        created_by_agent_prescripteur: false,
+                        rdv_solidarites_created_by_id: user_id2,
                         user_id: user2.id,
                         rdv_solidarites_participation_id: 999,
                         follow_up_id: follow_up2.id,
-                        convocable: false,
-                        rdv_solidarites_agent_prescripteur_id: nil
+                        convocable: false
                       },
                       {
                         id: nil,
                         status: "unknown",
-                        created_by: "user",
+                        created_by_type: "User",
+                        created_by_agent_prescripteur: false,
+                        rdv_solidarites_created_by_id: user_id1,
                         user_id: new_user.id,
                         rdv_solidarites_participation_id: 998,
                         follow_up_id: new_follow_up.id,
-                        convocable: false,
-                        rdv_solidarites_agent_prescripteur_id: nil
+                        convocable: false
                       }
                     ],
                     organisation_id: organisation.id,
@@ -374,12 +380,13 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   participations_attributes: [{
                     id: nil,
                     status: "unknown",
-                    created_by: "user",
+                    created_by_type: "User",
+                    created_by_agent_prescripteur: false,
+                    rdv_solidarites_created_by_id: user_id2,
                     user_id: user2.id,
                     rdv_solidarites_participation_id: 999,
                     follow_up_id: follow_up2.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
+                    convocable: false
                   }],
                   agent_ids: [agent.id],
                   organisation_id: organisation.id,
@@ -424,12 +431,13 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   participations_attributes: [{
                     id: nil,
                     status: "unknown",
-                    created_by: "user",
+                    created_by_type: "User",
+                    created_by_agent_prescripteur: false,
+                    rdv_solidarites_created_by_id: user_id2,
                     user_id: user2.id,
                     rdv_solidarites_participation_id: 999,
                     follow_up_id: follow_up2.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
+                    convocable: false
                   }],
                   agent_ids: [agent.id],
                   organisation_id: organisation.id,
@@ -468,11 +476,12 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             {
               id: 2,
               status: "seen",
-              created_by: "user",
+              created_by_type: nil,
+              created_by_agent_prescripteur: nil,
+              rdv_solidarites_created_by_id: nil,
               user_id: user2.id,
               rdv_solidarites_participation_id: 999,
-              follow_up_id: follow_up2.id,
-              rdv_solidarites_agent_prescripteur_id: nil
+              follow_up_id: follow_up2.id
             },
             {
               _destroy: true,
@@ -574,22 +583,24 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "user",
+                  created_by_type: "User",
+                  created_by_agent_prescripteur: false,
+                  rdv_solidarites_created_by_id: user_id1,
                   user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
-                  convocable: true,
-                  rdv_solidarites_agent_prescripteur_id: nil
+                  convocable: true
                 },
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "user",
+                  created_by_type: "User",
+                  created_by_agent_prescripteur: false,
+                  rdv_solidarites_created_by_id: user_id2,
                   user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
-                  convocable: true,
-                  rdv_solidarites_agent_prescripteur_id: nil
+                  convocable: true
                 }
               ],
               organisation_id: organisation.id,
@@ -611,22 +622,24 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "user",
+                  created_by_type: "User",
+                  created_by_agent_prescripteur: false,
+                  rdv_solidarites_created_by_id: user_id1,
                   user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
-                  convocable: false,
-                  rdv_solidarites_agent_prescripteur_id: nil
+                  convocable: false
                 },
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "user",
+                  created_by_type: "User",
+                  created_by_agent_prescripteur: false,
+                  rdv_solidarites_created_by_id: user_id2,
                   user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
-                  convocable: false,
-                  rdv_solidarites_agent_prescripteur_id: nil
+                  convocable: false
                 }
               ]
               # Here we sort the participations by user_id to ensure the test doesn't get flaky and matches
@@ -695,22 +708,24 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "agent",
+                  created_by_type: nil,
+                  created_by_agent_prescripteur: nil,
+                  rdv_solidarites_created_by_id: nil,
                   user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
-                  convocable: true,
-                  rdv_solidarites_agent_prescripteur_id: nil
+                  convocable: true
                 },
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "user",
+                  created_by_type: nil,
+                  created_by_agent_prescripteur: nil,
+                  rdv_solidarites_created_by_id: nil,
                   user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
-                  convocable: false,
-                  rdv_solidarites_agent_prescripteur_id: nil
+                  convocable: false
                 }
               ],
               organisation_id: organisation.id,
@@ -735,22 +750,24 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   {
                     id: nil,
                     status: "unknown",
-                    created_by: "agent",
                     user_id: user.id,
                     rdv_solidarites_participation_id: 998,
+                    created_by_type: nil,
+                    created_by_agent_prescripteur: nil,
+                    rdv_solidarites_created_by_id: nil,
                     follow_up_id: follow_up.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
+                    convocable: false
                   },
                   {
                     id: nil,
                     status: "unknown",
-                    created_by: "user",
                     user_id: user2.id,
                     rdv_solidarites_participation_id: 999,
+                    created_by_type: nil,
+                    created_by_agent_prescripteur: nil,
+                    rdv_solidarites_created_by_id: nil,
                     follow_up_id: follow_up2.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
+                    convocable: false
                   }
                 ],
                 organisation_id: organisation.id,
@@ -800,9 +817,11 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
         let!(:participations_attributes) do
           [
-            { id: 998, status: "unknown", created_by: "agent", user: { id: user_id1 },
-              created_by_agent_prescripteur: true, created_by_id: agent.rdv_solidarites_agent_id },
-            { id: 999, status: "unknown", created_by: "user", user: { id: user_id2 } }
+            { id: 998, status: "unknown", created_by: "agent", created_by_type: "Agent",
+              created_by_agent_prescripteur: true, created_by_id: agent.rdv_solidarites_agent_id,
+              user: { id: user_id1 } },
+            { id: 999, status: "unknown", created_by: "user", created_by_type: "User",
+              created_by_agent_prescripteur: false, created_by_id: user_id2, user: { id: user_id2 } }
           ]
         end
 
@@ -815,22 +834,24 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "agent",
+                  created_by_type: "Agent",
+                  created_by_agent_prescripteur: true,
+                  rdv_solidarites_created_by_id: agent.rdv_solidarites_agent_id,
                   user_id: user.id,
                   rdv_solidarites_participation_id: 998,
                   follow_up_id: follow_up.id,
-                  convocable: true,
-                  rdv_solidarites_agent_prescripteur_id: agent.rdv_solidarites_agent_id
+                  convocable: true
                 },
                 {
                   id: nil,
                   status: "unknown",
-                  created_by: "user",
+                  created_by_type: "User",
+                  created_by_agent_prescripteur: false,
+                  rdv_solidarites_created_by_id: user_id2,
                   user_id: user2.id,
                   rdv_solidarites_participation_id: 999,
                   follow_up_id: follow_up2.id,
-                  convocable: false,
-                  rdv_solidarites_agent_prescripteur_id: nil
+                  convocable: false
                 }
               ],
               organisation_id: organisation.id,

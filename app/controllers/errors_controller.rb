@@ -7,16 +7,16 @@ class ErrorsController < ApplicationController
 
   def not_found
     respond_to do |format|
-      format.html
-      format.turbo_stream
+      format.html { render status: :not_found }
+      format.turbo_stream { render status: :not_found }
       format.json { render json: { success: false, errors: [@not_found_error_message] }, status: :not_found }
     end
   end
 
   def unprocessable_entity
     respond_to do |format|
-      format.html
-      format.turbo_stream
+      format.html { render status: :unprocessable_entity }
+      format.turbo_stream { render status: :unprocessable_entity }
       format.json do
         render json: { success: false, errors: [@unprocessable_entity_error_message] }, status: :unprocessable_entity
       end
@@ -25,8 +25,8 @@ class ErrorsController < ApplicationController
 
   def internal_server_error
     respond_to do |format|
-      format.html
-      format.turbo_stream
+      format.html { render status: :internal_server_error }
+      format.turbo_stream { render status: :internal_server_error }
       format.json do
         render json: { success: false, errors: [@internal_server_error_message] }, status: :internal_server_error
       end
