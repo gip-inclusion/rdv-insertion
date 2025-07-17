@@ -1,25 +1,29 @@
 <%= render "common/attribute_input", f: f, attribute: :signature_lines, as: :array, padding: false, columns: false %>
 
-<div class="my-3" data-controller="signature-upload">
-  <div class="d-flex align-items-center mb-2 <%= 'd-none' unless f.object.signature_image.attached? %>" data-signature-upload-target="attachedSection">
-    <strong>Signature jointe :</strong>
-    <% if f.object.signature_image.attached? %>
-      <%= link_to f.object.signature_image.filename,
-                 previews_signature_path(id: f.object.id),
-                 class: "mx-2",
-                 data: { signature_upload_target: "originalLink", turbo_frame: "remote_modal" } %>
-    <% end %>
-    <span class="mx-2 d-none" data-signature-upload-target="filename"></span>
-    <span class="ms-1"
-          style="cursor: pointer; font-weight: bold;"
-          data-action="click->signature-upload#removeSignature">×</span>
-  </div>
+<div class="my-3"
+     data-controller="signature-upload"
+     data-signature-upload-target="container"
+     data-signature-state="<%= f.object.signature_image.attached? ? 'HAS_SIGNATURE' : 'NO_SIGNATURE' %>">
 
-  <div class="d-flex align-items-center mb-2 <%= 'd-none' if f.object.signature_image.attached? %>" data-signature-upload-target="notAttachedSection">
-    <strong>Signature jointe :</strong>
-    <%= label_tag :signature_image, "+ Joindre une signature",
-                  class: "btn btn-outline-primary btn-sm mx-2",
-                  for: "messages_configuration_signature_image" %>
+  <div class="d-flex align-items-center mb-2">
+    Signature jointe :
+
+    <div class="signature-display-section">
+      <% if f.object.signature_image.attached? %>
+        <%= link_to f.object.signature_image.filename,
+                   previews_signature_path(id: f.object.id),
+                   class: "mx-2 existing-signature-link",
+                   data: { turbo_frame: "remote_modal" } %>
+      <% end %>
+      <span class="mx-2 new-filename" data-filename style="display: none;"></span>
+      <span class="ms-1 signature-remove" data-action="click->signature-upload#removeSignature">×</span>
+    </div>
+
+    <div class="signature-upload-section">
+      <%= label_tag :signature_image, "+ Joindre une signature",
+                    class: "btn btn-outline-primary btn-sm mx-2",
+                    for: "messages_configuration_signature_image" %>
+    </div>
   </div>
 
   <%= f.file_field :signature_image,

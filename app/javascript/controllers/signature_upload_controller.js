@@ -1,59 +1,36 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["fileInput", "attachedSection", "notAttachedSection", "removeField", "filename", "originalLink"]
-
-  removeSignature() {
-    this.removeFieldTarget.value = "true"
-    this.fileInputTarget.value = ""
-    this.#clearFilename()
-    this.#showFilenameDisplay()
-    this.#updateSectionVisibility(false)
-  }
-
+  static targets = ["container", "fileInput", "removeField"]
+  
   connect() {
     this.fileInputTarget.addEventListener("change", (event) => {
       if (event.target.files.length > 0) {
-        this.#handleNewFileSelection(event.target.files[0])
+        this.handleFileSelection(event.target.files[0])
       }
     })
   }
-
-  #handleNewFileSelection(file) {
+  
+  removeSignature() {
+    this.removeFieldTarget.value = "true"
+    this.fileInputTarget.value = ""
+    this.updateState("NO_SIGNATURE")
+  }
+  
+  handleFileSelection(file) {
     this.removeFieldTarget.value = "false"
-    this.#updateFilename(file.name)
-    this.#showFilenameDisplay()
-    this.#updateSectionVisibility(true)
+    this.updateFilename(file.name)
+    this.updateState("NEW_FILE")
   }
-
-  #updateSectionVisibility(isAttached) {
-    if (isAttached) {
-      this.notAttachedSectionTarget.classList.add("d-none")
-      this.attachedSectionTarget.classList.remove("d-none")
-    } else {
-      this.attachedSectionTarget.classList.add("d-none")
-      this.notAttachedSectionTarget.classList.remove("d-none")
-    }
+  
+  updateState(state) {
+    this.containerTarget.dataset.signatureState = state
   }
-
-  #showFilenameDisplay() {
-    if (this.hasOriginalLinkTarget) {
-      this.originalLinkTarget.classList.add("d-none")
-    }
-    if (this.hasFilenameTarget) {
-      this.filenameTarget.classList.remove("d-none")
-    }
-  }
-
-  #updateFilename(filename) {
-    if (this.hasFilenameTarget) {
-      this.filenameTarget.textContent = filename
-    }
-  }
-
-  #clearFilename() {
-    if (this.hasFilenameTarget) {
-      this.filenameTarget.textContent = ""
+  
+  updateFilename(filename) {
+    const filenameEl = this.containerTarget.querySelector("[data-filename]")
+    if (filenameEl) {
+      filenameEl.textContent = filename
     }
   }
 }
