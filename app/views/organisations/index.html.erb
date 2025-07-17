@@ -37,7 +37,7 @@
                   <% end %>
                 </div>
                 <div>
-                  <%= link_to(organisations.length > 1 ? new_department_upload_path(department) : new_organisation_upload_path(organisations.first)) do %>
+                  <%= link_to(organisations.length > 1 ? new_department_user_list_uploads_category_selection_path(department) : new_organisation_user_list_uploads_category_selection_path(organisations.first)) do %>
                     <i class="ri-add-line"></i> Ajout usagers
                   <% end %>
                 </div>
