@@ -14,7 +14,7 @@ describe UpsertRecord, type: :service do
           {
             id: nil,
             status: "unknown",
-            created_by: created_by,
+            created_by_type: created_by_type,
             user_id: user_id,
             rdv_solidarites_participation_id: 998,
             follow_up_id: follow_up.id
@@ -31,7 +31,7 @@ describe UpsertRecord, type: :service do
     let!(:rdv_solidarites_rdv_id) { 12 }
     let!(:rdv_solidarites_attributes) do
       { id: 12, starts_at: starts_at, duration_in_min: duration_in_min,
-        status: status, created_by: created_by }
+        status: status, created_by_type: created_by_type }
     end
     let!(:user) { create(:user, id: user_id) }
     let!(:follow_up) { create(:follow_up) }
@@ -40,7 +40,7 @@ describe UpsertRecord, type: :service do
     let!(:starts_at) { Time.zone.parse("2021-09-08 12:00:00") }
     let!(:duration_in_min) { 45 }
     let!(:status) { "unknown" }
-    let!(:created_by) { "user" }
+    let!(:created_by_type) { "user" }
 
     describe "#call" do
       context "when the record exists" do
@@ -60,7 +60,7 @@ describe UpsertRecord, type: :service do
           participation = Participation.order(:created_at).last
           expect(participation.user_id).to eq(user.id)
           expect(participation.rdv_id).to eq(rdv.id)
-          expect(participation.created_by).to eq("user")
+          expect(participation.created_by_type).to eq("user")
           expect(participation.follow_up_id).to eq(follow_up.id)
         end
 

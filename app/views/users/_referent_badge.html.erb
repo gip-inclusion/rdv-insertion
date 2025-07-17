@@ -1,4 +1,4 @@
-<div class="d-inline-flex badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex text-truncate">
+<div class="d-inline-flex badge badge-tag justify-content-between background-blue-light text-dark-blue border-blue border me-2 d-flex text-truncate">
   <span class="text-truncate">
     <%= referent %>
   </span>
@@ -11,7 +11,7 @@
       }
     ) do
   %>
-    <i class="ri-close-line text-dark-grey-alt ms-2" data-action="click->confirmation-modal#show"></i>
+    <i class="ri-close-line text-dark-grey ms-2" data-action="click->confirmation-modal#show"></i>
     <% modal_text_content = capture do %>
       Êtes-vous sûr de vouloir retirer l'agent référent <b><%= referent %></b> de l'usager <b><%= user %></b> ?
     <% end %>

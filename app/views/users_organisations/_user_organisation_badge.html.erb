@@ -2,7 +2,7 @@
   <span class="text-truncate" <%= tooltip_for_archived_organisation_badge(archive) %>>
     <%= organisation.name %>
     <% if department.id != organisation.department_id %>
-      <span class="text-dark-grey-alt">
+      <span class="text-dark-grey">
         &nbsp;(<%= organisation.department.number %> - <%= organisation.department.name %>)
       </span>
     <% end %>
@@ -15,7 +15,7 @@
             turbo_method: :delete
           }
         ) do %>
-      <i class="ri-close-line text-dark-grey-alt ms-2" data-action="click->confirmation-modal#show"></i>
+      <i class="ri-close-line text-dark-grey ms-2" data-action="click->confirmation-modal#show"></i>
       <% if user.organisations.count > 1 %>
         <% modal_text_content = capture do %>
           Êtes-vous sûr de vouloir retirer l'usager <b><%= user %></b> de l'organisation <b><%= organisation.name %></b> ?

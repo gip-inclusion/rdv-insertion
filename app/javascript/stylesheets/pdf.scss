@@ -1,3 +1,4 @@
+@import "./_variables";
 
 // Chrome headless (use by Grover) does'nt have access to assets so we need to encode Marianne font in base64 to use it in the PDF
 @font-face {
@@ -119,8 +120,8 @@ u {
 }
 
 .invitation-token {
+  background-color: $dark-blue;
   vertical-align: middle;
-  background-color: #083b66;
   color: white;
   text-align: center;
   padding: 10px;
@@ -139,7 +140,7 @@ u {
 
 .bold-blue {
   font-weight: bold;
-  color: #083b66;
+  color: $dark-blue;
 }
 
 .letter-signature {
@@ -177,8 +178,9 @@ u {
   }
 
   // Ajustements en fonction du nombre de logos
+  &:has(div:first-child:nth-last-child(1)),
   &:has(div:first-child:nth-last-child(2)) {
-    // 2 logos
+    // 1 ou 2 logos
     div img {
       height: 50px;
     }

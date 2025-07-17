@@ -1,5 +1,4 @@
 <%= render "file_configuration_form", title: "Créer fichier d'import",
                                       file_configuration: @file_configuration,
-                                      organisation: @organisation,
-                                      url: organisation_file_configurations_path(@organisation),
+                                      url: file_configurations_path(category_configuration_id: @category_configuration.id),
                                       method: :post %>

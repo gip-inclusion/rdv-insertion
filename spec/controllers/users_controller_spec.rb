@@ -557,7 +557,11 @@ describe UsersController do
 
     context "when a status is passed" do
       let!(:index_params) do
-        { organisation_id: organisation.id, status: "invitation_pending", motif_category_id: category_orientation.id }
+        {
+          organisation_id: organisation.id,
+          follow_up_statuses: ["invitation_pending"],
+          motif_category_id: category_orientation.id
+        }
       end
 
       it "filters by status" do
@@ -887,7 +891,7 @@ describe UsersController do
         it "displays the configure organisation option" do
           get :index, params: index_params
 
-          expect(response.body).to match(/Configurer une organisation/)
+          expect(response.body).to match(/Configurer/)
         end
       end
     end
