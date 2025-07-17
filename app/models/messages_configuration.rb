@@ -2,8 +2,7 @@ class MessagesConfiguration < ApplicationRecord
   SIGNATURE_ACCEPTED_FORMATS = %w[PNG JPG SVG].freeze
   SIGNATURE_MIME_TYPES = [
     "image/png",
-    "image/jpeg",
-    "image/svg+xml"
+    "image/jpeg"
   ].freeze
 
   before_save :remove_blank_array_fields
