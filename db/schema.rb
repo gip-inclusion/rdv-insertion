@@ -415,6 +415,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_01_140708) do
     t.bigint "follow_up_id"
     t.boolean "convocable", default: false, null: false
     t.string "france_travail_id"
+    t.string "created_by"
+    t.bigint "rdv_solidarites_agent_prescripteur_id"
     t.boolean "created_by_agent_prescripteur", default: false
     t.string "created_by_type"
     t.bigint "rdv_solidarites_created_by_id"
