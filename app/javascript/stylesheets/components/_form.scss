@@ -196,7 +196,7 @@
 }
 
 [data-signature-state="NEW_FILE"] .new-filename {
-  // There is a new signature uploaded so we show the filename but not the link_to
+  // There is a new signature, not uploaded yet, so we show the filename but not the link_to
   display: inline !important;
 }
 
