@@ -43,6 +43,24 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).not_to include("france-travail-logo")
     end
 
+    context "with signature image" do
+      before do
+        messages_configuration.signature_image.attach(
+          io: File.open("spec/fixtures/logo.png"),
+          filename: "signature.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "includes signature image in generated letter" do
+        subject
+        content = unescape_html(invitation.content)
+
+        expect(content).to include("signature.png")
+        expect(content).to include("<img")
+      end
+    end
+
     context "when the format is not postal" do
       let!(:invitation) { create(:invitation, user: user, format: "sms") }
 

@@ -7,6 +7,7 @@ fr:
         direction_names: En-têtes
         sender_city: Ville d'expédition
         signature_lines: Signature
+        signature_image: Signature (image)
         letter_sender_name: Nom de l'expéditeur
         help_address: Adresse d'accueil
         display_europe_logos: Afficher les logos européens

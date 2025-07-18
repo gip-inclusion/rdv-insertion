@@ -21,7 +21,7 @@
   <p>En cas d'empêchement, merci d'appeler rapidement le <%= rdv.phone_number %>.</p>
   <%= render "letters/salutation", user: user %>
   <div class="letter-signature">
-    <%= render 'common/organisation_signature', signature_lines: signature_lines, department: department %>
+    <%= render 'common/organisation_signature', signature_lines: signature_lines, signature_image: signature_image, department: department %>
   </div>
 </div>
 

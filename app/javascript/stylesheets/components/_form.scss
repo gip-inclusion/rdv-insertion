@@ -169,3 +169,29 @@
     }
   }
 }
+
+[data-signature-state="NO_SIGNATURE"] .signature-display-section,
+[data-signature-state="NEW_FILE"] .signature-upload-section,
+[data-signature-state="HAS_SIGNATURE"] .signature-upload-section {
+  display: none !important;
+}
+
+[data-signature-state="NEW_FILE"] .existing-signature-link {
+  // There is no signature uploaded yet so we hide the link
+  display: none !important;
+}
+
+[data-signature-state="NEW_FILE"] .new-filename {
+  // There is a new signature, not uploaded yet, so we show the filename but not the link_to
+  display: inline !important;
+}
+
+.signature-remove {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.existing-signature-link {
+  color: $dark-blue;
+  text-decoration: underline;
+}

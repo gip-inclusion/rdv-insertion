@@ -57,6 +57,24 @@ describe Notifications::GenerateLetter, type: :service do
       expect(content).to include("Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité")
     end
 
+    context "with signature image" do
+      before do
+        messages_configuration.signature_image.attach(
+          io: File.open("spec/fixtures/logo.png"),
+          filename: "signature.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "includes signature image in generated notification" do
+        subject
+        content = unescape_html(notification.content)
+
+        expect(content).to include("signature.png")
+        expect(content).to include("<img")
+      end
+    end
+
     context "when the motif has no documents warning" do
       let!(:motif) { create(:motif, location_type: "public_office") }
 
