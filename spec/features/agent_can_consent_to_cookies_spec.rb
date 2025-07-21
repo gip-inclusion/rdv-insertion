@@ -5,6 +5,7 @@ describe "Agent can consent to cookies", :js do
   before do
     ENV["ENABLE_CRISP"] = "true"
     allow(EnvironmentsHelper).to receive(:production_env?).and_return(true)
+    agent.cookies_consent.destroy!
   end
 
   context "when agent is not logged in" do

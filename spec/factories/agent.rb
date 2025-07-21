@@ -5,6 +5,7 @@ FactoryBot.define do
     sequence(:last_name) { |n| "doe#{n}" }
 
     rdv_solidarites_agent_id { rand(1..10_000_000_000) }
+    cgu_accepted_at { Time.zone.now }
 
     transient do
       basic_role_in_organisations { [] }
@@ -30,6 +31,8 @@ FactoryBot.define do
       end
     end
 
-    cgu_accepted_at { Time.zone.now }
+    after(:create) do |agent|
+      create(:cookies_consent, agent: agent)
+    end
   end
 end
