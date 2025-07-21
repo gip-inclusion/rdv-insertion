@@ -1,6 +1,8 @@
 describe "Crisp chatbox visibility", :js do
   let!(:organisation) { create(:organisation) }
-  let!(:agent) { create(:agent, organisations: [organisation], cookies_consent: create(:cookies_consent, support_accepted: true)) }
+  let!(:agent) do
+    create(:agent, organisations: [organisation], cookies_consent: create(:cookies_consent, support_accepted: true))
+  end
 
   context "when user is not logged in" do
     it "does not display the crisp chatbox" do
