@@ -37,7 +37,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessMotifJob do
       expect(UpsertRecordJob).to receive(:perform_later)
         .with(
           "Motif", motif_attributes,
-          { organisation_id: organisation.id, last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" }
+          { organisation_id: organisation.id, motif_category_id: nil, last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" }
         )
       subject
     end
