@@ -3,7 +3,7 @@ describe FranceTravailApi::DeleteParticipation, type: :service do
     described_class.call(
       participation_id: participation.id,
       france_travail_id: france_travail_id,
-      user_id: user.id,
+      user: user,
       timestamp: timestamp
     )
   end
