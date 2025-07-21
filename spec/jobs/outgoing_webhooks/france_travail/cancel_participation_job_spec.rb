@@ -1,4 +1,4 @@
-describe OutgoingWebhooks::FranceTravail::DeleteParticipationJob do
+describe OutgoingWebhooks::FranceTravail::CancelParticipationJob do
   subject do
     described_class.perform_now(
       participation_id: participation.id,
@@ -13,14 +13,14 @@ describe OutgoingWebhooks::FranceTravail::DeleteParticipationJob do
 
   describe "#perform" do
     before do
-      allow(FranceTravailApi::DeleteParticipation).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(FranceTravailApi::CancelParticipation).to receive(:call).and_return(OpenStruct.new(success?: true))
       travel_to(now)
     end
 
     it "calls the delete participation service" do
       subject
 
-      expect(FranceTravailApi::DeleteParticipation).to have_received(:call)
+      expect(FranceTravailApi::CancelParticipation).to have_received(:call)
     end
 
     context "when the user is not found" do
@@ -30,7 +30,7 @@ describe OutgoingWebhooks::FranceTravail::DeleteParticipationJob do
 
       it "does not call the delete participation service" do
         subject
-        expect(FranceTravailApi::DeleteParticipation).not_to have_received(:call)
+        expect(FranceTravailApi::CancelParticipation).not_to have_received(:call)
       end
     end
   end

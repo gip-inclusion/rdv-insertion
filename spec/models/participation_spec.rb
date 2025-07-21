@@ -351,7 +351,7 @@ describe Participation do
 
     before do
       travel_to now
-      allow(OutgoingWebhooks::FranceTravail::DeleteParticipationJob).to receive(:perform_later)
+      allow(OutgoingWebhooks::FranceTravail::CancelParticipationJob).to receive(:perform_later)
     end
 
     context "when the organisation is eligible for France Travail webhooks" do
@@ -369,7 +369,7 @@ describe Participation do
               participation_id = participation.id
               france_travail_id = participation.france_travail_id
               user_id = user.id
-              expect(OutgoingWebhooks::FranceTravail::DeleteParticipationJob).to receive(:perform_later)
+              expect(OutgoingWebhooks::FranceTravail::CancelParticipationJob).to receive(:perform_later)
                 .with(
                   participation_id: participation_id,
                   france_travail_id: france_travail_id,
@@ -388,7 +388,7 @@ describe Participation do
 
           context "on deletion" do
             it "does not send webhook" do
-              expect(OutgoingWebhooks::FranceTravail::DeleteParticipationJob).not_to receive(:perform_later)
+              expect(OutgoingWebhooks::FranceTravail::CancelParticipationJob).not_to receive(:perform_later)
               participation.destroy
             end
           end
@@ -404,7 +404,7 @@ describe Participation do
 
         context "on deletion" do
           it "does not send webhook" do
-            expect(OutgoingWebhooks::FranceTravail::DeleteParticipationJob).not_to receive(:perform_later)
+            expect(OutgoingWebhooks::FranceTravail::CancelParticipationJob).not_to receive(:perform_later)
             participation.destroy
           end
         end
@@ -419,7 +419,7 @@ describe Participation do
 
         context "on deletion" do
           it "notifies the deletion" do
-            expect(OutgoingWebhooks::FranceTravail::DeleteParticipationJob).to receive(:perform_later)
+            expect(OutgoingWebhooks::FranceTravail::CancelParticipationJob).to receive(:perform_later)
             participation.destroy
           end
         end
@@ -434,7 +434,7 @@ describe Participation do
 
         context "on deletion" do
           it "does not send webhook" do
-            expect(OutgoingWebhooks::FranceTravail::DeleteParticipationJob).not_to receive(:perform_later)
+            expect(OutgoingWebhooks::FranceTravail::CancelParticipationJob).not_to receive(:perform_later)
             participation.destroy
           end
         end
@@ -451,7 +451,7 @@ describe Participation do
 
       context "on deletion" do
         it "does not send webhook on deletion" do
-          expect(OutgoingWebhooks::FranceTravail::DeleteParticipationJob).not_to receive(:perform_later)
+          expect(OutgoingWebhooks::FranceTravail::CancelParticipationJob).not_to receive(:perform_later)
           participation.destroy
         end
       end

@@ -1,4 +1,4 @@
-describe FranceTravailApi::DeleteParticipation, type: :service do
+describe FranceTravailApi::CancelParticipation, type: :service do
   subject do
     described_class.call(
       participation_id: participation.id,
@@ -26,7 +26,7 @@ describe FranceTravailApi::DeleteParticipation, type: :service do
   end
 
   before do
-    allow(FranceTravailClient).to receive(:delete_participation)
+    allow(FranceTravailClient).to receive(:cancel_participation)
       .and_return(OpenStruct.new(success?: true))
     allow(FranceTravailApi::BuildUserAuthenticatedHeaders).to receive(:call)
       .and_return(OpenStruct.new(headers: headers, success?: true))
@@ -34,12 +34,12 @@ describe FranceTravailApi::DeleteParticipation, type: :service do
 
   it "sends delete request to France Travail API" do
     subject
-    expect(FranceTravailClient).to have_received(:delete_participation)
+    expect(FranceTravailClient).to have_received(:cancel_participation)
   end
 
   context "when API call fails" do
     before do
-      allow(FranceTravailClient).to receive(:delete_participation)
+      allow(FranceTravailClient).to receive(:cancel_participation)
         .and_return(OpenStruct.new(success?: false, status: 400, body: "Error"))
     end
 
