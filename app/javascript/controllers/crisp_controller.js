@@ -17,8 +17,6 @@ export default class extends Controller {
       return;
     }
 
-    console.log("cowabunga");
-
     // safe mode is enabled to avoid console warnings related to MutationObserver modifications
     window.$crisp = window.$crisp || [];
     window.$crisp.push(["safe", true]);
