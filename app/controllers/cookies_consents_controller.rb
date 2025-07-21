@@ -7,7 +7,7 @@ class CookiesConsentsController < ApplicationController
       redirect_to redirect_url, notice: "Votre consentement a été enregistré."
     else
       redirect_to redirect_url, alert: "Une erreur est survenue lors de l'enregistrement de votre consentement: " \
-                                          "#{cookies_consent.errors.full_messages.join(', ')}"
+                                       "#{cookies_consent.errors.full_messages.join(', ')}"
     end
   end
 
