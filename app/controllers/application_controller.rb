@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   include PaperTrailConcern
   include AgentLoggingConcern
   include CookiesConsentConcern
+  include MatomoConcern
 
   protect_from_forgery with: :exception
   before_action :set_sentry_context

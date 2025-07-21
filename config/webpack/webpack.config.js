@@ -50,7 +50,6 @@ module.exports = {
       "process.env.RDV_SOLIDARITES_URL": JSON.stringify(process.env.RDV_SOLIDARITES_URL),
       "process.env.CARNET_DE_BORD_URL": JSON.stringify(process.env.CARNET_DE_BORD_URL),
       "process.env.RAILS_ENV": JSON.stringify(process.env.RAILS_ENV),
-      "process.env.MATOMO_CONTAINER_ID": JSON.stringify(process.env.MATOMO_CONTAINER_ID),
       "process.env.CRISP_WEBSITE_ID": JSON.stringify(process.env.CRISP_WEBSITE_ID),
     }),
     // Include plugins

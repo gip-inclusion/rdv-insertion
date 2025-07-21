@@ -2,7 +2,8 @@
 <html>
   <%= render 'layouts/head' %>
 
-  <body data-matomo-mask>
+  <body data-matomo-mask class="<%= "bg-white" if local_assigns[:white_background] %>">
+    <%= render 'common/matomo_script_tag' if @enable_matomo_tracking %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>
     <%= render 'common/flashes' %>

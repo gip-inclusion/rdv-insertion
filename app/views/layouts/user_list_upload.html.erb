@@ -1,21 +1,9 @@
+<%# The difference from _application_base.html.erb is that the body has a white background and no footer %>
+
 <% content_for :header do %>
   <%= render 'common/header' %>
 <% end %>
-<!DOCTYPE html>
-<html>
-  <%= render 'layouts/head' %>
 
-  <%# The difference from _application_base.html.erb is that the body has a white background and no footer %>
-  <body data-matomo-mask class="bg-white">
-    <%= render 'layouts/rdv_insertion_instance_name' %>
-    <%= content_for :header %>
-    <%= render 'common/flashes' %>
-    <div class="wrapper reset-dsfr-overrides">
-      <%= turbo_frame_tag "remote_modal", target: "_top" %>
-      <%= yield %>
-      <%= render 'common/accept_cgu_modal' if @should_display_accept_cgu %>
-      <%= render 'common/accept_dpa_modal' if @should_display_accept_dpa %>
-      <%= render 'common/crisp' %>
-    </div>
-  </body>
-</html>
+<%= render "layouts/application_base", white_background: true do %>
+  <%= yield %>
+<% end %>

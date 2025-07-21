@@ -2,7 +2,7 @@ module CookiesConsentConcern
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_should_display_cookies_consent
+    before_action :set_should_display_cookies_consent, if: -> { request.get? }
   end
 
   private
