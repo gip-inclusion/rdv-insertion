@@ -54,7 +54,7 @@ describe "Agents can assign referents", :js do
       click_button("Ajouter un référent")
 
       expect(page).to have_content("Aucun autre référent disponible.")
-      click_button("Ok")
+      click_button("OK")
 
       find(".badge", text: "Derek SHEPERD").find("a").click
       modal = find(".modal")
