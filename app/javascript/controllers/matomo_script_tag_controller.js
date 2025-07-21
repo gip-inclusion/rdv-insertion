@@ -6,9 +6,6 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log("matomo script tag");
-
-    console.log("containerIdValue", this.containerIdValue);
     if (this.containerIdValue === "") {
       console.error("MATOMO_CONTAINER_ID is not set");
       return;
