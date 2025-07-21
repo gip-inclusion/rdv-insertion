@@ -20,39 +20,37 @@ describe "Agent can consent to cookies", :js do
       setup_agent_session(agent)
     end
 
-    context "when agent has not consented to cookies" do
-      it "can accept all cookies" do
-        visit organisation_users_path(organisation)
-        expect(page).to have_css("div.fr-consent-banner")
-        expect(page).to have_content("À propos des cookies sur rdv-insertion.fr")
+    it "can accept all cookies" do
+      visit organisation_users_path(organisation)
+      expect(page).to have_css("div.fr-consent-banner")
+      expect(page).to have_content("À propos des cookies sur rdv-insertion.fr")
 
-        expect(page).to have_button("Tout accepter")
-        expect(page).to have_button("Tout refuser")
-        expect(page).to have_button("Personnaliser")
+      expect(page).to have_button("Tout accepter")
+      expect(page).to have_button("Tout refuser")
+      expect(page).to have_button("Personnaliser")
 
-        # It does not have matomo script tag element
-        expect(page).to have_no_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
-        # It does not have crisp element
-        expect(page).to have_no_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
+      # It does not have matomo script tag element
+      expect(page).to have_no_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
+      # It does not have crisp element
+      expect(page).to have_no_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
 
-        click_button "Tout accepter"
-        expect(page).to have_no_css("div.fr-consent-banner")
-        expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
-        expect(page).to have_current_path(organisation_users_path(organisation))
+      click_button "Tout accepter"
+      expect(page).to have_no_css("div.fr-consent-banner")
+      expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
+      expect(page).to have_current_path(organisation_users_path(organisation))
 
-        expect(agent.reload.cookies_consent).to be_support_accepted
-        expect(agent.reload.cookies_consent).to be_tracking_accepted
+      expect(agent.reload.cookies_consent).to be_support_accepted
+      expect(agent.reload.cookies_consent).to be_tracking_accepted
 
-        visit organisation_users_path(organisation)
-        expect(page).to have_no_css("div.fr-consent-banner")
-        expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
+      visit organisation_users_path(organisation)
+      expect(page).to have_no_css("div.fr-consent-banner")
+      expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
 
-        ## It has matomo script tag element
-        expect(page).to have_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
+      ## It has matomo script tag element
+      expect(page).to have_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
 
-        ## It has crisp element
-        expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
-      end
+      ## It has crisp element
+      expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
     end
 
     it "can refuse all cookies" do
@@ -82,6 +80,10 @@ describe "Agent can consent to cookies", :js do
       visit organisation_users_path(organisation)
       expect(page).to have_css("div.fr-consent-banner")
       expect(page).to have_content("À propos des cookies sur rdv-insertion.fr")
+
+      # We specify the current path to avoid this CI error where the referer is somehow not the current page:
+      # https://github.com/gip-inclusion/rdv-insertion/actions/runs/16426240492/job/46417105965
+      visit current_path
 
       click_button "Personnaliser"
 
@@ -115,6 +117,10 @@ describe "Agent can consent to cookies", :js do
       visit organisation_users_path(organisation)
       expect(page).to have_css("div.fr-consent-banner")
       expect(page).to have_content("À propos des cookies sur rdv-insertion.fr")
+
+      # We specify the current path to avoid this CI error where the referer is somehow not the current page:
+      # https://github.com/gip-inclusion/rdv-insertion/actions/runs/16426240492/job/46417105965
+      visit current_path
 
       click_button "Personnaliser"
 
