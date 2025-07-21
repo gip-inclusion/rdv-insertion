@@ -1,11 +1,10 @@
 describe "Agent can consent to cookies", :js do
   let!(:organisation) { create(:organisation) }
-  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:agent) { create(:agent, :without_cookies_consent, organisations: [organisation]) }
 
   before do
     ENV["ENABLE_CRISP"] = "true"
     allow(EnvironmentsHelper).to receive(:production_env?).and_return(true)
-    agent.cookies_consent.destroy!
   end
 
   context "when agent is not logged in" do

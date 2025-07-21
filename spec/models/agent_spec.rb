@@ -76,7 +76,7 @@ describe Agent do
   end
 
   describe "tracking_accepted?" do
-    let(:agent) { create(:agent) }
+    let(:agent) { create(:agent, :without_cookies_consent) }
 
     it "returns false if no cookies consent" do
       expect(agent).not_to be_tracking_accepted
@@ -97,7 +97,7 @@ describe Agent do
   end
 
   describe "support_accepted?" do
-    let(:agent) { create(:agent) }
+    let(:agent) { create(:agent, :without_cookies_consent) }
 
     it "returns false if no cookies consent" do
       expect(agent).not_to be_support_accepted

@@ -4,9 +4,9 @@ class CookiesConsentsController < ApplicationController
   def create
     cookies_consent = CookiesConsent.new(cookies_consent_params.merge(agent: current_agent))
     if cookies_consent.save
-      redirect_to request.referer, notice: "Votre consentement a été enregistré."
+      redirect_to redirect_url, notice: "Votre consentement a été enregistré."
     else
-      redirect_to request.referer, alert: "Une erreur est survenue lors de l'enregistrement de votre consentement: " \
+      redirect_to redirect_url, alert: "Une erreur est survenue lors de l'enregistrement de votre consentement: " \
                                           "#{cookies_consent.errors.full_messages.join(', ')}"
     end
   end
@@ -20,6 +20,10 @@ class CookiesConsentsController < ApplicationController
   def verify_cookies_consent_not_already_given
     return if current_agent.cookies_consent.nil?
 
-    redirect_to request.referer, alert: "Vous ne pouvez pas modifier les préférences des cookies."
+    redirect_to redirect_url, alert: "Vous ne pouvez pas modifier les préférences des cookies."
+  end
+
+  def redirect_url
+    request.referer || authenticated_root_path
   end
 end
