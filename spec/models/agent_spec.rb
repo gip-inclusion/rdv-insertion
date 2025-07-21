@@ -74,4 +74,46 @@ describe Agent do
       end
     end
   end
+
+  describe "tracking_accepted?" do
+    let(:agent) { create(:agent) }
+
+    it "returns false if no cookies consent" do
+      expect(agent.tracking_accepted?).to be_falsey
+    end
+
+    context "with cookies consent" do
+      let!(:cookies_consent) { create(:cookies_consent, agent:, tracking_accepted: true) }
+
+      it "returns true if tracking accepted" do
+        expect(agent.tracking_accepted?).to be_truthy
+      end
+
+      it "returns false if tracking not accepted" do
+        cookies_consent.update!(tracking_accepted: false)
+        expect(agent.tracking_accepted?).to be_falsey
+      end
+    end
+  end
+
+  describe "support_accepted?" do
+    let(:agent) { create(:agent) }
+
+    it "returns false if no cookies consent" do
+      expect(agent.support_accepted?).to be_falsey
+    end
+
+    context "with cookies consent" do
+      let!(:cookies_consent) { create(:cookies_consent, agent:, support_accepted: true) }
+
+      it "returns true if support accepted" do
+        expect(agent.support_accepted?).to be_truthy
+      end
+
+      it "returns false if support not accepted" do
+        cookies_consent.update!(support_accepted: false)
+        expect(agent.support_accepted?).to be_falsey
+      end
+    end
+  end
 end
