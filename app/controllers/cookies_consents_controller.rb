@@ -4,10 +4,13 @@ class CookiesConsentsController < ApplicationController
   def create
     cookies_consent = CookiesConsent.new(cookies_consent_params.merge(agent: current_agent))
     if cookies_consent.save
-      redirect_to authenticated_root_path, notice: "Votre consentement a été enregistré."
+      redirect_back(notice: "Votre consentement a été enregistré.", fallback_location: authenticated_root_path)
     else
-      redirect_to authenticated_root_path, alert: "Une erreur est survenue lors de l'enregistrement de votre consentement: " \
-                                       "#{cookies_consent.errors.full_messages.join(', ')}"
+      redirect_back(
+        alert: "Une erreur est survenue lors de l'enregistrement de votre consentement: " \
+               "#{cookies_consent.errors.full_messages.join(', ')}",
+        fallback_location: authenticated_root_path
+      )
     end
   end
 
@@ -20,6 +23,9 @@ class CookiesConsentsController < ApplicationController
   def verify_cookies_consent_not_already_given
     return if current_agent.cookies_consent.nil?
 
-    redirect_to authenticated_root_path, alert: "Vous ne pouvez pas modifier les préférences des cookies."
+    redirect_back(
+      alert: "Vous ne pouvez pas modifier les préférences des cookies.",
+      fallback_location: authenticated_root_path
+    )
   end
 end
