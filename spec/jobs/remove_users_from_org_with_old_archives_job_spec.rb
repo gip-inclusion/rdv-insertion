@@ -1,4 +1,4 @@
-describe RemoveOrganisationUsersForExpiredArchivesJob do
+describe RemoveUsersFromOrgWithOldArchivesJob do
   subject { described_class.new.perform }
 
   let!(:org1) { create(:organisation, data_retention_duration_in_months: 24) }

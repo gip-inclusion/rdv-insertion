@@ -1,4 +1,4 @@
-class RemoveOrganisationUsersForExpiredArchivesJob < ApplicationJob
+class RemoveUsersFromOrgWithOldArchivesJob < ApplicationJob
   def perform
     removed_users_count = 0
 
