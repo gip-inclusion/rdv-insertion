@@ -1,0 +1,12 @@
+<div class="mx-2">
+  <div class="w-100">
+    <%= link_to structure_users_path(url_params.merge(action_required: params[:action_required] == "true" ? nil : "true")) do %>
+      <button class="btn btn-grey w-100">
+        Intervention nécessaire
+        <% if params[:action_required] == "true" %>
+          <span class="filter-active ms-1">1</span>
+        <% end %>
+      </button>
+    <% end %>
+  </div>
+</div>

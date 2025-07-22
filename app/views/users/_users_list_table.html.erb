@@ -10,7 +10,13 @@
       <p class="mb-0 pb-2">Aucun dossier usager ne correspond à votre recherche</p>
       <p class="mb-0 pb-3">Vous pouvez essayer de lancer une nouvelle recherche ou utiliser les filtres</p>
     <% else %>
-      <h4 class="mb-0 pb-2">Il n'y a pas encore d'usagers</h4>
+      <% if archived_scope?(@users_scope) %>
+        <h5 class="mb-0 pb-2"><strong>Il n'y a pas encore d'usagers archivés</strong></h5>
+      <% else %>
+        <h5 class="mb-0 pb-2"><strong>Il n'y a pas encore d'usagers</strong></h5>
+        <p class="mb-0 pb-2">Vous pouvez <%= link_to("importer des usagers", new_structure_user_list_uploads_category_selection_path, class: "link-blue-underlined") %>
+         ou <%= link_to("ajouter un usager manuellement", new_structure_user_path, class: "link-blue-underlined") %> pour compléter cette liste</p>
+      <% end %>
     <% end %>
   <% elsif archived_scope?(@users_scope) %>
     <%= render "archived_users_table" %>

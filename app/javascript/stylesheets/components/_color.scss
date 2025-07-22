@@ -105,6 +105,14 @@
   }
 }
 
+.link-blue-underlined {
+  text-decoration: underline;
+  color: $dark-blue;
+  &:hover {
+    color: $alt-grey;
+  }
+}
+
 .blue-out {
   background-color: white;
   color: $dark-blue;
