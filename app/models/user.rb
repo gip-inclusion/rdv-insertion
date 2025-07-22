@@ -49,7 +49,7 @@ class User < ApplicationRecord
 
   has_many :follow_ups, dependent: :destroy
   has_many :invitations, dependent: :destroy
-  has_many :participations, dependent: :destroy
+  has_many :participations, dependent: :destroy, inverse_of: :user
   has_many :archives, dependent: :destroy
   has_many :tag_users, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
