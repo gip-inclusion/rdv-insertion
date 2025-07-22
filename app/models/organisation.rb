@@ -36,6 +36,7 @@ class Organisation < ApplicationRecord
   has_many :agents, through: :agent_roles
   has_many :motif_categories, -> { distinct }, through: :category_configurations
   has_many :tags, through: :tag_organisations
+  has_many :file_configurations, through: :category_configurations
 
   has_and_belongs_to_many :invitations, dependent: :nullify
 

@@ -1,4 +1,4 @@
-<p class="text-dark-grey-alt mb-1">Taille maximale : <%= number_to_human_size(ParcoursDocument::MAX_SIZE) %></p>
+<p class="text-dark-grey mb-1">Taille maximale : <%= number_to_human_size(ParcoursDocument::MAX_SIZE) %></p>
 <% if parcours_documents.empty? %>
   <span>Aucun <%= t("activerecord.attributes.parcours_document.type.#{type}") %> renseigné.</span>
 <% else %>

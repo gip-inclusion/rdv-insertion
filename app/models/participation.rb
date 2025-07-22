@@ -8,11 +8,6 @@ class Participation < ApplicationRecord
   belongs_to :rdv
   belongs_to :follow_up
   belongs_to :user
-  belongs_to :agent_prescripteur,
-             class_name: "Agent",
-             primary_key: "rdv_solidarites_agent_id",
-             foreign_key: "rdv_solidarites_agent_prescripteur_id",
-             optional: true
 
   has_many :notifications, dependent: :destroy
   has_many :follow_up_invitations, through: :follow_up, source: :invitations
@@ -29,7 +24,7 @@ class Participation < ApplicationRecord
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
   after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
 
-  enum :created_by, { agent: "agent", user: "user", prescripteur: "prescripteur" }, prefix: true
+  enum :created_by_type, { agent: "Agent", user: "User", prescripteur: "Prescripteur" }, prefix: true
 
   delegate :starts_at, :motif, :lieu, :collectif?, :by_phone?, :duration_in_min,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv, :address,
@@ -37,6 +32,25 @@ class Participation < ApplicationRecord
   delegate :department, :department_id, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :user
   delegate :motif_category, :orientation?, to: :follow_up
+
+  alias_method :created_by_agent?, :created_by_type_agent?
+  alias_method :created_by_prescripteur?, :created_by_type_prescripteur?
+  alias_method :created_by_user?, :created_by_type_user?
+
+  # rdv_solidarites_created_by_id are not entirely synced
+  # with rdv-solidarités as we added them later without backfilling
+  # the data.
+  def created_by
+    if created_by_agent?
+      Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id)
+    elsif created_by_user?
+      User.find_by(rdv_solidarites_user_id: rdv_solidarites_created_by_id)
+    end
+  end
+
+  def agent_prescripteur
+    Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id) if created_by_agent_prescripteur?
+  end
 
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])

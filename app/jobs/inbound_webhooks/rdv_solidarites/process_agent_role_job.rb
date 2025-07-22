@@ -42,9 +42,6 @@ module InboundWebhooks
 
       def delete_agent
         agent.destroy!
-        MattermostClient.send_to_notif_channel(
-          "agent removed from organisation #{organisation.name} (#{organisation.id}) and deleted"
-        )
       end
 
       def upsert_agent!

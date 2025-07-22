@@ -37,7 +37,7 @@ describe Stats::ComputeRateOfAutonomousUsers, type: :service do
   let!(:rdv3) { create(:rdv, created_at: date, created_by: "agent") }
   let!(:participation3) do
     create(:participation, follow_up: follow_up3, user: user3,
-                           rdv: rdv3, created_at: date, created_by: "user")
+                           rdv: rdv3, created_at: date, created_by_type: "user")
   end
 
   # Fourth user : created 1 month ago, has been invited but has not take any rdv

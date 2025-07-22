@@ -15,6 +15,10 @@ module UsersHelper
     users.empty? && params[:search_query].present?
   end
 
+  def no_users_matching_filters?(users)
+    users.empty? && active_filter_list.any?
+  end
+
   def options_for_select_status(statuses_count)
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
@@ -54,11 +58,11 @@ module UsersHelper
       "agent_searches?#{params.to_query}"
   end
 
-  def structure_rdv_solidarites_url(structure)
+  def structure_rdv_solidarites_configuration_url(structure)
     if structure.is_a?(Department)
       "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations"
     else
-      structure.rdv_solidarites_url
+      structure.rdv_solidarites_configuration_url
     end
   end
 

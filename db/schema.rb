@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_09_093142) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_122431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -414,10 +414,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_09_093142) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "follow_up_id"
-    t.string "created_by", null: false
     t.boolean "convocable", default: false, null: false
-    t.bigint "rdv_solidarites_agent_prescripteur_id"
     t.string "france_travail_id"
+    t.boolean "created_by_agent_prescripteur", default: false
+    t.string "created_by_type"
+    t.bigint "rdv_solidarites_created_by_id"
     t.index ["follow_up_id"], name: "index_participations_on_follow_up_id"
     t.index ["status"], name: "index_participations_on_status"
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true

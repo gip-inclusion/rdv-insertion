@@ -18,7 +18,7 @@ module NotificationCenterConcern
                                           .where(created_at: notifications_read_at...)
                                           # If organisation has 2 valid motif_categories it will receive 2 notifications
                                           # Any of the notifications created today may be important, not just the last
-                                          .where(created_at: Time.zone.today...)
+                                          .where(created_at: Time.zone.today.beginning_of_day...)
                                           .with_pending_invitations
                                           .order(created_at: :desc)
                                           .any?(&:low_availability?)

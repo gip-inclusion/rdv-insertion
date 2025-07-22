@@ -14,9 +14,10 @@
 }
 
 .alert-info {
-  background-color: #E9F2FA;
+  background-color: $light-3 !important;
+  color: $info;
   span > i {
-    color: #2580CD;
+    color: $info;
   }
 }
 

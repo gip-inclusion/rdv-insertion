@@ -28,7 +28,7 @@ describe "Agents can visualize active filters on index page", :js do
     visit organisation_users_path(
       organisation,
       orientation_type: "Sociale",
-      status: "rdv_seen",
+      follow_up_statuses: ["rdv_seen"],
       search_query: "coucou",
       motif_category_id: motif_category.id,
       referent_id: agent.id,
@@ -44,7 +44,7 @@ describe "Agents can visualize active filters on index page", :js do
   end
 
   it "shows a recap of all active filters" do
-    expect(page).to have_content("0 dossier correspondant à votre recherche « coucou »")
+    expect(page).to have_content("0 dossiers correspondant à votre recherche « coucou »")
     expect(page).to have_content("Orientation : Sociale")
     expect(page).to have_content("Statut : RDV honoré")
     expect(page).to have_content("Suivi par #{agent}")

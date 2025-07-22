@@ -30,11 +30,11 @@
     <div class="d-flex justify-content-between">
       <div class="col-6">
         <h5>Nombre d'agents dans l'organisation</h5>
-        <p><%= @organisation.agents.count %> agents</p>
+        <p><%= custom_pluralize(@organisation.agents.count, "agent") %></p>
       </div>
       <div class="col-6">
         <h5>Niveaux de permissions</h5>
-        <p><%= @agent_roles.count(&:admin?) %> agents administrateurs, <%= @agent_roles.count(&:basic?) %> agents basiques</p>
+        <p><%= custom_pluralize(@agent_roles.count(&:admin?), "agent") %> <%= custom_pluralize(@agent_roles.count(&:admin?), "administrateur") %>, <%= custom_pluralize(@agent_roles.count(&:basic?), "agent") %> <%= custom_pluralize(@agent_roles.count(&:basic?), "basique") %></p>
       </div>
     </div>
     <div class="d-flex justify-content-end mt-2 me-2">
