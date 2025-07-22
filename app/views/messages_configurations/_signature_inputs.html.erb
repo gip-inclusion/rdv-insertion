@@ -11,7 +11,7 @@
     <div class="signature-display-section">
       <% if f.object.signature_image.attached? %>
         <%= link_to f.object.signature_image.filename,
-                   previews_signature_path(id: f.object.id),
+                   previews_signature_image_path(id: f.object.id),
                    class: "mx-2 existing-signature-link",
                    data: { turbo_frame: "remote_modal" } %>
       <% end %>

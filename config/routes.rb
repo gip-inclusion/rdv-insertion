@@ -178,7 +178,7 @@ Rails.application.routes.draw do
   namespace :previews do
     resources :invitations, only: [:index]
     resources :notifications, only: [:index]
-    resources :signatures, only: [:show]
+    resources :signature_images, only: [:show]
   end
 
   resources :departments, only: [] do

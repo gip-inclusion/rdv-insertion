@@ -1,5 +1,5 @@
 module Previews
-  class SignaturesController < ApplicationController
+  class SignatureImagesController < ApplicationController
     before_action :set_messages_configuration
 
     def show

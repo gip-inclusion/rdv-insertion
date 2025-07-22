@@ -32,8 +32,6 @@ class MessagesConfiguration < ApplicationRecord
   end
 
   def purge_signature_if_requested
-    return unless remove_signature == "true" && signature_image.attached?
-
-    signature_image.purge_later
+    signature_image.purge_later if remove_signature == "true" && signature_image.attached?
   end
 end
