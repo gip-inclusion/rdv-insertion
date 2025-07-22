@@ -36,6 +36,9 @@ Rails.application.routes.draw do
   get '/sign_in', to: 'sessions#new'
   get 'auth/:provider/callback', to: 'sessions#create'
 
+  resources :super_admin_authentication_requests, only: [:create]
+  resources :super_admin_authentication_request_verifications, only: [:new, :create]
+
   scope module: 'website' do
     root "static_pages#welcome"
     get "mentions-legales", to: "static_pages#legal_notice"

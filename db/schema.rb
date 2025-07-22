@@ -488,6 +488,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_122431) do
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
+  create_table "super_admin_authentication_requests", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.string "token", null: false
+    t.datetime "verified_at"
+    t.datetime "invalidated_at"
+    t.integer "verification_attempts", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_super_admin_authentication_requests_on_agent_id"
+  end
+
   create_table "tag_organisations", force: :cascade do |t|
     t.bigint "tag_id", null: false
     t.bigint "organisation_id", null: false
@@ -714,6 +725,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_122431) do
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
+  add_foreign_key "super_admin_authentication_requests", "agents"
   add_foreign_key "tag_organisations", "organisations"
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
