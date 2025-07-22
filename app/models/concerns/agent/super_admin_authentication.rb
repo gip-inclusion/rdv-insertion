@@ -11,8 +11,8 @@ module Agent::SuperAdminAuthentication
     SuperAdminMailer.send_authentication_token(self, token).deliver_now!
   end
 
-  def super_admin_token_verified?
-    super_admin? && last_super_admin_authentication_request&.verified?
+  def super_admin_token_verified_and_valid?
+    super_admin? && last_super_admin_authentication_request&.verified_and_valid?
   end
 
   def invalidate_super_admin_authentication_request!

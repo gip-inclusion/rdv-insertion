@@ -14,8 +14,8 @@ describe Agent::SuperAdminAuthentication do
     end
   end
 
-  describe "#super_admin_token_verified?" do
-    subject { agent.super_admin_token_verified? }
+  describe "#super_admin_token_verified_and_valid?" do
+    subject { agent.super_admin_token_verified_and_valid? }
 
     context "when the agent is not a super admin" do
       let(:agent) { create(:agent) }

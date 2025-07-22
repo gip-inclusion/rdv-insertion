@@ -1,6 +1,6 @@
 class SuperAdminAuthenticationRequest < ApplicationRecord
-  TOKEN_VERIFICATION_DURATION = 10.minutes.freeze
-  TOKEN_VALIDITY_DURATION = 12.hours.freeze
+  VERIFICATION_WINDOW = 10.minutes.freeze
+  VERIFIED_TOKEN_LIFETIME = 12.hours.freeze
   MAX_VERIFICATION_ATTEMPTS = 5
 
   belongs_to :agent
@@ -8,8 +8,8 @@ class SuperAdminAuthenticationRequest < ApplicationRecord
   validates :token, presence: true, format: { with: /\A[A-Z0-9]{6}\z/ }
   validate :must_belong_to_super_admin
 
-  def verified?
-    verified_at.present? && verified_at > TOKEN_VALIDITY_DURATION.ago && !invalidated?
+  def verified_and_valid?
+    verified_at.present? && verified_at > VERIFIED_TOKEN_LIFETIME.ago && !invalidated?
   end
 
   def verify(token)
@@ -44,7 +44,7 @@ class SuperAdminAuthenticationRequest < ApplicationRecord
   end
 
   def expired?
-    created_at < TOKEN_VERIFICATION_DURATION.ago
+    created_at < VERIFICATION_WINDOW.ago
   end
 
   def increment_verification_attempts!

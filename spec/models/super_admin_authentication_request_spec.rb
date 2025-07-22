@@ -127,8 +127,8 @@ describe SuperAdminAuthenticationRequest, type: :model do
     end
   end
 
-  describe "#verified?" do
-    subject { super_admin_authentication_request.verified? }
+  describe "#verified_and_valid?" do
+    subject { super_admin_authentication_request.verified_and_valid? }
 
     let(:super_admin_authentication_request) { create(:super_admin_authentication_request) }
 
