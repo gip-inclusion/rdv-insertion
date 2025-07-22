@@ -46,3 +46,4 @@ dump.rdb
 !/app/assets/builds/.keep
 
 .cursor/
+.gemini/
