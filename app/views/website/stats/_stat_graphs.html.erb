@@ -1,6 +1,6 @@
 <div class="container">
   <%= render 'header' %>
-  <% if stat.present? %>
+  <% if stat %>
     <div class="row d-flex justify-content-center mt-4 flex-wrap">
       <div class="col-12 col-md-6 px-5 pb-5">
         <p class="highlight-stat big margin-left"><%= number_with_delimiter(@stat.users_count, locale: :fr) %></p>
