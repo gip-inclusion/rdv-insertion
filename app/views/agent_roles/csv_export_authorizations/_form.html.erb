@@ -9,7 +9,7 @@
           <%= f.check_box :agent_role_ids, { multiple: true, checked: authorized_agent_role_ids.include?(agent_role.id) ,class: "form-check-input" }, agent_role.id, nil %>
           <%= f.label "agent_role_ids_#{agent_role.id}", class: "ms-3" do %>
             <%= agent_role.agent.to_s %>
-            <span class="text-dark-grey-alt ms-2 float-end"><%= agent_role.agent.email %></span>
+            <span class="text-dark-grey ms-2 float-end"><%= agent_role.agent.email %></span>
           <% end %>
         </div>
       <% end %>
@@ -29,7 +29,7 @@
           <% end %>
       <% else %>
           <button type="button" class="btn btn-blue border-0 me-2" data-bs-dismiss="modal">
-            Ok
+            OK
           </button>
       <% end %>
     </div>

@@ -405,6 +405,9 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
         "id": 291,
         "status": "unknown",
         "created_by": "agent",
+        "created_by_type": "Agent",
+        "created_by_agent_prescripteur": false,
+        "rdv_solidarites_created_by_id": 7,
         "created_at": "2023-11-09T09:25:05.356+01:00",
         "starts_at": "2023-11-14T09:00:00.000+01:00",
         "user": {

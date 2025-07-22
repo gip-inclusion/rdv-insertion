@@ -46,9 +46,9 @@ module InboundWebhooks
           rdv_solidarites_motif.to_rdv_insertion_attributes,
           {
             organisation_id: organisation.id,
-            last_webhook_update_received_at: @meta[:timestamp]
+            last_webhook_update_received_at: @meta[:timestamp],
+            motif_category_id: motif_category&.id
           }
-            .merge(motif_category ? { motif_category_id: motif_category.id } : {})
         )
       end
 

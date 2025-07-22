@@ -13,9 +13,15 @@
   <%= csp_meta_tag %>
   <%= favicon_link_tag 'logos/rdvi-favicon.png' %>
 
+  <%= stylesheet_link_tag "dsfr.min", "application-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "utility/dsfr-utility.min", "application-turbo-track": "reload" %>
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+  <%= javascript_include_tag "dsfr.module.min.js", type: 'module' %>
+  <%= javascript_include_tag "dsfr.nomodule.min.js", nomodule: true %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
   <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
+
+
   <%= content_for :head %>
 </head>

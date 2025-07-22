@@ -20,7 +20,7 @@
 @import "./components/color";
 @import "./components/notification_center";
 @import "./components/flash";
-@import "./components/index_filters";
+@import "./components/users_list_filters";
 @import "./components/stat";
 @import "./components/table";
 @import "./components/icon";
@@ -29,9 +29,9 @@
 @import "./components/agreement_modal";
 @import "./components/rdv_insertion_instance_name";
 @import "./components/token_input";
+@import "./reset_dsfr_overrides.scss";
 @import "tippy.js/dist/tippy.css";
 @import "remixicon/fonts/remixicon.css";
-@import "./dsfr_overrides.scss";
 
 @font-face {
   font-family: 'Marianne';
@@ -60,7 +60,7 @@ a {
 }
 
 body {
-  background-color: $light;
+  background-color: $light-2;
   display: flex;
   flex-direction: column;
   min-height: 100vh;

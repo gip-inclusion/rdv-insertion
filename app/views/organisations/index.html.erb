@@ -32,12 +32,12 @@
               </div>
               <div class="d-flex flex-column justify-content-center mx-2 py-4 text-center">
                 <div>
-                  <% if asset_exists?("maps/#{department.name.parameterize}.svg") %>
-                    <%= image_tag("maps/#{department.name.parameterize}.svg", alt: department.name.parameterize) %>
+                  <% if asset_exists?("maps/#{department.name.parameterize}.png") %>
+                    <%= image_tag("maps/#{department.name.parameterize}.png", alt: department.name.parameterize) %>
                   <% end %>
                 </div>
                 <div>
-                  <%= link_to(organisations.length > 1 ? new_department_upload_path(department) : new_organisation_upload_path(organisations.first)) do %>
+                  <%= link_to(organisations.length > 1 ? new_department_user_list_uploads_category_selection_path(department) : new_organisation_user_list_uploads_category_selection_path(organisations.first)) do %>
                     <i class="ri-add-line"></i> Ajout usagers
                   <% end %>
                 </div>

@@ -70,7 +70,7 @@ module Previews
         contents_by_action.each do |action, content|
           contents_by_action[action] = content.gsub(
             overridable_text,
-            "<span class=\"text-purple\">#{overridable_text}</span>"
+            "<span class=\"text-violet\">#{overridable_text}</span>"
           )
         end
       end
