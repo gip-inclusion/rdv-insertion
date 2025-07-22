@@ -77,6 +77,7 @@ describe Organisations::RgpdCleanup, type: :service do
   describe "#destroy_useless_rdvs" do
     let(:old_date) { 25.months.ago }
     let(:recent_date) { 1.month.ago }
+    let!(:webhook_endpoint) { create(:webhook_endpoint, organisation:, subscriptions: %w[rdv]) }
 
     let!(:useless_rdv) do
       rdv = create(:rdv, organisation: organisation, created_at: old_date)
@@ -90,7 +91,8 @@ describe Organisations::RgpdCleanup, type: :service do
       rdv
     end
 
-    it "destroys old rdvs without participations" do
+    it "destroys old rdvs without participations and does not send webhooks" do
+      expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
       expect { service.call }.to change(Rdv, :count).by(-1)
       expect(Rdv.exists?(useless_rdv.id)).to be false
       expect(Rdv.exists?(recent_rdv.id)).to be true

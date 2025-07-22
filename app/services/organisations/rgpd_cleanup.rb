@@ -74,7 +74,7 @@ class Organisations::RgpdCleanup < BaseService
 
     useless_rdvs_ids = useless_rdvs.pluck(:id)
 
-    configure_webhooks_for_department_thirteen(useless_rdvs)
+    do_not_send_destroy_webhooks_for_rdvs(useless_rdvs)
     useless_rdvs.destroy_all
     notify_rdv_deletions(useless_rdvs_ids)
   end
@@ -85,13 +85,9 @@ class Organisations::RgpdCleanup < BaseService
        .where(rdvs: { created_at: ...@date_limit })
   end
 
-  def configure_webhooks_for_department_thirteen(rdvs)
-    # We don't send rgpd cleanup webhooks for rdvs in the department 13
-    return unless @organisation.department.number == "13"
-
-    rdvs.each do |rdv|
-      rdv.should_send_webhook = false
-    end
+  def do_not_send_destroy_webhooks_for_rdvs(rdvs)
+    # We assume external services have their own way to handle RGDP data retention
+    rdvs.each { |rdv| rdv.should_send_webhook = false }
   end
 
   def notify_rdv_deletions(rdv_ids)

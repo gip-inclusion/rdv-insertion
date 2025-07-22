@@ -6,7 +6,7 @@ class RemoveUsersFromOrgWithOldArchivesJob < ApplicationJob
       @organisation = organisation
       @date_limit = organisation.data_retention_duration_in_months.months.ago
 
-      expired_archives_without_recent_rdvs.each do |archive|
+      archives_outside_retention_period.each do |archive|
         RemoveOrganisationUserForExpiredArchiveJob.perform_later(archive.id)
         removed_users_count += 1
       end
@@ -23,7 +23,7 @@ class RemoveUsersFromOrgWithOldArchivesJob < ApplicationJob
     )
   end
 
-  def expired_archives_without_recent_rdvs
+  def archives_outside_retention_period
     Archive.joins(:organisation)
            .where(organisation: @organisation)
            .where(archives: { created_at: ...@date_limit })
