@@ -1,7 +1,7 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
-    :department_id, :safir_code, :data_retention_duration
+    :department_id, :safir_code, :data_retention_duration_in_months
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_edit,

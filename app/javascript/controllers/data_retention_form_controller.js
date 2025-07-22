@@ -13,7 +13,7 @@ export default class extends Controller {
       },
       body: JSON.stringify({
         organisation: {
-          data_retention_duration: this.inputTarget.value
+          data_retention_duration_in_months: this.inputTarget.value
         }
       })
     })

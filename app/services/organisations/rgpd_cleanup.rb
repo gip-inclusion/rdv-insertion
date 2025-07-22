@@ -1,7 +1,7 @@
 class Organisations::RgpdCleanup < BaseService
   def initialize(organisation:)
     @organisation = organisation
-    @date_limit = organisation.data_retention_duration.months.ago
+    @date_limit = organisation.data_retention_duration_in_months.months.ago
   end
 
   def call

@@ -1,7 +1,7 @@
 describe RgpdCleanupJob do
   describe "#perform" do
-    let!(:organisation1) { create(:organisation, data_retention_duration: 12) }
-    let!(:organisation2) { create(:organisation, data_retention_duration: 24) }
+    let!(:organisation1) { create(:organisation, data_retention_duration_in_months: 12) }
+    let!(:organisation2) { create(:organisation, data_retention_duration_in_months: 24) }
 
     it "enqueues RgpdCleanupOrganisationJob for each organisation" do
       allow(RgpdCleanupOrganisationJob).to receive(:perform_later)

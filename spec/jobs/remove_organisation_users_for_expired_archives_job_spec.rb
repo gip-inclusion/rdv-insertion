@@ -1,8 +1,8 @@
 describe RemoveOrganisationUsersForExpiredArchivesJob do
   subject { described_class.new.perform }
 
-  let!(:org1) { create(:organisation, data_retention_duration: 24) }
-  let!(:org2) { create(:organisation, data_retention_duration: 36) }
+  let!(:org1) { create(:organisation, data_retention_duration_in_months: 24) }
+  let!(:org2) { create(:organisation, data_retention_duration_in_months: 36) }
 
   describe "#perform" do
     context "with expired archives according to organization retention" do

@@ -4,7 +4,7 @@ class RemoveOrganisationUsersForExpiredArchivesJob < ApplicationJob
 
     Organisation.find_each do |organisation|
       @organisation = organisation
-      @date_limit = organisation.data_retention_duration.months.ago
+      @date_limit = organisation.data_retention_duration_in_months.months.ago
 
       expired_archives_without_recent_rdvs.each do |archive|
         RemoveOrganisationUserForExpiredArchiveJob.perform_later(archive.id)

@@ -1,5 +1,5 @@
 describe Organisations::RgpdCleanup, type: :service do
-  let(:organisation) { create(:organisation, data_retention_duration: 24) }
+  let(:organisation) { create(:organisation, data_retention_duration_in_months: 24) }
   let(:service) { described_class.new(organisation: organisation) }
 
   describe "#call" do
@@ -48,7 +48,7 @@ describe Organisations::RgpdCleanup, type: :service do
     end
 
     context "when user is in multiple organisations" do
-      let(:other_organisation) { create(:organisation, data_retention_duration: 24) }
+      let(:other_organisation) { create(:organisation, data_retention_duration_in_months: 24) }
       let!(:inactive_user_organisation_other_organisation) do
         create(:users_organisation, user: inactive_user, organisation: other_organisation, created_at: old_date)
       end

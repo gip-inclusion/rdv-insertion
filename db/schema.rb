@@ -361,7 +361,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_09_093142) do
     t.string "organisation_type"
     t.datetime "archived_at"
     t.boolean "display_in_stats", default: true
-    t.integer "data_retention_duration", default: 24, null: false
+    t.integer "data_retention_duration_in_months", default: 24, null: false
     t.index ["archived_at"], name: "index_organisations_on_archived_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true

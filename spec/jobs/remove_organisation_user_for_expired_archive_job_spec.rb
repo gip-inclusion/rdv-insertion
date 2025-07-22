@@ -4,8 +4,8 @@ describe RemoveOrganisationUserForExpiredArchiveJob do
   end
 
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation1, organisation2]) }
-  let!(:organisation1) { create(:organisation, data_retention_duration: 24) }
-  let!(:organisation2) { create(:organisation, data_retention_duration: 24) }
+  let!(:organisation1) { create(:organisation, data_retention_duration_in_months: 24) }
+  let!(:organisation2) { create(:organisation, data_retention_duration_in_months: 24) }
   let!(:archived_user) { create(:user, organisations: [organisation1, organisation2]) }
   let!(:archive) { create(:archive, user: archived_user, organisation: organisation1, created_at: 25.months.ago) }
 

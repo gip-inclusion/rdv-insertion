@@ -1,5 +1,5 @@
 describe Organisation::UsersRetriever, type: :model do
-  let(:organisation) { create(:organisation, data_retention_duration: 24) }
+  let(:organisation) { create(:organisation, data_retention_duration_in_months: 24) }
   let(:retriever) { described_class.new(organisation: organisation) }
   let(:old_date) { 25.months.ago }
   let(:recent_date) { 1.month.ago }
@@ -61,7 +61,7 @@ describe Organisation::UsersRetriever, type: :model do
     end
 
     context "when user has recent activity in other organisation only" do
-      let!(:other_organisation) { create(:organisation, data_retention_duration: 24) }
+      let!(:other_organisation) { create(:organisation, data_retention_duration_in_months: 24) }
 
       context "with recent invitation in other organisation" do
         let!(:recent_invitation_other_org) do

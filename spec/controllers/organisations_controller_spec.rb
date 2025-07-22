@@ -373,7 +373,7 @@ describe OrganisationsController do
     end
   end
 
-  describe "#update with data_retention_duration" do
+  describe "#update with data_retention_duration_in_months" do
     let!(:admin_agent) { create(:agent, admin_role_in_organisations: [organisation]) }
 
     before do
@@ -387,7 +387,7 @@ describe OrganisationsController do
 
         patch :update, params: {
           id: organisation.id,
-          organisation: { data_retention_duration: 12 }
+          organisation: { data_retention_duration_in_months: 12 }
         }
 
         expect(response).to be_successful
@@ -403,11 +403,11 @@ describe OrganisationsController do
       it "does not update" do
         patch :update, params: {
           id: organisation.id,
-          organisation: { data_retention_duration: 0 }
+          organisation: { data_retention_duration_in_months: 0 }
         }
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(organisation.reload.data_retention_duration).to eq(24)
+        expect(organisation.reload.data_retention_duration_in_months).to eq(24)
       end
     end
   end

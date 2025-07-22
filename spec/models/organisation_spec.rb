@@ -69,15 +69,15 @@ describe Organisation do
     end
   end
 
-  describe "data_retention_duration validation" do
+  describe "data_retention_duration_in_months validation" do
     context "with valid duration" do
-      let(:organisation) { build(:organisation, data_retention_duration: 24) }
+      let(:organisation) { build(:organisation, data_retention_duration_in_months: 24) }
 
       it { expect(organisation).to be_valid }
     end
 
     context "with duration too short" do
-      let(:organisation) { build(:organisation, data_retention_duration: 0) }
+      let(:organisation) { build(:organisation, data_retention_duration_in_months: 0) }
 
       it "adds errors" do
         expect(organisation).not_to be_valid
@@ -87,7 +87,7 @@ describe Organisation do
     end
 
     context "with duration too long" do
-      let(:organisation) { build(:organisation, data_retention_duration: 124) }
+      let(:organisation) { build(:organisation, data_retention_duration_in_months: 124) }
 
       it "adds errors" do
         expect(organisation).not_to be_valid
