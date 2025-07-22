@@ -5,7 +5,7 @@ class OrganisationsController < ApplicationController
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_edit,
-                only: [:show, :edit, :update]
+                only: [:show, :edit, :update, :update_data_retention]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
@@ -27,6 +27,21 @@ class OrganisationsController < ApplicationController
     else
       flash.now[:error] = update_organisation.errors&.join(",")
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def update_data_retention
+    @organisation.assign_attributes(data_retention_params)
+    authorize @organisation, :update?
+
+    if @organisation.save
+      respond_to do |format|
+        format.turbo_stream { turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès") }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream { turbo_stream_display_error_modal(@organisation.errors.full_messages) }
+      end
     end
   end
 
@@ -116,6 +131,10 @@ class OrganisationsController < ApplicationController
 
   def update_organisation
     @update_organisation ||= Organisations::Update.call(organisation: @organisation)
+  end
+
+  def data_retention_params
+    params.expect(organisation: [:data_retention_duration_in_months])
   end
 
   def authorize_organisation_edit
