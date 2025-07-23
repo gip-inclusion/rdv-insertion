@@ -1,4 +1,4 @@
-class RemoveOrganisationUserForExpiredArchiveJob < ApplicationJob
+class RemoveUserFromOrgWithOldArchiveJob < ApplicationJob
   def perform(archive_id)
     @archive = Archive.find(archive_id)
     @organisation = @archive.organisation

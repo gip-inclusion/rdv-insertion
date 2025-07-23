@@ -1,4 +1,4 @@
-describe RemoveUsersFromOrgWithOldArchivesJob do
+describe RemoveUsersFromOrgsWithOldArchivesJob do
   subject { described_class.new.perform }
 
   let!(:org1) { create(:organisation, data_retention_duration_in_months: 24) }
@@ -10,8 +10,8 @@ describe RemoveUsersFromOrgWithOldArchivesJob do
       let!(:recent_archive_org2) { create(:archive, organisation: org2, created_at: 2.years.ago) }
 
       it "schedules cleanup jobs for expired archives according to each organization's retention" do
-        expect(RemoveOrganisationUserForExpiredArchiveJob).to receive(:perform_later).with(old_archive_org1.id)
-        expect(RemoveOrganisationUserForExpiredArchiveJob).not_to receive(:perform_later).with(recent_archive_org2.id)
+        expect(RemoveUserFromOrgWithOldArchiveJob).to receive(:perform_later).with(old_archive_org1.id)
+        expect(RemoveUserFromOrgWithOldArchiveJob).not_to receive(:perform_later).with(recent_archive_org2.id)
 
         subject
       end
@@ -38,9 +38,9 @@ describe RemoveUsersFromOrgWithOldArchivesJob do
       end
 
       it "only schedules cleanup jobs for users without recent RDVs" do
-        expect(RemoveOrganisationUserForExpiredArchiveJob).not_to receive(:perform_later)
+        expect(RemoveUserFromOrgWithOldArchiveJob).not_to receive(:perform_later)
           .with(expired_archive_with_recent_rdv.id)
-        expect(RemoveOrganisationUserForExpiredArchiveJob).to receive(:perform_later)
+        expect(RemoveUserFromOrgWithOldArchiveJob).to receive(:perform_later)
           .with(expired_archive_without_recent_rdv.id)
 
         subject
@@ -51,7 +51,7 @@ describe RemoveUsersFromOrgWithOldArchivesJob do
       let!(:recent_archive) { create(:archive, organisation: org1, created_at: 1.month.ago) }
 
       it "does not schedule any cleanup jobs" do
-        expect(RemoveOrganisationUserForExpiredArchiveJob).not_to receive(:perform_later)
+        expect(RemoveUserFromOrgWithOldArchiveJob).not_to receive(:perform_later)
         subject
       end
 

@@ -1,7 +1,7 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
-    :department_id, :safir_code, :data_retention_duration_in_months
+    :department_id, :safir_code
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_edit,
@@ -35,13 +35,9 @@ class OrganisationsController < ApplicationController
     authorize @organisation, :update?
 
     if @organisation.save
-      respond_to do |format|
-        format.turbo_stream { turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès") }
-      end
+      turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès")
     else
-      respond_to do |format|
-        format.turbo_stream { turbo_stream_display_error_modal(@organisation.errors.full_messages) }
-      end
+      turbo_stream_display_error_modal(@organisation.errors.full_messages)
     end
   end
 

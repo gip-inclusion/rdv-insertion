@@ -1,4 +1,4 @@
-describe RemoveOrganisationUserForExpiredArchiveJob do
+describe RemoveUserFromOrgWithOldArchiveJob do
   subject do
     described_class.new.perform(archive.id)
   end

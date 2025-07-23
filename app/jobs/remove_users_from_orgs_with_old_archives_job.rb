@@ -1,4 +1,4 @@
-class RemoveUsersFromOrgWithOldArchivesJob < ApplicationJob
+class RemoveUsersFromOrgsWithOldArchivesJob < ApplicationJob
   def perform
     removed_users_count = 0
 
@@ -7,7 +7,7 @@ class RemoveUsersFromOrgWithOldArchivesJob < ApplicationJob
       @date_limit = organisation.data_retention_duration_in_months.months.ago
 
       archives_outside_retention_period.each do |archive|
-        RemoveOrganisationUserForExpiredArchiveJob.perform_later(archive.id)
+        RemoveUserFromOrgWithOldArchiveJob.perform_later(archive.id)
         removed_users_count += 1
       end
     end
