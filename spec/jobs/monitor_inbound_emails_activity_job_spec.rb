@@ -29,7 +29,7 @@ describe MonitorInboundEmailsActivityJob do
       it "sends a message to Mattermost" do
         expect(MattermostClient).to receive(:send_to_private_channel).with(
           "⚠️ Les emails des usagers n'ont pas été transérés depuis plus de 7 jours!\n" \
-          "Dernier email reçu le #{last_inbound_email_received_at.strftime("%d/%m/%Y %H:%M")}"
+          "Dernier email reçu le #{last_inbound_email_received_at.strftime('%d/%m/%Y %H:%M')}"
         )
         subject
       end
