@@ -1,3 +1,4 @@
+
 require "administrate/base_dashboard"
 
 class LieuDashboard < Administrate::BaseDashboard
@@ -31,46 +32,6 @@ class LieuDashboard < Administrate::BaseDashboard
     address
     phone_number
   ].freeze
-
-  # SHOW_PAGE_ATTRIBUTES
-  # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = %i[
-    id
-    address
-    last_webhook_update_received_at
-    name
-    organisation
-    phone_number
-    rdv_solidarites_lieu_id
-    rdvs
-    created_at
-    updated_at
-  ].freeze
-
-  # FORM_ATTRIBUTES
-  # an array of attributes that will be displayed
-  # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = %i[
-    address
-    last_webhook_update_received_at
-    name
-    organisation
-    phone_number
-    rdv_solidarites_lieu_id
-    rdvs
-  ].freeze
-
-  # COLLECTION_FILTERS
-  # a hash that defines filters that can be used while searching via the search
-  # field of the dashboard.
-  #
-  # For example to add an option to search for open resources by typing "open:"
-  # in the search field:
-  #
-  #   COLLECTION_FILTERS = {
-  #     open: ->(resources) { resources.where(open: true) }
-  #   }.freeze
-  COLLECTION_FILTERS = {}.freeze
 
   # Overwrite this method to customize how lieux are displayed
   # across all pages of the admin dashboard.

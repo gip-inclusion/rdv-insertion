@@ -42,56 +42,6 @@ class MotifDashboard < Administrate::BaseDashboard
     organisation
   ].freeze
 
-  # SHOW_PAGE_ATTRIBUTES
-  # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = %i[
-    id
-    collectif
-    deleted_at
-    follow_up
-    instruction_for_rdv
-    last_webhook_update_received_at
-    location_type
-    motif_category
-    name
-    organisation
-    rdv_solidarites_motif_id
-    rdv_solidarites_service_id
-    reservable_online
-    created_at
-    updated_at
-  ].freeze
-
-  # FORM_ATTRIBUTES
-  # an array of attributes that will be displayed
-  # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = %i[
-    collectif
-    deleted_at
-    follow_up
-    instruction_for_rdv
-    last_webhook_update_received_at
-    location_type
-    motif_category
-    name
-    organisation
-    rdv_solidarites_motif_id
-    rdv_solidarites_service_id
-    reservable_online
-  ].freeze
-
-  # COLLECTION_FILTERS
-  # a hash that defines filters that can be used while searching via the search
-  # field of the dashboard.
-  #
-  # For example to add an option to search for open resources by typing "open:"
-  # in the search field:
-  #
-  #   COLLECTION_FILTERS = {
-  #     open: ->(resources) { resources.where(open: true) }
-  #   }.freeze
-  COLLECTION_FILTERS = {}.freeze
-
   # Overwrite this method to customize how motifs are displayed
   # across all pages of the admin dashboard.
   #
