@@ -15,7 +15,7 @@ class FranceTravailClient
     )
   end
 
-  def self.delete_participation(france_travail_id:, headers:)
+  def self.cancel_participation(france_travail_id:, headers:)
     Faraday.delete(
       "#{ENV['FRANCE_TRAVAIL_API_URL']}/partenaire/rendez-vous-partenaire/v1/rendez-vous/#{france_travail_id}",
       {},

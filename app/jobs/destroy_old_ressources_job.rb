@@ -30,7 +30,7 @@ class DestroyOldRessourcesJob < ApplicationJob
               )", date_limit)
           .distinct
 
-    inactive_users.find_each(&:mark_for_rgpd_destruction)
+    inactive_users.each(&:mark_for_rgpd_destruction)
 
     inactive_user_ids = inactive_users.pluck(:id)
 

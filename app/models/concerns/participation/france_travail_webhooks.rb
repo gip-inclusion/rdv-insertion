@@ -32,7 +32,7 @@ module Participation::FranceTravailWebhooks
   end
 
   def send_france_travail_delete_webhook
-    OutgoingWebhooks::FranceTravail::DeleteParticipationJob.perform_later(
+    OutgoingWebhooks::FranceTravail::CancelParticipationJob.perform_later(
       participation_id: id,
       france_travail_id: france_travail_id,
       user_id: user.id,
