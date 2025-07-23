@@ -311,6 +311,8 @@ tables:
       - created_at
       - updated_at
       - follow_up_id
+      - created_by
+      - rdv_solidarites_agent_prescripteur_id
       - created_by_type
       - created_by_agent_prescripteur
       - rdv_solidarites_created_by_id
@@ -379,6 +381,8 @@ tables:
     non_anonymized_column_names:
       - agent_id
       - user_id
+      - created_at
+      - updated_at
 
   - table_name: stats
     non_anonymized_column_names:
@@ -465,6 +469,7 @@ tables:
       - department_id
       - last_webhook_update_received_at
       - archived_at
+      - data_retention_duration_in_months
 
   - table_name: blocked_invitations_counters
     anonymized_column_names: []
@@ -577,3 +582,13 @@ tables:
       - updated_at
       - support_accepted
       - tracking_accepted
+  - table_name: super_admin_authentication_requests
+    anonymized_column_names:
+      - token
+    non_anonymized_column_names:
+      - agent_id
+      - created_at
+      - updated_at
+      - verified_at
+      - verification_attempts
+      - invalidated_at

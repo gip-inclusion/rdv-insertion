@@ -37,7 +37,7 @@ describe FranceTravailClient do
     end
   end
 
-  describe "#delete_participation" do
+  describe "#cancel_participation" do
     before do
       stub_request(
         :delete,
@@ -48,7 +48,7 @@ describe FranceTravailClient do
     end
 
     it "sends a DELETE request to France Travail API" do
-      response = described_class.delete_participation(france_travail_id: france_travail_id, headers: headers)
+      response = described_class.cancel_participation(france_travail_id: france_travail_id, headers: headers)
       expect(response.status).to eq(200)
     end
   end

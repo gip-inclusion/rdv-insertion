@@ -19,3 +19,4 @@ fr:
           siae: "SIAE"
           autre: "Autre"
         display_in_stats: Afficher dans les statistiques
+        data_retention_duration_in_months: Durée de conservation des données

@@ -49,7 +49,7 @@ describe "Agents can edit users tags", :js do
       click_button("Ajouter un tag")
 
       expect(page).to have_content("Aucun autre tag disponible.")
-      click_button("Ok")
+      click_button("OK")
 
       within("#tags_list") do
         find(".badge", text: "coucou").find("a").click

@@ -24,7 +24,7 @@ module Invitations
       )
     end
 
-    def locals
+    def locals # rubocop:disable Metrics/AbcSize
       {
         invitation: @invitation,
         department: @invitation.department,
@@ -33,6 +33,7 @@ module Invitations
         sender_name: @invitation.letter_sender_name,
         direction_names: @invitation.direction_names,
         signature_lines: @invitation.signature_lines,
+        signature_image: @invitation.signature_image,
         help_address: @invitation.help_address,
         display_europe_logos: @invitation.display_europe_logos,
         display_department_logo: @invitation.display_department_logo,

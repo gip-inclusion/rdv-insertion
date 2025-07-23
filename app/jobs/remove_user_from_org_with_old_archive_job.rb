@@ -1,17 +1,17 @@
-class RemoveOrganisationUserForExpiredArchiveJob < ApplicationJob
+class RemoveUserFromOrgWithOldArchiveJob < ApplicationJob
   def perform(archive_id)
     @archive = Archive.find(archive_id)
     @organisation = @archive.organisation
     @user = @archive.user
 
-    return no_agent_found unless @organisation.agents.any?
+    return log_no_agent_found unless @organisation.agents.any?
 
     remove_user_from_organisation
   end
 
   private
 
-  def no_agent_found
+  def log_no_agent_found
     Sentry.capture_message(
       "No agent found for organisation #{@organisation.id} when trying to remove user #{@user.id}"
     )

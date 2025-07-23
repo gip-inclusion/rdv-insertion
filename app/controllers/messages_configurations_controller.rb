@@ -1,7 +1,8 @@
 class MessagesConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
     { direction_names: [] }, :sender_city, :letter_sender_name, { signature_lines: [] }, :help_address,
-    :display_europe_logos, :display_france_travail_logo, :display_department_logo, :sms_sender_name
+    :display_europe_logos, :display_france_travail_logo, :display_department_logo, :sms_sender_name,
+    :signature_image, :remove_signature
   ].freeze
 
   before_action :set_organisation, only: [:show, :new, :edit, :create, :update]

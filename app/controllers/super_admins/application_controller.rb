@@ -17,9 +17,18 @@ module SuperAdmins
     private
 
     def authenticate_super_admin!
-      return if current_agent.super_admin?
+      if current_agent.super_admin?
+        authenticate_super_admin_with_token!
+      else
+        redirect_to root_path, alert: "Vous n'avez pas accès à cette page"
+      end
+    end
 
-      redirect_to root_path, alert: "Vous n'avez pas accès à cette page"
+    def authenticate_super_admin_with_token!
+      return if current_agent.super_admin_token_verified_and_valid?
+
+      current_agent.generate_and_send_super_admin_authentication_request!
+      redirect_to new_super_admin_authentication_request_verification_path
     end
 
     def force_full_page_reload

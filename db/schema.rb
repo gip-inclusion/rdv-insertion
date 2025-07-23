@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_16_125833) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_122431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -370,6 +370,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_125833) do
     t.string "organisation_type"
     t.datetime "archived_at"
     t.boolean "display_in_stats", default: true
+    t.integer "data_retention_duration_in_months", default: 24, null: false
     t.index ["archived_at"], name: "index_organisations_on_archived_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
@@ -461,6 +462,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_125833) do
   create_table "referent_assignations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "agent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id", "agent_id"], name: "index_referent_assignations_on_user_id_and_agent_id", unique: true
   end
 
@@ -495,6 +498,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_125833) do
     t.float "rate_of_users_accompanied_in_less_than_30_days"
     t.json "rate_of_users_accompanied_in_less_than_30_days_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
+  end
+
+  create_table "super_admin_authentication_requests", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.string "token", null: false
+    t.datetime "verified_at"
+    t.datetime "invalidated_at"
+    t.integer "verification_attempts", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_super_admin_authentication_requests_on_agent_id"
   end
 
   create_table "tag_organisations", force: :cascade do |t|
@@ -724,6 +738,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_125833) do
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
+  add_foreign_key "super_admin_authentication_requests", "agents"
   add_foreign_key "tag_organisations", "organisations"
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"

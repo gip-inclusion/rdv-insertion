@@ -10,9 +10,6 @@ import { Application } from "@hotwired/stimulus";
 import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers";
 import "chartkick/chart.js";
 
-import StatusSelector from "./components/status-selector";
-import OrientationSelector from "./components/orientation-selector";
-import ReferentSelector from "./components/referent-selector";
 import DepartmentSelector from "./components/department-selector";
 import OrganisationSelector from "./components/organisation-selector";
 
@@ -41,9 +38,6 @@ Turbo.StreamActions.redirect = function () {
 }
 
 document.addEventListener("turbo:load", () => {
-  new StatusSelector();
-  new OrientationSelector();
-  new ReferentSelector();
   new DepartmentSelector();
   new OrganisationSelector();
 });

@@ -19,6 +19,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    invalidate_authentication_requests_if_super_admin
     clear_session
     flash[:notice] = "Déconnexion réussie"
     sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
@@ -33,6 +34,10 @@ class SessionsController < ApplicationController
     flash[:error] = "L'agent ne fait pas partie d'une organisation sur RDV-Insertion. \
                     Déconnectez-vous de RDV Solidarités puis essayez avec un autre compte."
     redirect_to @agent_return_to_url || root_path
+  end
+
+  def invalidate_authentication_requests_if_super_admin
+    current_agent.invalidate_super_admin_authentication_request! if current_agent.super_admin?
   end
 
   def mark_agent_as_logged_in!

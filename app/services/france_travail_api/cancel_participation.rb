@@ -1,12 +1,12 @@
 module FranceTravailApi
-  class DeleteParticipation < BaseService
+  class CancelParticipation < BaseService
     # https://francetravail.io/data/api/rechercher-usager/rdv-partenaire/documentation#/api-reference/
     include Webhooks::ReceiptHandler
 
-    def initialize(participation_id:, france_travail_id:, user_id:, timestamp:)
+    def initialize(participation_id:, france_travail_id:, user:, timestamp:)
       @participation_id = participation_id
       @france_travail_id = france_travail_id
-      @user = User.find(user_id)
+      @user = user
       @timestamp = timestamp
     end
 
@@ -23,7 +23,7 @@ module FranceTravailApi
     private
 
     def send_request!
-      response = FranceTravailClient.delete_participation(
+      response = FranceTravailClient.cancel_participation(
         france_travail_id: @france_travail_id,
         headers: ft_user_headers
       )
