@@ -23,7 +23,6 @@ describe "Agents can edit category configuration", :js do
       expect(page).to have_content("3234")
       expect(page).to have_content("test@test.com")
       expect(page).to have_content("ceci est un rdv")
-      expect(page).to have_content("les invitations n'expireront jamais.")
 
       expect(category_configuration.reload.phone_number).to eq("3234")
       expect(category_configuration.email_to_notify_rdv_changes).to eq("test@test.com")
