@@ -12,7 +12,6 @@ import "chartkick/chart.js";
 
 import DepartmentSelector from "./components/department-selector";
 import OrganisationSelector from "./components/organisation-selector";
-import MatomoScriptTag from "./components/matomo-script-tag";
 
 require("@rails/ujs").start();
 require("@rails/activestorage").start();
@@ -41,7 +40,4 @@ Turbo.StreamActions.redirect = function () {
 document.addEventListener("turbo:load", () => {
   new DepartmentSelector();
   new OrganisationSelector();
-  if (process.env.RAILS_ENV === "production") {
-    new MatomoScriptTag();
-  }
 });

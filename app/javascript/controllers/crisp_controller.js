@@ -86,7 +86,7 @@ export default class extends Controller {
       window.originalMutationObserver = window.MutationObserver
       window.listOfObservers = [];
 
-      window.MutationObserver = function(aFunction) {
+      window.MutationObserver = function (aFunction) {
         /* eslint new-cap: ["error", { "newIsCap": false }] */
 
         const observer = new window.originalMutationObserver(aFunction);

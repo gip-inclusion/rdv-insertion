@@ -574,6 +574,14 @@ tables:
       - user_id
       - created_at
       - updated_at
+  - table_name: cookies_consents
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - agent_id
+      - created_at
+      - updated_at
+      - support_accepted
+      - tracking_accepted
   - table_name: super_admin_authentication_requests
     anonymized_column_names:
       - token

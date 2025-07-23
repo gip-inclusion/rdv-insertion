@@ -3,6 +3,7 @@ class Agent < ApplicationRecord
 
   include Agent::RdvSolidaritesClient
   include Agent::Signature
+  include Agent::CookiesConsentable
   include Agent::SuperAdminAuthentication
 
   has_many :agent_roles, dependent: :destroy
@@ -13,7 +14,6 @@ class Agent < ApplicationRecord
   has_many :parcours_documents, dependent: :nullify
   has_many :dpa_agreements, dependent: :nullify
   has_many :user_list_uploads, dependent: :destroy
-
   has_many :organisations, through: :agent_roles
   has_many :departments, -> { distinct }, through: :organisations
   has_many :category_configurations, through: :organisations

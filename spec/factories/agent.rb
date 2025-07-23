@@ -5,6 +5,7 @@ FactoryBot.define do
     sequence(:last_name) { |n| "doe#{n}" }
 
     rdv_solidarites_agent_id { rand(1..10_000_000_000) }
+    cgu_accepted_at { Time.zone.now }
 
     transient do
       basic_role_in_organisations { [] }
@@ -12,6 +13,14 @@ FactoryBot.define do
 
     transient do
       admin_role_in_organisations { [] }
+    end
+
+    transient do
+      create_cookies_consent { true }
+    end
+
+    trait :without_cookies_consent do
+      create_cookies_consent { false }
     end
 
     trait :super_admin do
@@ -36,8 +45,7 @@ FactoryBot.define do
       evaluator.admin_role_in_organisations.each do |organisation|
         create(:agent_role, :admin, agent: agent, organisation: organisation)
       end
+      create(:cookies_consent, agent: agent) if evaluator.create_cookies_consent
     end
-
-    cgu_accepted_at { Time.zone.now }
   end
 end
