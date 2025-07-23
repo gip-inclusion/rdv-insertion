@@ -372,4 +372,36 @@ describe OrganisationsController do
       end
     end
   end
+
+  describe "#update with data_retention_duration_in_months" do
+    let!(:admin_agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+    before do
+      sign_in(admin_agent)
+    end
+
+    context "when valid duration" do
+      it "updates the data retention duration" do
+        patch :update_data_retention, params: {
+          id: organisation.id,
+          organisation: { data_retention_duration_in_months: 12 }
+        }, format: :turbo_stream
+
+        expect(response).to be_successful
+        expect(organisation.reload.data_retention_duration_in_months).to eq(12)
+      end
+    end
+
+    context "when invalid duration" do
+      it "does not update" do
+        patch :update_data_retention, params: {
+          id: organisation.id,
+          organisation: { data_retention_duration_in_months: 0 }
+        }, format: :turbo_stream
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(organisation.reload.data_retention_duration_in_months).to eq(24)
+      end
+    end
+  end
 end

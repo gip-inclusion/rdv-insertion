@@ -69,6 +69,34 @@ describe Organisation do
     end
   end
 
+  describe "data_retention_duration_in_months validation" do
+    context "with valid duration" do
+      let(:organisation) { build(:organisation, data_retention_duration_in_months: 24) }
+
+      it { expect(organisation).to be_valid }
+    end
+
+    context "with duration too short" do
+      let(:organisation) { build(:organisation, data_retention_duration_in_months: 0) }
+
+      it "adds errors" do
+        expect(organisation).not_to be_valid
+        expect(organisation.errors.full_messages)
+          .to include("Durée de conservation des données doit être au minimum de 1 mois")
+      end
+    end
+
+    context "with duration too long" do
+      let(:organisation) { build(:organisation, data_retention_duration_in_months: 124) }
+
+      it "adds errors" do
+        expect(organisation).not_to be_valid
+        expect(organisation.errors.full_messages)
+          .to include("Durée de conservation des données doit être au maximum de 3 ans")
+      end
+    end
+  end
+
   describe "archivable" do
     let(:organisation) { create(:organisation, agents: [create(:agent)]) }
 

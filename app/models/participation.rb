@@ -59,7 +59,7 @@ class Participation < ApplicationRecord
   private
 
   def refresh_follow_up_status
-    RefreshFollowUpStatusesJob.perform_later(follow_up_id)
+    RefreshFollowUpStatusesJob.perform_later(follow_up_id) if follow_up_id?
   end
 
   def status_reloaded_from_cancelled?

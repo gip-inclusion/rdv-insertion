@@ -103,4 +103,19 @@
 
   <h4>Configuration des messages</h4>
   <%= render "messages_configurations/messages_configuration", messages_configuration: @messages_configuration %>
+
+  <h4>Durée de conservation des données</h4>
+  <span>
+    La durée de conservation des données personnelles - que vous pouvez configurer en tant que responsable de traitement des données personnelles - est de
+    <%= form_with model: @organisation, url: update_data_retention_organisation_path(@organisation), method: :patch, class: "d-inline", data: { controller: "data-retention-form" } do |f| %>
+      <%= f.number_field :data_retention_duration_in_months,
+          min: 1,
+          max: 36,
+          step: 1,
+          class: "form-control d-inline-block mx-2",
+          style: "width: 80px;",
+          data: { action: "change->data-retention-form#submit" } %>
+    <% end %>
+    mois.
+  </span>
 </div>

@@ -4,8 +4,8 @@ class OrganisationsController < ApplicationController
     :department_id, :safir_code
   ].freeze
 
-  before_action :set_organisation, :set_department, :authorize_organisation_edit,
-                only: [:show, :edit, :update]
+  before_action :set_organisation, :set_department,
+                only: [:show, :edit, :update, :update_data_retention]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
@@ -21,12 +21,21 @@ class OrganisationsController < ApplicationController
 
   def update
     @organisation.assign_attributes(organisation_params)
-    authorize @organisation
     if update_organisation.success?
       render :show
     else
       flash.now[:error] = update_organisation.errors&.join(",")
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def update_data_retention
+    @organisation.assign_attributes(data_retention_params)
+
+    if @organisation.save
+      turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès")
+    else
+      turbo_stream_display_error_modal(@organisation.errors.full_messages)
     end
   end
 
@@ -68,6 +77,7 @@ class OrganisationsController < ApplicationController
 
   def set_organisation
     @organisation = policy_scope(Organisation).find(params[:id])
+    authorize @organisation
   end
 
   def set_department
@@ -118,7 +128,7 @@ class OrganisationsController < ApplicationController
     @update_organisation ||= Organisations::Update.call(organisation: @organisation)
   end
 
-  def authorize_organisation_edit
-    authorize @organisation, :edit?
+  def data_retention_params
+    params.expect(organisation: [:data_retention_duration_in_months])
   end
 end

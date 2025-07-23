@@ -381,6 +381,8 @@ tables:
     non_anonymized_column_names:
       - agent_id
       - user_id
+      - created_at
+      - updated_at
 
   - table_name: stats
     non_anonymized_column_names:
@@ -467,6 +469,7 @@ tables:
       - department_id
       - last_webhook_update_received_at
       - archived_at
+      - data_retention_duration_in_months
 
   - table_name: blocked_invitations_counters
     anonymized_column_names: []

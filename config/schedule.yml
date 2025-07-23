@@ -24,14 +24,14 @@ send_convocation_reminders_job:
 
 # We compute global stats once a week, the saturday at 22:00
 upsert_global_stats_job:
-  cron: "0 22 * * 6" 
+  cron: "0 22 * * 6"
   class: "Stats::GlobalStats::UpsertStatsJob"
 
 # We compute monthly stats once a week on Friday at 22:00
 # This task takes several hours to run, so we schedule it for the start of the weekend
 # to avoid overlapping with the week load
 upsert_monthly_stats_job:
-  cron: "0 22 * * 5" 
+  cron: "0 22 * * 5"
   class: "Stats::MonthlyStats::UpsertStatsJob"
 
 refresh_out_of_date_follow_up_statuses_job:
@@ -42,7 +42,7 @@ store_all_number_of_creneaux_available_job:
   class: "Creneaux::StoreAllNumberOfCreneauxAvailableJob"
 remove_organisation_users_for_expired_archives_job:
   cron: "0 23 * * *" # we remove expired archived users from organisations once a day, at 23:00
-  class: "RemoveOrganisationUsersForExpiredArchivesJob"
-destroy_old_ressources_job:
-  cron: "0 0 * * *" # we destroy inactive users and useless ressources once a day, at 00:00
-  class: "DestroyOldRessourcesJob"
+  class: "RemoveUsersFromOrgsWithOldArchivesJob"
+rgpd_cleanup_job:
+  cron: "0 0 * * *" # we destroy inactive users and useless resources once a day, at 00:00
+  class: "RgpdCleanupJob"
