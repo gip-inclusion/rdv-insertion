@@ -16,7 +16,7 @@ class CategoryConfiguration < ApplicationRecord
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
               with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/,
-              allow_blank: true
+              allow_nil: true
             }
 
   validates :phone_number, phone_number: { allow_4_digits_numbers: true }
@@ -25,6 +25,8 @@ class CategoryConfiguration < ApplicationRecord
   delegate :sheet_name, to: :file_configuration
   delegate :department, :department_id, :rdv_solidarites_organisation_id, to: :organisation
   delegate :template, to: :motif_category
+
+  nullify_blank :email_to_notify_no_available_slots, :email_to_notify_rdv_changes
 
   def self.template_override_attributes
     attribute_names.select do |attribute_name|
