@@ -29,47 +29,4 @@ class TagDashboard < Administrate::BaseDashboard
     tag_organisations
     tag_users
   ].freeze
-
-  # SHOW_PAGE_ATTRIBUTES
-  # an array of attributes that will be displayed on the model's show page.
-  # SHOW_PAGE_ATTRIBUTES = %i[
-  #   id
-  #   organisations
-  #   tag_organisations
-  #   tag_users
-  #   users
-  #   value
-  #   created_at
-  #   updated_at
-  # ].freeze
-
-  # FORM_ATTRIBUTES
-  # an array of attributes that will be displayed
-  # on the model's form (`new` and `edit`) pages.
-  # FORM_ATTRIBUTES = %i[
-  #   organisations
-  #   tag_organisations
-  #   tag_users
-  #   users
-  #   value
-  # ].freeze
-
-  # COLLECTION_FILTERS
-  # a hash that defines filters that can be used while searching via the search
-  # field of the dashboard.
-  #
-  # For example to add an option to search for open resources by typing "open:"
-  # in the search field:
-  #
-  #   COLLECTION_FILTERS = {
-  #     open: ->(resources) { resources.where(open: true) }
-  #   }.freeze
-  # COLLECTION_FILTERS = {}.freeze
-
-  # Overwrite this method to customize how tags are displayed
-  # across all pages of the admin dashboard.
-  #
-  # def display_resource(tag)
-  #   "Tag ##{tag.id}"
-  # end
 end
