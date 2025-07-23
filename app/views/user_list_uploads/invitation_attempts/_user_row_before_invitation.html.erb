@@ -13,7 +13,7 @@
             <%= "disabled" if disable_invitation_for_user_row?(user_row) %>>
   </td>
 
-  <% [:title, :first_name, :last_name, :affiliation_number, :phone_number, :email].each do |attribute| %>
+  <% [:title, :first_name, :last_name, :phone_number, :email].each do |attribute| %>
     <td class="border-light <%= "text-truncate-150" if attribute.in?([:affiliation_number]) %>">
       <span><%= display_attribute(user_row.user.send(attribute)) %></span>
     </td>
