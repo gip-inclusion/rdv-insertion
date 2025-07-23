@@ -34,7 +34,7 @@
       </div>
       <div class="col-6">
         <h5>Niveaux de permissions</h5>
-        <p><%= custom_pluralize(@agent_roles.count(&:admin?), "agent") %> <%= custom_pluralize(@agent_roles.count(&:admin?), "administrateur") %>, <%= custom_pluralize(@agent_roles.count(&:basic?), "agent") %> <%= custom_pluralize(@agent_roles.count(&:basic?), "basique") %></p>
+        <p><%= custom_pluralize(@agent_roles.count(&:admin?), "agent") %> <%= custom_pluralize(@agent_roles.count(&:admin?), "administrateur", with_count: false) %>, <%= custom_pluralize(@agent_roles.count(&:basic?), "agent") %> <%= custom_pluralize(@agent_roles.count(&:basic?), "basique", with_count: false) %></p>
       </div>
     </div>
     <div class="d-flex justify-content-end mt-2 me-2">
