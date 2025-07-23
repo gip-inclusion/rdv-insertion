@@ -4,7 +4,7 @@ class OrganisationsController < ApplicationController
     :department_id, :safir_code
   ].freeze
 
-  before_action :set_organisation, :set_department, :authorize_organisation_edit,
+  before_action :set_organisation, :set_department,
                 only: [:show, :edit, :update, :update_data_retention]
 
   def index
@@ -21,7 +21,6 @@ class OrganisationsController < ApplicationController
 
   def update
     @organisation.assign_attributes(organisation_params)
-    authorize @organisation
     if update_organisation.success?
       render :show
     else
@@ -32,7 +31,6 @@ class OrganisationsController < ApplicationController
 
   def update_data_retention
     @organisation.assign_attributes(data_retention_params)
-    authorize @organisation, :update?
 
     if @organisation.save
       turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès")
@@ -79,6 +77,7 @@ class OrganisationsController < ApplicationController
 
   def set_organisation
     @organisation = policy_scope(Organisation).find(params[:id])
+    authorize @organisation
   end
 
   def set_department
@@ -131,9 +130,5 @@ class OrganisationsController < ApplicationController
 
   def data_retention_params
     params.expect(organisation: [:data_retention_duration_in_months])
-  end
-
-  def authorize_organisation_edit
-    authorize @organisation, :edit?
   end
 end
