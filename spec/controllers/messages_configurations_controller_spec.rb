@@ -285,6 +285,52 @@ describe MessagesConfigurationsController do
       expect(messages_configuration.reload.display_department_logo).to eq(false)
     end
 
+    context "adding signature image" do
+      let(:image_file) { fixture_file_upload("spec/fixtures/logo.png", "image/png") }
+      let!(:update_params_with_image) do
+        {
+          messages_configuration: {
+            signature_image: image_file
+          },
+          organisation_id: organisation.id,
+          id: messages_configuration.id
+        }
+      end
+
+      it "attaches the signature image" do
+        patch :update, params: update_params_with_image
+        expect(messages_configuration.reload.signature_image).to be_attached
+        expect(messages_configuration.reload.signature_image.filename.to_s).to eq("logo.png")
+      end
+    end
+
+    context "removing signature image" do
+      before do
+        messages_configuration.signature_image.attach(
+          io: File.open("spec/fixtures/logo.png"),
+          filename: "signature.png",
+          content_type: "image/png"
+        )
+      end
+
+      let!(:update_params_remove) do
+        {
+          messages_configuration: {
+            remove_signature: "true"
+          },
+          organisation_id: organisation.id,
+          id: messages_configuration.id
+        }
+      end
+
+      it "schedules signature removal" do
+        expect(messages_configuration.signature_image).to be_attached
+
+        expect_any_instance_of(ActiveStorage::Attached::One).to receive(:purge_later)
+        patch :update, params: update_params_remove
+      end
+    end
+
     context "when the update succeeds" do
       it "is a success" do
         patch :update, params: update_params
