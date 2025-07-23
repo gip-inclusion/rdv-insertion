@@ -16,7 +16,6 @@ describe "Agents can edit category configuration", :js do
       fill_in "category_configuration_email_to_notify_rdv_changes", with: "test@test.com"
       fill_in "category_configuration_email_to_notify_no_available_slots", with: "test@test.com"
 
-      find("input[data-periodic-invites-form-target='enable']").check
       fill_in "category_configuration_template_rdv_title_override", with: "ceci est un rdv"
 
       click_button "Enregistrer"
@@ -24,14 +23,12 @@ describe "Agents can edit category configuration", :js do
       expect(page).to have_content("3234")
       expect(page).to have_content("test@test.com")
       expect(page).to have_content("ceci est un rdv")
-      expect(page).to have_content("Les invitations périodiques sont actives")
       expect(page).to have_content("les invitations n'expireront jamais.")
 
       expect(category_configuration.reload.phone_number).to eq("3234")
       expect(category_configuration.email_to_notify_rdv_changes).to eq("test@test.com")
       expect(category_configuration.email_to_notify_no_available_slots).to eq("test@test.com")
       expect(category_configuration.template_rdv_title_override).to eq("ceci est un rdv")
-      expect(category_configuration.number_of_days_between_periodic_invites).to eq(14)
     end
   end
 end
