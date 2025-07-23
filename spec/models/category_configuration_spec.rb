@@ -40,20 +40,6 @@ describe CategoryConfiguration do
           .to include("Le délai d'expiration de l'invitation doit être supérieur à 3 jours")
       end
     end
-
-    context "periodic_invites_activated is true and number_of_days_before_invitations_expire is set" do
-      let(:category_configuration) do
-        build(:category_configuration, organisation: create(:organisation),
-                                       number_of_days_before_invitations_expire: 5,
-                                       number_of_days_between_periodic_invites: 15)
-      end
-
-      it "adds errors" do
-        expect(category_configuration).not_to be_valid
-        expect(category_configuration.errors.full_messages.to_sentence)
-          .to include("Les invitations périodiques ne peuvent pas être activées")
-      end
-    end
   end
 
   describe "invitation formats validity" do
@@ -93,40 +79,6 @@ describe CategoryConfiguration do
         expect(new_configuration).not_to be_valid
         expect(new_configuration.errors.full_messages.to_sentence)
           .to include("Organisation a déjà une category_configuration pour cette catégorie de motif")
-      end
-    end
-  end
-
-  describe "#periodic_invite_should_be_sent?" do
-    context "day_of_the_month_periodic_invites is set" do
-      let(:category_configuration) do
-        build(:category_configuration, organisation: create(:organisation), day_of_the_month_periodic_invites: 15)
-      end
-
-      context "today is the 15th of the month" do
-        before { travel_to(Time.zone.local(2025, 6, 15, 12, 0, 0)) }
-
-        it { expect(category_configuration.periodic_invite_should_be_sent?(20.days.ago)).to eq(true) }
-      end
-
-      context "today is not the 15th of the month" do
-        before { travel_to(Time.zone.local(2025, 6, 16, 12, 0, 0)) }
-
-        it { expect(category_configuration.periodic_invite_should_be_sent?(20.days.ago)).to eq(false) }
-      end
-    end
-
-    context "number_of_days_between_periodic_invites is set" do
-      let(:category_configuration) do
-        build(:category_configuration, organisation: create(:organisation), number_of_days_between_periodic_invites: 15)
-      end
-
-      it "returns false if the invitation was sent the number of days between periodic invites" do
-        expect(category_configuration.periodic_invite_should_be_sent?(10.days.ago)).to eq(false)
-      end
-
-      it "returns true if the invitation was sent the number of days between periodic invites" do
-        expect(category_configuration.periodic_invite_should_be_sent?(15.days.ago)).to eq(true)
       end
     end
   end

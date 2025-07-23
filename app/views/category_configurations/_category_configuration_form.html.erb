@@ -42,9 +42,6 @@
     <div class="row my-4">
       <%= render "category_configurations/external_email_notification_form", f: f, category_configuration: category_configuration %>
     </div>
-    <div class="row my-4">
-      <%= render "category_configurations/periodic_invites_form", f: f, category_configuration: category_configuration %>
-    </div>
 
     <% if category_configuration.persisted? %>
       <div class="row my-4">

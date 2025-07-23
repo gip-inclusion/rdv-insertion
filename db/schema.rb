@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_122431) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_23_143614) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -140,8 +140,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_122431) do
     t.string "template_rdv_title_by_phone_override"
     t.string "template_user_designation_override"
     t.string "template_rdv_purpose_override"
-    t.integer "number_of_days_between_periodic_invites"
-    t.integer "day_of_the_month_periodic_invites"
     t.integer "position", default: 0
     t.integer "department_position", default: 0
     t.string "phone_number"

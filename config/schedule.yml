@@ -8,9 +8,6 @@ notify_jobs_to_retry_on_mattermost_job:
 retrieve_and_notify_all_unavailable_creneaux_job:
   cron: "0 01 * * *" # we verify organisations creneaux availability once a day, at 01:00
   class: "Creneaux::RetrieveAndNotifyAllUnavailableCreneauxJob"
-send_periodic_invites_job:
-  cron: "0 14 * * *" # we send recurrent invitations X days after the previous one, at 14:00
-  class: "SendPeriodicInvitesJob"
 <% end %>
 
 <% if ENV["ENVIRONMENT_NAME"] == "production" || ENV["ENVIRONMENT_NAME"] == "demo" %>

@@ -31,22 +31,9 @@ export default class extends Controller {
     if (this.enableTarget.checked) {
       this.noLimitMessageTarget.classList.add("d-none")
       this.inputGroupTarget.classList.remove("d-none")
-      this.disablePeriodicInvites()
     } else {
       this.noLimitMessageTarget.classList.remove("d-none")
       this.inputGroupTarget.classList.add("d-none")
-    }
-  }
-
-  disablePeriodicInvites() {
-    const periodicInvitesFormController = this.application.getControllerForElementAndIdentifier(
-      document.querySelector("[data-controller=\"periodic-invites-form\"]"), 
-      "periodic-invites-form"
-    );
-
-    
-    if (periodicInvitesFormController) {
-      periodicInvitesFormController.disable();
     }
   }
 }

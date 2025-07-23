@@ -1,4 +1,4 @@
-<div class="mb-2" data-controller="external-notifications">
+<div class="mb-2">
   <div class="d-flex align-items-center">
     <h3>Notifications tierces</h3>
   </div>
@@ -7,28 +7,22 @@
     <div class="mt-2">
       <div class="d-flex mb-2">
         <div class="w-75 d-flex">
-          <div class="form-check form-switch mx-2 d-flex align-items-center">
-            <%= check_box_tag :notify_rdv_changes, checked: category_configuration.notify_rdv_changes?, class: "form-check-input", data: { external_notifications_target: "rdvChangesCheck", action: "change->external-notifications#rdvChangesCheckTargetChanged" } %>
-          </div>
           <div class="align-items-center">
-            Notifier l'adresse email suivante de toutes les prises de rendez-vous ayant lieu pour cette catégorie de motifs : 
+            Notifier l'adresse email suivante de toutes les prises de rendez-vous ayant lieu pour cette catégorie de motifs :
           </div>
         </div>
         <div class="w-25 ps-2">
-          <%= f.text_field :email_to_notify_rdv_changes, placeholder: "email@email.fr", data: { external_notifications_target: "rdvChangesInput", action: "change->external-notifications#rdvChangesInputChanged" } %>
+          <%= f.text_field :email_to_notify_rdv_changes, placeholder: "email@email.fr" %>
         </div>
       </div>
       <div class="d-flex mb-2">
         <div class="w-75 d-flex">
-          <div class="form-check form-switch mx-2 d-flex align-items-center">
-            <%= check_box_tag :notify_no_available_slots, checked: category_configuration.notify_no_available_slots?, class: "form-check-input", data: { external_notifications_target: "noAvailableSlotsCheck", action: "change->external-notifications#noAvailableSlotsCheckTargetChanged" } %>
-          </div>
           <div class="align-items-center">
             Notifier l'adresse email suivante dès lors qu'il n'y a plus de créneaux disponibles sur les motifs de cette catégorie :
           </div>
         </div>
         <div class="w-25 ps-2">
-          <%= f.text_field :email_to_notify_no_available_slots, placeholder: "email@email.fr", data: { external_notifications_target: "noAvailableSlotsInput", action: "change->external-notifications#noAvailableSlotsInputChanged" } %>
+          <%= f.text_field :email_to_notify_no_available_slots, placeholder: "email@email.fr" %>
         </div>
       </div>
     </div>

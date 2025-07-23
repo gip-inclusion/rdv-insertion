@@ -28,6 +28,7 @@ class Invitation < ApplicationRecord
   delegate :post_code, to: :user, prefix: true, allow_nil: true
 
   enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
+  # "periodic" is not used anymore, but we keep it for database integrity
   enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid
@@ -37,9 +38,6 @@ class Invitation < ApplicationRecord
   scope :expired, -> { where(expires_at: ..Time.zone.now) }
   scope :expireable, -> { where.not(expires_at: nil) }
   scope :never_expire, -> { where(expires_at: nil) }
-  scope :candidates_for_periodic_invite, lambda {
-    where(created_at: CategoryConfiguration.time_range_for_candidates_for_periodic_invite)
-  }
 
   def send_to_user
     case self.format
@@ -116,13 +114,6 @@ class Invitation < ApplicationRecord
   end
 
   def referent_emails = referents.pluck(:email)
-
-  def should_be_sent_again_as_periodic_invite?
-    # We don't send an invite the first month if the invitation was sent less than 10 days ago
-    sent_before?(10.days.ago) &&
-      current_category_configuration.present? &&
-      current_category_configuration.periodic_invite_should_be_sent?(created_at)
-  end
 
   private
 
