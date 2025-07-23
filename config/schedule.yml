@@ -2,6 +2,9 @@
 monitor_webhook_activity_job:
   cron: "0 0-1,6-23 * * 1-5" # Monitor webhooks activity every hour from Monday to Friday except between 1:00 and 6:00
   class: "MonitorWebhookActivityJob"
+monitor_inbound_emails_activity_job:
+  cron: "0 15 * * *" # Monitor inbound emails activity every day at 15:00
+  class: "MonitorInboundEmailsActivityJob"
 notify_jobs_to_retry_on_mattermost_job:
   cron: "30 10 * * *" # we send jobs in the retry_set once a day, at 10:30
   class: "NotifyJobsToRetryOnMattermostJob"
