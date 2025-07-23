@@ -1,4 +1,3 @@
-
 require "administrate/base_dashboard"
 
 class LieuDashboard < Administrate::BaseDashboard
