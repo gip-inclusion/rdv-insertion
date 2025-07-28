@@ -9,6 +9,8 @@
         placeholder: "du",
         data: {
           controller: "flatpickr",
+          action: "change->flatpickr#updateAfterDateMin",
+          flatpickr_role: "before",
           flatpickr_min_date: "2012/04/01",
           flatpickr_max_date: Date.today
         }
@@ -24,6 +26,8 @@
         placeholder: "au",
         data: {
           controller: "flatpickr",
+          action: "change->flatpickr#updateBeforeDateMax",
+          flatpickr_role: "after",
           flatpickr_min_date: "2012/04/01"
         }
       )

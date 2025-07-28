@@ -10,6 +10,8 @@
         value: params[:first_invitation_date_after],
         data: {
           controller: "flatpickr",
+          action: "change->flatpickr#updateAfterDateMin",
+          flatpickr_role: "before",
           flatpickr_date_format: "d-m-Y",
           flatpickr_min_date: "2021/04/01",
           flatpickr_max_date: Date.today
@@ -20,6 +22,8 @@
         value: params[:first_invitation_date_before],
         data: {
           controller: "flatpickr",
+          action: "change->flatpickr#updateBeforeDateMax",
+          flatpickr_role: "after",
           flatpickr_date_format: "d-m-Y",
           flatpickr_min_date: "2021/04/01",
           flatpickr_max_date: Date.today
@@ -33,6 +37,8 @@
         value: params[:last_invitation_date_after],
         data: {
           controller: "flatpickr",
+          action: "change->flatpickr#updateAfterDateMin",
+          flatpickr_role: "before",
           flatpickr_date_format: "d-m-Y",
           flatpickr_min_date: "2021/04/01",
           flatpickr_max_date: Date.today
@@ -43,6 +49,8 @@
         value: params[:last_invitation_date_before],
         data: {
           controller: "flatpickr",
+          action: "change->flatpickr#updateBeforeDateMax",
+          flatpickr_role: "after",
           flatpickr_date_format: "d-m-Y",
           flatpickr_min_date: "2021/04/01",
           flatpickr_max_date: Date.today
