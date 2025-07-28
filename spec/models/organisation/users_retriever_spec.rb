@@ -3,8 +3,8 @@ describe Organisation::UsersRetriever, type: :model do
   let(:retriever) { described_class.new(organisation: organisation) }
   let(:old_date) { 25.months.ago }
   let(:recent_date) { 1.month.ago }
-  let!(:inactive_user) { create(:user, created_at: old_date) }
-  let!(:active_user) { create(:user, created_at: recent_date) }
+  let!(:inactive_user) { create(:user) }
+  let!(:active_user) { create(:user) }
   let!(:inactive_user_organisation) do
     create(:users_organisation, user: inactive_user, organisation: organisation, created_at: old_date)
   end
@@ -25,7 +25,7 @@ describe Organisation::UsersRetriever, type: :model do
       end
 
       it "excludes the user from inactive users" do
-        expect(retriever.inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).to eq([])
       end
     end
 
@@ -36,7 +36,7 @@ describe Organisation::UsersRetriever, type: :model do
       end
 
       it "excludes the user from inactive users" do
-        expect(retriever.inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).to eq([])
       end
     end
 
@@ -45,7 +45,7 @@ describe Organisation::UsersRetriever, type: :model do
       let!(:recent_tag_user) { create(:tag_user, user: inactive_user, tag: tag, created_at: recent_date) }
 
       it "excludes the user from inactive users" do
-        expect(retriever.inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).to eq([])
       end
     end
 
@@ -56,7 +56,7 @@ describe Organisation::UsersRetriever, type: :model do
       end
 
       it "excludes the user from inactive users" do
-        expect(retriever.inactive_users).not_to include(inactive_user)
+        expect(retriever.inactive_users).to eq([])
       end
     end
 
@@ -69,7 +69,7 @@ describe Organisation::UsersRetriever, type: :model do
         end
 
         it "still includes the user in inactive users" do
-          expect(retriever.inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to contain_exactly(inactive_user)
         end
       end
 
@@ -80,7 +80,7 @@ describe Organisation::UsersRetriever, type: :model do
         end
 
         it "still includes the user in inactive users" do
-          expect(retriever.inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to contain_exactly(inactive_user)
         end
       end
 
@@ -91,7 +91,7 @@ describe Organisation::UsersRetriever, type: :model do
         end
 
         it "still includes the user in inactive users" do
-          expect(retriever.inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to contain_exactly(inactive_user)
         end
       end
 
@@ -102,8 +102,18 @@ describe Organisation::UsersRetriever, type: :model do
         end
 
         it "still includes the user in inactive users" do
-          expect(retriever.inactive_users).to include(inactive_user)
+          expect(retriever.inactive_users).to contain_exactly(inactive_user)
         end
+      end
+    end
+
+    context "when the user has been updated recently" do
+      before do
+        inactive_user.update!(first_name: "John", last_name: "Doe")
+      end
+
+      it "excludes the user from inactive users" do
+        expect(retriever.inactive_users).to eq([])
       end
     end
   end
