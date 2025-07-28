@@ -4,7 +4,7 @@ class MattermostClient
     notification: ENV["MATTERMOST_NOTIFICATIONS_CHANNEL_URL"],
     private: ENV["MATTERMOST_PRIVATE_CHANNEL_URL"],
     sentry: ENV["MATTERMOST_SENTRY_CHANNEL_URL"],
-    rgpd_cleanup: ENV["MATTERMOST_RGDP_CLEANUP_CHANNEL_URL"],
+    rgpd_cleanup: ENV["MATTERMOST_RGDP_CLEANUP_CHANNEL_URL"]
   }.freeze
 
   class << self

@@ -7,8 +7,10 @@ class Organisations::RgpdCleanup < BaseService
 
   def call
     ActiveRecord::Base.transaction do
-      process_inactive_users # process users for rgpd reasons (destroy or remove from org)
-      destroy_useless_rdvs # destroying users will destroy participations ; rdvs with no participations are useless for us
+      # remove from org and destroy if no orgs left
+      process_inactive_users
+      # destroying users will destroy participations ; rdvs with no participations are useless for us
+      destroy_useless_rdvs
       raise ActiveRecord::Rollback if @dry_run
     end
   end
@@ -40,11 +42,11 @@ class Organisations::RgpdCleanup < BaseService
   def process_users_to_delete(users_to_delete)
     return if users_to_delete.empty?
 
-    cleanup_user_data(users_to_delete)
+    destroy_users(users_to_delete)
     notify_user_deletions(users_to_delete.pluck(:id))
   end
 
-  def cleanup_user_data(users)
+  def destroy_users(users)
     # this will also destroy participations and invitations
     users.each do |user|
       user.mark_for_rgpd_destruction
@@ -57,8 +59,8 @@ class Organisations::RgpdCleanup < BaseService
       "#{dry_run_log_prefix}🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
       "#{@organisation.name} : #{user_ids.join(', ')}"
     )
-    Rails.logger.info("#{dry_run_log_prefix}🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
-                      "#{@organisation.name} : #{user_ids.join(', ')}")
+    Rails.logger.info("#{dry_run_log_prefix}🚮 Les usagers suivants ont été supprimés pour inactivité dans " \
+                      "l'organisation #{@organisation.name} : #{user_ids.join(', ')}")
   end
 
   def notify_user_removals(user_ids)
@@ -68,8 +70,10 @@ class Organisations::RgpdCleanup < BaseService
       "#{dry_run_log_prefix}↩️ Les usagers suivants ont été retirés de l'organisation " \
       "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}"
     )
-    Rails.logger.info("#{dry_run_log_prefix}↩️ Les usagers suivants ont été retirés de l'organisation " \
-                      "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}")
+    Rails.logger.info(
+      "#{dry_run_log_prefix}↩️ Les usagers suivants ont été retirés de l'organisation " \
+      "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}"
+    )
   end
 
   def destroy_useless_rdvs
@@ -99,8 +103,10 @@ class Organisations::RgpdCleanup < BaseService
       "#{dry_run_log_prefix}🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
       "#{@organisation.name} : #{rdv_ids.join(', ')}"
     )
-    Rails.logger.info("#{dry_run_log_prefix}🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
-                      "#{@organisation.name} : #{rdv_ids.join(', ')}")
+    Rails.logger.info(
+      "#{dry_run_log_prefix}🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
+      "#{@organisation.name} : #{rdv_ids.join(', ')}"
+    )
   end
 
   def dry_run_log_prefix

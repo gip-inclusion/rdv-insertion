@@ -104,12 +104,20 @@ describe Organisations::RgpdCleanup, type: :service do
         allow(MattermostClient).to receive(:send_to_rgpd_cleanup_channel)
       end
 
-      it "does not destroy anything" do
+      it "does not destroy users" do
         expect { subject }.not_to change(User, :count)
-        expect { subject }.not_to change(Rdv, :count)
-        expect { subject }.not_to change(UsersOrganisation, :count)
         expect(User.exists?(inactive_user.id)).to be true
         expect(User.exists?(active_user.id)).to be true
+      end
+
+      it "does not destroy rdvs" do
+        expect { subject }.not_to change(Rdv, :count)
+      end
+
+      it "does not remove users from org" do
+        expect { subject }.not_to change(UsersOrganisation, :count)
+        expect(inactive_user.reload.users_organisations.where(organisation: organisation)).to be_present
+        expect(active_user.reload.users_organisations.where(organisation: organisation)).to be_present
       end
 
       it "still sends notification when users are to be deleted" do
