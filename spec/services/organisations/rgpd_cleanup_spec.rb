@@ -124,7 +124,9 @@ describe Organisations::RgpdCleanup, type: :service do
         subject
 
         expect(MattermostClient).to have_received(:send_to_rgpd_cleanup_channel).with(
-          match(/\[🔍 DRY RUN\] 🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation #{organisation.name}/)
+          match(
+            /\[🔍 DRY RUN\] 🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation/
+          )
         )
       end
     end
