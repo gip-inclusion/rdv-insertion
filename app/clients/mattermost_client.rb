@@ -3,7 +3,8 @@ class MattermostClient
     main: ENV["MATTERMOST_MAIN_CHANNEL_URL"],
     notification: ENV["MATTERMOST_NOTIFICATIONS_CHANNEL_URL"],
     private: ENV["MATTERMOST_PRIVATE_CHANNEL_URL"],
-    sentry: ENV["MATTERMOST_SENTRY_CHANNEL_URL"]
+    sentry: ENV["MATTERMOST_SENTRY_CHANNEL_URL"],
+    rgpd_cleanup: ENV["MATTERMOST_RGDP_CLEANUP_CHANNEL_URL"],
   }.freeze
 
   class << self
@@ -21,6 +22,10 @@ class MattermostClient
 
     def send_to_sentry_channel(text)
       send_message(:sentry, text)
+    end
+
+    def send_to_rgpd_cleanup_channel(text)
+      send_message(:rgpd_cleanup, text)
     end
 
     def send_unique_message(channel_type:, text:, expiration: 24.hours)

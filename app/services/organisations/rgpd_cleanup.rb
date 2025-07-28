@@ -1,12 +1,16 @@
 class Organisations::RgpdCleanup < BaseService
-  def initialize(organisation:)
+  def initialize(organisation:, dry_run:)
     @organisation = organisation
     @date_limit = organisation.data_retention_duration_in_months.months.ago
+    @dry_run = dry_run
   end
 
   def call
-    process_inactive_users # process users for rgpd reasons (destroy or remove from org)
-    destroy_useless_rdvs # destroying users will destroy participations ; rdvs with no participations are useless for us
+    ActiveRecord::Base.transaction do
+      process_inactive_users # process users for rgpd reasons (destroy or remove from org)
+      destroy_useless_rdvs # destroying users will destroy participations ; rdvs with no participations are useless for us
+      raise ActiveRecord::Rollback if @dry_run
+    end
   end
 
   private
@@ -17,7 +21,7 @@ class Organisations::RgpdCleanup < BaseService
 
     remove_users_from_org(inactive_users)
 
-    users_to_delete, users_to_remove_from_org = inactive_users.partition { |user| user.organisations.reload.empty? }
+    users_to_delete, users_to_remove_from_org = inactive_users.partition { |user| user.reload.organisations.empty? }
 
     process_users_to_delete(users_to_delete)
     notify_user_removals(users_to_remove_from_org.pluck(:id))
@@ -49,22 +53,22 @@ class Organisations::RgpdCleanup < BaseService
   end
 
   def notify_user_deletions(user_ids)
-    MattermostClient.send_to_notif_channel(
-      "🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
+    MattermostClient.send_to_rgpd_cleanup_channel(
+      "#{dry_run_log_prefix}🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
       "#{@organisation.name} : #{user_ids.join(', ')}"
     )
-    Rails.logger.info("🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
+    Rails.logger.info("#{dry_run_log_prefix}🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
                       "#{@organisation.name} : #{user_ids.join(', ')}")
   end
 
   def notify_user_removals(user_ids)
     return if user_ids.empty?
 
-    MattermostClient.send_to_notif_channel(
-      "↩️ Les usagers suivants ont été retirés de l'organisation " \
+    MattermostClient.send_to_rgpd_cleanup_channel(
+      "#{dry_run_log_prefix}↩️ Les usagers suivants ont été retirés de l'organisation " \
       "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}"
     )
-    Rails.logger.info("↩️ Les usagers suivants ont été retirés de l'organisation " \
+    Rails.logger.info("#{dry_run_log_prefix}↩️ Les usagers suivants ont été retirés de l'organisation " \
                       "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}")
   end
 
@@ -91,11 +95,15 @@ class Organisations::RgpdCleanup < BaseService
   end
 
   def notify_rdv_deletions(rdv_ids)
-    MattermostClient.send_to_notif_channel(
-      "🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
+    MattermostClient.send_to_rgpd_cleanup_channel(
+      "#{dry_run_log_prefix}🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
       "#{@organisation.name} : #{rdv_ids.join(', ')}"
     )
-    Rails.logger.info("🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
+    Rails.logger.info("#{dry_run_log_prefix}🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
                       "#{@organisation.name} : #{rdv_ids.join(', ')}")
+  end
+
+  def dry_run_log_prefix
+    @dry_run ? "[🔍 DRY RUN] " : ""
   end
 end
