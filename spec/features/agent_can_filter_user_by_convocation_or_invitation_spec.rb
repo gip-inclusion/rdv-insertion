@@ -21,12 +21,16 @@ describe "Agents can filter users by convocation or invitation on index page", :
   end
 
   let(:follow_up) { create(:follow_up, user: user3, motif_category:) }
-  let(:participation) { create(:participation, user: user3, follow_up:, convocable: true) }
-  let!(:notification) { create(:notification, participation:, created_at: 3.days.ago) }
+  let(:participation_user3) { create(:participation, user: user3, follow_up:, convocable: true) }
+  let!(:notification_user3) do
+    create(:notification, event: "participation_created", participation: participation_user3, created_at: 3.days.ago)
+  end
 
   let(:follow_up2) { create(:follow_up, user: user1, motif_category:) }
-  let(:participation2) { create(:participation, user: user1, follow_up: follow_up2, convocable: true) }
-  let!(:notification2) { create(:notification, participation: participation2, created_at: 1.day.ago) }
+  let(:participation_user1) { create(:participation, user: user1, follow_up: follow_up2, convocable: true) }
+  let!(:notification_user1) do
+    create(:notification, event: "participation_created", participation: participation_user1, created_at: 1.day.ago)
+  end
 
   before do
     follow_up.set_status
@@ -63,6 +67,18 @@ describe "Agents can filter users by convocation or invitation on index page", :
       expect(page).to have_content(user1.first_name)
       expect(page).to have_no_content(user2.first_name)
       expect(page).to have_no_content(user3.first_name)
+    end
+
+    context "it does not take other notifications into account" do
+      before do
+        create(:notification, event: "participation_updated", participation: participation_user3, created_at: 1.day.ago)
+      end
+
+      it "filters users the same way" do
+        expect(page).to have_content(user1.first_name)
+        expect(page).to have_no_content(user2.first_name)
+        expect(page).to have_no_content(user3.first_name)
+      end
     end
   end
 
