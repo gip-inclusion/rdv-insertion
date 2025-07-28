@@ -1,7 +1,7 @@
 class InboundEmailsController < ApplicationController
   skip_before_action :authenticate_agent!, :verify_authenticity_token
 
-  before_action :authenticate_brevo
+  before_action :authenticate_brevo, :store_last_inbound_email_received_at
 
   def brevo
     payload = request.params["items"].first
@@ -15,5 +15,11 @@ class InboundEmailsController < ApplicationController
 
     Sentry.capture_message("Brevo inbound controller was called without valid password")
     head :unauthorized
+  end
+
+  def store_last_inbound_email_received_at
+    RedisConnection.with_redis do |redis|
+      redis.set("last_inbound_email_received_at", Time.current.to_i, ex: 7.days.to_i)
+    end
   end
 end
