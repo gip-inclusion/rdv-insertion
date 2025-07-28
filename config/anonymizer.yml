@@ -86,8 +86,6 @@ tables:
       - email_to_notify_no_available_slots
       - phone_number
     non_anonymized_column_names:
-      - number_of_days_between_periodic_invites
-      - day_of_the_month_periodic_invites
       - position
       - department_position
       - created_at
