@@ -31,12 +31,23 @@ describe Organisation::UsersRetriever, type: :model do
 
     context "when user has recent participation" do
       let!(:recent_participation) do
-        rdv = create(:rdv, organisation: organisation)
-        create(:participation, user: inactive_user, rdv: rdv, created_at: recent_date)
+        rdv = create(:rdv, organisation: organisation, starts_at: recent_date)
+        create(:participation, user: inactive_user, rdv: rdv)
       end
 
       it "excludes the user from inactive users" do
         expect(retriever.inactive_users).to eq([])
+      end
+    end
+
+    context "when user has old participation" do
+      let!(:old_participation) do
+        rdv = create(:rdv, organisation: organisation, starts_at: old_date)
+        create(:participation, user: inactive_user, rdv: rdv)
+      end
+
+      it "includes the user in inactive users" do
+        expect(retriever.inactive_users).to contain_exactly(inactive_user)
       end
     end
 
