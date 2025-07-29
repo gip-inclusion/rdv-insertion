@@ -55,7 +55,7 @@ describe FranceTravailApi::RetrieveUserToken do
       end
 
       context "when the API call fails" do
-        let(:response_body) { { "jetonUsager" => nil, "codeRetour" => "R001" }.to_json }
+        let(:response_body) { { "jetonUsager" => nil, "codeRetour" => "123" }.to_json }
 
         before do
           allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
@@ -69,6 +69,20 @@ describe FranceTravailApi::RetrieveUserToken do
           expect(subject.errors).to eq(
             ["Erreur lors de l'appel à l'api recherche-usager FT.\nStatus: 400\n Body: #{response_body}"]
           )
+        end
+
+        context "when the API call returns a 403 with codeRetour R001" do
+          let(:response_body) { { "jetonUsager" => nil, "codeRetour" => "R001" }.to_json }
+
+          before do
+            allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
+              .with(payload: expected_payload, headers: headers)
+              .and_return(OpenStruct.new(success?: false, status: 403, body: response_body))
+          end
+
+          it "returns an error" do
+            expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::AccessForbidden)
+          end
         end
       end
 

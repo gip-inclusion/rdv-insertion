@@ -297,6 +297,15 @@ describe Participation do
         expect(subject).to eq(false)
       end
     end
+
+    context "when the department has disabled France Travail webhooks" do
+      let!(:department) { create(:department, disable_ft_webhooks: true) }
+      let!(:organisation) { create(:organisation, organisation_type: "conseil_departemental", department:) }
+
+      it "is not eligible" do
+        expect(subject).to eq(false)
+      end
+    end
   end
 
   describe "france travail webhook callbacks on update" do
