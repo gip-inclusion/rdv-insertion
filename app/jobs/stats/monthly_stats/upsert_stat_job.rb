@@ -1,7 +1,12 @@
 module Stats
   module MonthlyStats
     class UpsertStatJob < Stats::BaseJob
-      def perform(structure_type, structure_id, from_date_string = 1.year.ago.to_s, until_date_string = Time.zone.now.to_s)
+      def perform(
+        structure_type,
+        structure_id,
+        from_date_string = 1.year.ago.to_s,
+        until_date_string = Time.zone.now.to_s
+      )
         @stat = Stat.find_or_initialize_by(statable_type: structure_type, statable_id: structure_id)
         date = from_date_string.to_date
 
