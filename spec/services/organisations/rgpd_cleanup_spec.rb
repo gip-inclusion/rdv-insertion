@@ -69,13 +69,13 @@ describe Organisations::RgpdCleanup, type: :service do
       let!(:webhook_endpoint) { create(:webhook_endpoint, organisation:, subscriptions: %w[rdv]) }
 
       let!(:useless_rdv) do
-        rdv = create(:rdv, organisation: organisation, created_at: old_date)
+        rdv = create(:rdv, organisation: organisation, starts_at: old_date)
         rdv.participations.destroy_all
         rdv
       end
 
       let!(:recent_rdv) do
-        rdv = create(:rdv, organisation: organisation, created_at: recent_date)
+        rdv = create(:rdv, organisation: organisation, starts_at: recent_date)
         rdv.participations.destroy_all
         rdv
       end

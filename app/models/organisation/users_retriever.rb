@@ -26,8 +26,7 @@ class Organisation::UsersRetriever
 
   def users_with_recent_participations
     User.joins(participations: :rdv)
-        .where(participations: { created_at: @date_limit.. })
-        .where(rdvs: { organisation: @organisation })
+        .where(rdvs: { organisation: @organisation, starts_at: @date_limit.. })
         .select(:id)
   end
 
