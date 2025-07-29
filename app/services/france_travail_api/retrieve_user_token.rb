@@ -25,11 +25,9 @@ module FranceTravailApi
     end
 
     def handle_success
-      if no_matching_user?
-        raise NoMatchingUser, "Aucun usager trouvé avec l'id #{@user.id}"
-      else
-        @france_travail_user_token = @response_body["jetonUsager"]
-      end
+      raise NoMatchingUser, "Aucun usager trouvé avec l'id #{@user.id}" if no_matching_user?
+
+      @france_travail_user_token = @response_body["jetonUsager"]
     end
 
     def no_matching_user?
@@ -41,7 +39,7 @@ module FranceTravailApi
 
     def handle_error
       error_message = "Erreur lors de l'appel à l'api recherche-usager FT.\n" \
-        "Status: #{@response.status}\n Body: #{@response.body.force_encoding('UTF-8')}"
+                      "Status: #{@response.status}\n Body: #{@response.body.force_encoding('UTF-8')}"
 
       Rails.logger.error(error_message)
 

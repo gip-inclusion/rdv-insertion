@@ -1,10 +1,10 @@
 describe OutgoingWebhooks::FranceTravail::UpsertParticipationJob do
   subject { described_class.perform_now(participation_id: participation.id, timestamp: timestamp) }
+
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, organisation_type: "delegataire_rsa", department: department) }
   let!(:timestamp) { Time.zone.parse("21/01/2023 23:42:11") }
   let!(:participation) { create(:participation, france_travail_id: nil) }
-
 
   before do
     travel_to timestamp

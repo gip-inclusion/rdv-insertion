@@ -3,7 +3,8 @@ module OutgoingWebhooks
     class BaseJob < ApplicationJob
       include LockedAndOrderedJobs
 
-      discard_on FranceTravailApi::RetrieveUserToken::NoMatchingUser, FranceTravailApi::RetrieveUserToken::AccessForbidden
+      discard_on FranceTravailApi::RetrieveUserToken::NoMatchingUser,
+                 FranceTravailApi::RetrieveUserToken::AccessForbidden
 
       def self.lock_key(participation_id:, **)
         "#{base_lock_key}:#{participation_id}"
