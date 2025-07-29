@@ -63,6 +63,22 @@ describe OutgoingWebhooks::FranceTravail::UpsertParticipationJob do
           end.not_to raise_error
         end
       end
+
+      context "when update service fails with AccessForbidden error" do
+        before do
+          allow(FranceTravailApi::UpdateParticipation).to receive(:call)
+            .and_raise(FranceTravailApi::RetrieveUserToken::AccessForbidden, "Aucun usager trouvé")
+        end
+
+        it "discards the job without raising an error" do
+          expect do
+            described_class.perform_now(
+              participation_id: participation.id,
+              timestamp: timestamp
+            )
+          end.not_to raise_error
+        end
+      end
     end
 
     context "when participation is not found" do
