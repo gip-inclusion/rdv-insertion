@@ -90,7 +90,7 @@ class Organisations::RgpdCleanup < BaseService
   def find_useless_rdvs
     Rdv.where.missing(:participations)
        .where(organisation: @organisation)
-       .where(rdvs: { created_at: ...@date_limit })
+       .where(rdvs: { starts_at: ...@date_limit })
   end
 
   def do_not_send_destroy_webhooks_for_rdvs(rdvs)
