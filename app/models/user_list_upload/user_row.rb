@@ -56,7 +56,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def saved_user
-    user_save_attempts.last&.user
+    user_save_attempts.find(&:success?)&.user
   end
 
   def matching_user_attribute_changed?(attribute)
