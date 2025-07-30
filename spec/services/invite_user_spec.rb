@@ -54,6 +54,20 @@ describe InviteUser, type: :service do
       subject
     end
 
+    context "when the user has no linked category configurations for this motif category" do
+      before do
+        category_configuration.update!(motif_category: create(:motif_category))
+      end
+
+      it "is a failure" do
+        is_a_failure
+      end
+
+      it "stores the error" do
+        expect(subject.errors).to eq(["L'organisation de l'usager n'est pas configurée pour cette catégorie de motif"])
+      end
+    end
+
     context "when there is no motif category attributes" do
       let!(:motif_category_attributes) { {} }
 

@@ -73,7 +73,9 @@ class InviteUser < BaseService
 
         all_configurations.first
       else
-        all_configurations.find { |c| c.motif_category_id == motif_category.id }
+        all_configurations.find { |c| c.motif_category_id == motif_category.id }.tap do |configuration|
+          fail!("L'organisation de l'usager n'est pas configurée pour cette catégorie de motif") if configuration.nil?
+        end
       end
   end
 
