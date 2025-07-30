@@ -1,9 +1,10 @@
 describe Stats::MonthlyStats::UpsertStatJob, type: :service do
   subject do
-    described_class.new.perform(structure_type, structure_id, until_date_string)
+    described_class.new.perform(structure_type, structure_id, from_date_string, until_date_string)
   end
 
-  let!(:department) { create(:department, created_at: Time.zone.parse("2022-01-17 12:00:00 +0100")) }
+  let!(:department) { create(:department) }
+  let!(:from_date_string) { "2022-01-17 12:00:00 +0100" }
   let!(:until_date_string) { "2022-05-01 12:00:00 +0100" }
   let!(:date) { until_date_string.to_date }
   let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
@@ -40,7 +41,7 @@ describe Stats::MonthlyStats::UpsertStatJob, type: :service do
       Stat::MONTHLY_STAT_ATTRIBUTES.each do |method_name|
         4.times do |i|
           expect(Stats::MonthlyStats::ComputeAndSaveSingleStatJob).to receive(:perform_later)
-            .with(stat.id, method_name, department.created_at + i.month)
+            .with(stat.id, method_name, from_date_string.to_date + i.month)
             .once
         end
       end
