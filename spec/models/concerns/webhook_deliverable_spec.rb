@@ -162,5 +162,38 @@ describe WebhookDeliverable, type: :concern do
         end
       end
     end
+
+    context "for record deletion" do
+      let!(:rdv) { create(:rdv, organisation: organisation) }
+
+      context "when the record deletion fails" do
+        before do
+          allow(rdv).to receive(:destroy).and_return(false)
+        end
+
+        it "does not send the webhook" do
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
+          rdv.destroy
+        end
+      end
+
+      context "when the record deletion succeeds" do
+        it "sends the webhook" do
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_later)
+          rdv.destroy
+        end
+      end
+
+      context "when the record deletion raises an error" do
+        before do
+          allow(rdv).to receive(:destroy).and_raise(StandardError)
+        end
+
+        it "does not send the webhook" do
+          expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_later)
+          expect { rdv.destroy }.to raise_error(StandardError)
+        end
+      end
+    end
   end
 end
