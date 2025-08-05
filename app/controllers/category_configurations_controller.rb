@@ -85,7 +85,7 @@ class CategoryConfigurationsController < ApplicationController
       FileConfiguration
       .preload(:organisations, category_configurations: [:motif_category, :organisation])
       .where(id: department_scope_file_configuration_ids + agent_scope_file_configuration_ids)
-      .distinct
+      .distinct.order(:created_at)
   end
 
   def department_scope_file_configuration_ids
