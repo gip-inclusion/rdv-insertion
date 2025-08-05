@@ -81,7 +81,8 @@ class CategoryConfigurationsController < ApplicationController
   end
 
   def set_file_configurations
-    @file_configurations = FileConfiguration
+    @file_configurations =
+      FileConfiguration
       .preload(:organisations, category_configurations: [:motif_category, :organisation])
       .where(id: department_scope_file_configuration_ids + agent_scope_file_configuration_ids)
       .distinct

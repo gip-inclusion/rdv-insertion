@@ -119,6 +119,7 @@ describe CategoryConfigurationsController do
         create(:file_configuration, created_by_agent: create(:agent), category_configurations: [])
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it "displays the file_configurations of the department" do
         get :new, params: new_params
 
@@ -143,15 +144,18 @@ describe CategoryConfigurationsController do
           "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_not_used.id}"
         )
         expect(response.body).to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_same_department.id}"
+          "category_configuration_file_configuration_" \
+          "#{file_configuration_created_by_agent_and_used_in_same_department.id}"
         )
         expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_another_department.id}"
+          "category_configuration_file_configuration_" \
+          "#{file_configuration_created_by_agent_and_used_in_another_department.id}"
         )
         expect(response.body).not_to match(
           "category_configuration_file_configuration_#{file_configuration_created_by_another_agent.id}"
         )
       end
+      # rubocop:enable RSpec/ExampleLength
     end
 
     context "when not authorized because not admin" do
@@ -234,6 +238,7 @@ describe CategoryConfigurationsController do
         create(:file_configuration, created_by_agent: create(:agent), category_configurations: [])
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it "displays the file_configurations of the department" do
         get :edit, params: edit_params
 
@@ -258,15 +263,18 @@ describe CategoryConfigurationsController do
           "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_not_used.id}"
         )
         expect(response.body).to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_same_department.id}"
+          "category_configuration_file_configuration_" \
+          "#{file_configuration_created_by_agent_and_used_in_same_department.id}"
         )
         expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_another_department.id}"
+          "category_configuration_file_configuration_" \
+          "#{file_configuration_created_by_agent_and_used_in_another_department.id}"
         )
         expect(response.body).not_to match(
           "category_configuration_file_configuration_#{file_configuration_created_by_another_agent.id}"
         )
       end
+      # rubocop:enable RSpec/ExampleLength
     end
 
     context "when not authorized because not admin" do
