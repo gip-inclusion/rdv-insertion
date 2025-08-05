@@ -30,6 +30,16 @@ describe "Agents can edit category configuration", :js do
       expect(category_configuration.template_rdv_title_override).to eq("ceci est un rdv")
     end
 
+    it "allows to see file configuration details" do
+      visit edit_organisation_category_configuration_path(organisation, organisation.category_configurations.first)
+
+      within "turbo-frame#file_configurations_list" do
+        click_button "Voir le détail"
+      end
+
+      expect(page).to have_content("Détails du fichier d'import")
+    end
+
     it "allows to edit file configuration" do
       visit edit_organisation_category_configuration_path(organisation, organisation.category_configurations.first)
 
