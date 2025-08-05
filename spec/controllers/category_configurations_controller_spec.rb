@@ -93,6 +93,31 @@ describe CategoryConfigurationsController do
       let!(:config_of_organisation_agent_does_not_belong_to) do
         create(:category_configuration, organisation: organisation_agent_does_not_belong_to)
       end
+      let!(:file_configuration_created_by_agent_and_not_used) do
+        create(:file_configuration, created_by_agent: agent, category_configurations: [])
+      end
+      let!(:file_configuration_created_by_agent_and_unused) do
+        create(:file_configuration, created_by_agent: agent, category_configurations: [])
+      end
+      let!(:file_configuration_created_by_agent_and_used_in_same_department) do
+        create(
+          :file_configuration,
+          created_by_agent: agent,
+          category_configurations: [create(:category_configuration, organisation: organisation_agent_belongs_to)]
+        )
+      end
+      let!(:file_configuration_created_by_agent_and_used_in_another_department) do
+        create(
+          :file_configuration,
+          created_by_agent: agent,
+          category_configurations: [
+            create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
+          ]
+        )
+      end
+      let!(:file_configuration_created_by_another_agent) do
+        create(:file_configuration, created_by_agent: create(:agent), category_configurations: [])
+      end
 
       it "displays the file_configurations of the department" do
         get :new, params: new_params
@@ -113,6 +138,18 @@ describe CategoryConfigurationsController do
         )
         expect(response.body).not_to match(
           "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
+        )
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_not_used.id}"
+        )
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_same_department.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_another_department.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_another_agent.id}"
         )
       end
     end
@@ -171,6 +208,31 @@ describe CategoryConfigurationsController do
       let!(:config_of_organisation_agent_does_not_belong_to) do
         create(:category_configuration, organisation: organisation_agent_does_not_belong_to)
       end
+      let!(:file_configuration_created_by_agent_and_not_used) do
+        create(:file_configuration, created_by_agent: agent, category_configurations: [])
+      end
+      let!(:file_configuration_created_by_agent_and_unused) do
+        create(:file_configuration, created_by_agent: agent, category_configurations: [])
+      end
+      let!(:file_configuration_created_by_agent_and_used_in_same_department) do
+        create(
+          :file_configuration,
+          created_by_agent: agent,
+          category_configurations: [create(:category_configuration, organisation: organisation_agent_belongs_to)]
+        )
+      end
+      let!(:file_configuration_created_by_agent_and_used_in_another_department) do
+        create(
+          :file_configuration,
+          created_by_agent: agent,
+          category_configurations: [
+            create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
+          ]
+        )
+      end
+      let!(:file_configuration_created_by_another_agent) do
+        create(:file_configuration, created_by_agent: create(:agent), category_configurations: [])
+      end
 
       it "displays the file_configurations of the department" do
         get :edit, params: edit_params
@@ -191,6 +253,18 @@ describe CategoryConfigurationsController do
         )
         expect(response.body).not_to match(
           "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
+        )
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_not_used.id}"
+        )
+        expect(response.body).to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_same_department.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_used_in_another_department.id}"
+        )
+        expect(response.body).not_to match(
+          "category_configuration_file_configuration_#{file_configuration_created_by_another_agent.id}"
         )
       end
     end

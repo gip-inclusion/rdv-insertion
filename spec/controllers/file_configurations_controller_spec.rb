@@ -54,30 +54,14 @@ describe FileConfigurationsController do
   end
 
   describe "#new" do
-    let!(:new_params) { { category_configuration_id: category_configuration.id } }
-
     it "displays the new form for file_configuration" do
-      get :new, params: new_params
+      get :new
 
       expect(response).to be_successful
       expect(unescaped_response_body).to match(/Créer fichier d'import/)
       expect(unescaped_response_body).to match(/new_file_configuration/)
       expect(unescaped_response_body).to match(/Information collectée/)
       expect(unescaped_response_body).to match(/Nom de la colonne dans le fichier/)
-    end
-
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        get :new, params: new_params
-
-        expect(response).to redirect_to(root_path)
-      end
     end
   end
 
@@ -127,8 +111,7 @@ describe FileConfigurationsController do
         file_configuration: {
           sheet_name: "INDEX BENEFICIAIRES", title_column: "Civilité", first_name_column: "Prénom",
           last_name_column: "Nom", role_column: "Rôle", email_column: "Adresses mail"
-        },
-        category_configuration_id: category_configuration.id
+        }
       }
     end
 
@@ -149,8 +132,8 @@ describe FileConfigurationsController do
     context "when the creation succeeds" do
       it "redirects to the category_configuration" do
         post :create, params: create_params, format: :turbo_stream
-        expect(flash[:success]).to eq("Le fichier d'import a été créé avec succès")
-        expect(response).to redirect_to(organisation_category_configuration_path(organisation, category_configuration))
+        expect(response).to be_successful
+        expect(unescaped_response_body).to match(/Le fichier d'import a été créé avec succès/)
       end
     end
 
@@ -159,8 +142,7 @@ describe FileConfigurationsController do
         {
           file_configuration: {
             sheet_name: "INDEX BENEFICIAIRES"
-          },
-          category_configuration_id: category_configuration.id
+          }
         }
       end
 
@@ -174,20 +156,6 @@ describe FileConfigurationsController do
         expect(unescaped_response_body).to match(/Civilité doit être rempli/)
         expect(unescaped_response_body).to match(/Prénom doit être rempli/)
         expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
-      end
-    end
-
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "is forbidden" do
-        post :create, params: create_params, format: :turbo_stream
-
-        expect(response).to have_http_status(:forbidden)
       end
     end
   end
@@ -216,7 +184,7 @@ describe FileConfigurationsController do
     context "when the update succeeds" do
       it "is a success" do
         patch :update, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/flashes/)
+        expect(response).to be_successful
         expect(unescaped_response_body).to match(/Le fichier d'import a été modifié avec succès/)
       end
     end
