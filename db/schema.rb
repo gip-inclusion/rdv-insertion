@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_23_143614) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -233,6 +233,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_143614) do
     t.string "organisation_search_terms_column"
     t.string "referent_email_column"
     t.string "tags_column"
+    t.bigint "created_by_agent_id"
+    t.index ["created_by_agent_id"], name: "index_file_configurations_on_created_by_agent_id"
   end
 
   create_table "follow_ups", force: :cascade do |t|
@@ -712,6 +714,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_143614) do
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "dpa_agreements", "agents"
   add_foreign_key "dpa_agreements", "organisations"
+  add_foreign_key "file_configurations", "agents", column: "created_by_agent_id"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
   add_foreign_key "invitations", "departments"

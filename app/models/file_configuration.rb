@@ -1,4 +1,6 @@
 class FileConfiguration < ApplicationRecord
+  belongs_to :created_by_agent, class_name: "Agent", optional: true
+
   has_many :category_configurations, dependent: :restrict_with_error
   has_many :organisations, through: :category_configurations
 
@@ -14,22 +16,17 @@ class FileConfiguration < ApplicationRecord
     User.attribute_names.find { |n| n == attribute_name.delete_suffix("_column") }
   end
 
+  def created_by_agent?(agent)
+    created_by_agent == agent
+  end
+
+  def no_category_configuration?
+    category_configurations.empty?
+  end
+
   # a hash with key-value pairs for all informed the column names of the file
   def column_attributes
     attributes.slice(*self.class.column_attributes_names).compact
-  end
-
-  def save_with_category_configuration(category_configuration)
-    save_with_category_configuration!(category_configuration)
-  rescue ActiveRecord::RecordInvalid
-    false
-  end
-
-  def save_with_category_configuration!(category_configuration)
-    transaction do
-      save!
-      category_configuration.update!(file_configuration: self)
-    end
   end
 
   private
