@@ -41,7 +41,9 @@ module WebhookDeliverable
       generate_webhook_payload(:destroyed, endpoint.organisation_type)
     end
     # Execute la suppression, après avoir construit les données à envoyer
-    yield if block_given?
+    result = yield if block_given?
+    return if result == false
+
     payloads.each do |endpoint, payload|
       OutgoingWebhooks::SendWebhookJob.perform_later(endpoint.id, payload)
     end
