@@ -3,8 +3,9 @@
       data: {
         controller: "remote-modal",
         action: "turbo:before-render@document->remote-modal#hideBeforeRender turbo:submit-end->remote-modal#submitEnd"
-      }.merge(local_assigns[:dismissable] == false ? { "bs-keyboard": "false", "bs-backdrop": "static" } : {}), 
-      class: "modal fade in", 
+      }.merge(local_assigns[:data_attributes] || {})
+       .merge(local_assigns[:dismissable] == false ? { "bs-keyboard": "false", "bs-backdrop": "static" } : {}),
+      class: "modal fade in",
       tabindex: "-1"
     ) do %>
     <div class="modal-dialog <%= "large-modal-card" if local_assigns[:size] == :large %>">

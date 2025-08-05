@@ -7,7 +7,7 @@ export default class extends Controller {
     this.modal.show();
 
     // Listener for when the modal is closed
-    this.element.addEventListener('hidden.bs.modal', () => {
+    this.element.addEventListener("hidden.bs.modal", () => {
       if (this.#shouldReloadOnClose()) {
         window.location.reload();
       }
@@ -38,6 +38,6 @@ export default class extends Controller {
 
 
   #shouldReloadOnClose() {
-    return this.element.dataset.reloadOnClose === 'true';
+    return this.element.dataset.reloadOnClose === "true";
   }
 }

@@ -7,11 +7,15 @@
   %>
   <div class="background-blue-light d-flex justify-content-between px-4 pt-2 rounded flex-grow-1">
     <div class="flex-grow-1 d-flex flex-column justify-content-center">
-      <p class="mb-0">Utilisé pour :</p>
-      <% file_configuration.category_configurations
-                           .select { |category_configuration| category_configuration.department_id == department.id && policy(category_configuration).show? }
-                           .group_by(&:motif_category).each do |motif_category, category_configurations| %>
-        <p class="mb-2">- <strong><%= motif_category.name %></strong> par <strong><%= category_configurations.map(&:organisation).join(', ') %></strong></p>
+      <% if file_configuration.no_category_configuration? && file_configuration.created_by_agent?(current_agent) %>
+        <p class="mb-0">Créé par vous il y a <%= time_ago_in_words(file_configuration.created_at) %> et non utilisé</p>
+      <% else %>
+        <p class="mb-0">Utilisé pour :</p>
+        <% file_configuration.category_configurations
+                             .select { |category_configuration| category_configuration.department_id == department.id && policy(category_configuration).show? }
+                             .group_by(&:motif_category).each do |motif_category, category_configurations| %>
+          <p class="mb-2">- <strong><%= motif_category.name %></strong> par <strong><%= category_configurations.map(&:organisation).join(', ') %></strong></p>
+        <% end %>
       <% end %>
     </div>
     <div class="d-flex flex-column justify-content-center">
