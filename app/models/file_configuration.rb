@@ -1,4 +1,6 @@
 class FileConfiguration < ApplicationRecord
+  belongs_to :created_by_agent, class_name: "Agent", optional: true
+
   has_many :category_configurations, dependent: :restrict_with_error
   has_many :organisations, through: :category_configurations
 

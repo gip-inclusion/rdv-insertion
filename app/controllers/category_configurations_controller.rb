@@ -81,10 +81,22 @@ class CategoryConfigurationsController < ApplicationController
   end
 
   def set_file_configurations
-    @file_configurations = policy_scope(FileConfiguration)
-                           .preload(category_configurations: [:motif_category, :organisation])
-                           .where(organisations: { department_id: current_department_id })
-                           .distinct
+    @file_configurations = FileConfiguration
+      .preload(:organisations, category_configurations: [:motif_category, :organisation])
+      .where(id: department_scope_file_configuration_ids + agent_scope_file_configuration_ids)
+      .distinct
+  end
+
+  def department_scope_file_configuration_ids
+    policy_scope(FileConfiguration)
+      .joins(category_configurations: :organisation)
+      .where(organisations: { department_id: current_department_id }).pluck(:id)
+  end
+
+  def agent_scope_file_configuration_ids
+    policy_scope(FileConfiguration).where(created_by_agent: current_agent)
+                                   .where.missing(:category_configurations)
+                                   .pluck(:id)
   end
 
   def set_template

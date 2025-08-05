@@ -7,7 +7,6 @@ class FileConfigurationsController < ApplicationController
     :rights_opening_date_column, :organisation_search_terms_column, :referent_email_column, :france_travail_id_column
   ].freeze
 
-  before_action :set_category_configuration, only: [:new, :create]
   before_action :set_file_configuration, only: [:show, :edit, :update, :download_template]
 
   def show; end
@@ -29,12 +28,9 @@ class FileConfigurationsController < ApplicationController
   end
 
   def create
-    @file_configuration = FileConfiguration.new(**file_configuration_params)
-    if @file_configuration.save_with_category_configuration(@category_configuration)
-      flash[:success] = "Le fichier d'import a été créé avec succès"
-      redirect_to organisation_category_configuration_path(
-        @category_configuration.organisation, @category_configuration
-      )
+    @file_configuration = FileConfiguration.new(file_configuration_params.merge(created_by_agent: current_agent))
+    if @file_configuration.save
+      turbo_stream_display_success_modal("Le fichier d'import a été créé avec succès", reload_on_close: true)
     else
       turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
     end
@@ -43,7 +39,7 @@ class FileConfigurationsController < ApplicationController
   def update
     @file_configuration.assign_attributes(**file_configuration_params)
     if @file_configuration.save
-      turbo_stream_prepend_flash_messages(success: "Le fichier d'import a été modifié avec succès")
+      turbo_stream_display_success_modal("Le fichier d'import a été modifié avec succès")
     else
       turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
     end
@@ -53,11 +49,6 @@ class FileConfigurationsController < ApplicationController
 
   def file_configuration_params
     params.expect(file_configuration: PERMITTED_PARAMS)
-  end
-
-  def set_category_configuration
-    @category_configuration = CategoryConfiguration.find(params[:category_configuration_id])
-    authorize @category_configuration, :edit?
   end
 
   def set_file_configuration
