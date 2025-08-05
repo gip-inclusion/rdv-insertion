@@ -8,6 +8,6 @@ module CookiesConsentConcern
   private
 
   def set_should_display_cookies_consent
-    @should_display_cookies_consent = logged_in? && current_agent.cookies_consent.nil?
+    @should_display_cookies_consent = logged_in? && current_agent.cookies_consent.nil? && !agent_impersonated?
   end
 end
