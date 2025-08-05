@@ -46,3 +46,6 @@ remove_users_from_orgs_with_old_archives_job:
 rgpd_cleanup_job:
   cron: "0 0 * * *" # we destroy inactive users and useless resources once a day, at 00:00
   class: "RgpdCleanupJob"
+delete_unused_file_configurations_job:
+  cron: "0 7 * * *" # we delete unused file configurations once a day, at 07:00
+  class: "FileConfigurations::DeleteUnusedJob"
