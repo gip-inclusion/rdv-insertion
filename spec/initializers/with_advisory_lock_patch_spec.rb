@@ -1,6 +1,5 @@
 # This is a regression test to ensure that the with_advisory_lock_patch is applied correctly
 # and does not break the lock mechanism
-
 # rubocop:disable RSpec/DescribeClass
 RSpec.describe "with_advisory_lock" do
   after do
@@ -92,7 +91,5 @@ RSpec.describe "with_advisory_lock" do
     expect(uncached_lock_queries).to eq(2)
     expect(cached_lock_queries).to eq(0)
   end
-
-
 end
 # rubocop:enable RSpec/DescribeClass
