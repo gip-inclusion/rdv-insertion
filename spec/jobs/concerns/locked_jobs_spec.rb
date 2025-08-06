@@ -14,7 +14,7 @@ RSpec.describe LockedJobs, type: :concern do
   end
 
   after do
-    # Ensure all connections are returned to the pool and locks are released
+    # Ensure all DB connections are returned and locks are cleared after each test
     ActiveRecord::Base.connection_pool.clear_reloadable_connections!
   end
 
@@ -23,8 +23,9 @@ RSpec.describe LockedJobs, type: :concern do
       exceptions = []
 
       thread1 = Thread.new do
-        # this ensures the thread release its database connections properly so that locks don't persist
-        # beyond the test
+        # Each thread must use its own DB connection to ensure advisory locks work correctly.
+        # `with_connection` also ensures connections are checked back into the pool,
+        # so that locks don't persist after the test and no leaks occur.
         ActiveRecord::Base.connection_pool.with_connection do
           dummy_class.perform_now(1)
         rescue StandardError => e
