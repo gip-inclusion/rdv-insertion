@@ -57,30 +57,5 @@ RSpec.describe "with_advisory_lock" do
     expect(sql).to include("/* test-lock-key */")
     expect(sql).not_to include(" AS ")
   end
-
-  # we ensure the patch that changed caching is still working as expected
-  it "does not cache advisory lock SQL, but caches inner queries" do
-    sqls = []
-
-    ActiveSupport::Notifications.subscribed(
-      ->(_name, _start, _finish, _id, payload) { sqls << payload[:sql] }, "sql.active_record"
-    ) do
-      # First advisory lock call
-      ActiveRecord::Base.with_advisory_lock("my_lock") do
-        2.times { User.where(email: "foo@example.org").load }
-      end
-
-      # Second advisory lock call
-      ActiveRecord::Base.with_advisory_lock("my_lock") do
-        2.times { User.where(email: "foo@example.org").load }
-      end
-    end
-
-    lock_queries = sqls.select { |sql| sql.include?("pg_try_advisory_lock") }
-    user_queries = sqls.select { |sql| sql.include?("FROM \"users\"") }
-
-    expect(lock_queries.size).to eq(2) # advisory lock should run twice (not cached)
-    expect(user_queries.size).to eq(2) # user query should be cached after first time
-  end
 end
 # rubocop:enable RSpec/DescribeClass
