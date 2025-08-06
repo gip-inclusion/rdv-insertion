@@ -57,5 +57,42 @@ RSpec.describe "with_advisory_lock" do
     expect(sql).to include("/* test-lock-key */")
     expect(sql).not_to include(" AS ")
   end
+
+  # we ensure the patch that changed caching is still working as expected
+  it "uses the query cache correctly" do
+    user = create(:user)
+    sqls = []
+
+    ActiveSupport::Notifications.subscribed(
+      ->(_name, _start, _finish, _id, payload) { sqls << payload },
+      "sql.active_record"
+    ) do
+      # we need to activate the query cache which is disabled in tests by default
+      ActiveRecord::Base.cache do
+        2.times do
+          ActiveRecord::Base.with_advisory_lock("lock_key") do
+            User.where(id: user.id).to_a
+          end
+        end
+      end
+    end
+
+    user_queries = sqls.select { |s| s[:sql].include?("FROM \"users\"") }
+    lock_queries = sqls.select { |s| s[:sql].include?("pg_try_advisory_lock") }
+
+    uncached_user_queries = user_queries.count { |s| !s[:cached] }
+    cached_user_queries   = user_queries.count { |s| s[:cached] }
+
+    uncached_lock_queries = lock_queries.count { |s| !s[:cached] }
+    cached_lock_queries   = lock_queries.count { |s| s[:cached] }
+
+    expect(uncached_user_queries).to eq(1)
+    expect(cached_user_queries).to eq(1)
+
+    expect(uncached_lock_queries).to eq(2)
+    expect(cached_lock_queries).to eq(0)
+  end
+
+
 end
 # rubocop:enable RSpec/DescribeClass
