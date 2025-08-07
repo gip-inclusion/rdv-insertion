@@ -24,6 +24,14 @@
   a[href]:not(.fr-link):hover {
     --underline-hover-width: unset;
   }
+  input[type="radio"]:checked,
+  input[type="checkbox"]:checked,
+  input[type="radio"]:focus,
+  input[type="checkbox"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
   .btn-blue-out {
     &:hover {
       background-color: $light-grey-2 !important;
