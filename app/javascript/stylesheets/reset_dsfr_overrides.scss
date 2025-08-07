@@ -8,7 +8,10 @@
 .reset-dsfr-overrides {
   a {
     &::after {
-        display: none;
+      display: none;
+    }
+    &:active {
+      background-color: transparent !important;
     }
   }
   p {
@@ -20,6 +23,14 @@
   a[href]:not(.fr-link):active,
   a[href]:not(.fr-link):hover {
     --underline-hover-width: unset;
+  }
+  input[type="radio"]:checked,
+  input[type="checkbox"]:checked,
+  input[type="radio"]:focus,
+  input[type="checkbox"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
   }
   .btn-blue-out {
     &:hover {
@@ -103,15 +114,30 @@
       background-color: $dark-blue;
     }
   }
-  
+
   .btn-grey {
     border-color: $light-grey;
     background-color: white;
     color: black;
   }
-  
+
   .btn-sm {
     min-width: 105px !important;
     padding: 0.25rem;
+  }
+
+  // this avoids the grey hover on links in the header like the logo link
+  .fr-header__brand,
+  .fr-enlarge-link {
+    --background-raised-grey-hover: transparent;
+    --background-raised-grey-active: transparent;
+  }
+
+  // this class can be added to elements that should not have a hover effect
+  .no-hover-bg:hover {
+    background-color: initial !important;
+    // You might also need to override DSFR's CSS custom properties for this button
+    --background-action-high-blue-france: initial;
+    --background-action-high-blue-france-hover: initial;
   }
 }
