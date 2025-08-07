@@ -38,7 +38,7 @@
               <% else %>
                 <li>
                   <%= form_tag("/auth/rdvservicepublic", method: "post", data: { turbo: false }) do %>
-                    <button class="fr-btn fr-icon-lock-line" type='submit'>Connexion agent</button>
+                    <button class="fr-btn fr-icon-lock-line no-hover-bg" type='submit'>Connexion agent</button>
                   <% end %>
                 </li>
               <% end %>
