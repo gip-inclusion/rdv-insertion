@@ -8,7 +8,10 @@
 .reset-dsfr-overrides {
   a {
     &::after {
-        display: none;
+      display: none;
+    }
+    &:active {
+      background-color: transparent !important;
     }
   }
   p {
