@@ -314,15 +314,11 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def pick_most_relevant_phone_number(cnaf_phone_number)
-    return phone_number if cnaf_phone_number.blank?
+    return if cnaf_phone_number.blank?
 
     parsed_cnaf_phone_number = PhoneNumberHelper.parsed_number(cnaf_phone_number)
 
-    if parsed_cnaf_phone_number.type == :fixed_line
-      phone_number.presence || parsed_cnaf_phone_number.e164
-    else
-      parsed_cnaf_phone_number.e164
-    end
+    parsed_cnaf_phone_number.e164 unless parsed_cnaf_phone_number.type == :fixed_line && phone_number.present?
   end
 
   def retrieve_organisation_by_id(organisation_id)
