@@ -308,12 +308,12 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def format_cnaf_data(cnaf_data)
     {
-      "phone_number" => pick_most_relevant_phone_number(cnaf_data["phone_number"]),
+      "phone_number" => pick_cnaf_phone_number_if_relevant(cnaf_data["phone_number"]),
       "email" => cnaf_data["email"]
     }.compact_blank.transform_values(&:squish)
   end
 
-  def pick_most_relevant_phone_number(cnaf_phone_number)
+  def pick_cnaf_phone_number_if_relevant(cnaf_phone_number)
     return if cnaf_phone_number.blank?
 
     parsed_cnaf_phone_number = PhoneNumberHelper.parsed_number(cnaf_phone_number)
