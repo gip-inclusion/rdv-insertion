@@ -4,13 +4,10 @@ module SuperAdmins
     # For example, you may want to send an email after a foo is updated.
     #
     def index
-      resources = Administrate::Search.new(scoped_resource, dashboard_class, nil).run
-      resources = order.apply(resources)
-      resources = resources.page(params[:page]).per(records_per_page)
-
       page = Administrate::Page::Collection.new(dashboard, order:)
+      resources = order.apply(scoped_resource).page(params[:page]).per(records_per_page)
 
-      render locals: { resources:, search_term: params[:search], page:, show_search_bar: show_search_bar? }
+      render locals: { resources:, search_term: params[:search], page:, show_search_bar: true }
     end
 
     def update
@@ -33,11 +30,9 @@ module SuperAdmins
     end
 
     def scoped_resource
-      if params[:search].present?
-        User.search_by_text(params[:search])
-      else
-        User.active
-      end
+      return User.active if params[:search].blank?
+
+      User.active.search_by_text(params[:search])
     end
 
     # Override this method to specify custom lookup behavior.
