@@ -20,8 +20,8 @@ class UsersController < ApplicationController
                 :set_users, :set_follow_ups, :set_orientation_types, :set_filterable_tags,
                 :set_referents_list, :filter_users, :order_users,
                 for: :index
-  before_action :set_user, :ensure_user_presence_in_structure, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
+  before_action :set_user, :ensure_user_presence_in_structure, :set_organisation, :set_department,
+                :set_all_configurations, :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department,
                 for: :new

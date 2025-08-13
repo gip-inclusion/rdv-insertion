@@ -2,8 +2,8 @@ module Users
   class FollowUpsController < ApplicationController
     include Users::EnsurePresenceInStructure
 
-    before_action :set_user, :ensure_user_presence_in_structure, :set_department, :set_organisation, :set_user_department_organisations,
-                  :set_all_configurations, :set_user_tags,
+    before_action :set_user, :ensure_user_presence_in_structure, :set_department, :set_organisation,
+                  :set_user_department_organisations, :set_all_configurations, :set_user_tags,
                   :set_back_to_users_list_url, only: [:index]
 
     include BackToListConcern
