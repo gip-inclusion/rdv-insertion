@@ -32,7 +32,7 @@ describe Users::ParcoursController do
       let(:user_from_another_organisation) { create(:user, organisations: [create(:organisation)]) }
 
       it "redirects with authorization error" do
-        get :index, params: { user_id: user_from_another_organisation.id, organisation_id: organisation.id }
+        get :show, params: { user_id: user_from_another_organisation.id, organisation_id: organisation.id }
 
         expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
         expect(flash[:error]).to include("Aucun utilisateur trouvé avec cet identifiant")
