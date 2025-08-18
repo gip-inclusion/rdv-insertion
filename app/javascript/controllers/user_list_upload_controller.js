@@ -41,6 +41,17 @@ export default class extends Controller {
     }
   }
 
+  openFilePicker() {
+    this.inputTarget.click()
+  }
+
+  handleOpenPickerKeydown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      this.openFilePicker()
+    }
+  }
+
   handleFileRemove() {
     this.#removeFileInput()
     this.#updateFileName("")
