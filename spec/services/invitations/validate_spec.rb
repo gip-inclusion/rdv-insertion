@@ -209,7 +209,7 @@ describe Invitations::Validate, type: :service do
               message: "Aucun motif de suivi n'a été défini pour la catégorie #{category_orientation.name}",
               template_name: "no_follow_up_category",
               locals: { motif_category_name: "RSA orientation",
-                        organisation_id: organisation.id }
+                        rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id }
             )
           )
         end
