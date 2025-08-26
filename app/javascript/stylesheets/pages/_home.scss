@@ -1,0 +1,208 @@
+#home {
+  padding-top: 50px;
+
+  #home-title {
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+
+  #home-subtitle {
+    span {
+      font-weight: 700;
+    }
+  }
+
+
+  #home-cd-logos {
+    margin-top: 60px;
+
+    img {
+      width: 70px;
+    }
+  }
+
+  #home-facts {
+    background-color: $light;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 20px 0px 0px;
+    margin-top: 80px;
+    margin-bottom: 25px;
+  }
+
+  .fact-card {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .fact-card-title {
+    font-weight: 700;
+    font-size: 30px;
+    color: $dark-blue;
+  }
+
+  .fact-card-subtitle {
+    font-size: 14px;
+    text-align: center;
+    max-width: 180px;
+  }
+
+  #home-reinvent {
+    margin-top: 50px;
+    margin-bottom: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    #import-illustration {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 25px;
+
+      img {
+        max-width: 500px;
+      }
+    }
+
+    #reinvent-content {
+      #reinvent-content-title {
+        padding-right: 30px;
+        
+        h2 {
+          font-weight: 700;
+        }
+
+        p {
+          padding-right: 40px;
+        }
+      }
+
+      #reinvent-content-features {
+        margin-top: 25px;
+
+        .reinvent-content-feature {
+          border-top: 1px solid $light-grey;
+          padding: 12px 12px;
+          cursor: pointer;
+
+          &::before {
+            content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000091'%3E%3Cpath d='M12 15.0006L7.75732 10.758L9.17154 9.34375L12 12.1722L14.8284 9.34375L16.2426 10.758L12 15.0006Z'%3E%3C/path%3E%3C/svg%3E");
+            float: right;
+            width: 24px;
+            height: 24px;
+            bottom: 5px;
+            position: relative;
+          }
+
+          &:last-child {
+            border-bottom: 1px solid $light-grey;
+          }
+
+          h4 {
+            font-weight: 700;
+            font-size: 18px;
+            color: $dark-blue;
+
+          }
+
+          p {
+            display: none;
+            margin: 0;
+          }
+
+          &.active {
+            p {
+              display: block;
+            }
+
+            &::before {
+              transform: rotate(180deg);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  #home-quotes {
+    background-color: $light;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    margin-top: 70px;
+
+    .quote-card {
+      padding: 0px 32px;
+      border-left: 1px solid $light-grey;
+      max-width: 750px;
+      display: none;
+
+      &.active {
+        display: block;
+        animation: fadeInFromRight 0.5s ease-in-out;
+      }
+
+      @keyframes fadeInFromRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      &::before {
+        content: "";
+        background-image: url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3335 4.00024H18.6668C21.4958 4.00024 24.2089 5.12405 26.2093 7.12444C28.2097 9.12483 29.3335 11.8379 29.3335 14.6669C29.3335 17.4959 28.2097 20.209 26.2093 22.2094C24.2089 24.2098 21.4958 25.3336 18.6668 25.3336V30.0002C12.0001 27.3336 2.66681 23.3336 2.66681 14.6669C2.66681 11.8379 3.79062 9.12483 5.791 7.12444C7.79139 5.12405 10.5045 4.00024 13.3335 4.00024ZM16.0001 22.6669H18.6668C19.7174 22.6669 20.7577 22.46 21.7283 22.0579C22.6989 21.6559 23.5808 21.0666 24.3237 20.3238C25.0665 19.5809 25.6558 18.699 26.0578 17.7284C26.4599 16.7578 26.6668 15.7175 26.6668 14.6669C26.6668 13.6163 26.4599 12.576 26.0578 11.6054C25.6558 10.6348 25.0665 9.75293 24.3237 9.01006C23.5808 8.26719 22.6989 7.67791 21.7283 7.27587C20.7577 6.87384 19.7174 6.66691 18.6668 6.66691H13.3335C11.2117 6.66691 9.17691 7.50977 7.67662 9.01006C6.17633 10.5103 5.33348 12.5452 5.33348 14.6669C5.33348 19.4802 8.61614 22.6216 16.0001 25.9736V22.6669Z" fill="%236A6AF4"/><path d="M15.6001 19.3336L12.7365 14.6669L15.6001 10.0002H12.5092L9.60014 14.6669L12.5092 19.3336H15.6001ZM21.6001 19.3336L18.7365 14.6669L21.6001 10.0002H18.5092L15.6001 14.6669L18.5092 19.3336H21.6001Z" fill="%236A6AF4"/></svg>');
+        background-repeat: no-repeat;
+        height: 30px;
+        display: block;
+        width: 30px;
+        margin-bottom: 20px;
+      }
+
+      .quote-card-text {
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      .quote-card-author {
+        font-size: 14px;
+        font-weight: 700;
+      }
+    }
+
+    #home-quotes-slide-indicator {
+      display: flex;
+      gap: 7px;
+      margin-top: 20px;
+    }
+
+    .slide-indicator-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: $light-grey;
+    }
+
+    .slide-indicator-dot.active {
+      background-color: $dark-blue;
+    }
+
+    .slide-indicator-dot:hover {
+      cursor: pointer;
+    }
+
+    .slide-indicator-dot:active {
+      background-color: $dark-blue;
+    }
+  }
+}

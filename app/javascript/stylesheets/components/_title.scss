@@ -35,12 +35,13 @@
 .welcome-title {
   color: $dark-blue;
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
 
   h1 {
-    font-size: 44px;
-    line-height: 60px;
+    font-size: 40px;
+    line-height: 50px;
     font-weight: 700;
   }
 }

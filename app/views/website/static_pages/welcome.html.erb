@@ -1,68 +1,111 @@
-<div class="container-fluid mt-5">
-  <div class="row justify-content-center mb-5">
-    <div class="col-11 col-lg-5 d-flex flex-column mt-auto mb-5">
-      <div class="welcome-title mt-sm-5">
-        <h1 class="text-left w-100">Accélérez les rendez&#8209;vous d'insertion et diminuez le taux d'absentéisme</h1>
+<div class="fr-container" id="home">
+  <div class="fr-grid-row fr-mb-3v fr-mt-6v">
+    <div class="fr-col-8 fr-mt-4v">
+      <div class="fr-mb-7v">
+        <h1 id="home-title">Rdv-insertion, l'outil de pilotage de rendez-vous des acteurs du RPE</h1>
+        <p id="home-subtitle">Faites confiance à rdv-insertion pour <span class="text-red">gérer 30-000 rendez-vous RSA par mois</span></p>
       </div>
-      <div class="d-flex">
-        <div class="me-2">
-          <%= link_to "https://tally.so/r/nGJo0k", target: "_blank" do %>
-            <button class="btn btn-blue">Être rappelé</button>
+      <div class="fr-grid-row">
+        <div class="fr-mr-3v">
+          <%= link_to "https://tally.so/r/nGJo0k", class: "fr-btn", target: "_blank" do %>
+            Être rappelé
           <% end %>
         </div>
         <div>
-          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/blog/cas-utilisateur-1-le-departement-de-la-drome", target: "_blank" do %>
-            <button class="btn btn-blue-out">Découvrir un cas utilisateur</button>
+          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/blog/cas-utilisateur-1-le-departement-de-la-drome", class: "fr-btn fr-btn--secondary", target: "_blank" do %>
+            Découvrir un cas utilisateur
           <% end %>
         </div>
       </div>
+      <div class="d-flex flex-column" id="home-cd-logos">
+        <p class="fr-mb-2w">Déjà 32 conseils départementaux utilisent nos services</p>
+        <div>
+          <%= image_tag "logos/logo_website_moselle.svg" %>
+        </div>
+      </div>
     </div>
-    <div class="col-11 col-lg-5">
-      <%= image_tag "illustrations/welcome-illustration.svg", class: "welcome-illustration", alt: "Image d'illustration de prise de rendez-vous" %>
-    </div>
-  </div>
-
-  <div class="row justify-content-center">
-    <h3 class="col-10 text-left mb-5">Rdv-insertion permet aux départements d’organiser facilement leurs rendez-vous avec leurs usagers allocataires du RSA (rendez-vous individuels, collectifs, rendez-vous de suivi ou ateliers).</h3>
-  </div>
-
-  <div class="row mx-5 mb-4">
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/computer.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration en quelques clics" %>
-      <p class="text-center">Invitez en masse par SMS et email en quelques clics</p>
-    </div>
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/letter.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration courrier" %>
-      <p class="text-center">Diminuez les tâches administratives de gestion des courriers et d'agenda
-    </div>
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/calendar.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration calendrier" %>
-      <p class="text-center">Gérez facilement les relances et le suivi des prises de rendez-vous
-    </div>
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/choice.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration du choix" %>
-      <p class="text-center">Les personnes invitées sont autonomes dans leur prise de rendez-vous et bénéficient d'un rappel automatique
+    <div class="fr-col-4">
+      <%= image_tag "illustrations/welcome-illustration.png", class: "welcome-illustration", alt: "Image d'illustration de prise de rendez-vous", style:"width: 130%" %>
     </div>
   </div>
-  <div class="row d-flex justify-content-center card-demo">
-    <h3 class="col-10 text-center mb-5 text-dark-blue">Et ça ressemble à quoi ?</h3>
-    <div class="col-10 col-md-8">
-      <video controls width="100%" src="https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/rdv_insertion_landing.mp4"></video>
+  <div class="fr-grid-row" id="home-facts">
+    <div class="fact-card">
+      <p class="fact-card-title">85%</p>
+      <p class="fact-card-subtitle">de taux de présence moyen aux rendez-vous</p>
+    </div>
+    <div class="fact-card">
+      <p class="fact-card-title">– 7.5 jours</p>
+      <p class="fact-card-subtitle">en moyenne de réduction des délais d'orientation</p>
+    </div>
+    <div class="fact-card">
+      <p class="fact-card-title">– 2.3 jours</p>
+      <p class="fact-card-subtitle">en moyenne de réduction des délais d'accompagnement</p>
+    </div>
+    <div class="fact-card">
+      <p class="fact-card-title">45 min</p>
+      <p class="fact-card-subtitle">de temps gagné par jour par agent des conseils départementaux</p>
     </div>
   </div>
-  <div class="row justify-content-center background-dark-blue text-white">
-    <p class="col-10 text-left mt-4 mb-4">Ce service est proposé par le Groupement d’Intérêt Public <%= link_to "\"Plateforme de l'inclusion\"", "https://inclusion.beta.gouv.fr/nos-services/", class: "link-blue-light", target: :blank %>, créé par arrêté en avril 2022. Sa mission est de développer de nouveaux services publics pour faciliter la vie des personnes en insertion et de celles et ceux qui les accompagnent.</p>
-  </div>
-
-  <div class="row justify-content-center card-demo">
-    <h2 class="col-10 text-center text-dark-blue bold mb-4">Ça vous intéresse&nbsp;?</h2>
-    <p class="col-10 text-center">Vous êtes un conseil départemental et vous souhaitez en savoir plus sur notre service ?</p>
-    <p class="col-10 text-center mb-4">Notre équipe est à votre écoute pour adapter rdv-insertion à vos besoins.</p>
-    <div class="col-10 text-center">
-      <%= link_to "https://calendly.com/eva-laurent-rdvi/60min", target: "_blank" do %>
-        <button class="btn btn-blue">Demander une démo</button>
-      <% end %>
+  <div class="fr-grid-row" id="home-reinvent">
+    <div id="import-illustration">
+      <%= image_tag "illustrations/upload.png", alt: "Image d'illustration de l'import d'usagers" %>
+    </div>
+    <div id="reinvent-content">
+      <div id="reinvent-content-title">
+        <h2>Réinventer votre manière de gérer vos rendez-vous RSA</h2>
+        <p>Importez, invitez et pilotez rapidement vos cohortes de bénéficiaires</p>
+      </div>
+        <div id="reinvent-content-features" data-controller="home-reinvent">
+        <div class="reinvent-content-feature active" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+          <h4>100% en ligne et sans coûts pour les collectivités</h4>
+          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+        </div>
+        <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+          <h4>Une interface intuitive</h4>
+          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+        </div>
+        <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+          <h4>Un logiciel mature</h4>
+          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+        </div>
+        <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+          <h4>En phase avec la loi plein emploi</h4>
+          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+        </div>
+      </div>
     </div>
   </div>
-
+  <div class="fr-grid-row" id="home-quotes" data-controller="home-quotes">
+    <div id="home-quotes-card" data-action="touchstart->home-quotes#onTouchStart touchmove->home-quotes#onTouchMove touchend->home-quotes#onTouchEnd">
+      <div class="quote-card active" data-home-quotes-target="quoteCard">
+        <p class="quote-card-text">
+          « La prise de rendez-vous en autonomie a entraîné un impact inattendu : les bénéficiaires ont un positionnement différent en rendez-vous. Ils sont moins stressés par la contrainte, les rendez-vous durent plus longtemps. »
+        </p>
+        <p class="quote-card-author">
+          Thomas GRAVELEAU, Chargé de mission direction insertion, CD 13 
+        </p>
+      </div>
+      <div class="quote-card" data-home-quotes-target="quoteCard">
+        <p class="quote-card-text">
+          « La prise de rendez-vous en autonomie a entraîné un impact inattendu : les bénéficiaires ont un positionnement différent en rendez-vous. Ils sont moins stressés par la contrainte, les rendez-vous durent plus longtemps. »
+        </p>
+        <p class="quote-card-author">
+          Thomas GRAVELEAU, Chargé de mission direction insertion, CD 13 
+        </p>
+      </div>
+      <div class="quote-card" data-home-quotes-target="quoteCard">
+        <p class="quote-card-text">
+          « La prise de rendez-vous en autonomie a entraîné un impact inattendu : les bénéficiaires ont un positionnement différent en rendez-vous. Ils sont moins stressés par la contrainte, les rendez-vous durent plus longtemps. »
+        </p>
+        <p class="quote-card-author">
+          Thomas GRAVELEAU, Chargé de mission direction insertion, CD 13 
+        </p>
+      </div>
+    </div>
+    <div id="home-quotes-slide-indicator">
+      <div class="slide-indicator-dot active" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
+      <div class="slide-indicator-dot" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
+      <div class="slide-indicator-dot" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
+    </div>
+  </div>
 </div>

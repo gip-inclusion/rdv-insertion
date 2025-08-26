@@ -7,6 +7,15 @@
 */
 .reset-dsfr-overrides {
   a {
+    text-decoration: none;
+    color: black;
+  
+    &:hover {
+      color: black;
+    }
+  }
+
+  a {
     &::after {
       display: none;
     }
