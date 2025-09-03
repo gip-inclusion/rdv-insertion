@@ -10,11 +10,19 @@ export default class extends Controller {
     this.touchStartY = null
     this.touchMoveX = null
     this.touchMoveY = null
+
+    this.autoRotateIntervalMs = 6000
+    this.startAutoRotate()
+  }
+
+  disconnect() {
+    this.stopAutoRotate()
   }
 
   showQuote(event) {
     const clickedIndex = Array.from(this.slideIndicatorTargets).indexOf(event.currentTarget)
     this.showIndex(clickedIndex)
+    this.resetAutoRotate()
   }
 
   onTouchStart(event) {
@@ -23,6 +31,7 @@ export default class extends Controller {
       this.touchStartY = event.touches[0].clientY
       this.touchMoveX = null
       this.touchMoveY = null
+      this.stopAutoRotate()
     }
   }
 
@@ -55,6 +64,8 @@ export default class extends Controller {
     this.touchStartY = null
     this.touchMoveX = null
     this.touchMoveY = null
+
+    this.startAutoRotate()
   }
 
   showIndex(index) {
@@ -82,5 +93,28 @@ export default class extends Controller {
 
   showPrev() {
     this.showIndex(this.currentIndex - 1)
+  }
+
+  startAutoRotate() {
+    if (this.autoRotateTimer) {
+      clearInterval(this.autoRotateTimer)
+      this.autoRotateTimer = null
+    }
+    if (this.quoteCardTargets.length <= 1) return
+    this.autoRotateTimer = setInterval(() => {
+      this.showNext()
+    }, this.autoRotateIntervalMs)
+  }
+
+  stopAutoRotate() {
+    if (this.autoRotateTimer) {
+      clearInterval(this.autoRotateTimer)
+      this.autoRotateTimer = null
+    }
+  }
+
+  resetAutoRotate() {
+    this.stopAutoRotate()
+    this.startAutoRotate()
   }
 } 
