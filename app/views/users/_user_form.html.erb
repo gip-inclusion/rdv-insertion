@@ -5,9 +5,6 @@
         <button class="btn btn-blue-out" type="button">Annuler</button>
       <% end %>
     </div>
-    <div>
-      <button type="submit" class="btn btn-blue">Enregistrer</button>
-    </div>
   </div>
   <div class="mb-4">
     <div class="row d-flex justify-content-start flex-wrap">
@@ -30,6 +27,9 @@
       <%= render "common/attribute_input", f:f, attribute: :address %>
       <%= render "common/attribute_input", f:f, attribute: :phone_number %>
       <%= render "common/attribute_input", f:f, attribute: :rights_opening_date, as: :date, start_year: Date.today.year - 10 %>
+    </div>
+    <div class="row d-flex justify-content-end">
+      <button type="submit" class="btn btn-blue w-auto">Enregistrer</button>
     </div>
   </div>
 </div>
