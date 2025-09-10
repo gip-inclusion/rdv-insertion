@@ -464,7 +464,7 @@
 
   }
 
-  #home-accompagnement {
+  #home-follow-up {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -474,7 +474,7 @@
       padding: 0px 20px;
     }
 
-    #home-accompagnement-title {
+    #home-follow-up-title {
       text-align: center;
       margin-bottom: 30px;
 
@@ -490,7 +490,7 @@
       }
     }
 
-    #home-accompagnement-steps {
+    #home-follow-up-steps {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
       gap: 100px;
@@ -499,7 +499,7 @@
         grid-template-columns: 1fr;
       }
 
-      .home-accompagnement-step {
+      .home-follow-up-step {
         margin-bottom: 10px;
 
         &::after {
@@ -547,7 +547,7 @@
       }
     }
 
-    #home-accompagnement-step-infos {
+    #home-follow-up-step-infos {
       max-width: 700px;
       margin-top: 20px;
       border-radius: 20px;
@@ -571,7 +571,7 @@
         font-size: 15px;
       }
 
-      .home-accompagnement-step-info {
+      .home-follow-up-step-info {
         display: none;
         animation: translateIn 0.7s ease-in-out forwards;
         opacity: 0;
@@ -593,28 +593,28 @@
       }
     }
 
-    #home-accompagnement-dots {
+    #home-follow-up-dots {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
     }
 
-    .home-accompagnement-dot {
+    .home-follow-up-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background-color: $light-grey;
     }
 
-    .home-accompagnement-dot.active {
+    .home-follow-up-dot.active {
       background-color: $dark-blue;
     }
 
-    .home-accompagnement-dot:hover {
+    .home-follow-up-dot:hover {
       cursor: pointer;
     }
 
-    .home-accompagnement-dot:active {
+    .home-follow-up-dot:active {
       background-color: $dark-blue;
     }
   }

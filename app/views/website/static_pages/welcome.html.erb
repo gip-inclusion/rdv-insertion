@@ -65,20 +65,20 @@
         <h2>Réinventer votre manière de gérer vos rendez-vous RSA</h2>
         <p>Importez, invitez et pilotez rapidement vos cohortes de bénéficiaires.</p>
       </div>
-        <div id="reinvent-content-features" data-controller="home-reinvent">
-        <div class="reinvent-content-feature active" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+        <div id="reinvent-content-features" data-controller="home-question">
+        <div class="reinvent-content-feature active" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
           <h4>100% en ligne et sans coûts pour les collectivités</h4>
           <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme.</p>
         </div>
-        <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+        <div class="reinvent-content-feature" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
           <h4>Une interface intuitive</h4>
           <p>L’interface intuitive a été conçue pour répondre aux enjeux spécifiques de la gestion des rendez-vous RSA.</p>
         </div>
-        <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+        <div class="reinvent-content-feature" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
           <h4>Un logiciel mature</h4>
           <p>Bénéficiez d’un logiciel mature après 4 années d’améliorations continues prenant en compte l’ensemble des actes métiers liés aux rendez-vous du parcours des bRSA.</p>
         </div>
-        <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
+        <div class="reinvent-content-feature" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
           <h4>En phase avec la loi plein emploi</h4>
           <p>Rdv-insertion vous permet de piloter sur une seule interface l’ensemble des rendez-vous assurés par le RPE : vos services mais aussi vos délégataires et partenaires.</p>
         </div>
@@ -194,51 +194,51 @@
       </div>
     </div>
   </div>
-  <div id="home-accompagnement" data-controller="home-accompagnement">
-    <div id="home-accompagnement-title">
+  <div id="home-follow-up" data-controller="home-follow-up">
+    <div id="home-follow-up-title">
       <h2>Notre équipe vous accompagne</h2>
       <p>A chaque étape du déploiement de votre espace rdv-insertion, l’équipe est à votre disposition pour répondre à vos besoins. </p>
     </div>
-    <div id="home-accompagnement-steps">
-      <div class="home-accompagnement-step active" data-home-accompagnement-target="stepImage">
+    <div id="home-follow-up-steps">
+      <div class="home-follow-up-step active" data-home-follow-up-target="stepImage" data-action="click->home-follow-up#onStepImageClick">
         <%= image_tag "illustrations/accompagnement-step-1.png", alt: "Illustration accompagnement 1" %>
       </div>
-      <div class="home-accompagnement-step" data-home-accompagnement-target="stepImage">
+      <div class="home-follow-up-step" data-home-follow-up-target="stepImage" data-action="click->home-follow-up#onStepImageClick">
         <%= image_tag "illustrations/accompagnement-step-2.png", alt: "Illustration accompagnement 2" %>
       </div>
-      <div class="home-accompagnement-step" data-home-accompagnement-target="stepImage">
+      <div class="home-follow-up-step" data-home-follow-up-target="stepImage" data-action="click->home-follow-up#onStepImageClick">
         <%= image_tag "illustrations/accompagnement-step-3.png", alt: "Illustration accompagnement 3" %>
       </div>
-      <div class="home-accompagnement-step" data-home-accompagnement-target="stepImage">
+      <div class="home-follow-up-step" data-home-follow-up-target="stepImage" data-action="click->home-follow-up#onStepImageClick">
         <%= image_tag "illustrations/accompagnement-step-4.png", alt: "Illustration accompagnement 4" %>
       </div>
     </div>
-    <div id="home-accompagnement-step-infos">
-      <div class="home-accompagnement-step-info" data-home-accompagnement-target="stepInfo">
+    <div id="home-follow-up-step-infos">
+      <div class="home-follow-up-step-info" data-home-follow-up-target="stepInfo">
         <h3>1. Étude d'opportunité</h3>
         <p>Nous étudions avec vous dans quelle mesure et comment l’outil rdv-insertion vous aidera à améliorer la gestion et le pilotage de vos rdv RSA.</p>
       </div>
 
-      <div class="home-accompagnement-step-info" data-home-accompagnement-target="stepInfo">
+      <div class="home-follow-up-step-info" data-home-follow-up-target="stepInfo">
         <h3>2. Conduite du changement</h3>
         <p>Conscient de l’enjeu que constitue l’appropriation d’un nouvel outil, nous élaborons ensemble le plan de déploiement le plus adapté à votre territoire et à vos objectifs.</p>
       </div>
 
-      <div class="home-accompagnement-step-info" data-home-accompagnement-target="stepInfo">
+      <div class="home-follow-up-step-info" data-home-follow-up-target="stepInfo">
         <h3>3. Paramétrage et embarquement</h3>
         <p>Nous assumons intégralement pour vous le paramétrage de votre espace rdv-insertion afin que vous n’ayez qu’à vous concentrer sur l’essentiel : l’accompagnement des bRSA.</p>
       </div>
 
-      <div class="home-accompagnement-step-info" data-home-accompagnement-target="stepInfo">
+      <div class="home-follow-up-step-info" data-home-follow-up-target="stepInfo">
         <h3>4. Formation et support utilisateur</h3>
         <p>Après une formation initiale que nous pouvons assurer en présentiel, vous bénéficiez d'un support fonctionnel et technique rapide de moins de 24 heures.</p>
       </div>
     </div>
-    <div id="home-accompagnement-dots">
-      <div class="home-accompagnement-dot active" data-home-accompagnement-target="dot" data-action="click->home-accompagnement#toggleStep"></div>
-      <div class="home-accompagnement-dot" data-home-accompagnement-target="dot" data-action="click->home-accompagnement#toggleStep"></div>
-      <div class="home-accompagnement-dot" data-home-accompagnement-target="dot" data-action="click->home-accompagnement#toggleStep"></div>
-      <div class="home-accompagnement-dot" data-home-accompagnement-target="dot" data-action="click->home-accompagnement#toggleStep"></div>
+    <div id="home-follow-up-dots">
+      <div class="home-follow-up-dot active" data-home-follow-up-target="dot" data-action="click->home-follow-up#onStepDotClick"></div>
+      <div class="home-follow-up-dot" data-home-follow-up-target="dot" data-action="click->home-follow-up#onStepDotClick"></div>
+      <div class="home-follow-up-dot" data-home-follow-up-target="dot" data-action="click->home-follow-up#onStepDotClick"></div>
+      <div class="home-follow-up-dot" data-home-follow-up-target="dot" data-action="click->home-follow-up#onStepDotClick"></div>
     </div>
   </div>
   <div id="home-trust">
