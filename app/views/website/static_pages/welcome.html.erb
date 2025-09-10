@@ -3,7 +3,10 @@
     <div id="home-intro-content">
       <div class="fr-mb-7v">
         <h1 id="home-title">Rdv-insertion, l'outil de pilotage de rendez-vous des acteurs du RPE</h1>
-        <p id="home-subtitle">Faites confiance à rdv-insertion pour <span class="text-red">gérer 30-000 rendez-vous RSA par mois</span></p>
+        <p id="home-subtitle" data-controller="home-subtitle">
+          Faites confiance à rdv-insertion pour 
+          <span class="text-red" data-home-subtitle-target="text"></span>
+        </p>
       </div>
       <div id="home-intro-links">
         <div class="home-intro-link">
@@ -19,8 +22,13 @@
       </div>
       <div class="d-flex flex-column" id="home-cd-logos">
         <p class="fr-mb-2w">Déjà 32 conseils départementaux utilisent nos services</p>
-        <div>
-          <%= image_tag "logos/logo_website_moselle.svg" %>
+        <div id="home-cd-logos-container">
+          <%= image_tag "logos/home_bouches-du-rhone.png" %>
+          <%= image_tag "logos/home_drome.png" %>
+          <%= image_tag "logos/home_la_manche.png" %>
+          <%= image_tag "logos/home_moselle.png" %>
+          <%= image_tag "logos/home_vaucluse.png" %>
+          <%= image_tag "logos/home_yvelines.png" %>
         </div>
       </div>
     </div>
@@ -35,11 +43,11 @@
         <p class="fact-card-subtitle">de taux de présence moyen aux rendez-vous</p>
       </div>
       <div class="fact-card">
-        <p class="fact-card-title">– 7.5 jours</p>
+        <p class="fact-card-title">– 7,5 jours</p>
         <p class="fact-card-subtitle">en moyenne de réduction des délais d'orientation</p>
       </div>
       <div class="fact-card">
-        <p class="fact-card-title">– 2.3 jours</p>
+        <p class="fact-card-title">– 2,3 jours</p>
         <p class="fact-card-subtitle">en moyenne de réduction des délais d'accompagnement</p>
       </div>
       <div class="fact-card">
@@ -55,24 +63,24 @@
     <div id="reinvent-content">
       <div id="reinvent-content-title">
         <h2>Réinventer votre manière de gérer vos rendez-vous RSA</h2>
-        <p>Importez, invitez et pilotez rapidement vos cohortes de bénéficiaires</p>
+        <p>Importez, invitez et pilotez rapidement vos cohortes de bénéficiaires.</p>
       </div>
         <div id="reinvent-content-features" data-controller="home-reinvent">
         <div class="reinvent-content-feature active" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
           <h4>100% en ligne et sans coûts pour les collectivités</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme.</p>
         </div>
         <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
           <h4>Une interface intuitive</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+          <p>L’interface intuitive a été conçue pour répondre aux enjeux spécifiques de la gestion des rendez-vous RSA.</p>
         </div>
         <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
           <h4>Un logiciel mature</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+          <p>Bénéficiez d’un logiciel mature après 4 années d’améliorations continues prenant en compte l’ensemble des actes métiers liés aux rendez-vous du parcours des bRSA.</p>
         </div>
         <div class="reinvent-content-feature" data-home-reinvent-target="feature" data-action="click->home-reinvent#toggleFeature">
           <h4>En phase avec la loi plein emploi</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+          <p>Rdv-insertion vous permet de piloter sur une seule interface l’ensemble des rendez-vous assurés par le RPE : vos services mais aussi vos délégataires et partenaires.</p>
         </div>
       </div>
     </div>
@@ -89,24 +97,15 @@
       </div>
       <div class="quote-card" data-home-quotes-target="quoteCard">
         <p class="quote-card-text">
-          « La prise de rendez-vous en autonomie a entraîné un impact inattendu : les bénéficiaires ont un positionnement différent en rendez-vous. Ils sont moins stressés par la contrainte, les rendez-vous durent plus longtemps. »
+          « Nous avons été accompagnés d’une façon optimale par l’équipe toujours disponible. Ils ont toujours répondus à nos questions et nous ont trouvé des solutions pour répondre au mieux à nos procédures. L’outil est finalement assez simple à paramétrer, ce qui laisse de l’autonomie pour le réaliser avec l’équipe concernée »
         </p>
         <p class="quote-card-author">
-          Thomas GRAVELEAU, Chargé de mission direction insertion, CD 13 
-        </p>
-      </div>
-      <div class="quote-card" data-home-quotes-target="quoteCard">
-        <p class="quote-card-text">
-          « La prise de rendez-vous en autonomie a entraîné un impact inattendu : les bénéficiaires ont un positionnement différent en rendez-vous. Ils sont moins stressés par la contrainte, les rendez-vous durent plus longtemps. »
-        </p>
-        <p class="quote-card-author">
-          Thomas GRAVELEAU, Chargé de mission direction insertion, CD 13 
+          Fabienne FERRY, Chef de service de l'Insertion et de l'accès à l'Emploi, CD 57
         </p>
       </div>
     </div>
     <div id="home-quotes-slide-indicator">
       <div class="slide-indicator-dot active" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
-      <div class="slide-indicator-dot" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
       <div class="slide-indicator-dot" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
     </div>
   </div>
@@ -181,7 +180,7 @@
         </div>
         <div class="home-api-feature-content">
           <h4>Suivi de parcours</h4>
-          <p>Rdv-insertion est compatible avec l’application Suivi de Parcours développée par France Travail. L’interconnexion permet de transmettre à Suivi de Parcours les rendez-vous passés et à venir générés dans rdv-insertion</p>
+          <p>Rdv-insertion est compatible avec l’application Suivi de Parcours développée par France Travail. L’interconnexion permet de transmettre à Suivi de Parcours les rendez-vous passés et à venir générés dans rdv-insertion.</p>
         </div>
       </div>
       <div class="home-api-feature">
@@ -221,18 +220,18 @@
       </div>
 
       <div class="home-accompagnement-step-info" data-home-accompagnement-target="stepInfo">
-        <h3>2. Étude d'opportunité</h3>
-        <p>Nous étudions avec vous dans quelle mesure et comment l’outil rdv-insertion vous aidera à améliorer la gestion et le pilotage de vos rdv RSA.</p>
+        <h3>2. Conduite du changement</h3>
+        <p>Conscient de l’enjeu que constitue l’appropriation d’un nouvel outil, nous élaborons ensemble le plan de déploiement le plus adapté à votre territoire et à vos objectifs.</p>
       </div>
 
       <div class="home-accompagnement-step-info" data-home-accompagnement-target="stepInfo">
-        <h3>3. Étude d'opportunité</h3>
-        <p>Nous étudions avec vous dans quelle mesure et comment l’outil rdv-insertion vous aidera à améliorer la gestion et le pilotage de vos rdv RSA.</p>
+        <h3>3. Paramétrage et embarquement</h3>
+        <p>Nous assumons intégralement pour vous le paramétrage de votre espace rdv-insertion afin que vous n’ayez qu’à vous concentrer sur l’essentiel : l’accompagnement des bRSA.</p>
       </div>
 
       <div class="home-accompagnement-step-info" data-home-accompagnement-target="stepInfo">
-        <h3>4. Étude d'opportunité</h3>
-        <p>Nous étudions avec vous dans quelle mesure et comment l’outil rdv-insertion vous aidera à améliorer la gestion et le pilotage de vos rdv RSA.</p>
+        <h3>4. Formation et support utilisateur</h3>
+        <p>Après une formation initiale que nous pouvons assurer en présentiel, vous bénéficiez d'un support fonctionnel et technique rapide de moins de 24 heures.</p>
       </div>
     </div>
     <div id="home-accompagnement-dots">
@@ -250,7 +249,7 @@
       </div>
       <div id="home-flourish-map">
         <h4>Carte du déploiement de rdv-insertion</h4>
-        <div class="flourish-embed flourish-map" data-src="visualisation/9644547"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+        <div class="flourish-embed flourish-map" data-src="visualisation/25039594"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
       </div>
       <div id="home-trust-why">
         <div id="home-trust-why-title">
@@ -334,15 +333,21 @@
         </div>
         <div class="home-question" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
           <h4>Quelle est la plus-value de rdv-insertion par rapport à mon logiciel de parcours ?</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+          <p>
+            Rdv-insertion est parfaitement complémentaire des logiciels de parcours en tant que spécialiste de la gestion des rdv RSA grâce à des fonctionnalités que nous ne retrouvons pas ailleurs : autonomisation des bRSA dans le choix du créneau, import/invitation en masse, relances automatique, rappel sms, statuts de rdv automatiquement mis à jour etc...
+          </p>
         </div>
         <div class="home-question" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
           <h4>Peut-on convoquer les bRSA avec rdv-insertion ?</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+          <p>
+            Bien que la proposition de valeur réside dans l’invitation des bRSA à choisir en autonomie leur créneau de rendez-vous, il est possible, au cas par cas d’avoir recours à la convocation si vous l’estimez nécessaire.
+          </p>
         </div>
         <div class="home-question" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
           <h4>Le recours à l’e-mail pour contacter les bRSA est-il une preuve recevable en cas de litige ?</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme</p>
+          <p>
+            Devant la juridiction administrative, et notamment le juge du plein contentieux compétent pour le RSA, la preuve est libre : témoignages, photos, captures d’écran, mails, etc. En cas de recours, le Conseil départemental peut donc produire des captures d’écran de rdv-insertion ou RDV Solidarités montrant l’envoi d’un SMS/mail ou l’annulation d’un rendez-vous par le bénéficiaire. Ces preuves sont en principe recevables.
+          </p>
         </div>
       </div>
     </div>
@@ -366,12 +371,13 @@
           </div>
         </div>
         <div id="home-wish-contact-button">
-          <a href="mailto:contact@rdv-insertion.fr" class="fr-btn">Contactez-nous !</a>
+          <a href="mailto:rdv-insertion@inclusion.gouv.fr" class="fr-btn">Contactez-nous !</a>
         </div>
       </div>
     </div>
   </div>
-  <div id="home-subscribe">
+  <%# We're waiting for the destination of the form %>
+  <div id="home-subscribe" style="display: none;">
     <div class="fr-container">
       <div id="home-subscribe-title">
         <h2>Abonnez-vous à notre lettre d'information</h2>
