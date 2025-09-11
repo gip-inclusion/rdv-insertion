@@ -5,7 +5,7 @@
         <p class="mb-2"> <%= "Tag".pluralize(assigned_tags.size) %> déjà <%= "sélectionné".pluralize(assigned_tags.size) %></p>
         <div class="flex-wrap d-flex">
           <% assigned_tags.each do |tag| %>
-            <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey me-2 d-flex text-truncate">
+            <span class="badge badge-tag justify-content-between me-2 d-flex text-truncate">
               <span class="text-truncate">
                 <%= tag.value %>
               </span>

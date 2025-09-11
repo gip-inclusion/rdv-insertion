@@ -1,8 +1,8 @@
 module OrganisationsBadgesHelper
   def css_classes_for_organisation_badge(archive)
     html_escape(
-      "badge badge-tag justify-content-between text-dark-blue me-2 mb-2 d-flex text-truncate"
-        .concat(archive.nil? ? " background-blue-light border-blue border" : " background-warning")
+      "badge badge-tag justify-content-between me-2 mb-2 d-flex text-truncate"
+        .concat(archive.nil? ? "" : " background-brown-light text-brown")
     )
   end
 

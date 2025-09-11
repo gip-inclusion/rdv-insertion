@@ -32,7 +32,7 @@
             <span class="attribute-label">Tags :</span>
             <% if user_row.tags.any? %>
               <% user_row.tags.each do |tag| %>
-                <span class="badge badge-tag <%= user_row.association_already_persisted?(tag, :tags) ? 'background-blue-light text-dark-blue border-blue border' : 'background-green-light text-dark-green' %>"><%= tag.value %></span>
+                <span class="badge badge-tag <%= 'background-green-light text-dark-green' unless user_row.association_already_persisted?(tag, :tags) %>"><%= tag.value %></span>
               <% end %>
             <% else %>
               <span>Aucun tag assigné</span>
@@ -80,7 +80,7 @@
             <span class="attribute-label">Référents :</span>
             <% if user_row.referents.any? %>
               <% user_row.referents.each do |referent| %>
-                <span class="badge badge-tag <%= user_row.association_already_persisted?(referent, :referents) ? 'background-blue-light text-dark-blue border-blue border' : 'background-green-light text-dark-green' %>"><%= referent %></span>
+                <span class="badge badge-tag <%= user_row.association_already_persisted?(referent, :referents) ? '' : 'background-green-light text-dark-green' %>"><%= referent %></span>
               <% end %>
             <% else %>
               <span>Aucun référent assigné</span>
