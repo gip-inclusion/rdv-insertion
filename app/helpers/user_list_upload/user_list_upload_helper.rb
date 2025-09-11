@@ -1,5 +1,8 @@
 # rubocop:disable Metrics/ModuleLength
 module UserListUpload::UserListUploadHelper
+  ARCHIVED_BADGE_CLASSES = "background-brown-light text-brown".freeze
+  NEW_BADGE_CLASSES      = "background-green-light text-dark-green".freeze
+
   def rows_with_errors?
     params[:rows_with_errors].present?
   end
@@ -68,27 +71,20 @@ module UserListUpload::UserListUploadHelper
   end
 
   def badge_class_for_user_row_organisation(user_row, organisation)
-    if user_row.association_already_persisted?(organisation, :organisations)
-      if user_row.archives.map(&:organisation_id).include?(organisation.id)
-        "background-brown-light text-brown"
-      else
-        "background-blue-light text-dark-blue border-blue border"
-      end
-    else
-      "background-green-light text-dark-green"
-    end
+    already_persisted = user_row.association_already_persisted?(organisation, :organisations)
+    archived_in_org   = user_row.archives.any? { |a| a.organisation_id == organisation.id }
+
+    archived = already_persisted && archived_in_org
+    return ARCHIVED_BADGE_CLASSES if archived
+
+    NEW_BADGE_CLASSES unless already_persisted
   end
 
   def badge_class_for_user_row_motif_category(user_row, motif_category)
-    if user_row.association_already_persisted?(motif_category, :motif_categories)
-      if user_row.user.follow_up_for(motif_category)&.closed?
-        "background-dark-green text-white"
-      else
-        "background-blue-light text-dark-blue border-blue border"
-      end
-    else
-      "background-green-light text-dark-green"
-    end
+    already_persisted = user_row.association_already_persisted?(motif_category, :motif_categories)
+    return if already_persisted
+
+    NEW_BADGE_CLASSES
   end
 
   def tooltip_for_user_row_before_save(user_row)
