@@ -4,11 +4,8 @@ export default class extends Controller {
   static targets = ["quoteCard", "slideIndicator"];
 
   connect() {
-    const activeIndex = this.quoteCardTargets.findIndex(card => card.classList.contains("active"));
-    this.currentIndex = activeIndex >= 0 ? activeIndex : 0;
-
+    this.currentIndex = 0;
     this.autoAdvanceIntervalMs = 6000;
-    this.autoRotateIntervalMs = this.autoAdvanceIntervalMs;
     this.horizontalSwipeThresholdPx = 40;
 
     this.#showIndex(this.currentIndex);
@@ -19,7 +16,7 @@ export default class extends Controller {
     this.#stopAutoAdvance();
   }
 
-  showQuote(event) {
+  onStepDotClick(event) {
     event.preventDefault?.();
 
     const clickedDot = event.currentTarget;
@@ -70,38 +67,6 @@ export default class extends Controller {
       }
     }
 
-    this.touchStartX = null;
-    this.touchStartY = null;
-    this.touchMoveX = null;
-    this.touchMoveY = null;
-
-    // Resume the auto-advance after touch ends, regardless of swipe detection
-    this.#startAutoAdvance();
-  }
-
-  // Public compatibility wrappers
-  showIndex(index) {
-    this.#showIndex(index);
-  }
-
-  showNext() {
-    this.#next();
-  }
-
-  showPrev() {
-    this.#prev();
-  }
-
-  startAutoRotate() {
-    this.#startAutoAdvance();
-  }
-
-  stopAutoRotate() {
-    this.#stopAutoAdvance();
-  }
-
-  resetAutoRotate() {
-    this.#stopAutoAdvance();
     this.#startAutoAdvance();
   }
 

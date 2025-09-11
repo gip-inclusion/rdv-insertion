@@ -105,8 +105,8 @@
       </div>
     </div>
     <div id="home-quotes-slide-indicator">
-      <div class="slide-indicator-dot active" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
-      <div class="slide-indicator-dot" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#showQuote"></div>
+      <div class="slide-indicator-dot active" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#onStepDotClick"></div>
+      <div class="slide-indicator-dot" data-home-quotes-target="slideIndicator" data-action="click->home-quotes#onStepDotClick"></div>
     </div>
   </div>
   <div id="home-why-rdvi">
@@ -194,7 +194,7 @@
       </div>
     </div>
   </div>
-  <div id="home-follow-up" data-controller="home-follow-up">
+  <div id="home-follow-up" data-controller="home-follow-up" data-action="touchstart->home-follow-up#onTouchStart touchmove->home-follow-up#onTouchMove touchend->home-follow-up#onTouchEnd">
     <div id="home-follow-up-title">
       <h2>Notre équipe vous accompagne</h2>
       <p>A chaque étape du déploiement de votre espace rdv-insertion, l’équipe est à votre disposition pour répondre à vos besoins. </p>

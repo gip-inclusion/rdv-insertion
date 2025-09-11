@@ -6,15 +6,14 @@ export default class extends Controller {
   connect() {
     this.currentIndex = 0;
     this.autoAdvanceIntervalMs = 6000;
+    this.horizontalSwipeThresholdPx = 40;
 
     this.#showIndex(this.currentIndex);
-    this.#initTouchListeners();
     this.#startAutoAdvance();
   }
 
   disconnect() {
     this.#stopAutoAdvance();
-    this.#removeTouchListeners();
   }
   
   onStepDotClick(event) {
@@ -76,24 +75,6 @@ export default class extends Controller {
       }
       this.#startAutoAdvance();
     }
-  }
-
-  #initTouchListeners() {
-    this.horizontalSwipeThresholdPx = 40;
-
-    this.onTouchStart = this.onTouchStart.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
-
-    this.element.addEventListener("touchstart", this.onTouchStart, { passive: true });
-    this.element.addEventListener("touchmove", this.onTouchMove, { passive: true });
-    this.element.addEventListener("touchend", this.onTouchEnd, { passive: true });
-  }
-
-  #removeTouchListeners() {
-    if (this.onTouchStart) this.element.removeEventListener("touchstart", this.onTouchStart);
-    if (this.onTouchMove) this.element.removeEventListener("touchmove", this.onTouchMove);
-    if (this.onTouchEnd) this.element.removeEventListener("touchend", this.onTouchEnd);
   }
 
   #count() {
