@@ -80,7 +80,7 @@
             <span class="attribute-label">Référents :</span>
             <% if user_row.referents.any? %>
               <% user_row.referents.each do |referent| %>
-                <span class="badge badge-tag <%= user_row.association_already_persisted?(referent, :referents) ? '' : 'background-green-light text-dark-green' %>"><%= referent %></span>
+                <span class="badge badge-tag <%= 'background-green-light text-dark-green' unless user_row.association_already_persisted?(referent, :referents) %>"><%= referent %></span>
               <% end %>
             <% else %>
               <span>Aucun référent assigné</span>
