@@ -52,8 +52,12 @@
   
     #home-cd-logos {
       margin-top: 60px;
-
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      
       @media (max-width: 768px) {
+        align-items: center;
         margin-top: 20px;
         margin-bottom: 15px;
       }
@@ -450,7 +454,7 @@
           font-size: 18px;
         }
 
-        p {
+        ul {
           margin-bottom: 0px;
         }
       }

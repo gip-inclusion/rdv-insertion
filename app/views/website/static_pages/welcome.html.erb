@@ -20,7 +20,7 @@
           <% end %>
         </div>
       </div>
-      <div class="d-flex flex-column" id="home-cd-logos">
+      <div id="home-cd-logos">
         <p class="fr-mb-2w">Déjà 32 conseils départementaux utilisent nos services</p>
         <div id="home-cd-logos-container">
           <%= image_tag "logos/home_bouches-du-rhone.png" %>
@@ -65,20 +65,20 @@
         <h2>Réinventer votre manière de gérer vos rendez-vous RSA</h2>
         <p>Importez, invitez et pilotez rapidement vos cohortes de bénéficiaires.</p>
       </div>
-        <div id="reinvent-content-features" data-controller="home-question">
-        <div class="reinvent-content-feature active" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
+        <div id="reinvent-content-features" data-controller="home-questions">
+        <div class="reinvent-content-feature active" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
           <h4>100% en ligne et sans coûts pour les collectivités</h4>
-          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absenteisme.</p>
+          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absentéisme.</p>
         </div>
-        <div class="reinvent-content-feature" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
+        <div class="reinvent-content-feature" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
           <h4>Une interface intuitive</h4>
           <p>L’interface intuitive a été conçue pour répondre aux enjeux spécifiques de la gestion des rendez-vous RSA.</p>
         </div>
-        <div class="reinvent-content-feature" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
+        <div class="reinvent-content-feature" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
           <h4>Un logiciel mature</h4>
           <p>Bénéficiez d’un logiciel mature après 4 années d’améliorations continues prenant en compte l’ensemble des actes métiers liés aux rendez-vous du parcours des bRSA.</p>
         </div>
-        <div class="reinvent-content-feature" data-home-question-target="feature" data-action="click->home-question#toggleFeature">
+        <div class="reinvent-content-feature" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
           <h4>En phase avec la loi plein emploi</h4>
           <p>Rdv-insertion vous permet de piloter sur une seule interface l’ensemble des rendez-vous assurés par le RPE : vos services mais aussi vos délégataires et partenaires.</p>
         </div>
@@ -158,10 +158,10 @@
     <div id="home-api-features">
       <div class="home-api-feature">
         <div class="home-api-feature-logo">
-          <%= image_tag "logos/france-travail.svg", alt: "Logo de France travail" %>
+          <%= image_tag "logos/france-travail.svg", alt: "Logo de France Travail" %>
         </div>
         <div class="home-api-feature-content">
-          <h4>France travail</h4>
+          <h4>France Travail</h4>
           <p>Conformément aux objectifs de la LPE, rdv-insertion est connecté au SI Plateforme de FT via l’API “RDV-partenaires”.</p>
         </div>
       </div>
@@ -185,11 +185,11 @@
       </div>
       <div class="home-api-feature">
         <div class="home-api-feature-logo">
-          <%= image_tag "illustrations/logicier-metier.png", alt: "Illustration Logicier métier" %>
+          <%= image_tag "illustrations/logiciel-metier.png", alt: "Illustration logiciel métier" %>
         </div>
         <div class="home-api-feature-content">
-          <h4>Logicier métier</h4>
-          <p>Comme les Bouches du Rhônes, le Cantal et le Lot-et-Garonne, notre API est à votre disposition pour interconnecté vos propres logiciels à rdv-insertion.</p>
+          <h4>Logiciel métier</h4>
+          <p>Comme les Bouches du Rhônes, le Cantal et le Lot-et-Garonne, notre API est à votre disposition pour interconnecter vos propres logiciels à rdv-insertion.</p>
         </div>
       </div>
     </div>
@@ -263,7 +263,7 @@
           </div>
           <div class="home-trust-why-content-item">
             <%= image_tag "illustrations/home-trust-why-2.png", alt: "Illustration découpage administratif" %>
-            <p><span class="text-bold">Les type de rendez-vous à gérer :</span> orientation, signature CER, suivi, atelier collectif etc..</p>
+            <p><span class="text-bold">Les types de rendez-vous à gérer :</span> orientation, signature CER, suivi, atelier collectif etc..</p>
           </div>
           <div class="home-trust-why-content-item">
             <%= image_tag "illustrations/home-trust-why-3.png", alt: "Illustration découpage administratif" %>
@@ -293,13 +293,12 @@
         </div>
         <div class="home-api-feature-content">
           <h4>Rdv-insertion, votre outil de suivi de rendez-vous</h4>
-          <p>
-            <ul>
-              <li>Import des usagers et envoi des invitations en masse</li>
-              <li>Tableau de bord de pilotage des rendez-vous </li>
-              <li>Import des flux CAF, CNAF Hubee</li>
-              <li>Exports des données pour vos statistiques</li>
-          </p>
+          <ul>
+            <li>Import des usagers et envoi des invitations en masse</li>
+            <li>Tableau de bord de pilotage des rendez-vous </li>
+            <li>Import des flux CAF, CNAF Hubee</li>
+            <li>Exports des données pour vos statistiques</li>
+          </ul>
         </div>
       </div>
       <div class="home-how-it-works-content-item">
@@ -326,7 +325,7 @@
     <div id="home-questions-content">
       <div id="home-questions-features" data-controller="home-questions">
         <div class="home-question active" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
-          <h4>Quel est le coup d'utilisation de l'outil rdv-insertion ?</h4>
+          <h4>Quel est le coût d'utilisation de l'outil rdv-insertion ?</h4>
           <p>
             Rdv-insertion est sans coût pour les collectivités que ce soit l’usage de l’outil, son paramétrage et le support utilisateur assuré par l’équipe de déploiement. Porté par la Plateforme de l’inclusion, rdv-insertion est au service des professionnels de l’insertion pour les aider à mener à bien leurs missions d’accompagnement des bRSA.
           </p>
