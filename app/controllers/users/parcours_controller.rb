@@ -1,6 +1,8 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_user_tags, :set_back_to_users_list_url,
+    include Users::EnsurePresenceInStructure
+
+    before_action :set_user, :ensure_user_presence_in_structure, :set_user_tags, :set_back_to_users_list_url,
                   :ensure_has_access_to_parcours, only: [:show]
 
     include BackToListConcern
@@ -26,7 +28,7 @@ module Users
     end
 
     def set_user
-      @user = policy_scope(User).preload(:archives).find(params[:user_id])
+      @user = policy_scope(User).where(current_organisations_filter).preload(:archives).find_by(id: params[:user_id])
     end
   end
 end

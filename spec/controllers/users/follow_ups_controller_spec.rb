@@ -101,6 +101,17 @@ describe Users::FollowUpsController do
         expect(response.body).not_to match(/Convoqué par/)
       end
 
+      context "when user no longer exists" do
+        let(:user_from_another_organisation) { create(:user, organisations: [create(:organisation)]) }
+
+        it "redirects with authorization error" do
+          get :index, params: { user_id: user_from_another_organisation.id, organisation_id: organisation.id }
+
+          expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
+          expect(flash[:error]).to include("Aucun usager trouvé avec cet identifiant")
+        end
+      end
+
       context "when a follow_up is not open" do
         let!(:follow_up2) { nil }
         let!(:invitation_accompagnement) { nil }
