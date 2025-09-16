@@ -39,10 +39,6 @@ class FollowUp < ApplicationRecord
                            joins(:motif_category).where(motif_category: { motif_category_type: "rsa_accompagnement" })
                          }
 
-  def action_required_status?
-    status.in?(STATUSES_WITH_ACTION_REQUIRED)
-  end
-
   def convocable_status?
     status.in?(CONVOCABLE_STATUSES)
   end

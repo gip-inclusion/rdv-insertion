@@ -35,13 +35,15 @@ module ParticipationsHelper
     return "" if participation.follow_up.closed?
 
     if participation.seen?
-      "bg-success border-success"
-    elsif participation.cancelled?
-      "bg-danger border-danger"
+      "rdv-seen border-light-grey"
+    elsif participation.revoked?
+      "rdv-revoked border-light-grey"
+    elsif participation.excused?
+      "rdv-excused border-light-grey"
+    elsif participation.noshow?
+      "rdv-noshow border-light-grey"
     elsif participation.needs_status_update?
-      "bg-warning border-warning"
-    else
-      ""
+      "rdv-needs-status-update"
     end
   end
 
