@@ -35,7 +35,7 @@ describe Users::ParcoursController do
         get :show, params: { user_id: user_from_another_organisation.id, organisation_id: organisation.id }
 
         expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
-        expect(flash[:error]).to include("Aucun utilisateur trouvé avec cet identifiant")
+        expect(flash[:error]).to include("Aucun usager trouvé avec cet identifiant")
       end
     end
 
