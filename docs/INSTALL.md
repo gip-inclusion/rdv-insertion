@@ -45,6 +45,7 @@ Ainsi le fichier [seeds](https://github.com/betagouv/rdv-solidarites.fr/blob/pro
 
 Avant de le lancer les commandes suivantes, veuillez mettre à jour [le fichier de seeds](db/seeds.rb) pour que les organisations que l'on crée pointent vers les organisations créés précédemment sur RDV-Solidarités (en changeant le `rdv_solidarites_organisation_id` au niveau des organisations).
 De la même facon, vérifier `rdv_solidarites_agent_id` pour notre agent de test et les `rdv_solidarites_motif_id` et `rdv_solidarites_service_id` pour les motifs.
+Enfin, prenez soin de définir la variable `SHARED_SECRET_FOR_AGENTS_AUTH` à une valeur commune dans les fichiers `.env` des deux projets. Dans le cas contraire, les deux applications ne seront pas en mesure de communiquer et certaines fonctionnalités seront dysfonctionnelles (i.e, ajout de nouveaux usagers)
 
 Se connecter sur RDV-Insertion avec les identifiants RDV-Solidarités crée automatiquement l'agent sur RDV-Insertion.
 
