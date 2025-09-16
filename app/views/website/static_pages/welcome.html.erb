@@ -22,13 +22,13 @@
       </div>
       <div id="home-cd-logos">
         <p class="fr-mb-2w">Déjà 32 conseils départementaux utilisent nos services</p>
-        <div id="home-cd-logos-container">
-          <%= image_tag "logos/home_bouches-du-rhone.png" %>
-          <%= image_tag "logos/home_drome.png" %>
-          <%= image_tag "logos/home_la_manche.png" %>
-          <%= image_tag "logos/home_moselle.png" %>
-          <%= image_tag "logos/home_vaucluse.png" %>
-          <%= image_tag "logos/home_yvelines.png" %>
+        <div id="home-cd-logos-container" data-controller="home-department-logos">
+          <%= image_tag "logos/home_bouches-du-rhone.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_drome.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_la_manche.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_moselle.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_vaucluse.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_yvelines.png", data: { action: "click->home-department-logos#scrollToMap" } %>
         </div>
       </div>
     </div>
@@ -118,7 +118,7 @@
         <%= image_tag "illustrations/why-rdvi-1.png", alt: "Image d'illustration de la raison pour laquelle rdv-insertion est le meilleur outil pour gérer les rendez-vous RSA" %>
         <div class="home-why-rdvi-keypoint-content">
           <h3>Autonomiser les bRSA</h3>
-          <p>Invitez les bénéficiaires du RSA à choisir en autonomie un créneau de rendez-vous sur les créneaux de disponibilités des conseillers <br> → De meilleurs taux de présence et entrée positive en parcours.</p>
+          <p>Invitez les bénéficiaires du RSA à choisir en autonomie un créneau de rendez-vous sur les créneaux de disponibilités des conseillers <br> → De meilleurs taux de présence et entrées positives en parcours.</p>
         </div>
       </div>
       <div class="home-why-rdvi-keypoint">
@@ -249,7 +249,7 @@
       </div>
       <div id="home-flourish-map">
         <h4>Carte du déploiement de rdv-insertion</h4>
-        <div class="flourish-embed flourish-map" data-src="visualisation/25039594"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+        <div class="flourish-embed flourish-map" data-src="visualisation/9644547"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
       </div>
       <div id="home-trust-why">
         <div id="home-trust-why-title">
