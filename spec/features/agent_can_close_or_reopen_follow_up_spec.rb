@@ -28,7 +28,7 @@ describe "Agents can close or reopen follow_up", :js do
       expect(page).to have_content("RSA orientation")
 
       expect(page).to have_content("Rouvrir")
-      expect(page).to have_content("Traité le")
+      expect(page).to have_content("traité le")
       expect(follow_up.reload.status).to eq("closed")
       expect(page).to have_current_path(department_user_follow_ups_path(department_id: department.id,
                                                                         user_id: user.id))
@@ -54,7 +54,7 @@ describe "Agents can close or reopen follow_up", :js do
       expect(page).to have_content("RSA orientation")
 
       expect(page).to have_content("Rouvrir")
-      expect(page).to have_content("Traité le")
+      expect(page).to have_content("traité le")
       expect(follow_up.reload.status).to eq("closed")
       expect(page).to have_current_path(organisation_user_follow_ups_path(organisation_id: organisation.id,
                                                                           user_id: user.id))
