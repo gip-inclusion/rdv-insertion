@@ -1,68 +1,394 @@
-<div class="container-fluid mt-5">
-  <div class="row justify-content-center mb-5">
-    <div class="col-11 col-lg-5 d-flex flex-column mt-auto mb-5">
-      <div class="welcome-title mt-sm-5">
-        <h1 class="text-left w-100">Accélérez les rendez&#8209;vous d'insertion et diminuez le taux d'absentéisme</h1>
+<div id="home">
+  <div class="fr-container fr-grid-row" id="home-intro">
+    <div id="home-intro-content">
+      <div class="fr-mb-7v">
+        <h1 id="home-title">Rdv-insertion, l'outil de pilotage de rendez-vous des acteurs du RPE</h1>
+        <p id="home-subtitle" data-controller="home-subtitle">
+          Faites confiance à rdv-insertion pour 
+          <span class="text-red" data-home-subtitle-target="text"></span>
+        </p>
       </div>
-      <div class="d-flex">
-        <div class="me-2">
-          <%= link_to "https://tally.so/r/nGJo0k", target: "_blank" do %>
-            <button class="btn btn-blue">Être rappelé</button>
+      <div id="home-intro-links">
+        <div class="home-intro-link">
+          <%= link_to "https://tally.so/r/nGJo0k", class: "fr-btn", target: "_blank" do %>
+            Être rappelé
           <% end %>
         </div>
-        <div>
-          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/blog/cas-utilisateur-1-le-departement-de-la-drome", target: "_blank" do %>
-            <button class="btn btn-blue-out">Découvrir un cas utilisateur</button>
+        <div class="home-intro-link">
+          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/blog/cas-utilisateur-1-le-departement-de-la-drome", class: "fr-btn fr-btn--secondary", target: "_blank" do %>
+            Découvrir un cas utilisateur
           <% end %>
         </div>
       </div>
+      <div id="home-cd-logos">
+        <p class="fr-mb-2w">Déjà 32 conseils départementaux utilisent nos services</p>
+        <div id="home-cd-logos-container" data-controller="home-department-logos">
+          <%= image_tag "logos/home_bouches-du-rhone.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_drome.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_la_manche.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_moselle.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_vaucluse.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+          <%= image_tag "logos/home_yvelines.png", data: { action: "click->home-department-logos#scrollToMap" } %>
+        </div>
+      </div>
     </div>
-    <div class="col-11 col-lg-5">
-      <%= image_tag "illustrations/welcome-illustration.svg", class: "welcome-illustration", alt: "Image d'illustration de prise de rendez-vous" %>
+    <div id="home-intro-image">
+      <%= image_tag "illustrations/welcome-illustration.png", class: "welcome-illustration", alt: "Image d'illustration de prise de rendez-vous" %>
     </div>
   </div>
+  <div class="fr-container">
+    <div class="fr-grid-row" id="home-facts">
+      <div class="fact-card">
+        <p class="fact-card-title">85%</p>
+        <p class="fact-card-subtitle">de taux de présence moyen aux rendez-vous</p>
+      </div>
+      <div class="fact-card">
+        <p class="fact-card-title">– 7,5 jours</p>
+        <p class="fact-card-subtitle">en moyenne de réduction des délais d'orientation</p>
+      </div>
+      <div class="fact-card">
+        <p class="fact-card-title">– 2,3 jours</p>
+        <p class="fact-card-subtitle">en moyenne de réduction des délais d'accompagnement</p>
+      </div>
+      <div class="fact-card">
+        <p class="fact-card-title">45 min</p>
+        <p class="fact-card-subtitle">de temps gagné par jour par agent des conseils départementaux</p>
+      </div>
+    </div>
+  </div>
+  <div class="fr-grid-row fr-container" id="home-reinvent">
+    <div id="import-illustration">
+      <%= image_tag "illustrations/upload.png", alt: "Image d'illustration de l'import d'usagers" %>
+    </div>
+    <div id="reinvent-content">
+      <div id="reinvent-content-title">
+        <h2>Réinventer votre manière de gérer vos rendez-vous RSA</h2>
+        <p>Importez, invitez et pilotez rapidement vos cohortes de bénéficiaires.</p>
+      </div>
+        <div id="reinvent-content-features" data-controller="home-questions">
+        <div class="reinvent-content-feature active" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>100% en ligne et sans coûts pour les collectivités</h4>
+          <p>Rdv-insertion est le seul outil permettant d’autonomiser les bénéficiaires du RSA dans le choix de leurs rendez-vous et ainsi réduire drastiquement les taux d’absentéisme.</p>
+        </div>
+        <div class="reinvent-content-feature" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>Une interface intuitive</h4>
+          <p>L’interface intuitive a été conçue pour répondre aux enjeux spécifiques de la gestion des rendez-vous RSA.</p>
+        </div>
+        <div class="reinvent-content-feature" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>Un logiciel mature</h4>
+          <p>Bénéficiez d’un logiciel mature après 4 années d’améliorations continues prenant en compte l’ensemble des actes métiers liés aux rendez-vous du parcours des bRSA.</p>
+        </div>
+        <div class="reinvent-content-feature" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>En phase avec la loi plein emploi</h4>
+          <p>Rdv-insertion vous permet de piloter sur une seule interface l’ensemble des rendez-vous assurés par le RPE : vos services mais aussi vos délégataires et partenaires.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fr-grid-row" id="home-quotes" data-controller="home-carrousel">
+    <div id="home-quotes-card" data-action="touchstart->home-carrousel#onTouchStart touchmove->home-carrousel#onTouchMove touchend->home-carrousel#onTouchEnd">
+      <div class="quote-card active" data-home-carrousel-target="stepInfo">
+        <p class="quote-card-text">
+          « La prise de rendez-vous en autonomie a entraîné un impact inattendu : les bénéficiaires ont un positionnement différent en rendez-vous. Ils sont moins stressés par la contrainte, les rendez-vous durent plus longtemps. »
+        </p>
+        <p class="quote-card-author">
+          Thomas GRAVELEAU, Chargé de mission direction insertion, CD 13 
+        </p>
+      </div>
+      <div class="quote-card" data-home-carrousel-target="stepInfo">
+        <p class="quote-card-text">
+          « Nous avons été accompagnés d’une façon optimale par l’équipe toujours disponible. Ils ont toujours répondus à nos questions et nous ont trouvé des solutions pour répondre au mieux à nos procédures. L’outil est finalement assez simple à paramétrer, ce qui laisse de l’autonomie pour le réaliser avec l’équipe concernée »
+        </p>
+        <p class="quote-card-author">
+          Fabienne FERRY, Chef de service de l'Insertion et de l'accès à l'Emploi, CD 57
+        </p>
+      </div>
+    </div>
+    <div id="home-quotes-slide-indicator">
+      <div class="slide-indicator-dot active" data-home-carrousel-target="dot" data-action="click->home-carrousel#onStepDotClick"></div>
+      <div class="slide-indicator-dot" data-home-carrousel-target="dot" data-action="click->home-carrousel#onStepDotClick"></div>
+    </div>
+  </div>
+  <div id="home-why-rdvi">
+    <div id="home-why-rdvi-title">
+      <h2>Pourquoi choisir rdv-insertion</h2>
+    </div>
+    <div id="home-why-rdvi-keypoints">
+      <div class="home-why-rdvi-keypoint">
+        <%= image_tag "illustrations/why-rdvi-1.png", alt: "Image d'illustration de la raison pour laquelle rdv-insertion est le meilleur outil pour gérer les rendez-vous RSA" %>
+        <div class="home-why-rdvi-keypoint-content">
+          <h3>Autonomiser les bRSA</h3>
+          <p>Invitez les bénéficiaires du RSA à choisir en autonomie un créneau de rendez-vous sur les créneaux de disponibilités des conseillers <br> → De meilleurs taux de présence et entrées positives en parcours.</p>
+        </div>
+      </div>
+      <div class="home-why-rdvi-keypoint">
+        <div class="home-why-rdvi-keypoint-content">
+          <h3>Gérer des cohortes de bRSA</h3>
+          <p>
+            Importez et invitez en masse vos flux ou votre stock <br>→ Plus besoin de convoquer individuellement chaque bRSA.
+          </p>
+        </div>
+        <%= image_tag "illustrations/why-rdvi-2.png", alt: "Image d'illustration de la raison pour laquelle rdv-insertion est le meilleur outil pour gérer les rendez-vous RSA" %>
+      </div>
+      <div class="home-why-rdvi-keypoint">
+        <%= image_tag "illustrations/why-rdvi-3.png", alt: "Image d'illustration de la raison pour laquelle rdv-insertion est le meilleur outil pour gérer les rendez-vous RSA" %>
+        <div class="home-why-rdvi-keypoint-content">
+          <h3>Pilotez les rendez-vous</h3>
+          <p>
+            Pilotez et contrôlez en un clin d’oeil la bonne prise et la bonne tenue des rendez-vous.
+          </p>
+        </div>
+      </div>
+      <div class="home-why-rdvi-keypoint">
+        <div class="home-why-rdvi-keypoint-content">
+          <h3>Prescrivez des rendez-vous</h3>
+          <p>
+            Prescrivez des rendez-vous entre services, délégataires ou partenaires <br>→ Assurez-vous de parcours sans coutures et disposez d’une visibilité parfaite des prochains rdv possibles pour vos bRSA accompagnés.
+          </p>
+        </div>
+        <%= image_tag "illustrations/why-rdvi-4.png", alt: "Image d'illustration de la raison pour laquelle rdv-insertion est le meilleur outil pour gérer les rendez-vous RSA" %> 
+      </div>
+    </div>
+  </div>
+  <div id="home-api">
+    <div id="home-api-title">
+      <h2>API rdv-insertion</h2>
+      <p>Afin de limiter au maximum les douleurs générées par la double-saisie de données parfois nécessaire entre logiciels, rdv-insertion est interconnectable grâce à son API.</p>
+    </div>
+    <div id="home-api-features">
+      <div class="home-api-feature">
+        <div class="home-api-feature-logo">
+          <%= image_tag "logos/france-travail.svg", alt: "Logo de France Travail" %>
+        </div>
+        <div class="home-api-feature-content">
+          <h4>France Travail</h4>
+          <p>Conformément aux objectifs de la LPE, rdv-insertion est connecté au SI Plateforme de FT via l’API “RDV-partenaires”.</p>
+        </div>
+      </div>
+      <div class="home-api-feature">
+        <div class="home-api-feature-logo">
+          <%= image_tag "logos/solis.png", alt: "Logo de Solis" %>
+        </div>
+        <div class="home-api-feature-content">
+          <h4>Solis</h4>
+          <p>Incorporé dans la version 12 de Solis, l’interconnexion avec rdv-insertion permet de piloter la création de dossiers et l’envoi d’invitation depuis Solis. Ensuite, les rendez-vous choisis en autonomie par les bRSA remontent automatiquement dans leur dossier usager Solis.</p>
+        </div>
+      </div>
+      <div class="home-api-feature">
+        <div class="home-api-feature-logo">
+          <%= image_tag "logos/suivi-de-parcours.png", alt: "Logo de Suivi de parcours" %>
+        </div>
+        <div class="home-api-feature-content">
+          <h4>Suivi de parcours</h4>
+          <p>Rdv-insertion est compatible avec l’application Suivi de Parcours développée par France Travail. L’interconnexion permet de transmettre à Suivi de Parcours les rendez-vous passés et à venir générés dans rdv-insertion.</p>
+        </div>
+      </div>
+      <div class="home-api-feature">
+        <div class="home-api-feature-logo">
+          <%= image_tag "illustrations/logiciel-metier.png", alt: "Illustration logiciel métier" %>
+        </div>
+        <div class="home-api-feature-content">
+          <h4>Logiciel métier</h4>
+          <p>Comme les Bouches du Rhônes, le Cantal et le Lot-et-Garonne, notre API est à votre disposition pour interconnecter vos propres logiciels à rdv-insertion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="home-follow-up" data-controller="home-carrousel" data-action="touchstart->home-carrousel#onTouchStart touchmove->home-carrousel#onTouchMove touchend->home-carrousel#onTouchEnd">
+    <div id="home-follow-up-title">
+      <h2>Notre équipe vous accompagne</h2>
+      <p>A chaque étape du déploiement de votre espace rdv-insertion, l’équipe est à votre disposition pour répondre à vos besoins. </p>
+    </div>
+    <div id="home-follow-up-steps">
+      <div class="home-follow-up-step active" data-home-carrousel-target="stepImage" data-action="click->home-carrousel#onStepImageClick">
+        <%= image_tag "illustrations/accompagnement-step-1.png", alt: "Illustration accompagnement 1" %>
+      </div>
+      <div class="home-follow-up-step" data-home-carrousel-target="stepImage" data-action="click->home-carrousel#onStepImageClick">
+        <%= image_tag "illustrations/accompagnement-step-2.png", alt: "Illustration accompagnement 2" %>
+      </div>
+      <div class="home-follow-up-step" data-home-carrousel-target="stepImage" data-action="click->home-carrousel#onStepImageClick">
+        <%= image_tag "illustrations/accompagnement-step-3.png", alt: "Illustration accompagnement 3" %>
+      </div>
+      <div class="home-follow-up-step" data-home-carrousel-target="stepImage" data-action="click->home-carrousel#onStepImageClick">
+        <%= image_tag "illustrations/accompagnement-step-4.png", alt: "Illustration accompagnement 4" %>
+      </div>
+    </div>
+    <div id="home-follow-up-step-infos">
+      <div class="home-follow-up-step-info" data-home-carrousel-target="stepInfo">
+        <h3>1. Étude d'opportunité</h3>
+        <p>Nous étudions avec vous dans quelle mesure et comment l’outil rdv-insertion vous aidera à améliorer la gestion et le pilotage de vos rdv RSA.</p>
+      </div>
 
-  <div class="row justify-content-center">
-    <h3 class="col-10 text-left mb-5">Rdv-insertion permet aux départements d’organiser facilement leurs rendez-vous avec leurs usagers allocataires du RSA (rendez-vous individuels, collectifs, rendez-vous de suivi ou ateliers).</h3>
-  </div>
+      <div class="home-follow-up-step-info" data-home-carrousel-target="stepInfo">
+        <h3>2. Conduite du changement</h3>
+        <p>Conscient de l’enjeu que constitue l’appropriation d’un nouvel outil, nous élaborons ensemble le plan de déploiement le plus adapté à votre territoire et à vos objectifs.</p>
+      </div>
 
-  <div class="row mx-5 mb-4">
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/computer.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration en quelques clics" %>
-      <p class="text-center">Invitez en masse par SMS et email en quelques clics</p>
-    </div>
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/letter.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration courrier" %>
-      <p class="text-center">Diminuez les tâches administratives de gestion des courriers et d'agenda
-    </div>
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/calendar.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration calendrier" %>
-      <p class="text-center">Gérez facilement les relances et le suivi des prises de rendez-vous
-    </div>
-    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
-      <%= image_tag "illustrations/choice.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration du choix" %>
-      <p class="text-center">Les personnes invitées sont autonomes dans leur prise de rendez-vous et bénéficient d'un rappel automatique
-    </div>
-  </div>
-  <div class="row d-flex justify-content-center card-demo">
-    <h3 class="col-10 text-center mb-5 text-dark-blue">Et ça ressemble à quoi ?</h3>
-    <div class="col-10 col-md-8">
-      <video controls width="100%" src="https://rdv-insertion-medias-production.s3.fr-par.scw.cloud/assets/rdv_insertion_landing.mp4"></video>
-    </div>
-  </div>
-  <div class="row justify-content-center background-dark-blue text-white">
-    <p class="col-10 text-left mt-4 mb-4">Ce service est proposé par le Groupement d’Intérêt Public <%= link_to "\"Plateforme de l'inclusion\"", "https://inclusion.beta.gouv.fr/nos-services/", class: "link-blue-light", target: :blank %>, créé par arrêté en avril 2022. Sa mission est de développer de nouveaux services publics pour faciliter la vie des personnes en insertion et de celles et ceux qui les accompagnent.</p>
-  </div>
+      <div class="home-follow-up-step-info" data-home-carrousel-target="stepInfo">
+        <h3>3. Paramétrage et embarquement</h3>
+        <p>Nous assumons intégralement pour vous le paramétrage de votre espace rdv-insertion afin que vous n’ayez qu’à vous concentrer sur l’essentiel : l’accompagnement des bRSA.</p>
+      </div>
 
-  <div class="row justify-content-center card-demo">
-    <h2 class="col-10 text-center text-dark-blue bold mb-4">Ça vous intéresse&nbsp;?</h2>
-    <p class="col-10 text-center">Vous êtes un conseil départemental et vous souhaitez en savoir plus sur notre service ?</p>
-    <p class="col-10 text-center mb-4">Notre équipe est à votre écoute pour adapter rdv-insertion à vos besoins.</p>
-    <div class="col-10 text-center">
-      <%= link_to "https://calendly.com/eva-laurent-rdvi/60min", target: "_blank" do %>
-        <button class="btn btn-blue">Demander une démo</button>
-      <% end %>
+      <div class="home-follow-up-step-info" data-home-carrousel-target="stepInfo">
+        <h3>4. Formation et support utilisateur</h3>
+        <p>Après une formation initiale que nous pouvons assurer en présentiel, vous bénéficiez d'un support fonctionnel et technique rapide de moins de 24 heures.</p>
+      </div>
+    </div>
+    <div id="home-follow-up-dots">
+      <div class="home-follow-up-dot active" data-home-carrousel-target="dot" data-action="click->home-carrousel#onStepDotClick"></div>
+      <div class="home-follow-up-dot" data-home-carrousel-target="dot" data-action="click->home-carrousel#onStepDotClick"></div>
+      <div class="home-follow-up-dot" data-home-carrousel-target="dot" data-action="click->home-carrousel#onStepDotClick"></div>
+      <div class="home-follow-up-dot" data-home-carrousel-target="dot" data-action="click->home-carrousel#onStepDotClick"></div>
     </div>
   </div>
-
+  <div id="home-trust">
+    <div class="fr-container">
+      <div id="home-trust-title">
+        <h2>Ils nous font confiance</h2>
+        <p>32 conseils départementaux font confiance à rdv-insertion pour le pilotage et la gestion de leurs rendez-vous RSA, soit près de 1/3 du territoire.</p>
+      </div>
+      <div id="home-flourish-map">
+        <h4>Carte du déploiement de rdv-insertion</h4>
+        <div class="flourish-embed flourish-map" data-src="visualisation/9644547"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+      </div>
+      <div id="home-trust-why">
+        <div id="home-trust-why-title">
+          <h4>Un déploiement sur mesure pour chaque département</h4>
+          <p>Le même  outil pour nos 32 conseils départementaux utilisateurs, mais autant de manières de le déployer compte tenu des spécificités de votre territoire  : </p>
+        </div>
+        <div id="home-trust-why-content">
+          <div class="home-trust-why-content-item">
+            <%= image_tag "illustrations/home-trust-why-1.png", alt: "Illustration découpage administratif" %>
+            <p><span class="text-bold">Le découpage administratif</span> de votre territoire et ses différents lieux d’accueils des publics</p>
+          </div>
+          <div class="home-trust-why-content-item">
+            <%= image_tag "illustrations/home-trust-why-2.png", alt: "Illustration découpage administratif" %>
+            <p><span class="text-bold">Les types de rendez-vous à gérer :</span> orientation, signature CER, suivi, atelier collectif etc..</p>
+          </div>
+          <div class="home-trust-why-content-item">
+            <%= image_tag "illustrations/home-trust-why-3.png", alt: "Illustration découpage administratif" %>
+            <p><span class="text-bold">
+            Vos modalités de rendez-vous :</span> par téléphone ? En lieu d’accueil ? A domicile ? En visio ?
+            </p>
+          </div>
+          <div class="home-trust-why-content-item">
+            <%= image_tag "illustrations/home-trust-why-4.png", alt: "Illustration découpage administratif" %>
+            <p><span class="text-bold">
+              Vos objectifs :</span> intégration du flux de nouveaux entrants, seconde chance des bRSA sanctionnés, remobilisation des perdu(es) de vue.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="home-how-it-works">
+    <div id="home-how-it-works-title">
+      <h2>Comment ça fonctionne ?</h2>
+      <p>Rdv-insertion fonctionne avec le service de l’État de prise de rendez-vous RDV Solidarités. L’échange des données se fait automatiquement entre les deux outils</p>
+    </div>
+    <div id="home-how-it-works-content">
+      <div class="home-how-it-works-content-item">
+        <div class="home-api-feature-logo">
+          <%= image_tag "logos/rdv-insertion.png", alt: "Logo rdv-insertion" %>
+        </div>
+        <div class="home-api-feature-content">
+          <h4>Rdv-insertion, votre outil de suivi de rendez-vous</h4>
+          <ul>
+            <li>Import des usagers et envoi des invitations en masse</li>
+            <li>Tableau de bord de pilotage des rendez-vous </li>
+            <li>Import des flux CAF, CNAF Hubee</li>
+            <li>Exports des données pour vos statistiques</li>
+          </ul>
+        </div>
+      </div>
+      <div class="home-how-it-works-content-item">
+        <div class="home-api-feature-logo">
+          <%= image_tag "logos/rdv-solidarites.png", alt: "Logo rdv-solidarites" %>
+        </div>
+        <div class="home-api-feature-content">
+          <h4>RDV Solidarités, votre outil de planification</h4>
+          <p>
+            <ul>
+              <li>Gestion des comptes agents</li>
+              <li>Gestion des plages de disponibilités pour les rendez-vous</li>
+              <li>Outil de prise de rendez-vous pour les usagers</li>
+            </ul>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="home-questions">
+    <div id="home-questions-title">
+      <h2>Questions fréquentes</h2>
+    </div>
+    <div id="home-questions-content">
+      <div id="home-questions-features" data-controller="home-questions">
+        <div class="home-question active" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>Quel est le coût d'utilisation de l'outil rdv-insertion ?</h4>
+          <p>
+            Rdv-insertion est sans coût pour les collectivités que ce soit l’usage de l’outil, son paramétrage et le support utilisateur assuré par l’équipe de déploiement. Porté par la Plateforme de l’inclusion, rdv-insertion est au service des professionnels de l’insertion pour les aider à mener à bien leurs missions d’accompagnement des bRSA.
+          </p>
+        </div>
+        <div class="home-question" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>Quelle est la plus-value de rdv-insertion par rapport à mon logiciel de parcours ?</h4>
+          <p>
+            Rdv-insertion est parfaitement complémentaire des logiciels de parcours en tant que spécialiste de la gestion des rdv RSA grâce à des fonctionnalités que nous ne retrouvons pas ailleurs : autonomisation des bRSA dans le choix du créneau, import/invitation en masse, relances automatique, rappel sms, statuts de rdv automatiquement mis à jour etc...
+          </p>
+        </div>
+        <div class="home-question" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>Peut-on convoquer les bRSA avec rdv-insertion ?</h4>
+          <p>
+            Bien que la proposition de valeur réside dans l’invitation des bRSA à choisir en autonomie leur créneau de rendez-vous, il est possible, au cas par cas d’avoir recours à la convocation si vous l’estimez nécessaire.
+          </p>
+        </div>
+        <div class="home-question" data-home-questions-target="feature" data-action="click->home-questions#toggleFeature">
+          <h4>Le recours à l’e-mail pour contacter les bRSA est-il une preuve recevable en cas de litige ?</h4>
+          <p>
+            Devant la juridiction administrative, et notamment le juge du plein contentieux compétent pour le RSA, la preuve est libre : témoignages, photos, captures d’écran, mails, etc. En cas de recours, le Conseil départemental peut donc produire des captures d’écran de rdv-insertion ou RDV Solidarités montrant l’envoi d’un SMS/mail ou l’annulation d’un rendez-vous par le bénéficiaire. Ces preuves sont en principe recevables.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="home-wish">
+    <div class="fr-container">
+      <div id="home-wish-image">
+        <%= image_tag "illustrations/home-wish.png", alt: "Image d'illustration de la volonté de rdv-insertion" %>
+      </div>
+      <div id="home-wish-content">
+        <h2>Vous souhaitez...</h2>
+        <div id="home-wish-content-items">
+          <div class="home-wish-content-item">
+            <p>Déployer rdv-insertion sur votre territoire ?</p>
+          </div>
+          <div class="home-wish-content-item">
+            <p>Demander une démo ?</p>
+          </div>
+          <div class="home-wish-content-item">
+            <p>Avoir plus d'informations sur notre service ?</p>
+          </div>
+        </div>
+        <div id="home-wish-contact-button">
+          <a href="mailto:rdv-insertion@inclusion.gouv.fr" class="fr-btn">Contactez-nous !</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%# We're waiting for the destination of the form %>
+  <div id="home-subscribe" style="display: none;">
+    <div class="fr-container">
+      <div id="home-subscribe-title">
+        <h2>Abonnez-vous à notre lettre d'information</h2>
+        <p>Restez informer sur nos actualités, l’évolution de notre service, et sur nos évènements en vous abonnant à notre lettre d’information mensuelle.</p>
+      </div>
+      <div id="home-subscribe-form">
+        <form action="#">
+          <%= email_field_tag :email, nil, placeholder: "Votre adresse électronique (ex. : nom@domaine.fr)", class: "fr-input" %>
+          <%= submit_tag "S'abonner", class: "fr-btn" %>
+        </form>
+        <p>En renseignant votre adresse électronique, vous acceptez de recevoir nos actualités par courriel. Vous pouvez vous désinscrire à tout moment à l’aide des liens de désinscription ou en nous contactant.</p>
+      </div>
+    </div>
+  </div>
 </div>
