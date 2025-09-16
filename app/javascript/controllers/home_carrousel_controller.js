@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["quoteCard", "slideIndicator"];
+  static targets = ["stepImage", "stepInfo", "dot"];
 
   connect() {
     this.currentIndex = 0;
@@ -15,13 +15,23 @@ export default class extends Controller {
   disconnect() {
     this.#stopAutoAdvance();
   }
-
+  
   onStepDotClick(event) {
-    event.preventDefault?.();
+    event.preventDefault();
 
     const clickedDot = event.currentTarget;
-    const index = this.slideIndicatorTargets.indexOf(clickedDot);
+    const index = this.dotTargets.indexOf(clickedDot);
 
+    this.#showIndex(index);
+    this.#startAutoAdvance();
+  }
+
+  onStepImageClick(event) {
+    event.preventDefault();
+
+    const clickedStep = event.currentTarget;
+    const index = this.stepImageTargets.indexOf(clickedStep);
+    
     this.#showIndex(index);
     this.#startAutoAdvance();
   }
@@ -34,8 +44,6 @@ export default class extends Controller {
     this.touchStartY = touch.clientY;
     this.touchMoveX = null;
     this.touchMoveY = null;
-
-    this.#stopAutoAdvance();
   }
 
   onTouchMove(event) {
@@ -56,39 +64,43 @@ export default class extends Controller {
     const deltaY = endY - this.touchStartY;
 
     const isHorizontalMovement = Math.abs(deltaX) > Math.abs(deltaY);
-    const exceedsThreshold = Math.abs(deltaX) >= this.horizontalSwipeThresholdPx;
+    const exceedsThreshold = Math.abs(deltaX) > this.horizontalSwipeThresholdPx;
     const isSwipeLeft = deltaX < 0;
-
+    
     if (isHorizontalMovement && exceedsThreshold) {
       if (isSwipeLeft) {
         this.#next();
       } else {
         this.#prev();
       }
+      this.#startAutoAdvance();
     }
-
-    this.#startAutoAdvance();
   }
 
   #count() {
-    return this.quoteCardTargets.length;
+    return this.stepInfoTargets.length;
   }
 
   #resetSlides() {
-    this.quoteCardTargets.forEach(quoteCard => quoteCard.classList.remove("active"));
-    this.slideIndicatorTargets.forEach(indicator => indicator.classList.remove("active"));
+    this.stepImageTargets?.forEach(stepImage => stepImage.classList.remove("active"));
+    this.stepInfoTargets.forEach(stepInfo => stepInfo.classList.remove("active"));
+    this.dotTargets.forEach(dot => dot.classList.remove("active"));
   }
 
   #showIndex(index) {
     const total = this.#count();
     if (total === 0) return;
 
+    // This allows to handle out of bounds indexes
+    // The idea is to show the first slide when swiping after the last slide
+    // and the last slide when swiping before the first slide
     const newIndex = ((index % total) + total) % total;
 
     this.#resetSlides();
 
-    this.quoteCardTargets[newIndex]?.classList.add("active");
-    this.slideIndicatorTargets[newIndex]?.classList.add("active");
+    this.stepImageTargets[newIndex]?.classList.add("active");
+    this.stepInfoTargets[newIndex]?.classList.add("active");
+    this.dotTargets[newIndex]?.classList.add("active");
 
     this.currentIndex = newIndex;
   }
@@ -103,8 +115,6 @@ export default class extends Controller {
 
   #startAutoAdvance() {
     this.#stopAutoAdvance();
-    if (this.#count() <= 1) return;
-
     this.autoTimer = setInterval(() => {
       this.#next();
     }, this.autoAdvanceIntervalMs);
@@ -116,4 +126,4 @@ export default class extends Controller {
       this.autoTimer = null;
     }
   }
-} 
+}
