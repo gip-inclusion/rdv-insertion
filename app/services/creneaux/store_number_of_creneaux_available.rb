@@ -38,7 +38,6 @@ module Creneaux
       Invitation.joins(:follow_up, :organisations)
                 .where(follow_ups: { motif_category_id: category_configuration.motif_category_id })
                 .where(organisations: { id: category_configuration.organisation_id })
-                .distinct(:follow_up_id)
                 .valid
                 .count
     end
