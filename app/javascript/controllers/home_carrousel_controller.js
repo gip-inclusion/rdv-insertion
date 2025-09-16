@@ -5,7 +5,7 @@ export default class extends Controller {
 
   connect() {
     this.currentIndex = 0;
-    this.autoAdvanceIntervalMs = 6000;
+    this.autoAdvanceIntervalMs = 7000;
     this.horizontalSwipeThresholdPx = 40;
 
     this.#showIndex(this.currentIndex);

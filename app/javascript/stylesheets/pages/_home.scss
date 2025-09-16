@@ -33,11 +33,16 @@
     }
   
     #home-subtitle {
+
+      @media (max-width: 768px) {
+        height: 60px;
+      }
+
       span {
         font-weight: 700;
 
         @media (max-width: 768px) {
-          display: inline-block;
+          display: block;
         }
       }
     }
@@ -67,7 +72,7 @@
         gap: 15px;
 
         img {
-          height: 26px;
+          height: 30px;
         }
 
         @media (max-width: 768px) {
@@ -414,10 +419,16 @@
       border: 1px solid $light-grey;
       border-bottom: 3px solid #000;
 
+      @media (max-width: 768px) {
+        &:last-child {
+          width: 250px;
+        }
+      }
+
       @media all and (min-width: 768px) {
         transition: transform 0.3s ease-in-out;
         width: 230px;
-        
+
         &:hover {
           transform: scale(1.02);
         }
