@@ -31,12 +31,28 @@ button, input[type="button"] {
 }
 
 .badge-tag {
-  padding: 0.75em 1em;
-  margin-right: 0.25rem;
-  margin-bottom: 0.5em;
-  font-size: 0.85em;
-  font-weight: 600;
-  line-height: 16px;
+  border-radius: 16px;
+  opacity: 1;
+  padding-top: 10px;
+  padding-right: 12px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  background-color: #EDF5FE;
+  color: $info;
+  font-size: 14px;
+
+  a {
+    color: $info;
+  }
+
+  a:hover {
+    color: $info;
+  }
+}
+
+.badge-tag.text-brown i {
+  // ri-close-line color inheritance
+  color: $brown;
 }
 
 button:disabled {

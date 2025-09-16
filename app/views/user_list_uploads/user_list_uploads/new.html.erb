@@ -47,7 +47,7 @@
             <p class="mb-0">Glisser/déposer votre fichier ici</p>
             <p class="text-muted small">OU</p>
             <div class="mt-2">
-              <label for="user_list_upload_file" class="btn btn-primary" id="rdvi_upload_select-file_file-choice">
+              <label for="user_list_upload_file" class="btn btn-primary" id="rdvi_upload_select-file_file-choice" tabindex="0" role="button" data-action="keydown->user-list-upload#handleOpenPickerKeydown">
                 Charger un fichier
               </label>
             </div>
@@ -76,7 +76,7 @@
               </div>
             </div>
             <div>
-              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline" id="rdvi_upload_select-file_change-file" tabindex="0" role="button" data-action="keydown->user-list-upload#handleOpenPickerKeydown click->user-list-upload#openFilePicker">
+              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline" id="rdvi_upload_select-file_change-file" tabindex="0" role="button" data-action="keydown->user-list-upload#handleOpenPickerKeydown">
                 Changer de fichier
               </label>
             </div>
