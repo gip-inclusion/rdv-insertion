@@ -226,7 +226,7 @@ describe UsersController do
         get :show, params: show_params
 
         expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
-        expect(flash[:error]).to include("Aucun utilisateur trouvé avec cet identifiant")
+        expect(flash[:error]).to include("Aucun usager trouvé avec cet identifiant")
       end
     end
 
@@ -1234,7 +1234,7 @@ describe UsersController do
           patch :update, params: update_params
 
           expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
-          expect(flash[:error]).to include("Aucun utilisateur trouvé avec cet identifiant")
+          expect(flash[:error]).to include("Aucun usager trouvé avec cet identifiant")
         end
       end
 
