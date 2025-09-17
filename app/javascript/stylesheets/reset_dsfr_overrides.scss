@@ -62,10 +62,10 @@
     width: 50px;
     min-width: 50px !important;
     height: 50px;
-  
+
     &.has-notification {
       @extend .btn-blue;
-  
+
       &::after {
         content: "";
         position: absolute;
@@ -78,19 +78,19 @@
       }
     }
   }
-  
+
   .btn-header {
     height: 50px;
     max-width: 350px;
   }
-  
+
   #rdvi_header_organisation-nav {
     @extend .btn;
     @extend .btn-header;
     @extend .btn-blue-out;
     min-width: 200px;
   }
-  
+
   .btn-blue {
     background-color: $dark-blue;
     border-color: $dark-blue;
@@ -105,7 +105,7 @@
       min-width: 0;
     }
   }
-  
+
   .btn-blue-out {
     border-color: $dark-blue;
     background-color: white;
@@ -139,5 +139,10 @@
     // You might also need to override DSFR's CSS custom properties for this button
     --background-action-high-blue-france: initial;
     --background-action-high-blue-france-hover: initial;
+  }
+
+  // Override DSFR hover styles for SweetAlert 2 buttons
+  .swal2-actions button:hover {
+    background-color: #1212FF !important;
   }
 }
