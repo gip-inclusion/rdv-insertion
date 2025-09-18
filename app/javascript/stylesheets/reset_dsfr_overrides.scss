@@ -6,23 +6,6 @@
 *
 */
 .reset-dsfr-overrides {
-  a {
-    text-decoration: none;
-    color: black;
-  
-    &:hover {
-      color: black;
-    }
-  }
-
-  a {
-    &::after {
-      display: none;
-    }
-    &:active {
-      background-color: transparent !important;
-    }
-  }
   p {
     line-height: normal;
   }
@@ -71,10 +54,10 @@
     width: 50px;
     min-width: 50px !important;
     height: 50px;
-  
+
     &.has-notification {
       @extend .btn-blue;
-  
+
       &::after {
         content: "";
         position: absolute;
@@ -87,19 +70,19 @@
       }
     }
   }
-  
+
   .btn-header {
     height: 50px;
     max-width: 350px;
   }
-  
+
   #rdvi_header_organisation-nav {
     @extend .btn;
     @extend .btn-header;
     @extend .btn-blue-out;
     min-width: 200px;
   }
-  
+
   .btn-blue {
     background-color: $dark-blue;
     border-color: $dark-blue;
@@ -114,7 +97,7 @@
       min-width: 0;
     }
   }
-  
+
   .btn-blue-out {
     border-color: $dark-blue;
     background-color: white;
