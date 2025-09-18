@@ -270,6 +270,11 @@
       border-left: 1px solid $light-grey;
       max-width: 750px;
       display: none;
+      height: 230px;
+
+      @media all and (max-width: 768px) {
+        height: 400px;
+      }
 
       &.active {
         display: block;
@@ -581,6 +586,10 @@
       justify-content: center;
       align-items: center;
 
+      @media (max-width: 768px) {
+        height: 200px;
+      }
+
       h3 {
         font-weight: 700;
         color: $dark-blue;
@@ -670,6 +679,9 @@
 
     #home-flourish-map {
       margin-bottom: 30px;
+      width: 90%;
+      max-width: 480px;
+      text-align: center;
 
       h4 {
         font-weight: 700;

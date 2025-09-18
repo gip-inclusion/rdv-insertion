@@ -2,7 +2,7 @@
   <div id="js-block-status-<%= follow_up.motif_category_id %>">
     <span class="badge rounded-pill <%= badge_background_class(follow_up) %>">
       <% if follow_up.closed? %>
-        <%= "Traité le #{format_date(follow_up.closed_at)}" %>
+        <%= "Dossier traité le #{format_date(follow_up.closed_at)}" %>
       <% else %>
         <%= display_follow_up_status(follow_up) %>
       <% end %>

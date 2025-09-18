@@ -21,6 +21,11 @@ button, input[type="button"] {
   }
 }
 
+.btn-border-light-grey {
+  border-color: $light-grey;
+  border-radius: 5px;
+}
+
 .text-array__remove {
   cursor: pointer;
 }
@@ -53,4 +58,44 @@ button, input[type="button"] {
 
 button:disabled {
   cursor: not-allowed !important;
+}
+
+// We need !important to maintain colors on row hover on user index table
+.invitation-pending,
+.rdv-pending {
+  color: #000191 !important;
+}
+
+.invitation-pending-and-expired,
+.rdv-revoked {
+  color: $brown !important;
+}
+
+.rdv-needs-status-update,
+.rdv-excused {
+  color: #CE0401 !important;
+}
+
+.rdv-noshow {
+  color: #E1020E !important;
+}
+
+.rdv-seen {
+  color: #17753D !important;
+}
+
+.uninvited-or-closed {
+  color: $alt-grey !important;
+}
+
+.invitation-pending {
+  background-color: #EDF5FF !important;
+}
+
+.invitation-pending-and-expired {
+  background-color: #FFE3D3 !important;
+}
+
+.rdv-needs-status-update {
+  background-color: #FFE4E4 !important;
 }
