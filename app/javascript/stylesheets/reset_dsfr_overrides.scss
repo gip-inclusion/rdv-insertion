@@ -132,4 +132,10 @@
     --background-action-high-blue-france: initial;
     --background-action-high-blue-france-hover: initial;
   }
+
+  // Reset hr styles - only .fr-hr should have DSFR styles
+  hr:not(.fr-hr) {
+    background-image: none !important;
+    padding: initial !important;
+  }
 }

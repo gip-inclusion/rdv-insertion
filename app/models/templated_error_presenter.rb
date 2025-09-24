@@ -7,6 +7,10 @@ class TemplatedErrorPresenter
     @locals = locals
   end
 
+  def as_json(options = {})
+    message
+  end
+
   def to_s
     message
   end
