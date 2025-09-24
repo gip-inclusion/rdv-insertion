@@ -283,7 +283,7 @@ Pour cela, ce système d'informations doit :
 
 ## Configuration
 
-Pour pouvoir configurer un endpoint prêt à recevoir les webhooks de rdv-insertion, [vous devez prendre contact avec l'équipe rdv-insertion](mailto:rdv-insertion@beta.gouv.fr) et leur donner l'URL qui les recevra et convenir d'un token `secret` partagé.
+Pour pouvoir configurer un endpoint prêt à recevoir les webhooks de rdv-insertion, [vous devez prendre contact avec l'équipe rdv-insertion](mailto:rdv-insertion@inclusion.gouv.fr) et leur donner l'URL qui les recevra et convenir d'un token `secret` partagé.
 
 ## Signatures des requêtes
 

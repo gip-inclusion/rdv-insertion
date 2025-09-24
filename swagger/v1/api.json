@@ -3,7 +3,7 @@
   "info": {
     "title": "API RDV insertion",
     "version": "v1",
-    "description": "L'API de rdv-insertion vous permet d'inviter des personnes en insertion à prendre rdv avec votre structure.\nQuand l'usager aura pris rendez-vous suite à son invitation, vous pouvez récupérer les informations du rdv via les webhooks (API de notifications).\n\nToutes les fonctionnalités de rdv-insertion ne sont pas encore disponibles via l’API. Contactez-nous si vous avez besoin de fonctionnalités qui ne sont pas encore présentes.\n\n# Requêtes\n\nL'API adhère aux principes REST :\n\n- requêtes `GET` : lecture sans modification\n- requêtes `POST` : création de nouvelle ressource\n- requêtes `PATCH` : mise à jour d'une ressource existante\n- requêtes `DELETE` : suppression d'une ressource\n\nLes paramètres des requêtes `GET` doivent être envoyés via les query string de la requête.\n\nLes paramètres des requêtes `POST` doivent être transmis dans le corps de la requête sous un format JSON valide, et doivent contenir le header `Content-Type: application/json`.\n\n# Routes\n\nLes endpoints de l'API sont accessibles par une route de la forme : `https://<domain>/api/<version>/<endpoint>`.\n\nAvec :\n\n- `version` est la version de l'API\n- `endpoint` est le nom de l'endpoint\n\nPour la version production, les requêtes doivent être adressées à **https://www.rdv-insertion.fr**.\n\nPour la version démo, les requêtes doivent être adressées à **https://demo.rdv-insertion.fr**.\n\n# Authentification\n\nLes endpoints sont réservés aux agents authentifiés, dans la limite de leur rôle au sein de l'application.\n\nComme sur l'interface web, l'authentification se fait via les identifiants rdv-solidarités. **Il est donc nécessaire pour l'authentification d'appeler un endpoint sur rdv-solidarités et non pas sur rdv-insertion**. Les modalités de cet endpoint sont décrits ci-dessous.\n\n## Headers d'authentification\n\nTous les agents peuvent utiliser l'API. Les requêtes faites sur l'API sont authentifiées grace à des tokens d'accès associés à chaque agent. Chaque action faite via l'API est donc attribuable à un agent.\n\nPour récupérer le token d'accès d'un agent il faut faire une première requête `POST` à l'url `https://www.rdv-solidarites.fr/api/v1/auth/sign_in` en passant en paramètres JSON l'email et le mot de passe de l'agent. Par exemple (avec HTTPie) :\n\n```httpie\nhttp --json POST 'https://www.rdv-solidarites.fr/api/v1/auth/sign_in' \\\n  email='amine.dhobb@beta.gouv.fr' password='SOME_FAKE_PASSWORD_123456'\n```\n\nEn cas de succès d'authentification, la réponse à cette requête contiendra dans le corps le détail de l'agent, et dans les headers les token d'accès à l'API. Par exemple :\n\n```http\nHTTP/1.1 200 OK\nX-Frame-Options: SAMEORIGIN\nX-XSS-Protection: 1; mode=block\nX-Content-Type-Options: nosniff\nX-Download-Options: noopen\nX-Permitted-Cross-Domain-Policies: none\nReferrer-Policy: strict-origin-when-cross-origin\nContent-Type: application/json; charset=utf-8\naccess-token: SOME_FAKE_ACCESS_TOKEN_12345 token-type: Bearer\nclient: SOME_FAKE_CLIENT_12345 expiry: 1605600758\nuid: amine.dhobb@beta.gouv.fr\nETag: W/\"0fe52663d6745c922160384e13afe1e1\"\nCache-Control: max-age=0, private, must-revalidate\nX-Meta-Request-Version: 0.7.2\nX-Request-Id: 291fab6a-043b-4b9c-b4b9-3c7fc9c9453a\nX-Runtime: 0.194743< Transfer-Encoding: chunked\n* Connection #0 to host rdv-solidarites.fr left intact\n{\n  \"data\": {\n    \"email\": \"amine.dhobb@beta.gouv.fr\",\n    \"first_name\": \"Amine\",\n    \"last_name\": \"DHOBB\",\n    \"provider\": \"email\",\n    \"uid\": \"amine.dhobb@beta.gouv.fr\",\n    \"id\": 7,\n    \"deleted_at\": null,\n    \"service_id\": 4,\n    \"email_original\": null,\n    \"allow_password_change\": false,\n    \"rdv_notifications_level\": \"soon\",\n    \"unknown_past_rdv_count\": 171,\n    \"display_saturdays\": false,\n    \"display_cancelled_rdv\": true,\n    \"plage_ouverture_notification_level\": \"all\",\n    \"absence_notification_level\": \"all\",\n    \"external_id\": null,\n    \"calendar_uid\": null,\n    \"microsoft_graph_token\": null,\n    \"refresh_microsoft_graph_token\": null,\n    \"cnfs_secondary_email\": null,\n    \"outlook_disconnect_in_progress\": false,\n    \"account_deletion_warning_sent_at\": null\n  }\n}\n* Closing connection 0\n```\n\nLes 3 headers essentiels pour l'authentification sont les suivants :\n\n```http\naccess-token: SOME_FAKE_ACCESS_TOKEN_12345\nclient: SOME_FAKE_ACCESS_CLIENT_12345\nuid: amine.dhobb@beta.gouv.fr\n```\n\n- `access-token` : c'est le jeton d'accès qui vous a été attribué. Il a une durée de vie de 24h, après ça il vous faudra reproduire cette procédure pour en récupérer un nouveau.\n- `client` : un identifiant unique associé à l'appareil depuis lequel vous avez effectué la requête\n- `uid` : l'identifiant de l'agent dans l'API, égal à l'email de l'agent.\n\n**Ces 3 headers doivent être transmis avec chacune de vos requêtes successives à l'API**, peu importe la méthode HTTP.\n\n## Permissions\n\nLes rôles et permissions des agents sont les mêmes via l'API que depuis l'interface web.\n\n# Sérialisation\n\nL'API supporte uniquement le format JSON. Toutes les réponses envoyées par l'API contiendront le header `Content-Type: application/json` et leur contenu est présent dans le body dans un format JSON à désérialiser.\n\n# Codes de retour\n\nL'API est susceptible de retourner les codes suivants :\n\n| Code  | Nom                   | Description                                                                   |\n| ----- | --------------------- | ----------------------------------------------------------------------------- |\n| `200` | Success               | Succès                                                                        |\n| `204` | No Content            | Succès mais la réponse ne contient pas de données (exemple : suppression)     |\n| `400` | Bad Request           | La requête est invalide                                                       |\n| `401` | Unauthorized          | L'authentification a échoué                                                   |\n| `403` | Forbidden             | Droits insuffisants pour réaliser l'action demandée                           |\n| `404` | Not Found             | La ressource est introuvable                                                  |\n| `422` | Unprocessable Entity  | La donnée transmise est mal formattée                                         |\n| `429` | Too Many Requests     | Trop de requêtes ont été effectuées                                           |\n| `500` | Internal Server Error | Une erreur serveur produite (l'équipe technique est notifiée automatiquement) |\n\n# Erreurs\n\nEn cas d'erreur reconnue par le système (par exemple erreur 422), les champs suivants seront présents dans la réponse pour vous informer sur les problèmes :\n\n- `errors` : [ERREUR] : liste d'erreurs groupées par attribut problèmatique au format machine.\n\n# Endpoints\n\nLes endpoints exposés par l'API se trouvent en bas de page. Pour chaque endpoint, vous trouverez en plus du schéma d'entrée et de sortie un exemple de payload envoyé à l'API et un exemple de réponse de l'API.\nLe fonctionnement des endpoints de création et invitation des usagers est explicité dans la partie suivante.\n\n# Création et invitations des usagers à prendre rdv\n\nIl y a plusieurs façons de travailler avec les usagers via l'API :\n\n## Recherche d'usagers\n\n- `GET https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users`\n\nCet endpoint permet de **rechercher et lister les usagers** d'une organisation de manière paginée.\n\n### Paramètres de recherche\n\n- `search_query` (optionnel) : Terme de recherche qui s'applique sur les champs suivants :\n  - **Prénom** de l'usager\n  - **Nom** de l'usager\n  - **Email** de l'usager\n  - **Numéro de téléphone** de l'usager\n  - **Numéro d'affiliation** (numéro CAF)\n\n- `page` (optionnel, défaut: 1) : Numéro de page pour la pagination\n\n### Pagination\n\nLes résultats sont **automatiquement paginés** avec **25 usagers par page**. La réponse inclut les métadonnées de pagination :\n- `current_page` : Page actuelle\n- `next_page` : Page suivante (null si dernière page)\n- `prev_page` : Page précédente (null si première page)\n- `total_pages` : Nombre total de pages\n- `total_count` : Nombre total d'usagers correspondant à la recherche\n\n## Création et invitation d'usagers\n\nIl y a plusieurs façons d'inviter les usagers à prendre rdv:\n\n### Endpoints en lot (_many)\n\n- **Création et invitation en lot** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many` - Crée et invite jusqu'à **25** usagers de manière **asynchrone**\n\nCet endpoint étant asynchrone, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités.\n\n### Endpoints unitaires\n\n- **Création et invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite` - Crée et invite un usager de manière **synchrone**\n\n- **Création unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users` - Crée un usager sans l'inviter, de manière **synchrone**\n\n- **Invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/{id}/invite` - Invite un usager existant de manière **synchrone**\n\n**Pour tous les endpoints d'invitation, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.\n\nLes réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.\nLes formats des réponses sont spécifiés en bas de page.\n\n## Paramètres de l'URL\n\n- `rdv_solidarites_organisation_id`: c'est l'ID de l'organisation sur RDV-Solidarités dans laquelle on veut créer et inviter l'usager. Ces IDs peuvent être récupérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`. Le format de réponse est détaillé au bas de cette page.\n\n## Paramètres dans le body de la requête\n\nLe schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on explique à quoi correspondent les attributs des usagers:\n\n- `first_name`: STRING (requis): Prénom de l'usager\n- `last_name`: STRING (requis): Nom de l'usager\n- `title`: STRING (requis): Civilité de l'usager. Valeurs possibles: monsieur, madame.\n- `affiliation_number`: STRING (requis) : Numéro CAF de l'usager.\n- `role`: STRING (requis) : Le rôle de la personne au sein du dossier de demande RSA. Valeurs possibles: demandeur, conjoint.\n- `email`: STRING (optionnel) : L'email e l'usager. S'il n'est pas présent l'invitation par email ne sera pas envoyée.\n- `phone_number`: STRING (optionnel) : Le numéro de téléphone de l'usager. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.\n- `birth_date`: STRING (optionnel) : Date de naissance de l'usager au format DD/MM/YYYY\n- `nir` (optionnel) : NIR, Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée. Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée.\n- `france_travail_id` (optionnel) : numéro d'identification France Travail\n- `rights_opening_date`: STRING (optionnel): Si l'usager est bénéficiaire du RSA, c'est la date de réception du 1er flux bénéficiaire quotidien qui montre que l'usager est un nouvel entrant). Au format DD/MM/YYYY.\n- `address`: STRING (optionnel) : L'addresse de l'usager. Cette addresse comprend le code postal et la ville.\n- `birth_name` : STRING (optionnel) : Le nom de naissance de l'usager\n- `department_internal_id`: STRING (optionnel) : ID interne de la personne au sein du système d'information du département (cela peut être l'ID lié à l'éditeur comme l'ID de IODAS par exemple). Cet ID est nécessaire si l'on veut que rdv-insertion notifie de la prise/annulation de RDV sur une API côté département ou éditeur.\n- `invitation`: OBJECT (optionnel): Contient les informations ci-dessous liées à l'invitation à prendre rdv:\n  - `rdv_solidarites_lieu_id`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'usager sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n  - `motif_category: OBJECT (optionnel):\n    - `name`: STRING: Le nom de la catégorie de motif pour laquelle on veut inviter l'usager. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n    - `short_name`: STRING: Alternativement au `name`, on peut préciser le nom court de la catégorie de motif pour laquelle on veut inviter l'usager. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Il est présent dans la réponse de l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n- `referents_to_add`: ARRAY(optionnel):\n  - OBJECT:\n    - `email` : STRING: email du referent à ajouter à l'usager. Si l'email ne correspond à aucun agent de l'organisation la requête échoue.\n- `tags_to_add`: ARRAY(optionnel):\n  - OBJECT:\n    - `value` : STRING: nom du tag à ajouter à l'usager. Le tag doit exister au préalable dans l'organisation sinon la requête échoue.\n\n## Idempotence\n\nCes endpoints sont idempotents, ce qui veut dire que le fait de jouer ces requêtes plusieurs fois aura le même effet que de les jouer une seule fois. Plus précisément:\n\n- Si l'usager que l'on essaie de créer est déjà présent dans l'application, il ne sera pas créé une deuxième fois. Il sera mis à jour si les attributs passés dans la requête sont changés par rapport à ce qui est enregistré en base de données.\n- On ne renverra pas d'invitation à l'usager si une invitation a déjà été envoyée à l'usager il y a moins de 24 heures.\n\n### Réponse\n\nLors de l'envoi, nous allons vérifier que pour chaque usager les attributs requis sont présents et que tous les attributs passés sont au bon format (email, téléphone etc). Si c'est le cas la requête sera un succès. Cela ne veut pas dire que la création et l'invitation des usagers et l'invitation ont été un succès car ces actions se feront de manière asynchrone.\n\n#### En cas de succès\n\nSi la requête est un succès, nous répondrons avec un statut 200 et un body en JSON notifiant le succès de la requête (voir détails du format de réponse en bas de page).\n\n#### En cas d'échec\n\nSi la requête est un échec (voir conditions plus haut), nous répondrons avec un statut 422 et un body en JSON contenant les erreurs de la requête, avec pour chaque entrée les erreurs (voir détails du format de réponse en bas de page).\n\n### Notifications asynchrones\n\nLors du processus asynchrone de création et des invitations des usagers des erreurs peuvent avoir lieu, bien que la réponse à la requête ait été un succès. Il faut alors notifier l'organisation de ces échecs.\n\n#### En cas de problèmes à la création de l'usager\n\nEn cas d'échec de la création de l'usager, un mail sera envoyé à la personne ayant fait la requête avec l'identité de l'usager en question et les erreurs associées à sa création.\n\n![mail-notification](/api_doc/mail-notification.png)\n\n#### En cas de problèmes à l'invitation de l'usager\n\nS'il y a un problème lors de l'invitation d'un usager, l'organisation ne sera pas notifiée directement.\nPour voir si les personnes ont bien été invitées, on peut:\n\n- Aller sur l'interface web RDV-I et vérifier dans la liste que les personnes ont bien été invitées (les coches sont cochées pour chaque format d'invitation dans la liste des usagers)\n- Souscrire au webhook envoyé lorsqu'une invitation est envoyée. Les détails de ces webhooks sont explicités dans la partie webhooks ci-dessous.\n\n# Webhooks (API de notifications)\n\nrdv-insertion peut notifier des évènements ayant lieu sur l'application dans votre système d’information à l’aide de webhooks.\n\nrdv-insertion peut notifier n'importe quel système d'information accessible en ligne lors de **modifications** (création, modification, suppression) sur les **RDV** et les **invitations**.\n\nAinsi, lorsqu'un rdv est créé, modifié ou supprimé sur rdv-insertion, nous avons la possiblité de vous envoyer une requête à un endpoint de votre côté avec en payload les informations du rdv.\n\nPour cela, ce système d'informations doit :\n\n- être accessible à une URL publique et accepter des requêtes HTTP POST à cette URL\n\n## Configuration\n\nPour pouvoir configurer un endpoint prêt à recevoir les webhooks de rdv-insertion, [vous devez prendre contact avec l'équipe rdv-insertion](mailto:rdv-insertion@beta.gouv.fr) et leur donner l'URL qui les recevra et convenir d'un token `secret` partagé.\n\n## Signatures des requêtes\n\nUn **secret partagé** est associé à chacune de ces URLs pour vous permettre de vérifier que nous sommes bien à l'origine de l'envoi d'information. La requête envoyée en HTTP POST contient un entête `X-RDVI-Signature` qui contient une signature SHA256 hexadécimale du corps de la requête.\n\nPar exemple, pour vérifier que la signature vient bien de notre application, cela donnerait en `ruby` :\n\n![webhook-signature-check-example](/api_doc/webhook-signature-check-example.png)\n\n## Format des données\n\nLe payload des requêtes est envoyés sont un format JSON. Ce payload contient deux attributs:\n\n- `data` : c'est le payload de la ressource au format JSON. Les payloads de chaque ressource sont disponibles en bas de page.\n- `meta` : un objet contenant les trois attributs suivants:\n  - `model` : Le nom de la ressource que l'on envoie. Pour les rdvs elle sera égale à `Rdv`\n  - `event` : l'évènement ayant déclenché l'envoi du webhook. Il a trois valeurs possibles: `created`, `updated` et `destroyed`\n  - `timestamp` : un string représentant le moment où le webhook est envoyé.\n\n## Exemple\n\nCi-dessous un exemple de payload envoyé lorsqu'un rdv est créé:\n\n```json\n{\n  \"data\": {\n    \"id\": 325,\n    \"starts_at\": \"2023-11-14T09:00:00.000+01:00\",\n    \"duration_in_min\": 25,\n    \"cancelled_at\": null,\n    \"address\": \"Die, 26150, 26, Drôme, Auvergne-Rhône-Alpes\",\n    \"uuid\": \"2bc2393b-bf2c-47f0-9f84-e30a6b067138\",\n    \"created_by\": \"agent\",\n    \"status\": \"unknown\",\n    \"users_count\": 1,\n    \"max_participants_count\": null,\n    \"rdv_solidarites_rdv_id\": 344,\n    \"agents\": [\n      {\n        \"id\": 2,\n        \"email\": \"amine.dhobb@beta.gouv.fr\",\n        \"first_name\": \"Amine\",\n        \"last_name\": \"DHOBB\",\n        \"rdv_solidarites_agent_id\": 7\n      }\n    ],\n    \"lieu\": {\n      \"rdv_solidarites_lieu_id\": 9,\n      \"name\": \"Batiment région Rhône-Alpes\",\n      \"address\": \"Die, 26150, 26, Drôme, Auvergne-Rhône-Alpes\",\n      \"phone_number\": \"0839230303\"\n    },\n    \"motif\": {\n      \"rdv_solidarites_motif_id\": 45,\n      \"name\": \"RSA Orientation : Convocation sur site\",\n      \"collectif\": false,\n      \"location_type\": \"public_office\",\n      \"follow_up\": false,\n      \"motif_category\": {\n        \"id\": 1,\n        \"short_name\": \"rsa_orientation\",\n        \"name\": \"RSA orientation\"\n      }\n    },\n    \"users\": [\n      {\n        \"id\": 722,\n        \"uid\": \"Nzg2NzY4NyAtIGRlbWFuZGV1cg==\",\n        \"affiliation_number\": \"7867687\",\n        \"role\": \"demandeur\",\n        \"created_at\": \"2023-07-26T12:19:08.522+02:00\",\n        \"department_internal_id\": null,\n        \"first_name\": \"Andreas\",\n        \"last_name\": \"Kopke\",\n        \"title\": \"monsieur\",\n        \"address\": \"165 rue saint maur 75011 Paris\",\n        \"phone_number\": \"+33664891033\",\n        \"email\": \"remi.betagouv+demo67576567@gmail.com\",\n        \"birth_date\": \"1987-12-20\",\n        \"rights_opening_date\": null,\n        \"birth_name\": null,\n        \"rdv_solidarites_user_id\": 468,\n        \"nir\": null,\n        \"france_travail_id\": null,\n      }\n    ],\n    \"organisation\": {\n      \"id\": 4,\n      \"name\": \"CD de DIE\",\n      \"email\": null,\n      \"phone_number\": \"01 01 01 01 01\",\n      \"department_number\": \"26\",\n      \"rdv_solidarites_organisation_id\": 29,\n      \"motif_categories\": [\n        {\n          \"id\": 1,\n          \"short_name\": \"rsa_orientation\",\n          \"name\": \"RSA orientation\"\n        },\n        {\n          \"id\": 2,\n          \"short_name\": \"rsa_accompagnement\",\n          \"name\": \"RSA accompagnement\"\n        },\n        {\n          \"id\": 4,\n          \"short_name\": \"rsa_cer_signature\",\n          \"name\": \"RSA signature CER\"\n        },\n        {\n          \"id\": 17,\n          \"short_name\": \"psychologue\",\n          \"name\": \"Psychologue\"\n        }\n      ]\n    },\n    \"participations\": [\n      {\n        \"id\": 291,\n        \"status\": \"unknown\",\n        \"created_by\": \"agent\",\n        \"created_at\": \"2023-11-09T09:25:05.356+01:00\",\n        \"starts_at\": \"2023-11-14T09:00:00.000+01:00\",\n        \"user\": {\n          \"id\": 722,\n          \"uid\": \"Nzg2NzY4NyAtIGRlbWFuZGV1cg==\",\n          \"affiliation_number\": \"7867687\",\n          \"role\": \"demandeur\",\n          \"created_at\": \"2023-07-26T12:19:08.522+02:00\",\n          \"department_internal_id\": null,\n          \"first_name\": \"Andreas\",\n          \"last_name\": \"Kopke\",\n          \"title\": \"monsieur\",\n          \"address\": \"165 rue saint maur 75011 Paris\",\n          \"phone_number\": \"+33664891033\",\n          \"email\": \"andreas@kopke.com\",\n          \"birth_date\": \"1987-12-20\",\n          \"rights_opening_date\": null,\n          \"birth_name\": null,\n          \"rdv_solidarites_user_id\": 468,\n          \"nir\": null,\n          \"france_travail_id\": null\n        }\n      }\n    ]\n  },\n  \"meta\": {\n    \"model\": \"Rdv\",\n    \"event\": \"created\",\n    \"timestamp\": \"2023-11-13 19:53:07 +0100\"\n  }\n}\n```\n"
+    "description": "L'API de rdv-insertion vous permet d'inviter des personnes en insertion à prendre rdv avec votre structure.\nQuand l'usager aura pris rendez-vous suite à son invitation, vous pouvez récupérer les informations du rdv via les webhooks (API de notifications).\n\nToutes les fonctionnalités de rdv-insertion ne sont pas encore disponibles via l’API. Contactez-nous si vous avez besoin de fonctionnalités qui ne sont pas encore présentes.\n\n# Requêtes\n\nL'API adhère aux principes REST :\n\n- requêtes `GET` : lecture sans modification\n- requêtes `POST` : création de nouvelle ressource\n- requêtes `PATCH` : mise à jour d'une ressource existante\n- requêtes `DELETE` : suppression d'une ressource\n\nLes paramètres des requêtes `GET` doivent être envoyés via les query string de la requête.\n\nLes paramètres des requêtes `POST` doivent être transmis dans le corps de la requête sous un format JSON valide, et doivent contenir le header `Content-Type: application/json`.\n\n# Routes\n\nLes endpoints de l'API sont accessibles par une route de la forme : `https://<domain>/api/<version>/<endpoint>`.\n\nAvec :\n\n- `version` est la version de l'API\n- `endpoint` est le nom de l'endpoint\n\nPour la version production, les requêtes doivent être adressées à **https://www.rdv-insertion.fr**.\n\nPour la version démo, les requêtes doivent être adressées à **https://demo.rdv-insertion.fr**.\n\n# Authentification\n\nLes endpoints sont réservés aux agents authentifiés, dans la limite de leur rôle au sein de l'application.\n\nComme sur l'interface web, l'authentification se fait via les identifiants rdv-solidarités. **Il est donc nécessaire pour l'authentification d'appeler un endpoint sur rdv-solidarités et non pas sur rdv-insertion**. Les modalités de cet endpoint sont décrits ci-dessous.\n\n## Headers d'authentification\n\nTous les agents peuvent utiliser l'API. Les requêtes faites sur l'API sont authentifiées grace à des tokens d'accès associés à chaque agent. Chaque action faite via l'API est donc attribuable à un agent.\n\nPour récupérer le token d'accès d'un agent il faut faire une première requête `POST` à l'url `https://www.rdv-solidarites.fr/api/v1/auth/sign_in` en passant en paramètres JSON l'email et le mot de passe de l'agent. Par exemple (avec HTTPie) :\n\n```httpie\nhttp --json POST 'https://www.rdv-solidarites.fr/api/v1/auth/sign_in' \\\n  email='amine.dhobb@beta.gouv.fr' password='SOME_FAKE_PASSWORD_123456'\n```\n\nEn cas de succès d'authentification, la réponse à cette requête contiendra dans le corps le détail de l'agent, et dans les headers les token d'accès à l'API. Par exemple :\n\n```http\nHTTP/1.1 200 OK\nX-Frame-Options: SAMEORIGIN\nX-XSS-Protection: 1; mode=block\nX-Content-Type-Options: nosniff\nX-Download-Options: noopen\nX-Permitted-Cross-Domain-Policies: none\nReferrer-Policy: strict-origin-when-cross-origin\nContent-Type: application/json; charset=utf-8\naccess-token: SOME_FAKE_ACCESS_TOKEN_12345 token-type: Bearer\nclient: SOME_FAKE_CLIENT_12345 expiry: 1605600758\nuid: amine.dhobb@beta.gouv.fr\nETag: W/\"0fe52663d6745c922160384e13afe1e1\"\nCache-Control: max-age=0, private, must-revalidate\nX-Meta-Request-Version: 0.7.2\nX-Request-Id: 291fab6a-043b-4b9c-b4b9-3c7fc9c9453a\nX-Runtime: 0.194743< Transfer-Encoding: chunked\n* Connection #0 to host rdv-solidarites.fr left intact\n{\n  \"data\": {\n    \"email\": \"amine.dhobb@beta.gouv.fr\",\n    \"first_name\": \"Amine\",\n    \"last_name\": \"DHOBB\",\n    \"provider\": \"email\",\n    \"uid\": \"amine.dhobb@beta.gouv.fr\",\n    \"id\": 7,\n    \"deleted_at\": null,\n    \"service_id\": 4,\n    \"email_original\": null,\n    \"allow_password_change\": false,\n    \"rdv_notifications_level\": \"soon\",\n    \"unknown_past_rdv_count\": 171,\n    \"display_saturdays\": false,\n    \"display_cancelled_rdv\": true,\n    \"plage_ouverture_notification_level\": \"all\",\n    \"absence_notification_level\": \"all\",\n    \"external_id\": null,\n    \"calendar_uid\": null,\n    \"microsoft_graph_token\": null,\n    \"refresh_microsoft_graph_token\": null,\n    \"cnfs_secondary_email\": null,\n    \"outlook_disconnect_in_progress\": false,\n    \"account_deletion_warning_sent_at\": null\n  }\n}\n* Closing connection 0\n```\n\nLes 3 headers essentiels pour l'authentification sont les suivants :\n\n```http\naccess-token: SOME_FAKE_ACCESS_TOKEN_12345\nclient: SOME_FAKE_ACCESS_CLIENT_12345\nuid: amine.dhobb@beta.gouv.fr\n```\n\n- `access-token` : c'est le jeton d'accès qui vous a été attribué. Il a une durée de vie de 24h, après ça il vous faudra reproduire cette procédure pour en récupérer un nouveau.\n- `client` : un identifiant unique associé à l'appareil depuis lequel vous avez effectué la requête\n- `uid` : l'identifiant de l'agent dans l'API, égal à l'email de l'agent.\n\n**Ces 3 headers doivent être transmis avec chacune de vos requêtes successives à l'API**, peu importe la méthode HTTP.\n\n## Permissions\n\nLes rôles et permissions des agents sont les mêmes via l'API que depuis l'interface web.\n\n# Sérialisation\n\nL'API supporte uniquement le format JSON. Toutes les réponses envoyées par l'API contiendront le header `Content-Type: application/json` et leur contenu est présent dans le body dans un format JSON à désérialiser.\n\n# Codes de retour\n\nL'API est susceptible de retourner les codes suivants :\n\n| Code  | Nom                   | Description                                                                   |\n| ----- | --------------------- | ----------------------------------------------------------------------------- |\n| `200` | Success               | Succès                                                                        |\n| `204` | No Content            | Succès mais la réponse ne contient pas de données (exemple : suppression)     |\n| `400` | Bad Request           | La requête est invalide                                                       |\n| `401` | Unauthorized          | L'authentification a échoué                                                   |\n| `403` | Forbidden             | Droits insuffisants pour réaliser l'action demandée                           |\n| `404` | Not Found             | La ressource est introuvable                                                  |\n| `422` | Unprocessable Entity  | La donnée transmise est mal formattée                                         |\n| `429` | Too Many Requests     | Trop de requêtes ont été effectuées                                           |\n| `500` | Internal Server Error | Une erreur serveur produite (l'équipe technique est notifiée automatiquement) |\n\n# Erreurs\n\nEn cas d'erreur reconnue par le système (par exemple erreur 422), les champs suivants seront présents dans la réponse pour vous informer sur les problèmes :\n\n- `errors` : [ERREUR] : liste d'erreurs groupées par attribut problèmatique au format machine.\n\n# Endpoints\n\nLes endpoints exposés par l'API se trouvent en bas de page. Pour chaque endpoint, vous trouverez en plus du schéma d'entrée et de sortie un exemple de payload envoyé à l'API et un exemple de réponse de l'API.\nLe fonctionnement des endpoints de création et invitation des usagers est explicité dans la partie suivante.\n\n# Création et invitations des usagers à prendre rdv\n\nIl y a plusieurs façons de travailler avec les usagers via l'API :\n\n## Recherche d'usagers\n\n- `GET https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users`\n\nCet endpoint permet de **rechercher et lister les usagers** d'une organisation de manière paginée.\n\n### Paramètres de recherche\n\n- `search_query` (optionnel) : Terme de recherche qui s'applique sur les champs suivants :\n  - **Prénom** de l'usager\n  - **Nom** de l'usager\n  - **Email** de l'usager\n  - **Numéro de téléphone** de l'usager\n  - **Numéro d'affiliation** (numéro CAF)\n\n- `page` (optionnel, défaut: 1) : Numéro de page pour la pagination\n\n### Pagination\n\nLes résultats sont **automatiquement paginés** avec **25 usagers par page**. La réponse inclut les métadonnées de pagination :\n- `current_page` : Page actuelle\n- `next_page` : Page suivante (null si dernière page)\n- `prev_page` : Page précédente (null si première page)\n- `total_pages` : Nombre total de pages\n- `total_count` : Nombre total d'usagers correspondant à la recherche\n\n## Création et invitation d'usagers\n\nIl y a plusieurs façons d'inviter les usagers à prendre rdv:\n\n### Endpoints en lot (_many)\n\n- **Création et invitation en lot** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many` - Crée et invite jusqu'à **25** usagers de manière **asynchrone**\n\nCet endpoint étant asynchrone, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités.\n\n### Endpoints unitaires\n\n- **Création et invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite` - Crée et invite un usager de manière **synchrone**\n\n- **Création unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users` - Crée un usager sans l'inviter, de manière **synchrone**\n\n- **Invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/{id}/invite` - Invite un usager existant de manière **synchrone**\n\n**Pour tous les endpoints d'invitation, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.\n\nLes réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.\nLes formats des réponses sont spécifiés en bas de page.\n\n## Paramètres de l'URL\n\n- `rdv_solidarites_organisation_id`: c'est l'ID de l'organisation sur RDV-Solidarités dans laquelle on veut créer et inviter l'usager. Ces IDs peuvent être récupérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`. Le format de réponse est détaillé au bas de cette page.\n\n## Paramètres dans le body de la requête\n\nLe schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on explique à quoi correspondent les attributs des usagers:\n\n- `first_name`: STRING (requis): Prénom de l'usager\n- `last_name`: STRING (requis): Nom de l'usager\n- `title`: STRING (requis): Civilité de l'usager. Valeurs possibles: monsieur, madame.\n- `affiliation_number`: STRING (requis) : Numéro CAF de l'usager.\n- `role`: STRING (requis) : Le rôle de la personne au sein du dossier de demande RSA. Valeurs possibles: demandeur, conjoint.\n- `email`: STRING (optionnel) : L'email e l'usager. S'il n'est pas présent l'invitation par email ne sera pas envoyée.\n- `phone_number`: STRING (optionnel) : Le numéro de téléphone de l'usager. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.\n- `birth_date`: STRING (optionnel) : Date de naissance de l'usager au format DD/MM/YYYY\n- `nir` (optionnel) : NIR, Format à 13 chiffres : accepté, la clé NIR sera automatiquement calculée et ajoutée. Format complet à 15 chiffres : également accepté, dans ce cas la clé du NIR sera vérifiée.\n- `france_travail_id` (optionnel) : numéro d'identification France Travail\n- `rights_opening_date`: STRING (optionnel): Si l'usager est bénéficiaire du RSA, c'est la date de réception du 1er flux bénéficiaire quotidien qui montre que l'usager est un nouvel entrant). Au format DD/MM/YYYY.\n- `address`: STRING (optionnel) : L'addresse de l'usager. Cette addresse comprend le code postal et la ville.\n- `birth_name` : STRING (optionnel) : Le nom de naissance de l'usager\n- `department_internal_id`: STRING (optionnel) : ID interne de la personne au sein du système d'information du département (cela peut être l'ID lié à l'éditeur comme l'ID de IODAS par exemple). Cet ID est nécessaire si l'on veut que rdv-insertion notifie de la prise/annulation de RDV sur une API côté département ou éditeur.\n- `invitation`: OBJECT (optionnel): Contient les informations ci-dessous liées à l'invitation à prendre rdv:\n  - `rdv_solidarites_lieu_id`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'usager sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n  - `motif_category: OBJECT (optionnel):\n    - `name`: STRING: Le nom de la catégorie de motif pour laquelle on veut inviter l'usager. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n    - `short_name`: STRING: Alternativement au `name`, on peut préciser le nom court de la catégorie de motif pour laquelle on veut inviter l'usager. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Il est présent dans la réponse de l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n- `referents_to_add`: ARRAY(optionnel):\n  - OBJECT:\n    - `email` : STRING: email du referent à ajouter à l'usager. Si l'email ne correspond à aucun agent de l'organisation la requête échoue.\n- `tags_to_add`: ARRAY(optionnel):\n  - OBJECT:\n    - `value` : STRING: nom du tag à ajouter à l'usager. Le tag doit exister au préalable dans l'organisation sinon la requête échoue.\n\n## Idempotence\n\nCes endpoints sont idempotents, ce qui veut dire que le fait de jouer ces requêtes plusieurs fois aura le même effet que de les jouer une seule fois. Plus précisément:\n\n- Si l'usager que l'on essaie de créer est déjà présent dans l'application, il ne sera pas créé une deuxième fois. Il sera mis à jour si les attributs passés dans la requête sont changés par rapport à ce qui est enregistré en base de données.\n- On ne renverra pas d'invitation à l'usager si une invitation a déjà été envoyée à l'usager il y a moins de 24 heures.\n\n### Réponse\n\nLors de l'envoi, nous allons vérifier que pour chaque usager les attributs requis sont présents et que tous les attributs passés sont au bon format (email, téléphone etc). Si c'est le cas la requête sera un succès. Cela ne veut pas dire que la création et l'invitation des usagers et l'invitation ont été un succès car ces actions se feront de manière asynchrone.\n\n#### En cas de succès\n\nSi la requête est un succès, nous répondrons avec un statut 200 et un body en JSON notifiant le succès de la requête (voir détails du format de réponse en bas de page).\n\n#### En cas d'échec\n\nSi la requête est un échec (voir conditions plus haut), nous répondrons avec un statut 422 et un body en JSON contenant les erreurs de la requête, avec pour chaque entrée les erreurs (voir détails du format de réponse en bas de page).\n\n### Notifications asynchrones\n\nLors du processus asynchrone de création et des invitations des usagers des erreurs peuvent avoir lieu, bien que la réponse à la requête ait été un succès. Il faut alors notifier l'organisation de ces échecs.\n\n#### En cas de problèmes à la création de l'usager\n\nEn cas d'échec de la création de l'usager, un mail sera envoyé à la personne ayant fait la requête avec l'identité de l'usager en question et les erreurs associées à sa création.\n\n![mail-notification](/api_doc/mail-notification.png)\n\n#### En cas de problèmes à l'invitation de l'usager\n\nS'il y a un problème lors de l'invitation d'un usager, l'organisation ne sera pas notifiée directement.\nPour voir si les personnes ont bien été invitées, on peut:\n\n- Aller sur l'interface web RDV-I et vérifier dans la liste que les personnes ont bien été invitées (les coches sont cochées pour chaque format d'invitation dans la liste des usagers)\n- Souscrire au webhook envoyé lorsqu'une invitation est envoyée. Les détails de ces webhooks sont explicités dans la partie webhooks ci-dessous.\n\n# Webhooks (API de notifications)\n\nrdv-insertion peut notifier des évènements ayant lieu sur l'application dans votre système d’information à l’aide de webhooks.\n\nrdv-insertion peut notifier n'importe quel système d'information accessible en ligne lors de **modifications** (création, modification, suppression) sur les **RDV** et les **invitations**.\n\nAinsi, lorsqu'un rdv est créé, modifié ou supprimé sur rdv-insertion, nous avons la possiblité de vous envoyer une requête à un endpoint de votre côté avec en payload les informations du rdv.\n\nPour cela, ce système d'informations doit :\n\n- être accessible à une URL publique et accepter des requêtes HTTP POST à cette URL\n\n## Configuration\n\nPour pouvoir configurer un endpoint prêt à recevoir les webhooks de rdv-insertion, [vous devez prendre contact avec l'équipe rdv-insertion](mailto:rdv-insertion@inclusion.gouv.fr) et leur donner l'URL qui les recevra et convenir d'un token `secret` partagé.\n\n## Signatures des requêtes\n\nUn **secret partagé** est associé à chacune de ces URLs pour vous permettre de vérifier que nous sommes bien à l'origine de l'envoi d'information. La requête envoyée en HTTP POST contient un entête `X-RDVI-Signature` qui contient une signature SHA256 hexadécimale du corps de la requête.\n\nPar exemple, pour vérifier que la signature vient bien de notre application, cela donnerait en `ruby` :\n\n![webhook-signature-check-example](/api_doc/webhook-signature-check-example.png)\n\n## Format des données\n\nLe payload des requêtes est envoyés sont un format JSON. Ce payload contient deux attributs:\n\n- `data` : c'est le payload de la ressource au format JSON. Les payloads de chaque ressource sont disponibles en bas de page.\n- `meta` : un objet contenant les trois attributs suivants:\n  - `model` : Le nom de la ressource que l'on envoie. Pour les rdvs elle sera égale à `Rdv`\n  - `event` : l'évènement ayant déclenché l'envoi du webhook. Il a trois valeurs possibles: `created`, `updated` et `destroyed`\n  - `timestamp` : un string représentant le moment où le webhook est envoyé.\n\n## Exemple\n\nCi-dessous un exemple de payload envoyé lorsqu'un rdv est créé:\n\n```json\n{\n  \"data\": {\n    \"id\": 325,\n    \"starts_at\": \"2023-11-14T09:00:00.000+01:00\",\n    \"duration_in_min\": 25,\n    \"cancelled_at\": null,\n    \"address\": \"Die, 26150, 26, Drôme, Auvergne-Rhône-Alpes\",\n    \"uuid\": \"2bc2393b-bf2c-47f0-9f84-e30a6b067138\",\n    \"created_by\": \"agent\",\n    \"status\": \"unknown\",\n    \"users_count\": 1,\n    \"max_participants_count\": null,\n    \"rdv_solidarites_rdv_id\": 344,\n    \"agents\": [\n      {\n        \"id\": 2,\n        \"email\": \"amine.dhobb@beta.gouv.fr\",\n        \"first_name\": \"Amine\",\n        \"last_name\": \"DHOBB\",\n        \"rdv_solidarites_agent_id\": 7\n      }\n    ],\n    \"lieu\": {\n      \"rdv_solidarites_lieu_id\": 9,\n      \"name\": \"Batiment région Rhône-Alpes\",\n      \"address\": \"Die, 26150, 26, Drôme, Auvergne-Rhône-Alpes\",\n      \"phone_number\": \"0839230303\"\n    },\n    \"motif\": {\n      \"rdv_solidarites_motif_id\": 45,\n      \"name\": \"RSA Orientation : Convocation sur site\",\n      \"collectif\": false,\n      \"location_type\": \"public_office\",\n      \"follow_up\": false,\n      \"motif_category\": {\n        \"id\": 1,\n        \"short_name\": \"rsa_orientation\",\n        \"name\": \"RSA orientation\"\n      }\n    },\n    \"users\": [\n      {\n        \"id\": 722,\n        \"uid\": \"Nzg2NzY4NyAtIGRlbWFuZGV1cg==\",\n        \"affiliation_number\": \"7867687\",\n        \"role\": \"demandeur\",\n        \"created_at\": \"2023-07-26T12:19:08.522+02:00\",\n        \"department_internal_id\": null,\n        \"first_name\": \"Andreas\",\n        \"last_name\": \"Kopke\",\n        \"title\": \"monsieur\",\n        \"address\": \"165 rue saint maur 75011 Paris\",\n        \"phone_number\": \"+33664891033\",\n        \"email\": \"remi.betagouv+demo67576567@gmail.com\",\n        \"birth_date\": \"1987-12-20\",\n        \"rights_opening_date\": null,\n        \"birth_name\": null,\n        \"rdv_solidarites_user_id\": 468,\n        \"nir\": null,\n        \"france_travail_id\": null,\n      }\n    ],\n    \"organisation\": {\n      \"id\": 4,\n      \"name\": \"CD de DIE\",\n      \"email\": null,\n      \"phone_number\": \"01 01 01 01 01\",\n      \"department_number\": \"26\",\n      \"rdv_solidarites_organisation_id\": 29,\n      \"motif_categories\": [\n        {\n          \"id\": 1,\n          \"short_name\": \"rsa_orientation\",\n          \"name\": \"RSA orientation\"\n        },\n        {\n          \"id\": 2,\n          \"short_name\": \"rsa_accompagnement\",\n          \"name\": \"RSA accompagnement\"\n        },\n        {\n          \"id\": 4,\n          \"short_name\": \"rsa_cer_signature\",\n          \"name\": \"RSA signature CER\"\n        },\n        {\n          \"id\": 17,\n          \"short_name\": \"psychologue\",\n          \"name\": \"Psychologue\"\n        }\n      ]\n    },\n    \"participations\": [\n      {\n        \"id\": 291,\n        \"status\": \"unknown\",\n        \"created_by\": \"agent\",\n        \"created_by_type\": \"Agent\",\n        \"created_by_agent_prescripteur\": false,\n        \"rdv_solidarites_created_by_id\": 7,\n        \"created_at\": \"2023-11-09T09:25:05.356+01:00\",\n        \"starts_at\": \"2023-11-14T09:00:00.000+01:00\",\n        \"user\": {\n          \"id\": 722,\n          \"uid\": \"Nzg2NzY4NyAtIGRlbWFuZGV1cg==\",\n          \"affiliation_number\": \"7867687\",\n          \"role\": \"demandeur\",\n          \"created_at\": \"2023-07-26T12:19:08.522+02:00\",\n          \"department_internal_id\": null,\n          \"first_name\": \"Andreas\",\n          \"last_name\": \"Kopke\",\n          \"title\": \"monsieur\",\n          \"address\": \"165 rue saint maur 75011 Paris\",\n          \"phone_number\": \"+33664891033\",\n          \"email\": \"andreas@kopke.com\",\n          \"birth_date\": \"1987-12-20\",\n          \"rights_opening_date\": null,\n          \"birth_name\": null,\n          \"rdv_solidarites_user_id\": 468,\n          \"nir\": null,\n          \"france_travail_id\": null\n        }\n      }\n    ]\n  },\n  \"meta\": {\n    \"model\": \"Rdv\",\n    \"event\": \"created\",\n    \"timestamp\": \"2023-11-13 19:53:07 +0100\"\n  }\n}\n```\n"
   },
   "components": {
     "securitySchemes": {
@@ -1354,7 +1354,7 @@
                             "email": "pole-parcours@departement13.fr",
                             "phone_number": "0101010101",
                             "department_number": "13",
-                            "rdv_solidarites_organisation_id": 2598791762,
+                            "rdv_solidarites_organisation_id": 9068395382,
                             "department_id": 1,
                             "motif_categories": [
                               {
@@ -1365,7 +1365,7 @@
                             ],
                             "motifs": [
                               {
-                                "rdv_solidarites_motif_id": 2241,
+                                "rdv_solidarites_motif_id": 36883,
                                 "name": "RSA orientation sur site",
                                 "collectif": false,
                                 "location_type": "public_office",
@@ -1379,7 +1379,7 @@
                             ],
                             "lieux": [
                               {
-                                "rdv_solidarites_lieu_id": 2241,
+                                "rdv_solidarites_lieu_id": 36883,
                                 "name": "DINUM",
                                 "address": "20 avenue de Ségur 75007 Paris",
                                 "phone_number": null
@@ -1518,33 +1518,33 @@
                     "value": {
                       "rdv": {
                         "id": 2,
-                        "starts_at": "2025-07-05T15:27:37.391+02:00",
+                        "starts_at": "2025-09-27T14:42:45.925+02:00",
                         "duration_in_min": 30,
                         "cancelled_at": null,
                         "address": "2O avenue de Ségur, 75007 Paris",
-                        "uuid": "9b5b2c8c-0e96-47ad-a6c2-700c5a6ea2ac",
+                        "uuid": "913114d3-f4ec-49b8-bef8-02be61f1f098",
                         "created_by": "user",
                         "status": "unknown",
                         "users_count": 0,
                         "max_participants_count": null,
-                        "rdv_solidarites_rdv_id": 2244,
+                        "rdv_solidarites_rdv_id": 36886,
                         "agents": [
                           {
                             "id": 13,
-                            "email": "agent2279@gouv.fr",
+                            "email": "agent36921@gouv.fr",
                             "first_name": "jane39",
                             "last_name": "doe39",
-                            "rdv_solidarites_agent_id": 9067865412
+                            "rdv_solidarites_agent_id": 6655904347
                           }
                         ],
                         "lieu": {
-                          "rdv_solidarites_lieu_id": 2248,
+                          "rdv_solidarites_lieu_id": 36890,
                           "name": "DINUM",
                           "address": "20 avenue de Ségur 75007 Paris",
                           "phone_number": null
                         },
                         "motif": {
-                          "rdv_solidarites_motif_id": 2247,
+                          "rdv_solidarites_motif_id": 36889,
                           "name": "RSA orientation sur site",
                           "collectif": false,
                           "location_type": "public_office",
@@ -1558,32 +1558,32 @@
                         "users": [
                           {
                             "id": 1,
-                            "uid": "bnVtZXJvXzIyNDUgLSBkZW1hbmRldXI=",
-                            "affiliation_number": "numero_2245",
+                            "uid": "bnVtZXJvXzM2ODg3IC0gZGVtYW5kZXVy",
+                            "affiliation_number": "numero_36887",
                             "role": "demandeur",
                             "created_at": "0024-12-02T22:22:00.000+00:09",
-                            "department_internal_id": "4877",
-                            "first_name": "john2245",
-                            "last_name": "doe2245",
+                            "department_internal_id": "4715",
+                            "first_name": "john36887",
+                            "last_name": "doe36887",
                             "title": "monsieur",
                             "address": "27 avenue de Ségur 75007 Paris",
                             "phone_number": "+33782605941",
-                            "email": "johndoe2245@yahoo.fr",
+                            "email": "johndoe36887@yahoo.fr",
                             "birth_date": null,
                             "rights_opening_date": null,
                             "birth_name": null,
-                            "rdv_solidarites_user_id": 2245,
+                            "rdv_solidarites_user_id": 36887,
                             "nir": null,
                             "france_travail_id": null
                           }
                         ],
                         "organisation": {
                           "id": 3,
-                          "name": "Organisation n°2258",
-                          "email": "organisation2258@rdv-insertion.fr",
+                          "name": "Organisation n°36900",
+                          "email": "organisation36900@rdv-insertion.fr",
                           "phone_number": "0101010101",
                           "department_number": "18",
-                          "rdv_solidarites_organisation_id": 7479629545,
+                          "rdv_solidarites_organisation_id": 1466534231,
                           "department_id": 3,
                           "motif_categories": [
                             {
@@ -1597,29 +1597,29 @@
                           {
                             "id": 2,
                             "status": "unknown",
-                            "created_by": "user",
-                            "created_at": "2025-07-02T15:27:37.382+02:00",
-                            "starts_at": "2025-07-05T15:27:37.391+02:00",
+                            "created_at": "2025-09-24T14:42:45.916+02:00",
+                            "starts_at": "2025-09-27T14:42:45.925+02:00",
                             "user": {
                               "id": 1,
-                              "uid": "bnVtZXJvXzIyNDUgLSBkZW1hbmRldXI=",
-                              "affiliation_number": "numero_2245",
+                              "uid": "bnVtZXJvXzM2ODg3IC0gZGVtYW5kZXVy",
+                              "affiliation_number": "numero_36887",
                               "role": "demandeur",
                               "created_at": "0024-12-02T22:22:00.000+00:09",
-                              "department_internal_id": "4877",
-                              "first_name": "john2245",
-                              "last_name": "doe2245",
+                              "department_internal_id": "4715",
+                              "first_name": "john36887",
+                              "last_name": "doe36887",
                               "title": "monsieur",
                               "address": "27 avenue de Ségur 75007 Paris",
                               "phone_number": "+33782605941",
-                              "email": "johndoe2245@yahoo.fr",
+                              "email": "johndoe36887@yahoo.fr",
                               "birth_date": null,
                               "rights_opening_date": null,
                               "birth_name": null,
-                              "rdv_solidarites_user_id": 2245,
+                              "rdv_solidarites_user_id": 36887,
                               "nir": null,
                               "france_travail_id": null
-                            }
+                            },
+                            "created_by": "user"
                           }
                         ]
                       }
@@ -1888,7 +1888,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°2306. ",
+                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°36948. ",
                           "index": 0
                         }
                       ]
@@ -1899,7 +1899,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°2307. ",
+                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°36949. ",
                           "index": 0
                         }
                       ]
@@ -1947,7 +1947,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180275141373896",
+                        "nir": "180773774137938",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1973,7 +1973,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180477856649197",
+                        "nir": "180658329719382",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -2007,7 +2007,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180245933622635",
+                        "nir": "180878329651248",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2033,7 +2033,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180455152287977",
+                        "nir": "180858467485444",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -2067,7 +2067,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180195665735277",
+                        "nir": "180492981751311",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2093,7 +2093,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180953417667388",
+                        "nir": "180593395781919",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -2127,7 +2127,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180417924976988",
+                        "nir": "180365788838552",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2153,7 +2153,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180672923531116",
+                        "nir": "180154829212458",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -2187,7 +2187,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180417566559614",
+                        "nir": "180365229443215",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2213,7 +2213,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180665558339328",
+                        "nir": "180664788746474",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -2247,7 +2247,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180259276924423",
+                        "nir": "180241469727472",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2273,7 +2273,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180541455594963",
+                        "nir": "180397342485721",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -2307,7 +2307,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2331,7 +2331,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2355,7 +2355,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2379,7 +2379,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2403,7 +2403,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2427,7 +2427,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2451,7 +2451,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2475,7 +2475,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2499,7 +2499,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2523,7 +2523,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2547,7 +2547,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2571,7 +2571,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2595,7 +2595,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2619,7 +2619,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2643,7 +2643,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2667,7 +2667,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2691,7 +2691,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2715,7 +2715,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2739,7 +2739,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2763,7 +2763,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2787,7 +2787,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2811,7 +2811,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2835,7 +2835,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2859,7 +2859,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2883,7 +2883,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2907,7 +2907,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2931,7 +2931,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2955,7 +2955,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2979,7 +2979,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3003,7 +3003,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180494752649429",
+                        "nir": "180178544538956",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3034,7 +3034,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180933575819522",
+                        "nir": "180257773779264",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3065,7 +3065,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180726651111831",
+                        "nir": "180592842381972",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3096,7 +3096,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180257518766165",
+                        "nir": "180223564558543",
                         "referents_to_add": [
                           {
                             "email": "agentnontrouve@nomdedomaine.fr"
@@ -3122,7 +3122,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180422162839187",
+                        "nir": "180291344932995",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -3156,7 +3156,7 @@
                         "birth_name": null,
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180838829164659",
+                        "nir": "180618782294592",
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -3182,7 +3182,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
-                        "nir": "180739715731332",
+                        "nir": "180925643738651",
                         "tags_to_add": [
                           {
                             "value": "A relancer"
@@ -3287,8 +3287,8 @@
                         "birth_date": "1980-03-11",
                         "rights_opening_date": null,
                         "birth_name": null,
-                        "rdv_solidarites_user_id": 2260,
-                        "nir": "180662936711915",
+                        "rdv_solidarites_user_id": 36902,
+                        "nir": "180593145141144",
                         "france_travail_id": null,
                         "referents": [
                           {
@@ -3296,7 +3296,7 @@
                             "email": "agentreferent@nomdedomaine.fr",
                             "first_name": "jane113",
                             "last_name": "doe113",
-                            "rdv_solidarites_agent_id": 3225615184
+                            "rdv_solidarites_agent_id": 5212522979
                           }
                         ],
                         "tags": [
@@ -3358,7 +3358,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180662936711915",
+                      "nir": "180593145141144",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3456,7 +3456,7 @@
                           "affiliation_number": "1049239",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4973",
+                          "department_internal_id": "4741",
                           "first_name": "Didier",
                           "last_name": "Drogba",
                           "title": "monsieur",
@@ -3466,7 +3466,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2261,
+                          "rdv_solidarites_user_id": 36903,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3478,7 +3478,7 @@
                           "affiliation_number": "20584721",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4143",
+                          "department_internal_id": "4726",
                           "first_name": "Dimitri",
                           "last_name": "Payet",
                           "title": "monsieur",
@@ -3488,7 +3488,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2262,
+                          "rdv_solidarites_user_id": 36904,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3514,7 +3514,7 @@
                           "affiliation_number": "30675832",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4984",
+                          "department_internal_id": "4228",
                           "first_name": "Antoine",
                           "last_name": "Griezmann",
                           "title": "monsieur",
@@ -3524,7 +3524,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2266,
+                          "rdv_solidarites_user_id": 36908,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3550,7 +3550,7 @@
                           "affiliation_number": "1049239",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4189",
+                          "department_internal_id": "4523",
                           "first_name": "Didier",
                           "last_name": "Drogba",
                           "title": "monsieur",
@@ -3560,7 +3560,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2267,
+                          "rdv_solidarites_user_id": 36909,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3572,7 +3572,7 @@
                           "affiliation_number": "20584721",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4736",
+                          "department_internal_id": "4560",
                           "first_name": "Dimitri",
                           "last_name": "Payet",
                           "title": "monsieur",
@@ -3582,7 +3582,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2268,
+                          "rdv_solidarites_user_id": 36910,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3594,7 +3594,7 @@
                           "affiliation_number": "30675832",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4966",
+                          "department_internal_id": "4684",
                           "first_name": "Antoine",
                           "last_name": "Griezmann",
                           "title": "monsieur",
@@ -3604,7 +3604,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2269,
+                          "rdv_solidarites_user_id": 36911,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3612,11 +3612,11 @@
                         },
                         {
                           "id": 4,
-                          "uid": "bnVtZXJvXzIyNjAgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2260",
+                          "uid": "bnVtZXJvXzM2OTAyIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36902",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4812",
+                          "department_internal_id": "4471",
                           "first_name": "User0",
                           "last_name": "Test0",
                           "title": "monsieur",
@@ -3626,7 +3626,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2270,
+                          "rdv_solidarites_user_id": 36912,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3634,11 +3634,11 @@
                         },
                         {
                           "id": 5,
-                          "uid": "bnVtZXJvXzIyNjEgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2261",
+                          "uid": "bnVtZXJvXzM2OTAzIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36903",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4663",
+                          "department_internal_id": "4359",
                           "first_name": "User1",
                           "last_name": "Test1",
                           "title": "monsieur",
@@ -3648,7 +3648,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2271,
+                          "rdv_solidarites_user_id": 36913,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3656,11 +3656,11 @@
                         },
                         {
                           "id": 6,
-                          "uid": "bnVtZXJvXzIyNjIgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2262",
+                          "uid": "bnVtZXJvXzM2OTA0IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36904",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4423",
+                          "department_internal_id": "4630",
                           "first_name": "User2",
                           "last_name": "Test2",
                           "title": "monsieur",
@@ -3670,7 +3670,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2272,
+                          "rdv_solidarites_user_id": 36914,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3678,11 +3678,11 @@
                         },
                         {
                           "id": 7,
-                          "uid": "bnVtZXJvXzIyNjMgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2263",
+                          "uid": "bnVtZXJvXzM2OTA1IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36905",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4092",
+                          "department_internal_id": "4669",
                           "first_name": "User3",
                           "last_name": "Test3",
                           "title": "monsieur",
@@ -3692,7 +3692,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2273,
+                          "rdv_solidarites_user_id": 36915,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3700,11 +3700,11 @@
                         },
                         {
                           "id": 8,
-                          "uid": "bnVtZXJvXzIyNjQgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2264",
+                          "uid": "bnVtZXJvXzM2OTA2IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36906",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4421",
+                          "department_internal_id": "4984",
                           "first_name": "User4",
                           "last_name": "Test4",
                           "title": "monsieur",
@@ -3714,7 +3714,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2274,
+                          "rdv_solidarites_user_id": 36916,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3722,11 +3722,11 @@
                         },
                         {
                           "id": 9,
-                          "uid": "bnVtZXJvXzIyNjUgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2265",
+                          "uid": "bnVtZXJvXzM2OTA3IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36907",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4163",
+                          "department_internal_id": "4148",
                           "first_name": "User5",
                           "last_name": "Test5",
                           "title": "monsieur",
@@ -3736,7 +3736,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2275,
+                          "rdv_solidarites_user_id": 36917,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3744,11 +3744,11 @@
                         },
                         {
                           "id": 10,
-                          "uid": "bnVtZXJvXzIyNjYgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2266",
+                          "uid": "bnVtZXJvXzM2OTA4IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36908",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4672",
+                          "department_internal_id": "4241",
                           "first_name": "User6",
                           "last_name": "Test6",
                           "title": "monsieur",
@@ -3758,7 +3758,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2276,
+                          "rdv_solidarites_user_id": 36918,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3766,11 +3766,11 @@
                         },
                         {
                           "id": 11,
-                          "uid": "bnVtZXJvXzIyNjcgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2267",
+                          "uid": "bnVtZXJvXzM2OTA5IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36909",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4970",
+                          "department_internal_id": "4321",
                           "first_name": "User7",
                           "last_name": "Test7",
                           "title": "monsieur",
@@ -3780,7 +3780,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2277,
+                          "rdv_solidarites_user_id": 36919,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3788,11 +3788,11 @@
                         },
                         {
                           "id": 12,
-                          "uid": "bnVtZXJvXzIyNjggLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2268",
+                          "uid": "bnVtZXJvXzM2OTEwIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36910",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4162",
+                          "department_internal_id": "4408",
                           "first_name": "User8",
                           "last_name": "Test8",
                           "title": "monsieur",
@@ -3802,7 +3802,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2278,
+                          "rdv_solidarites_user_id": 36920,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3810,11 +3810,11 @@
                         },
                         {
                           "id": 13,
-                          "uid": "bnVtZXJvXzIyNjkgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2269",
+                          "uid": "bnVtZXJvXzM2OTExIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36911",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4033",
+                          "department_internal_id": "4533",
                           "first_name": "User9",
                           "last_name": "Test9",
                           "title": "monsieur",
@@ -3824,7 +3824,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2279,
+                          "rdv_solidarites_user_id": 36921,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3832,11 +3832,11 @@
                         },
                         {
                           "id": 14,
-                          "uid": "bnVtZXJvXzIyNzAgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2270",
+                          "uid": "bnVtZXJvXzM2OTEyIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36912",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4120",
+                          "department_internal_id": "4322",
                           "first_name": "User10",
                           "last_name": "Test10",
                           "title": "monsieur",
@@ -3846,7 +3846,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2280,
+                          "rdv_solidarites_user_id": 36922,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3854,11 +3854,11 @@
                         },
                         {
                           "id": 15,
-                          "uid": "bnVtZXJvXzIyNzEgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2271",
+                          "uid": "bnVtZXJvXzM2OTEzIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36913",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4694",
+                          "department_internal_id": "4995",
                           "first_name": "User11",
                           "last_name": "Test11",
                           "title": "monsieur",
@@ -3868,7 +3868,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2281,
+                          "rdv_solidarites_user_id": 36923,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3876,11 +3876,11 @@
                         },
                         {
                           "id": 16,
-                          "uid": "bnVtZXJvXzIyNzIgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2272",
+                          "uid": "bnVtZXJvXzM2OTE0IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36914",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4828",
+                          "department_internal_id": "4371",
                           "first_name": "User12",
                           "last_name": "Test12",
                           "title": "monsieur",
@@ -3890,7 +3890,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2282,
+                          "rdv_solidarites_user_id": 36924,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3898,11 +3898,11 @@
                         },
                         {
                           "id": 17,
-                          "uid": "bnVtZXJvXzIyNzMgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2273",
+                          "uid": "bnVtZXJvXzM2OTE1IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36915",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4909",
+                          "department_internal_id": "4517",
                           "first_name": "User13",
                           "last_name": "Test13",
                           "title": "monsieur",
@@ -3912,7 +3912,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2283,
+                          "rdv_solidarites_user_id": 36925,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3920,11 +3920,11 @@
                         },
                         {
                           "id": 18,
-                          "uid": "bnVtZXJvXzIyNzQgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2274",
+                          "uid": "bnVtZXJvXzM2OTE2IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36916",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4187",
+                          "department_internal_id": "4021",
                           "first_name": "User14",
                           "last_name": "Test14",
                           "title": "monsieur",
@@ -3934,7 +3934,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2284,
+                          "rdv_solidarites_user_id": 36926,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3942,11 +3942,11 @@
                         },
                         {
                           "id": 19,
-                          "uid": "bnVtZXJvXzIyNzUgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2275",
+                          "uid": "bnVtZXJvXzM2OTE3IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36917",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4587",
+                          "department_internal_id": "4222",
                           "first_name": "User15",
                           "last_name": "Test15",
                           "title": "monsieur",
@@ -3956,7 +3956,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2285,
+                          "rdv_solidarites_user_id": 36927,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3964,11 +3964,11 @@
                         },
                         {
                           "id": 20,
-                          "uid": "bnVtZXJvXzIyNzYgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2276",
+                          "uid": "bnVtZXJvXzM2OTE4IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36918",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4733",
+                          "department_internal_id": "4407",
                           "first_name": "User16",
                           "last_name": "Test16",
                           "title": "monsieur",
@@ -3978,7 +3978,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2286,
+                          "rdv_solidarites_user_id": 36928,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -3986,11 +3986,11 @@
                         },
                         {
                           "id": 21,
-                          "uid": "bnVtZXJvXzIyNzcgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2277",
+                          "uid": "bnVtZXJvXzM2OTE5IC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36919",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4167",
+                          "department_internal_id": "4321",
                           "first_name": "User17",
                           "last_name": "Test17",
                           "title": "monsieur",
@@ -4000,7 +4000,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2287,
+                          "rdv_solidarites_user_id": 36929,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -4008,11 +4008,11 @@
                         },
                         {
                           "id": 22,
-                          "uid": "bnVtZXJvXzIyNzggLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2278",
+                          "uid": "bnVtZXJvXzM2OTIwIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36920",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4897",
+                          "department_internal_id": "4640",
                           "first_name": "User18",
                           "last_name": "Test18",
                           "title": "monsieur",
@@ -4022,7 +4022,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2288,
+                          "rdv_solidarites_user_id": 36930,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -4030,11 +4030,11 @@
                         },
                         {
                           "id": 23,
-                          "uid": "bnVtZXJvXzIyNzkgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2279",
+                          "uid": "bnVtZXJvXzM2OTIxIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36921",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4659",
+                          "department_internal_id": "4584",
                           "first_name": "User19",
                           "last_name": "Test19",
                           "title": "monsieur",
@@ -4044,7 +4044,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2289,
+                          "rdv_solidarites_user_id": 36931,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -4052,11 +4052,11 @@
                         },
                         {
                           "id": 24,
-                          "uid": "bnVtZXJvXzIyODAgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2280",
+                          "uid": "bnVtZXJvXzM2OTIyIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36922",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4322",
+                          "department_internal_id": "4871",
                           "first_name": "User20",
                           "last_name": "Test20",
                           "title": "monsieur",
@@ -4066,7 +4066,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2290,
+                          "rdv_solidarites_user_id": 36932,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -4074,11 +4074,11 @@
                         },
                         {
                           "id": 25,
-                          "uid": "bnVtZXJvXzIyODEgLSBkZW1hbmRldXI=",
-                          "affiliation_number": "numero_2281",
+                          "uid": "bnVtZXJvXzM2OTIzIC0gZGVtYW5kZXVy",
+                          "affiliation_number": "numero_36923",
                           "role": "demandeur",
                           "created_at": "0024-12-02T22:22:00.000+00:09",
-                          "department_internal_id": "4769",
+                          "department_internal_id": "4856",
                           "first_name": "User21",
                           "last_name": "Test21",
                           "title": "monsieur",
@@ -4088,7 +4088,7 @@
                           "birth_date": null,
                           "rights_opening_date": null,
                           "birth_name": null,
-                          "rdv_solidarites_user_id": 2291,
+                          "rdv_solidarites_user_id": 36933,
                           "nir": null,
                           "france_travail_id": null,
                           "referents": [],
@@ -4291,8 +4291,8 @@
                         "birth_date": "1980-03-11",
                         "rights_opening_date": null,
                         "birth_name": null,
-                        "rdv_solidarites_user_id": 2311,
-                        "nir": "180471124785356",
+                        "rdv_solidarites_user_id": 36953,
+                        "nir": "180538869421644",
                         "france_travail_id": null,
                         "referents": [
                           {
@@ -4300,7 +4300,7 @@
                             "email": "agentreferent@nomdedomaine.fr",
                             "first_name": "jane184",
                             "last_name": "doe184",
-                            "rdv_solidarites_agent_id": 9517795072
+                            "rdv_solidarites_agent_id": 4469001444
                           }
                         ],
                         "tags": [
@@ -4316,10 +4316,10 @@
                           "format": "sms",
                           "clicked": false,
                           "rdv_with_referents": false,
-                          "created_at": "2025-07-02T15:28:03.203+02:00",
+                          "created_at": "2025-09-24T14:42:51.717+02:00",
                           "delivery_status": null,
                           "delivered_at": null,
-                          "expires_at": "2025-07-09T15:28:02.988+02:00",
+                          "expires_at": "2025-10-01T14:42:51.686+02:00",
                           "motif_category": {
                             "id": 2,
                             "short_name": "rsa_orientation_16",
@@ -4331,10 +4331,10 @@
                           "format": "email",
                           "clicked": false,
                           "rdv_with_referents": false,
-                          "created_at": "2025-07-02T15:28:02.911+02:00",
+                          "created_at": "2025-09-24T14:42:51.678+02:00",
                           "delivery_status": null,
                           "delivered_at": null,
-                          "expires_at": "2025-07-09T15:28:02.687+02:00",
+                          "expires_at": "2025-10-01T14:42:51.650+02:00",
                           "motif_category": {
                             "id": 1,
                             "short_name": "rsa_orientation_15",
@@ -4482,7 +4482,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°2420. "
+                          "error_details": "Assignation du référent impossible car aucun agent n'a été retrouvé avec l'adresse agentnontrouve@nomdedomaine.fr au sein de l'organisation Organisation n°37062. "
                         }
                       ]
                     }
@@ -4492,7 +4492,7 @@
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°2425. "
+                          "error_details": "Assignation du tag impossible car aucun tag n'a été trouvé avec la valeur TagInexistant au sein de l'organisation Organisation n°37067. "
                         }
                       ]
                     }
@@ -4535,7 +4535,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180471124785356",
+                      "nir": "180538869421644",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4569,7 +4569,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180131968542765",
+                      "nir": "180571258384115",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4603,7 +4603,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180557994656276",
+                      "nir": "180317297719891",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4637,7 +4637,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180896463913787",
+                      "nir": "180979187676590",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4671,7 +4671,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180929391278619",
+                      "nir": "180132985369417",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4705,7 +4705,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180566918118224",
+                      "nir": "180367645198224",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4739,7 +4739,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180852335834639",
+                      "nir": "180272467798134",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4773,7 +4773,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180927146665460",
+                      "nir": "180494288258365",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4807,7 +4807,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180924811293658",
+                      "nir": "180615738343334",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4841,7 +4841,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180169916777946",
+                      "nir": "180716319496826",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4875,7 +4875,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180679835632736",
+                      "nir": "180643124221690",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -4909,7 +4909,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180966541725818",
+                      "nir": "180214475845318",
                       "referents_to_add": [
                         {
                           "email": "agentnontrouve@nomdedomaine.fr"
@@ -4943,7 +4943,7 @@
                       "birth_name": null,
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180162126244425",
+                      "nir": "180611258895509",
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -5045,13 +5045,13 @@
                       "success": true,
                       "user": {
                         "id": 1,
-                        "uid": "bnVtZXJvXzIzMTggLSBkZW1hbmRldXI=",
-                        "affiliation_number": "numero_2318",
+                        "uid": "bnVtZXJvXzM2OTYwIC0gZGVtYW5kZXVy",
+                        "affiliation_number": "numero_36960",
                         "role": "demandeur",
                         "created_at": "0024-12-02T22:22:00.000+00:09",
-                        "department_internal_id": "4317",
-                        "first_name": "john2286",
-                        "last_name": "doe2286",
+                        "department_internal_id": "4909",
+                        "first_name": "john36928",
+                        "last_name": "doe36928",
                         "title": "monsieur",
                         "address": "27 avenue de Ségur 75007 Paris",
                         "phone_number": "+33782605941",
@@ -5059,7 +5059,7 @@
                         "birth_date": null,
                         "rights_opening_date": null,
                         "birth_name": null,
-                        "rdv_solidarites_user_id": 2350,
+                        "rdv_solidarites_user_id": 36992,
                         "nir": null,
                         "france_travail_id": null,
                         "referents": [],
@@ -5071,10 +5071,10 @@
                           "format": "sms",
                           "clicked": false,
                           "rdv_with_referents": false,
-                          "created_at": "2025-07-02T15:28:22.573+02:00",
+                          "created_at": "2025-09-24T14:42:54.584+02:00",
                           "delivery_status": null,
                           "delivered_at": null,
-                          "expires_at": "2025-07-09T15:28:22.372+02:00",
+                          "expires_at": "2025-10-01T14:42:54.554+02:00",
                           "motif_category": {
                             "id": 2,
                             "short_name": "rsa_orientation_42",
@@ -5086,10 +5086,10 @@
                           "format": "email",
                           "clicked": false,
                           "rdv_with_referents": false,
-                          "created_at": "2025-07-02T15:28:22.306+02:00",
+                          "created_at": "2025-09-24T14:42:54.547+02:00",
                           "delivery_status": null,
                           "delivered_at": null,
-                          "expires_at": "2025-07-09T15:28:22.057+02:00",
+                          "expires_at": "2025-10-01T14:42:54.521+02:00",
                           "motif_category": {
                             "id": 1,
                             "short_name": "rsa_orientation_41",
@@ -5104,13 +5104,13 @@
                       "success": true,
                       "user": {
                         "id": 1,
-                        "uid": "bnVtZXJvXzIzMjEgLSBkZW1hbmRldXI=",
-                        "affiliation_number": "numero_2321",
+                        "uid": "bnVtZXJvXzM2OTYzIC0gZGVtYW5kZXVy",
+                        "affiliation_number": "numero_36963",
                         "role": "demandeur",
                         "created_at": "0024-12-02T22:22:00.000+00:09",
-                        "department_internal_id": "4062",
-                        "first_name": "john2289",
-                        "last_name": "doe2289",
+                        "department_internal_id": "4697",
+                        "first_name": "john36931",
+                        "last_name": "doe36931",
                         "title": "monsieur",
                         "address": "27 avenue de Ségur 75007 Paris",
                         "phone_number": "+33782605941",
@@ -5118,7 +5118,7 @@
                         "birth_date": null,
                         "rights_opening_date": null,
                         "birth_name": null,
-                        "rdv_solidarites_user_id": 2353,
+                        "rdv_solidarites_user_id": 36995,
                         "nir": null,
                         "france_travail_id": null,
                         "referents": [],
@@ -5130,10 +5130,10 @@
                           "format": "sms",
                           "clicked": false,
                           "rdv_with_referents": false,
-                          "created_at": "2025-07-02T15:28:24.107+02:00",
+                          "created_at": "2025-09-24T14:42:54.889+02:00",
                           "delivery_status": null,
                           "delivered_at": null,
-                          "expires_at": "2025-07-09T15:28:23.870+02:00",
+                          "expires_at": "2025-10-01T14:42:54.855+02:00",
                           "motif_category": {
                             "id": 2,
                             "short_name": "rsa_orientation_44",
