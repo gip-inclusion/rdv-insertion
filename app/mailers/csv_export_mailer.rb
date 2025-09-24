@@ -10,7 +10,7 @@ class CsvExportMailer < ApplicationMailer
   private
 
   def set_request_filters
-    set_status_filter
+    set_follow_up_statuses_filter
     set_referent_filter
     set_creation_dates_filter
     set_invitation_dates_filter
@@ -29,8 +29,8 @@ class CsvExportMailer < ApplicationMailer
       end
   end
 
-  def set_status_filter
-    @status_filter = @request_params[:status]
+  def set_follow_up_statuses_filter
+    @follow_up_statuses_filter = @request_params[:follow_up_statuses]
   end
 
   def set_referent_filter
