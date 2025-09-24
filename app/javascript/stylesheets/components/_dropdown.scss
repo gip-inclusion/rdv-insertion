@@ -47,6 +47,21 @@
   box-shadow: none !important;
 }
 
+.text-truncate-with-chevron {
+  position: relative !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 35px !important;
+
+  &::after {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
 #batch-actions-menu {
   width: 260px;
 }
