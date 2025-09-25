@@ -132,4 +132,9 @@
     --background-action-high-blue-france: initial;
     --background-action-high-blue-france-hover: initial;
   }
+
+  // Override DSFR hover styles for SweetAlert 2 buttons
+  .swal2-actions button:hover {
+    background-color: #1212FF !important;
+  }
 }
