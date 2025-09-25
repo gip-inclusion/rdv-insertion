@@ -11,7 +11,7 @@ fr:
           rdv_pending: RDV à venir
           rdv_needs_status_update: Statut du RDV à préciser
           rdv_noshow: Absence non excusée au RDV
-          rdv_revoked: RDV annulé à l'initative du Service
-          rdv_excused: RDV annulé à l'initiative de l'usager
+          rdv_revoked: RDV annulé par le service
+          rdv_excused: RDV annulé par l'usager
           rdv_seen: RDV honoré
           closed: Dossier traité

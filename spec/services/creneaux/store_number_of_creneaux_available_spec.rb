@@ -28,5 +28,16 @@ describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
       subject
       expect(CreneauAvailability.last.number_of_pending_invitations).to eq(1)
     end
+
+    context "with multiple invitations of the same follow_up" do
+      let!(:invitation2) do
+        create(:invitation, user: user, follow_up: follow_up, organisations: [category_configuration.organisation])
+      end
+
+      it "stores the number of pending invitations" do
+        subject
+        expect(CreneauAvailability.last.number_of_pending_invitations).to eq(1)
+      end
+    end
   end
 end

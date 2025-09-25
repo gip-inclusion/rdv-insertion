@@ -6,14 +6,6 @@
 *
 */
 .reset-dsfr-overrides {
-  a {
-    &::after {
-      display: none;
-    }
-    &:active {
-      background-color: transparent !important;
-    }
-  }
   p {
     line-height: normal;
   }

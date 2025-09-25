@@ -4,6 +4,6 @@
   <%= render 'common/header' %>
 <% end %>
 
-<%= render "layouts/application_base", white_background: true do %>
+<%= render "layouts/application_base", white_background: true, reset_dsfr_overrides: true do %>
   <%= yield %>
 <% end %>

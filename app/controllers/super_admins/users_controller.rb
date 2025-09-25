@@ -3,6 +3,12 @@ module SuperAdmins
     # Overwrite any of the RESTful controller actions to implement custom behavior
     # For example, you may want to send an email after a foo is updated.
     #
+    def index
+      page = Administrate::Page::Collection.new(dashboard, order:)
+      resources = order.apply(scoped_resource).page(params[:page]).per(records_per_page)
+
+      render locals: { resources:, search_term: params[:search], page:, show_search_bar: true }
+    end
 
     def update
       requested_resource.assign_attributes(**resource_params)
@@ -24,7 +30,9 @@ module SuperAdmins
     end
 
     def scoped_resource
-      resource_class.active
+      return User.active if params[:search].blank?
+
+      User.active.search_by_text(params[:search])
     end
 
     # Override this method to specify custom lookup behavior.

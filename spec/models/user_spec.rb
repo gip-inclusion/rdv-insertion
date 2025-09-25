@@ -55,7 +55,7 @@ describe User do
         :user,
         first_name: "romain",
         last_name: "duris",
-        email: "romain@duris.fr",
+        email: "coucoulol@gmail.com",
         phone_number: "+33782605941",
         affiliation_number: "0000"
       )
@@ -70,7 +70,7 @@ describe User do
     end
 
     context "email query" do
-      let(:query) { "romain@duris" }
+      let(:query) { "coucoulol@gmail.com" }
 
       it { is_expected.to include(user_romain) }
       it { is_expected.not_to include(user_cecile) }

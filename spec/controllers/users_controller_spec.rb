@@ -218,6 +218,18 @@ describe UsersController do
       end
     end
 
+    context "when user no longer exists" do
+      let(:user_from_another_organisation) { create(:user, organisations: [create(:organisation)]) }
+      let!(:show_params) { { id: user_from_another_organisation.id, organisation_id: organisation.id } }
+
+      it "redirects with authorization error" do
+        get :show, params: show_params
+
+        expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
+        expect(flash[:error]).to include("Aucun usager trouvé avec cet identifiant")
+      end
+    end
+
     context "when department_level" do
       let!(:show_params) { { id: user.id, department_id: department.id } }
 
@@ -1034,9 +1046,8 @@ describe UsersController do
         end
 
         it "does not call the service" do
-          expect do
-            post :update, params: update_params
-          end.to raise_error(ActiveRecord::RecordNotFound)
+          post :update, params: update_params
+          expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
         end
       end
 
@@ -1203,10 +1214,27 @@ describe UsersController do
           sign_in(another_agent)
         end
 
-        it "does not call the service" do
-          expect do
-            patch :update, params: update_params
-          end.to raise_error(ActiveRecord::RecordNotFound)
+        it "redirects with authorization error" do
+          patch :update, params: update_params
+          expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
+        end
+      end
+
+      context "when user no longer exists" do
+        let(:user_from_another_organisation) { create(:user, organisations: [create(:organisation)]) }
+        let!(:update_params) do
+          {
+            id: user_from_another_organisation.id,
+            organisation_id: organisation.id,
+            user: { first_name: "Alain", last_name: "Deloin", phone_number: "0123456789" }
+          }
+        end
+
+        it "redirects with authorization error" do
+          patch :update, params: update_params
+
+          expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
+          expect(flash[:error]).to include("Aucun usager trouvé avec cet identifiant")
         end
       end
 
