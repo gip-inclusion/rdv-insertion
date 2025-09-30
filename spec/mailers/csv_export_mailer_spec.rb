@@ -65,7 +65,7 @@ RSpec.describe CsvExportMailer do
           action_required: "true", first_invitation_date_before: "15-04-2024",
           last_invitation_date_after: "01-01-2024", last_invitation_date_before: "02-04-2024",
           motif_category_id: motif_category.id.to_s,
-          referent_id: agent.id.to_s, search_query: "Bacri", status: "invitation_pending",
+          referent_id: agent.id.to_s, search_query: "Bacri", follow_up_statuses: ["invitation_pending"],
           tag_ids: [tag.id.to_s], organisation_id: organisation1.id.to_s
         }
       end

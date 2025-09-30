@@ -136,6 +136,12 @@
     --background-action-high-blue-france-hover: initial;
   }
 
+  // Reset hr styles - only .fr-hr should have DSFR styles
+  hr:not(.fr-hr) {
+    background-image: none !important;
+    padding: initial !important;
+  }
+  
   // Override DSFR hover styles for SweetAlert 2 buttons
   .swal2-actions button:hover {
     background-color: #1212FF !important;

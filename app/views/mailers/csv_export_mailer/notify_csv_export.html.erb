@@ -10,8 +10,10 @@
   <% if @motif_category_filter %>
     <li><strong>Catégorie</strong>&nbsp;: <%= @motif_category_filter.name %></li>
   <% end %>
-  <% if @status_filter %>
-    <li><strong>Statut</strong>&nbsp;: <%= I18n.t("activerecord.attributes.follow_up.statuses.#{@status_filter}") %></li>
+  <% if @follow_up_statuses_filter %>
+    <li><strong><%= @follow_up_statuses_filter.size > 1 ? "Statuts" : "Statut" %></strong>&nbsp;:
+      <%= @follow_up_statuses_filter.map { |status| I18n.t("activerecord.attributes.follow_up.statuses.#{status}") }.join(", ") %>
+    </li>
   <% end %>
   <% if @referent_filter %>
     <li><strong>Référent</strong>&nbsp;: <%= @referent_filter.to_s %></li>

@@ -1,7 +1,7 @@
 <% if @all_links.length == 0 %>
   <%= render "common/remote_modal", title: "🔦 Aucun motif de convocation détecté" do %>
     <p>Aucun motif de convocation n'a été retrouvé pour cette catégorie sur RDV-Solidarités.</p>
-    <p>Contactez-nous à l'adresse <%= mail_to "rdv-insertion@beta.gouv.fr", subject: "Motif de convocations" %> pour en savoir plus.</p>
+    <p>Contactez-nous à l'adresse <%= mail_to "rdv-insertion@inclusion.gouv.fr", subject: "Motif de convocations" %> pour en savoir plus.</p>
   <% end %>
 <% elsif @all_links.length == 1 %>
   <!-- we insert a link that is clicked automatically in that case to redirect on another window. We still have to put this inside the turbo frame "remote_modal" since the response expects it and we call the frame directly and not the component because we don't want to show the modal. -->
@@ -25,4 +25,3 @@
     </div>
   <% end %>
 <% end  %>
-
