@@ -1,5 +1,5 @@
 module FollowUpsHelper
-  STATUS_TABLE_ROW_CLASSES = {
+  TABLE_CELL_CSS_CLASSES_BY_FOLLOW_UP_STATUS = {
     no_upcoming_rdv_and_all_invitations_expired: "background-orange-pale text-brown",
     invitation_pending: "background-blue-pale text-navy-blue",
     rdv_pending: "text-navy-blue",
@@ -10,7 +10,7 @@ module FollowUpsHelper
     rdv_seen: "text-dark-green-alt"
   }.freeze
 
-  STATUS_BADGE_CLASSES = {
+  BADGE_CSS_CLASSES_BY_FOLLOW_STATUS = {
     no_upcoming_rdv_and_all_invitations_expired: "background-orange-pale text-brown",
     invitation_pending: "background-blue-pale text-navy-blue",
     rdv_pending: "text-navy-blue border-light-grey",
@@ -22,7 +22,7 @@ module FollowUpsHelper
   }.freeze
 
   def table_row_classes_for_follow_up_status(follow_up)
-    STATUS_TABLE_ROW_CLASSES.each do |condition, css_class|
+    TABLE_CELL_CSS_CLASSES_BY_FOLLOW_UP_STATUS.each do |condition, css_class|
       return css_class if follow_up&.send(:"#{condition}?")
     end
 
@@ -30,7 +30,7 @@ module FollowUpsHelper
   end
 
   def badge_classes_for_follow_up_status(follow_up)
-    STATUS_BADGE_CLASSES.each do |condition, css_class|
+    BADGE_CSS_CLASSES_BY_FOLLOW_STATUS.each do |condition, css_class|
       return css_class if follow_up&.send(:"#{condition}?")
     end
 
