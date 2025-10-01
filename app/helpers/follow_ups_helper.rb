@@ -21,7 +21,7 @@ module FollowUpsHelper
     rdv_seen: "text-dark-green-alt border-light-grey"
   }.freeze
 
-  def table_row_classes_for_follow_up_status(follow_up)
+  def table_cell_css_classes_for_follow_up_status(follow_up)
     TABLE_CELL_CSS_CLASSES_BY_FOLLOW_UP_STATUS.each do |condition, css_class|
       return css_class if follow_up&.send(:"#{condition}?")
     end
@@ -29,7 +29,7 @@ module FollowUpsHelper
     ""
   end
 
-  def badge_classes_for_follow_up_status(follow_up)
+  def badge_css_classes_for_follow_up_status(follow_up)
     BADGE_CSS_CLASSES_BY_FOLLOW_STATUS.each do |condition, css_class|
       return css_class if follow_up&.send(:"#{condition}?")
     end
