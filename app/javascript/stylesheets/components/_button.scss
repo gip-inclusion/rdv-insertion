@@ -49,11 +49,11 @@ button, input[type="button"] {
   a {
     color: $info;
   }
-}
 
-.badge-tag.text-brown i {
-  // ri-close-line color inheritance
-  color: $brown;
+  // When badge has text-brown class, icons (like remove cross) should be brown instead of info color
+  &.text-brown a {
+    color: $brown;
+  }
 }
 
 button:disabled {
