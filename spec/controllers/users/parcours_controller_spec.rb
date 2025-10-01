@@ -28,10 +28,15 @@ describe Users::ParcoursController do
       end
     end
 
-    context "when user no longer exists" do
+    context "when user no longer exists in the current organisation" do
       let(:user_from_another_organisation) { create(:user, organisations: [create(:organisation)]) }
 
-      it "redirects with authorization error" do
+      it "raises a not found error" do
+        expect do
+          get :show, params: { user_id: user_from_another_organisation.id, organisation_id: organisation.id }
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
         get :show, params: { user_id: user_from_another_organisation.id, organisation_id: organisation.id }
 
         expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
