@@ -58,6 +58,6 @@ class ErrorsController < ApplicationController
     # Turbo frame requests expect a frame with the same id as the one that triggered the request to be returned here.
     # Instead of fetching the frame_id and replacing the frame with a turbo_stream, we redirect to this current action
     # via turbo_stream which will render the html response.
-    turbo_stream_redirect(request.path) if turbo_frame_request?
+    turbo_stream_redirect(request.referer) if turbo_frame_request?
   end
 end
