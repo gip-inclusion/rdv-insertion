@@ -1,40 +1,40 @@
 module FollowUpsHelper
-  BACKGROUND_CLASSES = {
-    no_upcoming_rdv_and_all_invitations_expired?: "invitation-pending-and-expired",
-    invitation_pending?: "invitation-pending",
-    rdv_pending?: "rdv-pending",
-    rdv_needs_status_update?: "rdv-needs-status-update",
-    rdv_noshow?: "rdv-noshow",
-    rdv_revoked?: "rdv-revoked",
-    rdv_excused?: "rdv-excused",
-    rdv_seen?: "rdv-seen"
+  STATUS_TABLE_ROW_CLASSES = {
+    no_upcoming_rdv_and_all_invitations_expired: "background-orange-pale text-brown",
+    invitation_pending: "background-blue-pale text-navy-blue",
+    rdv_pending: "text-navy-blue",
+    rdv_needs_status_update: "background-red-pale text-dark-red",
+    rdv_noshow: "text-red-bright",
+    rdv_revoked: "text-brown",
+    rdv_excused: "text-dark-red",
+    rdv_seen: "text-dark-green-alt"
   }.freeze
 
-  BADGE_CLASSES = {
-    no_upcoming_rdv_and_all_invitations_expired?: "invitation-pending-and-expired",
-    invitation_pending?: "invitation-pending",
-    rdv_pending?: "rdv-pending border-light-grey",
-    rdv_needs_status_update?: "rdv-needs-status-update",
-    rdv_noshow?: "rdv-noshow border-light-grey",
-    rdv_revoked?: "rdv-revoked border-light-grey",
-    rdv_excused?: "rdv-excused border-light-grey",
-    rdv_seen?: "rdv-seen border-light-grey"
+  STATUS_BADGE_CLASSES = {
+    no_upcoming_rdv_and_all_invitations_expired: "background-orange-pale text-brown",
+    invitation_pending: "background-blue-pale text-navy-blue",
+    rdv_pending: "text-navy-blue border-light-grey",
+    rdv_needs_status_update: "background-red-pale text-dark-red",
+    rdv_noshow: "text-red-bright border-light-grey",
+    rdv_revoked: "text-brown border-light-grey",
+    rdv_excused: "text-dark-red border-light-grey",
+    rdv_seen: "text-dark-green-alt border-light-grey"
   }.freeze
 
-  def background_class_for_follow_up_status(follow_up)
-    BACKGROUND_CLASSES.each do |condition, css_class|
-      return css_class if follow_up&.send(condition)
+  def table_row_classes_for_follow_up_status(follow_up)
+    STATUS_TABLE_ROW_CLASSES.each do |condition, css_class|
+      return css_class if follow_up&.send(:"#{condition}?")
     end
 
     ""
   end
 
-  def badge_background_class(follow_up)
-    BADGE_CLASSES.each do |condition, css_class|
-      return css_class if follow_up&.send(condition)
+  def badge_classes_for_follow_up_status(follow_up)
+    STATUS_BADGE_CLASSES.each do |condition, css_class|
+      return css_class if follow_up&.send(:"#{condition}?")
     end
 
-    "uninvited-or-closed border-light-grey"
+    "text-grey-alt border-light-grey"
   end
 
   def display_follow_up_status(follow_up)

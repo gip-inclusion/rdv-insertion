@@ -1,6 +1,6 @@
 <td
   id="follow-up-status-<%= follow_up.id %>"
-  class="<%= background_class_for_follow_up_status(follow_up) %>"
+  class="<%= table_row_classes_for_follow_up_status(follow_up) %>"
   data-link-path="<%= structure_user_follow_ups_path(user_id: follow_up.user_id, anchor: "follow_up_#{follow_up.id}") %>"
 >
   <%= display_follow_up_status(follow_up) %>

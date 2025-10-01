@@ -31,19 +31,19 @@ module ParticipationsHelper
     "text-danger"
   end
 
-  def background_class_for_participation_status(participation)
+  def button_classes_for_participation_status(participation)
     return "" if participation.follow_up.closed?
 
     if participation.seen?
-      "rdv-seen border-light-grey"
+      "text-dark-green-alt border-light-grey"
     elsif participation.revoked?
-      "rdv-revoked border-light-grey"
+      "text-brown border-light-grey"
     elsif participation.excused?
-      "rdv-excused border-light-grey"
+      "text-dark-red border-light-grey"
     elsif participation.noshow?
-      "rdv-noshow border-light-grey"
+      "text-red-bright border-light-grey"
     elsif participation.needs_status_update?
-      "rdv-needs-status-update"
+      "background-red-pale text-dark-red"
     end
   end
 
