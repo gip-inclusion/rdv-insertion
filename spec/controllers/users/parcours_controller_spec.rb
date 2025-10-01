@@ -37,12 +37,6 @@ describe Users::ParcoursController do
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
-        get :show, params: { user_id: user_from_another_organisation.id, organisation_id: organisation.id }
-
-        expect(response).to redirect_to(organisation_users_path(organisation_id: organisation.id))
-        expect(flash[:error]).to include("Aucun usager trouvé avec cet identifiant")
-      end
-    end
 
     context "when organization type doesn't have parcours access" do
       let!(:non_parcours_organisation) { create(:organisation, department: department, organisation_type: "autre") }
