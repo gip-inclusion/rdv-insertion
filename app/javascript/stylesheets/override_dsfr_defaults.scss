@@ -5,7 +5,7 @@
 * the buttons are styled as expected.
 *
 */
-.reset-dsfr-overrides {
+.override-dsfr-defaults {
   p {
     line-height: normal;
   }
@@ -23,6 +23,9 @@
     outline: none !important;
     box-shadow: none !important;
     border: none !important;
+  }
+  [target="_blank"]:not(.fr-link):after {
+    display: none !important;
   }
   .btn-blue-out {
     &:hover {

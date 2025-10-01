@@ -2,7 +2,7 @@
 <html>
   <%= render 'layouts/head' %>
 
-  <body data-matomo-mask class="<%= "reset-dsfr-overrides" if local_assigns[:reset_dsfr_overrides] %> <%= " bg-white" if local_assigns[:white_background] %>">
+  <body data-matomo-mask class="<%= "override-dsfr-defaults" unless local_assigns[:keep_dsfr_defaults] %> <%= " bg-white" if local_assigns[:white_background] %>">
     <%= render 'common/matomo_script_tag' if @enable_matomo_tracking %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= content_for :header %>

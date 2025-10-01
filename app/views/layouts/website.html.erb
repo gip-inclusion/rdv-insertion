@@ -6,6 +6,6 @@
   <%= render 'common/footer_website' %>
 <% end %>
 
-<%= render "layouts/application_base" do %>
+<%= render "layouts/application_base", keep_dsfr_defaults: true do %>
   <%= yield %>
 <% end %>
