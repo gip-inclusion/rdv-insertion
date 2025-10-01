@@ -1,5 +1,5 @@
 class ErrorsController < ApplicationController
-  before_action :set_not_found_error_message, only: [:not_found]
+  before_action :handle_turbo_frame_request, :set_not_found_error_message, only: [:not_found]
   before_action :set_unprocessable_entity_error_message, only: [:unprocessable_entity]
   before_action :set_internal_server_error_message, only: [:internal_server_error]
 
@@ -52,5 +52,12 @@ class ErrorsController < ApplicationController
     @internal_server_error_message =
       "Erreur 500 - Une erreur s'est produite," \
       " nous nous efforçons de résoudre le problème le plus vite possible"
+  end
+
+  def handle_turbo_frame_request
+    # Turbo frame requests expect a frame with the same id as the one that triggered the request to be returned here.
+    # Instead of fetching the frame_id and replacing the frame with a turbo_stream, we redirect to this current action
+    # via turbo_stream which will render the html response.
+    turbo_stream_redirect(request.path) if turbo_frame_request?
   end
 end
