@@ -13,21 +13,20 @@ class UsersController < ApplicationController
   include Users::Sortable
   include Users::Taggable
   include Users::ArchivedList
-  include Users::EnsurePresenceInStructure
 
   before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_users_scope, :set_current_category_configuration, :set_current_motif_category,
                 :set_users, :set_follow_ups, :set_orientation_types, :set_filterable_tags,
                 :set_referents_list, :filter_users, :order_users,
                 for: :index
-  before_action :set_user, :ensure_user_presence_in_structure, :set_organisation, :set_department,
+  before_action :set_user, :set_organisation, :set_department,
                 :set_all_configurations, :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department,
                 for: :new
   before_action :set_organisation, :set_department,
                 for: :create
-  before_action :set_user, :ensure_user_presence_in_structure, :set_organisation, :set_department,
+  before_action :set_user, :set_organisation, :set_department,
                 for: [:edit, :update]
   before_action :reset_tag_users, only: :update
   after_action :store_back_to_users_list_url, only: [:index]
@@ -160,7 +159,7 @@ class UsersController < ApplicationController
       .preload(:tag_users)
       .where(current_organisations_filter)
       .preload(:archives)
-      .find_by(id: params[:id])
+      .find(params[:id])
   end
 
   def set_organisation
