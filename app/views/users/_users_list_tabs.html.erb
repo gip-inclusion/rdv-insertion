@@ -34,7 +34,7 @@
         <%= render "csv_export_button" %>
       <% end %>
       <% if @current_category_configuration.present? %>
-        <%= link_to(new_structure_batch_action_path(motif_category_id: @current_category_configuration.motif_category_id), class: "btn btn-blue-out", id: "rdvi_index-nav_send-invitations-uninvited") do %>
+        <%= link_to(new_structure_batch_action_path(motif_category_id: @current_category_configuration.motif_category_id), class: "btn btn-blue-out", id: "rdvi_index-nav_send-invitations-uninvited", data: { turbo_prefetch: "false" }) do %>
           <i class="ri-send-plane-fill"></i>
           Inviter les non-invités
         <% end %>
