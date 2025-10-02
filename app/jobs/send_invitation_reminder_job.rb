@@ -21,16 +21,16 @@ class SendInvitationReminderJob < ApplicationJob
     @invitation ||= Invitation.new(
       trigger: "reminder",
       user: @user,
-      department: first_invitation.department,
-      organisations: first_invitation.organisations,
-      follow_up: first_invitation.follow_up,
+      department: reference_invitation.department,
+      organisations: reference_invitation.organisations,
+      follow_up: reference_invitation.follow_up,
       format: @invitation_format,
-      help_phone_number: first_invitation.help_phone_number,
-      rdv_solidarites_lieu_id: first_invitation.rdv_solidarites_lieu_id,
-      link: first_invitation.link,
-      rdv_solidarites_token: first_invitation.rdv_solidarites_token,
-      expires_at: first_invitation.expires_at,
-      rdv_with_referents: first_invitation.rdv_with_referents
+      help_phone_number: reference_invitation.help_phone_number,
+      rdv_solidarites_lieu_id: reference_invitation.rdv_solidarites_lieu_id,
+      link: reference_invitation.link,
+      rdv_solidarites_token: reference_invitation.rdv_solidarites_token,
+      expires_at: reference_invitation.expires_at,
+      rdv_with_referents: reference_invitation.rdv_with_referents
     )
   end
 
@@ -57,11 +57,11 @@ class SendInvitationReminderJob < ApplicationJob
 
   def eligible_for_reminder?
     @follow_up.status == "invitation_pending" &&
-      first_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
-      first_invitation.expireable? && first_invitation.expires_at >= 2.days.from_now
+      reference_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
+      reference_invitation.expireable? && reference_invitation.expires_at >= 2.days.from_now
   end
 
-  def first_invitation
-    @first_invitation ||= @follow_up.first_invitation_relative_to_last_participation
+  def reference_invitation
+    @reference_invitation ||= @follow_up.reference_invitation_for_current_period
   end
 end

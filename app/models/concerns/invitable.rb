@@ -36,20 +36,22 @@ module Invitable
     invitations.any? { |invitation| invitation.format == format }
   end
 
-  def first_invitation_relative_to_last_participation
-    participations.any? ? first_invitation_after_last_participation : first_invitation
+  def reference_invitation_for_current_period
+    if participations.any?
+      first_invitation_after_last_participation
+    else
+      # last_manual_invitation may return nil only if the first invitation sent was a periodic one
+      last_manual_invitation || first_invitation
+    end
   end
 
-  def first_invitation_relative_to_last_participation_by(format)
-    participations.any? ? first_invitation_after_last_participation_by(format) : first_invitation_by(format)
-  end
-
-  def first_invitation_relative_to_last_participation_created_at
-    first_invitation_relative_to_last_participation&.created_at
-  end
-
-  def first_invitation_relative_to_last_participation_created_at_by(format)
-    first_invitation_relative_to_last_participation_by(format)&.created_at
+  def reference_invitation_for_current_period_by(format)
+    if participations.any?
+      first_invitation_after_last_participation_by(format)
+    else
+      # last_manual_invitation may return nil only if the first invitation sent was a periodic one
+      last_manual_invitation_by(format) || first_invitation_by(format)
+    end
   end
 
   def all_invitations_expired?
@@ -60,5 +62,13 @@ module Invitable
     invitations.each do |invitation|
       ExpireInvitationJob.perform_later(invitation.id)
     end
+  end
+
+  def last_manual_invitation
+    invitations.manual.max_by(&:created_at)
+  end
+
+  def last_manual_invitation_by(format)
+    invitations.manual.select { |invitation| invitation.format == format }.max_by(&:created_at)
   end
 end
