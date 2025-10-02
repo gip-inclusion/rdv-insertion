@@ -10,8 +10,8 @@ describe Website::StatsController do
   end
 
   describe "#show" do
-    let!(:show_params_for_department) { { department_id: department.id } }
-    let!(:show_params_for_organisation) { { organisation_id: organisation.id } }
+    let!(:show_params_for_department) { { department_id_for_stats: department.id } }
+    let!(:show_params_for_organisation) { { organisation_id_for_stats: organisation.id } }
 
     context "when for a department" do
       it "returns a success response" do
