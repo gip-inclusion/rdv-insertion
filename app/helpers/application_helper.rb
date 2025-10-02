@@ -45,7 +45,7 @@ module ApplicationHelper
 
   def custom_pluralize(count, word, with_count: true)
     word = ActiveSupport::Inflector.pluralize(word) unless count == 1
-    with_count ? "#{count} #{word}" : word
+    with_count ? "#{number_with_delimiter(count, locale: :fr)} #{word}" : word
   end
 
   def current_url
