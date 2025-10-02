@@ -37,21 +37,11 @@ module Invitable
   end
 
   def reference_invitation_for_current_period
-    if participations.any?
-      first_invitation_after_last_participation
-    else
-      # last_manual_invitation may return nil only if the first invitation sent was a periodic one
-      last_manual_invitation || first_invitation
-    end
+    participations.any? ? first_invitation_after_last_participation : last_manual_invitation
   end
 
   def reference_invitation_for_current_period_by(format)
-    if participations.any?
-      first_invitation_after_last_participation_by(format)
-    else
-      # last_manual_invitation may return nil only if the first invitation sent was a periodic one
-      last_manual_invitation_by(format) || first_invitation_by(format)
-    end
+    participations.any? ? first_invitation_after_last_participation_by(format) : last_manual_invitation_by(format)
   end
 
   def all_invitations_expired?
