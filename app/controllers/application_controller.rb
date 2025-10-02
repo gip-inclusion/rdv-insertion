@@ -6,7 +6,8 @@ class ApplicationController < ActionController::Base
   include PolicyHelper
   include BeforeActionOverride
   include TurboStreamConcern
-  include ModalAgreementsConcern
+  include CguConcern
+  include DpaConcern
   include CrispConcern
   include NotificationCenterConcern
   include PaperTrailConcern
