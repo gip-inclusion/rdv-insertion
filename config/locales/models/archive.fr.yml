@@ -6,3 +6,5 @@ fr:
       archive:
         archiving_reason: Motif d'archivage
         created_at: Archivé le
+        user_id: Usager
+        organisation_id: Organisation

@@ -30,6 +30,6 @@ class Archive < ApplicationRecord
   def user_must_belong_to_organisation
     return if user.reload.organisation_ids.include?(organisation_id)
 
-    errors.add(:user, "doit appartenir à l'organisation")
+    errors.add(:user_id, "doit appartenir à l'organisation")
   end
 end

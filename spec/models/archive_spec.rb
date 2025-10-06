@@ -10,7 +10,7 @@ describe Archive do
 
     it "is not valid" do
       expect(subject).not_to be_valid
-      expect(subject.errors.full_messages).to include("User doit appartenir à l'organisation")
+      expect(subject.errors.full_messages).to include("Usager doit appartenir à l'organisation")
     end
   end
 
