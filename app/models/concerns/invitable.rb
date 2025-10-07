@@ -36,8 +36,12 @@ module Invitable
     invitations.any? { |invitation| invitation.format == format }
   end
 
-  def reference_invitation_for_current_period_by(format)
-    participations.any? ? first_invitation_after_last_participation_by(format) : last_manual_invitation_by(format)
+  def currently_invited_by?(format)
+    if participations.any?
+      first_invitation_after_last_participation_by(format).present?
+    else
+      last_manual_invitation_by(format).present?
+    end
   end
 
   def all_invitations_expired?
