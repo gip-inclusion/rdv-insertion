@@ -21,16 +21,16 @@ class SendInvitationReminderJob < ApplicationJob
     @invitation ||= Invitation.new(
       trigger: "reminder",
       user: @user,
-      department: reference_invitation.department,
-      organisations: reference_invitation.organisations,
-      follow_up: reference_invitation.follow_up,
+      department: last_manual_invitation.department,
+      organisations: last_manual_invitation.organisations,
+      follow_up: last_manual_invitation.follow_up,
       format: @invitation_format,
-      help_phone_number: reference_invitation.help_phone_number,
-      rdv_solidarites_lieu_id: reference_invitation.rdv_solidarites_lieu_id,
-      link: reference_invitation.link,
-      rdv_solidarites_token: reference_invitation.rdv_solidarites_token,
-      expires_at: reference_invitation.expires_at,
-      rdv_with_referents: reference_invitation.rdv_with_referents
+      help_phone_number: last_manual_invitation.help_phone_number,
+      rdv_solidarites_lieu_id: last_manual_invitation.rdv_solidarites_lieu_id,
+      link: last_manual_invitation.link,
+      rdv_solidarites_token: last_manual_invitation.rdv_solidarites_token,
+      expires_at: last_manual_invitation.expires_at,
+      rdv_with_referents: last_manual_invitation.rdv_with_referents
     )
   end
 
@@ -57,11 +57,11 @@ class SendInvitationReminderJob < ApplicationJob
 
   def eligible_for_reminder?
     @follow_up.status == "invitation_pending" &&
-      reference_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
-      reference_invitation.expireable? && reference_invitation.expires_at >= 2.days.from_now
+      last_manual_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
+      last_manual_invitation.expireable? && last_manual_invitation.expires_at >= 2.days.from_now
   end
 
-  def reference_invitation
-    @reference_invitation ||= @follow_up.last_manual_invitation
+  def last_manual_invitation
+    @last_manual_invitation ||= @follow_up.last_manual_invitation
   end
 end

@@ -4,7 +4,7 @@ class SendInvitationRemindersJob < ApplicationJob
 
     follow_ups_with_reminder_needed.includes(:invitations, :participations, :user).find_each do |follow_up|
       invitation = follow_up.last_manual_invitation
-      # we check here that the reference invitation has been sent Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+      # we check here that the last manual invitation has been sent Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
       # number of days ago with that value being set to 3
       next unless invitation_sent_3_days_ago?(invitation)
 
