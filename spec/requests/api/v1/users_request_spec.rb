@@ -128,9 +128,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
             items: {
               "$ref" => "#/components/schemas/user_params"
             }
-          },
-          required: %w[users]
-        }
+          }
+        },
+        required: %w[users]
       }
 
       let!(:users_params) do
@@ -245,8 +245,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
         type: "object",
         properties: {
           user: { "$ref" => "#/components/schemas/user_params" },
-          required: %w[user]
-        }
+        },
+        required: %w[user]
       }
 
       let!(:user_attributes) do
@@ -457,8 +457,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
         type: "object",
         properties: {
           user: { "$ref" => "#/components/schemas/user_params" },
-          required: %w[user]
-        }
+        },
+        required: %w[user]
       }
 
       let!(:user_attributes) do
@@ -628,11 +628,13 @@ describe "Users API", swagger_doc: "v1/api.json" do
                 properties: {
                   name: { type: "string" },
                   short_name: { type: "string" }
-                }
+                },
               }
-            }
-          }
-        }
+            },
+            required: %w[motif_category]
+          },
+        },
+        required: %w[invitation]
       }
 
       let!(:user) { create(:user, organisations: [organisation], phone_number: "0782605941", email: "user@test.com") }

@@ -352,10 +352,10 @@ RSpec.configure do |config|
                   }
                 }
               },
-              required: %w[
-                first_name last_name title
-              ]
-            }
+            },
+            required: %w[
+              first_name last_name title
+            ]
           },
           organisation_with_root: {
             type: "object",

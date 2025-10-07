@@ -208,9 +208,9 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
 
 - `first_name`: STRING (requis): Prénom de l'usager
 - `last_name`: STRING (requis): Nom de l'usager
-- `title`: STRING (requis): Civilité de l'usager. Valeurs possibles: monsieur, madame.
-- `affiliation_number`: STRING (requis) : Numéro CAF de l'usager.
-- `role`: STRING (requis) : Le rôle de la personne au sein du dossier de demande RSA. Valeurs possibles: demandeur, conjoint.
+- `title`: STRING (optionnel): Civilité de l'usager. Valeurs possibles: monsieur, madame. **Cette valeur est requise pour l'envoi d'invitations**.
+- `affiliation_number`: STRING (optionnel) : Numéro CAF de l'usager.
+- `role`: STRING (optionnel) : Le rôle de la personne au sein du dossier de demande RSA. Valeurs possibles: demandeur, conjoint.
 - `email`: STRING (optionnel) : L'email e l'usager. S'il n'est pas présent l'invitation par email ne sera pas envoyée.
 - `phone_number`: STRING (optionnel) : Le numéro de téléphone de l'usager. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.
 - `birth_date`: STRING (optionnel) : Date de naissance de l'usager au format DD/MM/YYYY
@@ -231,6 +231,8 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
 - `tags_to_add`: ARRAY(optionnel):
   - OBJECT:
     - `value` : STRING: nom du tag à ajouter à l'usager. Le tag doit exister au préalable dans l'organisation sinon la requête échoue.
+
+**Au moins un attribut identifiant est requis pour pouvoir créer un usager**. Ces attributs sont: le NIR, l'email, le numéro de téléphone, le numéro d'allocataire avec le rôle.
 
 ## Idempotence
 
