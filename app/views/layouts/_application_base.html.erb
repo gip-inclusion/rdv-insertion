@@ -14,6 +14,7 @@
       <%= render 'common/accept_dpa_modal' if @should_display_accept_dpa %>
       <%= render 'common/crisp' %>
       <%= render 'common/cookies_consent' if @should_display_cookies_consent %>
+      <%= render 'common/cookies_consent_customization_modal' if logged_in? %>
     </div>
     <%= content_for :footer %>
   </body>
