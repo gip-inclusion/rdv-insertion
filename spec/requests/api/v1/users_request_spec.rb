@@ -244,7 +244,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       parameter name: :user_params, in: :body, required: true, schema: {
         type: "object",
         properties: {
-          user: { "$ref" => "#/components/schemas/user_params" },
+          user: { "$ref" => "#/components/schemas/user_params" }
         },
         required: %w[user]
       }
@@ -456,7 +456,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       parameter name: :user_params, in: :body, required: true, schema: {
         type: "object",
         properties: {
-          user: { "$ref" => "#/components/schemas/user_params" },
+          user: { "$ref" => "#/components/schemas/user_params" }
         },
         required: %w[user]
       }
@@ -628,11 +628,11 @@ describe "Users API", swagger_doc: "v1/api.json" do
                 properties: {
                   name: { type: "string" },
                   short_name: { type: "string" }
-                },
+                }
               }
             },
             required: %w[motif_category]
-          },
+          }
         },
         required: %w[invitation]
       }

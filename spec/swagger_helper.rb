@@ -351,7 +351,7 @@ RSpec.configure do |config|
                     value: { type: "string" }
                   }
                 }
-              },
+              }
             },
             required: %w[
               first_name last_name title
