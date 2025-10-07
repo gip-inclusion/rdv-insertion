@@ -25,8 +25,8 @@ describe RemoveUsersFromOrgsWithOldArchivesJob do
     end
 
     context "with expired archives but users with recent RDVs" do
-      let!(:user_with_recent_rdv) { create(:user) }
-      let!(:user_without_recent_rdv) { create(:user) }
+      let!(:user_with_recent_rdv) { create(:user, organisations: [org1]) }
+      let!(:user_without_recent_rdv) { create(:user, organisations: [org1]) }
       let!(:expired_archive_with_recent_rdv) do
         create(:archive, organisation: org1, user: user_with_recent_rdv, created_at: 25.months.ago)
       end

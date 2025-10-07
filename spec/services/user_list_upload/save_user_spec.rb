@@ -89,12 +89,8 @@ describe UserListUpload::SaveUser, type: :service do
     end
 
     context "when user is archived" do
+      let!(:organisation) { create(:organisation, users: [user]) }
       let!(:archive) { create(:archive, user: user, organisation: organisation) }
-
-      before do
-        allow(UserListUpload::RetrieveOrganisationToAssign).to receive(:call)
-          .and_return(OpenStruct.new(success?: true, organisation: organisation))
-      end
 
       it "unarchives the user" do
         expect { subject }.to change { user.archives.count }.from(1).to(0)
