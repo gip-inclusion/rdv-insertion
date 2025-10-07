@@ -3,7 +3,7 @@ module CookiesConsentConcern
 
   included do
     before_action :set_should_display_cookies_consent, if: -> { request.get? }
-    before_action :set_cookies_consent_for_form, if: -> { request.get? && logged_in? }
+    before_action :set_cookies_consent_for_form, if: -> { logged_in? }
   end
 
   private

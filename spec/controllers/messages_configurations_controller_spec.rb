@@ -335,7 +335,7 @@ describe MessagesConfigurationsController do
       it "is a success" do
         patch :update, params: update_params
         expect(response).to be_successful
-        expect(response.body).not_to match(/input/)
+        expect(response.body).not_to match(/messages_configuration\[/)
         expect(unescaped_response_body).to match(/flashes/)
         expect(unescaped_response_body).to match(/Les réglages ont été modifiés avec succès/)
       end
