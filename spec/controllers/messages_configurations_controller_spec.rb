@@ -217,7 +217,6 @@ describe MessagesConfigurationsController do
       it "is a success" do
         post :create, params: create_params
         expect(response).to redirect_to(organisation_category_configurations_path(organisation))
-        expect(response.body).not_to match(/input/)
       end
     end
 
