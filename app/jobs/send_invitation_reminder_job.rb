@@ -62,6 +62,6 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def reference_invitation
-    @reference_invitation ||= @follow_up.reference_invitation_for_current_period
+    @reference_invitation ||= @follow_up.last_manual_invitation
   end
 end

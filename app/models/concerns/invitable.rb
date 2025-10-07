@@ -36,10 +36,6 @@ module Invitable
     invitations.any? { |invitation| invitation.format == format }
   end
 
-  def reference_invitation_for_current_period
-    participations.any? ? first_invitation_after_last_participation : last_manual_invitation
-  end
-
   def reference_invitation_for_current_period_by(format)
     participations.any? ? first_invitation_after_last_participation_by(format) : last_manual_invitation_by(format)
   end
@@ -55,10 +51,10 @@ module Invitable
   end
 
   def last_manual_invitation
-    invitations.manual.max_by(&:created_at)
+    invitations.select(&:manual?).max_by(&:created_at)
   end
 
   def last_manual_invitation_by(format)
-    invitations.manual.select { |invitation| invitation.format == format }.max_by(&:created_at)
+    invitations.select { |invitation| invitation.manual? && invitation.format == format }.max_by(&:created_at)
   end
 end
