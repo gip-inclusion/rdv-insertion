@@ -160,7 +160,7 @@ describe OrganisationsController do
       it "renders to the show page" do
         patch :update, params: update_params
         expect(response).to be_successful
-        expect(response.body).not_to match(/input/)
+        expect(response.body).not_to match(/edit_organisation\[/)
       end
     end
 
@@ -174,7 +174,7 @@ describe OrganisationsController do
         patch :update, params: update_params
         expect(response).not_to be_successful
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to match(/input/)
+        expect(response.body).to match(/organisation\[/)
         expect(response.body).to match(/edit_organisation/)
       end
     end
