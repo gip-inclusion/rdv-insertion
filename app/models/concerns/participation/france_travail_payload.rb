@@ -40,9 +40,10 @@ module Participation::FranceTravailPayload
     by_phone? ? "TELEPHONE" : "PHYSIQUE"
   end
 
-  # Liste des initiateurs FT : USAGER, PARTENAIRE
+  # Liste des initiateurs FT : USAGER, PARTENAIRE, PRESCRIPTEUR
   def france_travail_initiateur
     created_by_user? ? "USAGER" : "PARTENAIRE"
+    created_by_prescripteur? ? "PRESCRIPTEUR" : "PARTENAIRE"
   end
 
   # Liste des motifs FT : AUT, ACC, ORI
