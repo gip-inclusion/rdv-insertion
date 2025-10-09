@@ -40,7 +40,7 @@
             <% if follow_up.rdv_pending? || follow_up.closed? %>
               <!-- show nothing -->
             <% elsif user.can_be_invited_through?(invitation_format) %>
-              <%= render "invitations/checkbox_form", user: user, invitation_format: invitation_format, motif_category: @current_motif_category, follow_up: follow_up, checked: checked = follow_up.first_invitation_relative_to_last_participation_by(invitation_format).present?, disabled: checked || user.deleted? %>
+              <%= render "invitations/checkbox_form", user: user, invitation_format: invitation_format, motif_category: @current_motif_category, follow_up: follow_up, checked: checked = follow_up.currently_invited_by?(invitation_format), disabled: checked || user.deleted? %>
             <% else %>
               -
             <% end %>
