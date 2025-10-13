@@ -7,6 +7,8 @@ class UserListUpload < ApplicationRecord
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", through: :user_rows
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", through: :user_rows
 
+  enum :origin, { file_upload: "file_upload", invite_all_uninvited_button: "invite_all_uninvited_button" }
+
   accepts_nested_attributes_for :user_rows
 
   delegate :user_rows_enriched_with_cnaf_data, :update_rows, :user_rows_selected_for_invitation,
