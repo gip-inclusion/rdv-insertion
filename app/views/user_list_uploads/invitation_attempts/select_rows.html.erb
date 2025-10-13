@@ -15,7 +15,7 @@
 
   <%= turbo_frame_tag "user_collection", data: { turbo_action: "advance" } do %>
     <div class="row justify-content-center"
-        data-controller="select-user-rows"
+        data-controller="user-list-upload--select-user-rows"
         data-user-list-upload-id="<%= @user_list_upload.id %>"
         data-attribute-to-toggle="selected_for_invitation"
     >
@@ -48,11 +48,11 @@
               <div class="d-flex justify-content-around align-items-center">
                 <div class="align-middle">Inviter la sélection par:</div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "format_email", "Email", checked: invitation_format_checked?("email", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "email" } %>
+                  <%= check_box_tag "format_email", "Email", checked: invitation_format_checked?("email", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { user_list_upload__select_user_rows_target: "invitationFormatOption", action: "change->user-list-upload--select-user-rows#handleFormatOptionChange", format: "email" } %>
                   <%= label_tag "format_email", "Email", class: "form-check-label" %>
                 </div>
                 <div class="form-check mx-3">
-                  <%= check_box_tag "format_sms", "SMS", checked: invitation_format_checked?("sms", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { select_user_rows_target: "invitationFormatOption", action: "change->select-user-rows#handleFormatOptionChange", format: "sms" } %>
+                  <%= check_box_tag "format_sms", "SMS", checked: invitation_format_checked?("sms", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { user_list_upload__select_user_rows_target: "invitationFormatOption", action: "change->user-list-upload--select-user-rows#handleFormatOptionChange", format: "sms" } %>
                   <%= label_tag "format_sms", "SMS", class: "form-check-label" %>
                 </div>
                 <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", id: "rdvi_upload_users-invit_send-invit", disabled: @number_of_user_rows_selected.zero? %>

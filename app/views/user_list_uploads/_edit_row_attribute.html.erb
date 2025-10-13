@@ -4,8 +4,8 @@
     id: user_row.id
   ),
   data: {
-    controller: "user-row-cell",
-    action: "turbo:submit-start->user-row-cell#setLoading submit->user-row-cell#submit"
+    controller: "user-list-upload--user-row-cell",
+    action: "turbo:submit-start->user-list-upload--user-row-cell#setLoading submit->user-list-upload--user-row-cell#submit"
   },
   class: "edit-row-attribute",
   method: :patch
@@ -17,7 +17,7 @@
       <%= form.text_field "user_row[#{attribute}]",
                           value: user_row.user.send(attribute),
                           class: "form-control",
-                          data: { user_row_cell_target: "textInput" } %>
+                          data: { user_list_upload__user_row_cell_target: "textInput" } %>
     <% end %>
     <div class="edit-buttons">
       <button type="submit">

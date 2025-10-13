@@ -1,6 +1,6 @@
 <div
   class="user-list-upload-table-container"
-  data-controller="select-user-rows"
+  data-controller="user-list-upload--select-user-rows"
   data-user-list-upload-id="<%= @user_list_upload.id %>"
   data-attribute-to-toggle="selected_for_user_save"
 >
@@ -12,7 +12,7 @@
             type="checkbox"
             class="form-check-input"
             id="rdvi_upload_users-data_all-select"
-            data-action="click->select-user-rows#toggleAll"
+            data-action="click->user-list-upload--select-user-rows#toggleAll"
             <%= "checked" if checkbox_to_select_all_checked?("selected_for_user_save", @user_list_upload.id) %>
           >
         </th>
