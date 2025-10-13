@@ -115,7 +115,7 @@ describe TransferEmailReplyJob do
 
   it "sends a notif on mattermost" do
     expect(MattermostClient).to receive(:send_to_notif_channel)
-      .with("📩 Un email d'un usager vient d'être transféré")
+      .with("📩 Un email d'un usager vient d'être transféré (RDV #{rdv.id})")
     subject
   end
 end
