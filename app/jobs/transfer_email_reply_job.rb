@@ -87,6 +87,16 @@ class TransferEmailReplyJob < ApplicationJob
   end
 
   def notify_on_mattermost
-    MattermostClient.send_to_notif_channel("📩 Un email d'un usager vient d'être transféré")
+    MattermostClient.send_to_notif_channel("📩 Un email d'un usager vient d'être transféré #{record_id_mattermost_mention}")
+  end
+
+  def record_id_mattermost_mention
+    if invitation
+      "(Invitation #{invitation.id})"
+    elsif rdv
+      "(RDV #{rdv.id})"
+    else
+      ""
+    end
   end
 end
