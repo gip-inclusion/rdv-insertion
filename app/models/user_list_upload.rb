@@ -1,4 +1,11 @@
 class UserListUpload < ApplicationRecord
+  include UserListUpload::Navigation
+
+  STEPS_BY_ORIGIN = {
+    file_upload: %i[user_save invitation],
+    invite_all_uninvited_button: %i[invitation]
+  }.freeze
+
   belongs_to :category_configuration, optional: true
   belongs_to :structure, polymorphic: true
   belongs_to :agent
@@ -16,6 +23,15 @@ class UserListUpload < ApplicationRecord
            :user_rows_with_closed_follow_up, to: :user_collection
   delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
   delegate :number, to: :department, prefix: true
+
+  def save_with_existing_users!(users)
+    transaction do
+      save!
+      UserListUpload::UserRow.import!(
+        users.map { |user| UserListUpload::UserRow.build_from_user(user, user_list_upload: self) }
+      )
+    end
+  end
 
   def department
     department_level? ? structure : structure.department
@@ -57,32 +73,6 @@ class UserListUpload < ApplicationRecord
 
   def invitations_enabled? = category_configuration.present?
 
-  def structure_user_path(user_id)
-    if department_level?
-      Rails.application.routes.url_helpers.department_user_path(id: user_id, department_id: structure_id)
-    else
-      Rails.application.routes.url_helpers.organisation_user_path(id: user_id, organisation_id: structure_id)
-    end
-  end
-
-  def structure_users_path
-    if department_level?
-      Rails.application.routes.url_helpers.department_users_path(department_id: structure_id)
-    else
-      Rails.application.routes.url_helpers.organisation_users_path(organisation_id: structure_id)
-    end
-  end
-
-  def user_invitations_path(user_id, **)
-    if department_level?
-      Rails.application.routes.url_helpers.department_user_invitations_path(department_id: structure_id, user_id:, **)
-    else
-      Rails.application.routes.url_helpers.organisation_user_invitations_path(
-        organisation_id: structure_id, user_id:, **
-      )
-    end
-  end
-
   def restricted_user_attributes
     UserPolicy.restricted_user_attributes_for_organisations(organisations:).to_a
   end
@@ -113,6 +103,9 @@ class UserListUpload < ApplicationRecord
       )
     ).select(:id, :department_internal_id, :affiliation_number, :role)
   end
+
+  def handle_user_save? = STEPS_BY_ORIGIN[origin.to_sym].include?(:user_save)
+  def handle_invitation_only? = STEPS_BY_ORIGIN[origin.to_sym] == [:invitation]
 
   private
 

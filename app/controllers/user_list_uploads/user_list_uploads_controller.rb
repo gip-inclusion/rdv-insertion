@@ -2,6 +2,7 @@ module UserListUploads
   class UserListUploadsController < BaseController
     before_action :set_all_configurations, :set_category_configuration, :set_file_configuration, only: :new
     before_action :set_user_list_upload, only: [:show]
+    before_action :set_users, only: :create_from_existing_users
 
     def show
       @user_collection = @user_list_upload.user_collection
@@ -38,10 +39,24 @@ module UserListUploads
       authorize @user_list_upload
 
       if @user_list_upload.save
-        render json: { location: user_list_upload_path(@user_list_upload) }
+        render json: { redirect_path: @user_list_upload.redirect_path_after_creation }
       else
+        # using turbo_stream allows better display of message errors instead of uncostomizable sweetalert
         turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
       end
+    end
+
+    def create_from_existing_users
+      @user_list_upload = UserListUpload.new(
+        agent: current_agent, structure: current_structure, origin: params[:origin]
+      )
+
+      authorize @user_list_upload
+
+      @user_list_upload.save_with_existing_users!(@users)
+      render json: { redirect_path: @user_list_upload.redirect_path_after_creation }
+    rescue ActiveRecord::RecordInvalid => e
+      turbo_stream_display_error_modal(e.record.errors.full_messages)
     end
 
     private
@@ -66,7 +81,7 @@ module UserListUploads
 
     def user_list_upload_params
       params.permit(
-        :category_configuration_id, :file_name,
+        :category_configuration_id, :file_name, :origin,
         user_rows_attributes: [
           :first_name, :last_name, :email, :phone_number, :role, :title, :nir, :department_internal_id,
           :france_travail_id, :rights_opening_date, :affiliation_number, :birth_date, :birth_name, :address,
@@ -96,6 +111,10 @@ module UserListUploads
     def no_changes_message
       "Fichier CNAF chargé avec succès. Les données correspondent aux usagers mais aucune modification
         n'a été apportée (les informations étaient déjà à jour)."
+    end
+
+    def set_users
+      @users = User.where(id: params[:user_ids])
     end
   end
 end

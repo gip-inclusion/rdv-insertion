@@ -13,7 +13,7 @@ class UserListUpload::UserRow < ApplicationRecord
   encrypts :nir
 
   before_save :format_attributes, :set_matching_user
-  before_create :select_for_user_save!, if: :selected_by_default_for_user_save?
+  before_create :select_for_user_save!, if: :selectable_by_default_for_user_save?
   after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
@@ -22,7 +22,7 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
-  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
+  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?, :origin,
            to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
   # without prefix
@@ -37,6 +37,12 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def self.updatable_attributes
     column_names.map(&:to_sym) - %i[id created_at updated_at user_list_upload_id]
+  end
+
+  def self.build_from_user(user, **)
+    new(**user.symbolized_attributes.slice(*USER_ATTRIBUTES), matching_user_id: user.id, **).tap do |user_row|
+      user_row.assign_default_selection
+    end
   end
 
   def user
@@ -189,6 +195,10 @@ class UserListUpload::UserRow < ApplicationRecord
     self.selected_for_user_save = true
   end
 
+  def select_for_invitation!
+    self.selected_for_invitation = true
+  end
+
   def save_user
     UserListUpload::UserSaveAttempt.create_from_row(user_row: self)
   end
@@ -206,7 +216,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def invitable?
-    saved_user && user.can_be_invited_through_phone_or_email? && !invited_less_than_24_hours_ago?
+    user.persisted? && user.can_be_invited_through_phone_or_email? && !invited_less_than_24_hours_ago?
   end
 
   def invited_less_than_24_hours_ago?
@@ -269,6 +279,11 @@ class UserListUpload::UserRow < ApplicationRecord
     restricted_user_attributes.each { |attribute| send("#{attribute}=", nil) }
   end
   # rubocop:enable Metrics/AbcSize
+
+  def assign_default_selection
+    select_for_user_save! if selectable_by_default_for_user_save?
+    select_for_invitation! if selectable_by_default_for_invitation?
+  end
 
   private
 
@@ -333,8 +348,12 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def selected_by_default_for_user_save?
-    user_valid? && !archived? && !matching_user_follow_up_closed?
+  def selectable_by_default_for_user_save?
+    user_list_upload.handle_user_save? && user_valid? && !archived? && !matching_user_follow_up_closed?
+  end
+
+  def selectable_by_default_for_invitation?
+    user_list_upload.handle_invitation_only? && invitable?
   end
 end
 # rubocop:enable Metrics/ClassLength

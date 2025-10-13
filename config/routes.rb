@@ -67,7 +67,9 @@ Rails.application.routes.draw do
     patch :update_data_retention, on: :member
     resources :convocations, only: [:new]
     scope module: :user_list_uploads do
-      resources :user_list_uploads, only: [:new, :create]
+      resources :user_list_uploads, only: [:new, :create] do
+        post :create_from_existing_users, on: :collection
+      end
     end
     namespace :user_list_uploads do
       resources :category_selections, only: [:new]
@@ -191,7 +193,9 @@ Rails.application.routes.draw do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :convocations, only: [:new]
     scope module: :user_list_uploads do
-      resources :user_list_uploads, only: [:new, :create]
+      resources :user_list_uploads, only: [:new, :create] do
+        post :create_from_existing_users, on: :collection
+      end
     end
     namespace :user_list_uploads do
       resources :category_selections, only: [:new]

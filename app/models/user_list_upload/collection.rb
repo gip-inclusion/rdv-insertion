@@ -44,6 +44,10 @@ class UserListUpload::Collection
     user_rows.select(&:changed_by_cnaf_data?)
   end
 
+  def user_rows_eligible_for_invitation
+    user_list_upload.handle_user_save? ? user_rows_with_user_save_success : user_rows
+  end
+
   def user_rows_archived
     user_rows.select(&:archived?)
   end
