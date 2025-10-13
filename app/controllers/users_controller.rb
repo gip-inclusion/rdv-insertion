@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_users_scope, :set_current_category_configuration, :set_current_motif_category,
                 :set_users, :set_follow_ups, :set_orientation_types, :set_filterable_tags,
-                :set_referents_list, :filter_users, :order_users,
+                :set_referents_list, :set_skip_pagination, :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department,
                 :set_all_configurations, :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
@@ -45,6 +45,9 @@ class UsersController < ApplicationController
                           " Il sera envoyé à l'adresse email #{current_agent.email}." \
                           " Pensez à vérifier vos spams."
         redirect_to url_for(request.query_parameters.except(:format, :export_type))
+      end
+      format.json do
+        render json: { users: @users.as_json(params[:ids_only] == "true" ? { view: :ids_only } : {}) }
       end
     end
   end
@@ -279,6 +282,10 @@ class UsersController < ApplicationController
 
   def set_users_scope
     @users_scope = params[:users_scope]
+  end
+
+  def set_skip_pagination
+    @skip_pagination = params[:skip_pagination] == "true" || request.format == "csv"
   end
 
   def archived_scope?
