@@ -1,4 +1,4 @@
-<tr class="<%= user_row_background_color_before_invitation(user_row) %>">
+<tr class="<%= user_row_background_color_before_invitation(user_row) %>" id="user-row-<%= user_row.id %>">
   <td class="border-light">
     <input type="checkbox"
             class="form-check-input user-checkbox"
@@ -41,7 +41,12 @@
               id="rdvi_upload_users-invit_user-download-<%= user_row.id %>"
               data-action="click->invitation-button#generatePostalInvitation"
               <%= "disabled" unless user_row.can_be_invited_through?("postal") %>>
-        <i class="ri-download-line <%= "text-muted" unless user_row.can_be_invited_through?("postal") %>"></i>
+        <i class="ri-download-line text-start <%= "text-muted" unless user_row.can_be_invited_through?("postal") %>"></i>
       </button>
+  </td>
+  <td class="border-light bg-white d-flex justify-content-center align-items-center user-row-details-toggle" data-turbo-prefetch="false" id="user-row-<%= user_row.id %>-details-link">
+    <%= link_to user_list_upload_user_row_show_details_path(user_list_upload_id: @user_list_upload.id, user_row_id: user_row.id), data: { turbo_stream: true } do %>
+      <i class="ri-arrow-down-s-line text-dark-blue"></i>
+    <% end %>
   </td>
 </tr>

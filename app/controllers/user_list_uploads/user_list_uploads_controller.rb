@@ -41,14 +41,13 @@ module UserListUploads
       if @user_list_upload.save
         render json: { redirect_path: @user_list_upload.redirect_path_after_creation }
       else
-        # using turbo_stream allows better display of message errors instead of uncostomizable sweetalert
-        turbo_stream_display_error_modal(@user_list_upload.errors.full_messages)
+        render json: { errors: @user_list_upload.errors.full_messages }, status: :unprocessable_entity
       end
     end
 
     def create_from_existing_users
       @user_list_upload = UserListUpload.new(
-        agent: current_agent, structure: current_structure, origin: params[:origin]
+        agent: current_agent, structure: current_structure, **create_from_existing_users_params[:user_list_upload]
       )
 
       authorize @user_list_upload
@@ -56,7 +55,7 @@ module UserListUploads
       @user_list_upload.save_with_existing_users!(@users)
       render json: { redirect_path: @user_list_upload.redirect_path_after_creation }
     rescue ActiveRecord::RecordInvalid => e
-      turbo_stream_display_error_modal(e.record.errors.full_messages)
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
     end
 
     private
@@ -94,6 +93,10 @@ module UserListUploads
       params.expect(rows_cnaf_data: [[:id, { cnaf_data: [:email, :phone_number] }]])
     end
 
+    def create_from_existing_users_params
+      params.permit(user_ids: [], user_list_upload: [:origin, :category_configuration_id])
+    end
+
     def set_file_configuration
       @file_configuration =
         if @category_configuration.present?
@@ -114,7 +117,8 @@ module UserListUploads
     end
 
     def set_users
-      @users = User.where(id: params[:user_ids])
+      @users = policy_scope(User).preload(invitations: :follow_up)
+                                 .where(id: create_from_existing_users_params[:user_ids])
     end
   end
 end
