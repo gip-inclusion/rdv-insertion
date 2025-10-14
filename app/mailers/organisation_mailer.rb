@@ -22,7 +22,7 @@ class OrganisationMailer < ApplicationMailer
       to: @organisation.email,
       subject: "[Alerte créneaux] Vérifier qu'il y a suffisamment de créneaux" \
                " de libre relativement au stock d'invitations en cours",
-      reply_to: "rdv-insertion@beta.gouv.fr"
+      reply_to: "rdv-insertion@inclusion.gouv.fr"
     )
   end
 
@@ -35,7 +35,7 @@ class OrganisationMailer < ApplicationMailer
     mail(
       to:,
       subject: "[Notification de RDV] Un rendez-vous a été #{I18n.t("external_notifications.events.#{event}")}",
-      reply_to: "rdv-insertion@beta.gouv.fr"
+      reply_to: "rdv-insertion@inclusion.gouv.fr"
     )
   end
 
@@ -50,7 +50,7 @@ class OrganisationMailer < ApplicationMailer
       to: recipient,
       subject: "[Alerte créneaux] Vérifier qu'il y a suffisamment de créneaux" \
                " de libre relativement au stock d'invitations en cours",
-      reply_to: "rdv-insertion@beta.gouv.fr"
+      reply_to: "rdv-insertion@inclusion.gouv.fr"
     )
   end
 end

@@ -5,6 +5,7 @@ class Archive < ApplicationRecord
   belongs_to :organisation
 
   validates :user_id, uniqueness: { scope: :organisation_id }
+  validate :user_must_belong_to_organisation
 
   after_create_commit :invalidate_related_invitations
 
@@ -24,5 +25,11 @@ class Archive < ApplicationRecord
 
       ExpireInvitationJob.perform_later(invitation.id)
     end
+  end
+
+  def user_must_belong_to_organisation
+    return if user.reload.organisation_ids.include?(organisation_id)
+
+    errors.add(:user_id, "doit appartenir à l'organisation")
   end
 end

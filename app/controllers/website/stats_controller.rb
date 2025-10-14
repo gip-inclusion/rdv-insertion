@@ -22,11 +22,11 @@ module Website
     end
 
     def set_organisation
-      @organisation = Organisation.find(params[:organisation_id]) if params[:organisation_id]
+      @organisation = Organisation.find(params[:organisation_id_for_stats]) if params[:organisation_id_for_stats]
     end
 
     def set_department
-      @department = @organisation&.department || Department.find(params[:department_id])
+      @department = @organisation&.department || Department.find(params[:department_id_for_stats])
     end
 
     def structure = @organisation || @department

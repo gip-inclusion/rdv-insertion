@@ -317,8 +317,10 @@ class UserListUpload::UserRow < ApplicationRecord
     return if cnaf_phone_number.blank?
 
     parsed_cnaf_phone_number = PhoneNumberHelper.parsed_number(cnaf_phone_number)
+    return if parsed_cnaf_phone_number.blank?
+    return if parsed_cnaf_phone_number.type == :fixed_line && phone_number.present?
 
-    parsed_cnaf_phone_number.e164 unless parsed_cnaf_phone_number.type == :fixed_line && phone_number.present?
+    parsed_cnaf_phone_number.e164
   end
 
   def retrieve_organisation_by_id(organisation_id)

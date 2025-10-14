@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :archive do
     organisation
-    user
+    user { create(:user, organisations: [organisation]) }
   end
 end

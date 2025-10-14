@@ -111,11 +111,6 @@ Rails.application.routes.draw do
                 :creation_dates_filterings, only: [:new]
     end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
-    resource :stats, only: [:show], controller: 'website/stats'
-  end
-
-  resources :stats, only: [:index], controller: 'website/stats' do
-    get :deployment_map, on: :collection
   end
 
   resources :user_list_uploads, module: :user_list_uploads, only: [:show] do
@@ -218,7 +213,6 @@ Rails.application.routes.draw do
     resources :follow_ups, module: :follow_ups, only: [] do
       resource :closings, only: [:create, :destroy]
     end
-    resource :stats, only: [:show], controller: 'website/stats'
 
     resources :users_organisations, only: [:index, :create]
     resource :users_organisations, only: [:destroy]
@@ -233,6 +227,18 @@ Rails.application.routes.draw do
                 :convocation_dates_filterings,
                 :creation_dates_filterings, only: [:new]
     end
+  end
+
+  resources :departments, only: [], param: :id_for_stats do
+    resource :stats, only: [:show], controller: 'website/stats'
+  end
+
+  resources :organisations, only: [], param: :id_for_stats do
+    resource :stats, only: [:show], controller: 'website/stats'
+  end
+
+  resources :stats, only: [:index], controller: 'website/stats' do
+    get :deployment_map, on: :collection
   end
 
   namespace :api do

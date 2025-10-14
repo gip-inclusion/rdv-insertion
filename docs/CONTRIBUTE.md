@@ -2,11 +2,11 @@
 
 ## Signaler un problème
 
-Si vous rencontrez un problème, [contactez-nous par email](mailto:rdv-insertion@beta.gouv.fr).
+Si vous rencontrez un problème, [contactez-nous par email](mailto:rdv-insertion@inclusion.gouv.fr).
 
 ## Soumettre une modification
 
-Les pull requests sont bienvenues ! N’hésitez pas à [nous en parler à l’avance](mailto:rdv-insertion@beta.gouv.fr). La démarche est habituelle: faites un fork, créez une branche, faites un PR. Pour les petites corrections de fautes d’orthographe, n’hésitez pas à proposer une modification directement depuis github.com.
+Les pull requests sont bienvenues ! N’hésitez pas à [nous en parler à l’avance](mailto:rdv-insertion@inclusion.gouv.fr). La démarche est habituelle: faites un fork, créez une branche, faites un PR. Pour les petites corrections de fautes d’orthographe, n’hésitez pas à proposer une modification directement depuis github.com.
 
 ## Style de code
 

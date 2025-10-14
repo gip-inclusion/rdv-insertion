@@ -1,4 +1,4 @@
-Contact: mailto:charles.capelli@beta.gouv.fr
+Contact: mailto:charles.capelli@inclusion.gouv.fr
 Policy: https://inclusion.beta.gouv.fr/.well-known/security-policy
 Preferred-Languages: fr, en
 Expires: 2027-01-01T00:00:00.000Z

@@ -12,6 +12,7 @@ export default class extends Controller {
 
     const url = new URL(window.location.href)
     url.searchParams.delete(this.paramNameValue)
+    url.searchParams.delete(`${this.paramNameValue}[]`)
 
     if (selectedValues.length > 0) {
       const paramKey = this.isMultiple() ? `${this.paramNameValue}[]` : this.paramNameValue
@@ -20,8 +21,8 @@ export default class extends Controller {
 
     window.location.href = url.toString()
   }
-  
+
   isMultiple() {
     return this.inputTargets[0].type === "checkbox"
   }
-} 
+}

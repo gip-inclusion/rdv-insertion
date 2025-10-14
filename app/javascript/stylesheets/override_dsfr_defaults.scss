@@ -5,7 +5,7 @@
 * the buttons are styled as expected.
 *
 */
-.reset-dsfr-overrides {
+.override-dsfr-defaults {
   p {
     line-height: normal;
   }
@@ -23,6 +23,9 @@
     outline: none !important;
     box-shadow: none !important;
     border: none !important;
+  }
+  [target="_blank"]:not(.fr-link):after {
+    display: none !important;
   }
   .btn-blue-out {
     &:hover {
@@ -133,6 +136,12 @@
     --background-action-high-blue-france-hover: initial;
   }
 
+  // Reset hr styles - only .fr-hr should have DSFR styles
+  hr:not(.fr-hr) {
+    background-image: none !important;
+    padding: initial !important;
+  }
+  
   // Override DSFR hover styles for SweetAlert 2 buttons
   .swal2-actions button:hover {
     background-color: #1212FF !important;

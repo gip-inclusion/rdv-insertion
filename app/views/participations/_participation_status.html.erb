@@ -3,7 +3,7 @@
     <%= form_for(participation, method: :patch, data: { controller: "participation-status-dropdown", remote: true }) do |f| %>
       <%= f.hidden_field :status %>
       <div class="btn-group">
-        <button id="toggle-rdv-status" type="button" class="btn <%= background_class_for_participation_status(participation) %> dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button id="toggle-rdv-status" type="button" class="btn <%= button_classes_for_participation_status(participation) %> dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <%= participation.human_status %>
         </button>
         <div class="dropdown-menu">

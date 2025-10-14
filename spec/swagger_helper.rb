@@ -351,11 +351,11 @@ RSpec.configure do |config|
                     value: { type: "string" }
                   }
                 }
-              },
-              required: %w[
-                first_name last_name title
-              ]
-            }
+              }
+            },
+            required: %w[
+              first_name last_name title
+            ]
           },
           organisation_with_root: {
             type: "object",
