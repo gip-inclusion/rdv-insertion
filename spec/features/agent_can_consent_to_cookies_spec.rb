@@ -27,7 +27,7 @@ describe "Agent can consent to cookies", :js do
 
       expect(page).to have_button("Tout accepter")
       expect(page).to have_button("Tout refuser")
-      expect(page).to have_button("Personnaliser")
+      expect(page).to have_link("Personnaliser")
 
       # It does not have matomo script tag element
       expect(page).to have_no_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
@@ -85,7 +85,7 @@ describe "Agent can consent to cookies", :js do
       # https://github.com/gip-inclusion/rdv-insertion/actions/runs/16426240492/job/46417105965
       visit current_path
 
-      click_button "Personnaliser"
+      click_link "Personnaliser"
 
       expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
       expect(page).to have_content("Panneau de gestion des cookies")
@@ -122,7 +122,7 @@ describe "Agent can consent to cookies", :js do
       # https://github.com/gip-inclusion/rdv-insertion/actions/runs/16426240492/job/46417105965
       visit current_path
 
-      click_button "Personnaliser"
+      click_link "Personnaliser"
 
       expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
       expect(page).to have_content("Panneau de gestion des cookies")
@@ -172,7 +172,7 @@ describe "Agent can consent to cookies", :js do
 
         # Click on footer link to open modal
         within("footer") do
-          click_button "Gestion des cookies"
+          click_link "Gestion des cookies"
         end
 
         expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)

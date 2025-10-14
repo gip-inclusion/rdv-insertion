@@ -1,10 +1,11 @@
-<dialog id="cookies-consent-customization-modal" class="fr-modal" aria-labelledby="fr-cookies-consent-customization-modal-title">
+<%= turbo_frame_tag "remote_modal" do %>
+  <dialog id="cookies-consent-customization-modal" class="fr-modal" aria-labelledby="fr-cookies-consent-customization-modal-title" data-controller="dsfr-modal">
   <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
       <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
         <div class="fr-modal__body">
           <div class="fr-modal__header">
-            <button aria-controls="cookies-consent-customization-modal" data-fr-opened="false" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
+            <button aria-controls="cookies-consent-customization-modal" title="Fermer" type="button" class="fr-btn--close fr-btn" data-action="dsfr-modal#close">Fermer</button>
           </div>
           <div class="fr-modal__content">
             <h1 id="fr-cookies-consent-customization-modal-title" class="fr-modal__title">
@@ -17,14 +18,14 @@
                   <legend id="finality-legend" class="fr-consent-service__title">Préférences pour tous les services.<br><%= link_to "Données personnelles et cookies", politique_de_confidentialite_path, class: "fr-link" %>
                   </legend>
                   <div class="fr-consent-service__radios">
-                    <%= form_with model: @cookies_consent, url: cookies_consent_path, local: true do |f| %>
+                    <%= form_with model: cookies_consent, url: cookies_consent_path, local: true do |f| %>
                       <%= f.hidden_field :support_accepted, value: false %>
                       <%= f.hidden_field :tracking_accepted, value: false %>
                       <button type="submit" class="fr-btn me-2">
                         Tout refuser
                       </button>
                     <% end %>
-                    <%= form_with model: @cookies_consent, url: cookies_consent_path, local: true do |f| %>
+                    <%= form_with model: cookies_consent, url: cookies_consent_path, local: true do |f| %>
                       <%= f.hidden_field :support_accepted, value: true %>
                       <%= f.hidden_field :tracking_accepted, value: true %>
                       <button type="submit" class="fr-btn">
@@ -54,7 +55,7 @@
                   <p id="finality-0-desc" class="fr-consent-service__desc">Ce site utilise des cookies nécessaires à son bon fonctionnement qui ne peuvent pas être désactivés.</p>
                 </fieldset>
               </div>
-              <%= form_with model: @cookies_consent, url: cookies_consent_path, local: true do |f| %>
+              <%= form_with model: cookies_consent, url: cookies_consent_path, local: true do |f| %>
                 <div class="fr-consent-service">
                   <fieldset aria-labelledby="tracking-legend tracking-desc" role="group" class="fr-fieldset">
                   <legend id="tracking-legend" class="fr-consent-service__title">Mesure d'audience</legend>
@@ -98,4 +99,5 @@
       </div>
     </div>
   </div>
-</dialog>
+  </dialog>
+<% end %>

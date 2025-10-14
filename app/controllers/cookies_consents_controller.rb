@@ -1,4 +1,21 @@
 class CookiesConsentsController < ApplicationController
+  def edit
+    @cookies_consent = current_agent.cookies_consent || current_agent.build_cookies_consent(
+      tracking_accepted: true,
+      support_accepted: true
+    )
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "remote_modal",
+          partial: "common/cookies_consent_customization_modal",
+          locals: { cookies_consent: @cookies_consent }
+        )
+      end
+    end
+  end
+
   def create
     save_cookies_consent
   end
