@@ -31,7 +31,7 @@
             "organisation", "id",
             grouped_options_for_select(
               options_for_organisation_select(@department),
-              selected: params[:organisation_id] || "0"
+              selected: params[:organisation_id_for_stats] || "0"
             ),
             { },
             class: "text-center form-select js-organisation-selector"
