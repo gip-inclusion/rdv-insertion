@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import safeSwal from "../../lib/safeSwal";
+import fetchApp from "../../lib/fetchApp";
 
 export default class extends Controller {
   static targets = ["checkbox"]
@@ -36,11 +37,8 @@ export default class extends Controller {
     url.searchParams.set("ids_only", "true")
     console.log(url.toString())
     try {
-      const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" }
-      })
-      const { users } = await response.json()
+      const jsonResponse = await fetchApp(url.toString(), { parseJson: true })
+      const { users } = jsonResponse
       this.userIds = users.map(user => user.id)
     } catch (error) {
       safeSwal({
@@ -53,26 +51,37 @@ export default class extends Controller {
 
   async #createUserListUpload() {
     try {
-      const response = await fetch(this.form.action, {
+      const response = await fetchApp(this.form.action, {
         method: this.form.method,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "text/vnd.turbo-stream.html",
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
-        },
-        body: JSON.stringify({ user_ids: this.userIds, origin: "invite_all_uninvited_button" })
+        body: {
+          user_ids: this.userIds,
+          user_list_upload: {
+            origin: "invite_all_uninvited_button",
+            category_configuration_id: this.form.dataset.currentCategoryConfigurationId
+          }
+        }
       })
+
       if (response.ok) {
         /* eslint-disable-next-line camelcase */
         const { redirect_path } = await response.json()
         window.Turbo.visit(redirect_path)
       } else {
-        const html = await response.text()
-        window.Turbo.renderStreamMessage(html)
+        const { errors } = await response.json()
+        safeSwal({
+          title: "Une erreur s'est produite lors de la création de la liste",
+          text: errors.join(", "),
+          icon: "error"
+        })
         this.#resetButton()
       }
     } catch (error) {
       console.error(error)
+      safeSwal({
+        title: "Une erreur s'est produite lors de la création de la liste",
+        text: "Veuillez réessayer ou contacter l'équipe RDV-Insertion",
+        icon: "error"
+      })
       this.#resetButton()
     }
   }

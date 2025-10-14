@@ -1,4 +1,4 @@
-import appFetch from "../../lib/appFetch";
+import fetchApp from "../../lib/fetchApp";
 
 const inviteUser = async (
   userId,
@@ -7,7 +7,7 @@ const inviteUser = async (
   isDepartmentLevel,
   invitationFormat,
   motifCategoryId,
-  types = "application/json"
+  accept = "application/json"
 ) => {
   let url;
   if (isDepartmentLevel) {
@@ -15,16 +15,19 @@ const inviteUser = async (
   } else {
     url = `/organisations/${organisationId}/users/${userId}/invitations`;
   }
-  return appFetch(
+  return fetchApp(
     url,
-    "POST",
     {
-      invitation: {
-        format: invitationFormat,
-        motif_category: { id: motifCategoryId },
+      method: "POST",
+      body: {
+        invitation: {
+          format: invitationFormat,
+          motif_category: { id: motifCategoryId },
+        },
       },
-    },
-    types
+      accept,
+      parseJson: accept === "application/json",
+    }
   );
 };
 
