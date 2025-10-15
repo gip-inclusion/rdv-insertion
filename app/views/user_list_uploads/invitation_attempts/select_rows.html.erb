@@ -4,10 +4,10 @@
   <div class="row text-dark-blue">
     <div class="col text-center align-items-center my-1">
       <div>
-        <h1 class="h1-title">Envoyer des invitations</h1>
+        <h1 class="h1-title"><%= select_rows_page_title(@user_list_upload) %></h1>
         <p class="text-muted mb-4">
           au niveau de « <%= structure_name_with_context(@user_list_upload.structure) %> »
-          <%= ", sur « #{@category_configuration.motif_category.name} »" if @category_configuration %>
+          <%= ", sur « #{@user_list_upload.motif_category_name} »" if @user_list_upload.motif_category_name %>
         </p>
       </div>
     </div>

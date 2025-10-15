@@ -11,6 +11,14 @@ export default class extends Controller {
     const button = this.form.querySelector("button[type='submit']")
     await this.#setLoadingButton(button)
     await this.#fetchUninvitedUsers()
+    if (this.userIds.length === 0) {
+      safeSwal({
+        title: "Tous les usagers sont déjà invités",
+        text: "Tous les usagers ont déjà été invités sur cette catégorie",
+        icon: "success"
+      })
+      return
+    }
     await this.#createUserListUpload()
   }
 
@@ -35,7 +43,7 @@ export default class extends Controller {
     const url = new URL(window.location.href)
     url.searchParams.set("skip_pagination", "true")
     url.searchParams.set("ids_only", "true")
-    console.log(url.toString())
+    url.searchParams.set("follow_up_statuses[]", "not_invited")
     try {
       const jsonResponse = await fetchApp(url.toString(), { parseJson: true })
       const { users } = jsonResponse

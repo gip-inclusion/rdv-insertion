@@ -14,14 +14,16 @@ class UserListUpload < ApplicationRecord
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", through: :user_rows
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", through: :user_rows
 
-  enum :origin, { file_upload: "file_upload", invite_all_uninvited_button: "invite_all_uninvited_button" }
+  enum :origin, { file_upload: "file_upload", invite_all_uninvited_button: "invite_all_uninvited_button" },
+                prefix: true
 
   accepts_nested_attributes_for :user_rows
 
   delegate :user_rows_enriched_with_cnaf_data, :update_rows, :user_rows_selected_for_invitation,
            :user_rows_selected_for_user_save, :user_rows_with_errors, :user_rows_archived,
            :user_rows_with_closed_follow_up, to: :user_collection
-  delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
+  delegate :motif_category, :motif_category_id, :motif_category_name, :motif_category_short_name,
+           to: :category_configuration, allow_nil: true
   delegate :number, :id, to: :department, prefix: true
 
   def save_with_existing_users!(users)
