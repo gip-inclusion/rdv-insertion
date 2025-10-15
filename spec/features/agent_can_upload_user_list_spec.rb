@@ -246,7 +246,9 @@ describe "Agents can upload user list", :js do
       expect(page).to have_content("2 usagers sélectionnés")
 
       # Uncheck all rows
-      check_all_button = find("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']")
+      check_all_button = find(
+        "input[type='checkbox'][data-action='click->user-list-upload--select-user-rows#toggleAll']"
+      )
       expect(check_all_button).to be_checked
       check_all_button.click
 
@@ -258,7 +260,9 @@ describe "Agents can upload user list", :js do
 
       # All rows selection is preserved after page refresh
       page.refresh
-      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:not(:checked)")
+      expect(page).to have_css(
+        "input[type='checkbox'][data-action='click->user-list-upload--select-user-rows#toggleAll']:not(:checked)"
+      )
 
       # Check all rows
       check_all_button.click
@@ -1035,12 +1039,12 @@ describe "Agents can upload user list", :js do
       expect(christian_row.selected_for_invitation).to be_truthy
 
       #  Uncheck all rows
-      check_all_button = find("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']")
+      check_all_button = find("input[type='checkbox'][data-action='click->user-list-upload--select-user-rows#toggleAll']")
       expect(check_all_button).to be_checked
       check_all_button.click
 
       # expect rows to be unchecked
-      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-action='click->user-list-upload--select-user-rows#toggleAll']:not(:checked)")
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
 
@@ -1053,7 +1057,7 @@ describe "Agents can upload user list", :js do
 
       # checkbox all still unchecked after page refresh
       page.refresh
-      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:not(:checked)")
+      expect(page).to have_css("input[type='checkbox'][data-action='click->user-list-upload--select-user-rows#toggleAll']:not(:checked)")
 
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:not(:checked)")
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:not(:checked)")
@@ -1062,7 +1066,7 @@ describe "Agents can upload user list", :js do
       check_all_button.click
 
       # expect rows to be checked
-      expect(page).to have_css("input[type='checkbox'][data-action='click->select-user-rows#toggleAll']:checked")
+      expect(page).to have_css("input[type='checkbox'][data-action='click->user-list-upload--select-user-rows#toggleAll']:checked")
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{christian_row.id}']:checked")
 

@@ -82,7 +82,6 @@ Rails.application.routes.draw do
         scope module: :users do
           resources :uploads, only: [:new]
           get "uploads/category_selection", to: "uploads#category_selection"
-          resources :batch_actions, only: [:new]
         end
       end
       scope module: :users do
@@ -205,7 +204,6 @@ Rails.application.routes.draw do
         scope module: :users do
           resources :uploads, only: [:new]
           get "uploads/category_selection", to: "uploads#category_selection"
-          resources :batch_actions, only: [:new]
         end
         get :default_list
       end
