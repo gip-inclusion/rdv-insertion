@@ -107,6 +107,7 @@ describe "Agents can upload user list", :js do
 
       user_list_upload = UserListUpload.last
 
+      expect(user_list_upload.origin).to eq("file_upload")
       expect(page).to have_current_path(user_list_upload_path(user_list_upload))
 
       expect(user_list_upload.user_rows.count).to eq(2)
