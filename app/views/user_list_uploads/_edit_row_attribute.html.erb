@@ -5,7 +5,8 @@
   ),
   data: {
     controller: "user-list-upload--user-row-cell",
-    action: "turbo:submit-start->user-list-upload--user-row-cell#setLoading submit->user-list-upload--user-row-cell#submit"
+    action: "turbo:submit-start->user-list-upload--user-row-cell#setLoading submit->user-list-upload--user-row-cell#submit",
+    turbo_frame: "_top"
   },
   class: "edit-row-attribute",
   method: :patch
