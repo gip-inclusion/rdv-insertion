@@ -36,6 +36,6 @@ class UserBlueprint < ApplicationBlueprint
   end
 
   view :ids_only do
-    excludes *FIELD_NAMES
+    excludes(*FIELD_NAMES)
   end
 end

@@ -35,6 +35,7 @@ class UsersController < ApplicationController
     redirect_to default_list_path
   end
 
+  # rubocop:disable Metrics/AbcSize
   def index
     respond_to do |format|
       format.html
@@ -51,6 +52,7 @@ class UsersController < ApplicationController
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def show; end
 
