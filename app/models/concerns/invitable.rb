@@ -36,20 +36,12 @@ module Invitable
     invitations.any? { |invitation| invitation.format == format }
   end
 
-  def first_invitation_relative_to_last_participation
-    participations.any? ? first_invitation_after_last_participation : first_invitation
-  end
-
-  def first_invitation_relative_to_last_participation_by(format)
-    participations.any? ? first_invitation_after_last_participation_by(format) : first_invitation_by(format)
-  end
-
-  def first_invitation_relative_to_last_participation_created_at
-    first_invitation_relative_to_last_participation&.created_at
-  end
-
-  def first_invitation_relative_to_last_participation_created_at_by(format)
-    first_invitation_relative_to_last_participation_by(format)&.created_at
+  def currently_invited_by?(format)
+    if participations.any?
+      first_invitation_after_last_participation_by(format).present?
+    else
+      last_manual_invitation_by(format).present?
+    end
   end
 
   def all_invitations_expired?
@@ -60,5 +52,13 @@ module Invitable
     invitations.each do |invitation|
       ExpireInvitationJob.perform_later(invitation.id)
     end
+  end
+
+  def last_manual_invitation
+    invitations.select(&:manual?).max_by(&:created_at)
+  end
+
+  def last_manual_invitation_by(format)
+    invitations.select { |invitation| invitation.manual? && invitation.format == format }.max_by(&:created_at)
   end
 end
