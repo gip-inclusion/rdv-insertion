@@ -13,7 +13,7 @@ class UserListUpload::UserRow < ApplicationRecord
   encrypts :nir
 
   before_save :format_attributes, :set_matching_user
-  before_create :select_for_user_save!, if: :selectable_by_default_for_user_save?
+  before_create :assign_default_selection
   after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
@@ -39,10 +39,21 @@ class UserListUpload::UserRow < ApplicationRecord
     column_names.map(&:to_sym) - %i[id created_at updated_at user_list_upload_id]
   end
 
-  def self.build_from_user(user, **)
-    new(**user.symbolized_attributes.slice(*USER_ATTRIBUTES), matching_user_id: user.id, **).tap do |user_row|
-      user_row.assign_default_selection
+  def self.import_from_users!(users, user_list_upload:)
+    import!(build_from_users(users, user_list_upload:).map do |user_row|
+      # callbacks need to be called manually here because we are using `import!`
+      user_row.tap(&:assign_default_selection)
+    end)
+  end
+
+  def self.build_from_users(users, user_list_upload:)
+    users.preload(*user_list_upload.user_associations_to_preload).map do |user|
+      build_from_user(user, user_list_upload:)
     end
+  end
+
+  def self.build_from_user(user, **)
+    new(**user.symbolized_attributes.slice(*USER_ATTRIBUTES), matching_user: user, **)
   end
 
   def user
@@ -184,19 +195,15 @@ class UserListUpload::UserRow < ApplicationRecord
     matching_user&.send(association_name)&.include?(resource)
   end
 
+  def user_department_organisations
+    user.department_organisations(department_id)
+  end
+
   def will_change_matching_user?
     return false unless user == matching_user
 
     user.changed? || user.organisations != organisations || user.motif_categories != motif_categories ||
       user.referents != referents || user.tags != tags
-  end
-
-  def select_for_user_save!
-    self.selected_for_user_save = true
-  end
-
-  def select_for_invitation!
-    self.selected_for_invitation = true
   end
 
   def save_user
@@ -346,6 +353,14 @@ class UserListUpload::UserRow < ApplicationRecord
         search_terms.downcase.in?(attribute)
       end
     end
+  end
+
+  def select_for_user_save!
+    self.selected_for_user_save = true
+  end
+
+  def select_for_invitation!
+    self.selected_for_invitation = true
   end
 
   def selectable_by_default_for_user_save?

@@ -119,7 +119,7 @@ class UserListUpload::Collection
   def load_user_rows
     @user_list_upload.user_rows.preload(
       matching_user: [:organisations, :motif_categories, :referents, :tags, :address_geocoding, {
-        archives: :organisation
+        archives: :organisation, invitations: :follow_up
       }],
       invitation_attempts: :invitation,
       user_save_attempts: [user: [:address_geocoding, { invitations: [:follow_up] }]]

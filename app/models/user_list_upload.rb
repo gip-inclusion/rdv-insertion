@@ -22,14 +22,12 @@ class UserListUpload < ApplicationRecord
            :user_rows_selected_for_user_save, :user_rows_with_errors, :user_rows_archived,
            :user_rows_with_closed_follow_up, to: :user_collection
   delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
-  delegate :number, to: :department, prefix: true
+  delegate :number, :id, to: :department, prefix: true
 
   def save_with_existing_users!(users)
     transaction do
       save!
-      UserListUpload::UserRow.import!(
-        users.map { |user| UserListUpload::UserRow.build_from_user(user, user_list_upload: self) }
-      )
+      UserListUpload::UserRow.import_from_users!(users, user_list_upload: self)
     end
   end
 
@@ -89,7 +87,8 @@ class UserListUpload < ApplicationRecord
             User.active.where(phone_number: user_row_attributes_formatted_phone_numbers)
           )
           .or(User.active.where(nir: user_row_attributes_formatted_nirs))
-          .select(:id, :nir, :phone_number, :email, :first_name)
+          # Preload associations to avoid N+1 queries when calling user_row.user_valid?
+          .preload(*user_associations_to_preload)
   end
 
   def potential_matching_users_in_department
@@ -101,11 +100,22 @@ class UserListUpload < ApplicationRecord
         department_internal_id: user_row_attributes.pluck("department_internal_id").compact,
         organisations: { department_id: department.id }
       )
-    ).select(:id, :department_internal_id, :affiliation_number, :role)
+      # Preload associations to avoid N+1 queries when calling user_row.user_valid?
+    ).preload(*user_associations_to_preload)
   end
 
   def handle_user_save? = STEPS_BY_ORIGIN[origin.to_sym].include?(:user_save)
   def handle_invitation_only? = STEPS_BY_ORIGIN[origin.to_sym] == [:invitation]
+
+  def user_associations_to_preload
+    # we need to preload the associations to avoid N+1 queries when calling user_row.user_valid?
+    # or user_row.invitable?
+    if handle_user_save?
+      [:archives, :follow_ups]
+    else
+      [invitations: :follow_up]
+    end
+  end
 
   private
 

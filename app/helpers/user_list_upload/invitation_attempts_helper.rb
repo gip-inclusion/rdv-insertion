@@ -93,6 +93,10 @@ module UserListUpload::InvitationAttemptsHelper
     %w[sms email]
   end
 
+  def user_row_department_organisation_names(user_row)
+    user_row.user_department_organisations.map(&:name).join(", ")
+  end
+
   private
 
   def tooltip_content_for_user_row_before_invitation_invitable(user_row)
