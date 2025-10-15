@@ -6,10 +6,10 @@ module Agent::CookiesConsentable
   end
 
   def support_accepted?
-    (cookies_consent&.persisted? && cookies_consent.support_accepted?) || false
+    cookies_consent&.support_accepted? || false
   end
 
   def tracking_accepted?
-    (cookies_consent&.persisted? && cookies_consent.tracking_accepted?) || false
+    cookies_consent&.tracking_accepted? || false
   end
 end
