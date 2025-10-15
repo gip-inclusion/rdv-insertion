@@ -9,6 +9,8 @@ export default class extends Controller {
       this.element.classList.add("fr-modal--opened")
     }, 0)
     this.element.addEventListener("click", this.#handleBackdropClick)
+    // ESC key triggers 'cancel' event, we prevent default and call close manually
+    this.element.addEventListener("cancel", this.#handleCancel)
   }
 
   close() {
@@ -16,13 +18,20 @@ export default class extends Controller {
     this.element.close()
   }
 
+  // For native <dialog>, backdrop clicks have event.target === dialog element
+  // Content clicks have event.target === clicked element
   #handleBackdropClick = (event) => {
     if (event.target === this.element) {
       this.close()
     }
   }
 
+  #handleCancel = () => {
+    this.element.classList.remove("fr-modal--opened")
+  }
+
   disconnect() {
     this.element.removeEventListener("click", this.#handleBackdropClick)
+    this.element.removeEventListener("cancel", this.#handleCancel)
   }
 }
