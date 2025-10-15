@@ -39,4 +39,23 @@ describe "Agent can invite all the uninvited", :js do
     expect(user_row.user_list_upload.origin).to eq("invite_all_uninvited_button")
     expect(user_row.matching_user).to eq(uninvited_user)
   end
+
+  context "when there are no uninvited users" do
+    let!(:new_invitation) { create(:invitation, follow_up: uninvited_follow_up, user: uninvited_user) }
+
+    before do
+      uninvited_follow_up.set_status
+      uninvited_follow_up.save!
+    end
+
+    it "can invite all the uninvited" do
+      visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+      expect(page).to have_content(uninvited_user.last_name)
+      expect(page).to have_content(invited_user.last_name)
+
+      click_button("Inviter les non-invités")
+      expect(page).to have_content("Tous les usagers sont déjà invités")
+      expect(UserListUpload.count).to eq(0)
+    end
+  end
 end
