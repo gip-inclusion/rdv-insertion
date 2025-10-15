@@ -146,4 +146,12 @@
   .swal2-actions button:hover {
     background-color: #1212FF !important;
   }
+
+  // Fix for DSFR dialog backdrop to cover entire viewport
+  // Ensure dialog is properly positioned
+  dialog.fr-modal {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
 }

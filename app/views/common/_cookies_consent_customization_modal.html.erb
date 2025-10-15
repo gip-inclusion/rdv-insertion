@@ -1,13 +1,13 @@
-<dialog id="consent-modal" class="fr-modal" aria-labelledby="fr-consent-modal-title">
+<dialog id="cookies-consent-customization-modal" class="fr-modal" aria-labelledby="fr-cookies-consent-customization-modal-title" data-controller="dsfr-modal">
   <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
       <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
         <div class="fr-modal__body">
           <div class="fr-modal__header">
-            <button aria-controls="consent-modal" data-fr-opened="false" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
+            <button aria-controls="cookies-consent-customization-modal" title="Fermer" type="button" class="fr-btn--close fr-btn" data-action="dsfr-modal#close">Fermer</button>
           </div>
           <div class="fr-modal__content">
-            <h1 id="fr-consent-modal-title" class="fr-modal__title">
+            <h1 id="fr-cookies-consent-customization-modal-title" class="fr-modal__title">
               Panneau de gestion des cookies
             </h1>
             <div class="fr-consent-manager">
@@ -17,14 +17,14 @@
                   <legend id="finality-legend" class="fr-consent-service__title">Préférences pour tous les services.<br><%= link_to "Données personnelles et cookies", politique_de_confidentialite_path, class: "fr-link" %>
                   </legend>
                   <div class="fr-consent-service__radios">
-                    <%= form_for :cookies_consent, url: cookies_consents_path, method: :post do |f| %>
+                    <%= form_with model: cookies_consent, url: cookies_consent_path, local: true do |f| %>
                       <%= f.hidden_field :support_accepted, value: false %>
                       <%= f.hidden_field :tracking_accepted, value: false %>
                       <button type="submit" class="fr-btn me-2">
                         Tout refuser
                       </button>
                     <% end %>
-                    <%= form_for :cookies_consent, url: cookies_consents_path, method: :post do |f| %>
+                    <%= form_with model: cookies_consent, url: cookies_consent_path, local: true do |f| %>
                       <%= f.hidden_field :support_accepted, value: true %>
                       <%= f.hidden_field :tracking_accepted, value: true %>
                       <button type="submit" class="fr-btn">
@@ -54,13 +54,13 @@
                   <p id="finality-0-desc" class="fr-consent-service__desc">Ce site utilise des cookies nécessaires à son bon fonctionnement qui ne peuvent pas être désactivés.</p>
                 </fieldset>
               </div>
-              <%= form_for :cookies_consent, url: cookies_consents_path, method: :post do |f| %>
+              <%= form_with model: cookies_consent, url: cookies_consent_path, local: true do |f| %>
                 <div class="fr-consent-service">
                   <fieldset aria-labelledby="tracking-legend tracking-desc" role="group" class="fr-fieldset">
                   <legend id="tracking-legend" class="fr-consent-service__title">Mesure d'audience</legend>
                   <div class="fr-consent-service__radios">
                     <div class="fr-radio-group">
-                      <%= f.radio_button :tracking_accepted, true, id: "tracking-accept", checked: true %>
+                      <%= f.radio_button :tracking_accepted, true, id: "tracking-accept" %>
                       <%= f.label :tracking_accepted, "Accepter", for: "tracking-accept", class: "fr-label" %>
                     </div>
                     <div class="fr-radio-group">
@@ -76,7 +76,7 @@
                   <legend id="support-legend" class="fr-consent-service__title">Support et assistance utilisateur</legend>
                   <div class="fr-consent-service__radios">
                     <div class="fr-radio-group">
-                      <%= f.radio_button :support_accepted, true, id: "support-accept", checked: true %>
+                      <%= f.radio_button :support_accepted, true, id: "support-accept" %>
                       <%= f.label :support_accepted, "Accepter", for: "support-accept", class: "fr-label" %>
                     </div>
                     <div class="fr-radio-group">
