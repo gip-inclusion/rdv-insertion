@@ -34,7 +34,17 @@
         <%= render "csv_export_button" %>
       <% end %>
       <% if @current_category_configuration.present? %>
-        <%= form_for :user_list_upload, url: create_from_existing_users_structure_user_list_uploads_path, method: :post, data: { controller: "user-list-upload--invite-all-univited", action: "submit->user-list-upload--invite-all-univited#createUserListUploadAndRedirect", current_category_configuration_id: @current_category_configuration.id } do |f| %>
+        <%= form_for(
+              :user_list_upload,
+              url: create_from_existing_users_structure_user_list_uploads_path,
+              method: :post,
+              data: {
+                controller: "user-list-upload--invite-all-univited",
+                action: "submit->user-list-upload--invite-all-univited#createUserListUploadAndRedirect",
+                current_category_configuration_id: @current_category_configuration.id,
+                motif_category_id: @current_category_configuration.motif_category_id
+              }
+            ) do |f| %>
           <%= button_tag(type: "submit", class: "btn btn-blue-out", id: "rdvi_index-nav_send-invitations-uninvited") do %>
             <i class="ri-send-plane-fill"></i>
             Inviter les non-invités

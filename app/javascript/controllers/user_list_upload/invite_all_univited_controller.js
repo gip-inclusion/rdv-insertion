@@ -12,6 +12,7 @@ export default class extends Controller {
     await this.#setLoadingButton(button)
     await this.#fetchUninvitedUsers()
     if (this.userIds.length === 0) {
+      this.#resetButton()
       safeSwal({
         title: "Tous les usagers sont déjà invités",
         text: "Tous les usagers ont déjà été invités sur cette catégorie",
@@ -41,6 +42,8 @@ export default class extends Controller {
 
   async #fetchUninvitedUsers() {
     const url = new URL(window.location.href)
+    url.search = ""
+    url.searchParams.set("motif_category_id", this.form.dataset.motifCategoryId)
     url.searchParams.set("skip_pagination", "true")
     url.searchParams.set("ids_only", "true")
     url.searchParams.set("follow_up_statuses[]", "not_invited")
