@@ -17,6 +17,8 @@ class UserListUpload < ApplicationRecord
   enum :origin, { file_upload: "file_upload", invite_all_uninvited_button: "invite_all_uninvited_button" },
        prefix: true
 
+  validates :category_configuration_id, presence: true, if: :handle_invitation_only?
+
   accepts_nested_attributes_for :user_rows
 
   delegate :user_rows_enriched_with_cnaf_data, :update_rows, :user_rows_selected_for_invitation,
