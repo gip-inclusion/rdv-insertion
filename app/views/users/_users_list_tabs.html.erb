@@ -39,8 +39,8 @@
               url: create_from_existing_users_structure_user_list_uploads_path,
               method: :post,
               data: {
-                controller: "user-list-upload--invite-all-univited",
-                action: "submit->user-list-upload--invite-all-univited#createUserListUploadAndRedirect",
+                controller: "user-list-upload--invite-all-uninvited",
+                action: "submit->user-list-upload--invite-all-uninvited#createUserListUploadAndRedirect",
                 current_category_configuration_id: @current_category_configuration.id,
                 motif_category_id: @current_category_configuration.motif_category_id
               }

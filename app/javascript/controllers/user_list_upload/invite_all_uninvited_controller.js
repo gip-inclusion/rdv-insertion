@@ -67,7 +67,7 @@ export default class extends Controller {
         body: {
           user_ids: this.userIds,
           user_list_upload: {
-            origin: "invite_all_uninvited_button",
+            origin: "invite_all_uninvited",
             category_configuration_id: this.form.dataset.currentCategoryConfigurationId
           }
         }
