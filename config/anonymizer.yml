@@ -514,6 +514,7 @@ tables:
       - structure_id
       - structure_type
       - agent_id
+      - origin
 
   - table_name: user_list_upload_user_rows
     anonymized_column_names:
