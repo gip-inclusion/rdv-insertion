@@ -4,7 +4,7 @@
 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton" data-turbo-prefetch="false">
   <li>
     <%= link_to(
-          structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)),
+          structure_users_path(**url_params.merge(format: "csv", export_type: nil)),
           class: "dropdown-item",
           **tooltip_attributes(content: "Les usagers correspondant aux filtres actuels seront exportés", placement: "bottom")
         ) do %>
@@ -13,7 +13,7 @@
   </li>
   <li>
     <%= link_to(
-          structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")),
+          structure_users_path(**url_params.merge(format: "csv", export_type: "participations")),
           class: "dropdown-item",
           **tooltip_attributes(content: "Les rendez-vous des usagers correspondant aux filtres actuels seront exportés", placement: "bottom")
         ) do %>

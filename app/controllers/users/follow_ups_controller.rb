@@ -45,7 +45,7 @@ module Users
         policy_scope(CategoryConfiguration)
         .joins(:organisation)
         .where(current_organisation_filter)
-        .where({ organisation: @user.department_organisations(@department).map(&:id) })
+        .where({ organisation: @user.department_organisations(@department.id).map(&:id) })
         .preload(:motif_category)
         .uniq(&:motif_category_id)
 

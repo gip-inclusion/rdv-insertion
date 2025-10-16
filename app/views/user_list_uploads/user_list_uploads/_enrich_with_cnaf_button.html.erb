@@ -1,21 +1,21 @@
-<div data-controller="enrich-with-cnaf-file" data-user-rows="<%= @user_rows.map { |user_row| { id: user_row.id, affiliation_number: user_row.affiliation_number, nir: user_row.nir } }.to_json %>">
+<div data-controller="user-list-upload--enrich-with-cnaf-file" data-user-rows="<%= @user_rows.map { |user_row| { id: user_row.id, affiliation_number: user_row.affiliation_number, nir: user_row.nir } }.to_json %>">
   <%= file_field_tag :file,
     class: "d-none",
     id: "enrich_with_cnaf_data_file_input",
     data: {
-      action: "change->enrich-with-cnaf-file#submit",
-      enrich_with_cnaf_file_target: "input"
+      action: "change->user-list-upload--enrich-with-cnaf-file#submit",
+      user_list_upload__enrich_with_cnaf_file_target: "input"
     },
     accept: ".csv, .txt"
   %>
-  <%= label_tag :enrich_with_cnaf_data_file_input, class: "btn btn-blue-out mb-2", id: "rdvi_upload_users-data_data-complete", data: { enrich_with_cnaf_file_target: "button" } do %>
-    <span data-enrich-with-cnaf-file-target="buttonText">Enrichir avec les données CNAF</span>
-    <span class="spinner-border spinner-border-sm d-none ms-1" role="status" data-enrich-with-cnaf-file-target="spinner">
+  <%= label_tag :enrich_with_cnaf_data_file_input, class: "btn btn-blue-out mb-2", id: "rdvi_upload_users-data_data-complete", data: { user_list_upload__enrich_with_cnaf_file_target: "button" } do %>
+    <span data-user-list-upload--enrich-with-cnaf-file-target="buttonText">Enrichir avec les données CNAF</span>
+    <span class="spinner-border spinner-border-sm d-none ms-1" role="status" data-user-list-upload--enrich-with-cnaf-file-target="spinner">
       <span class="visually-hidden">Chargement...</span>
     </span>
   <% end %>
 
-  <%= form_with(url: user_list_upload_enrich_with_cnaf_data_path(user_list_upload_id: @user_list_upload.id), local: true, data: { enrich_with_cnaf_file_target: "form", target: "_top" }) do |f| %>
+  <%= form_with(url: user_list_upload_enrich_with_cnaf_data_path(user_list_upload_id: @user_list_upload.id), local: true, data: { user_list_upload__enrich_with_cnaf_file_target: "form", target: "_top" }) do |f| %>
     <%= f.hidden_field :rows_cnaf_data %>
   <% end %>
 </div>

@@ -1,8 +1,12 @@
-import appFetch from "../../lib/appFetch";
+import fetchApp from "../../lib/fetchApp";
 
 const createUser = async (user, organisationId) =>
-  appFetch(`/organisations/${organisationId}/users`, "POST", {
-    user: user.asJson(),
+  fetchApp(`/organisations/${organisationId}/users`, {
+    method: "POST",
+    body: {
+      user: user.asJson(),
+    },
+    parseJson: true,
   });
 
 export default createUser;

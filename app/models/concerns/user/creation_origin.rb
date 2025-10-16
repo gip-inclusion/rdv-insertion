@@ -13,7 +13,8 @@ module User::CreationOrigin
 
     belongs_to :created_from_structure, polymorphic: true, optional: true
 
-    validates :created_through, :created_from_structure, presence: true, on: :create
+    validates :created_through, :created_from_structure_type, :created_from_structure_id,
+              presence: true, on: :create
 
     # prevent these attributes from being updated
     attr_readonly(*ORIGIN_ATTRIBUTES)

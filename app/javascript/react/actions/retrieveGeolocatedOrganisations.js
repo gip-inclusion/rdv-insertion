@@ -1,10 +1,13 @@
-import appFetch from "../../lib/appFetch";
+import fetchApp from "../../lib/fetchApp";
 
 const retrieveGeolocatedOrganisations = async (departmentNumber, address) =>
-  appFetch(
+  fetchApp(
     `/organisations/geolocated?department_number=${encodeURIComponent(
       departmentNumber
-    )}&address=${encodeURIComponent(address)}`
+    )}&address=${encodeURIComponent(address)}`,
+    {
+      parseJson: true,
+    }
   );
 
 export default retrieveGeolocatedOrganisations;
