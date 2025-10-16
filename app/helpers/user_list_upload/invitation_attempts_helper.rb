@@ -93,10 +93,6 @@ module UserListUpload::InvitationAttemptsHelper
     %w[sms email]
   end
 
-  def user_row_department_organisation_names(user_row)
-    user_row.user_department_organisations.map(&:name).join(", ")
-  end
-
   def select_rows_page_title(user_list_upload)
     if user_list_upload.origin_invite_all_uninvited_button?
       "Envoyer des invitations aux usagers non invités"

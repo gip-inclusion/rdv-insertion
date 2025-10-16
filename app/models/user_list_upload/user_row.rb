@@ -199,6 +199,10 @@ class UserListUpload::UserRow < ApplicationRecord
     user.department_organisations(department_id)
   end
 
+  def user_department_organisation_names
+    user_department_organisations.map(&:name).join(", ")
+  end
+
   def will_change_matching_user?
     return false unless user == matching_user
 

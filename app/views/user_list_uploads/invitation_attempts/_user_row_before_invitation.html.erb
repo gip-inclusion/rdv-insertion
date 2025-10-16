@@ -20,8 +20,8 @@
   <% end %>
   <% if @user_list_upload.department_level? %>
     <td class="border-light text-truncate-150">
-      <span <%= tooltip(content: user_row_department_organisation_names(user_row)) %>>
-        <%= display_attribute(user_row_department_organisation_names(user_row)) %>
+      <span <%= tooltip(content: user_row.user_department_organisation_names) %>>
+        <%= display_attribute(user_row.user_department_organisation_names) %>
       </span>
     </td>
   <% end %>
