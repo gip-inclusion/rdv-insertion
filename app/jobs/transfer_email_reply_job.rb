@@ -94,9 +94,10 @@ class TransferEmailReplyJob < ApplicationJob
 
   def record_id_mattermost_mention
     if invitation
-      "(Invitation #{invitation.id})"
+      "(Invitation dans #{invitation.organisations.one? ? 'l\'organisation' : 'les organisations'} " \
+        "#{invitation.organisation_ids.to_sentence})"
     elsif rdv
-      "(RDV #{rdv.id})"
+      "(RDV dans l'organisation #{rdv.organisation_id})"
     else
       ""
     end
