@@ -52,9 +52,10 @@ export default class extends Controller {
       const { users } = jsonResponse
       this.userIds = users.map(user => user.id)
     } catch (error) {
+      console.error(error)
       safeSwal({
         title: "Une erreur s'est produite lors de la récupération des usagers",
-        text: error.message,
+        text: "Veuillez réessayer ou contacter le support à l'adresse support@rdv-insertion.fr",
         icon: "error"
       })
     }
@@ -90,7 +91,7 @@ export default class extends Controller {
       console.error(error)
       safeSwal({
         title: "Une erreur s'est produite lors de la création de la liste",
-        text: "Veuillez réessayer ou contacter l'équipe RDV-Insertion",
+        text: "Veuillez réessayer ou contacter le support à l'adresse support@rdv-insertion.fr",
         icon: "error"
       })
       this.#resetButton()
