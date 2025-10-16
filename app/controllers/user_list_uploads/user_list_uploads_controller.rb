@@ -119,6 +119,7 @@ module UserListUploads
     def set_users
       @users = policy_scope(User).preload(invitations: :follow_up)
                                  .where(id: create_from_existing_users_params[:user_ids])
+                                 .distinct
     end
   end
 end

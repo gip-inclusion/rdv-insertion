@@ -47,7 +47,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def self.build_from_users(users, user_list_upload:)
-    users.preload(*user_list_upload.user_associations_to_preload).map do |user|
+    users.preload(*user_list_upload.user_associations_to_preload).distinct.map do |user|
       build_from_user(user, user_list_upload:)
     end
   end
