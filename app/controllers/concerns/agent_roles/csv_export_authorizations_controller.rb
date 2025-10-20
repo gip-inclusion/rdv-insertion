@@ -46,6 +46,7 @@ module AgentRoles
 
     def set_organisation
       @organisation = current_organisation
+      authorize @organisation, :configure?
     end
   end
 end
