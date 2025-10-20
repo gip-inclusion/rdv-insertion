@@ -1,6 +1,8 @@
 module AgentRoles
   class CsvExportAuthorizationsController < ApplicationController
-    before_action :set_organisation, :set_agent_roles, :set_authorized_agent_role_ids, only: [:index]
+    before_action :set_agent_roles, :set_authorized_agent_role_ids, only: [:index]
+
+    before_action :set_organisation, only: [:index, :batch_update]
 
     def index; end
 
