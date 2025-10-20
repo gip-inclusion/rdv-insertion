@@ -26,7 +26,9 @@ module AgentRoles
     end
 
     def agent_roles_to_authorize
-      @agent_roles_to_authorize ||= @organisation.agent_roles.where(id: csv_export_authorizations_params[:agent_role_ids])
+      @agent_roles_to_authorize ||= @organisation.agent_roles.basic.where(
+        id: csv_export_authorizations_params[:agent_role_ids]
+      )
     end
 
     def set_agent_roles

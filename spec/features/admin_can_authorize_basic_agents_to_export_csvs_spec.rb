@@ -99,7 +99,7 @@ describe "Admins can authorize basic agents to export csvs", :js do
           "csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}",
           visible: :all
         )
-        expect(page).not_to have_field(
+        expect(page).to have_no_field(
           "csv_export_authorizations_agent_role_ids_#{agent_role_from_other_org.id}",
           visible: :all
         )
