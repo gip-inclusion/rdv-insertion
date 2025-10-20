@@ -1,18 +1,19 @@
-# Documentation du Schéma de Données - RDV Insertion
+# Documentation du Schéma de Données - rdv-insertion
 
 ## Introduction
 
-RDV Insertion est une application développée par beta.gouv.fr qui permet aux départements français de gérer le suivi des bénéficiaires du RSA et plus généralement tous les usagers qui sont dans un parcours d'insertion. L'application s'interface avec RDV-Solidarités pour la gestion des rendez-vous.
+rdv-insertion est une application qui permet aux départements français de gérer le suivi des bénéficiaires du RSA et plus généralement tous les usagers qui sont dans un parcours d'insertion. L'application s'interface avec RDV-Solidarités pour la gestion des rendez-vous.
 
 ## Architecture Générale
 
 L'application fonctionne selon le principe suivant :
 1. Les **départements** contiennent des **organisations** (conseils départementaux, France Travail, etc.)
-2. Les **agents** sont rattachés aux organisations via des **agent_roles**
-3. Les **users** (bénéficiaires) sont suivis dans des **organisations**
-4. Un **follow_up** est créé pour chaque **motif_category** sur un **user** pour suivre l'avancement de l'usager sur cette catégorie
-5. Des **invitations** sont envoyées pour prendre des rendez-vous
-6. Les **rdvs** (rendez-vous) sont créés, avec des **participations** pour chaque usager
+2. Les **users** (bénéficiaires) sont suivis dans des **organisations**
+3. Un **follow_up** est créé pour chaque **motif_category** sur un **user** pour suivre l'avancement de l'usager sur cette catégorie
+4. Des **invitations** sont envoyées pour prendre des rendez-vous
+5. Les **rdvs** (rendez-vous) sont créés, avec des **participations** pour chaque usager
+6. Les **agents** sont rattachés aux organisations via des **agent_roles**
+
 
 ---
 
@@ -29,7 +30,7 @@ Représente les usagers suivis dans l'application, souvent des bénéficaires du
 - `first_name`, `last_name` : Identité
 - `email`, `phone_number`, `address` : Coordonnées pour les contacter
 - `affiliation_number` : Numéro d'allocataire CAF
-- `department_internal_id` : Identifiant interne du département
+- `department_internal_id` : ID de l'usager dans le SI du département
 - `france_travail_id` : Identifiant France Travail
 - `nir` : Numéro de sécurité sociale (encrypté)
 - `role` : "demandeur" ou "conjoint"
