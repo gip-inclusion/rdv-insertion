@@ -30,7 +30,7 @@ describe AgentRoles::CsvExportAuthorizationsController do
       it "prevents the update and redirects with error" do
         expect do
           post :batch_update, params: batch_update_params
-        end.not_to change { agent_role_for_organisation.reload.authorized_to_export_csv }
+        end.not_to change(agent_role_for_organisation, :authorized_to_export_csv)
 
         expect(response).to redirect_to(root_path)
         expect(flash[:alert]).to be_present
