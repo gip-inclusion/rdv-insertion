@@ -8,7 +8,7 @@ rdv-insertion est une application qui permet aux départements français de gér
 
 L'application fonctionne selon le principe suivant :
 1. Les **départements** contiennent des **organisations** (conseils départementaux, France Travail, etc.)
-2. Les **users** (bénéficiaires) sont suivis dans des **organisations**
+2. Les **users** (usagers) sont suivis dans des **organisations**
 3. Un **follow_up** est créé pour chaque **motif_category** sur un **user** pour suivre l'avancement de l'usager sur cette catégorie
 4. Des **invitations** sont envoyées pour prendre des rendez-vous
 5. Les **rdvs** (rendez-vous) sont créés, avec des **participations** pour chaque usager
@@ -35,7 +35,7 @@ Représente les usagers suivis dans l'application, souvent des bénéficaires du
 - `nir` : Numéro de sécurité sociale (encrypté)
 - `role` : "demandeur" ou "conjoint"
 - `deleted_at` : Soft delete pour RGPD
-- `created_through` : Source de création ("rdv_solidarites", "file_import", etc.)
+- `created_through` : Source de création ("rdv_insertion_upload_page", "rdv_solidarites_webhook", etc.)
 
 **Relations** :
 - Appartient à plusieurs `organisations` via `users_organisations`
@@ -137,7 +137,7 @@ Représente une invitation envoyée à un usager pour qu'il prenne rendez-vous.
 - `clicked` : L'usager a-t-il cliqué sur le lien ?
 - `trigger` : "manual" (manuelle) ou "reminder" (relance)
 - `delivery_status` : Statut de livraison (Brevo)
-- `rdv_with_referents` : RDV avec les référents spécifiques
+- `rdv_with_referents` : Invitation à un rdv avec référent ?
 - `help_phone_number` : Numéro d'aide affiché
 
 **Relations** :
@@ -163,18 +163,18 @@ Représente un rendez-vous créé dans RDV-Solidarités.
 - `lieu_id` : Lieu du RDV (optionnel si à distance)
 - `status` : Statut du RDV
 - `cancelled_at` : Date d'annulation
-- `created_by` : Origine ("agent", "user", "file_attente", "prescripteur")
+- `created_by` : Origine ("agent", "user", "prescripteur")
 - `context` : Contexte/notes
 - `users_count` : Nombre de participants
-- `max_participants_count` : Pour RDV collectifs
+- `max_participants_count` : Nombre max de participants RDV collectifs
 
 **Relations** :
+- A plusieurs `participations` (usagers participants)
+- A plusieurs `users` via `participations` (les rdvs pouvant être collectifs)
 - Appartient à une `organisation`
 - Appartient à un `motif`
 - Appartient à un `lieu` (optionnel)
-- A plusieurs `participations` (usagers participants)
 - A plusieurs `agents` via `agents_rdvs`
-- A plusieurs `users` via `participations` (les rdvs pouvant être collectifs)
 
 ---
 
@@ -564,12 +564,12 @@ Endpoints webhook pour notifier des systèmes externes.
 
 ### **webhook_receipts** - Réceptions webhook
 
-Trace les webhooks reçus depuis RDV-Solidarités.
+Trace les webhooks envoyés depuis rdv-insertion.
 
 **Champs clés** :
 - `webhook_endpoint_id` : Endpoint
 - `resource_model`, `resource_id` : Ressource concernée
-- `timestamp` : Date de réception
+- `timestamp` : Date d'envoi
 
 ---
 
