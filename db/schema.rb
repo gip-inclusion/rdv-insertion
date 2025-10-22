@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_22_084319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -468,11 +468,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
   end
 
   create_table "stats", force: :cascade do |t|
-    t.integer "users_count"
     t.json "users_count_grouped_by_month"
-    t.integer "rdvs_count"
     t.json "rdvs_count_grouped_by_month"
-    t.integer "sent_invitations_count"
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
@@ -489,7 +486,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
     t.json "rate_of_no_show_for_invitations_grouped_by_month"
     t.float "rate_of_users_oriented"
     t.json "rate_of_users_oriented_grouped_by_month"
-    t.integer "users_with_rdv_count"
     t.json "users_with_rdv_count_grouped_by_month"
     t.float "rate_of_no_show"
     t.json "rate_of_no_show_grouped_by_month"
