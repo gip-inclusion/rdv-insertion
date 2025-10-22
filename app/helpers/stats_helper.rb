@@ -18,8 +18,10 @@ module StatsHelper
     default_option + grouped_organisations
   end
 
-  def sanitize_monthly_data(stat)
-    exclude_starting_zeros(exclude_current_month(stat))
+  def sanitize_monthly_data(stat, exclude_previous_month: false)
+    exclude_starting_zeros(
+      exclude_previous_month ? exclude_current_and_previous_month(stat) : exclude_current_month(stat)
+    )
   end
 
   def exclude_starting_zeros(stat)
