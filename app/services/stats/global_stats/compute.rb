@@ -5,22 +5,6 @@ module Stats
         @stat = stat
       end
 
-      def users_count
-        @stat.all_users.count
-      end
-
-      def users_with_rdv_count
-        @stat.user_ids_with_rdv_set.count
-      end
-
-      def rdvs_count
-        @stat.all_participations.count
-      end
-
-      def sent_invitations_count
-        @stat.invitations_set.count
-      end
-
       def rate_of_no_show_for_invitations
         ComputeRateOfNoShow.call(participations: @stat.participations_after_invitations_set).value
       end
