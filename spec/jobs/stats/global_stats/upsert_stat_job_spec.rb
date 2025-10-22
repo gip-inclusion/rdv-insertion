@@ -42,7 +42,9 @@ describe Stats::GlobalStats::UpsertStatJob, type: :service do
     end
 
     it "saves the stat record" do
-      expect { subject }.to change { stat.reload.users_count_grouped_by_month }.from({}).to(users_count_grouped_by_month)
+      expect { subject }.to change { stat.reload.users_count_grouped_by_month }.from({}).to(
+        users_count_grouped_by_month
+      )
     end
   end
 end

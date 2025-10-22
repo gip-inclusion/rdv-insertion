@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class Stat < ApplicationRecord
   GLOBAL_STAT_ATTRIBUTES = %w[
     rate_of_no_show_for_invitations
@@ -162,3 +163,4 @@ class Stat < ApplicationRecord
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
