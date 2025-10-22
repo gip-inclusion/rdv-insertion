@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_22_084319) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_22_095144) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -468,31 +468,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_22_084319) do
   end
 
   create_table "stats", force: :cascade do |t|
-    t.json "users_count_grouped_by_month"
-    t.json "rdvs_count_grouped_by_month"
-    t.json "sent_invitations_count_grouped_by_month"
+    t.json "users_count_grouped_by_month", default: {}
+    t.json "rdvs_count_grouped_by_month", default: {}
+    t.json "sent_invitations_count_grouped_by_month", default: {}
     t.float "average_time_between_invitation_and_rdv_in_days"
-    t.json "average_time_between_invitation_and_rdv_in_days_by_month"
+    t.json "average_time_between_invitation_and_rdv_in_days_by_month", default: {}
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "rate_of_autonomous_users"
-    t.json "rate_of_autonomous_users_grouped_by_month"
+    t.json "rate_of_autonomous_users_grouped_by_month", default: {}
     t.string "statable_type"
     t.bigint "statable_id"
     t.float "rate_of_no_show_for_convocations"
-    t.json "rate_of_no_show_for_convocations_grouped_by_month"
+    t.json "rate_of_no_show_for_convocations_grouped_by_month", default: {}
     t.float "rate_of_no_show_for_invitations"
-    t.json "rate_of_no_show_for_invitations_grouped_by_month"
+    t.json "rate_of_no_show_for_invitations_grouped_by_month", default: {}
     t.float "rate_of_users_oriented"
-    t.json "rate_of_users_oriented_grouped_by_month"
-    t.json "users_with_rdv_count_grouped_by_month"
+    t.json "rate_of_users_oriented_grouped_by_month", default: {}
+    t.json "users_with_rdv_count_grouped_by_month", default: {}
     t.float "rate_of_no_show"
-    t.json "rate_of_no_show_grouped_by_month"
+    t.json "rate_of_no_show_grouped_by_month", default: {}
     t.float "rate_of_users_oriented_in_less_than_45_days"
-    t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
+    t.json "rate_of_users_oriented_in_less_than_45_days_by_month", default: {}
     t.float "rate_of_users_accompanied_in_less_than_30_days"
-    t.json "rate_of_users_accompanied_in_less_than_30_days_by_month"
+    t.json "rate_of_users_accompanied_in_less_than_30_days_by_month", default: {}
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
