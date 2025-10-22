@@ -1,9 +1,6 @@
+# rubocop:disable Metrics/ClassLength
 class Stat < ApplicationRecord
   GLOBAL_STAT_ATTRIBUTES = %w[
-    users_count
-    users_with_rdv_count
-    rdvs_count
-    sent_invitations_count
     rate_of_no_show_for_invitations
     rate_of_no_show_for_convocations
     rate_of_no_show
@@ -31,6 +28,22 @@ class Stat < ApplicationRecord
   ].freeze
 
   belongs_to :statable, polymorphic: true, optional: true
+
+  def users_count
+    users_count_grouped_by_month.values.sum
+  end
+
+  def rdvs_count
+    rdvs_count_grouped_by_month.values.sum
+  end
+
+  def sent_invitations_count
+    sent_invitations_count_grouped_by_month.values.sum
+  end
+
+  def users_with_rdv_count
+    users_with_rdv_count_grouped_by_month.values.sum
+  end
 
   def all_users
     @all_users ||= statable.nil? ? User.all : statable.users
@@ -150,3 +163,4 @@ class Stat < ApplicationRecord
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

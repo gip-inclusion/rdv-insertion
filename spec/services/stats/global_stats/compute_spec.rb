@@ -56,10 +56,6 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "renders the stats in the right format" do
-      expect(subject.users_count).to be_a(Integer)
-      expect(subject.users_with_rdv_count).to be_a(Integer)
-      expect(subject.rdvs_count).to be_a(Integer)
-      expect(subject.sent_invitations_count).to be_a(Integer)
       expect(subject.rate_of_no_show_for_invitations).to be_a(Float)
       expect(subject.rate_of_no_show_for_convocations).to be_a(Float)
       expect(subject.rate_of_no_show).to be_a(Float)
@@ -69,26 +65,6 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.rate_of_users_oriented).to be_a(Float)
       expect(subject.rate_of_autonomous_users).to be_a(Float)
       expect(subject.agents_count).to be_a(Integer)
-    end
-
-    it "counts the users" do
-      expect(stat).to receive(:all_users)
-      expect(subject.users_count).to eq(2)
-    end
-
-    it "counts the users with rdv" do
-      expect(stat).to receive(:user_ids_with_rdv_set)
-      expect(subject.users_with_rdv_count).to eq(2)
-    end
-
-    it "counts the rdvs" do
-      expect(stat).to receive(:all_participations)
-      expect(subject.rdvs_count).to eq(2)
-    end
-
-    it "counts the sent invitations" do
-      expect(stat).to receive(:invitations_set)
-      expect(subject.sent_invitations_count).to eq(2)
     end
 
     it "computes the percentage of no show for invitations" do
