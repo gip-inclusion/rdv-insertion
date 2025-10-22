@@ -3,11 +3,12 @@ describe Stats::GlobalStats::UpsertStatJob, type: :service do
     described_class.new.perform(structure_type, structure_id, stat_name)
   end
 
-  let(:stat_name) { "users_count" }
+  let(:stat_name) { "users_count_grouped_by_month" }
   let!(:department) { create(:department) }
   let!(:stat_attributes) do
-    { users_count: 3 }
+    { users_count_grouped_by_month: }
   end
+  let!(:users_count_grouped_by_month) { { "01/2025" => 3 } }
   let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
   let!(:structure_type) { "Department" }
   let!(:structure_id) { department.id }
@@ -41,7 +42,7 @@ describe Stats::GlobalStats::UpsertStatJob, type: :service do
     end
 
     it "saves the stat record" do
-      expect { subject }.to change { stat.reload.users_count }.from(0).to(3)
+      expect { subject }.to change { stat.reload.users_count_grouped_by_month }.from({}).to(users_count_grouped_by_month)
     end
   end
 end

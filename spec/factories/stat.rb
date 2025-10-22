@@ -1,10 +1,7 @@
 FactoryBot.define do
   factory :stat do
-    users_count { 0 }
     users_count_grouped_by_month { {} }
-    rdvs_count { 0 }
     rdvs_count_grouped_by_month { {} }
-    sent_invitations_count { 0 }
     sent_invitations_count_grouped_by_month { {} }
     rate_of_no_show_for_convocations { 0.0 }
     rate_of_no_show_for_convocations_grouped_by_month { {} }
