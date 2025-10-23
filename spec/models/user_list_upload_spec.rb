@@ -60,4 +60,45 @@ RSpec.describe UserListUpload do
       expect(user_list_upload.reload.referents_from_rows).to eq([referent_from_organisation])
     end
   end
+
+  describe "#average_metrics_hash" do
+    let(:user_list_upload_1) { create(:user_list_upload) }
+    let(:user_list_upload_2) { create(:user_list_upload) }
+    let(:user_list_upload_3) { create(:user_list_upload) }
+    let(:metrics_1) do
+      OpenStruct.new(
+        time_between_user_saves_triggered_and_user_saves_ended: 10,
+        rate_of_invitations_succeeded: 100
+      )
+    end
+    let(:metrics_2) do
+      OpenStruct.new(
+        time_between_user_saves_triggered_and_user_saves_ended: nil,
+        rate_of_invitations_succeeded: nil
+      )
+    end
+    let(:metrics_3) do
+      OpenStruct.new(
+        time_between_user_saves_triggered_and_user_saves_ended: 30,
+        rate_of_invitations_succeeded: 50
+      )
+    end
+
+    let!(:user_list_uploads) do
+      [user_list_upload_1, user_list_upload_2, user_list_upload_3]
+    end
+
+    before do
+      allow(user_list_upload_1).to receive(:metrics).and_return(metrics_1)
+      allow(user_list_upload_2).to receive(:metrics).and_return(metrics_2)
+      allow(user_list_upload_3).to receive(:metrics).and_return(metrics_3)
+    end
+
+    it "returns the average metrics hash" do
+      expect(described_class.average_metrics_hash(user_list_uploads)).to eq(
+        time_between_user_saves_triggered_and_user_saves_ended: 20,
+        rate_of_invitations_succeeded: 75
+      )
+    end
+  end
 end
