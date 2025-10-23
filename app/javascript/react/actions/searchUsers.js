@@ -1,16 +1,20 @@
 /* eslint no-await-in-loop: "off" */
-import appFetch from "../../lib/appFetch";
+import fetchApp from "../../lib/fetchApp";
 
 const searchUsers = async (departmentId, nirs, departmentInternalIds, uids, emails, phoneNumbers) =>
-  appFetch("/users/searches", "POST", {
-    department_id: departmentId,
-    users: {
-      department_internal_ids: departmentInternalIds,
-      uids,
-      nirs,
-      emails,
-      phone_numbers: phoneNumbers,
+  fetchApp("/users/searches", {
+    method: "POST",
+    body: {
+      department_id: departmentId,
+      users: {
+        department_internal_ids: departmentInternalIds,
+        uids,
+        nirs,
+        emails,
+        phone_numbers: phoneNumbers,
+      },
     },
+    parseJson: true,
   });
 
 export default searchUsers;

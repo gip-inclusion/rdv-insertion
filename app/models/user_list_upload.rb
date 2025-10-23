@@ -1,4 +1,11 @@
 class UserListUpload < ApplicationRecord
+  include UserListUpload::Navigation
+
+  STEPS_BY_ORIGIN = {
+    file_upload: %i[user_save invitation],
+    invite_all_uninvited_button: %i[invitation]
+  }.freeze
+
   belongs_to :category_configuration, optional: true
   belongs_to :structure, polymorphic: true
   belongs_to :agent
@@ -7,13 +14,26 @@ class UserListUpload < ApplicationRecord
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", through: :user_rows
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", through: :user_rows
 
+  enum :origin, { file_upload: "file_upload", invite_all_uninvited_button: "invite_all_uninvited_button" },
+       prefix: true
+
+  validates :category_configuration_id, presence: true, if: :handle_invitation_only?
+
   accepts_nested_attributes_for :user_rows
 
   delegate :user_rows_enriched_with_cnaf_data, :update_rows, :user_rows_selected_for_invitation,
            :user_rows_selected_for_user_save, :user_rows_with_errors, :user_rows_archived,
            :user_rows_with_closed_follow_up, to: :user_collection
-  delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
-  delegate :number, to: :department, prefix: true
+  delegate :motif_category, :motif_category_id, :motif_category_name, :motif_category_short_name,
+           to: :category_configuration, allow_nil: true
+  delegate :number, :id, to: :department, prefix: true
+
+  def save_with_existing_users!(users)
+    transaction do
+      save!
+      UserListUpload::UserRow.import_from_users!(users, user_list_upload: self)
+    end
+  end
 
   def department
     department_level? ? structure : structure.department
@@ -55,32 +75,6 @@ class UserListUpload < ApplicationRecord
 
   def invitations_enabled? = category_configuration.present?
 
-  def structure_user_path(user_id)
-    if department_level?
-      Rails.application.routes.url_helpers.department_user_path(id: user_id, department_id: structure_id)
-    else
-      Rails.application.routes.url_helpers.organisation_user_path(id: user_id, organisation_id: structure_id)
-    end
-  end
-
-  def structure_users_path
-    if department_level?
-      Rails.application.routes.url_helpers.department_users_path(department_id: structure_id)
-    else
-      Rails.application.routes.url_helpers.organisation_users_path(organisation_id: structure_id)
-    end
-  end
-
-  def user_invitations_path(user_id, **)
-    if department_level?
-      Rails.application.routes.url_helpers.department_user_invitations_path(department_id: structure_id, user_id:, **)
-    else
-      Rails.application.routes.url_helpers.organisation_user_invitations_path(
-        organisation_id: structure_id, user_id:, **
-      )
-    end
-  end
-
   def restricted_user_attributes
     UserPolicy.restricted_user_attributes_for_organisations(organisations:).to_a
   end
@@ -97,7 +91,8 @@ class UserListUpload < ApplicationRecord
             User.active.where(phone_number: user_row_attributes_formatted_phone_numbers)
           )
           .or(User.active.where(nir: user_row_attributes_formatted_nirs))
-          .select(:id, :nir, :phone_number, :email, :first_name)
+          # Preload associations to avoid N+1 queries when calling user_row.user_valid?
+          .preload(*user_associations_to_preload)
   end
 
   def potential_matching_users_in_department
@@ -109,7 +104,21 @@ class UserListUpload < ApplicationRecord
         department_internal_id: user_row_attributes.pluck("department_internal_id").compact,
         organisations: { department_id: department.id }
       )
-    ).select(:id, :department_internal_id, :affiliation_number, :role)
+      # Preload associations to avoid N+1 queries when calling user_row.user_valid?
+    ).preload(*user_associations_to_preload)
+  end
+
+  def handle_user_save? = STEPS_BY_ORIGIN[origin.to_sym].include?(:user_save)
+  def handle_invitation_only? = STEPS_BY_ORIGIN[origin.to_sym] == [:invitation]
+
+  def user_associations_to_preload
+    # we need to preload the associations to avoid N+1 queries when calling user_row.user_valid?
+    # or user_row.invitable?
+    if handle_user_save?
+      [:archives, :follow_ups]
+    else
+      [invitations: :follow_up]
+    end
   end
 
   private

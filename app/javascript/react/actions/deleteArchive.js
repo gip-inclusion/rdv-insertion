@@ -1,5 +1,8 @@
-import appFetch from "../../lib/appFetch";
+import fetchApp from "../../lib/fetchApp";
 
-const deleteArchive = async (archiveId, organisationId) => appFetch(`/organisations/${organisationId}/archives/${archiveId}`, "DELETE");
+const deleteArchive = async (archiveId, organisationId) => fetchApp(`/organisations/${organisationId}/archives/${archiveId}`, {
+  method: "DELETE",
+  parseJson: true,
+});
 
 export default deleteArchive;

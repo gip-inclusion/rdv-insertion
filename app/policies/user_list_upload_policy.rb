@@ -3,6 +3,8 @@ class UserListUploadPolicy < ApplicationPolicy
     record.organisations.intersect?(pundit_user.organisations)
   end
 
+  def create_from_existing_users? = create?
+
   def show?
     record.agent_id == pundit_user.id
   end

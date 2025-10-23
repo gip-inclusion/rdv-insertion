@@ -1,8 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 import * as XLSX from "xlsx";
-import safeSwal from "../lib/safeSwal";
-import { retrieveMissingColumnNames, retrieveSheetColumnNames, displayMissingColumnsWarning, validateFileFormat } from "../lib/fileParser";
-import parseContactsData from "../lib/parseContactsData";
+import safeSwal from "../../lib/safeSwal";
+import { retrieveMissingColumnNames, retrieveSheetColumnNames, displayMissingColumnsWarning, validateFileFormat } from "../../lib/fileParser";
+import parseContactsData from "../../lib/parseContactsData";
 
 export default class extends Controller {
   static targets = ["input", "form", "button", "buttonText", "spinner"]
