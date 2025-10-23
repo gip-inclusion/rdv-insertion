@@ -1,4 +1,6 @@
 class UserListUpload < ApplicationRecord
+  include UserListUpload::Metrics
+
   belongs_to :category_configuration, optional: true
   belongs_to :structure, polymorphic: true
   belongs_to :agent
@@ -11,7 +13,8 @@ class UserListUpload < ApplicationRecord
 
   delegate :user_rows_enriched_with_cnaf_data, :update_rows, :user_rows_selected_for_invitation,
            :user_rows_selected_for_user_save, :user_rows_with_errors, :user_rows_archived,
-           :user_rows_with_closed_follow_up, to: :user_collection
+           :user_rows_with_closed_follow_up, :user_rows_with_user_save_success, :user_rows_with_successful_invitation,
+           to: :user_collection
   delegate :motif_category, :motif_category_id, to: :category_configuration, allow_nil: true
   delegate :number, to: :department, prefix: true
 
