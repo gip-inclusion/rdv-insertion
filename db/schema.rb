@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_23_102544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -563,6 +563,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
     t.index ["user_row_id"], name: "index_user_list_upload_invitation_attempts_on_user_row_id"
   end
 
+  create_table "user_list_upload_processing_logs", force: :cascade do |t|
+    t.datetime "user_saves_triggered_at"
+    t.datetime "user_saves_started_at"
+    t.datetime "user_saves_ended_at"
+    t.datetime "invitations_triggered_at"
+    t.datetime "invitations_started_at"
+    t.datetime "invitations_ended_at"
+    t.uuid "user_list_upload_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_list_upload_id"], name: "index_user_list_upload_processing_logs_on_user_list_upload_id"
+  end
+
   create_table "user_list_upload_user_rows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -746,6 +759,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
   add_foreign_key "tag_users", "users"
   add_foreign_key "user_list_upload_invitation_attempts", "invitations"
   add_foreign_key "user_list_upload_invitation_attempts", "user_list_upload_user_rows", column: "user_row_id"
+  add_foreign_key "user_list_upload_processing_logs", "user_list_uploads"
   add_foreign_key "user_list_upload_user_rows", "user_list_uploads"
   add_foreign_key "user_list_upload_user_rows", "users", column: "matching_user_id"
   add_foreign_key "user_list_upload_user_save_attempts", "user_list_upload_user_rows", column: "user_row_id"
