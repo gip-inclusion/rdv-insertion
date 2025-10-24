@@ -1,6 +1,7 @@
 module UserListUploads
   class InvitationAttemptsController < BaseController
     before_action :set_user_list_upload, only: [:index, :select_rows, :create_many]
+    before_action :capture_invitations_triggered_at, only: [:create_many]
 
     def select_rows
       @user_collection = @user_list_upload.user_collection
@@ -35,6 +36,12 @@ module UserListUploads
 
     def invitation_formats
       [params[:format_email], params[:format_sms]].compact.map(&:downcase)
+    end
+
+    def capture_invitations_triggered_at
+      UserListUpload::CaptureProcessingTimestampJob.perform_later(
+        @user_list_upload.id, "invitations_triggered_at", Time.zone.now.to_s
+      )
     end
   end
 end

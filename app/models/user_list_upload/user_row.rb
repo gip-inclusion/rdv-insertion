@@ -255,6 +255,10 @@ class UserListUpload::UserRow < ApplicationRecord
     invitation_attempted? && invitation_attempts.none?(&:success?)
   end
 
+  def invitation_succeeded?
+    invitation_attempts.any?(&:success?)
+  end
+
   # rubocop:disable Metrics/AbcSize
   def format_attributes
     # formatting attributes

@@ -1,6 +1,7 @@
 module UserListUploads
   class UserSaveAttemptsController < BaseController
     before_action :set_user_list_upload, only: [:create_many, :index]
+    before_action :capture_user_saves_triggered_at, only: [:create_many]
 
     def create_many
       UserListUpload::SaveUsersJob.perform_later(@user_list_upload.id)
@@ -22,6 +23,12 @@ module UserListUploads
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
       authorize @user_list_upload, :edit?
+    end
+
+    def capture_user_saves_triggered_at
+      UserListUpload::CaptureProcessingTimestampJob.perform_later(
+        @user_list_upload.id, "user_saves_triggered_at", Time.zone.now.to_s
+      )
     end
   end
 end
