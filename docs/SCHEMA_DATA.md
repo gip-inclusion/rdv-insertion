@@ -646,6 +646,10 @@ Demandes d'authentification renforcée en tant que super-admin.
 
 ---
 
+### **user_list_upload_processing_logs** - Log des temps de traitement d'une liste d'usager
+
+Log les temps de traitement (sauvegarde d'usagers, invitations) d'une liste d'usagers
+
 ## Tables Active Storage
 
 ### **active_storage_attachments**

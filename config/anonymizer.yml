@@ -590,3 +590,14 @@ tables:
       - verified_at
       - verification_attempts
       - invalidated_at
+  - table_name: user_list_upload_processing_logs
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - user_list_upload_id
+      - created_at
+      - updated_at
+      - user_saves_triggered_at
+      - user_saves_started_at
+      - user_saves_ended_at
+      - invitations_triggered_at
+      - invitations_started_at
