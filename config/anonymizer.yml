@@ -601,3 +601,4 @@ tables:
       - user_saves_ended_at
       - invitations_triggered_at
       - invitations_started_at
+      - invitations_ended_at
