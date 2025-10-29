@@ -15,17 +15,56 @@
       <% unless category_configuration.persisted? %>
         <div class="d-flex flex-column align-items-center col-12 px-5 mb-4">
           <h4>Configuration pour : *</h4>
-          <div class="select">
-            <select
-              name="category_configuration[motif_category_id]"
-              id="motif_category_id"
-              required="true"
-            >
-              <option value=""> - </option>
+          <div class="position-relative w-100"
+               style="max-width: 400px;"
+               data-controller="dropdown-menu list-filter select-dropdown">
+
+            <input type="text"
+                   name="category_configuration[motif_category_id]"
+                   id="motif_category_id"
+                   data-select-dropdown-target="hiddenInput"
+                   required="true"
+                   class="visually-hidden">
+
+            <button type="button"
+                    class="form-select text-start d-flex justify-content-between align-items-center"
+                    data-action="click->dropdown-menu#toggle"
+                    data-dropdown-menu-target="button"
+                    data-select-dropdown-target="button"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              <span data-select-dropdown-target="label" style="pointer-events: none;"> Selectionner une catégorie </span>
+            </button>
+
+            <div class="dropdown-menu py-0 mt-2 w-100"
+                 data-dropdown-menu-target="dropdown"
+                 style="max-height: 400px; overflow-y: auto;">
+              <div class="px-3 pt-2 pb-2 border-bottom">
+                <input type="text"
+                        class="form-control form-control-sm"
+                        placeholder="Rechercher une catégorie..."
+                        data-list-filter-target="input"
+                        data-action="input->list-filter#search"
+                        autocomplete="off">
+              </div>
+
               <% @authorized_motif_categories.each do |motif_category| %>
-                <option value="<%= motif_category.id %>"><%= motif_category.name %></option>
+                <div class="dropdown-item py-2"
+                     style="cursor: pointer;"
+                     data-list-filter-target="item"
+                     data-select-dropdown-target="option"
+                     data-action="click->select-dropdown#select"
+                     data-value="<%= motif_category.id %>"
+                     data-label="<%= motif_category.name %>">
+                  <%= motif_category.name %>
+                </div>
               <% end %>
-            </select>
+
+              <div class="dropdown-item py-2 text-muted text-center d-none"
+                   data-list-filter-target="noResults">
+                Aucun résultat
+              </div>
+            </div>
           </div>
         </div>
       <% end %>
