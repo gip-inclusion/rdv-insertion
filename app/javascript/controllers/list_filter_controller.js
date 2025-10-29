@@ -42,6 +42,13 @@ export default class extends Controller {
     }
   }
 
+  reset() {
+    if (this.hasInputTarget) {
+      this.inputTarget.value = "";
+      this.#unhideAllItems();
+    }
+  }
+
   #unhideAllItems() {
     this.itemTargets.forEach(item => {
       item.classList.remove("d-none");
