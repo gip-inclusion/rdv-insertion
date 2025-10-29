@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["button", "hiddenInput", "label", "option"]
+  static targets = ["button", "hiddenInput", "label", "option", "dropdown"]
 
   connect() {
     if (this.hiddenInputTarget.value) {
@@ -23,8 +23,15 @@ export default class extends Controller {
     this.hiddenInputTarget.value = value;
     this.labelTarget.textContent = label;
 
+    this.#scrollToTop();
     this.#resetFilter();
     this.#closeDropdown();
+  }
+
+  #scrollToTop() {
+    if (this.hasDropdownTarget) {
+      this.dropdownTarget.scrollTop = 0;
+    }
   }
 
   #resetFilter() {
