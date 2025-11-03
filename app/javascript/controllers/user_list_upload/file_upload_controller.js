@@ -1,8 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 import * as XLSX from "xlsx"
-import { retrieveSheetColumnNames, retrieveMissingColumnNames, displayMissingColumnsWarning, validateFileFormat } from "../lib/fileParser"
-import { parameterizeObjectKeys, parameterizeObjectValues } from "../lib/parameterize"
-import { formatInput, formatAffiliationNumber, formatDateInput, formatAddress, formatRole, formatTitle, formatTags } from "../lib/inputFormatters"
+import { retrieveSheetColumnNames, retrieveMissingColumnNames, displayMissingColumnsWarning, validateFileFormat } from "../../lib/fileParser"
+import { parameterizeObjectKeys, parameterizeObjectValues } from "../../lib/parameterize"
+import { formatInput, formatAffiliationNumber, formatDateInput, formatAddress, formatRole, formatTitle, formatTags } from "../../lib/inputFormatters"
+import fetchApp from "../../lib/fetchApp"
+import safeSwal from "../../lib/safeSwal"
 
 export default class extends Controller {
   static targets = ["dropZone", "input", "uploadedFileInfo", "fileName", "fileInputInstruction", "userCount", "submitButton", "warning"]
@@ -73,35 +75,40 @@ export default class extends Controller {
     const payload = {
       file_name: this.fileNameTarget.textContent,
       category_configuration_id: this.categoryConfigurationId,
+      origin: "file_upload",
       user_rows_attributes: this.userList
     }
 
-    // Here we send the form as JSON instead of native form data 
+    // Here we send the form as JSON instead of native form data
     // Because natively form data have a size limit that makes
     // upload fail whenever too many users are sent
     //
-    // Sending this as JSON makes the payload sligthly 
-    // smaller and allows for any number of users to be sent
     try {
-      const response = await fetch(form.action, {
+      const response = await fetchApp(form.action, {
         method: form.method,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "text/vnd.turbo-stream.html",
-          "X-CSRF-Token": document.querySelector("meta[name=\"csrf-token\"]").content,
-        },
-        body: JSON.stringify(payload)
+        body: payload
       })
 
       if (response.status === 200) {
-        const { location } = await response.json()
-        window.Turbo.visit(location)
+        /* eslint-disable-next-line camelcase */
+        const { redirect_path } = await response.json()
+        window.Turbo.visit(redirect_path)
       } else {
-        const html = await response.text()
-        window.Turbo.renderStreamMessage(html)
+        const { errors } = await response.json()
+        safeSwal({
+          title: "Une erreur s'est produite lors de la création de la liste",
+          text: errors.join(", "),
+          icon: "error"
+        })
         this.#resetForm()
       }
     } catch (err) {
+      console.error(err)
+      safeSwal({
+        title: "Une erreur s'est produite lors de la création de la liste",
+        text: "Veuillez réessayer ou contacter le support à l'adresse support@rdv-insertion.fr",
+        icon: "error"
+      })
       this.#resetForm()
     }
   }

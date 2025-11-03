@@ -16,7 +16,7 @@
 
   <div class="row justify-content-center">
     <div class="col-md-10"
-         data-controller="user-list-upload"
+         data-controller="user-list-upload--file-upload"
          data-file-configuration-column-attributes="<%= @file_configuration.column_attributes.to_json %>"
          data-file-configuration-sheet-name="<%= @file_configuration.sheet_name %>"
          data-category-configuration-id="<%= @category_configuration&.id %>">
@@ -25,8 +25,8 @@
       <input type="file"
              class="d-none"
              id="user_list_upload_file"
-             data-user-list-upload-target="input"
-             data-action="change->user-list-upload#handleFileSelect"
+             data-user-list-upload--file-upload-target="input"
+             data-action="change->user-list-upload--file-upload#handleFileSelect"
              accept=".csv, .xlsx, .xls, .ods">
 
       <%= form_with(url: structure_user_list_uploads_path, local: true, class: "upload-form") do |f| %>
@@ -39,29 +39,29 @@
         </div>
 
         <div class="upload-zone p-5 mb-4 text-center border border-2 rounded"
-            data-user-list-upload-target="dropZone"
-            data-action="dragover->user-list-upload#handleDragOver
-                        dragleave->user-list-upload#handleDragLeave
-                        drop->user-list-upload#handleDrop">
-          <div data-user-list-upload-target="fileInputInstruction">
+            data-user-list-upload--file-upload-target="dropZone"
+            data-action="dragover->user-list-upload--file-upload#handleDragOver
+                        dragleave->user-list-upload--file-upload#handleDragLeave
+                        drop->user-list-upload--file-upload#handleDrop">
+          <div data-user-list-upload--file-upload-target="fileInputInstruction">
             <p class="mb-0">Glisser/déposer votre fichier ici</p>
             <p class="text-muted small">OU</p>
             <div class="mt-2">
-              <label for="user_list_upload_file" class="btn btn-primary" id="rdvi_upload_select-file_file-choice" tabindex="0" role="button" data-action="keydown->user-list-upload#handleOpenPickerKeydown">
+              <label for="user_list_upload_file" class="btn btn-primary" id="rdvi_upload_select-file_file-choice" tabindex="0" role="button" data-action="keydown->user-list-upload--file-upload#handleOpenPickerKeydown">
                 Charger un fichier
               </label>
             </div>
           </div>
 
-          <div data-user-list-upload-target="uploadedFileInfo" class="d-flex text-dark-blue justify-content-between align-items-center d-none">
+          <div data-user-list-upload--file-upload-target="uploadedFileInfo" class="d-flex text-dark-blue justify-content-between align-items-center d-none">
             <div class="d-flex">
               <div class="px-2">
                 <i class="ri-file-text-line ri-2x"></i>
               </div>
               <div class="px-2 text-start">
-                <p>Fichier « <span data-user-list-upload-target="fileName"></span> »</p>
-                <p class="text-start text-muted small" data-user-list-upload-target="userCount"></p>
-                <div class="d-flex text-brown position-relative d-none position-absolute" data-user-list-upload-target="warning">
+                <p>Fichier « <span data-user-list-upload--file-upload-target="fileName"></span> »</p>
+                <p class="text-start text-muted small" data-user-list-upload--file-upload-target="userCount"></p>
+                <div class="d-flex text-brown position-relative d-none position-absolute" data-user-list-upload--file-upload-target="warning">
                   <div class="d-flex">
                     <i class="ri-information-line me-1 fs-4"></i>
                     <p class="w-50">
@@ -72,11 +72,11 @@
                 </div>
               </div>
               <div class="px-2">
-                <i class="ri-close-line ri-2x btn btn-link text-decoration-none" data-action="click->user-list-upload#handleFileRemove" id="rdvi_upload_select-file_delete"></i>
+                <i class="ri-close-line ri-2x btn btn-link text-decoration-none" data-action="click->user-list-upload--file-upload#handleFileRemove" id="rdvi_upload_select-file_delete"></i>
               </div>
             </div>
             <div>
-              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline" id="rdvi_upload_select-file_change-file" tabindex="0" role="button" data-action="keydown->user-list-upload#handleOpenPickerKeydown">
+              <label for="user_list_upload_file" class="btn btn-link p-0 text-decoration-underline" id="rdvi_upload_select-file_change-file" tabindex="0" role="button" data-action="keydown->user-list-upload--file-upload#handleOpenPickerKeydown">
                 Changer de fichier
               </label>
             </div>
@@ -93,8 +93,8 @@
                         class: "btn btn-primary d-block mx-auto disabled",
                         id: "rdvi_upload_select-file_validate",
                         data: {
-                          action: "click->user-list-upload#handleSubmit",
-                          user_list_upload_target: "submitButton"
+                          action: "click->user-list-upload--file-upload#handleSubmit",
+                          user_list_upload__file_upload_target: "submitButton"
                         } %>
           </div>
         </div>
