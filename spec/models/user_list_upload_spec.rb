@@ -101,4 +101,21 @@ RSpec.describe UserListUpload do
       )
     end
   end
+
+  describe "validations" do
+    context "when the origin is invite_all_uninvited_button" do
+      let(:user_list_upload) do
+        build(:user_list_upload, origin: "invite_all_uninvited_button", category_configuration: nil)
+      end
+
+      it "is invalid without a category configuration" do
+        expect(user_list_upload).to be_invalid
+      end
+
+      it "is valid with a category configuration" do
+        user_list_upload.category_configuration = create(:category_configuration)
+        expect(user_list_upload).to be_valid
+      end
+    end
+  end
 end

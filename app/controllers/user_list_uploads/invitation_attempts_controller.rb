@@ -7,7 +7,7 @@ module UserListUploads
       @user_collection = @user_list_upload.user_collection
       @user_collection.sort_by!(**sort_params) if sort_params_valid?
       @user_collection.search!(params[:search_query]) if params[:search_query].present?
-      @user_rows = @user_collection.user_rows_with_user_save_success
+      @user_rows = @user_collection.user_rows_eligible_for_invitation
       @number_of_user_rows_selected = @user_list_upload.user_rows_selected_for_invitation.length
       @total_number_of_user_rows = @user_list_upload.user_rows.length
     end

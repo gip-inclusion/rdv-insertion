@@ -628,8 +628,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_102544) do
     t.bigint "agent_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "origin", null: false
     t.index ["agent_id"], name: "index_user_list_uploads_on_agent_id"
     t.index ["category_configuration_id"], name: "index_user_list_uploads_on_category_configuration_id"
+    t.index ["origin"], name: "index_user_list_uploads_on_origin"
     t.index ["structure_type", "structure_id"], name: "index_user_list_uploads_on_structure"
   end
 

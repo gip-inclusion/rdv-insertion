@@ -76,7 +76,7 @@ module Users::Filterable
   end
 
   def filter_users_by_page
-    return if request.format == "csv"
+    return if @skip_pagination
 
     @users = @users.page(page)
   end

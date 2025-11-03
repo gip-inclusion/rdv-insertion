@@ -12,6 +12,8 @@ class AgentRole < ApplicationRecord
 
   enum :access_level, { basic: "basic", admin: "admin" }
 
+  after_destroy_commit :archive_organisation_if_last_agent
+
   scope :authorized_to_export_csv, -> { where(authorized_to_export_csv: true) }
   scope :with_last_name, -> { joins(:agent).where.not(agents: { last_name: nil }) }
 
@@ -21,5 +23,9 @@ class AgentRole < ApplicationRecord
 
   def organisation_is_not_archived
     errors.add(:organisation, "est archivée") if organisation.archived?
+  end
+
+  def archive_organisation_if_last_agent
+    organisation.archive! if organisation.reload.agents.empty?
   end
 end

@@ -1,7 +1,7 @@
 module Serializable
   def as_json(opts = {})
     if blueprint_class
-      blueprint_class.render_as_json(self, opts.merge(blueprint_view_opts))
+      blueprint_class.render_as_json(self, default_blueprint_view_opts.merge(opts))
     else
       super
     end
@@ -13,7 +13,7 @@ module Serializable
     "#{self.class}Blueprint".safe_constantize
   end
 
-  def blueprint_view_opts
+  def default_blueprint_view_opts
     blueprint_class.view?(:extended) ? { view: :extended } : {}
   end
 end

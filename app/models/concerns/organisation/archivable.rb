@@ -10,7 +10,11 @@ module Organisation::Archivable
   def archived? = archived_at.present?
 
   def archive!
-    update!(archived_at: Time.zone.now)
+    archived? || update!(archived_at: Time.zone.now, name: "[Organisation archivée] #{name}")
+  end
+
+  def unarchive!
+    update!(archived_at: nil, name: name.gsub(/^\[Organisation archivée\] /, ""))
   end
 
   private
