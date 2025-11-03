@@ -6,16 +6,16 @@ module UserListUpload::Metrics
   end
 
   class_methods do
-    def average_metric(uploads, metric_name)
-      values = uploads.map(&:metrics).compact.map(&metric_name).compact
+    def average_metric(user_list_uploads, metric_name)
+      values = user_list_uploads.map(&:metrics).compact.map(&metric_name).compact
       return if values.empty?
 
       (values.sum.to_f / values.count).round(2)
     end
 
-    def average_metrics_hash(uploads)
-      uploads.first.metrics.to_h.keys.index_with do |metric_name|
-        average_metric(uploads, metric_name)
+    def average_metrics_hash(user_list_uploads)
+      user_list_uploads.first.metrics.to_h.keys.index_with do |metric_name|
+        average_metric(user_list_uploads, metric_name)
       end
     end
   end
