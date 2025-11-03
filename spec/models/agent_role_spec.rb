@@ -110,4 +110,13 @@ describe AgentRole do
       expect(agent_role).not_to be_valid
     end
   end
+
+  describe "organisation is archived when last agent role is destroyed" do
+    let(:organisation) { create(:organisation, agents: []) }
+    let(:agent_role) { create(:agent_role, organisation: organisation) }
+
+    it "archives the organisation" do
+      expect { agent_role.destroy! }.to change { organisation.reload.archived? }.from(false).to(true)
+    end
+  end
 end
