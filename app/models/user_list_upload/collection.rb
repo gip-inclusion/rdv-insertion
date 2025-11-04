@@ -94,6 +94,10 @@ class UserListUpload::Collection
     user_rows_with_invitation_attempted.select(&:all_invitations_failed?)
   end
 
+  def user_rows_with_successful_invitation
+    user_rows_with_invitation_attempted.select(&:invitation_succeeded?)
+  end
+
   def sort_by!(sort_by:, sort_direction:)
     @user_rows = UserListUpload::Sorter.sort(user_rows, sort_by, sort_direction)
   end

@@ -9,4 +9,11 @@ FactoryBot.define do
     role { "demandeur" }
     title { "monsieur" }
   end
+
+  trait :not_selected_for_user_save do
+    after(:create) do |user_row|
+      # we need to do it in an update since it is set automatically when the user_row is created
+      user_row.update_column(:selected_for_user_save, false)
+    end
+  end
 end
