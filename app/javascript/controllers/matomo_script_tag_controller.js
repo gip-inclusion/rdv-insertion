@@ -44,20 +44,28 @@ export default class extends Controller {
     // Remove query parameters
     let routePattern = path.split("?")[0];
 
-    // Replace numeric IDs with named identifiers, add more replacements as needed
-    routePattern = routePattern.replace(/\/organisations\/\d+/, "/organisations/:organisation_id");
-    routePattern = routePattern.replace(/\/departments\/\d+/, "/departments/:department_id");
-    routePattern = routePattern.replace(/\/user_list_uploads\/[a-f0-9-]+/, "/user_list_uploads/:user_list_upload_id");
-    routePattern = routePattern.replace(/\/user_rows\/\d+/, "/user_rows/:user_row_id");
-    routePattern = routePattern.replace(/\/agents\/\d+/, "/agents/:agent_id");
-    routePattern = routePattern.replace(/\/follow_ups\/\d+/, "/follow_ups/:follow_up_id");
-    routePattern = routePattern.replace(/\/participations\/\d+/, "/participations/:participation_id");
-    routePattern = routePattern.replace(/\/file_configurations\/\d+/, "/file_configurations/:file_configuration_id");
-    routePattern = routePattern.replace(/\/r\/[a-f0-9-]+/, "/r/:uuid");
+    // Replace /resource_name/id patterns automatically
+    routePattern = routePattern.replace(/\/([a-z_]+)\/([\d]+|[a-f0-9-]{8,})/g, (match, resourceName) => {
+      // Special case: /r/uuid for invitation links
+      if (resourceName === "r") {
+        return "/r/:uuid";
+      }
 
-    // General replacement for any remaining numeric IDs
-    routePattern = routePattern.replace(/\/\d+/g, "/:id");
+      const singularName = this.singularize(resourceName);
+      return `/${resourceName}/:${singularName}_id`;
+    });
 
     return routePattern;
+  }
+
+  singularize(word) {
+    if (word.endsWith("ies")) {
+      return `${word.slice(0, -3)}y`; // companies -> company
+    }
+    if (word.endsWith("s")) {
+      return word.slice(0, -1); // users -> user
+    }
+
+    return word; // already singular or unknown
   }
 }

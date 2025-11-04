@@ -15,7 +15,7 @@ describe "Matomo URL rewriting", :js do
     matomo_data = page.evaluate_script("window._mtm")
     custom_url = matomo_data.find { |item| item["customPageUrl"] }&.dig("customPageUrl")
 
-    expect(custom_url).to eq("/organisations/:organisation_id/users/:id")
+    expect(custom_url).to eq("/organisations/:organisation_id/users/:user_id")
   end
 
   it "keeps static URLs unchanged" do
