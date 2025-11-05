@@ -39,13 +39,24 @@ module Users
     end
 
     def upsert_rdv_solidarites_user
-      @rdv_solidarites_user_id.present? ? update_user_and_associations : create_rdv_solidarites_user!
+      @rdv_solidarites_user_id.present? ? update_user_and_associations : handle_user_creation
     end
 
     def update_user_and_associations
+      # upserting associations is useful when adding orgs or referents to an existing user
+      # from user list uploads for example
       upsert_user_profiles
       upsert_referents if @user.referents.any?
       update_rdv_solidarites_user
+    end
+
+    def handle_user_creation
+      create_rdv_solidarites_user!
+      # if user already existed in rdv-insertion (and rdv_solidarites_user_id has been nullified),
+      # we need to push its associations in rdv-solidarites.
+      # we already push the organisations common to the agent and the user during the rdv_solidarites_user creation
+      upsert_user_profiles if user_in_organisations_agent_does_not_belong_to?
+      upsert_referents if @user.referents.any?
     end
 
     def create_rdv_solidarites_user!
@@ -62,10 +73,9 @@ module Users
 
     def create_rdv_solidarites_user
       @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
-        user_attributes:
-          rdv_solidarites_user_attributes
-            .merge(organisation_ids: rdv_solidarites_organisation_ids)
-            .merge(referent_agent_ids: referent_rdv_solidarites_ids)
+        user_attributes: rdv_solidarites_user_attributes.merge(
+          organisation_ids: user_agent_rdv_solidarites_organisation_ids
+        )
       )
     end
 
@@ -73,7 +83,7 @@ module Users
       @upsert_user_profiles ||= call_service!(
         RdvSolidaritesApi::CreateUserProfiles,
         rdv_solidarites_user_id: @rdv_solidarites_user_id,
-        rdv_solidarites_organisation_ids: rdv_solidarites_organisation_ids
+        rdv_solidarites_organisation_ids: user_rdv_solidarites_organisation_ids
       )
     end
 
@@ -109,12 +119,20 @@ module Users
       @rdv_solidarites_user_id.nil? || email_field_to_target == :notification_email
     end
 
-    def rdv_solidarites_organisation_ids
+    def user_rdv_solidarites_organisation_ids
       @user.organisations.map(&:rdv_solidarites_organisation_id)
     end
 
     def referent_rdv_solidarites_ids
       @user.referents.map(&:rdv_solidarites_agent_id)
+    end
+
+    def user_agent_rdv_solidarites_organisation_ids
+      (@user.organisations & Current.agent.organisations).map(&:rdv_solidarites_organisation_id)
+    end
+
+    def user_in_organisations_agent_does_not_belong_to?
+      user_rdv_solidarites_organisation_ids.length > user_agent_rdv_solidarites_organisation_ids.length
     end
   end
 end
