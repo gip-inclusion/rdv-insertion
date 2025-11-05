@@ -37,7 +37,7 @@ describe SendInvitationReminderJob do
     allow(Invitations::SaveAndSend).to receive(:call)
       .with(invitation:, check_creneaux_availability: false)
       .and_return(OpenStruct.new(success?: true))
-    allow(MattermostClient).to receive(:send_to_notif_channel)
+    allow(SlackClient).to receive(:send_to_notif_channel)
   end
 
   it "instanciates an invitation with attributes from the first one" do
@@ -77,8 +77,8 @@ describe SendInvitationReminderJob do
       subject
     end
 
-    it "sends a notification to mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notification to slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with("🚫 L'usager 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
@@ -97,8 +97,8 @@ describe SendInvitationReminderJob do
       subject
     end
 
-    it "sends a notification to mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notification to slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with("🚫 L'usager 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
@@ -117,8 +117,8 @@ describe SendInvitationReminderJob do
       subject
     end
 
-    it "sends a notification to mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notification to slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with("🚫 L'usager 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end

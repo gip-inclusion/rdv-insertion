@@ -13,7 +13,7 @@ class Creneaux::RetrieveAndNotifyUnavailableCreneauxJob < ApplicationJob
 
     deliver_general_email
     deliver_per_category_email_to_notify_no_available_slots
-    notify_on_mattermost
+    notify_on_slack
     create_blocked_invitations_counter
     create_blocked_user
   end
@@ -61,15 +61,15 @@ class Creneaux::RetrieveAndNotifyUnavailableCreneauxJob < ApplicationJob
   end
   # rubocop:enable Metrics/AbcSize
 
-  def notify_on_mattermost
+  def notify_on_slack
     invitations_without_creneaux_by_motif_category.each do |motif_category, invitations|
-      MattermostClient.send_to_notif_channel(formated_string_for_mattermost_message(organisation,
+      SlackClient.send_to_notif_channel(formated_string_for_slack_message(organisation,
                                                                                     motif_category,
                                                                                     invitations))
     end
   end
 
-  def formated_string_for_mattermost_message(organisation, motif_category, invitations)
+  def formated_string_for_slack_message(organisation, motif_category, invitations)
     string =
       "Créneaux indisponibles pour l'organisation #{organisation.name}" \
       " (Département: #{organisation.department.name})\n" \

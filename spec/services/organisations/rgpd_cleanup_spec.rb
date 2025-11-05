@@ -19,7 +19,7 @@ describe Organisations::RgpdCleanup, type: :service do
 
     context "when user is only in current organisation" do
       it "destroys the user completely" do
-        allow(MattermostClient).to receive(:send_to_rgpd_cleanup_channel)
+        allow(SlackClient).to receive(:send_to_rgpd_cleanup_channel)
 
         expect { subject }.to change(User, :count).by(-1)
         expect(User.exists?(inactive_user.id)).to be false
@@ -27,11 +27,11 @@ describe Organisations::RgpdCleanup, type: :service do
       end
 
       it "sends deletion notification" do
-        allow(MattermostClient).to receive(:send_to_rgpd_cleanup_channel)
+        allow(SlackClient).to receive(:send_to_rgpd_cleanup_channel)
 
         subject
 
-        expect(MattermostClient).to have_received(:send_to_rgpd_cleanup_channel).with(
+        expect(SlackClient).to have_received(:send_to_rgpd_cleanup_channel).with(
           match(/Les usagers suivants ont été supprimés pour inactivité dans l'organisation #{organisation.name}/)
         )
       end
@@ -44,7 +44,7 @@ describe Organisations::RgpdCleanup, type: :service do
       end
 
       it "removes user from current organisation only" do
-        allow(MattermostClient).to receive(:send_to_rgpd_cleanup_channel)
+        allow(SlackClient).to receive(:send_to_rgpd_cleanup_channel)
 
         expect { subject }.not_to change(User, :count)
         expect(User.exists?(inactive_user.id)).to be true
@@ -53,11 +53,11 @@ describe Organisations::RgpdCleanup, type: :service do
       end
 
       it "sends removal notification" do
-        allow(MattermostClient).to receive(:send_to_rgpd_cleanup_channel)
+        allow(SlackClient).to receive(:send_to_rgpd_cleanup_channel)
 
         subject
 
-        expect(MattermostClient).to have_received(:send_to_rgpd_cleanup_channel).with(
+        expect(SlackClient).to have_received(:send_to_rgpd_cleanup_channel).with(
           match(/Les usagers suivants ont été retirés de l'organisation #{organisation.name} pour inactivité/)
         )
       end
@@ -88,10 +88,10 @@ describe Organisations::RgpdCleanup, type: :service do
       end
 
       it "sends notification when rdvs are deleted" do
-        allow(MattermostClient).to receive(:send_to_rgpd_cleanup_channel)
+        allow(SlackClient).to receive(:send_to_rgpd_cleanup_channel)
         subject
 
-        expect(MattermostClient).to have_received(:send_to_rgpd_cleanup_channel).with(
+        expect(SlackClient).to have_received(:send_to_rgpd_cleanup_channel).with(
           match(/Les rdvs suivants ont été supprimés automatiquement pour l'organisation #{organisation.name}/)
         )
       end
@@ -101,7 +101,7 @@ describe Organisations::RgpdCleanup, type: :service do
       let!(:dry_run) { true }
 
       before do
-        allow(MattermostClient).to receive(:send_to_rgpd_cleanup_channel)
+        allow(SlackClient).to receive(:send_to_rgpd_cleanup_channel)
       end
 
       it "does not destroy users" do
@@ -123,7 +123,7 @@ describe Organisations::RgpdCleanup, type: :service do
       it "still sends notification when users are to be deleted" do
         subject
 
-        expect(MattermostClient).to have_received(:send_to_rgpd_cleanup_channel).with(
+        expect(SlackClient).to have_received(:send_to_rgpd_cleanup_channel).with(
           match(
             /\[🔍 DRY RUN\] 🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation/
           )

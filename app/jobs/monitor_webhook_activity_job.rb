@@ -16,7 +16,7 @@ class MonitorWebhookActivityJob < ApplicationJob
 
     return if alertable_models.empty?
 
-    MattermostClient.send_to_notif_channel(
+    SlackClient.send_to_notif_channel(
       "⚠️ Les models suivants semblent ne pas avoir reçus de webhooks récemment : \n" \
       "#{alertable_models.pluck(:model).map(&:name).join(', ')}"
     )

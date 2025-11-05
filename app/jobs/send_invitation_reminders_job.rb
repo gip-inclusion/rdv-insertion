@@ -16,7 +16,7 @@ class SendInvitationRemindersJob < ApplicationJob
       @sent_reminders_user_ids << user.id
     end
 
-    notify_on_mattermost
+    notify_on_slack
   end
 
   private
@@ -47,8 +47,8 @@ class SendInvitationRemindersJob < ApplicationJob
     invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date
   end
 
-  def notify_on_mattermost
-    MattermostClient.send_to_notif_channel(
+  def notify_on_slack
+    SlackClient.send_to_notif_channel(
       "📬 #{@sent_reminders_user_ids.length} relances en cours!\n" \
       "Les usagers sont: #{@sent_reminders_user_ids}"
     )

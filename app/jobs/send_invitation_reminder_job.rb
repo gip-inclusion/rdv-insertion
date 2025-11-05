@@ -50,7 +50,7 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def notify_non_eligible_for_reminder
-    MattermostClient.send_to_notif_channel(
+    SlackClient.send_to_notif_channel(
       "🚫 L'usager #{@user.id} n'est pas éligible à la relance pour #{@follow_up.motif_category_name}."
     )
   end

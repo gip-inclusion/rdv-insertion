@@ -105,8 +105,8 @@ describe Creneaux::RetrieveAndNotifyUnavailableCreneauxJob do
     subject
   end
 
-  it "send the message to mattermost" do
-    expect(MattermostClient).to receive(:send_to_notif_channel)
+  it "send the message to slack" do
+    expect(SlackClient).to receive(:send_to_notif_channel)
       .with(
         "Créneaux indisponibles pour l'organisation CD Aveyron (Département: Aveyron)\n" \
         " Motif : RSA Orientation\n" \
@@ -114,7 +114,7 @@ describe Creneaux::RetrieveAndNotifyUnavailableCreneauxJob do
         " Codes postaux : 75001, 75002\n" \
         " Référents (rdvsp_ids) : 1\n" \
       )
-    expect(MattermostClient).to receive(:send_to_notif_channel)
+    expect(SlackClient).to receive(:send_to_notif_channel)
       .with(
         "Créneaux indisponibles pour l'organisation CD Aveyron" \
         " (Département: Aveyron)\n" \

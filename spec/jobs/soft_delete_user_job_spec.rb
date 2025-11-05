@@ -11,7 +11,7 @@ describe SoftDeleteUserJob do
       allow(User).to receive(:find_by)
         .with(rdv_solidarites_user_id: rdv_solidarites_user_id)
         .and_return(user)
-      allow(MattermostClient).to receive(:send_to_notif_channel)
+      allow(SlackClient).to receive(:send_to_notif_channel)
     end
 
     it "finds the matching user" do

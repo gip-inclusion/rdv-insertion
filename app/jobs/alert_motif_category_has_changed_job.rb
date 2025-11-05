@@ -6,7 +6,7 @@ class AlertMotifCategoryHasChangedJob < ApplicationJob
 
     return if motif&.rdvs.blank?
 
-    alert_on_mattermost
+    alert_on_slack
     alert_on_sentry
   end
 
@@ -19,8 +19,8 @@ class AlertMotifCategoryHasChangedJob < ApplicationJob
       " vient de changer de catégorie malgré la présence de #{motif.rdvs.count} rendez-vous associés."
   end
 
-  def alert_on_mattermost
-    MattermostClient.send_to_private_channel(alert_message)
+  def alert_on_slack
+    SlackClient.send_to_private_channel(alert_message)
   end
 
   def alert_on_sentry

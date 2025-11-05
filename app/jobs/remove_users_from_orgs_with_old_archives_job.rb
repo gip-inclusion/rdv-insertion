@@ -12,13 +12,13 @@ class RemoveUsersFromOrgsWithOldArchivesJob < ApplicationJob
       end
     end
 
-    notify_on_mattermost(removed_users_count) if removed_users_count.positive?
+    notify_on_slack(removed_users_count) if removed_users_count.positive?
   end
 
   private
 
-  def notify_on_mattermost(count)
-    MattermostClient.send_to_notif_channel(
+  def notify_on_slack(count)
+    SlackClient.send_to_notif_channel(
       "🧹 #{count} usagers archivés ont été retirés de leurs organisations selon leur durée de conservation"
     )
   end
