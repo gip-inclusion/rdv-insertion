@@ -40,7 +40,7 @@ module UserListUploads
 
     def capture_invitations_triggered_at
       UserListUpload::CaptureProcessingTimestampJob.perform_later(
-        @user_list_upload.id, "invitations_triggered_at", Time.zone.now.to_s
+        @user_list_upload.id, "invitations_triggered_at", Time.zone.now
       )
     end
   end

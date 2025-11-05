@@ -3,7 +3,7 @@ describe UserListUpload::CaptureProcessingTimestampJob do
 
   let!(:user_list_upload) { create(:user_list_upload) }
   let!(:timestamp_name) { "user_saves_triggered_at" }
-  let!(:value) { Time.zone.now.to_s }
+  let!(:value) { Time.zone.now }
 
   describe "#perform" do
     context "when the processing log does not exist" do

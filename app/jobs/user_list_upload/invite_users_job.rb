@@ -20,13 +20,13 @@ class UserListUpload::InviteUsersJob < ApplicationJob
 
   def capture_invitations_started_at
     UserListUpload::CaptureProcessingTimestampJob.perform_later(
-      arguments.first, "invitations_started_at", Time.zone.now.to_s
+      arguments.first, "invitations_started_at", Time.zone.now
     )
   end
 
   def capture_invitations_ended_at
     UserListUpload::CaptureProcessingTimestampJob.perform_later(
-      arguments.first, "invitations_ended_at", Time.zone.now.to_s
+      arguments.first, "invitations_ended_at", Time.zone.now
     )
   end
 end
