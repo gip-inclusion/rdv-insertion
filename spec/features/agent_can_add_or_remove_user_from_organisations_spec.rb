@@ -152,6 +152,17 @@ describe "Agents can add or remove user from organisations", :js do
             user: { id: rdv_solidarites_user_id }
           }.to_json
         )
+        stub_create_user_profiles = stub_request(
+          :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/user_profiles/create_many"
+        ).to_return(
+          status: 200,
+          body: {
+            user: { id: rdv_solidarites_user_id,
+                    organisation_ids: [
+                      organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id
+                    ] }
+          }.to_json
+        )
 
         visit department_user_path(department, user)
 
@@ -175,6 +186,7 @@ describe "Agents can add or remove user from organisations", :js do
         expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
         expect(user.reload.motif_categories).not_to include(other_motif_category)
         expect(stub_create_user).to have_been_requested
+        expect(stub_create_user_profiles).to have_been_requested
       end
     end
 
