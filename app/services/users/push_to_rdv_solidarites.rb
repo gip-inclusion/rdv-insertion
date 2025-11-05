@@ -43,8 +43,8 @@ module Users
     end
 
     def update_user_and_associations
-      # upserting associations is necessary when adding orgs or referents to an existing user
-      # from user list uploads for example
+      # Upserting associations is necessary when we update a user and add orgs or referents to it.
+      # It can be done from user list uploads.
       upsert_user_profiles
       upsert_referents if @user.referents.any?
       update_rdv_solidarites_user
