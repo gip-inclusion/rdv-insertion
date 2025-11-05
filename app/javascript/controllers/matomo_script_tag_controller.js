@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import Cookies from "js-cookie";
 
 export default class extends Controller {
   static values = {
@@ -32,40 +33,11 @@ export default class extends Controller {
   }
 
   trackPageView() {
-    const routePattern = this.rewriteUrlToRoutePattern(window.location.pathname);
+    const routePattern = Cookies.get("matomo_page_url") || window.location.pathname;
 
     window._mtm = window._mtm || [];
     window._mtm.push({
       customPageUrl: routePattern
     });
-  }
-
-  rewriteUrlToRoutePattern(path) {
-    // Remove query parameters
-    let routePattern = path.split("?")[0];
-
-    // Replace /resource_name/id patterns automatically
-    routePattern = routePattern.replace(/\/([a-z_]+)\/([\d]+|[a-f0-9-]{8,})/g, (match, resourceName) => {
-      // Special case: /r/uuid for invitation links
-      if (resourceName === "r") {
-        return "/r/:uuid";
-      }
-
-      const singularName = this.singularize(resourceName);
-      return `/${resourceName}/:${singularName}_id`;
-    });
-
-    return routePattern;
-  }
-
-  singularize(word) {
-    if (word.endsWith("ies")) {
-      return `${word.slice(0, -3)}y`; // companies -> company
-    }
-    if (word.endsWith("s")) {
-      return word.slice(0, -1); // users -> user
-    }
-
-    return word; // already singular or unknown
   }
 }
