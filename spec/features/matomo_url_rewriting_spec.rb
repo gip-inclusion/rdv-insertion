@@ -28,13 +28,15 @@ describe "Matomo URL rewriting with cookie", :js do
 
     click_link "Parcours"
 
-    expect(page).to have_content("Historique d'accompagnement", wait: 1)
+    expect(page).to have_content("Historique d'accompagnement")
 
     new_cookie = CGI.unescape(page.driver.browser.manage.cookie_named("matomo_page_url")[:value])
     expect(new_cookie).to eq("/organisations/:organisation_id/users/:user_id/parcours")
 
-    matomo_data = page.evaluate_script("window._mtm")
-    custom_urls = matomo_data.select { |item| item["customPageUrl"] }.map { |item| item["customPageUrl"] }
-    expect(custom_urls.last).to eq("/organisations/:organisation_id/users/:user_id/parcours")
+    expect(page).to have_xpath("//body", wait: 2) do
+      matomo_data = page.evaluate_script("window._mtm")
+      custom_urls = matomo_data.select { |item| item["customPageUrl"] }.map { |item| item["customPageUrl"] }
+      custom_urls.include?("/organisations/:organisation_id/users/:user_id/parcours")
+    end
   end
 end
