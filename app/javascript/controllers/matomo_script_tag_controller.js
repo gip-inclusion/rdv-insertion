@@ -16,7 +16,6 @@ export default class extends Controller {
     /* eslint no-underscore-dangle: "off" */
     window._mtm = window._mtm || [];
     window._mtm.push({ "mtm.startTime": new Date().getTime(), event: "mtm.Start" });
-
     const matomoScriptTag = document.createElement("script");
     matomoScriptTag.async = true;
     matomoScriptTag.src = `https://matomo.inclusion.beta.gouv.fr/js/container_${this.containerIdValue}.js`;
