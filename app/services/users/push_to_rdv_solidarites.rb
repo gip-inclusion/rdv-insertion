@@ -43,7 +43,7 @@ module Users
     end
 
     def update_user_and_associations
-      # upserting associations is useful when adding orgs or referents to an existing user
+      # upserting associations is necessary when adding orgs or referents to an existing user
       # from user list uploads for example
       upsert_user_profiles
       upsert_referents if @user.referents.any?
