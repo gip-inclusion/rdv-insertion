@@ -259,7 +259,9 @@ describe Users::PushToRdvSolidarites, type: :service do
           expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
             .with(
               rdv_solidarites_user_id: 42,
-              rdv_solidarites_organisation_ids: [organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id]
+              rdv_solidarites_organisation_ids: [
+                organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id
+              ]
             )
           subject
         end
