@@ -21,13 +21,13 @@ class UserListUpload::SaveUsersJob < ApplicationJob
 
   def capture_user_saves_started_at
     UserListUpload::CaptureProcessingTimestampJob.perform_later(
-      arguments.first, "user_saves_started_at", Time.zone.now.to_s
+      arguments.first, "user_saves_started_at", Time.zone.now
     )
   end
 
   def capture_user_saves_ended_at
     UserListUpload::CaptureProcessingTimestampJob.perform_later(
-      arguments.first, "user_saves_ended_at", Time.zone.now.to_s
+      arguments.first, "user_saves_ended_at", Time.zone.now
     )
   end
 end

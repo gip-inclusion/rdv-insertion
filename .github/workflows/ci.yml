@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:13.2
+        image: postgres:16.9
         env:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
