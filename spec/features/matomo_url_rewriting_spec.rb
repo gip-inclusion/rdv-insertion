@@ -28,7 +28,7 @@ describe "Matomo URL rewriting with cookie", :js do
 
     click_link "Parcours"
 
-    expect(page).to have_content("Historique d'accompagnement")
+    expect(page).to have_content("Historique d'accompagnement", wait: 1)
 
     new_cookie = CGI.unescape(page.driver.browser.manage.cookie_named("matomo_page_url")[:value])
     expect(new_cookie).to eq("/organisations/:organisation_id/users/:user_id/parcours")
