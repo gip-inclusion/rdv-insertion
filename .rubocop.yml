@@ -98,6 +98,9 @@ Style/HashSyntax:
 Naming/BlockForwarding:
   Enabled: false
 
+Naming/VariableNumber:
+  Enabled: false
+
 Rails/HasAndBelongsToMany:
   Enabled: false
 

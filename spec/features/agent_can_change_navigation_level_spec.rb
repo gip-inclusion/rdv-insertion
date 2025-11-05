@@ -135,12 +135,6 @@ describe "Agents can sort users on index page", :js do
         include_examples "a page with an organisation navigation button"
       end
 
-      context "on batch actions page" do
-        let!(:page_path) { new_department_batch_action_path(department, motif_category_id: motif_category.id) }
-
-        include_examples "a page with an organisation navigation button"
-      end
-
       context "on stats page" do
         it "does not show the organisation navigation button in header" do
           visit stats_path
@@ -209,12 +203,6 @@ describe "Agents can sort users on index page", :js do
 
       context "on user parcours page" do
         let!(:page_path) { organisation_user_parcours_path(organisation, user) }
-
-        include_examples "a page with an organisation navigation button"
-      end
-
-      context "on batch actions page" do
-        let!(:page_path) { new_organisation_batch_action_path(organisation, motif_category_id: motif_category.id) }
 
         include_examples "a page with an organisation navigation button"
       end

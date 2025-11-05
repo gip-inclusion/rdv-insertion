@@ -44,6 +44,10 @@ class UserListUpload::Collection
     user_rows.select(&:changed_by_cnaf_data?)
   end
 
+  def user_rows_eligible_for_invitation
+    user_list_upload.handle_user_save? ? user_rows_with_user_save_success : user_rows
+  end
+
   def user_rows_archived
     user_rows.select(&:archived?)
   end
@@ -90,6 +94,10 @@ class UserListUpload::Collection
     user_rows_with_invitation_attempted.select(&:all_invitations_failed?)
   end
 
+  def user_rows_with_successful_invitation
+    user_rows_with_invitation_attempted.select(&:invitation_succeeded?)
+  end
+
   def sort_by!(sort_by:, sort_direction:)
     @user_rows = UserListUpload::Sorter.sort(user_rows, sort_by, sort_direction)
   end
@@ -115,7 +123,7 @@ class UserListUpload::Collection
   def load_user_rows
     @user_list_upload.user_rows.preload(
       matching_user: [:organisations, :motif_categories, :referents, :tags, :address_geocoding, {
-        archives: :organisation
+        archives: :organisation, invitations: :follow_up
       }],
       invitation_attempts: :invitation,
       user_save_attempts: [user: [:address_geocoding, { invitations: [:follow_up] }]]

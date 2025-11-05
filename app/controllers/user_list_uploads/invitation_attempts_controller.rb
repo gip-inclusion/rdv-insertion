@@ -1,12 +1,13 @@
 module UserListUploads
   class InvitationAttemptsController < BaseController
     before_action :set_user_list_upload, only: [:index, :select_rows, :create_many]
+    before_action :capture_invitations_triggered_at, only: [:create_many]
 
     def select_rows
       @user_collection = @user_list_upload.user_collection
       @user_collection.sort_by!(**sort_params) if sort_params_valid?
       @user_collection.search!(params[:search_query]) if params[:search_query].present?
-      @user_rows = @user_collection.user_rows_with_user_save_success
+      @user_rows = @user_collection.user_rows_eligible_for_invitation
       @number_of_user_rows_selected = @user_list_upload.user_rows_selected_for_invitation.length
       @total_number_of_user_rows = @user_list_upload.user_rows.length
     end
@@ -35,6 +36,12 @@ module UserListUploads
 
     def invitation_formats
       [params[:format_email], params[:format_sms]].compact.map(&:downcase)
+    end
+
+    def capture_invitations_triggered_at
+      UserListUpload::CaptureProcessingTimestampJob.perform_later(
+        @user_list_upload.id, "invitations_triggered_at", Time.zone.now.to_s
+      )
     end
   end
 end

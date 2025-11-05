@@ -3,5 +3,6 @@ FactoryBot.define do
     agent
     structure { create(:department) }
     category_configuration
+    origin { "file_upload" }
   end
 end

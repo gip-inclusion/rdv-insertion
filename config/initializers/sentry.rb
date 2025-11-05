@@ -6,6 +6,8 @@ Sentry.init do |config|
   # of transactions for performance monitoring.
   # We recommend adjusting this value in production
   config.traces_sample_rate = 0.05
+  # crash-free sessions tracking
+  config.auto_session_tracking = true
 
   config.before_send = lambda do |event, _hint|
     # We filter sensitive data from Sidekiq arguments

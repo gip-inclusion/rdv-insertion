@@ -214,8 +214,8 @@ class User < ApplicationRecord
     )
   end
 
-  def department_organisations(department)
-    organisations.where(department: department)
+  def department_organisations(department_id)
+    organisations.select { |o| o.department_id == department_id }
   end
 
   def archive_in_organisation(organisation)
