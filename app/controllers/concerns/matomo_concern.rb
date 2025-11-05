@@ -4,7 +4,7 @@ module MatomoConcern
 
   included do
     before_action :set_enable_matomo_tracking, if: -> { request.get? }
-    before_action :set_matomo_page_url_cookie, if: :matomo_tracking_enabled? && request.get?
+    before_action :set_matomo_page_url_cookie, if: -> { request.get? }
   end
 
   private
@@ -14,6 +14,8 @@ module MatomoConcern
   end
 
   def set_matomo_page_url_cookie
+    return unless matomo_tracking_enabled?
+
     cookies[:matomo_page_url] = matomo_page_url
   end
 
