@@ -63,9 +63,7 @@ class Creneaux::RetrieveAndNotifyUnavailableCreneauxJob < ApplicationJob
 
   def notify_on_slack
     invitations_without_creneaux_by_motif_category.each do |motif_category, invitations|
-      SlackClient.send_to_notif_channel(formated_string_for_slack_message(organisation,
-                                                                                    motif_category,
-                                                                                    invitations))
+      SlackClient.send_to_notif_channel(formated_string_for_slack_message(organisation, motif_category, invitations))
     end
   end
 
