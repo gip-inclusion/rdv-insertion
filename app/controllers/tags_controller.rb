@@ -1,5 +1,5 @@
 class TagsController < ApplicationController
-  before_action :set_organisation
+  before_action :set_organisation, :authorize_organisation_configuration
 
   def create
     tag = Tag.joins(:tag_organisations).find_by(
@@ -27,6 +27,10 @@ class TagsController < ApplicationController
 
   def set_organisation
     @organisation = current_organisation
+  end
+
+  def authorize_organisation_configuration
+    authorize @organisation, :configure?
   end
 
   def tag_params
