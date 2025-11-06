@@ -123,7 +123,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       allow(UpsertRecordJob).to receive(:perform_later)
       allow(ExpireInvitationJob).to receive(:perform_later)
       allow(DeleteRdvJob).to receive(:perform_later)
-      allow(MattermostClient).to receive(:send_to_notif_channel)
+      allow(SlackClient).to receive(:send_to_notif_channel)
     end
 
     context "when no organisation is found" do

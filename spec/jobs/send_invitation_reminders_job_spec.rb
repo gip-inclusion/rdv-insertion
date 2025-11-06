@@ -113,7 +113,7 @@ describe SendInvitationRemindersJob do
 
     before do
       allow(SendInvitationReminderJob).to receive(:perform_later)
-      allow(MattermostClient).to receive(:send_to_notif_channel)
+      allow(SlackClient).to receive(:send_to_notif_channel)
     end
 
     it "enqueues reminder jobs for the eligible contexts only" do # rubocop:disable RSpec/ExampleLength
@@ -152,8 +152,8 @@ describe SendInvitationRemindersJob do
       subject
     end
 
-    it "sends a notification to mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notification to slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with(
           "📬 2 relances en cours!\n" \
           "Les usagers sont: [#{user1.id}, #{user7.id}]"

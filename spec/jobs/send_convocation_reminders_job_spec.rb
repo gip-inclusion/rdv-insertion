@@ -16,7 +16,7 @@ describe SendConvocationRemindersJob do
 
     before do
       allow(NotifyParticipationsToUsersJob).to receive(:perform_later)
-      allow(MattermostClient).to receive(:send_to_notif_channel)
+      allow(SlackClient).to receive(:send_to_notif_channel)
     end
 
     it "notifies the convocable participation that starts in 2 days" do
@@ -25,8 +25,8 @@ describe SendConvocationRemindersJob do
       subject
     end
 
-    it "sends a notification to mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notification to slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with(
           "📅 1 rappels de convocation en cours d'envoi!\n" \
           "Les participations sont: [239]"

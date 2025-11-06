@@ -5,14 +5,14 @@ class RefreshOutOfDateFollowUpStatusesJob < ApplicationJob
       @follow_up_ids << follow_up.id if follow_up.status != follow_up.set_status.to_s
     end
 
-    notify_on_mattermost
+    notify_on_slack
     RefreshFollowUpStatusesJob.perform_later(@follow_up_ids)
   end
 
   private
 
-  def notify_on_mattermost
-    MattermostClient.send_to_notif_channel(
+  def notify_on_slack
+    SlackClient.send_to_notif_channel(
       "✨ Rafraîchit les statuts pour: #{@follow_up_ids}"
     )
   end

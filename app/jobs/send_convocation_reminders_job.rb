@@ -1,7 +1,7 @@
 class SendConvocationRemindersJob < ApplicationJob
   def perform
     NotifyParticipationsToUsersJob.perform_later(participations_to_send_reminders_to.ids, "reminder")
-    notify_on_mattermost
+    notify_on_slack
   end
 
   private
@@ -14,8 +14,8 @@ class SendConvocationRemindersJob < ApplicationJob
                    .not_cancelled
   end
 
-  def notify_on_mattermost
-    MattermostClient.send_to_notif_channel(
+  def notify_on_slack
+    SlackClient.send_to_notif_channel(
       "📅 #{participations_to_send_reminders_to.ids.length} rappels de convocation en cours d'envoi!\n" \
       "Les participations sont: #{participations_to_send_reminders_to.ids}"
     )
