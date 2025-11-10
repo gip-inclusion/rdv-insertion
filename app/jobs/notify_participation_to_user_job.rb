@@ -28,7 +28,7 @@ class NotifyParticipationToUserJob < ApplicationJob
 
   def already_notified?
     if @event == "participation_updated"
-      # we assume here there should not be more than 2 lieu/time updates in one hour. The mattermost notification
+      # we assume here there should not be more than 2 lieu/time updates in one hour. The slack notification
       # would let us double check anyway.
       @participation.notifications
                     .where(event: "participation_updated", format: @format)

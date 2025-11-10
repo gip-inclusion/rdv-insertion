@@ -55,7 +55,7 @@ class Organisations::RgpdCleanup < BaseService
   end
 
   def notify_user_deletions(user_ids)
-    MattermostClient.send_to_rgpd_cleanup_channel(
+    SlackClient.send_to_rgpd_cleanup_channel(
       "#{dry_run_log_prefix}🚮 Les usagers suivants ont été supprimés pour inactivité dans l'organisation " \
       "#{@organisation.name} : #{user_ids.join(', ')}"
     )
@@ -66,7 +66,7 @@ class Organisations::RgpdCleanup < BaseService
   def notify_user_removals(user_ids)
     return if user_ids.empty?
 
-    MattermostClient.send_to_rgpd_cleanup_channel(
+    SlackClient.send_to_rgpd_cleanup_channel(
       "#{dry_run_log_prefix}↩️ Les usagers suivants ont été retirés de l'organisation " \
       "#{@organisation.name} pour inactivité (mais restent actifs ailleurs) : #{user_ids.join(', ')}"
     )
@@ -99,7 +99,7 @@ class Organisations::RgpdCleanup < BaseService
   end
 
   def notify_rdv_deletions(rdv_ids)
-    MattermostClient.send_to_rgpd_cleanup_channel(
+    SlackClient.send_to_rgpd_cleanup_channel(
       "#{dry_run_log_prefix}🚮 Les rdvs suivants ont été supprimés automatiquement pour l'organisation " \
       "#{@organisation.name} : #{rdv_ids.join(', ')}"
     )

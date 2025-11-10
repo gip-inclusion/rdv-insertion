@@ -6,7 +6,7 @@ class UserListUpload::InvitationAttempt < ApplicationRecord
 
   def self.create_from_row(user_row:, format:)
     invite_user_result = InviteUser.call(
-      user: user_row.saved_user,
+      user: user_row.user,
       organisations: user_row.user_list_upload.organisations,
       motif_category_attributes: { id: user_row.user_list_upload.motif_category_id },
       invitation_attributes: { format: format }

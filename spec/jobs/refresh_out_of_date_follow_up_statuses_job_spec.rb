@@ -35,7 +35,7 @@ describe RefreshOutOfDateFollowUpStatusesJob do
       FollowUp.where.not(id: [follow_up1.id, follow_up2.id, follow_up3.id, follow_up4.id,
                               follow_up5.id]).find_each(&:destroy!)
       allow(RefreshFollowUpStatusesJob).to receive(:perform_later)
-      allow(MattermostClient).to receive(:send_to_notif_channel)
+      allow(SlackClient).to receive(:send_to_notif_channel)
     end
 
     it "enqueues a refresh job for out of date follow-ups" do
@@ -44,8 +44,8 @@ describe RefreshOutOfDateFollowUpStatusesJob do
       subject
     end
 
-    it "sends a notification on mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notification on slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with(
           "✨ Rafraîchit les statuts pour: [#{follow_up1.id}, #{follow_up3.id}, #{follow_up5.id}]"
         )

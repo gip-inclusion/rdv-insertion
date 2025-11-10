@@ -3,7 +3,7 @@ module Notifications
     def verify_sender_phone_number!(notification)
       return if notification.rdv.phone_number.present?
 
-      MattermostClient.send_unique_message(
+      SlackClient.send_unique_message(
         channel_type: :private,
         text: "Un rendez-vous de convocation (#{notification.rdv.id}) a été placé pour cet usager" \
               " (#{notification.participation.user.id}) mais la convocation n'a pas été envoyée car l'organisation" \

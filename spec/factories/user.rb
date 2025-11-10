@@ -13,7 +13,8 @@ FactoryBot.define do
     phone_number { "+33782605941" }
     created_at { Time.zone.parse("24/12/2O22 22:22") }
     created_through { "rdv_insertion_upload_page" }
-    created_from_structure { association :organisation }
+    created_from_structure_id { rand(1..1000) }
+    created_from_structure_type { "Organisation" }
     trait :skip_validate do
       to_create { |instance| instance.save(validate: false) }
     end

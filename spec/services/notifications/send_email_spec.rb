@@ -161,8 +161,8 @@ describe Notifications::SendEmail, type: :service do
         )
       end
 
-      it "sends a message to mattermost" do
-        expect(MattermostClient).to receive(:send_unique_message).with(
+      it "sends a message to slack" do
+        expect(SlackClient).to receive(:send_unique_message).with(
           channel_type: :private,
           text: "Un rendez-vous de convocation (#{rdv.id}) a été placé pour cet usager" \
                 " (#{user.id}) mais la convocation n'a pas été envoyée car l'organisation" \

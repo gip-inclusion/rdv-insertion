@@ -34,4 +34,8 @@ class UserBlueprint < ApplicationBlueprint
     policy_scoped_association :follow_ups, blueprint: FollowUpBlueprint
     policy_scoped_association :tags, blueprint: TagBlueprint
   end
+
+  view :ids_only do
+    excludes(*FIELD_NAMES)
+  end
 end

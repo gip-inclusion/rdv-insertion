@@ -9,7 +9,7 @@ describe TransferEmailReplyJob do
       :with, :forward_notification_reply_to_organisation, :deliver_now
     )
     allow(ReplyTransferMailer).to receive_message_chain(:with, :forward_to_default_mailbox, :deliver_now)
-    allow(MattermostClient).to receive(:send_to_notif_channel)
+    allow(SlackClient).to receive(:send_to_notif_channel)
   end
 
   let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
@@ -113,8 +113,8 @@ describe TransferEmailReplyJob do
     end
   end
 
-  it "sends a notif on mattermost" do
-    expect(MattermostClient).to receive(:send_to_notif_channel)
+  it "sends a notif on slack" do
+    expect(SlackClient).to receive(:send_to_notif_channel)
       .with("📩 Un email d'un usager vient d'être transféré (RDV dans l'organisation #{rdv.organisation_id})")
     subject
   end
@@ -133,8 +133,8 @@ describe TransferEmailReplyJob do
       headers[:To] = "invitation+#{invitation2.uuid}@reply.rdv-insertion.fr"
     end
 
-    it "sends a notif on mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notif on slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with(
           "📩 Un email d'un usager vient d'être transféré (Invitation dans les organisations #{organisation.id}" \
           " et #{organisation2.id})"
@@ -157,8 +157,8 @@ describe TransferEmailReplyJob do
       headers[:To] = "invitation+#{invitation2.uuid}@reply.rdv-insertion.fr"
     end
 
-    it "sends a notif on mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notif on slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with("📩 Un email d'un usager vient d'être transféré (Invitation dans l'organisation #{organisation.id})")
       subject
     end
