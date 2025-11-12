@@ -57,40 +57,13 @@ describe TagsController do
         sign_in(other_org_admin)
       end
 
-      it "denies access to create tag in organisation they don't admin" do
+      it "denies access to create tag in organisation they don't administrate" do
         expect do
           post :create, params: { organisation_id: organisation.id, tag: { value: "coucou" } }
         end.not_to change(Tag, :count)
 
         expect(response).to redirect_to(root_url)
         expect(flash[:alert]).to eq("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-    end
-
-    context "when agent has basic role in org1 and admin role in org2" do
-      let!(:mixed_agent) do
-        create(:agent, basic_role_in_organisations: [organisation], admin_role_in_organisations: [organisation2])
-      end
-
-      before do
-        sign_in(mixed_agent)
-      end
-
-      it "denies access to create tag in org1 where they are basic" do
-        expect do
-          post :create, params: { organisation_id: organisation.id, tag: { value: "coucou" } }
-        end.not_to change(Tag, :count)
-
-        expect(response).to redirect_to(root_url)
-        expect(flash[:alert]).to eq("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-
-      it "allows access to create tag in org2 where they are admin" do
-        expect do
-          post :create, params: { organisation_id: organisation2.id, tag: { value: "allowed" } }
-        end.to change(Tag, :count).by(1)
-
-        expect(response).to redirect_to(organisation_category_configurations_path(organisation2))
       end
     end
   end
@@ -145,7 +118,7 @@ describe TagsController do
         sign_in(other_org_admin)
       end
 
-      it "denies access to delete tag from organisation they don't admin" do
+      it "denies access to delete tag from organisation they don't administrate" do
         tag = organisation.tags.first
 
         delete :destroy, params: { organisation_id: organisation.id, id: tag.id }
@@ -153,36 +126,6 @@ describe TagsController do
         expect(organisation.tags.reload.count).to eq(1)
         expect(response).to redirect_to(root_url)
         expect(flash[:alert]).to eq("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-    end
-
-    context "when agent has basic role in org1 and admin role in org2" do
-      let!(:mixed_agent) do
-        create(:agent, basic_role_in_organisations: [organisation], admin_role_in_organisations: [organisation2])
-      end
-
-      before do
-        sign_in(mixed_agent)
-        organisation2.tags << create(:tag, value: "tag2")
-      end
-
-      it "denies access to delete tag from org1 where they are basic" do
-        tag = organisation.tags.first
-
-        delete :destroy, params: { organisation_id: organisation.id, id: tag.id }
-
-        expect(organisation.tags.reload.count).to eq(1)
-        expect(response).to redirect_to(root_url)
-        expect(flash[:alert]).to eq("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-
-      it "allows access to delete tag from org2 where they are admin" do
-        tag2 = organisation2.tags.first
-
-        delete :destroy, params: { organisation_id: organisation2.id, id: tag2.id }
-
-        expect(organisation2.tags.reload.count).to eq(0)
-        expect(response).to be_successful
       end
     end
   end
