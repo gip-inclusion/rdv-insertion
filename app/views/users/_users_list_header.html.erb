@@ -37,13 +37,17 @@
       </div>
     </div>
     <div class="col-6 d-flex justify-content-end align-items-center">
-      <%= link_to(new_structure_user_path, class: "btn btn-blue-out", id: "rdvi_index-nav_create-one-user") do %>
-        <span class="ri-user-add-fill" aria-hidden="true"></span>
-        Ajouter un usager
+      <%= link_to(new_structure_user_path) do %>
+        <button class="btn btn-blue-out" id="rdvi_index-nav_create-one-user">
+          <span class="ri-user-add-fill me-2" aria-hidden="true"></span>
+          Ajouter un usager
+        </button>
       <% end %>
-      <%= link_to(new_structure_user_list_uploads_category_selection_path, class: "btn btn-blue ms-2", id: "rdvi_index-nav_upload-users") do %>
-        <span class="ri-file-add-fill" aria-hidden="true"></span>
-        Importer des usagers
+      <%= link_to(new_structure_user_list_uploads_category_selection_path) do %>
+        <button class="btn btn-blue ms-2" id="rdvi_index-nav_upload-users">
+          <span class="ri-file-add-fill me-2" aria-hidden="true"></span>
+          Importer des usagers
+        </button>
       <% end %>
     </div>
   </div>
