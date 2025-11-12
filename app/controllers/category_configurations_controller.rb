@@ -7,8 +7,7 @@ class CategoryConfigurationsController < ApplicationController
     :email_to_notify_no_available_slots, :email_to_notify_rdv_changes
   ].freeze
 
-  before_action :set_organisation, :authorize_organisation_configuration,
-                only: [:new, :create, :show, :edit, :update, :destroy]
+  before_action :set_organisation, only: [:new, :create, :show, :edit, :update, :destroy]
   before_action :set_category_configuration, :set_file_configuration, :set_template,
                 only: [:show, :edit, :update, :destroy]
   before_action :set_department, :set_file_configurations, :set_authorized_motif_categories,
@@ -110,13 +109,10 @@ class CategoryConfigurationsController < ApplicationController
 
   def set_organisation
     @organisation = current_organisation
+    authorize @organisation, :configure?
   end
 
   def set_authorized_motif_categories
     @authorized_motif_categories = MotifCategoryPolicy.authorized_for_organisation(@organisation)
-  end
-
-  def authorize_organisation_configuration
-    authorize @organisation, :configure?
   end
 end

@@ -1,10 +1,8 @@
 class ConfigurationsController < ApplicationController
   include BackToListConcern
 
-  before_action :set_organisation, :set_department, :authorize_organisation_configuration,
-                :set_messages_configuration, :set_category_configurations, :set_available_tags,
-                :set_user_count_by_tag_id, :set_agent_roles,
-                only: [:show]
+  before_action :set_organisation, :set_department, :set_messages_configuration, :set_category_configurations,
+                :set_available_tags, :set_user_count_by_tag_id, :set_agent_roles, only: [:show]
 
   def show; end
 
@@ -12,14 +10,11 @@ class ConfigurationsController < ApplicationController
 
   def set_organisation
     @organisation = Organisation.find(params[:organisation_id])
+    authorize @organisation, :configure?
   end
 
   def set_department
     @department = @organisation.department
-  end
-
-  def authorize_organisation_configuration
-    authorize @organisation, :configure?
   end
 
   def set_messages_configuration
