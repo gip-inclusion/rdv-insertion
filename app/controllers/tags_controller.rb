@@ -27,6 +27,7 @@ class TagsController < ApplicationController
 
   def set_organisation
     @organisation = current_organisation
+    authorize @organisation, :configure?
   end
 
   def tag_params
