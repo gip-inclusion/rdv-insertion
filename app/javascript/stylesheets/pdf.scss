@@ -22,6 +22,7 @@ u {
 
 .pdf-align-center {
   text-align: center;
+  display: block;
 }
 
 .header {
@@ -94,7 +95,6 @@ u {
 
 .main-content {
   width: 95%;
-  margin-left: 40px;
   margin-bottom: 60px;
   p {
     text-align:justify;
@@ -106,9 +106,20 @@ u {
   width: 100%;
 }
 
+.padding-left-20 {
+  padding-left: 20px;
+}
+
+.padding-right-20 {
+  padding-right: 20px;
+}
+
 .invitation-choices {
   display: flex;
+  flex-direction: row;
   justify-content: space-around;
+  align-items: center;
+  gap: 20px;
 }
 
 .qr-code {
@@ -134,13 +145,20 @@ u {
 
 .rdv-address {
   padding: 10px;
-  border: 1px solid;
-  font-weight: bold;
+  background-color: $very-light-grey;
 }
 
 .bold-blue {
   font-weight: bold;
   color: $dark-blue;
+}
+
+.text-violet {
+  color: $violet;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .letter-signature {

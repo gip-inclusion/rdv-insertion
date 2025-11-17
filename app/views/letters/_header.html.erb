@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="user-address">
-    <p><%= user.title.upcase %> <%= user.first_name.upcase %> <%= user.last_name.upcase %><br/>
+    <p><%= "#{user.title.upcase} " if user.title %><%= user.first_name.upcase %> <%= user.last_name.upcase %><br/>
     <%= simple_format(user.parsed_street_address.upcase, {}, wrapper_tag: "span") %><br/>
     <%= user.parsed_post_code_and_city.upcase %></p>
   </div>

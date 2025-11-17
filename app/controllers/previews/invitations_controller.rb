@@ -30,7 +30,7 @@ module Previews
 
     def set_user_example
       @user = User.new(
-        first_name: "Camille", last_name: "Martin", title: "madame",
+        first_name: "Camille", last_name: "Martin",
         address: "49 Rue Cavaignac, 13003 Marseille"
       )
     end

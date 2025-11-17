@@ -1,0 +1,19 @@
+<div class="invitation-choices padding-left-20 padding-right-20">
+  <div class="pdf-align-center">
+    <div class="qr-code">
+      <%= image_tag(qr_code.to_data_url) %>
+    </div>
+    <p><strong>Scanner ce QR code avec l'appareil photo de votre téléphone</strong> ou une application mobile permettant de lire les QR codes.</p>
+  </div>
+
+  <div class="pdf-align-center">
+    <p>OU</p>
+  </div>
+
+  <div class="pdf-align-center">
+    <br/><br/>
+    <p><%= link_to invitation_url, invitation_url, class: "pdf-align-center" %></p>
+    <br/>
+    <p><strong>Écrire l'adresse internet dans votre navigateur</strong>, sur votre téléphone, tablette ou ordinateur.</p>
+  </div>
+</div>

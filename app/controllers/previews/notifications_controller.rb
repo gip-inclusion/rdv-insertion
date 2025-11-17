@@ -15,7 +15,7 @@ module Previews
 
     def set_user_example
       @user = User.new(
-        first_name: "Camille", last_name: "Martin", title: "madame",
+        first_name: "Camille", last_name: "Martin", title: nil,
         address: "49 Rue Cavaignac, 13003 Marseille", phone_number: "+33607070707"
       )
     end
@@ -72,6 +72,7 @@ module Previews
         notification: @notification,
         rdv: @notification.rdv,
         department: @notification.department,
+        organisation: @notification.organisation,
         user_designation: @notification.user_designation,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,

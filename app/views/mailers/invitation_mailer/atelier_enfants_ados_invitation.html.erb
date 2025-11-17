@@ -1,4 +1,4 @@
-<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
+<h1>Bonjour <%= @user %>,</h1>
 <p>Tu es <%= @user.conjugate('invité') %> à participer à un atelier organisé par le Département.</p>
 <p>Nous te proposons de cliquer ci-dessous pour découvrir le programme.</p>
 <p><span class="font-weight-bold">Si tu es <%= @user.conjugate('intéressé') %> pour participer, tu n’auras qu’à cliquer ci-dessous et t’inscrire en ligne.</p>
@@ -7,6 +7,7 @@
     Découvrir
   <% end %>
 </p>
-<p>En cas de problème, tu peux contacter le <%= @invitation.help_phone_number_formatted %></p>
-<%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
-<%= render 'mailers/logos', display_europe_logos: @invitation.display_europe_logos, display_france_travail_logo: @invitation.display_france_travail_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<p>En cas de problème, contactez-nous:</p>
+<%= render "mailers/contact_infos", help_phone_number: @invitation.help_phone_number, help_email: @invitation.help_email, help_website: @invitation.help_website %>
+<%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
+<%= render "mailers/logos", display_europe_logos: @invitation.display_europe_logos, display_france_travail_logo: @invitation.display_france_travail_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

@@ -1,12 +1,13 @@
-<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
-<p>Vous êtes <%= @user_designation %> et bénéficiez d'un accompagnement. En cliquant sur le bouton suivant, vous pouvez <span class="font-weight-bold">consulter le(s) atelier(s) et formation(s) proposé(s)</span> sur la plateforme RDV-Solidarités et vous y inscrire directement et librement, dans la limite des places disponibles.</p>
+<h1>Bonjour <%= @user %>,</h1>
+<p>Vous êtes <span class="text-violet"><%= @user_designation %></span> et bénéficiez d'un accompagnement. En cliquant sur le bouton suivant, vous pouvez <span class="font-weight-bold">consulter le(s) atelier(s) et formation(s) proposé(s)</span> sur la plateforme RDV-Solidarités et vous y inscrire directement et librement, dans la limite des places disponibles.</p>
 <p class="btn-wrapper">
   <%= link_to @invitation.rdv_solidarites_public_url, class: "btn btn-primary" do %>
     M'inscrire
   <% end %>
 </p>
-<%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
+<%= tag.p tag.strong("#{@mandatory_warning}.") if @mandatory_warning %>
 <%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
-<p>En cas de problème, contactez le <%= @invitation.help_phone_number_formatted %></p>
-<%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
-<%= render 'mailers/logos', display_europe_logos: @invitation.display_europe_logos, display_france_travail_logo: @invitation.display_france_travail_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<p>En cas de problème, contactez-nous:</p>
+<%= render "mailers/contact_infos", help_phone_number: @invitation.help_phone_number, help_email: @invitation.help_email, help_website: @invitation.help_website %>
+<%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
+<%= render "mailers/logos", display_europe_logos: @invitation.display_europe_logos, display_france_travail_logo: @invitation.display_france_travail_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

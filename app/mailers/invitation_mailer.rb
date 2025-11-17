@@ -10,7 +10,7 @@ class InvitationMailer < ApplicationMailer
 
   def standard_invitation
     mail(
-      subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+      subject: "#{@rdv_subject.upcase} - Prenez rendez-vous dans le cadre de votre #{@rdv_subject}"
     )
   end
 
@@ -22,13 +22,13 @@ class InvitationMailer < ApplicationMailer
 
   def phone_platform_invitation
     mail(
-      subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+      subject: "#{@rdv_subject.upcase} - Prenez rendez-vous dans le cadre de votre #{@rdv_subject}"
     )
   end
 
   def atelier_invitation
     mail(
-      subject: "[#{@rdv_subject.upcase}]: Participer à un atelier dans le cadre de votre parcours"
+      subject: "#{@rdv_subject.upcase} - Participez à un atelier dans le cadre de votre parcours"
     )
   end
 
@@ -42,31 +42,31 @@ class InvitationMailer < ApplicationMailer
 
   def short_invitation_reminder
     mail(
-      subject: "[Rappel]: Votre #{@rdv_title}"
+      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour prendre rendez-vous"
     )
   end
 
   def standard_invitation_reminder
     mail(
-      subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour prendre rendez-vous"
     )
   end
 
   def phone_platform_invitation_reminder
     mail(
-      subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour prendre rendez-vous"
     )
   end
 
   def atelier_invitation_reminder
     mail(
-      subject: "[Rappel]: Participer à un atelier dans le cadre de votre parcours"
+      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour participer à un atelier"
     )
   end
 
   def atelier_enfants_ados_invitation_reminder
     mail(
-      subject: "[Rappel]: Invitation à un #{@rdv_title}"
+      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour participer à un atelier"
     )
   end
 

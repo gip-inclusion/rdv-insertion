@@ -8,16 +8,16 @@
 </div>
 
 <div class="main-content">
-  <p><%= user.title.capitalize %>,</p>
-  <p>Vous êtes <%= user_designation %> et à ce titre <span class="bold-blue">vous êtes <%= user.conjugate("convoqué") %> à un <%= rdv_title %></span> afin de <%= rdv_purpose %>.</p>
-  <p>Vous êtes <%= user.conjugate("attendu") %> <span class="bold-blue">le <%= I18n.l(rdv.starts_at, format: :human) %></span> à l'adresse suivante: </p>
+  <p><%= user.title_in_letter %>,</p>
+  <p>Vous êtes <span class="text-violet"><%= user_designation %></span> et à ce titre vous êtes <%= user.conjugate("convoqué") %> à un <span class="text-violet"><%= rdv_title %></span> pour <span class="text-violet"><%= rdv_purpose %></span>.</p>
+  <p>Vous êtes <%= user.conjugate("attendu") %> le <strong><%= I18n.l(rdv.starts_at, format: :human) %></strong> à l'adresse suivante: </p>
   <div class="rdv-address">
-    <p><h4><%= rdv.lieu.name %></h4></p>
-    <p><h4><%= rdv.lieu.address %></h4></p>
+    <div class="text-center">🕐<strong><%= rdv.lieu.name %></strong></div>
+    <div class="text-center">📍 <%= rdv.lieu.address %></div>
   </div>
-  <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
-  <%= tag.p tag.span(instruction_for_rdv, class: "bold-blue") if instruction_for_rdv.present? %>
-  <%= tag.p tag.span("En cas d'absence, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
+  <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
+  <%= tag.p tag.span(instruction_for_rdv) if instruction_for_rdv.present? %>
+  <%= tag.p tag.strong("En cas d'absence, #{punishable_warning}.") if punishable_warning.present? %>
   <p>En cas d'empêchement, merci d'appeler rapidement le <%= rdv.phone_number %>.</p>
   <%= render "letters/salutation", user: user %>
   <div class="letter-signature">

@@ -1,0 +1,20 @@
+<hr class="info-separator">
+
+<div class="info-block">
+  <div>🕐</div>
+  <div>
+    Votre rendez-vous téléphonique
+    <p><strong><%= I18n.l(rdv.starts_at, format: :human) %></strong></p>
+  </div>
+</div>
+
+<hr class="info-separator">
+
+<div class="info-block">
+  <div>📞</div>
+  <div>
+    Un conseiller d'insertion vous appellera sur votre numéro de téléphone : <p><strong><%= user.phone_number %></strong></p>
+  </div>
+</div>
+
+<hr class="info-separator">

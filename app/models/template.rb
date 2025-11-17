@@ -9,14 +9,14 @@ class Template < ApplicationRecord
 
   validates :display_mandatory_warning, inclusion: [true, false]
 
-  enum :model, { standard: "standard", atelier: "atelier", phone_platform: "phone_platform", short: "short",
+  enum :model, { standard: "standard", atelier: "atelier", phone_platform: "phone_platform",
                  atelier_enfants_ados: "atelier_enfants_ados" }
 
   def mandatory_warning
     if display_mandatory_warning && phone_platform?
-      "Cet appel est obligatoire pour le traitement de votre dossier."
+      "Cet appel est obligatoire pour le traitement de votre dossier"
     elsif display_mandatory_warning
-      "Ce RDV est obligatoire."
+      "Ce RDV est obligatoire"
     end
   end
 

@@ -1,31 +1,27 @@
 <%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
 
 <div class="mail-object">
-  <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre <%= rdv_subject %></span></p>
-  <%= tag.p("N° CAF / MSA : #{user.affiliation_number}") if user.affiliation_number %>
+  <p class="bold-blue">
+    Objet : <%= rdv_title.capitalize %> dans le cadre de votre <%= rdv_subject %><br/>
+    <% if user.affiliation_number %>
+      N° CAF / MSA : <%= user.affiliation_number %>
+    <% end %>
+  </p>
   <% if invitation.rdv_with_referents? %>
     <p><%= "Référent".pluralize(user.referents.count) %> de parcours : <%= user.referents.order(:last_name).map(&:to_s).join(", ") %></p>
   <% end %>
 </div>
 
 <div class="main-content">
-  <p><%= user.title.capitalize %>,</p>
-  <p>Vous êtes <%= user_designation %> et à ce titre vous êtes <%= user.conjugate('invité') %> à participer à un <%= rdv_title %> afin de <%= rdv_purpose %>.</p>
+  <p><%= user.title_in_letter %>,</p>
+  <p>Vous êtes <span class="text-violet"><%= user_designation %></span> et à ce titre vous êtes <%= user.conjugate('invité') %> à participer à un <span class="text-violet"><%= rdv_title %></span> pour <span class="text-violet"><%= rdv_purpose %></span>.</p>
   <%= tag.p(custom_sentence) if custom_sentence %>
-  <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
-  <p>Choisissez un créneau à votre convenance<%= " dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours à réception de ce courrier" if invitation.expireable? %>&nbsp;:</p>
-  <div class="invitation-choices">
-    <div class="pdf-align-center">
-      <div>soit en scannant ce QR code</div>
-      <div class="qr-code"><%= image_tag(qr_code.to_data_url) %></div>
-    </div>
-    <div class="pdf-align-center">
-      <div>soit en vous rendant à l'adresse</div>
-      <div class="invitation-token"><%= invitation_url %> </div>
-    </div>
-  </div>
-  <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
-  <%= tag.p tag.span("En l'absence d'action de votre part, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
+  <p>Pour vous aider dans vos démarches, <%= sender_name %> a mis en place <strong>une plateforme de réservation en ligne.</strong></p>
+  <p>Pour choisir la date et l'heure de votre rendez-vous, vous pouvez:</p>
+  <%= render "letters/invitations/invitation_choices", invitation_url: invitation_url, qr_code: qr_code %>
+  <p>Choisissez un rendez-vous dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier.</p>
+  <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
+  <%= tag.p tag.strong("En l'absence d'action de votre part, #{punishable_warning}.") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>
   <%= render "letters/salutation", user: user %>
   <div class="letter-signature">

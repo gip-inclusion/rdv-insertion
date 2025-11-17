@@ -1,5 +1,5 @@
 class Organisation < ApplicationRecord
-  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email, :website].freeze
   SEARCH_ATTRIBUTES = [:name, :slug].freeze
 
   include HasLogo
