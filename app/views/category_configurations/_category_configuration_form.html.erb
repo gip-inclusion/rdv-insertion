@@ -15,10 +15,14 @@
       <% unless category_configuration.persisted? %>
         <div class="d-flex flex-column align-items-center col-12 px-5 mb-4">
           <h4>Configuration pour : *</h4>
+
+          <%# Custom searchable dropdown for motif category selection %>
+          <%# Controllers: dropdown-menu (open/close), list-filter (search), select-dropdown (selection + keyboard) %>
           <div class="position-relative w-100 dropdown-select-container"
                data-controller="dropdown-menu list-filter select-dropdown"
                data-action="select-dropdown:selected->dropdown-menu#close select-dropdown:selected->list-filter#reset select-dropdown:close->dropdown-menu#close">
 
+            <%# Hidden input for HTML5 validation %>
             <input type="text"
                    name="category_configuration[motif_category_id]"
                    id="motif_category_id"
@@ -26,6 +30,7 @@
                    required="true"
                    class="visually-hidden">
 
+            <%# Trigger button to open/close dropdown %>
             <button type="button"
                     class="form-select text-start d-flex justify-content-between align-items-center"
                     data-action="click->dropdown-menu#toggle"
@@ -36,9 +41,12 @@
               <span data-select-dropdown-target="label" class="dropdown-select-label"> Selectionner une catégorie </span>
             </button>
 
+            <%# Dropdown menu with search and options list %>
             <div class="dropdown-menu py-0 mt-2 w-100 dropdown-select-menu"
                  data-dropdown-menu-target="dropdown"
                  data-select-dropdown-target="dropdown">
+
+              <%# Search bar to filter categories %>
               <div class="px-3 pt-2 pb-2 border-bottom">
                 <input type="text"
                         class="form-control form-control-sm"
@@ -48,6 +56,7 @@
                         autocomplete="off">
               </div>
 
+              <%# Category options (clickable and keyboard navigable) %>
               <% @authorized_motif_categories.each do |motif_category| %>
                 <div class="dropdown-item py-2 dropdown-select-option"
                      data-list-filter-target="item"
@@ -59,6 +68,7 @@
                 </div>
               <% end %>
 
+              <%# No results message (shown when search returns nothing) %>
               <div class="dropdown-item py-2 text-muted text-center d-none"
                    data-list-filter-target="noResults">
                 Aucun résultat
