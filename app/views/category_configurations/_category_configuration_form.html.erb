@@ -15,8 +15,7 @@
       <% unless category_configuration.persisted? %>
         <div class="d-flex flex-column align-items-center col-12 px-5 mb-4">
           <h4>Configuration pour : *</h4>
-          <div class="position-relative w-100"
-               style="max-width: 400px;"
+          <div class="position-relative w-100 dropdown-select-container"
                data-controller="dropdown-menu list-filter select-dropdown">
 
             <input type="text"
@@ -33,13 +32,12 @@
                     data-select-dropdown-target="button"
                     aria-haspopup="true"
                     aria-expanded="false">
-              <span data-select-dropdown-target="label" style="pointer-events: none;"> Selectionner une catégorie </span>
+              <span data-select-dropdown-target="label" class="dropdown-select-label"> Selectionner une catégorie </span>
             </button>
 
-            <div class="dropdown-menu py-0 mt-2 w-100"
+            <div class="dropdown-menu py-0 mt-2 w-100 dropdown-select-menu"
                  data-dropdown-menu-target="dropdown"
-                 data-select-dropdown-target="dropdown"
-                 style="max-height: 400px; overflow-y: auto;">
+                 data-select-dropdown-target="dropdown">
               <div class="px-3 pt-2 pb-2 border-bottom">
                 <input type="text"
                         class="form-control form-control-sm"
@@ -50,8 +48,7 @@
               </div>
 
               <% @authorized_motif_categories.each do |motif_category| %>
-                <div class="dropdown-item py-2"
-                     style="cursor: pointer;"
+                <div class="dropdown-item py-2 dropdown-select-option"
                      data-list-filter-target="item"
                      data-select-dropdown-target="option"
                      data-action="click->select-dropdown#select"
