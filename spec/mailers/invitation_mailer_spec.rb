@@ -503,7 +503,9 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to include(
           "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
-          " et à ce titre vous êtes invité à participer à un entretien d'embauche pour poursuivre le processus de recrutement"        )
+          " et à ce titre vous êtes invité à participer à un entretien d'embauche pour poursuivre " \
+          "le processus de recrutement"
+        )
         expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
@@ -669,7 +671,8 @@ RSpec.describe InvitationMailer do
       expect(body_string).to match("Bonjour Jean Valjean")
       expect(body_string).to match("Le département de la Drôme")
       expect(body_string).to match(
-        "En tant que bénéficiaire du RSA vous devez contacter la plateforme départementale pour démarrer un parcours d'accompagnement"
+        "En tant que bénéficiaire du RSA vous devez contacter la plateforme départementale pour " \
+        "démarrer un parcours d'accompagnement"
       )
       expect(subject.body.encoded).not_to match("/i/r/#{invitation.uuid}")
       expect(body_string).to match("merci d’appeler le 01 39 39 39 39 dans un délai de 3 jours")
@@ -907,7 +910,8 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match("Bonjour Jean Valjean")
           expect(body_string).to match("Le département de la Drôme")
           expect(body_string).to match(
-            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un rendez-vous d'accompagnement " \
+            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+            "à un rendez-vous d'accompagnement " \
             "pour démarrer un parcours d'accompagnement."
           )
           expect(body_string).to match("Ce rendez-vous est obligatoire.")
@@ -928,7 +932,6 @@ RSpec.describe InvitationMailer do
           end
 
           it "does not display the different optional logos" do
-            body_string = strip_tags(subject.body.encoded)
             expect(unescape_html(subject.body.encoded)).not_to match("Logo du département")
             expect(unescape_html(subject.body.encoded)).not_to match("Logo de l'Union européene")
             expect(unescape_html(subject.body.encoded)).not_to match("Logo de France Travail")
@@ -958,7 +961,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un rendez-vous de signature de CER " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à " \
+          "un rendez-vous de signature de CER " \
           "pour construire et signer votre Contrat d'Engagement Réciproque."
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
@@ -1073,7 +1077,6 @@ RSpec.describe InvitationMailer do
       end
 
       it "does not display the different optional logos" do
-        body_string = strip_tags(subject.body.encoded)
         expect(unescape_html(subject.body.encoded)).not_to match("Logo du département")
         expect(unescape_html(subject.body.encoded)).not_to match("Logo de l'Union européene")
         expect(unescape_html(subject.body.encoded)).not_to match("Logo de France Travail")

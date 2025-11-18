@@ -42,31 +42,40 @@ class InvitationMailer < ApplicationMailer
 
   def short_invitation_reminder
     mail(
-      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour prendre rendez-vous"
+      subject: "#{@rdv_subject.upcase} - Plus que " \
+               "#{@invitation.number_of_days_before_expiration} jours pour prendre rendez-vous"
     )
   end
 
   def standard_invitation_reminder
     mail(
-      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour prendre rendez-vous"
+      subject: "#{@rdv_subject.upcase} - Plus que " \
+               "#{@invitation.number_of_days_before_expiration} jours " \
+               "pour prendre rendez-vous"
     )
   end
 
   def phone_platform_invitation_reminder
     mail(
-      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour prendre rendez-vous"
+      subject: "#{@rdv_subject.upcase} - Plus que " \
+               "#{@invitation.number_of_days_before_expiration} jours " \
+               "pour prendre rendez-vous"
     )
   end
 
   def atelier_invitation_reminder
     mail(
-      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour participer à un atelier"
+      subject: "#{@rdv_subject.upcase} - Plus que " \
+               "#{@invitation.number_of_days_before_expiration} jours " \
+               "pour participer à un atelier"
     )
   end
 
   def atelier_enfants_ados_invitation_reminder
     mail(
-      subject: "#{@rdv_subject.upcase} - Plus que #{@invitation.number_of_days_before_expiration} jours pour participer à un atelier"
+      subject: "#{@rdv_subject.upcase} - Plus que " \
+               "#{@invitation.number_of_days_before_expiration} jours " \
+               "pour participer à un atelier"
     )
   end
 

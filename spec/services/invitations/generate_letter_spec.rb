@@ -199,7 +199,8 @@ describe Invitations::GenerateLetter, type: :service do
         content = strip_tags(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'orientation dans le cadre de votre RSA")
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un rendez-vous d'orientation pour démarrer " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+          "à un rendez-vous d'orientation pour démarrer " \
           "un parcours d'accompagnement"
         )
         expect(content).to include(
@@ -228,7 +229,9 @@ describe Invitations::GenerateLetter, type: :service do
             "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un " \
             "nouveau type de rendez-vous pour démarrer un test fonctionnel"
           )
-          expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+          expect(content).to include(
+            "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+          )
           expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
           expect(content).to include("Ce rendez-vous est obligatoire.")
           expect(content).not_to include(
@@ -248,12 +251,15 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous d'orientation dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement."
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+          "à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement."
         )
         expect(content).to include(
           "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux"
         )
-        expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
         expect(content).to include("Ce rendez-vous est obligatoire.")
         expect(content).not_to include(
@@ -270,10 +276,13 @@ describe Invitations::GenerateLetter, type: :service do
         content = strip_tags(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA")
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un rendez-vous d'accompagnement" \
-          " pour démarrer un parcours d'accompagnement"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+          "à un rendez-vous d'accompagnement " \
+          "pour démarrer un parcours d'accompagnement"
         )
-        expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
         expect(content).to include("Ce rendez-vous est obligatoire.")
         expect(content).to include(
@@ -292,10 +301,13 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de signature de CER dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un rendez-vous de signature de CER" \
-          " pour construire et signer votre Contrat d'Engagement Réciproque"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+          "à un rendez-vous de signature de CER " \
+          "pour construire et signer votre Contrat d'Engagement Réciproque"
         )
-        expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
         expect(content).to include("Ce rendez-vous est obligatoire.")
         expect(content).not_to include(
@@ -314,10 +326,13 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de suivi dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un rendez-vous de suivi pour faire un point" \
-          " avec votre référent de parcours"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+          "à un rendez-vous de suivi pour faire un point " \
+          "avec votre référent de parcours"
         )
-        expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
         expect(content).not_to include("Ce rendez-vous est obligatoire.")
         expect(content).not_to include(
@@ -336,11 +351,14 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Entretien d'embauche dans le cadre de votre candidature SIAE"
         )
         expect(content).to include(
-          "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE) et à ce titre vous êtes invité" \
-          " à participer à un entretien d'embauche pour " \
+          "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE) " \
+          "et à ce titre vous êtes invité " \
+          "à participer à un entretien d'embauche pour " \
           "poursuivre le processus de recrutement"
         )
-        expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
         expect(content).not_to include("N° usager.")
         expect(content).not_to include("Ce rendez-vous est obligatoire.")
@@ -360,10 +378,13 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de suivi dans le cadre de votre suivi SIAE"
         )
         expect(content).to include(
-          "Vous êtes salarié.e au sein de notre structure et à ce titre vous êtes invité à participer à un rendez-vous de suivi pour faire un point" \
-          " avec votre référent"
+          "Vous êtes salarié.e au sein de notre structure et à ce titre vous " \
+          "êtes invité à participer à un rendez-vous de suivi pour faire un point " \
+          "avec votre référent"
         )
-        expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
         expect(content).not_to include("N° usager.")
         expect(content).not_to include("Ce rendez-vous est obligatoire.")
@@ -383,11 +404,14 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous collectif d'information dans le cadre de votre candidature SIAE"
         )
         expect(content).to include(
-          "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE) et à ce titre vous êtes invité" \
-          " à participer à un rendez-vous collectif d'information pour " \
+          "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE) et " \
+          "à ce titre vous êtes invité " \
+          "à participer à un rendez-vous collectif d'information pour " \
           "découvrir cette structure"
         )
-        expect(content).to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Pour choisir la date et l'heure de votre rendez-vous, vous pouvez")
         expect(content).not_to include("N° usager.")
         expect(content).not_to include("Ce rendez-vous est obligatoire.")
@@ -407,11 +431,13 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. "\
+          "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Pour en profiter au mieux, nous vous invitons à vous inscrire directement " \
           "et librement aux ateliers et formations de votre choix."
         )
-        expect(content).not_to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).not_to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).to include("Choisissez un créneau à votre convenance")
         expect(content).not_to include("Ce rendez-vous est obligatoire.")
         expect(content).not_to include(
@@ -430,12 +456,14 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. "\
+          "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Pour en profiter au mieux, nous vous invitons à vous inscrire directement " \
           "et librement aux ateliers et formations de votre choix."
         )
         expect(content).to include("Choisissez un créneau à votre convenance")
-        expect(content).not_to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).not_to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
         expect(content).not_to include(
           "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
@@ -453,12 +481,14 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. "\
+          "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Pour en profiter au mieux, nous vous invitons à vous inscrire directement " \
           "et librement aux ateliers et formations de votre choix."
         )
         expect(content).to include("Choisissez un créneau à votre convenance")
-        expect(content).not_to include("Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).not_to include(
+          "Choisissez un rendez-vous dans un délai de 3 jours à compter de la réception de ce courrier."
+        )
         expect(content).not_to include(
           "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
         )
@@ -475,12 +505,15 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous d’orientation dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "La première étape est un appel téléphonique avec un professionnel de l’insertion "\
-          "afin de définir, selon votre situation et vos besoins, quelle sera la structure la mieux "\
-          "adaptée pour vous accompagner."
+          "La première étape est un appel téléphonique avec un professionnel de l’insertion " \
+          "afin de définir, selon votre situation et vos besoins, quelle sera la structure " \
+          "la mieux adaptée pour vous accompagner."
         )
         expect(content).to include("Cet appel est obligatoire pour le traitement de votre dossier.")
-        expect(content).to include("Pour cela, merci d’appeler le 0139393939 dans un délai de 3 jours à compter de la réception de ce courrier.")
+        expect(content).to include(
+          "Pour cela, merci d’appeler le 0139393939 dans un délai de 3 jours " \
+          "à compter de la réception de ce courrier."
+        )
       end
     end
 

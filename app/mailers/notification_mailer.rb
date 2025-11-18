@@ -3,10 +3,11 @@ class NotificationMailerError < StandardError; end
 class NotificationMailer < ApplicationMailer
   include ActsAsRdvSolidaritesConcern
 
-  before_action :set_notification, :set_user, :set_rdv, :set_organisation, :set_department, :set_rdv_subject, :set_signature_lines,
-                :set_rdv_title, :set_rdv_title_by_phone, :set_user_designation, :set_mandatory_warning,
-                :set_punishable_warning, :set_instruction_for_rdv, :set_rdv_purpose, :verify_phone_number_presence,
-                :set_organisation_logo_path, :set_department_logo_path, :set_x_mailin_custom_header
+  before_action :set_notification, :set_user, :set_rdv, :set_organisation, :set_department, :set_rdv_subject,
+                :set_signature_lines, :set_rdv_title, :set_rdv_title_by_phone, :set_user_designation,
+                :set_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv, :set_rdv_purpose,
+                :verify_phone_number_presence, :set_organisation_logo_path, :set_department_logo_path,
+                :set_x_mailin_custom_header
 
   default to: -> { @user.email }, reply_to: -> { "rdv+#{@rdv.uuid}@reply.rdv-insertion.fr" }
 

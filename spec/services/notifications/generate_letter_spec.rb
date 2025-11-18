@@ -47,7 +47,8 @@ describe Notifications::GenerateLetter, type: :service do
       expect(content).to include("DIRECTION DÉPARTEMENTAL")
       expect(content).to include("Convocation à un rendez-vous d'orientation dans le cadre de votre RSA")
       expect(content).to include(
-        "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
+        "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
+        "un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
       )
       expect(content).to include("Vous êtes attendu le dimanche 25 décembre 2022 à 09h30, à l'adresse suivante:")
       expect(content).to include("Mairie du 11eme")
@@ -92,7 +93,8 @@ describe Notifications::GenerateLetter, type: :service do
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
         expect(content).to include("Convocation à un rendez-vous d'orientation téléphonique dans le cadre de votre RSA")
         expect(content).to include(
-          "Un conseiller d'insertion vous appellera le dimanche 25 décembre 2022 à 09h30 sur votre numéro de téléphone: +33607070707"
+          "Un conseiller d'insertion vous appellera le dimanche 25 décembre 2022 " \
+          "à 09h30 sur votre numéro de téléphone: +33607070707"
         )
         expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
       end
@@ -133,7 +135,8 @@ describe Notifications::GenerateLetter, type: :service do
             "Convocation à un nouveau type de rendez-vous téléphonique dans le cadre de votre RSA"
           )
           expect(content).to include(
-            "Un conseiller d'insertion vous appellera le dimanche 25 décembre 2022 à 09h30 sur votre numéro de téléphone: +33607070707"
+            "Un conseiller d'insertion vous appellera le dimanche 25 décembre 2022 " \
+            "à 09h30 sur votre numéro de téléphone: +33607070707"
           )
         end
       end
@@ -149,7 +152,10 @@ describe Notifications::GenerateLetter, type: :service do
         content = strip_tags(notification.content)
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
-        expect(content).to include("Votre rendez-vous d'orientation, prévu le dimanche 25 décembre 2022 à 09h30 dans le cadre de votre RSA a été annulé")
+        expect(content).to include(
+          "Votre rendez-vous d'orientation, prévu le dimanche 25 décembre 2022 " \
+          "à 09h30 dans le cadre de votre RSA a été annulé"
+        )
       end
     end
 

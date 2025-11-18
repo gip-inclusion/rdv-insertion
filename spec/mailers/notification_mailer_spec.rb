@@ -18,8 +18,8 @@ RSpec.describe NotificationMailer do
   end
   let!(:organisation) do
     create(:organisation, category_configurations: [category_configuration],
-                           email: "someone@organisation.fr",
-                           website: "https://www.organisation.fr")
+                          email: "someone@organisation.fr",
+                          website: "https://www.organisation.fr")
   end
   let!(:category_configuration) { create(:category_configuration, motif_category:) }
   let!(:messages_configuration) do
@@ -53,7 +53,8 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué" \
+          " à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
         )
         expect(body_string).to include("Vous êtes attendu :")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
@@ -82,7 +83,8 @@ RSpec.describe NotificationMailer do
         it "renders the body" do
           body_string = strip_tags(mail.body.encoded)
           expect(body_string).to include(
-            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoquée à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
+            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoquée à " \
+            "un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
           )
           expect(body_string).to include("Vous êtes attendue :")
           expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
@@ -108,14 +110,17 @@ RSpec.describe NotificationMailer do
         it "renders the body" do
           body_string = strip_tags(mail.body.encoded)
           expect(body_string).to include(
-            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué(e) à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
+            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué(e) " \
+            "à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
           )
           expect(body_string).to include("Vous êtes attendu(e) :")
           expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
           expect(body_string).to include("DINUM")
           expect(body_string).to include("20 avenue de ségur 75007 Paris")
           expect(body_string).to include("Ce rendez-vous est obligatoire.")
-          expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité.")
+          expect(body_string).to include(
+            "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+          )
           expect(body_string).not_to include("En cas d'absence, votre RSA pourra être suspendue ou réduite.")
           expect(body_string).to include("En cas d'empêchement, contactez-nous:")
           expect(body_string).to include("Email : someone@organisation.fr")
@@ -175,7 +180,8 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous d'accompagnement"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
+          "un rendez-vous d'accompagnement"
         )
         expect(body_string).to include("Vous êtes attendu :")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
@@ -205,7 +211,8 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous d'accompagnement"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
+          "un rendez-vous d'accompagnement"
         )
         expect(body_string).to include("Vous êtes attendu :")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
@@ -235,7 +242,8 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous d'accompagnement"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
+          "un rendez-vous d'accompagnement"
         )
         expect(body_string).to include("Vous êtes attendu :")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
@@ -265,8 +273,9 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous de signature de CER" \
-          " pour construire et signer votre Contrat d'Engagement Réciproque"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
+          "un rendez-vous de signature de CER " \
+          "pour construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(body_string).to include("Vous êtes attendu :")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
@@ -528,12 +537,15 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous d'orientation" \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
+          "rendez-vous d'orientation" \
           " téléphonique pour démarrer un parcours d'accompagnement"
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).not_to include(
@@ -559,11 +571,15 @@ RSpec.describe NotificationMailer do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué " \
-          "à un rendez-vous d'accompagnement téléphonique pour démarrer un parcours d'accompagnement"
+          "à un rendez-vous d'accompagnement téléphonique pour démarrer " \
+          "un parcours d'accompagnement"
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).to include(
@@ -589,11 +605,15 @@ RSpec.describe NotificationMailer do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué " \
-          "à un rendez-vous d'accompagnement téléphonique pour démarrer un parcours d'accompagnement"
+          "à un rendez-vous d'accompagnement téléphonique pour démarrer " \
+          "un parcours d'accompagnement"
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).to include(
@@ -619,11 +639,15 @@ RSpec.describe NotificationMailer do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué " \
-          "à un rendez-vous d'accompagnement téléphonique pour démarrer un parcours d'accompagnement"
+          "à un rendez-vous d'accompagnement téléphonique pour démarrer " \
+          "un parcours d'accompagnement"
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).to include(
@@ -648,12 +672,16 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous téléphonique" \
-          " de signature de CER pour construire et signer votre Contrat d'Engagement Réciproque"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
+          "un rendez-vous téléphonique de signature de CER " \
+          "pour construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).not_to include(
@@ -679,11 +707,14 @@ RSpec.describe NotificationMailer do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous de suivi " \
-          "téléphonique pour faire un point avec votre référent de parcours" \
+          "téléphonique pour faire un point avec votre référent de parcours"
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include("Ce rendez-vous est obligatoire")
         expect(body_string).not_to include(
@@ -735,7 +766,10 @@ RSpec.describe NotificationMailer do
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).not_to include(
@@ -764,7 +798,10 @@ RSpec.describe NotificationMailer do
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).to include(
@@ -793,7 +830,10 @@ RSpec.describe NotificationMailer do
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).to include(
@@ -822,7 +862,10 @@ RSpec.describe NotificationMailer do
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
@@ -853,7 +896,10 @@ RSpec.describe NotificationMailer do
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).not_to include(
@@ -883,7 +929,10 @@ RSpec.describe NotificationMailer do
         )
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include("Ce rendez-vous est obligatoire")
@@ -1131,13 +1180,17 @@ RSpec.describe NotificationMailer do
       it "renders the body" do
         body_string = strip_tags(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un rendez-vous d'orientation" \
-          " téléphonique pour démarrer un parcours d'accompagnement"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à " \
+          "un rendez-vous d'orientation " \
+          "téléphonique pour démarrer un parcours d'accompagnement"
         )
         expect(body_string).to include("Nous vous rappelons:")
         expect(body_string).to include("Votre rendez-vous téléphonique")
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
-        expect(body_string).to include("Un conseiller d'insertion vous appellera sur votre numéro de téléphone : +33607070707")
+        expect(body_string).to include(
+          "Un conseiller d'insertion vous appellera sur votre numéro de téléphone : " \
+          "+33607070707"
+        )
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce rendez-vous est obligatoire")
         expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")

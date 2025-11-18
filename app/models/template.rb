@@ -16,7 +16,7 @@ class Template < ApplicationRecord
     return unless display_mandatory_warning
     return "Cet appel est obligatoire pour le traitement de votre dossier" if phone_platform?
 
-    "Ce #{format == "sms" ? "RDV" : "rendez-vous"} est obligatoire"
+    "Ce #{format == 'sms' ? 'RDV' : 'rendez-vous'} est obligatoire"
   end
 
   def name
