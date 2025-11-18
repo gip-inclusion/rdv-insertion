@@ -22,8 +22,7 @@ module Invitations
     def phone_platform_content
       "Bonjour #{user},\nVous êtes #{user_designation} et devez contacter la plateforme " \
         "départementale afin de #{rdv_purpose}. Pour cela, merci d'appeler le " \
-        "#{formatted_phone_number}. " \
-        "#{display_time_to_accept_invitation}" \
+        "#{formatted_phone_number}#{display_time_to_call_platform}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}"
     end
@@ -51,7 +50,7 @@ module Invitations
 
     def standard_reminder_content
       "Bonjour #{user},\nVous êtes #{user_designation} et vous avez été #{user.conjugate('invité')} il y a " \
-        "#{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours à prendre RDV " \
+        "#{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours à prendre rendez-vous " \
         "pour #{rdv_purpose}. Choisissez un créneau sur " \
         "#{@invitation.rdv_solidarites_public_url(with_protocol: false)}. " \
         "Lien valable #{number_of_days_before_expiration} jours. " \
@@ -90,6 +89,9 @@ module Invitations
       "Lien valable #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours. " if invitation.expireable?
     end
 
+    def display_time_to_call_platform
+      " dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours" if invitation.expireable?
+    end
 
     def mandatory_warning_message
       mandatory_warning ? "#{mandatory_warning}. " : ""

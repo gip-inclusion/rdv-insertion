@@ -2,7 +2,7 @@
 
 <div class="mail-object">
   <p class="bold-blue">
-    Objet : <%= rdv_title.capitalize %> dans le cadre de votre <%= rdv_subject %><br/>
+    Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre <%= rdv_subject %><br/>
     <% if user.affiliation_number %>
       N° CAF / MSA : <%= user.affiliation_number %>
     <% end %>
@@ -19,7 +19,9 @@
   <p>Pour vous aider dans vos démarches, <%= sender_name %> a mis en place <strong>une plateforme de réservation en ligne.</strong></p>
   <p>Pour choisir la date et l'heure de votre rendez-vous, vous pouvez:</p>
   <%= render "letters/invitations/invitation_choices", invitation_url: invitation_url, qr_code: qr_code %>
-  <p>Choisissez un rendez-vous dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier.</p>
+  <% if invitation.expireable? %>
+    <p>Choisissez un rendez-vous dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à compter de la réception de ce courrier.</p>
+  <% end %>
   <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
   <%= tag.p tag.strong("En l'absence d'action de votre part, #{punishable_warning}.") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>

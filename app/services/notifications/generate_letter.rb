@@ -42,7 +42,7 @@ module Notifications
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,
         user_designation: @notification.user_designation,
-        mandatory_warning: @notification.mandatory_warning,
+        mandatory_warning: @notification.mandatory_warning(format: "letter"),
         punishable_warning: @notification.punishable_warning,
         instruction_for_rdv: @notification.instruction_for_rdv,
         rdv_purpose: @notification.rdv_purpose,

@@ -117,7 +117,7 @@ class InvitationMailer < ApplicationMailer
   end
 
   def set_mandatory_warning
-    @mandatory_warning = @invitation.mandatory_warning
+    @mandatory_warning = @invitation.mandatory_warning(format: "email")
   end
 
   def set_punishable_warning

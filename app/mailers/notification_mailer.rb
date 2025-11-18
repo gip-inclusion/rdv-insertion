@@ -108,7 +108,7 @@ class NotificationMailer < ApplicationMailer
   end
 
   def set_mandatory_warning
-    @mandatory_warning = @notification.mandatory_warning
+    @mandatory_warning = @notification.mandatory_warning(format: "email")
   end
 
   def set_punishable_warning

@@ -12,12 +12,11 @@ class Template < ApplicationRecord
   enum :model, { standard: "standard", atelier: "atelier", phone_platform: "phone_platform",
                  atelier_enfants_ados: "atelier_enfants_ados" }
 
-  def mandatory_warning
-    if display_mandatory_warning && phone_platform?
-      "Cet appel est obligatoire pour le traitement de votre dossier"
-    elsif display_mandatory_warning
-      "Ce RDV est obligatoire"
-    end
+  def mandatory_warning(format: "sms")
+    return unless display_mandatory_warning
+    return "Cet appel est obligatoire pour le traitement de votre dossier" if phone_platform?
+
+    "Ce #{format == "sms" ? "RDV" : "rendez-vous"} est obligatoire"
   end
 
   def name

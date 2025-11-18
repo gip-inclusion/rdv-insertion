@@ -1,5 +1,5 @@
 <h1>Bonjour <%= @user %>,</h1>
-<p>En tant que <%= @user_designation %> vous devez contacter la plateforme départementale afin de <%= @rdv_purpose %>.</p>
+<p>En tant que <%= @user_designation %> vous devez contacter la plateforme départementale pour <%= @rdv_purpose %>.</p>
 <p><span class="font-weight-bold">Pour cela, merci d’appeler le <%= @invitation.help_phone_number_formatted %><%= tag.span(" dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours", class: ["font-weight-bold"]) if @invitation.expireable? %>.</span></p>
 <%= tag.p tag.strong("#{@mandatory_warning}.") if @mandatory_warning %>
 <%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
