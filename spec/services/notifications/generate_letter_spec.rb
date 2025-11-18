@@ -26,7 +26,7 @@ describe Notifications::GenerateLetter, type: :service do
               instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
     )
   end
-  let!(:lieu) { create(:lieu, address: "12 Place Léon Blum, 75011 Paris", name: "Marie du 11eme") }
+  let!(:lieu) { create(:lieu, address: "12 Place Léon Blum, 75011 Paris", name: "Mairie du 11eme") }
 
   let!(:organisation) { create(:organisation, department: department) }
   let!(:messages_configuration) do
@@ -42,18 +42,16 @@ describe Notifications::GenerateLetter, type: :service do
 
     it "generates the matching content" do
       subject
-      content = unescape_html(notification.content)
+      content = strip_tags(notification.content)
       expect(content).to include("20 AVENUE DE SEGUR")
       expect(content).to include("DIRECTION DÉPARTEMENTAL")
       expect(content).to include("Convocation à un rendez-vous d'orientation dans le cadre de votre RSA")
-      expect(content).to include("le dimanche 25 décembre 2022 à 09h30")
-      expect(content).to include("Marie du 11eme")
-      expect(content).to include("12 Place Léon Blum, 75011 Paris")
       expect(content).to include(
-        "Vous êtes bénéficiaire du RSA et à ce titre " \
-        "<span class=\"bold-blue\">vous êtes convoqué à un rendez-vous d'orientation</span>" \
-        " afin de démarrer un parcours d'accompagnement"
+        "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
       )
+      expect(content).to include("Vous êtes attendu le dimanche 25 décembre 2022 à 09h30, à l'adresse suivante:")
+      expect(content).to include("Mairie du 11eme")
+      expect(content).to include("12 Place Léon Blum, 75011 Paris")
       expect(content).to include("Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité")
     end
 
@@ -68,10 +66,9 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "includes signature image in generated notification" do
         subject
-        content = unescape_html(notification.content)
 
-        expect(content).to include("signature.png")
-        expect(content).to include("<img")
+        expect(notification.content).to include("signature.png")
+        expect(notification.content).to include("<img")
       end
     end
 
@@ -80,7 +77,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = unescape_html(notification.content)
+        content = strip_tags(notification.content)
         expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
       end
     end
@@ -90,13 +87,12 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = unescape_html(notification.content)
+        content = strip_tags(notification.content)
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
         expect(content).to include("Convocation à un rendez-vous d'orientation téléphonique dans le cadre de votre RSA")
         expect(content).to include(
-          "Un conseiller d'insertion vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 à 09h30" \
-          "</span> sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
+          "Un conseiller d'insertion vous appellera le dimanche 25 décembre 2022 à 09h30 sur votre numéro de téléphone: +33607070707"
         )
         expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
       end
@@ -130,15 +126,14 @@ describe Notifications::GenerateLetter, type: :service do
 
         it "generates the content with the overriden attributes" do
           subject
-          content = unescape_html(notification.content)
+          content = strip_tags(notification.content)
           expect(content).to include("20 AVENUE DE SEGUR")
           expect(content).to include("DIRECTION DÉPARTEMENTAL")
           expect(content).to include(
             "Convocation à un nouveau type de rendez-vous téléphonique dans le cadre de votre RSA"
           )
           expect(content).to include(
-            "Un conseiller d'insertion vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 " \
-            "à 09h30</span> sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
+            "Un conseiller d'insertion vous appellera le dimanche 25 décembre 2022 à 09h30 sur votre numéro de téléphone: +33607070707"
           )
         end
       end
@@ -151,15 +146,10 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = unescape_html(notification.content)
+        content = strip_tags(notification.content)
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
-        expect(content).to include("Votre rendez-vous d'orientation dans le cadre de votre RSA a été annulé")
-        expect(content).to include("le dimanche 25 décembre 2022 à 09h30")
-        expect(content).to include(
-          "Votre rendez-vous d'orientation prévu le dimanche 25 décembre 2022 à 09h30 " \
-          "dans le cadre de votre RSA a été annulé"
-        )
+        expect(content).to include("Votre rendez-vous d'orientation, prévu le dimanche 25 décembre 2022 à 09h30 dans le cadre de votre RSA a été annulé")
       end
     end
 

@@ -298,9 +298,12 @@ module MotifCategoriesHelper
         motif_category_type: "autre",
         template: create(
           :template,
-          model: "short",
+          model: "standard",
           rdv_title: "rendez-vous de suivi psychologue",
           rdv_title_by_phone: "rendez-vous téléphonique de suivi psychologue",
+          rdv_purpose: "vous aider dans votre parcours d'accompagnement ",
+          user_designation: "accompagné.e par notre structure",
+          rdv_subject: "Suivi insertion",
           display_mandatory_warning: false
         )
       )
