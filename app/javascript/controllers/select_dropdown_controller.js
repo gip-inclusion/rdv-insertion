@@ -24,35 +24,15 @@ export default class extends Controller {
     this.labelTarget.textContent = label;
 
     this.#scrollToTop();
-    this.#resetFilter();
-    this.#closeDropdown();
+
+    this.element.dispatchEvent(new CustomEvent("select-dropdown:selected", {
+      bubbles: true
+    }));
   }
 
   #scrollToTop() {
     if (this.hasDropdownTarget) {
       this.dropdownTarget.scrollTop = 0;
-    }
-  }
-
-  #resetFilter() {
-    const filterController = this.application.getControllerForElementAndIdentifier(
-      this.element,
-      "list-filter"
-    );
-
-    if (filterController) {
-      filterController.reset();
-    }
-  }
-
-  #closeDropdown() {
-    const dropdownController = this.application.getControllerForElementAndIdentifier(
-      this.element,
-      "dropdown-menu"
-    );
-
-    if (dropdownController && dropdownController.isOpen()) {
-      dropdownController.toggle();
     }
   }
 }
