@@ -14,8 +14,8 @@
 
 <div class="main-content">
   <p><%= user.title_in_letter %>,</p>
-  <p>Vous êtes <span class="text-violet"><%= user_designation %></span> et bénéficiez d'un accompagnement. Pour en profiter au mieux, nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix.</p>
-  <p>Pour faciliter votre inscription, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de vous inscrire vous-même.</span></p>
+  <p>Vous êtes <%= user_designation %> et bénéficiez d'un accompagnement. Pour en profiter au mieux, nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix.</p>
+  <p>Pour faciliter votre inscription, <%= sender_name %> a mis en place <strong>une plateforme vous permettant de vous inscrire vous-même.</strong></p>
   <p>Choisissez un créneau à votre convenance&nbsp;:</p>
   <%= render "letters/invitations/invitation_choices", invitation_url: invitation_url, qr_code: qr_code %>
   <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>

@@ -14,9 +14,9 @@
 
 <div class="main-content">
   <p><%= user.title_in_letter %>,</p>
-  <p>Vous êtes <span class="text-violet"><%= user_designation %></span> et devez bénéficier d’un accompagnement obligatoire dans le cadre de vos démarches d’insertion.</p>
-  <p>La première étape est <span class="bold-blue">un appel téléphonique avec un professionnel de l’insertion</span> afin de définir, selon votre situation et vos besoins, quelle sera la structure la mieux adaptée pour vous accompagner.</p>
-  <p>Pour cela, <span class="bold-blue">merci d’appeler le <%= invitation.help_phone_number %><%= " dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours à compter de la réception de ce courrier" if invitation.expireable? %>.</span></p>
+  <p>Vous êtes <%= user_designation %> et devez bénéficier d’un accompagnement obligatoire dans le cadre de vos démarches d’insertion.</p>
+  <p>La première étape est <strong>un appel téléphonique avec un professionnel de l’insertion</strong> afin de définir, selon votre situation et vos besoins, quelle sera la structure la mieux adaptée pour vous accompagner.</p>
+  <p>Pour cela, <strong>merci d’appeler le <%= invitation.help_phone_number %><%= " dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours à compter de la réception de ce courrier" if invitation.expireable? %>.</strong></p>
   <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
   <%= tag.p tag.strong("En l'absence d'action de votre part, #{punishable_warning}.") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>

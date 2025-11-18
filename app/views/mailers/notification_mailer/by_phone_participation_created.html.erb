@@ -1,5 +1,5 @@
 <h1>Bonjour <%= @user %>,</h1>
-<p>Vous êtes <span class="text-violet"><%= @user_designation %></span> et à ce titre vous êtes <%= @user.conjugate("convoqué") %> à un <span class="text-violet"><%= @rdv_title_by_phone %></span> pour <span class="text-violet"><%= @rdv_purpose %></span>.</p>
+<p>Vous êtes <%= @user_designation %> et à ce titre vous êtes <%= @user.conjugate("convoqué") %> à un <%= @rdv_title_by_phone %> pour <%= @rdv_purpose %>.</p>
 
 <%= render "mailers/notification_mailer/by_phone_rdv_infos", user: @user, rdv: @rdv %>
 

@@ -1,5 +1,5 @@
 <h1>Bonjour <%= @user %>,</h1>
-<p>Votre <span class="text-violet"><%= @rdv_title_by_phone %></span> dans le cadre de votre <span class="text-violet"><%= @rdv_subject %></span> a été modifié.</p>
+<p>Votre <%= @rdv_title_by_phone %> dans le cadre de votre <%= @rdv_subject %> a été modifié.</p>
 
 <%= render "mailers/notification_mailer/by_phone_rdv_infos", user: @user, rdv: @rdv %>
 

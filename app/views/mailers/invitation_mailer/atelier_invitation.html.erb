@@ -1,5 +1,5 @@
 <h1>Bonjour <%= @user %>,</h1>
-<p>Vous êtes <span class="text-violet"><%= @user_designation %></span> et bénéficiez d'un accompagnement. En cliquant sur le bouton suivant, vous pouvez <span class="font-weight-bold">consulter le(s) atelier(s) et formation(s) proposé(s)</span> sur la plateforme RDV-Solidarités et vous y inscrire directement et librement, dans la limite des places disponibles.</p>
+<p>Vous êtes <%= @user_designation %> et bénéficiez d'un accompagnement. En cliquant sur le bouton suivant, vous pouvez <span class="font-weight-bold">consulter le(s) atelier(s) et formation(s) proposé(s)</span> sur la plateforme RDV-Solidarités et vous y inscrire directement et librement, dans la limite des places disponibles.</p>
 <p class="btn-wrapper">
   <%= link_to @invitation.rdv_solidarites_public_url, class: "btn btn-primary" do %>
     M'inscrire

@@ -7,7 +7,7 @@
 
 <div class="main-content">
   <p><%= user.title_in_letter %>,</p>
-  <p>Votre <span class="text-violet"><%= rdv_title %></span>, prévu le <%= I18n.l(rdv.starts_at, format: :human) %> dans le cadre de votre <%= rdv_subject %> a été annulé.</p>
+  <p>Votre <%= rdv_title %>, prévu le <%= I18n.l(rdv.starts_at, format: :human) %> dans le cadre de votre <%= rdv_subject %> a été annulé.</p>
   <p>Pour plus d'informations, veuillez appeler le <%= rdv.phone_number %>.</p>
   <%= render "letters/salutation", user: user %>
   <br/>
