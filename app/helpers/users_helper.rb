@@ -1,4 +1,4 @@
-module UsersHelper
+module UsersHelper # rubocop:disable Metrics/ModuleLength
   def show_convocation?(category_configuration)
     category_configuration.convene_user?
   end
