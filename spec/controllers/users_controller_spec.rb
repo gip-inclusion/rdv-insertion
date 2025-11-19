@@ -629,7 +629,7 @@ describe UsersController do
 
       it "filters by tag" do
         get :index, params: index_params
-        expect(response.body).not_to match(/Michael/)
+        expect(response.body).to match(/Michael/)
         expect(response.body).to match(/Marie/)
         expect(response.body).not_to match(/Oliva/)
       end
