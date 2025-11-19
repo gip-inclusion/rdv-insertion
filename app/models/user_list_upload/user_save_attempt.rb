@@ -2,7 +2,8 @@ class UserListUpload::UserSaveAttempt < ApplicationRecord
   belongs_to :user_row, class_name: "UserListUpload::UserRow"
   belongs_to :user, optional: true
 
-  after_commit :mark_user_row_for_invitation!, if: :should_mark_user_row_for_invitation?
+  after_commit :mark_user_row_for_invitation!, if: :should_mark_user_row_for_invitation?,
+                                               on: :create
 
   def self.create_from_row(user_row:)
     save_user_result = UserListUpload::SaveUser.call(user_row: user_row)
