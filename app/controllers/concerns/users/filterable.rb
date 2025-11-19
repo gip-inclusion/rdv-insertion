@@ -31,8 +31,7 @@ module Users::Filterable
     user_ids = TagUser
                .select(:user_id)
                .where(tag_id: @filtered_tags)
-               .group(:user_id)
-               .having("COUNT(DISTINCT tag_id) = ?", [params[:tag_ids]].flatten.count)
+               .distinct
                .pluck(:user_id)
 
     @users = @users.where(id: user_ids)
