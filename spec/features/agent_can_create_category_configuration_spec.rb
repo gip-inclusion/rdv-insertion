@@ -29,7 +29,8 @@ describe "Agents can create category configuration", :js do
       fill_in "category_configuration_email_to_notify_rdv_changes", with: "test@test.com"
       fill_in "category_configuration_email_to_notify_no_available_slots", with: "test@test.com"
 
-      select "RSA Suivi", from: "category_configuration[motif_category_id]"
+      find("button[data-dropdown--select-option-target='button']").click
+      find("div[data-dropdown--select-option-target='option']", text: "RSA Suivi", exact_text: true).click
 
       find("input[name=\"category_configuration[file_configuration_id]\"]").click
 
@@ -52,9 +53,9 @@ describe "Agents can create category configuration", :js do
       it "allows to select authorized motif categories" do
         visit new_organisation_category_configuration_path(organisation)
 
-        expect(page).to have_select(
-          "category_configuration[motif_category_id]", options: ["-", "RSA Suivi"]
-        )
+        find("button[data-dropdown--select-option-target='button']").click
+        expect(page).to have_css("div[data-dropdown--select-option-target='option']", text: "RSA Suivi")
+        expect(page).to have_no_css("div[data-dropdown--select-option-target='option']", text: "Autre")
       end
     end
 
@@ -100,7 +101,8 @@ describe "Agents can create category configuration", :js do
 
         # we create now the category configuration with the newly created file configuration
 
-        select "RSA Suivi", from: "category_configuration[motif_category_id]"
+        find("button[data-dropdown--select-option-target='button']").click
+        find("div[data-dropdown--select-option-target='option']", text: "RSA Suivi", exact_text: true).click
 
         find("input[name=\"category_configuration[file_configuration_id]\"]").click
 

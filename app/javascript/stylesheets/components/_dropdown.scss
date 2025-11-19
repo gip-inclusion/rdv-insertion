@@ -66,3 +66,25 @@
 #batch-actions-menu {
   width: 260px;
 }
+
+// Dropdown select with search, custom component
+.dropdown-select-container {
+  max-width: 400px;
+}
+
+.dropdown-select-label {
+  pointer-events: none;
+}
+
+.dropdown-select-menu {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-select-option {
+  cursor: pointer;
+
+  &.keyboard-focused {
+    background-color: var(--bs-dropdown-link-hover-bg, #e9ecef);
+  }
+}

@@ -19,6 +19,11 @@ export default class extends Controller {
     this.buttonTarget.ariaExpanded = this.isOpen()
   }
 
+  close() {
+    this.dropdownTarget.classList.remove("d-block")
+    this.buttonTarget.ariaExpanded = "false"
+  }
+
   isOpen() {
     return this.dropdownTarget.classList.contains("d-block")
   }
