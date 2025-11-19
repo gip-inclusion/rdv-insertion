@@ -15,7 +15,6 @@ export default class extends Controller {
     }
 
     this.currentIndex = -1;
-    this.element.addEventListener("keydown", this.#handleKeydown.bind(this));
   }
 
   select(event) {
@@ -29,7 +28,7 @@ export default class extends Controller {
     this.#scrollToTop();
     this.currentIndex = -1;
 
-    this.element.dispatchEvent(new CustomEvent("select-dropdown:selected", {
+    this.element.dispatchEvent(new CustomEvent("dropdown--select-option:selected", {
       bubbles: true
     }));
   }
@@ -40,7 +39,7 @@ export default class extends Controller {
     }
   }
 
-  #handleKeydown(event) {
+  handleKeydown(event) {
     const visibleOptions = this.#getVisibleOptions();
     if (visibleOptions.length === 0) return;
 
@@ -69,7 +68,7 @@ export default class extends Controller {
         break;
       case "Escape":
         event.preventDefault();
-        this.element.dispatchEvent(new CustomEvent("select-dropdown:close", { bubbles: true }));
+        this.element.dispatchEvent(new CustomEvent("dropdown--select-option:close", { bubbles: true }));
         break;
       default:
         break;
