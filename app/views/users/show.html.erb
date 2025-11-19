@@ -1,3 +1,6 @@
+<div class="container mt-4">
+  <%= render "users/dora_banner", dora_url: dora_url_for_user(@user), link_id: dora_link_id_for_user(@user) %>
+</div>
 <%= turbo_frame_tag "user_page", data: { turbo_action: "advance" } do %>
   <%= render "users/page_title", user: @user %>
 
