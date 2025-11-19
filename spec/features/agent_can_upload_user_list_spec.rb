@@ -1000,10 +1000,12 @@ describe "Agents can upload user list", :js do
 
     let!(:hernan_row) do
       create(:user_row, user_list_upload:, first_name: "Hernan", last_name: "Crespo",
+                        selected_for_invitation: true,
                         user_save_attempts: [create(:user_save_attempt, success: true, user: hernan)])
     end
     let!(:christian_row) do
       create(:user_row, user_list_upload:, first_name: "Christian", last_name: "Vieri",
+                        selected_for_invitation: true,
                         user_save_attempts: [create(:user_save_attempt, success: true, user: christian)])
     end
 
