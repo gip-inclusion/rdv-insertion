@@ -18,36 +18,48 @@ describe UserListUpload::UserRow do
       it { expect(user_row).to be_changed_by_cnaf_data }
     end
 
-    context "when cnaf_data contains landline phone number" do
-      context "when phone number is not set" do
+    describe "cnaf_data phone number" do
+      context "when cnaf_data contains landline phone number" do
+        context "when phone number is not set" do
+          before do
+            user_row.phone_number = nil
+            user_row.cnaf_data = { "phone_number" => "0123456789" }
+            user_row.format_attributes
+          end
+
+          it { expect(user_row).to be_changed_by_cnaf_data }
+        end
+
+        context "when phone number is set to a mobile phone number" do
+          before do
+            user_row.phone_number = "0612345678"
+            user_row.cnaf_data = { "phone_number" => "0123456789" }
+            user_row.format_attributes
+          end
+
+          it { expect(user_row).not_to be_changed_by_cnaf_data }
+        end
+      end
+
+      context "when cnaf_data contains mobile phone number" do
         before do
-          user_row.phone_number = nil
-          user_row.cnaf_data = { "phone_number" => "0123456789" }
+          user_row.phone_number = "0723456789"
+          user_row.cnaf_data = { "phone_number" => "0623456789" }
           user_row.format_attributes
         end
 
         it { expect(user_row).to be_changed_by_cnaf_data }
       end
 
-      context "when phone number is set to a mobile phone number" do
+      context "when cnaf_data phone number cannot be parsed" do
         before do
           user_row.phone_number = "0612345678"
-          user_row.cnaf_data = { "phone_number" => "0123456789" }
+          user_row.cnaf_data = { "phone_number" => "312414124" }
           user_row.format_attributes
         end
 
         it { expect(user_row).not_to be_changed_by_cnaf_data }
       end
-    end
-
-    context "when cnaf_data contains mobile phone number" do
-      before do
-        user_row.phone_number = "0723456789"
-        user_row.cnaf_data = { "phone_number" => "0623456789" }
-        user_row.format_attributes
-      end
-
-      it { expect(user_row).to be_changed_by_cnaf_data }
     end
 
     context "when cnaf_data contains same values" do

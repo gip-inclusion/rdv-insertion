@@ -9,14 +9,14 @@ describe MonitorWebhookActivityJob do
         create(:agent, last_webhook_update_received_at: 10.minutes.ago)
       end
 
-      it "sends a message to Mattermost" do
+      it "sends a message to slack" do
         all_except_agent = MonitorWebhookActivityJob::MONITORS
                            .reject { |m| m[:model] == Agent }
                            .pluck(:model)
                            .map(&:name)
                            .join(", ")
 
-        expect(MattermostClient).to receive(:send_to_notif_channel).with(include(all_except_agent))
+        expect(SlackClient).to receive(:send_to_notif_channel).with(include(all_except_agent))
 
         subject
       end
@@ -30,8 +30,8 @@ describe MonitorWebhookActivityJob do
         end
       end
 
-      it "does not send a message to Mattermost" do
-        expect(MattermostClient).not_to receive(:send_to_notif_channel)
+      it "does not send a message to slack" do
+        expect(SlackClient).not_to receive(:send_to_notif_channel)
         subject
       end
     end

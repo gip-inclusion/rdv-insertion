@@ -12,7 +12,7 @@ class TransferEmailReplyJob < ApplicationJob
     else
       forward_to_default_mailbox
     end
-    notify_on_mattermost
+    notify_on_slack
   end
 
   private
@@ -86,7 +86,20 @@ class TransferEmailReplyJob < ApplicationJob
     end
   end
 
-  def notify_on_mattermost
-    MattermostClient.send_to_notif_channel("📩 Un email d'un usager vient d'être transféré")
+  def notify_on_slack
+    SlackClient.send_to_notif_channel(
+      "📩 Un email d'un usager vient d'être transféré #{record_id_slack_mention}"
+    )
+  end
+
+  def record_id_slack_mention
+    if invitation
+      "(Invitation dans #{invitation.organisations.one? ? 'l\'organisation' : 'les organisations'} " \
+        "#{invitation.organisation_ids.to_sentence})"
+    elsif rdv
+      "(RDV dans l'organisation #{rdv.organisation_id})"
+    else
+      ""
+    end
   end
 end

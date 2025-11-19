@@ -12,6 +12,7 @@ describe SendInvitationRemindersJob do
       create(:user, email: "camille5@gouv.fr", phone_number: "0649031935")
     end
     let!(:user6) { create(:user, email: "camille6@gouv.fr", phone_number: "0649031935") }
+    let!(:user7) { create(:user, email: "camille7@gouv.fr", phone_number: "0649031937") }
 
     let!(:follow_up1) do
       create(:follow_up, status: "invitation_pending", user: user1)
@@ -35,6 +36,9 @@ describe SendInvitationRemindersJob do
     end
     let!(:follow_up7) do
       create(:follow_up, status: "invitation_pending", user: user1)
+    end
+    let!(:follow_up8) do
+      create(:follow_up, status: "invitation_pending", user: user7)
     end
 
     # OK
@@ -92,16 +96,35 @@ describe SendInvitationRemindersJob do
       )
     end
 
-    before do
-      allow(SendInvitationReminderJob).to receive(:perform_later)
-      allow(MattermostClient).to receive(:send_to_notif_channel)
+    let!(:invitation8_old) do
+      create(
+        :invitation,
+        user: user7, follow_up: follow_up8,
+        created_at: 60.days.ago, expires_at: 50.days.ago
+      )
+    end
+    let!(:invitation8_new) do
+      create(
+        :invitation,
+        user: user7, follow_up: follow_up8,
+        created_at: 3.days.ago, expires_at: 4.days.from_now
+      )
     end
 
-    it "enqueues reminder jobs for the eligible contexts only" do
+    before do
+      allow(SendInvitationReminderJob).to receive(:perform_later)
+      allow(SlackClient).to receive(:send_to_notif_channel)
+    end
+
+    it "enqueues reminder jobs for the eligible contexts only" do # rubocop:disable RSpec/ExampleLength
       expect(SendInvitationReminderJob).to receive(:perform_later)
         .with(follow_up1.id, "sms")
       expect(SendInvitationReminderJob).to receive(:perform_later)
         .with(follow_up1.id, "email")
+      expect(SendInvitationReminderJob).to receive(:perform_later)
+        .with(follow_up8.id, "sms")
+      expect(SendInvitationReminderJob).to receive(:perform_later)
+        .with(follow_up8.id, "email")
       expect(SendInvitationReminderJob).not_to receive(:perform_later)
         .with(follow_up2.id, "sms")
       expect(SendInvitationReminderJob).not_to receive(:perform_later)
@@ -129,11 +152,11 @@ describe SendInvitationRemindersJob do
       subject
     end
 
-    it "sends a notification to mattermost" do
-      expect(MattermostClient).to receive(:send_to_notif_channel)
+    it "sends a notification to slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
         .with(
-          "📬 1 relances en cours!\n" \
-          "Les usagers sont: [#{user1.id}]"
+          "📬 2 relances en cours!\n" \
+          "Les usagers sont: [#{user1.id}, #{user7.id}]"
         )
       subject
     end

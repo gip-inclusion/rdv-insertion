@@ -5,9 +5,9 @@ monitor_webhook_activity_job:
 monitor_inbound_emails_activity_job:
   cron: "0 15 * * *" # Monitor inbound emails activity every day at 15:00
   class: "MonitorInboundEmailsActivityJob"
-notify_jobs_to_retry_on_mattermost_job:
+notify_jobs_to_retry_on_slack_job:
   cron: "30 10 * * *" # we send jobs in the retry_set once a day, at 10:30
-  class: "NotifyJobsToRetryOnMattermostJob"
+  class: "NotifyJobsToRetryOnSlackJob"
 retrieve_and_notify_all_unavailable_creneaux_job:
   cron: "0 01 * * *" # we verify organisations creneaux availability once a day, at 01:00
   class: "Creneaux::RetrieveAndNotifyAllUnavailableCreneauxJob"

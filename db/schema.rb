@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_23_102544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -468,35 +468,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
   end
 
   create_table "stats", force: :cascade do |t|
-    t.integer "users_count"
-    t.json "users_count_grouped_by_month"
-    t.integer "rdvs_count"
-    t.json "rdvs_count_grouped_by_month"
-    t.integer "sent_invitations_count"
-    t.json "sent_invitations_count_grouped_by_month"
+    t.json "users_count_grouped_by_month", default: {}
+    t.json "rdvs_count_grouped_by_month", default: {}
+    t.json "sent_invitations_count_grouped_by_month", default: {}
     t.float "average_time_between_invitation_and_rdv_in_days"
-    t.json "average_time_between_invitation_and_rdv_in_days_by_month"
+    t.json "average_time_between_invitation_and_rdv_in_days_by_month", default: {}
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "rate_of_autonomous_users"
-    t.json "rate_of_autonomous_users_grouped_by_month"
+    t.json "rate_of_autonomous_users_grouped_by_month", default: {}
     t.string "statable_type"
     t.bigint "statable_id"
     t.float "rate_of_no_show_for_convocations"
-    t.json "rate_of_no_show_for_convocations_grouped_by_month"
+    t.json "rate_of_no_show_for_convocations_grouped_by_month", default: {}
     t.float "rate_of_no_show_for_invitations"
-    t.json "rate_of_no_show_for_invitations_grouped_by_month"
+    t.json "rate_of_no_show_for_invitations_grouped_by_month", default: {}
     t.float "rate_of_users_oriented"
-    t.json "rate_of_users_oriented_grouped_by_month"
-    t.integer "users_with_rdv_count"
-    t.json "users_with_rdv_count_grouped_by_month"
+    t.json "rate_of_users_oriented_grouped_by_month", default: {}
+    t.json "users_with_rdv_count_grouped_by_month", default: {}
     t.float "rate_of_no_show"
-    t.json "rate_of_no_show_grouped_by_month"
+    t.json "rate_of_no_show_grouped_by_month", default: {}
     t.float "rate_of_users_oriented_in_less_than_45_days"
-    t.json "rate_of_users_oriented_in_less_than_45_days_by_month"
+    t.json "rate_of_users_oriented_in_less_than_45_days_by_month", default: {}
     t.float "rate_of_users_accompanied_in_less_than_30_days"
-    t.json "rate_of_users_accompanied_in_less_than_30_days_by_month"
+    t.json "rate_of_users_accompanied_in_less_than_30_days_by_month", default: {}
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -563,6 +559,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
     t.index ["user_row_id"], name: "index_user_list_upload_invitation_attempts_on_user_row_id"
   end
 
+  create_table "user_list_upload_processing_logs", force: :cascade do |t|
+    t.datetime "user_saves_triggered_at"
+    t.datetime "user_saves_started_at"
+    t.datetime "user_saves_ended_at"
+    t.datetime "invitations_triggered_at"
+    t.datetime "invitations_started_at"
+    t.datetime "invitations_ended_at"
+    t.uuid "user_list_upload_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_list_upload_id"], name: "index_user_list_upload_processing_logs_on_user_list_upload_id"
+  end
+
   create_table "user_list_upload_user_rows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -615,8 +624,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
     t.bigint "agent_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "origin", null: false
     t.index ["agent_id"], name: "index_user_list_uploads_on_agent_id"
     t.index ["category_configuration_id"], name: "index_user_list_uploads_on_category_configuration_id"
+    t.index ["origin"], name: "index_user_list_uploads_on_origin"
     t.index ["structure_type", "structure_id"], name: "index_user_list_uploads_on_structure"
   end
 
@@ -746,6 +757,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164240) do
   add_foreign_key "tag_users", "users"
   add_foreign_key "user_list_upload_invitation_attempts", "invitations"
   add_foreign_key "user_list_upload_invitation_attempts", "user_list_upload_user_rows", column: "user_row_id"
+  add_foreign_key "user_list_upload_processing_logs", "user_list_uploads"
   add_foreign_key "user_list_upload_user_rows", "user_list_uploads"
   add_foreign_key "user_list_upload_user_rows", "users", column: "matching_user_id"
   add_foreign_key "user_list_upload_user_save_attempts", "user_list_upload_user_rows", column: "user_row_id"

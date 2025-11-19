@@ -16,8 +16,8 @@ describe RemoveUsersFromOrgsWithOldArchivesJob do
         subject
       end
 
-      it "sends mattermost notification with correct count" do
-        expect(MattermostClient).to receive(:send_to_notif_channel)
+      it "sends slack notification with correct count" do
+        expect(SlackClient).to receive(:send_to_notif_channel)
           .with(/1 usagers archivés ont été retirés de leurs organisations/)
 
         subject
@@ -55,8 +55,8 @@ describe RemoveUsersFromOrgsWithOldArchivesJob do
         subject
       end
 
-      it "does not send mattermost notification" do
-        expect(MattermostClient).not_to receive(:send_to_notif_channel)
+      it "does not send slack notification" do
+        expect(SlackClient).not_to receive(:send_to_notif_channel)
         subject
       end
     end

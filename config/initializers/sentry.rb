@@ -6,6 +6,10 @@ Sentry.init do |config|
   # of transactions for performance monitoring.
   # We recommend adjusting this value in production
   config.traces_sample_rate = 0.05
+  # crash-free sessions tracking
+  config.auto_session_tracking = true
+  # "SOURCE_VERSION" env variable is set automatically by Scalingo as the SHA of the commit
+  config.release = ENV["SOURCE_VERSION"] unless Rails.env.local?
 
   config.before_send = lambda do |event, _hint|
     # We filter sensitive data from Sidekiq arguments

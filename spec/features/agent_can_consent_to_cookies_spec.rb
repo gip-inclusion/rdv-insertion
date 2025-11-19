@@ -27,7 +27,7 @@ describe "Agent can consent to cookies", :js do
 
       expect(page).to have_button("Tout accepter")
       expect(page).to have_button("Tout refuser")
-      expect(page).to have_button("Personnaliser")
+      expect(page).to have_link("Personnaliser")
 
       # It does not have matomo script tag element
       expect(page).to have_no_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
@@ -85,13 +85,13 @@ describe "Agent can consent to cookies", :js do
       # https://github.com/gip-inclusion/rdv-insertion/actions/runs/16426240492/job/46417105965
       visit current_path
 
-      click_button "Personnaliser"
+      click_link "Personnaliser"
 
-      expect(page).to have_css("dialog#consent-modal", wait: 10)
+      expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
       expect(page).to have_content("Panneau de gestion des cookies")
 
       # Test case: Accept tracking but refuse support
-      within("dialog#consent-modal") do
+      within("dialog#cookies-consent-customization-modal") do
         find("label[for='tracking-accept']").click
         find("label[for='support-refuse']").click
         click_button "Confirmer mes choix"
@@ -122,13 +122,13 @@ describe "Agent can consent to cookies", :js do
       # https://github.com/gip-inclusion/rdv-insertion/actions/runs/16426240492/job/46417105965
       visit current_path
 
-      click_button "Personnaliser"
+      click_link "Personnaliser"
 
-      expect(page).to have_css("dialog#consent-modal", wait: 10)
+      expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
       expect(page).to have_content("Panneau de gestion des cookies")
 
       # Test case: Refuse tracking but accept support
-      within("dialog#consent-modal") do
+      within("dialog#cookies-consent-customization-modal") do
         find("label[for='tracking-refuse']").click
         find("label[for='support-accept']").click
         click_button "Confirmer mes choix"
@@ -148,6 +148,58 @@ describe "Agent can consent to cookies", :js do
       expect(page).to have_no_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
       # It has crisp element
       expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
+    end
+
+    context "when agent already has cookies consent" do
+      let!(:agent) { create(:agent, :without_cookies_consent, organisations: [organisation]) }
+
+      before do
+        create(:cookies_consent, agent: agent, support_accepted: true, tracking_accepted: true)
+      end
+
+      it "can modify cookies preferences from footer link" do
+        visit organisation_users_path(organisation)
+
+        # Banner should not be displayed
+        expect(page).to have_no_css("div.fr-consent-banner")
+
+        # Both matomo and crisp should be enabled
+        expect(page).to have_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
+        expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
+
+        # We specify the current path to avoid referer issues
+        visit current_path
+
+        # Click on footer link to open modal
+        within("footer") do
+          click_link "Gestion des cookies"
+        end
+
+        expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
+        expect(page).to have_content("Panneau de gestion des cookies")
+
+        # Modify preferences: refuse support but keep tracking
+        within("dialog#cookies-consent-customization-modal") do
+          find("label[for='tracking-accept']").click
+          find("label[for='support-refuse']").click
+          click_button "Confirmer mes choix"
+        end
+
+        expect(page).to have_current_path(organisation_users_path(organisation))
+
+        sleep 0.5
+
+        # Verify preferences were updated
+        consent = CookiesConsent.find_by(agent_id: agent.id)
+        expect(consent.tracking_accepted).to be true
+        expect(consent.support_accepted).to be false
+
+        visit organisation_users_path(organisation)
+
+        # Matomo should be enabled, crisp disabled
+        expect(page).to have_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
+        expect(page).to have_no_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
+      end
     end
   end
 end

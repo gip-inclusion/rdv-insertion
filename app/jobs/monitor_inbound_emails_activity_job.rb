@@ -2,7 +2,7 @@ class MonitorInboundEmailsActivityJob < ApplicationJob
   def perform
     return if inbound_email_received_less_than_4_days_ago?
 
-    MattermostClient.send_to_private_channel(
+    SlackClient.send_to_private_channel(
       "⚠️ Les emails des usagers n'ont pas été transérés depuis plus de 4 jours!\n" \
       "Dernier email reçu le #{last_inbound_email_received_at.strftime('%d/%m/%Y %H:%M')}"
     )

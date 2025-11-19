@@ -3,7 +3,7 @@ describe Users::PushToRdvSolidarites, type: :service do
     described_class.call(user:)
   end
 
-  let!(:agent) { create(:agent) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 444 }
   let!(:rdv_solidarites_user_id) { 555 }
   let!(:organisation) do
@@ -42,10 +42,14 @@ describe Users::PushToRdvSolidarites, type: :service do
         .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, user: rdv_solidarites_user))
-      user.referents = [agent]
+      allow(Current).to receive(:agent).and_return(agent)
     end
 
     context "when the rdv_solidarites_user_id is present" do
+      before do
+        user.referents = [agent]
+      end
+
       it "assigns the user to the department organisations by creating user profiles on rdvs" do
         expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
           .with(
@@ -203,7 +207,6 @@ describe Users::PushToRdvSolidarites, type: :service do
           .with(
             user_attributes:
             rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id])
-                                           .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id])
           )
         subject
       end
@@ -216,6 +219,52 @@ describe Users::PushToRdvSolidarites, type: :service do
       it "tries to save the user in db" do
         expect(user).to receive(:save)
         subject
+      end
+
+      it "does not upsert the user profiles" do
+        expect(RdvSolidaritesApi::CreateUserProfiles).not_to receive(:call)
+        subject
+      end
+
+      it "does not upsert the referents" do
+        expect(RdvSolidaritesApi::CreateReferentAssignations).not_to receive(:call)
+        subject
+      end
+
+      context "when the user existed with referents" do
+        let!(:referent) { create(:agent) }
+
+        before do
+          user.referents = [referent]
+        end
+
+        it "upserts the referents" do
+          expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
+            .with(
+              rdv_solidarites_user_id: 42,
+              rdv_solidarites_agent_ids: [referent.rdv_solidarites_agent_id]
+            )
+          subject
+        end
+      end
+
+      context "when the user existed in organisations agent does not belong to" do
+        let!(:other_org) { create(:organisation) }
+
+        before do
+          user.organisations << other_org
+        end
+
+        it "upserts the user profiles" do
+          expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
+            .with(
+              rdv_solidarites_user_id: 42,
+              rdv_solidarites_organisation_ids: [
+                organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id
+              ]
+            )
+          subject
+        end
       end
 
       context "when the user cannot be saved in db" do
@@ -243,7 +292,6 @@ describe Users::PushToRdvSolidarites, type: :service do
             .with(
               user_attributes:
               rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id])
-                                             .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id])
             )
           subject
         end
@@ -258,7 +306,6 @@ describe Users::PushToRdvSolidarites, type: :service do
               user_attributes:
                 rdv_solidarites_user_attributes.except(:email)
                                                .merge(organisation_ids: [rdv_solidarites_organisation_id])
-                                               .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id])
             )
           subject
         end

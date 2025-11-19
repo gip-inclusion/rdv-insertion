@@ -9,7 +9,7 @@ describe TransferEmailReplyJob do
       :with, :forward_notification_reply_to_organisation, :deliver_now
     )
     allow(ReplyTransferMailer).to receive_message_chain(:with, :forward_to_default_mailbox, :deliver_now)
-    allow(MattermostClient).to receive(:send_to_notif_channel)
+    allow(SlackClient).to receive(:send_to_notif_channel)
   end
 
   let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
@@ -113,9 +113,54 @@ describe TransferEmailReplyJob do
     end
   end
 
-  it "sends a notif on mattermost" do
-    expect(MattermostClient).to receive(:send_to_notif_channel)
-      .with("📩 Un email d'un usager vient d'être transféré")
+  it "sends a notif on slack" do
+    expect(SlackClient).to receive(:send_to_notif_channel)
+      .with("📩 Un email d'un usager vient d'être transféré (RDV dans l'organisation #{rdv.organisation_id})")
     subject
+  end
+
+  context "when the invitation is in multiple organisations" do
+    let!(:organisation2) { create(:organisation, email: "organisation2@departement.fr") }
+    let!(:user2) do
+      create(:user, email: "bene_ficiaire2@gmail.com",
+                    first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation, organisation2])
+    end
+    let!(:invitation2) do
+      create(:invitation, user: user2, organisations: [organisation, organisation2])
+    end
+
+    before do
+      headers[:To] = "invitation+#{invitation2.uuid}@reply.rdv-insertion.fr"
+    end
+
+    it "sends a notif on slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
+        .with(
+          "📩 Un email d'un usager vient d'être transféré (Invitation dans les organisations #{organisation.id}" \
+          " et #{organisation2.id})"
+        )
+      subject
+    end
+  end
+
+  context "when the invitation is in a single organisation" do
+    let!(:organisation2) { create(:organisation, email: "organisation2@departement.fr") }
+    let!(:user2) do
+      create(:user, email: "bene_ficiaire2@gmail.com",
+                    first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
+    end
+    let!(:invitation2) do
+      create(:invitation, user: user2, organisations: [organisation])
+    end
+
+    before do
+      headers[:To] = "invitation+#{invitation2.uuid}@reply.rdv-insertion.fr"
+    end
+
+    it "sends a notif on slack" do
+      expect(SlackClient).to receive(:send_to_notif_channel)
+        .with("📩 Un email d'un usager vient d'être transféré (Invitation dans l'organisation #{organisation.id})")
+      subject
+    end
   end
 end

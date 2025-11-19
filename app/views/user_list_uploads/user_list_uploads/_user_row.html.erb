@@ -3,8 +3,8 @@
     <input type="checkbox"
            class="form-check-input user-checkbox"
            id="rdvi_upload_users-data_user-select-<%= user_row.id %>"
-           data-select-user-rows-target="checkbox"
-           data-action="click->select-user-rows#toggleSelect"
+           data-user-list-upload--select-user-rows-target="checkbox"
+           data-action="click->user-list-upload--select-user-rows#toggleSelect"
            data-user-row-id="<%= user_row.id %>"
            <%= "checked" if user_row.selected_for_user_save? %>
            <%= "disabled" unless user_row.user_for_display.valid? %>>
@@ -12,13 +12,13 @@
 
   <% %i[title first_name last_name affiliation_number phone_number email].each do |attribute| %>
     <td class="border-light <%= user_row_background_color_for_attribute(user_row, attribute) %>"
-        data-controller="user-row-cell"
+        data-controller="user-list-upload--user-row-cell"
         data-user-list-upload-id="<%= @user_list_upload.id %>"
         data-user-row-id="<%= user_row.id %>"
         data-user-row-attribute="<%= attribute %>">
       <div class="d-flex justify-content-between align-items-center"
             id="user-row-cell-<%= user_row.id %>-<%= attribute %>"
-            data-action="dblclick->user-row-cell#edit">
+            data-action="dblclick->user-list-upload--user-row-cell#edit">
         <span class="<%= "text-truncate-150" if attribute.in?([:affiliation_number]) %>"><%= display_attribute(user_row.user.send(attribute)) %></span>
         <%= user_row_icon_for_attribute(user_row, attribute) %>
       </div>

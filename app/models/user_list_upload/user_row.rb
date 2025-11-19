@@ -13,7 +13,7 @@ class UserListUpload::UserRow < ApplicationRecord
   encrypts :nir
 
   before_save :format_attributes, :set_matching_user
-  before_create :select_for_user_save!, if: :selected_by_default_for_user_save?
+  before_create :assign_default_selection
   after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
@@ -22,7 +22,7 @@ class UserListUpload::UserRow < ApplicationRecord
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
-  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?,
+  delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?, :origin,
            to: :user_list_upload
   delegate :valid?, :errors, to: :user, prefix: true
   # without prefix
@@ -37,6 +37,23 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def self.updatable_attributes
     column_names.map(&:to_sym) - %i[id created_at updated_at user_list_upload_id]
+  end
+
+  def self.import_from_users!(users, user_list_upload:)
+    import!(build_from_users(users, user_list_upload:).map do |user_row|
+      # callbacks need to be called manually here because we are using `import!`
+      user_row.tap(&:assign_default_selection)
+    end)
+  end
+
+  def self.build_from_users(users, user_list_upload:)
+    users.preload(*user_list_upload.user_associations_to_preload).distinct.map do |user|
+      build_from_user(user, user_list_upload:)
+    end
+  end
+
+  def self.build_from_user(user, **)
+    new(**user.symbolized_attributes.slice(*USER_ATTRIBUTES), matching_user: user, **)
   end
 
   def user
@@ -178,15 +195,19 @@ class UserListUpload::UserRow < ApplicationRecord
     matching_user&.send(association_name)&.include?(resource)
   end
 
+  def user_department_organisations
+    user.department_organisations(department_id)
+  end
+
+  def user_department_organisation_names
+    user_department_organisations.map(&:name).join(", ")
+  end
+
   def will_change_matching_user?
     return false unless user == matching_user
 
     user.changed? || user.organisations != organisations || user.motif_categories != motif_categories ||
       user.referents != referents || user.tags != tags
-  end
-
-  def select_for_user_save!
-    self.selected_for_user_save = true
   end
 
   def save_user
@@ -206,7 +227,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def invitable?
-    saved_user && user.can_be_invited_through_phone_or_email? && !invited_less_than_24_hours_ago?
+    user.persisted? && user.can_be_invited_through_phone_or_email? && !invited_less_than_24_hours_ago?
   end
 
   def invited_less_than_24_hours_ago?
@@ -255,6 +276,10 @@ class UserListUpload::UserRow < ApplicationRecord
     invitation_attempted? && invitation_attempts.none?(&:success?)
   end
 
+  def invitation_succeeded?
+    invitation_attempts.any?(&:success?)
+  end
+
   # rubocop:disable Metrics/AbcSize
   def format_attributes
     # formatting attributes
@@ -269,6 +294,11 @@ class UserListUpload::UserRow < ApplicationRecord
     restricted_user_attributes.each { |attribute| send("#{attribute}=", nil) }
   end
   # rubocop:enable Metrics/AbcSize
+
+  def assign_default_selection
+    select_for_user_save! if selectable_by_default_for_user_save?
+    select_for_invitation! if selectable_by_default_for_invitation?
+  end
 
   private
 
@@ -317,8 +347,10 @@ class UserListUpload::UserRow < ApplicationRecord
     return if cnaf_phone_number.blank?
 
     parsed_cnaf_phone_number = PhoneNumberHelper.parsed_number(cnaf_phone_number)
+    return if parsed_cnaf_phone_number.blank?
+    return if parsed_cnaf_phone_number.type == :fixed_line && phone_number.present?
 
-    parsed_cnaf_phone_number.e164 unless parsed_cnaf_phone_number.type == :fixed_line && phone_number.present?
+    parsed_cnaf_phone_number.e164
   end
 
   def retrieve_organisation_by_id(organisation_id)
@@ -333,8 +365,20 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def selected_by_default_for_user_save?
-    user_valid? && !archived? && !matching_user_follow_up_closed?
+  def select_for_user_save!
+    self.selected_for_user_save = true
+  end
+
+  def select_for_invitation!
+    self.selected_for_invitation = true
+  end
+
+  def selectable_by_default_for_user_save?
+    user_list_upload.handle_user_save? && user_valid? && !archived? && !matching_user_follow_up_closed?
+  end
+
+  def selectable_by_default_for_invitation?
+    user_list_upload.handle_invitation_only? && invitable?
   end
 end
 # rubocop:enable Metrics/ClassLength
