@@ -118,18 +118,15 @@ module UsersHelper # rubocop:disable Metrics/ModuleLength
   end
 
   def dora_url_for_user(user)
-    geocoding = user.address_geocoding
-    city_code = geocoding&.city_code
-    city = geocoding&.city
+    if user.city_code.blank? || user.city.blank?
+      return "https://dora.inclusion.gouv.fr/?mtm_campaign=rdvi&mtm_kwd=usager-ndef"
+    end
 
-    return "https://dora.inclusion.gouv.fr/?mtm_campaign=rdvi&mtm_kwd=usager-ndef" if city_code.blank? || city.blank?
-
-    params = { city: city_code, cl: city, locs: "en-presentiel", mtm_campaign: "rdvi", mtm_kwd: "usager-loc" }
+    params = { city: user.city_code, cl: user.city, locs: "en-presentiel", mtm_campaign: "rdvi", mtm_kwd: "usager-loc" }
     "https://dora.inclusion.gouv.fr/recherche?#{params.to_query}"
   end
 
-  def dora_link_id_for_user(user)
-    geocoding = user.address_geocoding
-    geocoding&.city_code.present? && geocoding&.city.present? ? "dora-link-user-loc" : "dora-link-user-ndef"
+  def dom_id_for_dora_user_link(user)
+    user.city_code.present? && user.city.present? ? "dora-link-user-loc" : "dora-link-user-ndef"
   end
 end
