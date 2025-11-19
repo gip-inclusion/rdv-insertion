@@ -58,6 +58,10 @@ class Invitation < ApplicationRecord
     organisations.map(&:messages_configuration).compact.first
   end
 
+  def help_email = organisations.map(&:email).compact.first
+
+  def help_website = organisations.map(&:website).compact.first
+
   def number_of_days_before_expiration
     return if never_expires?
 

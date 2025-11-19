@@ -1,20 +1,24 @@
 <%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
 
 <div class="mail-object">
-  <p class="bold-blue"><span class="bold-blue">Objet : Rendez-vous d’orientation dans le cadre de votre <%= rdv_subject %></span></p>
-  <%= tag.p("N° usager : #{user.affiliation_number}") if user.affiliation_number %>
+  <p class="bold-blue">
+    Objet : Rendez-vous d’orientation dans le cadre de votre <%= rdv_subject %><br/>
+    <% if user.affiliation_number %>
+      N° CAF / MSA : <%= user.affiliation_number %>
+    <% end %>
+  </p>
   <% if invitation.rdv_with_referents? %>
     <p><%= "Référent".pluralize(user.referents.count) %> de parcours : <%= user.referents.order(:last_name).map(&:to_s).join(", ") %></p>
   <% end %>
 </div>
 
 <div class="main-content">
-  <p><%= user.title.capitalize %>,</p>
+  <p><%= user.title_in_letter %>,</p>
   <p>Vous êtes <%= user_designation %> et devez bénéficier d’un accompagnement obligatoire dans le cadre de vos démarches d’insertion.</p>
-  <p>La première étape est <span class="bold-blue">un appel téléphonique avec un professionnel de l’insertion</span> afin de définir, selon votre situation et vos besoins, quelle sera la structure la mieux adaptée pour vous accompagner.</p>
-  <p>Pour cela, <span class="bold-blue">merci d’appeler le <%= invitation.help_phone_number %><%= " dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours à réception de ce courrier" if invitation.expireable? %>.</span></p>
-  <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
-  <%= tag.p tag.span("En l'absence d'action de votre part, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
+  <p>La première étape est <strong>un appel téléphonique avec un professionnel de l’insertion</strong> afin de définir, selon votre situation et vos besoins, quelle sera la structure la mieux adaptée pour vous accompagner.</p>
+  <p>Pour cela, <strong>merci d’appeler le <%= invitation.help_phone_number %><%= " dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours à compter de la réception de ce courrier" if invitation.expireable? %>.</strong></p>
+  <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
+  <%= tag.p tag.strong("En l'absence d'action de votre part, #{punishable_warning}.") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>
   <%= render "letters/salutation", user: user %>
   <div class="letter-signature">

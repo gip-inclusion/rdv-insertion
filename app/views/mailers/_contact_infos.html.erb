@@ -1,0 +1,9 @@
+<div class="background-blue padding-10 margin-bottom-10">
+  <p>Tel : <%= link_to help_phone_number, "tel:#{help_phone_number}" %></p>
+  <% if help_email.present? %>
+    <p>Email : <%= mail_to help_email %></p>
+  <% end %>
+  <% if help_website.present? %>
+    <p>Site web : <%= link_to help_website, help_website %></p>
+  <% end %>
+</div>

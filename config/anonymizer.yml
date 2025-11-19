@@ -454,6 +454,7 @@ tables:
     anonymized_column_names:
       - phone_number
       - email
+      - website
       - logo_filename
       - safir_code
     non_anonymized_column_names:

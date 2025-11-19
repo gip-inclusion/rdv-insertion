@@ -1,10 +1,9 @@
-<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
-<p>Vous êtes <%= @user_designation %> et à ce titre vous êtes <%= @user.conjugate("convoqué") %> à un <%= @rdv_title %> afin de <%= @rdv_purpose %>.</p>
-<p>Vous êtes <%= @user.conjugate("attendu") %> <span class="font-weight-bold">le <%= I18n.l(@rdv.starts_at, format: :human) %></span> à l'adresse suivante: </p>
-<p><h4><%= @rdv.lieu.name %></h4></p>
-<p><h4><%= @rdv.lieu.address %></h4></p>
-<br/>
-<%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
+<h1>Bonjour <%= @user %>,</h1>
+<p>Vous êtes <%= @user_designation %> et à ce titre vous êtes <%= @user.conjugate("convoqué") %> à un <%= @rdv_title %> pour <%= @rdv_purpose %>.</p>
+
+<%= render "mailers/notification_mailer/presential_rdv_infos", user: @user, rdv: @rdv %>
+
+<%= tag.p tag.strong("#{@mandatory_warning}.") if @mandatory_warning %>
 <% if @instruction_for_rdv.present? %>
   <p>
     <%= tag.strong("Informations importantes :") %><br>
@@ -12,6 +11,8 @@
   </p>
 <% end %>
 <%= tag.p tag.strong("En cas d'absence, #{@punishable_warning}.") if @punishable_warning.present? %>
-<p>En cas d'empêchement, merci d'appeler rapidement le <%= @rdv.phone_number %>.</p>
-<%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
-<%= render 'mailers/logos', display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+
+<p>En cas d'empêchement, contactez-nous:</p>
+<%= render "mailers/contact_infos", help_phone_number: @rdv.phone_number, help_email: @organisation.email, help_website: @organisation.website %>
+<%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
+<%= render "mailers/logos", display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

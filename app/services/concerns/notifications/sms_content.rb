@@ -10,78 +10,78 @@ module Notifications
     ### participation_created
 
     def presential_participation_created_content
-      "#{user.full_name},\nVous êtes #{user_designation} et êtes " \
+      "Bonjour #{user},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
-        "#{formatted_start_time} ici: #{lieu.full_name}. " \
+        "#{formatted_start_time} à: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
+        "En cas d’empêchement, contactez le #{formatted_phone_number}."
     end
 
     def by_phone_participation_created_content
-      "#{user.full_name},\nVous êtes #{user_designation} et êtes " \
+      "Bonjour #{user},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title_by_phone}. Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
+        "En cas d’empêchement, contactez le #{formatted_phone_number}."
     end
 
     ### participation_updated
 
     def presential_participation_updated_content
-      "#{user.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
+      "Bonjour #{user},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
-        " ici: #{lieu.full_name}. " \
+        " à: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
+        "En cas d’empêchement, contactez le #{formatted_phone_number}."
     end
 
     def by_phone_participation_updated_content
-      "#{user.full_name},\nVotre #{rdv_title_by_phone} dans le cadre de votre #{rdv_subject} a été modifié. " \
+      "Bonjour #{user},\nVotre #{rdv_title_by_phone} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
+        "En cas d’empêchement, contactez le #{formatted_phone_number}."
     end
 
     ### participation_reminder
 
     def presential_participation_reminder_content
-      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et avez été " \
+      "Rappel: Bonjour #{user},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
-        "#{formatted_start_time} ici: #{lieu.full_name}. " \
+        "#{formatted_start_time} à: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
+        "En cas d’empêchement, contactez le #{formatted_phone_number}."
     end
 
     def by_phone_participation_reminder_content
-      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et avez été " \
+      "Rappel: Bonjour #{user},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title_by_phone}. Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
+        "En cas d’empêchement, contactez le #{formatted_phone_number}."
     end
 
     ### participation_cancelled
 
     def participation_cancelled_content
-      "#{user.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été annulé. " \
+      "Bonjour #{user},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été annulé. " \
         "Pour plus d'informations, contactez le #{formatted_phone_number}."
     end
 
     ###
 
     def mandatory_warning_message
-      mandatory_warning ? "#{mandatory_warning} " : ""
+      mandatory_warning ? "#{mandatory_warning}. " : ""
     end
 
     def punishable_warning_message

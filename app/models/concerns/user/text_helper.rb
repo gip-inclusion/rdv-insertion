@@ -18,6 +18,17 @@ module User::TextHelper
   end
 
   def conjugate(past_participle)
-    title == "madame" ? "#{past_participle}e" : past_participle
+    case title
+    when "monsieur"
+      past_participle
+    when "madame"
+      "#{past_participle}e"
+    else
+      "#{past_participle}(e)"
+    end
+  end
+
+  def title_in_letter
+    title&.capitalize || "Madame, Monsieur"
   end
 end

@@ -278,6 +278,52 @@ blockquote {
   margin: 15px;
 }
 
+.background-blue {
+  background-color: $blue-pale;
+}
+
+.padding-10 {
+  padding: 10px;
+}
+
+.margin-bottom-10 {
+  margin-bottom: 10px;
+}
+
+.text-light-grey {
+  color: $light-grey;
+}
+
+.info-separator {
+  border: none;
+  border-top: 1px solid #e9e9e9;
+  margin: 20px 0;
+}
+
+.flex-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-block {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.text-underlined {
+  text-decoration: underline;
+}
+
+.text-line-through {
+  text-decoration: line-through;
+}
+
+.text-blue {
+  color: $dark-blue;
+}
+
 .margined-paragraph {
   margin-left: 25px;
   margin-bottom: 15px;

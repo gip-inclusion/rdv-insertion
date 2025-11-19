@@ -42,10 +42,11 @@ describe Invitations::SendSms, type: :service do
 
   let!(:follow_up) { build(:follow_up, motif_category: category_rsa_orientation) }
   let!(:content) do
-    "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
+    "Bonjour #{user},\nVous êtes bénéficiaire du RSA et êtes invité à participer" \
       " à un rendez-vous d'orientation. " \
-      "Pour choisir la date du RDV, cliquez sur ce lien " \
-      "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+      "Choisissez un créneau sur " \
+      "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+      "Lien valable 3 jours. " \
       "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
   end
 
@@ -64,6 +65,32 @@ describe Invitations::SendSms, type: :service do
           sender_name: sms_sender_name, record_identifier: invitation.record_identifier
         )
       subject
+    end
+
+    context "when the user has no title" do
+      before do
+        user.update!(title: nil)
+      end
+
+      let!(:content) do
+        "Bonjour #{user},\nVous êtes bénéficiaire du RSA et êtes invité(e) à participer" \
+          " à un rendez-vous d'orientation. " \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
+          "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send sms service with the right content" do
+        expect(Sms::SendWithBrevo).to receive(:call)
+          .with(
+            phone_number: phone_number, content: content,
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
+          )
+        subject
+      end
     end
 
     context "when the phone number is nil" do
@@ -144,10 +171,11 @@ describe Invitations::SendSms, type: :service do
 
     context "when it is a reminder" do
       let!(:content) do
-        "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-          "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
-          "Ce lien de prise de RDV expire dans 5 jours: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours à prendre " \
+          "rendez-vous pour démarrer un parcours d'accompagnement. " \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 5 jours. " \
           "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
       end
 
@@ -174,10 +202,11 @@ describe Invitations::SendSms, type: :service do
       end
 
       let!(:content) do
-        "M. John DOE,\nVous êtes nouveau et êtes #{user.conjugate('invité')} à participer" \
+        "Bonjour John Doe,\nVous êtes nouveau et êtes #{user.conjugate('invité')} à participer" \
           " à un nouveau type de rendez-vous. " \
-          "Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
       end
 
@@ -195,10 +224,11 @@ describe Invitations::SendSms, type: :service do
       let!(:follow_up) { build(:follow_up) }
       let!(:category_configuration) { create(:category_configuration, organisation: organisation) }
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à " \
-          "participer à un rendez-vous d'accompagnement." \
-          " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à " \
+          "participer à un rendez-vous d'accompagnement. " \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
           "votre RSA pourra être suspendu ou réduit. " \
           "En cas de problème, contactez le 0147200001."
@@ -224,13 +254,14 @@ describe Invitations::SendSms, type: :service do
 
         context "when it is a reminder" do
           let!(:content) do
-            "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-              "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
-              "Ce lien de prise de RDV expire dans 5 jours: " \
-              "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+            "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours " \
+              "à prendre rendez-vous pour démarrer un parcours d'accompagnement. " \
+              "Choisissez un créneau sur " \
+              "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+              "Lien valable 5 jours. " \
               "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
-              "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le " \
-              "0147200001."
+              "votre RSA pourra être suspendu ou réduit. " \
+              "En cas de problème, contactez le 0147200001."
           end
 
           before do
@@ -256,7 +287,7 @@ describe Invitations::SendSms, type: :service do
                                         motif_category: category_rsa_orientation_on_phone_platform)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et devez contacter la plateforme départementale " \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et devez contacter la plateforme départementale " \
           "afin de démarrer un parcours d'accompagnement. Pour cela, merci d'appeler le " \
           "0147200001 dans les 3 jours. " \
           "Cet appel est obligatoire pour le traitement de votre dossier. "
@@ -275,8 +306,8 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-            "invitant à contacter la plateforme départementale afin de démarrer un parcours d'accompagnement. " \
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez reçu un message il y a 3 jours vous invitant" \
+            " à contacter la plateforme départementale afin de démarrer un parcours d'accompagnement. " \
             "Il vous reste 5 jours pour appeler le " \
             "0147200001. Cet appel est obligatoire pour le traitement de votre dossier. "
         end
@@ -302,11 +333,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_cer_signature)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
-          " à un rendez-vous de signature de CER." \
-          " Pour choisir la date du RDV, cliquez sur ce lien dans les " \
-          "3 jours: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes invité à participer" \
+          " à un rendez-vous de signature de CER. " \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -324,13 +355,12 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
-            "vous invitant à prendre RDV au créneau de votre choix afin de construire et signer " \
-            "votre Contrat d'Engagement Réciproque. " \
-            "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -354,11 +384,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_main_tendue)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
-          " à un entretien de main tendue." \
-          " Pour choisir la date du RDV, cliquez sur ce lien dans les " \
-          "3 jours: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes invité à participer" \
+          " à un entretien de main tendue. " \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -376,12 +406,12 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
-            "vous invitant à prendre RDV au créneau de votre choix afin de faire le point sur votre situation." \
-            " Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour faire le point sur votre situation. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -406,10 +436,10 @@ describe Invitations::SendSms, type: :service do
                                         motif_category: category_rsa_atelier_collectif_mandatory)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
-          " à un atelier collectif. Pour choisir la date du RDV, cliquez sur ce lien dans les " \
-          "3 jours: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes invité à participer" \
+          " à un atelier collectif. Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -427,12 +457,12 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
-            "vous invitant à prendre RDV au créneau de votre choix afin de vous aider dans votre parcours d'insertion" \
-            ". Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour vous aider dans votre parcours d'insertion. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -456,10 +486,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_spie)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes demandeur d'emploi et êtes #{user.conjugate('invité')} à participer" \
-          " à un rendez-vous d'accompagnement." \
-          " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+        "Bonjour John Doe,\nVous êtes demandeur d'emploi et êtes invité à participer" \
+          " à un rendez-vous d'accompagnement. " \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
           "votre RSA pourra être suspendu ou réduit. " \
           "En cas de problème, contactez le 0147200001."
@@ -478,13 +509,13 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que demandeur d'emploi, vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
-            "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          "Bonjour John Doe,\nVous êtes demandeur d'emploi et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour démarrer un parcours d'accompagnement. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
             "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
-            "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le " \
-            "0147200001."
+            "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -509,10 +540,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_siae_interview)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
+        "Bonjour John Doe,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
           " et êtes #{user.conjugate('invité')} à participer à un entretien d'embauche." \
-          " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          " Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -529,13 +561,13 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que candidat.e dans une Structure d’Insertion par l’Activité Economique " \
-            "(SIAE), vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de poursuivre le processus de recrutement. " \
-            "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique " \
+            "(SIAE) et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour poursuivre le processus de recrutement. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -561,10 +593,11 @@ describe Invitations::SendSms, type: :service do
                                         motif_category: category_siae_collective_information)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
+        "Bonjour John Doe,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
           " et êtes #{user.conjugate('invité')} à participer à un rendez-vous collectif d'information." \
-          " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          " Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -581,13 +614,13 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que candidat.e dans une Structure d’Insertion par l’Activité Economique " \
-            "(SIAE), vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de découvrir cette structure. " \
-            "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique " \
+            "(SIAE) et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour découvrir cette structure. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -612,10 +645,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_siae_follow_up)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes salarié.e au sein de notre structure" \
+        "Bonjour John Doe,\nVous êtes salarié.e au sein de notre structure" \
           " et êtes #{user.conjugate('invité')} à participer à un rendez-vous de suivi." \
-          " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          " Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -632,13 +666,12 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que salarié.e au sein de notre structure, " \
-            "vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de faire un point avec votre référent. " \
-            "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes salarié.e au sein de notre structure et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour faire un point avec votre référent. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -663,9 +696,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_psychologue)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes invité à prendre un rendez-vous de suivi psychologue." \
-          " Pour choisir la date du RDV, cliquez sur ce lien: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+        "Bonjour John Doe,\nVous êtes accompagné.e par notre structure et êtes invité " \
+          "à participer à un rendez-vous de suivi psychologue." \
+          " Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -688,11 +723,11 @@ describe Invitations::SendSms, type: :service do
                                         motif_category: category_rsa_orientation_france_travail)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes invité à participer à " \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes invité à participer à " \
           "un rendez-vous d'orientation." \
-          " Pour choisir la date du RDV, cliquez sur ce lien dans les " \
-          "3 jours: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          " Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -719,7 +754,7 @@ describe Invitations::SendSms, type: :service do
         "John Doe,\nTu es invité à participer à un atelier organisé par le département. " \
           "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
           "Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
           "En cas de problème, tu peux contacter le 0147200001."
       end
 
@@ -742,10 +777,11 @@ describe Invitations::SendSms, type: :service do
                                         motif_category: category_rsa_integration_information)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes invité à participer" \
           " à un rendez-vous d'information." \
-          " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          " Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -763,12 +799,12 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de vous renseigner sur vos droits et vos devoirs. " \
-            "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour vous renseigner sur vos droits et vos devoirs. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
         before do
@@ -792,10 +828,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_insertion_offer)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
           "librement, dans la limite des places disponibles, en cliquant sur ce lien: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -817,10 +854,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_atelier_competences)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
           "librement, dans la limite des places disponibles, en cliquant sur ce lien: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -842,10 +880,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_atelier_rencontres_pro)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
           "librement, dans la limite des places disponibles, en cliquant sur ce lien: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -867,11 +906,11 @@ describe Invitations::SendSms, type: :service do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_follow_up)
       end
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes invité à participer" \
           " à un rendez-vous de suivi. " \
-          "Pour choisir la date du RDV, cliquez sur ce lien dans les " \
-          "3 jours: " \
-          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
+          "Choisissez un créneau sur " \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+          "Lien valable 3 jours. " \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -888,13 +927,12 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
-            "vous invitant à prendre RDV au créneau de votre choix afin de faire un point avec votre référent" \
-            " de parcours. " \
-            "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
-            "En cas de problème, contactez le " \
-            "0147200001."
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours à" \
+            " prendre rendez-vous pour faire un point avec votre référent de parcours. " \
+            "Choisissez un créneau sur " \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+            "Lien valable 5 jours. " \
+            "En cas de problème, contactez le 0147200001."
         end
 
         before do

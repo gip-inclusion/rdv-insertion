@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_23_102544) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_12_162527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -371,6 +371,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_102544) do
     t.datetime "archived_at"
     t.boolean "display_in_stats", default: true
     t.integer "data_retention_duration_in_months", default: 24, null: false
+    t.string "website"
     t.index ["archived_at"], name: "index_organisations_on_archived_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true

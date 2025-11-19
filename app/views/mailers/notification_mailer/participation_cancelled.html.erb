@@ -1,5 +1,9 @@
-<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
-<p>Votre <%= @rdv_title %> dans le cadre de votre <%= @rdv_subject %> initialement prévu le <%= I18n.l(@rdv.starts_at, format: :human) %> a été annulé.</p>
-<p>Pour plus d'informations, veuillez appeler le <%= @rdv.phone_number %>.</p>
-<%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
-<%= render 'mailers/logos', display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<h1>Bonjour <%= @user %>,</h1>
+<p>Votre <%= @rdv_title %> dans le cadre de votre <%= @rdv_subject %> a été annulé.</p>
+
+<%= render "mailers/notification_mailer/cancelled_rdv_infos", rdv: @rdv %>
+
+<p>Pour plus d'informations, contactez-nous:</p>
+<%= render "mailers/contact_infos", help_phone_number: @rdv.phone_number, help_email: @organisation.email, help_website: @organisation.website %>
+<%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
+<%= render "mailers/logos", display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

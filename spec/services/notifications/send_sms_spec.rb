@@ -54,11 +54,11 @@ describe Notifications::SendSms, type: :service do
   end
 
   let!(:content) do
-    "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+    "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
       "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
-      " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+      " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
       "Ce RDV est obligatoire. " \
-      "En cas d’empêchement, appelez rapidement le 0101010101."
+      "En cas d’empêchement, contactez le 0101010101."
   end
 
   describe "#call" do
@@ -176,11 +176,34 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Mme Jane DOE,\nVous êtes bénéficiaire du RSA et êtes convoquée à un " \
+          "Bonjour Jane Doe,\nVous êtes bénéficiaire du RSA et êtes convoquée à un " \
             "rendez-vous d'orientation. Vous êtes attendue le 20/12/2021" \
-            " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
+        end
+
+        it "calls the messenger service with the right content" do
+          expect(Sms::SendWithBrevo).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name, record_identifier: notification.record_identifier
+            )
+          subject
+        end
+      end
+
+      context "when the user has no title" do
+        before do
+          user.update!(title: nil)
+        end
+
+        let!(:content) do
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué(e) à un " \
+            "rendez-vous d'orientation. Vous êtes attendu(e) le 20/12/2021" \
+            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Ce RDV est obligatoire. " \
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "calls the messenger service with the right content" do
@@ -204,11 +227,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVous êtes joueur d'échec et êtes convoqué à un " \
+          "Bonjour John Doe,\nVous êtes joueur d'échec et êtes convoqué à un " \
             "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
-            " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "calls the messenger service with the overriden content" do
@@ -227,11 +250,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été modifié. " \
+          "Bonjour John Doe,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été modifié. " \
             "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -250,11 +273,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "RAPPEL: M. John DOE,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
+          "Rappel: Bonjour John Doe,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
             "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
-            " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -273,7 +296,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été annulé. " \
+          "Bonjour John Doe,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
 
@@ -291,12 +314,12 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous d'orientation téléphonique." \
             " Un conseiller d'insertion vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -314,12 +337,12 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "M. John DOE,\nVotre rendez-vous d'orientation téléphonique " \
+            "Bonjour John Doe,\nVotre rendez-vous d'orientation téléphonique " \
               "dans le cadre de votre RSA a été modifié. " \
               "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d’empêchement, appelez rapidement le 0101010101."
+              "En cas d’empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do
@@ -338,12 +361,12 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "RAPPEL: M. John DOE,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
+            "Rappel: Bonjour John Doe,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
               "rendez-vous d'orientation téléphonique." \
               " Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d’empêchement, appelez rapidement le 0101010101."
+              "En cas d’empêchement, contactez le 0101010101."
           end
 
           it "sends the sms with the right content" do
@@ -364,12 +387,12 @@ describe Notifications::SendSms, type: :service do
         let!(:follow_up) { create(:follow_up, motif_category: send(motif_category)) }
 
         let!(:content) do
-          "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous d'accompagnement. Vous êtes attendu " \
-            "le 20/12/2021 à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "le 20/12/2021 à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -387,12 +410,12 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "M. John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
               "Vous êtes attendu le 20/12/2021 à " \
-              "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+              "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-              "En cas d’empêchement, appelez rapidement le 0101010101."
+              "En cas d’empêchement, contactez le 0101010101."
           end
 
           it "sends the sms with the right content" do
@@ -411,7 +434,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "M. John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé. " \
+            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé. " \
               "Pour plus d'informations, contactez le 0101010101."
           end
 
@@ -429,12 +452,12 @@ describe Notifications::SendSms, type: :service do
           let!(:motif) { create(:motif, location_type: "phone") }
 
           let!(:content) do
-            "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+            "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
               "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
               "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-              "En cas d’empêchement, appelez rapidement le 0101010101."
+              "En cas d’empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do
@@ -452,13 +475,13 @@ describe Notifications::SendSms, type: :service do
             end
 
             let!(:content) do
-              "M. John DOE,\nVotre rendez-vous d'accompagnement téléphonique " \
+              "Bonjour John Doe,\nVotre rendez-vous d'accompagnement téléphonique " \
                 "dans le cadre de votre RSA a été modifié. " \
                 "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
                 "partir de 10:00 sur ce numéro. " \
                 "Ce RDV est obligatoire. " \
                 "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-                "En cas d’empêchement, appelez rapidement le 0101010101."
+                "En cas d’empêchement, contactez le 0101010101."
             end
 
             it "calls the send transactional service with the right content" do
@@ -479,12 +502,12 @@ describe Notifications::SendSms, type: :service do
       let!(:follow_up) { create(:follow_up, motif_category: category_rsa_cer_signature) }
 
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
           "rendez-vous de signature de CER. " \
           "Vous êtes attendu le 20/12/2021 à " \
-          "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
-          "En cas d’empêchement, appelez rapidement le 0101010101."
+          "En cas d’empêchement, contactez le 0101010101."
       end
 
       it "sends the sms with the right content" do
@@ -502,12 +525,12 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous de signature de CER" \
+          "Bonjour John Doe,\nVotre rendez-vous de signature de CER" \
             " dans le cadre de votre RSA a été modifié. " \
             "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -526,7 +549,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous de signature de CER" \
+          "Bonjour John Doe,\nVotre rendez-vous de signature de CER" \
             " dans le cadre de votre RSA a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
@@ -545,12 +568,12 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous téléphonique de signature de CER. " \
             "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -568,12 +591,12 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "M. John DOE,\nVotre rendez-vous téléphonique de signature de CER" \
+            "Bonjour John Doe,\nVotre rendez-vous téléphonique de signature de CER" \
               " dans le cadre de votre RSA a été modifié. " \
               "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d’empêchement, appelez rapidement le 0101010101."
+              "En cas d’empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do
@@ -593,11 +616,11 @@ describe Notifications::SendSms, type: :service do
       let!(:follow_up) { create(:follow_up, motif_category: category_rsa_follow_up) }
 
       let!(:content) do
-        "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
           "rendez-vous de suivi. " \
           "Vous êtes attendu le 20/12/2021 à " \
-          "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-          "En cas d’empêchement, appelez rapidement le 0101010101."
+          "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "En cas d’empêchement, contactez le 0101010101."
       end
 
       it "sends the sms with the right content" do
@@ -615,10 +638,10 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous de suivi dans le cadre de votre RSA a été modifié. " \
+          "Bonjour John Doe,\nVotre rendez-vous de suivi dans le cadre de votre RSA a été modifié. " \
             "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -637,7 +660,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous de suivi" \
+          "Bonjour John Doe,\nVotre rendez-vous de suivi" \
             " dans le cadre de votre RSA a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
@@ -656,11 +679,11 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous de suivi téléphonique. " \
             "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -678,11 +701,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "M. John DOE,\nVotre rendez-vous de suivi téléphonique" \
+            "Bonjour John Doe,\nVotre rendez-vous de suivi téléphonique" \
               " dans le cadre de votre RSA a été modifié. " \
               "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
-              "En cas d’empêchement, appelez rapidement le 0101010101."
+              "En cas d’empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do
@@ -702,12 +725,12 @@ describe Notifications::SendSms, type: :service do
       let!(:follow_up) { create(:follow_up, motif_category: category_rsa_spie) }
 
       let!(:content) do
-        "M. John DOE,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
+        "Bonjour John Doe,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
           "rendez-vous d'accompagnement. Vous êtes attendu " \
-          "le 20/12/2021 à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "le 20/12/2021 à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
           "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-          "En cas d’empêchement, appelez rapidement le 0101010101."
+          "En cas d’empêchement, contactez le 0101010101."
       end
 
       it "sends the sms with the right content" do
@@ -725,13 +748,13 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
+          "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
             "demande d'emploi a été modifié. " \
             "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -750,7 +773,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "M. John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
+          "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
             "demande d'emploi a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
@@ -769,12 +792,12 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "M. John DOE,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
+          "Bonjour John Doe,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
             "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
             "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-            "En cas d’empêchement, appelez rapidement le 0101010101."
+            "En cas d’empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -792,13 +815,13 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "M. John DOE,\nVotre rendez-vous d'accompagnement téléphonique dans le cadre de votre " \
+            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement téléphonique dans le cadre de votre " \
               "demande d'emploi a été modifié. " \
               "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-              "En cas d’empêchement, appelez rapidement le 0101010101."
+              "En cas d’empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do

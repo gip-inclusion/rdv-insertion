@@ -22,6 +22,7 @@ u {
 
 .pdf-align-center {
   text-align: center;
+  display: block;
 }
 
 .header {
@@ -57,7 +58,7 @@ u {
 }
 
 .direction-names {
-  margin-top: 110px;
+  margin-top: 100px;
   p {
     margin-top: 5px;
   }
@@ -94,7 +95,6 @@ u {
 
 .main-content {
   width: 95%;
-  margin-left: 40px;
   margin-bottom: 60px;
   p {
     text-align:justify;
@@ -106,41 +106,42 @@ u {
   width: 100%;
 }
 
+.padding-left-20 {
+  padding-left: 20px;
+}
+
+.padding-right-20 {
+  padding-right: 20px;
+}
+
 .invitation-choices {
   display: flex;
+  flex-direction: row;
   justify-content: space-around;
+  align-items: center;
+  gap: 20px;
 }
 
 .qr-code {
   vertical-align: middle;
   img {
-    height: 120px;
+    height: 100px;
     border: none;
   }
 }
 
-.invitation-token {
-  background-color: $dark-blue;
-  vertical-align: middle;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  border-radius: 3px;
-  margin: 40px auto 0 auto;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-
 .rdv-address {
   padding: 10px;
-  border: 1px solid;
-  font-weight: bold;
+  background-color: $very-light-grey;
 }
 
 .bold-blue {
   font-weight: bold;
   color: $dark-blue;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .letter-signature {
