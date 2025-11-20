@@ -31,7 +31,7 @@
       font-weight: 700;
       margin-bottom: 30px;
     }
-  
+
     #home-subtitle {
 
       @media (max-width: 768px) {
@@ -54,13 +54,13 @@
         width: 130%;
       }
     }
-  
+
     #home-cd-logos {
       margin-top: 60px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      
+
       @media (max-width: 768px) {
         align-items: center;
         margin-top: 20px;
@@ -75,7 +75,7 @@
           height: 30px;
           transition: transform 0.3s ease, opacity 0.3s ease;
           cursor: pointer;
-          
+
           &:hover {
             transform: scale(1.1);
             opacity: 0.8;
@@ -139,10 +139,16 @@
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
+
+    > #impact-link {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding-bottom: 20px;
+    }
   }
 
   .fact-card {
-    padding: 20px;
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -350,7 +356,7 @@
     #home-why-rdvi-title {
       text-align: center;
       margin-bottom: 50px;
-      
+
       h2 {
         font-weight: 700;
         font-size: 30px;
@@ -469,9 +475,9 @@
         }
       }
 
-      .home-api-feature-content { 
+      .home-api-feature-content {
         padding: 20px;
-  
+
         h4 {
           font-weight: 700;
           font-size: 18px;
@@ -548,7 +554,7 @@
           transition: .3s ease-in-out;
           cursor: pointer;
           filter: grayscale(100%);
-          
+
           &:hover {
             filter: grayscale(0%);
             transform: scale(1.5);
@@ -606,7 +612,7 @@
         display: none;
         animation: translateIn 0.7s ease-in-out forwards;
         opacity: 0;
-        
+
         @keyframes translateIn {
           from {
             transform: translateY(10px);
@@ -814,7 +820,7 @@
       }
     }
 
-    .home-api-feature-content { 
+    .home-api-feature-content {
       padding: 20px;
 
       h4 {
@@ -840,7 +846,7 @@
 
     #home-questions-title {
       padding-right: 30px;
-      
+
       h2 {
         font-weight: 700;
       }
@@ -939,7 +945,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       img {
         max-width: 450px;
         width: 100%;

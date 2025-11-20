@@ -21,7 +21,7 @@
         </div>
       </div>
       <div id="home-cd-logos">
-        <p class="fr-mb-2w">Déjà 32 conseils départementaux utilisent nos services</p>
+        <p class="fr-mb-2w">Déjà 36 conseils départementaux utilisent nos services</p>
         <div id="home-cd-logos-container" data-controller="home-department-logos">
           <%= image_tag "logos/home_bouches-du-rhone.png", data: { action: "click->home-department-logos#scrollToMap" } %>
           <%= image_tag "logos/home_drome.png", data: { action: "click->home-department-logos#scrollToMap" } %>
@@ -53,6 +53,11 @@
       <div class="fact-card">
         <p class="fact-card-title">45 min</p>
         <p class="fact-card-subtitle">de temps gagné par jour par agent des conseils départementaux</p>
+      </div>
+      <div id="impact-link">
+        <%= link_to "https://inclusion.gouv.fr/blog/faire-baisser-les-délais-de-prise-en-charge-des-usagers/", class: "text-center", target: "_blank" do %>
+          Lire l'étude d'impact
+        <% end %>
       </div>
     </div>
   </div>
@@ -154,6 +159,9 @@
     <div id="home-api-title">
       <h2>API rdv-insertion</h2>
       <p>Afin de limiter au maximum les douleurs générées par la double-saisie de données parfois nécessaire entre logiciels, rdv-insertion est interconnectable grâce à son API.</p>
+      <%= link_to "https://www.rdv-insertion.fr/api-docs/", class: "", target: "_blank" do %>
+        Consulter la documentation de l'API
+      <% end %>
     </div>
     <div id="home-api-features">
       <div class="home-api-feature">
@@ -245,7 +253,7 @@
     <div class="fr-container">
       <div id="home-trust-title">
         <h2>Ils nous font confiance</h2>
-        <p>32 conseils départementaux font confiance à rdv-insertion pour le pilotage et la gestion de leurs rendez-vous RSA, soit près de 1/3 du territoire.</p>
+        <p>36 conseils départementaux font confiance à rdv-insertion pour le pilotage et la gestion de leurs rendez-vous RSA, soit près de 1/3 du territoire.</p>
       </div>
       <div id="home-flourish-map">
         <h4>Carte du déploiement de rdv-insertion</h4>
@@ -254,7 +262,7 @@
       <div id="home-trust-why">
         <div id="home-trust-why-title">
           <h4>Un déploiement sur mesure pour chaque département</h4>
-          <p>Le même  outil pour nos 32 conseils départementaux utilisateurs, mais autant de manières de le déployer compte tenu des spécificités de votre territoire  : </p>
+          <p>Le même  outil pour nos 36 conseils départementaux utilisateurs, mais autant de manières de le déployer compte tenu des spécificités de votre territoire  : </p>
         </div>
         <div id="home-trust-why-content">
           <div class="home-trust-why-content-item">
