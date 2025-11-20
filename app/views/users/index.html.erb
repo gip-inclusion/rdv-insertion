@@ -1,4 +1,7 @@
-<div class="container mt-5 mb-5">
+<div class="container mt-4 px-0">
+  <%= render "users/dora_banner", dora_url: "https://dora.inclusion.gouv.fr/?mtm_campaign=rdvi&mtm_kwd=index", dom_id: "dora-link-index" %>
+</div>
+<div class="container mt-4 mb-5">
   <%= render "users_list_header" %>
   <div class="row card-white justify-content-center">
     <% if @all_configurations.empty? %>

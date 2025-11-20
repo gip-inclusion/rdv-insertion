@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-between mt-5 <%= @user_tags.any? ? "mb-3" : "mb-5" %>">
+<div class="d-flex justify-content-between mt-4 <%= @user_tags.any? ? "mb-3" : "mb-5" %>">
   <div class="col-sm-4 d-flex justify-content-start align-items-center">
     <%= link_to (@back_to_users_list_url || structure_users_path), data: { turbo_frame: :_top }, class: "me-2" do %>
       <button class="btn btn-blue-out">Retour</button>
