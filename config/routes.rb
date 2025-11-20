@@ -269,9 +269,6 @@ Rails.application.routes.draw do
   get "422", to: "errors#unprocessable_entity"
   get "500", to: "errors#internal_server_error"
 
-  # redirect logos that used to be served through webpacker
-  get "/packs/media/images/logos/*old_path", to: "asset_redirections#new", format: false
-
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]
