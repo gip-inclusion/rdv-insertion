@@ -714,7 +714,9 @@ describe UsersController do
       end
 
       context "when one invitation is expired" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 7.days.ago) }
+        before do
+          follow_up2.update!(status: "invitation_expired")
+        end
 
         it "filters by action required" do
           get :index, params: index_params
@@ -724,8 +726,6 @@ describe UsersController do
       end
 
       context "when no invitation expired" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 3.days.from_now) }
-
         it "filters by action required" do
           get :index, params: index_params
           expect(response.body).not_to match(/Baer/)

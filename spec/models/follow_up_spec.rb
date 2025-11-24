@@ -17,28 +17,6 @@ describe FollowUp do
         expect(subject).not_to include(follow_up)
       end
     end
-
-    context "when invitation is pending and invitations still valid" do
-      let!(:follow_up) { create(:follow_up, status: "invitation_pending") }
-
-      context "when the user has been invited less than 3 days ago in this context" do
-        let!(:invitation) { create(:invitation, follow_up: follow_up, expires_at: 5.days.ago) }
-        let!(:invitation2) { create(:invitation, follow_up: follow_up, expires_at: 2.days.from_now) }
-
-        it "does not retrieve the follow_up" do
-          expect(subject).not_to include(follow_up)
-        end
-      end
-
-      context "when invitation is pending and invitations all expired" do
-        let!(:invitation) { create(:invitation, follow_up: follow_up, expires_at: 5.days.ago) }
-        let!(:invitation2) { create(:invitation, follow_up: follow_up, expires_at: 4.days.ago) }
-
-        it "retrieve the follow_up" do
-          expect(subject).to include(follow_up)
-        end
-      end
-    end
   end
 
   describe "#set_status" do
@@ -80,6 +58,14 @@ describe FollowUp do
           it "is in invitation pending" do
             expect(subject).to eq(:invitation_pending)
           end
+
+          context "when the invitation is expired" do
+            let!(:invitation) { create(:invitation, user: user, created_at: 5.days.ago, expires_at: 4.days.ago) }
+
+            it "is in invitation expired" do
+              expect(subject).to eq(:invitation_expired)
+            end
+          end
         end
 
         context "with a seen participation" do
@@ -93,6 +79,14 @@ describe FollowUp do
 
             it "is in invitation pending" do
               expect(subject).to eq(:invitation_pending)
+            end
+
+            context "when the invitation is expired" do
+              before { invitation.update!(expires_at: 4.days.ago) }
+
+              it "is in invitation expired" do
+                expect(subject).to eq(:invitation_expired)
+              end
             end
           end
 
@@ -247,42 +241,39 @@ describe FollowUp do
         end
       end
     end
+  end
 
-    describe "#no_upcoming_rdv_and_all_invitations_expired?" do
-      let!(:invitation) { create(:invitation, expires_at: 2.days.from_now) }
-      let!(:invitation2) { create(:invitation, expires_at: 4.days.from_now) }
-      let!(:follow_up) { create(:follow_up, invitations: [invitation, invitation2], status: "invitation_pending") }
+  describe "#refresh_status_at" do
+    subject { follow_up.reload.refresh_status_at }
 
-      context "when no invitations expired" do
-        it "is false" do
-          expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(false)
-        end
+    let!(:follow_up) { create(:follow_up) }
+
+    context "when there is no invitation or rdv" do
+      it "returns nil" do
+        expect(subject).to be_nil
       end
+    end
 
-      context "when all invitations expired" do
-        let!(:invitation) { create(:invitation, expires_at: 2.days.ago) }
-        let!(:invitation2) { create(:invitation, expires_at: 4.days.ago) }
-
-        it "is true" do
-          expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(true)
-        end
-
-        context "when status is not invitation_pending" do
-          let!(:follow_up) { create(:follow_up, invitations: [invitation, invitation2], status: "rdv_seen") }
-
-          it "is false" do
-            expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(false)
-          end
-        end
+    context "when there are invitations and rdvs" do
+      let!(:last_rdv_starts_at) { Time.zone.parse("2025-11-24 10:00") }
+      let!(:last_invitation_expires_at) { Time.zone.parse("2025-11-22 12:00") }
+      let!(:participation) { create(:participation, rdv: create(:rdv, starts_at: last_rdv_starts_at), follow_up:) }
+      let!(:old_participation) do
+        create(:participation, rdv: create(:rdv, starts_at: last_rdv_starts_at - 7.days), follow_up:)
       end
+      let!(:invitation) { create(:invitation, expires_at: last_invitation_expires_at, follow_up:) }
 
-      context "when some invitations expired" do
-        let!(:invitation) { create(:invitation, expires_at: 2.days.from_now) }
-        let!(:invitation2) { create(:invitation, expires_at: 4.days.ago) }
+      it "returns the date of the last invitation or rdv" do
+        expect(subject).to eq(last_rdv_starts_at + 1.second)
+      end
+    end
 
-        it "is true" do
-          expect(follow_up.no_upcoming_rdv_and_all_invitations_expired?).to eq(false)
-        end
+    context "when there are invitations only" do
+      let!(:last_invitation_expires_at) { Time.zone.parse("2025-11-22 12:00") }
+      let!(:invitation) { create(:invitation, expires_at: last_invitation_expires_at, follow_up:) }
+
+      it "returns the date of the last invitation" do
+        expect(subject).to eq(last_invitation_expires_at + 1.second)
       end
     end
   end
