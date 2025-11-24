@@ -48,6 +48,10 @@ module Invitable
     invitations.all?(&:expired?)
   end
 
+  def last_invitation_expires_at
+    invitations.max_by(&:expires_at)&.expires_at
+  end
+
   def invalidate_invitations
     invitations.each do |invitation|
       ExpireInvitationJob.perform_later(invitation.id)
