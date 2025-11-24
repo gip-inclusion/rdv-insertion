@@ -32,7 +32,8 @@ class Invitation < ApplicationRecord
   enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid
-  after_commit :set_follow_up_status
+  after_commit :refresh_follow_up_status
+  after_commit :plan_follow_up_status_refresh, on: [:create, :update]
 
   scope :valid, -> { where("expires_at > ?", Time.zone.now).or(never_expire) }
   scope :expired, -> { where(expires_at: ..Time.zone.now) }

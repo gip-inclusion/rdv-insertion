@@ -21,6 +21,7 @@ class Participation < ApplicationRecord
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
   after_commit :refresh_follow_up_status
+  after_commit :plan_follow_up_status_refresh, on: [:create, :update]
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
   after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
 

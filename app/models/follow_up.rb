@@ -79,6 +79,11 @@ class FollowUp < ApplicationRecord
     (first_seen_rdv_starts_at.to_datetime.mjd - first_orientation_seen_rdv_date.to_datetime.mjd)
   end
 
+  def refresh_status_at
+    start_from = [last_invitation_expires_at, last_rdv_starts_at].compact.max
+    start_from + 1.second if start_from
+  end
+
   private
 
   def first_orientation_seen_rdv_date
