@@ -51,6 +51,7 @@ RSpec.configure do |config|
   config.include UploadHelper
   config.include DownloadHelper
   config.include PdfHelper
+  config.include SidekiqHelper
   config.extend ApiSpecHelper
   config.include ApiSpecSharedExamples
   config.include ActiveSupport::Testing::TimeHelpers
