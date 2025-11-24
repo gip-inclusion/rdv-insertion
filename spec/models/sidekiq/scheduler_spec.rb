@@ -1,5 +1,5 @@
 describe Sidekiq::Scheduler do
-  let!(:job_class) { FollowUp::RefreshStatusesJob }
+  let!(:job_class) { FollowUps::RefreshStatusesJob }
   let!(:args) { [23] }
   let!(:at) { 1.hour.from_now }
 

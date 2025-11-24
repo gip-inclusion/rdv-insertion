@@ -1,4 +1,4 @@
-describe FollowUp::PlanStatusRefreshJob do
+describe FollowUps::PlanStatusRefreshJob do
   subject do
     described_class.new.perform(follow_up_id)
   end
@@ -14,7 +14,7 @@ describe FollowUp::PlanStatusRefreshJob do
 
     it "plans a status refresh job" do
       expect(Sidekiq::Scheduler).to receive(:schedule_uniq_job)
-        .with(FollowUp::RefreshStatusesJob, follow_up_id,
+        .with(FollowUps::RefreshStatusesJob, follow_up_id,
               at: Time.zone.parse("2025-11-24 10:00"))
       subject
     end

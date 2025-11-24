@@ -1,4 +1,4 @@
-class FollowUp::PlanStatusRefreshJob < ApplicationJob
+class FollowUps::PlanStatusRefreshJob < ApplicationJob
   include LockedJobs
 
   def self.lock_key(follow_up_id)
@@ -10,7 +10,7 @@ class FollowUp::PlanStatusRefreshJob < ApplicationJob
     return if follow_up.refresh_status_at.blank?
 
     Sidekiq::Scheduler.schedule_uniq_job(
-      FollowUp::RefreshStatusesJob, follow_up.id,
+      FollowUps::RefreshStatusesJob, follow_up.id,
       at: follow_up.refresh_status_at
     )
   end

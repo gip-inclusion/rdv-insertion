@@ -1,4 +1,5 @@
-module UsersHelper # rubocop:disable Metrics/ModuleLength
+# rubocop:disable Metrics/ModuleLength
+module UsersHelper
   def show_convocation?(category_configuration)
     category_configuration.convene_user?
   end
@@ -131,3 +132,4 @@ module UsersHelper # rubocop:disable Metrics/ModuleLength
     user.city_code.present? && user.city.present? ? "dora-link-user-loc" : "dora-link-user-ndef"
   end
 end
+# rubocop:enable Metrics/ModuleLength

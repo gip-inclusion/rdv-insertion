@@ -12,4 +12,3 @@ module SidekiqHelper
     ActiveJob::Base.queue_adapter = original_adapter
   end
 end
-

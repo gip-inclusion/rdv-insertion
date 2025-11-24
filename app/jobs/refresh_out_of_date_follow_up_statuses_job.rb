@@ -6,7 +6,7 @@ class RefreshOutOfDateFollowUpStatusesJob < ApplicationJob
     end
 
     notify_on_slack
-    FollowUp::RefreshStatusesJob.perform_later(@follow_up_ids)
+    FollowUps::RefreshStatusesJob.perform_later(@follow_up_ids)
   end
 
   private

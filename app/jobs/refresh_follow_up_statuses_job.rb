@@ -1,4 +1,4 @@
-class FollowUp::RefreshStatusesJob < ApplicationJob
+class FollowUps::RefreshStatusesJob < ApplicationJob
   def perform(follow_up_ids)
     @follow_up_ids = follow_up_ids
     follow_ups.each do |follow_up|

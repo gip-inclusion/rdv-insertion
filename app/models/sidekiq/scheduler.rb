@@ -1,6 +1,6 @@
 class Sidekiq::Scheduler
-  def self.schedule_uniq_job(job_class, *args, at:)
-    new(job_class, *args, at: at).schedule_uniq_job
+  def self.schedule_uniq_job(job_class, *, at:)
+    new(job_class, *, at: at).schedule_uniq_job
   end
 
   def initialize(job_class, *args, at:, queue: "default")
@@ -17,7 +17,6 @@ class Sidekiq::Scheduler
       @job_class.set(wait_until: @at, queue: @queue).perform_later(*@args)
     end
   end
-
 
   private
 

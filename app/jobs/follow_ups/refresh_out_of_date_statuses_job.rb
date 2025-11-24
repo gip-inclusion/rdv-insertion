@@ -1,4 +1,4 @@
-class FollowUp::RefreshOutOfDateStatusesJob < ApplicationJob
+class FollowUps::RefreshOutOfDateStatusesJob < ApplicationJob
   def perform
     @follow_up_ids = []
     updatable_follow_ups.find_each do |follow_up|
@@ -6,7 +6,7 @@ class FollowUp::RefreshOutOfDateStatusesJob < ApplicationJob
     end
 
     notify_on_slack
-    FollowUp::RefreshStatusesJob.perform_later(@follow_up_ids)
+    FollowUps::RefreshStatusesJob.perform_later(@follow_up_ids)
   end
 
   private
@@ -20,7 +20,7 @@ class FollowUp::RefreshOutOfDateStatusesJob < ApplicationJob
   def updatable_follow_ups
     FollowUp.includes(:invitations, participations: :rdv)
             .where(user_id: User.active.select(:id))
-            .where.not(status: ["closed", "not_invited"])
+            .where.not(status: %w[closed not_invited])
             .distinct
   end
 end

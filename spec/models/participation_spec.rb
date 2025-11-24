@@ -197,7 +197,7 @@ describe Participation do
     let!(:follow_up2) { create(:follow_up, motif_category: create(:motif_category), status: "rdv_seen") }
 
     it "schedules a refresh_user_context_statuses job" do
-      expect(FollowUp::RefreshStatusesJob).to receive(:perform_later).with(follow_up1.id)
+      expect(FollowUps::RefreshStatusesJob).to receive(:perform_later).with(follow_up1.id)
       subject
     end
   end
