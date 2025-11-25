@@ -195,6 +195,9 @@ Cet endpoint étant asynchrone, une requête aboutissant à un succès ne signif
 
 **Pour tous les endpoints d'invitation, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.
 
+**⚠️ Pour tous les endpoints d'invitation, l'usager sera automatiquement désarchivé de l'organisation si l'usager est archivé dans l'organisation en question**.
+
+
 Les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
 Les formats des réponses sont spécifiés en bas de page.
 
