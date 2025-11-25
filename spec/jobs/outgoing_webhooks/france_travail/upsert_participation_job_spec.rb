@@ -79,6 +79,26 @@ describe OutgoingWebhooks::FranceTravail::UpsertParticipationJob do
           end.not_to raise_error
         end
       end
+
+      context "when update service fails with ParticipationNotFound error" do
+        before do
+          allow(FranceTravailApi::UpdateParticipation).to receive(:call)
+            .and_raise(FranceTravailApi::UpdateParticipation::ParticipationNotFound,
+                       "L'ID France Travail de la participation n'existe plus")
+        end
+
+        it "clears the france_travail_id and calls CreateParticipation" do
+          subject
+
+          expect(participation.reload.france_travail_id).to be_nil
+          expect(FranceTravailApi::CreateParticipation).to have_received(:call)
+            .with(participation: participation, timestamp: timestamp)
+        end
+
+        it "does not raise an error" do
+          expect { subject }.not_to raise_error
+        end
+      end
     end
 
     context "when participation is not found" do

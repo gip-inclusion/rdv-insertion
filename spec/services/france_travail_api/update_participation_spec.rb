@@ -46,4 +46,26 @@ describe FranceTravailApi::UpdateParticipation, type: :service do
       )
     end
   end
+
+  context "when API call fails with ID_NON_RECONNU error" do
+    let(:error_body) do
+      {
+        codeHttp: 400,
+        codeErreur: "ID_NON_RECONNU",
+        message: "Il n'existe pas de rdv pour l'id et l'utilisateur indiqué"
+      }.to_json
+    end
+
+    before do
+      allow(FranceTravailClient).to receive(:update_participation)
+        .and_return(OpenStruct.new(success?: false, status: 400, body: error_body))
+    end
+
+    it "raises ParticipationNotFound" do
+      expect { subject }.to raise_error(
+        FranceTravailApi::UpdateParticipation::ParticipationNotFound,
+        "L'ID France Travail n'existe plus"
+      )
+    end
+  end
 end

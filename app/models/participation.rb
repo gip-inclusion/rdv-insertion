@@ -5,6 +5,10 @@ class Participation < ApplicationRecord
   include Participation::FranceTravailWebhooks
   include Participation::FranceTravailPayload
 
+  has_paper_trail(
+    only: [:france_travail_id]
+  )
+
   belongs_to :rdv
   belongs_to :follow_up
   belongs_to :user

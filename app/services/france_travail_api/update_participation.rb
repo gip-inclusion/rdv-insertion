@@ -3,6 +3,10 @@ module FranceTravailApi
     # https://francetravail.io/data/api/rechercher-usager/rdv-partenaire/documentation#/api-reference/
     include Webhooks::ReceiptHandler
 
+    # This error is raised when FT returns ID_NON_RECONNU, when the participation ID is not found
+    # It happens when duplicate users were merged on FT side
+    class ParticipationNotFound < StandardError; end
+
     def initialize(participation:, timestamp:)
       @participation = participation
       @timestamp = timestamp
@@ -21,20 +25,27 @@ module FranceTravailApi
     private
 
     def send_update_request!
-      response = FranceTravailClient.update_participation(
+      @response = FranceTravailClient.update_participation(
         payload: @participation.to_ft_payload,
         headers: ft_user_headers
       )
 
-      handle_failure!(response) unless response.success?
-      response
+      @response.success? ? @response : handle_failure!
     end
 
-    def handle_failure!(response)
-      fail!(
-        "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Update de Participation).\n" \
-        "Status: #{response.status}\n Body: #{response.body.force_encoding('UTF-8')}"
-      )
+    def handle_failure!
+      @response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
+
+      error_message = "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Update de Participation).\n" \
+                      "Status: #{@response.status}\n Body: #{@response_body}"
+
+      raise ParticipationNotFound, "L'ID France Travail de la participation n'existe plus" if participation_not_found?
+
+      fail!(error_message)
+    end
+
+    def participation_not_found?
+      @response_body["codeErreur"] == "ID_NON_RECONNU"
     end
 
     def ft_user_headers

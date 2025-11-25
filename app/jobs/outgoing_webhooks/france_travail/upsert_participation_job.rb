@@ -7,7 +7,13 @@ module OutgoingWebhooks
         return unless participation&.eligible_for_france_travail_webhook?
 
         if participation.france_travail_id?
-          call_service!(FranceTravailApi::UpdateParticipation, participation:, timestamp:)
+          begin
+            call_service!(FranceTravailApi::UpdateParticipation, participation:, timestamp:)
+          rescue FranceTravailApi::UpdateParticipation::ParticipationNotFound
+            # If the participation was not found (ID_NON_RECONNU), we try to recreate it
+            participation.update_column(:france_travail_id, nil)
+            call_service!(FranceTravailApi::CreateParticipation, participation:, timestamp:)
+          end
         else
           call_service!(FranceTravailApi::CreateParticipation, participation:, timestamp:)
         end
