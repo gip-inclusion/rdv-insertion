@@ -2,6 +2,8 @@ module ApiSpecHelper
   # rubocop:disable Metrics/AbcSize
   def with_examples
     after do |example|
+      next if example.metadata[:skip_examples]
+
       example.metadata[:response][:content] = {
         "application/json" => {
           examples: {
