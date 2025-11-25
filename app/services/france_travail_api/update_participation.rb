@@ -34,19 +34,21 @@ module FranceTravailApi
     end
 
     def handle_failure!
-      @response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
-
-      error_message = "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT" \
-                      " (Update de Participation).\n" \
-                      "Status: #{@response.status}\n Body: #{@response_body}"
-
       raise ParticipationNotFound, "L'ID France Travail de la participation n'existe plus" if participation_not_found?
 
       fail!(error_message)
     end
 
+    def error_message
+      "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Update de Participation).\n" \
+        "Status: #{@response.status}\n Body: #{@response.body.force_encoding('UTF-8')}"
+    end
+
     def participation_not_found?
-      @response_body["codeErreur"] == "ID_NON_RECONNU"
+      response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
+      response_body["codeErreur"] == "ID_NON_RECONNU"
+    rescue JSON::ParserError
+      false
     end
 
     def ft_user_headers
