@@ -61,11 +61,10 @@ describe FranceTravailApi::UpdateParticipation, type: :service do
         .and_return(OpenStruct.new(success?: false, status: 400, body: error_body))
     end
 
-    it "raises ParticipationNotFound" do
-      expect { subject }.to raise_error(
-        FranceTravailApi::UpdateParticipation::ParticipationNotFound,
-        "L'ID France Travail de la participation n'existe plus"
-      )
+    it("is a failure") { is_a_failure }
+
+    it "sets error_type to :participation_not_found" do
+      expect(subject.error_type).to eq(:participation_not_found)
     end
   end
 end

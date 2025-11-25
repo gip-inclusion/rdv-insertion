@@ -38,13 +38,11 @@ describe OutgoingWebhooks::FranceTravail::UpsertParticipationJob do
       context "when update service fails with regular error" do
         before do
           allow(FranceTravailApi::UpdateParticipation).to receive(:call)
-            .and_raise(ApplicationJob::FailedServiceError, "Some error")
+            .and_return(OpenStruct.new(success?: false, failure?: true, errors: ["Some error"], error_type: nil))
         end
 
         it "raises a FailedServiceError" do
-          expect do
-            subject
-          end.to raise_error(ApplicationJob::FailedServiceError)
+          expect { subject }.to raise_error(ApplicationJob::FailedServiceError)
         end
       end
 
@@ -80,11 +78,15 @@ describe OutgoingWebhooks::FranceTravail::UpsertParticipationJob do
         end
       end
 
-      context "when update service fails with ParticipationNotFound error" do
+      context "when update service fails with participation_not_found error_type" do
         before do
           allow(FranceTravailApi::UpdateParticipation).to receive(:call)
-            .and_raise(FranceTravailApi::UpdateParticipation::ParticipationNotFound,
-                       "L'ID France Travail de la participation n'existe plus")
+            .and_return(OpenStruct.new(
+                          success?: false,
+                          failure?: true,
+                          errors: ["L'ID France Travail de la participation n'existe plus"],
+                          error_type: :participation_not_found
+                        ))
         end
 
         it "clears the france_travail_id and calls CreateParticipation" do

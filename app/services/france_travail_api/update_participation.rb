@@ -3,10 +3,6 @@ module FranceTravailApi
     # https://francetravail.io/data/api/rechercher-usager/rdv-partenaire/documentation#/api-reference/
     include Webhooks::ReceiptHandler
 
-    # This error is raised when FT returns ID_NON_RECONNU, when the participation ID is not found
-    # It happens when duplicate users were merged on FT side
-    class ParticipationNotFound < StandardError; end
-
     def initialize(participation:, timestamp:)
       @participation = participation
       @timestamp = timestamp
@@ -34,8 +30,7 @@ module FranceTravailApi
     end
 
     def handle_failure!
-      raise ParticipationNotFound, "L'ID France Travail de la participation n'existe plus" if participation_not_found?
-
+      result.error_type = :participation_not_found if participation_not_found?
       fail!(error_message)
     end
 
@@ -45,6 +40,8 @@ module FranceTravailApi
     end
 
     def participation_not_found?
+      # This error is raised when FT returns ID_NON_RECONNU, when the participation ID is not found
+      # It happens when duplicate users were merged on FT side
       response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
       response_body["codeErreur"] == "ID_NON_RECONNU"
     rescue JSON::ParserError
