@@ -64,7 +64,7 @@ describe FranceTravailApi::UpdateParticipation, type: :service do
     it "raises ParticipationNotFound" do
       expect { subject }.to raise_error(
         FranceTravailApi::UpdateParticipation::ParticipationNotFound,
-        "L'ID France Travail n'existe plus"
+        "L'ID France Travail de la participation n'existe plus"
       )
     end
   end
