@@ -7,7 +7,8 @@ module Searchable
     pg_search_scope(
       :search_by_text,
       using: { tsearch: { prefix: true } },
-      against: self::SEARCH_ATTRIBUTES
+      against: self::SEARCH_ATTRIBUTES,
+      ignoring: :accents
     )
   end
 end
