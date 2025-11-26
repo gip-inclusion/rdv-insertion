@@ -32,6 +32,16 @@ describe "Rdv API", swagger_doc: "v1/api.json" do
         run_test!
 
         it { expect(parsed_response_body["rdv"]["id"]).to eq(rdv.id) }
+
+        it "logs the API call" do
+          expect(ApiCall.last).to have_attributes(
+            method: "GET",
+            path: "/api/v1/rdvs/#{uuid}",
+            controller_name: "rdvs",
+            action_name: "show",
+            agent_id: agent.id
+          )
+        end
       end
 
       it_behaves_like "an endpoint that returns 403 - forbidden" do
