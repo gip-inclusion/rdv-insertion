@@ -55,8 +55,8 @@ describe Notifications::SendSms, type: :service do
 
   let!(:content) do
     "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
-      "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
-      " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+      "rendez-vous d'orientation. Vous êtes attendu le 20/12/21" \
+      " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
       "Ce RDV est obligatoire. " \
       "En cas d’empêchement, contactez le 0101010101."
   end
@@ -177,8 +177,8 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Bonjour Jane Doe,\nVous êtes bénéficiaire du RSA et êtes convoquée à un " \
-            "rendez-vous d'orientation. Vous êtes attendue le 20/12/2021" \
-            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "rendez-vous d'orientation. Vous êtes attendue le 20/12/21" \
+            " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -200,8 +200,8 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué(e) à un " \
-            "rendez-vous d'orientation. Vous êtes attendu(e) le 20/12/2021" \
-            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "rendez-vous d'orientation. Vous êtes attendu(e) le 20/12/21" \
+            " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -228,8 +228,8 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Bonjour John Doe,\nVous êtes joueur d'échec et êtes convoqué à un " \
-            "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
-            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "rendez-vous d'orientation. Vous êtes attendu le 20/12/21" \
+            " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -251,8 +251,8 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Bonjour John Doe,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été modifié. " \
-            "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Vous êtes attendu le 20/12/21 à " \
+            "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -274,8 +274,8 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Rappel: Bonjour John Doe,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
-            "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
-            " à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "rendez-vous d'orientation. Vous êtes attendu le 20/12/21" \
+            " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -296,7 +296,8 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Bonjour John Doe,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été annulé. " \
+          "Bonjour John Doe,\nVotre rendez-vous d'orientation du 20/12/21 à 10h " \
+            "dans le cadre de votre RSA a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
 
@@ -316,8 +317,8 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous d'orientation téléphonique." \
-            " Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-            "partir de 10:00 sur ce numéro. " \
+            " Un conseiller d'insertion vous appellera le 20/12/21 à " \
+            "partir de 10h sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -339,8 +340,8 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "Bonjour John Doe,\nVotre rendez-vous d'orientation téléphonique " \
               "dans le cadre de votre RSA a été modifié. " \
-              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-              "partir de 10:00 sur ce numéro. " \
+              "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+              "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d’empêchement, contactez le 0101010101."
           end
@@ -363,8 +364,8 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "Rappel: Bonjour John Doe,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
               "rendez-vous d'orientation téléphonique." \
-              " Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-              "partir de 10:00 sur ce numéro. " \
+              " Un conseiller d'insertion vous appellera le 20/12/21 à " \
+              "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d’empêchement, contactez le 0101010101."
           end
@@ -389,7 +390,7 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous d'accompagnement. Vous êtes attendu " \
-            "le 20/12/2021 à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "le 20/12/21 à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
             "En cas d’empêchement, contactez le 0101010101."
@@ -411,8 +412,8 @@ describe Notifications::SendSms, type: :service do
 
           let!(:content) do
             "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
-              "Vous êtes attendu le 20/12/2021 à " \
-              "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+              "Vous êtes attendu le 20/12/21 à " \
+              "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
               "En cas d’empêchement, contactez le 0101010101."
@@ -434,7 +435,8 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé. " \
+            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement du 20/12/21 à 10h " \
+              "dans le cadre de votre RSA a été annulé. " \
               "Pour plus d'informations, contactez le 0101010101."
           end
 
@@ -454,7 +456,7 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
               "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
-              "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
+              "vous appellera le 20/12/21 à partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
               "En cas d’empêchement, contactez le 0101010101."
@@ -477,8 +479,8 @@ describe Notifications::SendSms, type: :service do
             let!(:content) do
               "Bonjour John Doe,\nVotre rendez-vous d'accompagnement téléphonique " \
                 "dans le cadre de votre RSA a été modifié. " \
-                "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-                "partir de 10:00 sur ce numéro. " \
+                "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+                "partir de 10h sur ce numéro. " \
                 "Ce RDV est obligatoire. " \
                 "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
                 "En cas d’empêchement, contactez le 0101010101."
@@ -504,8 +506,8 @@ describe Notifications::SendSms, type: :service do
       let!(:content) do
         "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
           "rendez-vous de signature de CER. " \
-          "Vous êtes attendu le 20/12/2021 à " \
-          "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "Vous êtes attendu le 20/12/21 à " \
+          "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
           "En cas d’empêchement, contactez le 0101010101."
       end
@@ -527,8 +529,8 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "Bonjour John Doe,\nVotre rendez-vous de signature de CER" \
             " dans le cadre de votre RSA a été modifié. " \
-            "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Vous êtes attendu le 20/12/21 à " \
+            "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -549,8 +551,9 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Bonjour John Doe,\nVotre rendez-vous de signature de CER" \
-            " dans le cadre de votre RSA a été annulé. " \
+          "Bonjour John Doe,\nVotre rendez-vous de signature de CER " \
+            "du 20/12/21 à 10h " \
+            "dans le cadre de votre RSA a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
 
@@ -570,8 +573,8 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous téléphonique de signature de CER. " \
-            "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-            "partir de 10:00 sur ce numéro. " \
+            "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+            "partir de 10h sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
@@ -593,8 +596,8 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "Bonjour John Doe,\nVotre rendez-vous téléphonique de signature de CER" \
               " dans le cadre de votre RSA a été modifié. " \
-              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-              "partir de 10:00 sur ce numéro. " \
+              "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+              "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d’empêchement, contactez le 0101010101."
           end
@@ -618,8 +621,8 @@ describe Notifications::SendSms, type: :service do
       let!(:content) do
         "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
           "rendez-vous de suivi. " \
-          "Vous êtes attendu le 20/12/2021 à " \
-          "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "Vous êtes attendu le 20/12/21 à " \
+          "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
           "En cas d’empêchement, contactez le 0101010101."
       end
 
@@ -639,8 +642,8 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Bonjour John Doe,\nVotre rendez-vous de suivi dans le cadre de votre RSA a été modifié. " \
-            "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Vous êtes attendu le 20/12/21 à " \
+            "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
 
@@ -660,8 +663,8 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Bonjour John Doe,\nVotre rendez-vous de suivi" \
-            " dans le cadre de votre RSA a été annulé. " \
+          "Bonjour John Doe,\nVotre rendez-vous de suivi du 20/12/21 à 10h " \
+            "dans le cadre de votre RSA a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
 
@@ -681,8 +684,8 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
             "rendez-vous de suivi téléphonique. " \
-            "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-            "partir de 10:00 sur ce numéro. " \
+            "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+            "partir de 10h sur ce numéro. " \
             "En cas d’empêchement, contactez le 0101010101."
         end
 
@@ -703,8 +706,8 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "Bonjour John Doe,\nVotre rendez-vous de suivi téléphonique" \
               " dans le cadre de votre RSA a été modifié. " \
-              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-              "partir de 10:00 sur ce numéro. " \
+              "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+              "partir de 10h sur ce numéro. " \
               "En cas d’empêchement, contactez le 0101010101."
           end
 
@@ -727,7 +730,7 @@ describe Notifications::SendSms, type: :service do
       let!(:content) do
         "Bonjour John Doe,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
           "rendez-vous d'accompagnement. Vous êtes attendu " \
-          "le 20/12/2021 à 10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "le 20/12/21 à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
           "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
           "En cas d’empêchement, contactez le 0101010101."
@@ -750,8 +753,8 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
             "demande d'emploi a été modifié. " \
-            "Vous êtes attendu le 20/12/2021 à " \
-            "10:00 à: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Vous êtes attendu le 20/12/21 à " \
+            "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
             "En cas d’empêchement, contactez le 0101010101."
@@ -773,8 +776,8 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
-            "demande d'emploi a été annulé. " \
+          "Bonjour John Doe,\nVotre rendez-vous d'accompagnement du 20/12/21 à 10h " \
+            "dans le cadre de votre demande d'emploi a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
 
@@ -794,7 +797,7 @@ describe Notifications::SendSms, type: :service do
         let!(:content) do
           "Bonjour John Doe,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
             "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
-            "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
+            "vous appellera le 20/12/21 à partir de 10h sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
             "En cas d’empêchement, contactez le 0101010101."
@@ -817,8 +820,8 @@ describe Notifications::SendSms, type: :service do
           let!(:content) do
             "Bonjour John Doe,\nVotre rendez-vous d'accompagnement téléphonique dans le cadre de votre " \
               "demande d'emploi a été modifié. " \
-              "Un conseiller d'insertion vous appellera le 20/12/2021 à " \
-              "partir de 10:00 sur ce numéro. " \
+              "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+              "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
               "En cas d’empêchement, contactez le 0101010101."

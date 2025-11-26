@@ -1,9 +1,9 @@
 <h1>Bonjour <%= @user %>,</h1>
 <p>En tant que <%= @user_designation %>, vous avez reçu un premier mail il y a 3 jours vous invitant à contacter la plateforme départementale afin de <%= @rdv_purpose %>.</p>
-<p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour appeler le <span class="font-weight-bold"><%= @invitation.help_phone_number_formatted %></span>.</p>
+<p>Il ne vous reste que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour appeler le <span class="font-weight-bold"><%= @invitation.help_phone_number_formatted %></span>.</p>
 <%= tag.p tag.strong("#{@mandatory_warning}.") if @mandatory_warning %>
 <%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
-<p>En cas de problème, contactez-nous:</p>
+<p>En cas de problème, contactez-nous :</p>
 <%= render "mailers/contact_infos", help_phone_number: @invitation.help_phone_number, help_email: @invitation.help_email, help_website: @invitation.help_website %>
 <%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
 <%= render "mailers/logos", display_europe_logos: @invitation.display_europe_logos, display_france_travail_logo: @invitation.display_france_travail_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

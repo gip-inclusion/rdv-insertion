@@ -62,11 +62,14 @@ class Rdv < ApplicationRecord
   end
 
   def formatted_start_date
-    starts_at.to_datetime.strftime("%d/%m/%Y")
+    starts_at.to_datetime.strftime("%d/%m/%y")
   end
 
   def formatted_start_time
-    starts_at.to_datetime.strftime("%H:%M")
+    hour = starts_at.to_datetime.strftime("%-H")
+    minutes = starts_at.to_datetime.strftime("%M")
+
+    minutes == "00" ? "#{hour}h" : "#{hour}h#{minutes}"
   end
 
   def phone_number

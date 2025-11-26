@@ -1,6 +1,6 @@
 <h1>Bonjour <%= @user %>,</h1>
 <p>Vous êtes <%= @user_designation %> et à ce titre vous avez été <%= @user.conjugate("convoqué") %> à un <%= @rdv_title_by_phone %> pour <%= @rdv_purpose %>.</p>
-<p>Nous vous rappelons:</p>
+<p>Nous vous rappelons :</p>
 
 <%= render "mailers/notification_mailer/by_phone_rdv_infos", user: @user, rdv: @rdv %>
 
@@ -12,7 +12,7 @@
   </p>
 <% end %>
 <%= tag.p tag.strong("En cas d'absence, #{@punishable_warning}.") if @punishable_warning.present? %>
-<p>En cas d'empêchement, contactez-nous:</p>
+<p>En cas d'empêchement, contactez-nous :</p>
 <%= render "mailers/contact_infos", help_phone_number: @rdv.phone_number, help_email: @organisation.email, help_website: @organisation.website %>
 <%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
 <%= render "mailers/logos", display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
