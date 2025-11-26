@@ -32,8 +32,7 @@ class User < ApplicationRecord
   include User::CreationOrigin
   include User::Geocodable
 
-  attr_accessor :skip_uniqueness_validations, :import_associations_from_rdv_solidarites_on_create,
-                :require_title_presence
+  attr_accessor :skip_uniqueness_validations
 
   has_paper_trail(
     only: [:first_name, :last_name, :email, :phone_number, :address, :affiliation_number, :birth_date, :birth_name,
@@ -77,7 +76,6 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :tag_users
 
   validates :last_name, :first_name, presence: true
-  validates :title, presence: true, if: :require_title_presence
   validates :email, allow_blank: true, format: { with: EMAIL_REGEXP }
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
