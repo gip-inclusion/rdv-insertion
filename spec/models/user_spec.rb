@@ -92,6 +92,22 @@ describe User do
       it { is_expected.to include(user_cecile) }
       it { is_expected.not_to include(user_romain) }
     end
+
+    context "accent-insensitive search" do
+      let!(:user_jerome) { create(:user, first_name: "Jérôme", last_name: "Müller") }
+
+      context "when searching without accents" do
+        let(:query) { "jerome muller" }
+
+        it { is_expected.to include(user_jerome) }
+      end
+
+      context "when searching with accents" do
+        let(:query) { "Jérôme Müller" }
+
+        it { is_expected.to include(user_jerome) }
+      end
+    end
   end
 
   describe "email format validation" do
