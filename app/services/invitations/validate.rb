@@ -18,7 +18,6 @@ module Invitations
 
     def call
       validate_invitation_not_already_sent_today
-      validate_user_title_presence
       validate_help_phone_number_presence
       validate_user_belongs_to_an_org_linked_to_motif_category
       validate_organisations_are_not_from_different_departments
@@ -43,12 +42,6 @@ module Invitations
                .pending_or_delivered
                .where(format: invitation.format).where("created_at > ?", 24.hours.ago)
                .any?
-    end
-
-    def validate_user_title_presence
-      return if user.title?
-
-      result.errors << "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation"
     end
 
     def validate_organisations_are_not_from_different_departments

@@ -80,7 +80,7 @@ class Creneaux::RetrieveAndNotifyUnavailableCreneauxJob < ApplicationJob
     referent_ids = invitations.map(&:referent_ids).compact.uniq
     string += " Référents (rdvsp_ids) : #{referent_ids.join(', ')}\n" if referent_ids.any?
 
-    string += " ** L'organisation n'a pas d'email configuré et n'a pas été notifiée !**\n" if organisation.email.blank?
+    string += " *L'organisation n'a pas d'email configuré et n'a pas été notifiée !*\n" if organisation.email.blank?
 
     string
   end
