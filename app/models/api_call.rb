@@ -1,17 +1,7 @@
 class ApiCall < ApplicationRecord
   belongs_to :agent, optional: true
 
-  scope :today, -> { where(created_at: Time.current.all_day) }
-  scope :by_endpoint, ->(action) { where(action_name: action) }
-  scope :by_controller, ->(controller) { where(controller_name: controller) }
-
-  def self.usage_stats
-    group(:controller_name, :action_name).count
-  end
-
-  def self.usage_stats_by_day
-    group_by_day(:created_at).count
-  end
+  # Theses methods are used in console only
 
   def self.used_endpoints
     distinct.pluck(:controller_name, :action_name).to_set

@@ -100,7 +100,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_26_113455) do
   end
 
   create_table "api_calls", force: :cascade do |t|
-    t.string "method", null: false
+    t.string "http_method", null: false
     t.string "path", null: false
     t.string "host"
     t.string "controller_name", null: false

@@ -46,3 +46,6 @@ rgpd_cleanup_job:
 delete_unused_file_configurations_job:
   cron: "0 7 * * *" # we delete unused file configurations once a day, at 07:00
   class: "FileConfigurations::DeleteUnusedJob"
+purge_api_calls_job:
+  cron: "0 2 * * *" # we purge api calls older than 1 year once a day, at 02:00
+  class: "PurgeApiCallsJob"

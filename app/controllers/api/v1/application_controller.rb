@@ -69,7 +69,7 @@ module Api
 
       def log_api_call
         ApiCall.create!(
-          method: request.method,
+          http_method: request.method,
           path: request.fullpath,
           host: request.host,
           controller_name: controller_name,
@@ -80,7 +80,7 @@ module Api
         Sentry.capture_exception(
           e,
           extra: {
-            method: request.method,
+            http_method: request.method,
             path: request.fullpath,
             agent_id: current_agent&.id
           }

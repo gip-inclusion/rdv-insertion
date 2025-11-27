@@ -609,7 +609,7 @@ tables:
     anonymized_column_names:
       - path
     non_anonymized_column_names:
-      - method
+      - http_method
       - host
       - controller_name
       - action_name

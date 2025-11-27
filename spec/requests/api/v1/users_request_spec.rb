@@ -170,7 +170,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(parsed_response_body["success"]).to eq(true)
 
           expect(ApiCall.last).to have_attributes(
-            method: "POST",
+            http_method: "POST",
             path: "/api/v1/organisations/#{rdv_solidarites_organisation_id}/users/create_and_invite_many",
             host: "www.example.com",
             controller_name: "users",

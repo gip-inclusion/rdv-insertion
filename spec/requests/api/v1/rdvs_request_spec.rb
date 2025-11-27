@@ -35,7 +35,7 @@ describe "Rdv API", swagger_doc: "v1/api.json" do
 
         it "logs the API call" do
           expect(ApiCall.last).to have_attributes(
-            method: "GET",
+            http_method: "GET",
             path: "/api/v1/rdvs/#{uuid}",
             controller_name: "rdvs",
             action_name: "show",
