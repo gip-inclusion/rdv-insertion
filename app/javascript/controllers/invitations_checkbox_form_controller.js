@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 import { navigator } from "@hotwired/turbo";
 import DOMPurify from "dompurify";
 import safeTippy from "../lib/safeTippy";
-import handleUserInvitation from "../react/lib/handleUserInvitation";
+import handleUserInvitation from "../lib/handleUserInvitation";
 import { getFrenchFormatDateString, todaysDateString } from "../lib/datesHelper";
 
 export default class extends Controller {
