@@ -68,7 +68,7 @@ class UsersController < ApplicationController
   def create
     @user = upsert_user.user
     if upsert_user.success?
-      render_save_user_success
+      redirect_to(after_save_path)
     else
       render_errors(upsert_user.errors)
     end
@@ -78,7 +78,7 @@ class UsersController < ApplicationController
     @user.assign_attributes(user_params.except(*restricted_user_attributes))
     authorize @user
     if save_user.success?
-      render_save_user_success
+      redirect_to(after_save_path)
     else
       render_errors(save_user.errors)
     end
@@ -134,13 +134,6 @@ class UsersController < ApplicationController
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
       end
       format.json { render json: { success: false, errors: errors }, status: :unprocessable_entity }
-    end
-  end
-
-  def render_save_user_success
-    respond_to do |format|
-      format.html { redirect_to(after_save_path) }
-      format.json { render json: { success: true, user: @user } }
     end
   end
 
