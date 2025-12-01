@@ -17,7 +17,7 @@ jobs:
           key: node_modules-${{ hashFiles('yarn.lock') }}
           path: node_modules
       - name: Install JS dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile --ignore-scripts
       - name: Run Rubocop
         run: bundle exec rubocop
       - name: Run ESLint
@@ -62,7 +62,7 @@ jobs:
           key: node_modules-${{ hashFiles('yarn.lock') }}
           path: node_modules
       - name: Install JS dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile --ignore-scripts
       - name: Precompile assets
         run: yarn run build
       - name: List all unit spec files
@@ -141,7 +141,7 @@ jobs:
           install-chromedriver: true
           install-dependencies: true
       - name: Install JS dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile --ignore-scripts
       - name: Precompile assets
         run: RAILS_ENV=test bundle exec rake assets:precompile
       - name: List all feature spec files
