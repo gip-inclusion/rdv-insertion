@@ -65,6 +65,17 @@ RSpec.configure do |config|
     clear_downloads
   end
 
+  # https://github.com/teamcapybara/capybara/issues/2800#issuecomment-2728801284
+  config.before type: :feature do
+    # rubocop:disable Style/SoleNestedConditional
+    if page.driver.respond_to?(:invalid_element_errors)
+      unless page.driver.invalid_element_errors.include?(Selenium::WebDriver::Error::UnknownError)
+        page.driver.invalid_element_errors << Selenium::WebDriver::Error::UnknownError
+      end
+    end
+    # rubocop:enable Style/SoleNestedConditional
+  end
+
   config.before do
     ActiveSupport::CurrentAttributes.reset_all
     # ensure that ActiveStorage::Current.url_options is set for all requests

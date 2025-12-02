@@ -16,11 +16,11 @@
       <% end %>
       <%= render "common/attribute_input", f:f, attribute: :first_name, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :last_name, mandatory: true %>
-      <%= render "common/attribute_input", f:f, attribute: :title, mandatory: true, as: :select, collection: ["monsieur", "madame"] %>
+      <%= render "common/attribute_input", f:f, attribute: :title, mandatory: true, as: :select, collection: ["monsieur", "madame"], include_blank: true %>
       <%= render "common/attribute_input", f:f, attribute: :role, as: :select, collection: ["demandeur", "conjoint"], include_blank: true %>
       <%= render "common/attribute_input", f:f, attribute: :affiliation_number %>
       <%= render("common/attribute_input", f:f, attribute: :department_internal_id) if assignable_user_attribute?(@user, :department_internal_id)  %>
-      <%= render("common/attribute_input", f:f, attribute: :nir) if assignable_user_attribute?(@user, :nir) %> 
+      <%= render("common/attribute_input", f:f, attribute: :nir) if assignable_user_attribute?(@user, :nir) %>
       <%= render "common/attribute_input", f:f, attribute: :france_travail_id %>
       <%= render "common/attribute_input", f:f, attribute: :email %>
       <%= render "common/attribute_input", f:f, attribute: :birth_date, as: :date, start_year: Date.today.year - 100 %>
