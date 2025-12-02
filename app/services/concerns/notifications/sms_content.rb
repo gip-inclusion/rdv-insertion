@@ -13,7 +13,7 @@ module Notifications
       "Bonjour #{user},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
-        "#{formatted_start_time} à: #{lieu.full_name}. " \
+        "#{formatted_start_time} à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, contactez le #{formatted_phone_number}."
@@ -34,7 +34,7 @@ module Notifications
     def presential_participation_updated_content
       "Bonjour #{user},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
-        " à: #{lieu.full_name}. " \
+        " à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, contactez le #{formatted_phone_number}."
@@ -55,7 +55,7 @@ module Notifications
       "Rappel: Bonjour #{user},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
-        "#{formatted_start_time} à: #{lieu.full_name}. " \
+        "#{formatted_start_time} à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, contactez le #{formatted_phone_number}."
@@ -74,7 +74,8 @@ module Notifications
     ### participation_cancelled
 
     def participation_cancelled_content
-      "Bonjour #{user},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été annulé. " \
+      "Bonjour #{user},\nVotre #{rdv_title} du #{formatted_start_date} à #{formatted_start_time} " \
+        "dans le cadre de votre #{rdv_subject} a été annulé. " \
         "Pour plus d'informations, contactez le #{formatted_phone_number}."
     end
 

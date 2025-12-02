@@ -36,7 +36,7 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).to include("DIRECTION DÉPARTEMENTAL")
       expect(content).to include(
         " Pour vous aider dans vos démarches, " \
-        "le Conseil départemental a mis en place une plateforme de réservation en ligne."
+        "le Conseil départemental a mis en place une plateforme de prise de rendez-vous en ligne."
       )
       expect(content).to include(invitation.uuid)
       expect(content).to include(department.name)

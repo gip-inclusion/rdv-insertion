@@ -16,7 +16,7 @@
   <p><%= user.title_in_letter %>,</p>
   <p>Vous êtes <%= user_designation %> et à ce titre vous êtes <%= user.conjugate('invité') %> à participer à un <%= rdv_title %> pour <%= rdv_purpose %>.</p>
   <%= tag.p(custom_sentence) if custom_sentence %>
-  <p>Pour vous aider dans vos démarches, <%= sender_name %> a mis en place <strong>une plateforme de réservation en ligne.</strong></p>
+  <p>Pour vous aider dans vos démarches, <%= sender_name %> a mis en place <strong>une plateforme de prise de rendez-vous en ligne.</strong></p>
   <p>Pour choisir la date et l'heure de votre rendez-vous, vous pouvez:</p>
   <%= render "letters/invitations/invitation_choices", invitation_url: invitation_url, qr_code: qr_code %>
   <% if invitation.expireable? %>
