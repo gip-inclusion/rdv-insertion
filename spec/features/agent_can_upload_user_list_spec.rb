@@ -283,14 +283,14 @@ describe "Agents can upload user list", :js do
       expect(page).to have_css("input[type='checkbox'][data-user-row-id='#{hernan_row.id}']:checked")
 
       # Save users
-      perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
-        click_button("Créer et mettre à jour les dossiers")
-      end
+      click_button("Créer et mettre à jour les dossiers")
 
       ## User save attempts
       expect(page).to have_current_path(
         user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
       )
+
+      perform_enqueued_jobs(only: UserListUpload::SaveUsersJob)
 
       expect(page).to have_content("CRESPOGOAL")
       expect(page).to have_content("+33698943255")
