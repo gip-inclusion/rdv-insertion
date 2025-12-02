@@ -20,11 +20,4 @@ module AuthenticationSpecHelper
   def setup_agent_session(agent)
     page.set_rack_session(agent_auth: agent_auth_hash_from_sign_in_form(agent))
   end
-
-  def with_current_agent(agent)
-    Current.agent = agent
-    yield
-  ensure
-    Current.agent = nil
-  end
 end
