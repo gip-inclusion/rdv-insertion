@@ -3,7 +3,7 @@
 <p><span class="font-weight-bold">Pour cela, merci d’appeler le <%= @invitation.help_phone_number_formatted %><%= tag.span(" dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours", class: ["font-weight-bold"]) if @invitation.expireable? %>.</span></p>
 <%= tag.p tag.strong("#{@mandatory_warning}.") if @mandatory_warning %>
 <%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
-<p>En cas de problème, contactez-nous:</p>
+<p>En cas de problème, contactez-nous :</p>
 <%= render "mailers/contact_infos", help_phone_number: @invitation.help_phone_number, help_email: @invitation.help_email, help_website: @invitation.help_website %>
 <%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
 <%= render "mailers/logos", display_europe_logos: @invitation.display_europe_logos, display_france_travail_logo: @invitation.display_france_travail_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

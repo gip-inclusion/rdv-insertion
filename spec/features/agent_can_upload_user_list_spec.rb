@@ -285,12 +285,10 @@ describe "Agents can upload user list", :js do
       # Save users
       perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
         click_button("Créer et mettre à jour les dossiers")
+        expect(page).to have_current_path(
+          user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+        )
       end
-
-      ## User save attempts
-      expect(page).to have_current_path(
-        user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
-      )
 
       expect(page).to have_content("CRESPOGOAL")
       expect(page).to have_content("+33698943255")
@@ -351,11 +349,10 @@ describe "Agents can upload user list", :js do
 
       perform_enqueued_jobs(only: UserListUpload::InviteUsersJob) do
         click_button("Envoyer les invitations")
+        expect(page).to have_current_path(
+          user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+        )
       end
-
-      expect(page).to have_current_path(
-        user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
-      )
 
       expect(page).to have_content("Toutes les invitations ont été envoyées.")
       expect(page).to have_content("Invitations envoyées")
@@ -705,15 +702,15 @@ describe "Agents can upload user list", :js do
           # Add a wait to ensure user row is matched and rendered
           expect(page).to have_content("Hernan", wait: 5)
 
-          # Save users
-          click_button("Créer et mettre à jour les dossiers")
-
           user_list_upload = UserListUpload.last
 
-          expect(page).to have_current_path(
-            user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
-          )
-          perform_enqueued_jobs(only: UserListUpload::SaveUsersJob)
+          # Save users
+          perform_enqueued_jobs(only: UserListUpload::SaveUsersJob) do
+            click_button("Créer et mettre à jour les dossiers")
+            expect(page).to have_current_path(
+              user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
+            )
+          end
 
           hernan_row = user_list_upload.user_rows.find_by(first_name: "Hernan")
 

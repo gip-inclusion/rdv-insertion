@@ -44,12 +44,10 @@
     "eslint-plugin-no-unsanitized": "^4.1.2",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-rdv-insertion": "file:app/javascript/eslint-rules",
-    "husky": "^6.0.0",
     "pinst": "^2.1.6",
     "prettier": "^2.3.1"
   },
   "scripts": {
-    "postinstall": "husky install",
     "lint": "eslint 'app/javascript/**' --quiet",
     "build": "webpack --config ./config/webpack/webpack.config.js"
   },

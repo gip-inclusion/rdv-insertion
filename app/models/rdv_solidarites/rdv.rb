@@ -51,13 +51,5 @@ module RdvSolidarites
     def user_ids
       users.map(&:id)
     end
-
-    def formatted_start_date
-      starts_at.to_datetime.strftime("%d/%m/%Y")
-    end
-
-    def formatted_start_time
-      starts_at.to_datetime.strftime("%H:%M")
-    end
   end
 end

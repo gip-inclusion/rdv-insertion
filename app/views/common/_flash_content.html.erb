@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="row text-center pt-4 <%= flash_message.persist? ? "" : "flash_message_fade" %>" data-controller="flash" data-action="animationend->flash#remove">
+  <div class="row gx-0 text-center pt-4 <%= flash_message.persist? ? "" : "flash_message_fade" %>" data-controller="flash" data-action="animationend->flash#remove">
     <div class="alert <%= alert_class_for(flash_message.type) %> alert-dismissible fade show" role="alert">
       <div class="d-flex">
         <span class="mx-3"><i class="<%= icon_class_for(flash_message.type) %>"></i></span>

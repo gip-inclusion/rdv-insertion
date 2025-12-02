@@ -80,7 +80,7 @@ module Previews
         rdv_title: @invitation.rdv_title,
         rdv_purpose: @invitation.rdv_purpose,
         rdv_subject: @invitation.rdv_subject,
-        mandatory_warning: @invitation.mandatory_warning,
+        mandatory_warning: @invitation.mandatory_warning(format: "email"),
         punishable_warning: @invitation.punishable_warning,
         custom_sentence: @invitation.custom_sentence,
         signature_lines: @organisation.messages_configuration&.signature_lines

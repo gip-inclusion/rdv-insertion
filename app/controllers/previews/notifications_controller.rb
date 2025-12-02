@@ -78,7 +78,7 @@ module Previews
         rdv_title_by_phone: @notification.rdv_title_by_phone,
         rdv_purpose: @notification.rdv_purpose,
         rdv_subject: @notification.rdv_subject,
-        mandatory_warning: @notification.mandatory_warning,
+        mandatory_warning: @notification.mandatory_warning(format: "email"),
         punishable_warning: @notification.punishable_warning,
         custom_sentence: @notification.custom_sentence,
         signature_lines: @notification.signature_lines,
