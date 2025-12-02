@@ -290,7 +290,10 @@ describe "Agents can upload user list", :js do
         user_list_upload_user_save_attempts_path(user_list_upload_id: user_list_upload.id)
       )
 
-      perform_enqueued_jobs(only: UserListUpload::SaveUsersJob)
+      # sidekiq middleware that set the current agent are not called do we have to do it manually
+      with_current_agent(agent) do
+        perform_enqueued_jobs(only: UserListUpload::SaveUsersJob)
+      end
 
       expect(page).to have_content("CRESPOGOAL")
       expect(page).to have_content("+33698943255")
