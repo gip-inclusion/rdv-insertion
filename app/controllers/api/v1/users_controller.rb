@@ -112,12 +112,17 @@ module Api
       end
 
       def invite_user_by(format)
-        invite_user_service = call_invite_user_service_by(format)
-        unless invite_user_service.success?
-          @invitation_errors <<
-            "Erreur en envoyant l'invitation par #{format}: #{invite_user_service.errors.join(', ')}"
+        ActiveRecord::Base.transaction do
+          unarchive_user_if_archived
+          invite_user_service = call_invite_user_service_by(format)
+          if invite_user_service.success?
+            @invitations << invite_user_service.invitation
+          else
+            @invitation_errors <<
+              "Erreur en envoyant l'invitation par #{format}: #{invite_user_service.errors.join(', ')}"
+            raise ActiveRecord::Rollback
+          end
         end
-        @invitations << invite_user_service.invitation
       end
 
       def call_invite_user_service_by(format)
@@ -197,6 +202,10 @@ module Api
 
         attrs[:tag_users_attributes] = tag_users_attributes
         attrs.delete(:tags_to_add)
+      end
+
+      def unarchive_user_if_archived
+        Archive.find_by(user: @user, organisation: @organisation)&.destroy!
       end
     end
     # rubocop: enable Metrics/ClassLength

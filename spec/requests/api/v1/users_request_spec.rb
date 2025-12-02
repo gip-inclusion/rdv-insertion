@@ -747,6 +747,39 @@ describe "Users API", swagger_doc: "v1/api.json" do
             .and_return(OpenStruct.new(success?: false, errors: ["l'invitation n'a pas pu être délivrée"]))
         end
       end
+
+      context "when user is archived", :skip_examples do
+        let!(:archive) { create(:archive, user:, organisation:) }
+
+        it "unarchives the user before inviting" do
+          post invite_api_v1_user_path(rdv_solidarites_organisation_id, id),
+               params: invitation_params.to_json,
+               headers: auth_headers.merge({ "Content-Type" => "application/json" })
+
+          expect(response).to have_http_status(:ok)
+          expect(Archive.exists?(archive.id)).to eq(false)
+          expect(Archive.count).to eq(0)
+          expect(parsed_response_body["success"]).to eq(true)
+        end
+
+        context "when the invitation fails" do
+          before do
+            allow(InviteUser).to receive(:call)
+              .and_return(OpenStruct.new(success?: false, errors: ["l'invitation n'a pas pu être délivrée"]))
+          end
+
+          it "does not unarchive the user" do
+            post invite_api_v1_user_path(rdv_solidarites_organisation_id, id),
+                 params: invitation_params.to_json,
+                 headers: auth_headers.merge({ "Content-Type" => "application/json" })
+
+            expect(response).to have_http_status(:unprocessable_entity)
+            expect(Archive.exists?(archive.id)).to eq(true)
+            expect(Archive.count).to eq(1)
+            expect(parsed_response_body["success"]).to eq(false)
+          end
+        end
+      end
     end
   end
 end
