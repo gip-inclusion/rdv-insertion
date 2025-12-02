@@ -57,12 +57,10 @@
     "eslint-plugin-rdv-insertion": "file:app/javascript/eslint-rules",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4",
-    "husky": "^6.0.0",
     "pinst": "^2.1.6",
     "prettier": "^2.3.1"
   },
   "scripts": {
-    "postinstall": "husky install",
     "lint": "eslint 'app/javascript/**' --quiet",
     "build": "webpack --config ./config/webpack/webpack.config.js"
   },
