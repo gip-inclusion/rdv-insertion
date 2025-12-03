@@ -1,7 +1,7 @@
 <h1>Bonjour <%= @user %>,</h1>
 <p>Vous êtes <%= @user_designation %> et à ce titre vous êtes <%= @user.conjugate('invité') %> à participer à un <%= @rdv_title %> pour <%= @rdv_purpose %>.</p>
 <%= tag.p(@custom_sentence) if @custom_sentence %>
-<p>Pour choisir la date et l'horaire de votre rendez-vous, cliquez sur le bouton suivant:</p>
+<p>Pour choisir la date et l'horaire de votre rendez-vous, cliquez sur le bouton suivant&nbsp;:</p>
 <p class="btn-wrapper">
   <%= link_to @invitation.rdv_solidarites_public_url, class: "btn btn-primary" do %>
     Je prends rendez-vous
