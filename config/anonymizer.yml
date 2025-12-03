@@ -604,3 +604,15 @@ tables:
       - invitations_triggered_at
       - invitations_started_at
       - invitations_ended_at
+
+  - table_name: api_calls
+    anonymized_column_names:
+      - path
+    non_anonymized_column_names:
+      - http_method
+      - host
+      - controller_name
+      - action_name
+      - agent_id
+      - created_at
+      - updated_at

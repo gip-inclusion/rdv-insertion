@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_26_090324) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_26_113455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -98,6 +98,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_26_090324) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["agent_id", "rdv_id"], name: "index_agents_rdvs_on_agent_id_and_rdv_id", unique: true
+  end
+
+  create_table "api_calls", force: :cascade do |t|
+    t.string "http_method", null: false
+    t.string "path", null: false
+    t.string "host"
+    t.string "controller_name", null: false
+    t.string "action_name", null: false
+    t.bigint "agent_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_api_calls_on_agent_id"
+    t.index ["created_at"], name: "index_api_calls_on_created_at"
   end
 
   create_table "archives", force: :cascade do |t|
@@ -715,6 +728,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_26_090324) do
   add_foreign_key "address_geocodings", "users"
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
+  add_foreign_key "api_calls", "agents"
   add_foreign_key "archives", "organisations"
   add_foreign_key "archives", "users"
   add_foreign_key "blocked_invitations_counters", "organisations"
