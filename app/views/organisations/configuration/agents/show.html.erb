@@ -1,9 +1,11 @@
 <% content_for :title, "Configuration - Agents - #{@organisation.name} - rdv-insertion" %>
 
 <div class="container text-dark-blue mt-5 mb-5">
-  <%= render "organisations/configuration/header", tab: "agents", organisation: @organisation %>
+  <%= turbo_frame_tag "configuration_tab" do %>
+    <%= render "organisations/configuration/header", tab: "agents", organisation: @organisation %>
 
-  <div class="tab-content mt-4">
-    <p class="text-muted">Contenu de l'onglet Agents à implémenter</p>
-  </div>
+    <div class="tab-content mt-4">
+      <p class="text-muted">Contenu de l'onglet Agents à implémenter</p>
+    </div>
+  <% end %>
 </div>

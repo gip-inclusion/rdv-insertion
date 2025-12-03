@@ -1,9 +1,11 @@
 <% content_for :title, "Configuration - Messages - #{@organisation.name} - rdv-insertion" %>
 
 <div class="container text-dark-blue mt-5 mb-5">
-  <%= render "organisations/configuration/header", tab: "messages", organisation: @organisation %>
+  <%= turbo_frame_tag "configuration_tab" do %>
+    <%= render "organisations/configuration/header", tab: "messages", organisation: @organisation %>
 
-  <div class="tab-content mt-4">
-    <p class="text-muted">Contenu de l'onglet Messages à implémenter</p>
-  </div>
+    <div class="tab-content mt-4">
+      <p class="text-muted">Contenu de l'onglet Messages à implémenter</p>
+    </div>
+  <% end %>
 </div>

@@ -1,36 +1,36 @@
-<ul class="nav nav-tabs m-3">
+<ul class="nav nav-tabs">
   <li class="nav-item">
     <%= link_to organisation_configuration_informations_path(organisation),
         class: "nav-link #{tab == 'informations' ? 'active' : ''}",
-        data: { turbo_action: "advance" } do %>
+        data: { turbo_frame: "configuration_tab", turbo_action: "advance" } do %>
       Informations
     <% end %>
   </li>
   <li class="nav-item">
     <%= link_to organisation_configuration_agents_path(organisation),
         class: "nav-link #{tab == 'agents' ? 'active' : ''}",
-        data: { turbo_action: "advance" } do %>
+        data: { turbo_frame: "configuration_tab", turbo_action: "advance" } do %>
       Agents
     <% end %>
   </li>
   <li class="nav-item">
     <%= link_to organisation_configuration_categories_path(organisation),
         class: "nav-link #{tab == 'categories' ? 'active' : ''}",
-        data: { turbo_action: "advance" } do %>
+        data: { turbo_frame: "configuration_tab", turbo_action: "advance" } do %>
       Catégories
     <% end %>
   </li>
   <li class="nav-item">
     <%= link_to organisation_configuration_messages_path(organisation),
         class: "nav-link #{tab == 'messages' ? 'active' : ''}",
-        data: { turbo_action: "advance" } do %>
+        data: { turbo_frame: "configuration_tab", turbo_action: "advance" } do %>
       Messages
     <% end %>
   </li>
   <li class="nav-item">
     <%= link_to organisation_configuration_tags_path(organisation),
         class: "nav-link #{tab == 'tags' ? 'active' : ''}",
-        data: { turbo_action: "advance" } do %>
+        data: { turbo_frame: "configuration_tab", turbo_action: "advance" } do %>
       Gestion des tags
     <% end %>
   </li>
