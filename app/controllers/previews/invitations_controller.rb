@@ -104,7 +104,7 @@ module Previews
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
         user_designation: @invitation.user_designation,
-        mandatory_warning: @invitation.mandatory_warning,
+        mandatory_warning: @invitation.mandatory_warning(format: "letter"),
         punishable_warning: @invitation.punishable_warning,
         rdv_purpose: @invitation.rdv_purpose,
         rdv_subject: @invitation.rdv_subject,
