@@ -1,18 +1,7 @@
 module Organisations
   module Configuration
-    class InformationsController < ApplicationController
-      before_action :set_organisation
-
-      def show
-        @tab = "informations"
-      end
-
-      private
-
-      def set_organisation
-        @organisation = current_organisation
-        authorize @organisation, :configure?
-      end
+    class InformationsController < BaseController
+      def show; end
     end
   end
 end

@@ -1,7 +1,7 @@
 <% content_for :title, "Configuration - Informations - #{@organisation.name} - rdv-insertion" %>
 
 <div class="container text-dark-blue mt-5 mb-5">
-  <%= render "organisations/configuration/header" %>
+  <%= render "organisations/configuration/header", tab: "informations", organisation: @organisation %>
 
   <div class="tab-content mt-4">
     <p class="text-muted">Contenu de l'onglet Informations à implémenter</p>
