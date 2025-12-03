@@ -1,17 +1,21 @@
 module OutgoingWebhooks
   module FranceTravail
     class UpsertParticipationJob < BaseJob
+      attr_reader :participation, :timestamp
+
       def perform(participation_id:, timestamp:)
-        participation = Participation.find_by(id: participation_id)
+        @participation = Participation.find_by(id: participation_id)
+        @timestamp = timestamp
 
-        return unless participation&.eligible_for_france_travail_webhook?
+        return unless @participation&.eligible_for_france_travail_webhook?
 
-        if participation.france_travail_id?
-          @update_result = FranceTravailApi::UpdateParticipation.call(participation:, timestamp:)
+        if @participation.france_travail_id?
+          @update_result =
+            FranceTravailApi::UpdateParticipation.call(participation: @participation, timestamp: @timestamp)
 
           handle_update_result
         else
-          call_service!(FranceTravailApi::CreateParticipation, participation:, timestamp:)
+          call_service!(FranceTravailApi::CreateParticipation, participation: @participation, timestamp: @timestamp)
         end
       end
 
