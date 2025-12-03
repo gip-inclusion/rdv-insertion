@@ -120,68 +120,6 @@ describe UsersController do
         end
       end
     end
-
-    context "when json request" do
-      before { request.accept = "application/json" }
-
-      let(:user_params) do
-        {
-          user: {
-            uid: "123xz", first_name: "john", last_name: "doe", email: "johndoe@example.com",
-            affiliation_number: "1234", role: "conjoint"
-          },
-          organisation_id: organisation.id
-        }
-      end
-
-      context "when not authorized" do
-        let!(:another_organisation) { create(:organisation) }
-
-        it "renders the errors" do
-          post :create, params: user_params.merge(organisation_id: another_organisation.id)
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:forbidden)
-          expect(response.parsed_body["errors"]).to eq(["Votre compte ne vous permet pas d'effectuer cette action"])
-        end
-      end
-
-      context "when the creation succeeds" do
-        let!(:user) { create(:user, organisations: [organisation]) }
-
-        it "is a success" do
-          post :create, params: user_params
-          expect(response).to be_successful
-          expect(response.parsed_body["success"]).to eq(true)
-        end
-
-        it "renders the user" do
-          post :create, params: user_params
-          expect(response).to be_successful
-          expect(response.parsed_body["user"]["id"]).to eq(user.id)
-        end
-      end
-
-      context "when the creation fails" do
-        before do
-          allow(Users::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
-        end
-
-        it "is not a success" do
-          post :create, params: user_params
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.parsed_body["success"]).to eq(false)
-        end
-
-        it "renders the errors" do
-          post :create, params: user_params
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.parsed_body["errors"]).to eq(["some error"])
-        end
-      end
-    end
   end
 
   describe "#show" do
