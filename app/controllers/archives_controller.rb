@@ -29,7 +29,7 @@ class ArchivesController < ApplicationController
     turbo_stream_display_error_modal(e.record.errors.full_messages)
   end
 
-  def destroy # rubocop:disable Metrics/AbcSize
+  def destroy
     @archive = Archive.find(params[:id])
     authorize @archive
     if @archive.destroy
