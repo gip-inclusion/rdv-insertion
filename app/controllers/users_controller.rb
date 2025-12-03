@@ -28,7 +28,6 @@ class UsersController < ApplicationController
                 for: :create
   before_action :set_user, :set_organisation, :set_department,
                 for: [:edit, :update]
-  before_action :reset_tag_users, only: :update
   after_action :store_back_to_users_list_url, only: [:index]
 
   def default_list
@@ -112,18 +111,6 @@ class UsersController < ApplicationController
 
   def set_filterable_tags
     @tags = policy_scope((@organisation || @department).tags).order(Arel.sql("LOWER(tags.value)")).group("tags.id")
-  end
-
-  def reset_tag_users
-    return unless user_params[:tag_users_attributes]
-
-    @user
-      .tags
-      .joins(:organisations)
-      .where(organisations: department_level? ? @department.organisations : @organisation)
-      .find_each do |tag|
-      @user.tags.delete(tag)
-    end
   end
 
   def render_errors(errors)
