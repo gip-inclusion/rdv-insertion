@@ -75,6 +75,16 @@ Rails.application.routes.draw do
       resources :category_selections, only: [:new]
     end
     resource :configuration, only: [:show]
+
+    scope module: :organisations do
+      namespace :configuration do
+        resource :informations, only: [:show]
+        resource :agents, only: [:show]
+        resource :categories, only: [:show]
+        resource :messages, only: [:show]
+        resource :tags, only: [:show]
+      end
+    end
     resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
