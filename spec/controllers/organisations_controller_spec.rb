@@ -208,7 +208,52 @@ describe OrganisationsController do
     end
   end
 
-  describe "#update with data_retention_duration_in_months" do
+  describe "#show_info" do
+    it "renders the info partial" do
+      get :show_info, params: { id: organisation.id }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "#edit_info" do
+    it "renders the info_form partial" do
+      get :edit_info, params: { id: organisation.id }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "#update_info" do
+    context "when valid params" do
+      before do
+        allow_any_instance_of(Organisations::Update).to receive(:call).and_return(OpenStruct.new(success?: true))
+      end
+
+      it "updates the organisation" do
+        patch :update_info, params: {
+          id: organisation.id,
+          organisation: { name: "Nouveau nom", phone_number: "0607080910" }
+        }
+
+        expect(response).to be_successful
+      end
+    end
+  end
+
+  describe "#show_data_retention" do
+    it "renders the data_retention partial" do
+      get :show_data_retention, params: { id: organisation.id }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "#edit_data_retention" do
+    it "renders the data_retention_form partial" do
+      get :edit_data_retention, params: { id: organisation.id }
+      expect(response).to be_successful
+    end
+  end
+
+  describe "#update_data_retention" do
     let!(:admin_agent) { create(:agent, admin_role_in_organisations: [organisation]) }
 
     before do
@@ -220,7 +265,7 @@ describe OrganisationsController do
         patch :update_data_retention, params: {
           id: organisation.id,
           organisation: { data_retention_duration_in_months: 12 }
-        }, format: :turbo_stream
+        }
 
         expect(response).to be_successful
         expect(organisation.reload.data_retention_duration_in_months).to eq(12)
@@ -232,7 +277,7 @@ describe OrganisationsController do
         patch :update_data_retention, params: {
           id: organisation.id,
           organisation: { data_retention_duration_in_months: 0 }
-        }, format: :turbo_stream
+        }
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(organisation.reload.data_retention_duration_in_months).to eq(24)
