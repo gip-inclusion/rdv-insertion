@@ -1,9 +1,3 @@
-<%# The difference from _application_base.html.erb is that the body has a white background and no footer %>
-
-<% content_for :header do %>
-  <%= render 'common/header' %>
-<% end %>
-
-<%= render "layouts/application_base", white_background: true do %>
+<%= render "layouts/application_base", header: "common/header", footer: nil, white_background: true do %>
   <%= yield %>
 <% end %>
