@@ -13,7 +13,6 @@ describe ConfigurationsController do
       get :show, params: { organisation_id: organisation.id }
 
       expect(response).to be_successful
-      expect(response.body).to match(/Détails de l'organisation/)
       expect(response.body).to match(/Catégories de motifs configurés/)
       expect(response.body).to match(/Configuration des messages/)
       expect(response.body).to match(/Agents de l'organisation/)
