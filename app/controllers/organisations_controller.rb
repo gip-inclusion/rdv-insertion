@@ -1,11 +1,12 @@
-class OrganisationsController < ApplicationController
+class OrganisationsController < ApplicationController ## rubocop:disable Metrics/ClassLength
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
-    :department_id, :safir_code
+    :department_id, :safir_code, :logo, :remove_logo
   ].freeze
 
   before_action :set_organisation, :set_department,
-                only: [:show, :edit, :update, :update_data_retention]
+                only: [:show_info, :edit_info, :update_info,
+                       :show_data_retention, :edit_data_retention, :update_data_retention]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
@@ -15,28 +16,42 @@ class OrganisationsController < ApplicationController
     redirect_to default_list_organisation_users_path(@organisations.first)
   end
 
-  def show; end
+  def show_info
+    render partial: "info"
+  end
 
-  def edit; end
+  def edit_info
+    render partial: "info_form"
+  end
 
-  def update
+  def update_info
     @organisation.assign_attributes(organisation_params)
-    if update_organisation.success?
-      render :show
+    @success = update_organisation.success?
+    if @success
+      flash.now[:success] = "Informations mises à jour"
     else
-      flash.now[:error] = update_organisation.errors&.join(",")
-      render :edit, status: :unprocessable_entity
+      flash.now[:error] = update_organisation.errors&.join(", ")
     end
+    respond_to :turbo_stream
+  end
+
+  def show_data_retention
+    render partial: "data_retention"
+  end
+
+  def edit_data_retention
+    render partial: "data_retention_form"
   end
 
   def update_data_retention
     @organisation.assign_attributes(data_retention_params)
-
-    if @organisation.save
-      turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès")
+    @success = @organisation.save
+    if @success
+      flash.now[:success] = "Durée de conservation mise à jour"
     else
-      turbo_stream_display_error_modal(@organisation.errors.full_messages)
+      flash.now[:error] = @organisation.errors.full_messages.to_sentence
     end
+    respond_to :turbo_stream
   end
 
   def geolocated
