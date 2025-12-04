@@ -1,4 +1,5 @@
-module UsersHelper # rubocop:disable Metrics/ModuleLength
+# rubocop:disable Metrics/ModuleLength
+module UsersHelper
   def show_convocation?(category_configuration)
     category_configuration.convene_user?
   end
@@ -35,6 +36,7 @@ module UsersHelper # rubocop:disable Metrics/ModuleLength
     [
       ["not_invited", statuses_count["not_invited"]],
       ["invitation_pending", statuses_count["invitation_pending"]],
+      ["invitation_expired", statuses_count["invitation_expired"]],
       ["rdv_pending", statuses_count["rdv_pending"]],
       ["rdv_needs_status_update", statuses_count["rdv_needs_status_update"]],
       ["rdv_excused", statuses_count["rdv_excused"]],
@@ -130,3 +132,4 @@ module UsersHelper # rubocop:disable Metrics/ModuleLength
     user.city_code.present? && user.city.present? ? "dora-link-user-loc" : "dora-link-user-ndef"
   end
 end
+# rubocop:enable Metrics/ModuleLength

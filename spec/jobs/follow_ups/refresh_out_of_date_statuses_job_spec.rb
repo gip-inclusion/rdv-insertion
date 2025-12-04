@@ -1,4 +1,4 @@
-describe RefreshOutOfDateFollowUpStatusesJob do
+describe FollowUps::RefreshOutOfDateStatusesJob do
   subject do
     described_class.new.perform
   end
@@ -34,12 +34,12 @@ describe RefreshOutOfDateFollowUpStatusesJob do
       # remove follow-ups created in callbacks
       FollowUp.where.not(id: [follow_up1.id, follow_up2.id, follow_up3.id, follow_up4.id,
                               follow_up5.id]).find_each(&:destroy!)
-      allow(RefreshFollowUpStatusesJob).to receive(:perform_later)
+      allow(FollowUps::RefreshStatusesJob).to receive(:perform_later)
       allow(SlackClient).to receive(:send_to_notif_channel)
     end
 
     it "enqueues a refresh job for out of date follow-ups" do
-      expect(RefreshFollowUpStatusesJob).to receive(:perform_later)
+      expect(FollowUps::RefreshStatusesJob).to receive(:perform_later)
         .with([follow_up1.id, follow_up3.id, follow_up5.id])
       subject
     end

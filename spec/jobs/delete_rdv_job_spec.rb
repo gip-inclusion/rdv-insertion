@@ -14,7 +14,7 @@ describe DeleteRdvJob do
         .with(rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
         .and_return(rdv)
       allow(rdv).to receive(:destroy!)
-      allow(RefreshFollowUpStatusesJob).to receive(:perform_later)
+      allow(FollowUps::RefreshStatusesJob).to receive(:perform_later)
     end
 
     it "finds the matching rdv" do
@@ -29,7 +29,7 @@ describe DeleteRdvJob do
     end
 
     it "enqueues a refresh status job" do
-      expect(RefreshFollowUpStatusesJob).to receive(:perform_later)
+      expect(FollowUps::RefreshStatusesJob).to receive(:perform_later)
         .with([follow_up.id])
       subject
     end

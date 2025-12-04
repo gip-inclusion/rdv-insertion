@@ -36,7 +36,7 @@ upsert_monthly_stats_job:
 
 refresh_out_of_date_follow_up_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
-  class: "RefreshOutOfDateFollowUpStatusesJob"
+  class: "FollowUps::RefreshOutOfDateStatusesJob"
 store_all_number_of_creneaux_available_job:
   cron: "0 5 * * *" # we refresh out of date statuses once a day, at 21:00
   class: "Creneaux::StoreAllNumberOfCreneauxAvailableJob"

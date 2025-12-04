@@ -25,6 +25,7 @@ class Participation < ApplicationRecord
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
   after_commit :refresh_follow_up_status
+  after_commit :plan_follow_up_status_refresh, on: [:create, :update]
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
   after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
 
@@ -63,7 +64,11 @@ class Participation < ApplicationRecord
   private
 
   def refresh_follow_up_status
-    RefreshFollowUpStatusesJob.perform_later(follow_up_id) if follow_up_id?
+    FollowUps::RefreshStatusesJob.perform_later(follow_up_id)
+  end
+
+  def plan_follow_up_status_refresh
+    FollowUps::PlanStatusRefreshJob.perform_later(follow_up_id)
   end
 
   def status_reloaded_from_cancelled?

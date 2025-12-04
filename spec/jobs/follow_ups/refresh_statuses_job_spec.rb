@@ -1,4 +1,4 @@
-describe RefreshFollowUpStatusesJob do
+describe FollowUps::RefreshStatusesJob do
   subject do
     described_class.new.perform(follow_up_ids)
   end
