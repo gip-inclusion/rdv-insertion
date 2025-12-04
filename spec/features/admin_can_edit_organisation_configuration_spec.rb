@@ -40,7 +40,6 @@ describe "Admin can edit organisation configuration", :js do
 
       click_button "Enregistrer"
 
-      expect(page).to have_content("Informations mises à jour")
       expect(page).to have_content("Nouveau nom")
       expect(page).to have_content("0607080910")
       expect(page).to have_content("nouveau@email.fr")
@@ -61,7 +60,6 @@ describe "Admin can edit organisation configuration", :js do
 
       click_button "Enregistrer"
 
-      expect(page).to have_content("Durée de conservation mise à jour")
       expect(page).to have_content("12 mois")
       expect(organisation.reload.data_retention_duration_in_months).to eq(12)
     end
@@ -85,7 +83,6 @@ describe "Admin can edit organisation configuration", :js do
 
       click_button "Enregistrer"
 
-      expect(page).to have_content("Informations mises à jour")
       expect(page).to have_content("Logo de l'organisation")
       expect(page).to have_css("img[alt=\"Logo de l'organisation\"]")
 

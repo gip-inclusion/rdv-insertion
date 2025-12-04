@@ -228,13 +228,14 @@ describe OrganisationsController do
         allow_any_instance_of(Organisations::Update).to receive(:call).and_return(OpenStruct.new(success?: true))
       end
 
-      it "updates the organisation" do
+      it "updates the organisation and shows flash message" do
         patch :update_info, params: {
           id: organisation.id,
           organisation: { name: "Nouveau nom", phone_number: "0607080910" }
         }, format: :turbo_stream
 
         expect(response).to be_successful
+        expect(response.body).to include("Informations mises à jour")
       end
     end
   end
@@ -261,7 +262,7 @@ describe OrganisationsController do
     end
 
     context "when valid duration" do
-      it "updates the data retention duration" do
+      it "updates the data retention duration and shows flash message" do
         patch :update_data_retention, params: {
           id: organisation.id,
           organisation: { data_retention_duration_in_months: 12 }
@@ -269,6 +270,7 @@ describe OrganisationsController do
 
         expect(response).to be_successful
         expect(organisation.reload.data_retention_duration_in_months).to eq(12)
+        expect(response.body).to include("Durée de conservation mise à jour")
       end
     end
 
