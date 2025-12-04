@@ -28,7 +28,6 @@ class UsersController < ApplicationController
                 for: :create
   before_action :set_user, :set_organisation, :set_department,
                 for: [:edit, :update]
-  before_action :reset_tag_users, only: :update
   after_action :store_back_to_users_list_url, only: [:index]
 
   def default_list
@@ -68,7 +67,7 @@ class UsersController < ApplicationController
   def create
     @user = upsert_user.user
     if upsert_user.success?
-      render_save_user_success
+      redirect_to(after_save_path)
     else
       render_errors(upsert_user.errors)
     end
@@ -78,7 +77,7 @@ class UsersController < ApplicationController
     @user.assign_attributes(user_params.except(*restricted_user_attributes))
     authorize @user
     if save_user.success?
-      render_save_user_success
+      redirect_to(after_save_path)
     else
       render_errors(save_user.errors)
     end
@@ -114,18 +113,6 @@ class UsersController < ApplicationController
     @tags = policy_scope((@organisation || @department).tags).order(Arel.sql("LOWER(tags.value)")).group("tags.id")
   end
 
-  def reset_tag_users
-    return unless user_params[:tag_users_attributes]
-
-    @user
-      .tags
-      .joins(:organisations)
-      .where(organisations: department_level? ? @department.organisations : @organisation)
-      .find_each do |tag|
-      @user.tags.delete(tag)
-    end
-  end
-
   def render_errors(errors)
     respond_to do |format|
       format.turbo_stream { turbo_stream_replace_flash_messages(error: errors.join(", ")) }
@@ -134,13 +121,6 @@ class UsersController < ApplicationController
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
       end
       format.json { render json: { success: false, errors: errors }, status: :unprocessable_entity }
-    end
-  end
-
-  def render_save_user_success
-    respond_to do |format|
-      format.html { redirect_to(after_save_path) }
-      format.json { render json: { success: true, user: @user } }
     end
   end
 

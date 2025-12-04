@@ -4,19 +4,14 @@
     "es2021": true
   },
   "extends": [
-    "plugin:react/recommended",
-    "airbnb",
+    "airbnb-base",
     "prettier"
   ],
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
     "ecmaVersion": 13,
     "sourceType": "module"
   },
   "plugins": [
-    "react",
     "no-unsanitized",
     "rdv-insertion"
   ],
@@ -25,8 +20,6 @@
       "error",
       "double"
     ],
-    "react/prop-types": 0,
-    "react/no-unescaped-entities": 0,
     "no-underscore-dangle": [
       "error",
       {
@@ -38,10 +31,7 @@
     "class-methods-use-this": "off",
     "no-nested-ternary": "off",
     "no-use-before-define": "off",
-    "react/jsx-props-no-spreading": "off",
-    "jsx-a11y/no-autofocus": "off",
     "arrow-body-style": "off",
-    "react/no-danger": "error",
     "rdv-insertion/enforce-safe-swal": "error",
     "rdv-insertion/enforce-safe-tippy": "error",
     "no-unsanitized/method": [

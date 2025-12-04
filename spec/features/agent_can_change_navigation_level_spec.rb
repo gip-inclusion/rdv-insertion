@@ -100,13 +100,7 @@ describe "Agents can sort users on index page", :js do
       end
 
       context "on upload users page" do
-        let!(:page_path) { new_department_upload_path(department) }
-
-        include_examples "a page with an organisation navigation button"
-      end
-
-      context "on upload users page with category selected" do
-        let!(:page_path) { new_department_upload_path(department, category_configuration: motif_category.id) }
+        let!(:page_path) { new_department_user_list_uploads_category_selection_path(department) }
 
         include_examples "a page with an organisation navigation button"
       end
@@ -172,13 +166,7 @@ describe "Agents can sort users on index page", :js do
       end
 
       context "on upload users page" do
-        let!(:page_path) { new_organisation_upload_path(organisation) }
-
-        include_examples "a page with an organisation navigation button"
-      end
-
-      context "on upload users page with category selected" do
-        let!(:page_path) { new_organisation_upload_path(organisation, category_configuration: motif_category.id) }
+        let!(:page_path) { new_organisation_user_list_uploads_category_selection_path(organisation) }
 
         include_examples "a page with an organisation navigation button"
       end

@@ -1,50 +1,12 @@
 import chooseOrganisationModal from "../components/choose-organisation-modal";
-import retrieveGeolocatedOrganisations from "../react/actions/retrieveGeolocatedOrganisations";
-import searchOrganisations from "../react/actions/searchOrganisations";
+import retrieveGeolocatedOrganisations from "../actions/retrieveGeolocatedOrganisations";
 
 const retrieveRelevantOrganisation = async (
   departmentNumber,
-  organisationSearchTerms,
   userFullAddress,
   options = { raiseError: true }
 ) => {
-  if (organisationSearchTerms) {
-    return retrieveThroughSearchTerms(departmentNumber, organisationSearchTerms, options);
-  }
-
   return retrieveThroughGeolocalisation(departmentNumber, userFullAddress, options);
-};
-
-const retrieveThroughSearchTerms = async (
-  departmentNumber,
-  organisationSearchTerms,
-  options = { raiseError: true }
-) => {
-  const result = await searchOrganisations(departmentNumber, organisationSearchTerms);
-  if (result.success && result.matching_organisations.length === 1) {
-    return result.matching_organisations[0];
-  }
-
-  if (options.raiseError === false) {
-    return null;
-  }
-
-  let modalTitle;
-
-  if (result.errors && result.errors.length > 0) {
-    modalTitle = result.errors.join(", ");
-  } else {
-    modalTitle = `Aucune organisation ne correspond à <strong>${organisationSearchTerms}</strong>.`;
-  }
-  const modalText = "Veuillez choisir une organisation parmi les suivantes:";
-
-  return chooseOrganisationModal(
-    result.matching_organisations && result.matching_organisations.length > 1
-      ? result.matching_organisations
-      : result.department_organisations,
-    modalTitle,
-    modalText
-  );
 };
 
 const retrieveThroughGeolocalisation = async (
