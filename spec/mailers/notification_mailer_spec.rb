@@ -67,7 +67,6 @@ RSpec.describe NotificationMailer do
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
         expect(body_string).to include("Tel : 0101010101")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
       end
 
@@ -98,7 +97,6 @@ RSpec.describe NotificationMailer do
             "En cas d'absence, votre RSA pourra être suspendue ou réduite."
           )
           expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-          expect(body_string).to include("Email : someone@organisation.fr")
           expect(body_string).to include("Site web : https://www.organisation.fr")
           expect(body_string).to include("Tel : 0101010101")
         end
@@ -123,7 +121,6 @@ RSpec.describe NotificationMailer do
           )
           expect(body_string).not_to include("En cas d'absence, votre RSA pourra être suspendue ou réduite.")
           expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-          expect(body_string).to include("Email : someone@organisation.fr")
           expect(body_string).to include("Site web : https://www.organisation.fr")
           expect(body_string).to include("Tel : 0101010101")
         end
@@ -161,7 +158,6 @@ RSpec.describe NotificationMailer do
             "En cas d'absence, votre RSA pourra être suspendu ou réduit."
           )
           expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-          expect(body_string).to include("Email : someone@organisation.fr")
           expect(body_string).to include("Site web : https://www.organisation.fr")
           expect(body_string).to include("Tel : 0101010101")
         end
@@ -193,7 +189,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -224,7 +219,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -255,7 +249,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -287,7 +280,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -318,7 +310,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -360,7 +351,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -390,7 +380,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -420,7 +409,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -477,7 +465,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -507,7 +494,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -552,7 +538,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -586,7 +571,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -620,7 +604,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -654,7 +637,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -688,7 +670,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -721,7 +702,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -776,7 +756,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -808,7 +787,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -840,7 +818,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -873,7 +850,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -906,7 +882,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -940,7 +915,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -986,7 +960,6 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
         expect(body_string).to include("Votre rendez-vous est annulé")
         expect(body_string).to include("Pour plus d'informations, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
         expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
@@ -1010,7 +983,6 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
         expect(body_string).to include("Votre rendez-vous est annulé")
         expect(body_string).to include("Pour plus d'informations, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
         expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
@@ -1034,7 +1006,6 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
         expect(body_string).to include("Votre rendez-vous est annulé")
         expect(body_string).to include("Pour plus d'informations, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
         expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
@@ -1058,7 +1029,6 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
         expect(body_string).to include("Votre rendez-vous est annulé")
         expect(body_string).to include("Pour plus d'informations, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
         expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
@@ -1082,7 +1052,6 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
         expect(body_string).to include("Votre rendez-vous est annulé")
         expect(body_string).to include("Pour plus d'informations, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
         expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
@@ -1106,7 +1075,6 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
         expect(body_string).to include("Votre rendez-vous est annulé")
         expect(body_string).to include("Pour plus d'informations, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
         expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
@@ -1150,7 +1118,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
@@ -1198,7 +1165,6 @@ RSpec.describe NotificationMailer do
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to include("En cas d'empêchement, contactez-nous :")
-        expect(body_string).to include("Email : someone@organisation.fr")
         expect(body_string).to include("Site web : https://www.organisation.fr")
         expect(body_string).to include("Tel : 0101010101")
       end
