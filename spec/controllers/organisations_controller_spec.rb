@@ -232,7 +232,7 @@ describe OrganisationsController do
         patch :update_info, params: {
           id: organisation.id,
           organisation: { name: "Nouveau nom", phone_number: "0607080910" }
-        }
+        }, format: :turbo_stream
 
         expect(response).to be_successful
       end
@@ -265,7 +265,7 @@ describe OrganisationsController do
         patch :update_data_retention, params: {
           id: organisation.id,
           organisation: { data_retention_duration_in_months: 12 }
-        }
+        }, format: :turbo_stream
 
         expect(response).to be_successful
         expect(organisation.reload.data_retention_duration_in_months).to eq(12)
@@ -277,9 +277,8 @@ describe OrganisationsController do
         patch :update_data_retention, params: {
           id: organisation.id,
           organisation: { data_retention_duration_in_months: 0 }
-        }
+        }, format: :turbo_stream
 
-        expect(response).to have_http_status(:unprocessable_entity)
         expect(organisation.reload.data_retention_duration_in_months).to eq(24)
       end
     end

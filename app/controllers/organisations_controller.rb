@@ -26,13 +26,13 @@ class OrganisationsController < ApplicationController ## rubocop:disable Metrics
 
   def update_info
     @organisation.assign_attributes(organisation_params)
-    if update_organisation.success?
+    @success = update_organisation.success?
+    if @success
       flash.now[:success] = "Informations mises à jour"
-      render partial: "info"
     else
       flash.now[:error] = update_organisation.errors&.join(", ")
-      render partial: "info_form", status: :unprocessable_entity
     end
+    respond_to :turbo_stream
   end
 
   def show_data_retention
@@ -45,13 +45,13 @@ class OrganisationsController < ApplicationController ## rubocop:disable Metrics
 
   def update_data_retention
     @organisation.assign_attributes(data_retention_params)
-    if @organisation.save
+    @success = @organisation.save
+    if @success
       flash.now[:success] = "Durée de conservation mise à jour"
-      render partial: "data_retention"
     else
       flash.now[:error] = @organisation.errors.full_messages.to_sentence
-      render partial: "data_retention_form", status: :unprocessable_entity
     end
+    respond_to :turbo_stream
   end
 
   def geolocated
