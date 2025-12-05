@@ -82,11 +82,6 @@ class OrganisationsController < ApplicationController
     params.expect(organisation: PERMITTED_PARAMS)
   end
 
-  def set_organisation
-    @organisation = policy_scope(Organisation).find(params[:id])
-    authorize @organisation
-  end
-
   def set_organisation_for_configuration
     @organisation = policy_scope(Organisation).find(params[:id])
     authorize @organisation, :configure?

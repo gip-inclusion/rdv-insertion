@@ -7,22 +7,6 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.super_admin?
   end
 
-  def show?
-    configure?
-  end
-
-  def new?
-    create?
-  end
-
-  def update?
-    configure?
-  end
-
-  def edit?
-    configure?
-  end
-
   def create_and_invite_users?
     access?
   end
