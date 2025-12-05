@@ -2,10 +2,10 @@
 <html>
   <%= render 'layouts/head' %>
 
-  <body data-matomo-mask class="<%= "override-dsfr-defaults" unless local_assigns[:keep_dsfr_defaults] %> <%= " bg-white" if local_assigns[:white_background] %>">
+  <body data-matomo-mask class="<%= "override-dsfr-defaults" unless local_assigns[:keep_dsfr_defaults] %><%= " bg-white" if local_assigns[:white_background] %>">
     <%= render 'common/matomo_script_tag' if @enable_matomo_tracking %>
     <%= render 'layouts/rdv_insertion_instance_name' %>
-    <%= content_for :header %>
+    <%= render local_assigns[:header] if local_assigns[:header] %>
     <%= render 'common/flashes' %>
     <div class="wrapper">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
@@ -15,6 +15,6 @@
       <%= render 'common/crisp' %>
       <%= render 'common/cookies_consent' if @should_display_cookies_consent %>
     </div>
-    <%= content_for :footer %>
+    <%= render local_assigns[:footer] if local_assigns[:footer] %>
   </body>
 </html>

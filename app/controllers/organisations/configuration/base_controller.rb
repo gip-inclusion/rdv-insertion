@@ -1,6 +1,7 @@
 module Organisations
   module Configuration
     class BaseController < ApplicationController
+      layout "organisation_configuration"
       before_action :set_organisation
 
       private
