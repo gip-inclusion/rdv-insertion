@@ -1,0 +1,19 @@
+<%= turbo_frame_tag "data_retention" do %>
+  <div class="card-white p-4 mb-4">
+    <h3 class="h5 mb-2 fw-bold">Gestion des données personnelles</h3>
+    <p class="text-muted small mb-4">
+      En tant qu'administrateur de cette organisation, vous pouvez configurer la durée de conservation des données personnelles des usagers.
+    </p>
+
+    <p>
+      <span class="fw-bold">Durée de conservation des données personnelles :</span>
+      <%= @organisation.data_retention_duration_in_months %> mois
+    </p>
+
+    <div class="d-flex justify-content-end">
+      <%= link_to edit_data_retention_organisation_path(@organisation), class: "btn btn-blue" do %>
+        Modifier
+      <% end %>
+    </div>
+  </div>
+<% end %>

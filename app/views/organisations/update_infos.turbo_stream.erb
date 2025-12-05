@@ -1,0 +1,6 @@
+<% if @success %>
+  <%= turbo_stream.replace "organisation_info", partial: "info" %>
+<% else %>
+  <%= turbo_stream.replace "organisation_info", partial: "info_form" %>
+<% end %>
+<%= render_turbo_stream_flash_messages %>

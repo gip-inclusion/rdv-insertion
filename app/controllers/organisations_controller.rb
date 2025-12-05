@@ -1,11 +1,12 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
-    :department_id, :safir_code
+    :department_id, :safir_code, :logo, :remove_logo
   ].freeze
 
-  before_action :set_organisation, :set_department,
-                only: [:show, :edit, :update, :update_data_retention]
+  before_action :set_organisation_for_configuration, :set_department,
+                only: [:show_infos, :edit_infos, :update_infos,
+                       :show_data_retention, :edit_data_retention, :update_data_retention]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
@@ -15,28 +16,34 @@ class OrganisationsController < ApplicationController
     redirect_to default_list_organisation_users_path(@organisations.first)
   end
 
-  def show; end
+  def show_infos; end
 
-  def edit; end
+  def edit_infos; end
 
-  def update
+  def update_infos
     @organisation.assign_attributes(organisation_params)
-    if update_organisation.success?
-      render :show
+    @success = update_organisation.success?
+    if @success
+      flash.now[:success] = "Informations mises à jour"
     else
-      flash.now[:error] = update_organisation.errors&.join(",")
-      render :edit, status: :unprocessable_entity
+      flash.now[:error] = update_organisation.errors&.join(", ")
     end
+    respond_to :turbo_stream
   end
+
+  def show_data_retention; end
+
+  def edit_data_retention; end
 
   def update_data_retention
     @organisation.assign_attributes(data_retention_params)
-
-    if @organisation.save
-      turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès")
+    @success = @organisation.save
+    if @success
+      flash.now[:success] = "Durée de conservation mise à jour"
     else
-      turbo_stream_display_error_modal(@organisation.errors.full_messages)
+      flash.now[:error] = @organisation.errors.full_messages.to_sentence
     end
+    respond_to :turbo_stream
   end
 
   def geolocated
@@ -75,9 +82,9 @@ class OrganisationsController < ApplicationController
     params.expect(organisation: PERMITTED_PARAMS)
   end
 
-  def set_organisation
+  def set_organisation_for_configuration
     @organisation = policy_scope(Organisation).find(params[:id])
-    authorize @organisation
+    authorize @organisation, :configure?
   end
 
   def set_department

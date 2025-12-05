@@ -1,0 +1,26 @@
+<%= turbo_frame_tag "data_retention" do %>
+  <%= form_with model: @organisation, url: update_data_retention_organisation_path(@organisation), method: :patch do |f| %>
+    <div class="card-white p-4 mb-4">
+      <h3 class="h5 mb-2 fw-bold">Gestion des données personnelles</h3>
+      <p class="text-muted small mb-4">
+        En tant qu'administrateur de cette organisation, vous pouvez configurer la durée de conservation des données personnelles des usagers.
+      </p>
+
+      <div class="d-flex align-items-center mb-4">
+        <span class="fw-bold me-3">Durée de conservation des données personnelles :</span>
+        <%= f.select :data_retention_duration_in_months,
+            options_for_select(1..36, @organisation.data_retention_duration_in_months),
+            {},
+            { class: "form-select", style: "width: 80px;" } %>
+        <span class="ms-2">mois</span>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <%= link_to show_data_retention_organisation_path(@organisation), class: "btn btn-blue-out me-2" do %>
+          Annuler
+        <% end %>
+        <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

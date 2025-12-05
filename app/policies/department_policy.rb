@@ -7,8 +7,6 @@ class DepartmentPolicy < ApplicationPolicy
 
   def index? = access?
 
-  def batch_actions? = access?
-
   def parcours?(user:)
     return false unless record.with_parcours_access?
 

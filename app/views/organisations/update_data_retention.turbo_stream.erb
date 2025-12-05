@@ -1,0 +1,6 @@
+<% if @success %>
+  <%= turbo_stream.replace "data_retention", partial: "data_retention" %>
+<% else %>
+  <%= turbo_stream.replace "data_retention", partial: "data_retention_form" %>
+<% end %>
+<%= render_turbo_stream_flash_messages %>
