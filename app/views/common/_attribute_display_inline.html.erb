@@ -1,0 +1,24 @@
+<%# Displays a model attribute in inline format (label left, value right) %>
+<%# 2 locals are mandatory : record (a class instance) and attribute (a key corresponding to a class attribute) %>
+<%# Optional: label (custom label text or html_safe string), tooltip (hash with content key) %>
+
+<div id="<%= local_assigns[:id] %>" class="row py-2 align-items-center">
+  <div class="col-4 d-flex align-items-center">
+    <span class="fw-bold"><%= local_assigns[:label]&.html_safe || record.class.human_attribute_name(attribute) %></span>
+    <% if local_assigns[:tooltip].is_a?(Hash) %>
+      <i
+        class="<%= local_assigns[:tooltip][:icon] || 'ri-question-line' %> text-dark-blue ms-2 fs-4"
+        <%= tooltip(content: local_assigns[:tooltip][:content], placement: local_assigns[:tooltip][:placement] || 'top') %>
+      ></i>
+    <% end %>
+  </div>
+  <div class="col-4">
+    <% if record.send(attribute).blank? %>
+      <span class="text-muted">-</span>
+    <% elsif record[attribute].in?([true, false]) %>
+      <%= I18n.t("boolean.#{record[attribute]}") %>
+    <% else %>
+      <%= record.send(attribute) %>
+    <% end %>
+  </div>
+</div>

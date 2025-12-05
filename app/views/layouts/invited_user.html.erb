@@ -1,18 +1,3 @@
-<% content_for :head do %>
-  <%= stylesheet_link_tag "dsfr.min", "application-turbo-track": "reload" %>
-  <%= javascript_include_tag "dsfr.module.min.js", type: 'module' %>
-  <%= javascript_include_tag "dsfr.nomodule.min.js", nomodule: true %>
-  <%= stylesheet_link_tag "utility/dsfr-utility.min", "application-turbo-track": "reload" %>
-<% end %>
-
-<% content_for :header do %>
-  <%= render 'common/header_invitation' %>
-<% end %>
-
-<% content_for :footer do %>
-  <%= render 'common/footer_website' %>
-<% end %>
-
-<%= render "layouts/application_base" do %>
+<%= render "layouts/application_base", header: "common/header_invitation", footer: "common/footer_website", keep_dsfr_defaults: true, white_background: true do %>
   <%= yield %>
 <% end %>

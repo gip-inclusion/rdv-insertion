@@ -1,0 +1,20 @@
+<%# Displays an attribute input field in inline format (label left, input right) %>
+<%# 2 locals are mandatory : f (a form) and attribute (a key corresponding to a class attribute) %>
+<%# Optional: label (custom label text or html_safe string), mandatory (adds *), tooltip (hash with content and optional icon) %>
+
+<div class="row py-2 align-items-center">
+  <div class="col-4 fw-bold">
+    <%= (local_assigns[:label] || f.object.class.human_attribute_name(attribute)).html_safe %><%= "*" if local_assigns[:mandatory] %>
+  </div>
+  <div class="col-4">
+    <%= f.text_field attribute, class: "form-control" %>
+  </div>
+  <div class="col-1 d-flex align-items-center">
+    <% if local_assigns[:tooltip].is_a?(Hash) %>
+      <i
+        class="<%= local_assigns[:tooltip][:icon] || 'ri-question-line' %> text-dark-blue fs-4"
+        <%= tooltip(content: local_assigns[:tooltip][:content], placement: local_assigns[:tooltip][:placement] || 'top') %>
+      ></i>
+    <% end %>
+  </div>
+</div>
