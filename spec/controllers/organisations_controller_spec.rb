@@ -208,28 +208,28 @@ describe OrganisationsController do
     end
   end
 
-  describe "#show_info" do
+  describe "#show_infos" do
     it "renders the info partial" do
-      get :show_info, params: { id: organisation.id }
+      get :show_infos, params: { id: organisation.id }
       expect(response).to be_successful
     end
   end
 
-  describe "#edit_info" do
+  describe "#edit_infos" do
     it "renders the info_form partial" do
-      get :edit_info, params: { id: organisation.id }
+      get :edit_infos, params: { id: organisation.id }
       expect(response).to be_successful
     end
   end
 
-  describe "#update_info" do
+  describe "#update_infos" do
     context "when valid params" do
       before do
         allow_any_instance_of(Organisations::Update).to receive(:call).and_return(OpenStruct.new(success?: true))
       end
 
       it "updates the organisation and shows flash message" do
-        patch :update_info, params: {
+        patch :update_infos, params: {
           id: organisation.id,
           organisation: { name: "Nouveau nom", phone_number: "0607080910" }
         }, format: :turbo_stream

@@ -66,9 +66,9 @@ Rails.application.routes.draw do
     get :search, on: :collection
 
     member do
-      get :show_info
-      get :edit_info
-      patch :update_info
+      get :show_infos
+      get :edit_infos
+      patch :update_infos
       get :show_data_retention
       get :edit_data_retention
       patch :update_data_retention

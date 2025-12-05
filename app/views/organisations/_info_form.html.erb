@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "organisation_info" do %>
-  <%= form_with model: @organisation, url: update_info_organisation_path(@organisation), method: :patch do |f| %>
+  <%= form_with model: @organisation, url: update_infos_organisation_path(@organisation), method: :patch do |f| %>
     <div class="card-white p-4 mb-4">
       <h3 class="h5 mb-2 fw-bold">Informations générales</h3>
       <p class="text-muted mb-4">
@@ -89,7 +89,7 @@
       </p>
 
       <div class="d-flex justify-content-end">
-        <%= link_to show_info_organisation_path(@organisation), class: "btn btn-blue-out me-2" do %>
+        <%= link_to show_infos_organisation_path(@organisation), class: "btn btn-blue-out me-2" do %>
           Annuler
         <% end %>
         <%= f.submit "Enregistrer", class: "btn btn-primary" %>

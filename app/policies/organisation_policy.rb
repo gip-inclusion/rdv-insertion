@@ -19,30 +19,6 @@ class OrganisationPolicy < ApplicationPolicy
     configure?
   end
 
-  def show_info?
-    configure?
-  end
-
-  def edit_info?
-    configure?
-  end
-
-  def update_info?
-    configure?
-  end
-
-  def show_data_retention?
-    configure?
-  end
-
-  def edit_data_retention?
-    configure?
-  end
-
-  def update_data_retention?
-    configure?
-  end
-
   def edit?
     configure?
   end

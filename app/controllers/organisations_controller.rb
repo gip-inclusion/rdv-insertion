@@ -1,11 +1,11 @@
-class OrganisationsController < ApplicationController ## rubocop:disable Metrics/ClassLength
+class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
     :department_id, :safir_code, :logo, :remove_logo
   ].freeze
 
-  before_action :set_organisation, :set_department,
-                only: [:show_info, :edit_info, :update_info,
+  before_action :set_organisation_for_configuration, :set_department,
+                only: [:show_infos, :edit_infos, :update_infos,
                        :show_data_retention, :edit_data_retention, :update_data_retention]
 
   def index
@@ -16,15 +16,11 @@ class OrganisationsController < ApplicationController ## rubocop:disable Metrics
     redirect_to default_list_organisation_users_path(@organisations.first)
   end
 
-  def show_info
-    render partial: "info"
-  end
+  def show_infos; end
 
-  def edit_info
-    render partial: "info_form"
-  end
+  def edit_infos; end
 
-  def update_info
+  def update_infos
     @organisation.assign_attributes(organisation_params)
     @success = update_organisation.success?
     if @success
@@ -35,13 +31,9 @@ class OrganisationsController < ApplicationController ## rubocop:disable Metrics
     respond_to :turbo_stream
   end
 
-  def show_data_retention
-    render partial: "data_retention"
-  end
+  def show_data_retention; end
 
-  def edit_data_retention
-    render partial: "data_retention_form"
-  end
+  def edit_data_retention; end
 
   def update_data_retention
     @organisation.assign_attributes(data_retention_params)
@@ -93,6 +85,11 @@ class OrganisationsController < ApplicationController ## rubocop:disable Metrics
   def set_organisation
     @organisation = policy_scope(Organisation).find(params[:id])
     authorize @organisation
+  end
+
+  def set_organisation_for_configuration
+    @organisation = policy_scope(Organisation).find(params[:id])
+    authorize @organisation, :configure?
   end
 
   def set_department
