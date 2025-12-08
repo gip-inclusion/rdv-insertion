@@ -12,7 +12,7 @@ class NotifyParticipationToUserJob < ApplicationJob
     @format = format
     @event = event
 
-    return unless @participation.notifiable? && user.notifiable?
+    return unless @participation.notifiable?
     return if reminder_of_cancelled_participation?
 
     return if already_notified?

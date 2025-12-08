@@ -172,10 +172,6 @@ class User < ApplicationRecord
     types&.include?(:mobile)
   end
 
-  def notifiable?
-    title.present?
-  end
-
   def organisations_motif_category_ids
     organisations.map(&:motif_category_ids).flatten
   end
