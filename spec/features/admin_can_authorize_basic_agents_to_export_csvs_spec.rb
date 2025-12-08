@@ -13,7 +13,7 @@ describe "Admins can authorize basic agents to export csvs", :js do
     setup_agent_session(admin)
   end
 
-  context "from configure organisation page" do
+  context "from agents configuration page" do
     before do
       visit organisation_configuration_agents_path(organisation)
       click_link("Gérer les autorisations", href: organisation_csv_export_authorizations_path(organisation))
