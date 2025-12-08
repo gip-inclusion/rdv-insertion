@@ -15,7 +15,7 @@ describe "Admins can authorize basic agents to export csvs", :js do
 
   context "from configure organisation page" do
     before do
-      visit organisation_category_configurations_path(organisation)
+      visit organisation_configuration_agents_path(organisation)
       click_link("Gérer les autorisations", href: organisation_csv_export_authorizations_path(organisation))
     end
 
@@ -32,7 +32,7 @@ describe "Admins can authorize basic agents to export csvs", :js do
       find(:css, "#csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}").click
       click_button("Confirmer")
 
-      click_link("Gérer les autorisations", href: organisation_csv_export_authorizations_path(organisation))
+      click_link("Gérer les autorisations")
       expect(page).to have_field(
         "csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}", checked: true
       )
@@ -45,13 +45,13 @@ describe "Admins can authorize basic agents to export csvs", :js do
       find(:css, "#csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}").click
       click_button("Confirmer")
 
-      click_link("Gérer les autorisations", href: organisation_csv_export_authorizations_path(organisation))
+      click_link("Gérer les autorisations")
       expect(page).to have_field(
         "csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}", checked: false
       )
       expect(basic_agent.reload.agent_roles).to all(have_attributes(authorized_to_export_csv: false))
 
-      expect(page).to have_current_path(organisation_configuration_path(organisation))
+      expect(page).to have_current_path(organisation_configuration_agents_path(organisation))
     end
   end
 end
