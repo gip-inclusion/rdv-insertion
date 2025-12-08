@@ -5,19 +5,15 @@
     "@babel/core": "7.14.6",
     "@babel/plugin-transform-runtime": "^7.16.10",
     "@babel/preset-env": "7.14.5",
-    "@babel/preset-react": "^7.13.13",
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/stimulus-webpack-helpers": "^1.0.1",
     "@hotwired/turbo": "^8.0.4",
     "@hotwired/turbo-rails": "^8.0.4",
     "@popperjs/core": "^2.9.2",
-    "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
-    "@tippyjs/react": "^4.2.6",
     "babel-loader": "^8.2.3",
     "babel-plugin-macros": "^3.1.0",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "bootstrap": "^5.0.1",
     "chart.js": "^3.7.1",
     "chartkick": "^4.1.1",
@@ -26,13 +22,7 @@
     "flatpickr": "^4.6.13",
     "js-cookie": "^3.0.5",
     "mini-css-extract-plugin": "^2.7.7",
-    "mobx": "^6.10.0",
-    "mobx-react-lite": "^4.0.3",
-    "prop-types": "^15.7.2",
     "qr-scanner": "^1.4.2",
-    "react": "^17.0.2",
-    "react_ujs": "^2.6.1",
-    "react-dom": "^17.0.2",
     "remixicon": "^4.5.0",
     "sass": "^1.70.0",
     "sass-loader": "^14.0.0",
@@ -48,15 +38,12 @@
   "version": "1.22.5",
   "devDependencies": {
     "eslint": "^8.49.0",
-    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-no-unsanitized": "^4.1.2",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-rdv-insertion": "file:app/javascript/eslint-rules",
-    "eslint-plugin-react": "^7.21.5",
-    "eslint-plugin-react-hooks": "^4",
     "pinst": "^2.1.6",
     "prettier": "^2.3.1"
   },
@@ -66,8 +53,7 @@
   },
   "babel": {
     "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
+      "@babel/preset-env"
     ]
   }
 }

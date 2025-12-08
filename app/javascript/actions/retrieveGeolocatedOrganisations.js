@@ -1,4 +1,4 @@
-import fetchApp from "../../lib/fetchApp";
+import fetchApp from "../lib/fetchApp";
 
 const retrieveGeolocatedOrganisations = async (departmentNumber, address) =>
   fetchApp(

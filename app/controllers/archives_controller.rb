@@ -29,20 +29,14 @@ class ArchivesController < ApplicationController
     turbo_stream_display_error_modal(e.record.errors.full_messages)
   end
 
-  def destroy # rubocop:disable Metrics/AbcSize
+  def destroy
     @archive = Archive.find(params[:id])
     authorize @archive
-    respond_to do |format|
-      if @archive.destroy
-        flash_success_for_destroy
-        format.turbo_stream { turbo_stream_redirect(structure_user_path(@archive.user_id)) }
-        format.json { render json: { success: true, archive: @archive, redirect_path: request.referer } }
-      else
-        format.html { turbo_stream_display_error_modal(@archive.errors.full_messages) }
-        format.json do
-          render json: { success: false, errors: @archive.errors.full_messages }, status: :unprocessable_entity
-        end
-      end
+    if @archive.destroy
+      flash_success_for_destroy
+      turbo_stream_redirect(structure_user_path(@archive.user_id))
+    else
+      turbo_stream_display_error_modal(@archive.errors.full_messages)
     end
   end
 

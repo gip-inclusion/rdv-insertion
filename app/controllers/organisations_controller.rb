@@ -59,16 +59,6 @@ class OrganisationsController < ApplicationController
     end
   end
 
-  def search
-    @department_organisations = policy_scope(Organisation).where(department: department)
-    @matching_organisations = @department_organisations.search_by_text(params[:search_terms])
-    render json: {
-      success: true,
-      matching_organisations: @matching_organisations,
-      department_organisations: @department_organisations
-    }
-  end
-
   private
 
   def organisation_params

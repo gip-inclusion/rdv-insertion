@@ -1,4 +1,4 @@
-import safeSwal from "../../lib/safeSwal";
+import safeSwal from "./safeSwal";
 import inviteUser from "../actions/inviteUser";
 
 const createInvitationLetter = async (

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import DOMPurify from "dompurify";
-import createInvitationLetter from "../react/lib/createInvitationLetter";
+import createInvitationLetter from "../lib/createInvitationLetter";
 
 export default class extends Controller {
   connect() {
