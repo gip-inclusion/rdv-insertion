@@ -4,7 +4,7 @@ class OrganisationsController < ApplicationController
     :department_id, :safir_code, :logo, :remove_logo
   ].freeze
 
-  before_action :set_organisation_for_configuration, :set_department,
+  before_action :set_organisation, :set_department,
                 only: [:show_infos, :edit_infos, :update_infos,
                        :show_data_retention, :edit_data_retention, :update_data_retention]
 
@@ -22,13 +22,11 @@ class OrganisationsController < ApplicationController
 
   def update_infos
     @organisation.assign_attributes(organisation_params)
-    @success = update_organisation.success?
-    if @success
-      flash.now[:success] = "Informations mises à jour"
+    if update_organisation.success?
+      redirect_to show_infos_organisation_path(@organisation)
     else
-      flash.now[:error] = update_organisation.errors&.join(", ")
+      render :edit_infos, status: :unprocessable_entity
     end
-    respond_to :turbo_stream
   end
 
   def show_data_retention; end
@@ -37,13 +35,11 @@ class OrganisationsController < ApplicationController
 
   def update_data_retention
     @organisation.assign_attributes(data_retention_params)
-    @success = @organisation.save
-    if @success
-      flash.now[:success] = "Durée de conservation mise à jour"
+    if @organisation.save
+      redirect_to show_data_retention_organisation_path(@organisation)
     else
-      flash.now[:error] = @organisation.errors.full_messages.to_sentence
+      render :edit_data_retention, status: :unprocessable_entity
     end
-    respond_to :turbo_stream
   end
 
   def geolocated
@@ -82,9 +78,9 @@ class OrganisationsController < ApplicationController
     params.expect(organisation: PERMITTED_PARAMS)
   end
 
-  def set_organisation_for_configuration
+  def set_organisation
     @organisation = policy_scope(Organisation).find(params[:id])
-    authorize @organisation, :configure?
+    authorize @organisation
   end
 
   def set_department

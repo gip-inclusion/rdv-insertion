@@ -19,6 +19,13 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.admin_organisations_ids.include?(record.id)
   end
 
+  def show_infos? = configure?
+  def edit_infos? = configure?
+  def update_infos? = configure?
+  def show_data_retention? = configure?
+  def edit_data_retention? = configure?
+  def update_data_retention? = configure?
+
   def can_accept_dpa?
     configure?
   end

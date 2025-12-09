@@ -6,6 +6,9 @@
         Ces informations permettent d'identifier l'organisation, notamment dans les messages envoyés aux usagers.
       </p>
 
+      <% if @organisation.errors.any? %>
+        <%= render "common/error_list", errors: @organisation.errors.full_messages %>
+      <% end %>
       <div class="mb-4">
         <%= render "common/attribute_input_inline",
             f: f,
