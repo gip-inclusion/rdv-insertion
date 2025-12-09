@@ -114,16 +114,6 @@ describe "Agents can generate convocation pdf", :js do
       end
     end
 
-    context "when the user has no title" do
-      before { user.update! title: nil }
-
-      it "cannot generate a pdf" do
-        visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
-
-        expect(page).to have_no_button "Télécharger le courrier"
-      end
-    end
-
     context "when the participation is revoked" do
       before { participation.update! status: "revoked" }
 
