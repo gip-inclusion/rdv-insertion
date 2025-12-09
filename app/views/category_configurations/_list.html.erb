@@ -1,0 +1,17 @@
+<%# locals: (category_configurations:, motifs_count_by_category:, organisation:) %>
+
+<div data-controller="accordion">
+  <% category_configurations.each_with_index do |category_configuration, index| %>
+    <%= render "category_configurations/accordion_item",
+               category_configuration: category_configuration,
+               motifs_count: motifs_count_by_category[category_configuration.motif_category_id] || 0,
+               organisation: organisation,
+               index: index %>
+  <% end %>
+
+  <% if category_configurations.empty? %>
+    <div class="card-white text-center py-5">
+      <p class="text-muted mb-0">Aucune catégorie de motifs configurée pour cette organisation.</p>
+    </div>
+  <% end %>
+</div>

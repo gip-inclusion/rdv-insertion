@@ -1,0 +1,21 @@
+<%# locals: (category_configuration:, motifs_count:, organisation:, index:) %>
+
+<div class="card-white mb-3" data-accordion-target="item">
+  <div class="clickable d-flex justify-content-between align-items-center"
+       data-action="click->accordion#toggle"
+       data-index="<%= index %>"
+       role="button"
+       aria-expanded="false">
+    <div>
+      <span class="fw-bold h5">Catégorie « <%= category_configuration.motif_category_name %> »</span>
+      <span class="text-muted ms-2">- <%= motifs_count %> <%= "motif".pluralize(motifs_count) %> <%= "rattaché".pluralize(motifs_count) %></span>
+    </div>
+    <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
+  </div>
+
+  <div class="d-none" data-accordion-target="content">
+    <%= render "category_configurations/accordion_content",
+               category_configuration: category_configuration,
+               organisation: organisation %>
+  </div>
+</div>
