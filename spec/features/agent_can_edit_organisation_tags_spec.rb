@@ -10,11 +10,11 @@ describe "Agents can edit organisation tags", :js do
     setup_agent_session(agent)
   end
 
-  context "from organisation page" do
+  context "from tags configuration page" do
     it "allows to edit the organisation tags" do
-      visit organisation_category_configurations_path(organisation)
+      visit organisation_configuration_tags_path(organisation)
       page.fill_in "tag_value", with: tag_value
-      click_button("Créer le tag")
+      click_button("Créer un tag")
 
       tag = find(".badge")
       expect(tag).to have_content(tag_value)
@@ -24,7 +24,7 @@ describe "Agents can edit organisation tags", :js do
     it "allows to delete the organisation tags" do
       organisation.tags << Tag.create(value: tag_value)
 
-      visit organisation_category_configurations_path(organisation)
+      visit organisation_configuration_tags_path(organisation)
       find("#tag_#{organisation.tags.first.id} a").click
       find_by_id("confirm-button").click
       expect(page).to have_no_selector("#tag_#{organisation.tags.first.id}")
@@ -35,9 +35,9 @@ describe "Agents can edit organisation tags", :js do
     it "displays an error message when tag already exist in this organisation" do
       organisation.tags << Tag.create(value: tag_value)
 
-      visit organisation_category_configurations_path(organisation)
+      visit organisation_configuration_tags_path(organisation)
       page.fill_in "tag_value", with: tag_value
-      click_button("Créer le tag")
+      click_button("Créer un tag")
 
       expect(page).to have_content("Tag est déjà utilisé")
     end

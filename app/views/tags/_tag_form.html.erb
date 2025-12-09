@@ -2,12 +2,12 @@
   <div class="autocomplete-container" data-controller="autocomplete">
     <%= f.text_field :value, class: "form-control", placeholder: "Nom du tag", autocomplete: "off" %>
     <div class="autocomplete d-none">
-      <% @available_tags.each do |tag| %>
+      <% existing_tags.each do |tag| %>
         <button type="button"><%= tag.value %></button>
       <% end %>
     </div>
   </div>
   <%= button_tag type: 'submit', class: "btn btn-primary mx-2" do %>
-    <i class="ri-add-line"></i> Créer le tag
+    <i class="ri-add-line"></i> Créer un tag
   <% end  %>
 <% end %>
