@@ -49,7 +49,7 @@ module Invitable
   end
 
   def last_invitation_expires_at
-    invitations.max_by(&:expires_at)&.expires_at
+    invitations.maximum(:expires_at)
   end
 
   def invalidate_invitations
