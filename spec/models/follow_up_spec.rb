@@ -277,4 +277,26 @@ describe FollowUp do
       end
     end
   end
+
+  describe "#last_invitation_expires_at" do
+    subject { follow_up.reload.last_invitation_expires_at }
+
+    let!(:follow_up) { create(:follow_up) }
+
+    context "when there are invitations" do
+      let!(:invitation) { create(:invitation, expires_at: Time.zone.parse("2025-11-22 12:00"), follow_up:) }
+      let!(:other_invitation) { create(:invitation, expires_at: Time.zone.parse("2025-11-23 12:00"), follow_up:) }
+      let!(:never_expiring_invitation) { create(:invitation, expires_at: nil, follow_up:) }
+
+      it "returns the date of the last invitation" do
+        expect(subject).to eq(other_invitation.expires_at)
+      end
+    end
+
+    context "when there are no invitations" do
+      it "returns nil" do
+        expect(subject).to be_nil
+      end
+    end
+  end
 end
