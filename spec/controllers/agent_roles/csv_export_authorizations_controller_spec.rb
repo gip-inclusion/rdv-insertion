@@ -47,7 +47,7 @@ describe AgentRoles::CsvExportAuthorizationsController do
           post :batch_update, params: batch_update_params
         end.to change { agent_role_for_organisation.reload.authorized_to_export_csv }.from(false).to(true)
 
-        expect(response).to redirect_to(organisation_category_configurations_path(organisation))
+        expect(response).to redirect_to(organisation_configuration_agents_path(organisation))
         expect(flash[:success]).to eq("Les autorisations ont bien été mises à jour")
       end
 
