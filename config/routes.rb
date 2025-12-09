@@ -61,14 +61,11 @@ Rails.application.routes.draw do
   resources :notification_center, only: [:index]
   resource :cookies_consent, only: [:new, :create, :update, :edit]
 
-  resources :organisations, only: [:index] do
+  resources :organisations, only: [:index, :show, :edit, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
 
     member do
-      get :show_infos
-      get :edit_infos
-      patch :update_infos
       get :show_data_retention
       get :edit_data_retention
       patch :update_data_retention

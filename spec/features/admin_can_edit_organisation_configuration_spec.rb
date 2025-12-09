@@ -21,6 +21,15 @@ describe "Admin can edit organisation configuration", :js do
       expect(page).to have_content("org-test")
     end
 
+    it "displays data retention duration" do
+      visit organisation_configuration_informations_path(organisation)
+
+      within "turbo-frame#data_retention" do
+        expect(page).to have_content("Durée de conservation des données")
+        expect(page).to have_content("24 mois")
+      end
+    end
+
     it "allows to edit organisation informations" do
       stub_request(:patch, %r{/api/v1/organisations/}).to_return(
         status: 200,
@@ -30,7 +39,7 @@ describe "Admin can edit organisation configuration", :js do
 
       visit organisation_configuration_informations_path(organisation)
 
-      within "turbo-frame#organisation_info" do
+      within "turbo-frame#organisation" do
         click_link "Modifier"
       end
 
@@ -73,13 +82,13 @@ describe "Admin can edit organisation configuration", :js do
 
       visit organisation_configuration_informations_path(organisation)
 
-      within "turbo-frame#organisation_info" do
+      within "turbo-frame#organisation" do
         click_link "Modifier"
       end
 
       attach_file("logo_input", Rails.root.join("spec/fixtures/logo.png"), make_visible: true)
 
-      expect(page).to have_css("[data-logo-upload-target='previewContainer']:not(.d-none)")
+      expect(page).to have_css("[data-image-upload-target='previewContainer']:not(.d-none)")
 
       click_button "Enregistrer"
 
@@ -87,6 +96,33 @@ describe "Admin can edit organisation configuration", :js do
       expect(page).to have_css("img[alt=\"Logo de l'organisation\"]")
 
       expect(organisation.reload.logo).to be_attached
+    end
+
+    it "allows to remove a logo" do
+      organisation.logo.attach(io: Rails.root.join("spec/fixtures/logo.png").open, filename: "logo.png")
+
+      stub_request(:patch, %r{/api/v1/organisations/}).to_return(
+        status: 200,
+        body: { organisation: { id: organisation.rdv_solidarites_organisation_id } }.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+
+      visit organisation_configuration_informations_path(organisation)
+
+      within "turbo-frame#organisation" do
+        click_link "Modifier"
+      end
+
+      expect(page).to have_css("[data-image-upload-target='previewContainer']:not(.d-none)")
+
+      find("[data-action='click->image-upload#handleFileRemove']").click
+
+      expect(page).to have_css("[data-image-upload-target='placeholder']:not(.d-none)")
+
+      click_button "Enregistrer"
+
+      expect(page).to have_content("Aucun logo pour cette organisation")
+      expect(organisation.reload.logo).not_to be_attached
     end
   end
 end

@@ -5,8 +5,7 @@ class OrganisationsController < ApplicationController
   ].freeze
 
   before_action :set_organisation, :set_department,
-                only: [:show_infos, :edit_infos, :update_infos,
-                       :show_data_retention, :edit_data_retention, :update_data_retention]
+                only: [:show, :edit, :update, :show_data_retention, :edit_data_retention, :update_data_retention]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
@@ -16,16 +15,16 @@ class OrganisationsController < ApplicationController
     redirect_to default_list_organisation_users_path(@organisations.first)
   end
 
-  def show_infos; end
+  def show; end
 
-  def edit_infos; end
+  def edit; end
 
-  def update_infos
+  def update
     @organisation.assign_attributes(organisation_params)
     if update_organisation.success?
-      redirect_to show_infos_organisation_path(@organisation)
+      redirect_to organisation_path(@organisation)
     else
-      render :edit_infos, status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity
     end
   end
 
