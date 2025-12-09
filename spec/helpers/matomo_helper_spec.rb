@@ -12,7 +12,7 @@ describe MatomoHelper do
     end
 
     it "rewrites organisation IDs to route pattern" do
-      test_url_rewriting("/organisations/123/show_infos", "/organisations/:id/show_infos")
+      test_url_rewriting("/organisations/123", "/organisations/:id")
     end
 
     it "rewrites nested organisation and user IDs to route pattern" do
