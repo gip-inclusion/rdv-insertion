@@ -1,0 +1,58 @@
+<%# locals: (f:, organisation:) %>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Formats d'invitations</label>
+  <p class="text-muted small mb-2">Sélectionnez les canaux pour communiquer avec les usagers.</p>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <%= f.check_box :invitation_formats, { multiple: true, class: "form-check-input" }, "sms", nil %>
+      <%= f.label :invitation_formats, "SMS", value: "sms", class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :invitation_formats, { multiple: true, class: "form-check-input" }, "email", nil %>
+      <%= f.label :invitation_formats, "Email", value: "email", class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :invitation_formats, { multiple: true, class: "form-check-input" }, "postal", nil %>
+      <%= f.label :invitation_formats, "Courrier", value: "postal", class: "form-check-label" %>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Rendez-vous avec référent</label>
+  <p class="text-muted small mb-2">L'usager pourra prendre rendez-vous uniquement avec son référent.</p>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <%= f.radio_button :rdv_with_referents, true, class: "form-check-input" %>
+      <%= f.label :rdv_with_referents, "Oui", value: true, class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.radio_button :rdv_with_referents, false, class: "form-check-input" %>
+      <%= f.label :rdv_with_referents, "Non", value: false, class: "form-check-label" %>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Convocation possible</label>
+  <p class="text-muted small mb-2">Par défaut, l'envoi de convocations est possible sur les catégories. Mais vous pouvez la désactiver sur cette catégorie.</p>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <%= f.radio_button :convene_user, true, class: "form-check-input" %>
+      <%= f.label :convene_user, "Oui", value: true, class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.radio_button :convene_user, false, class: "form-check-input" %>
+      <%= f.label :convene_user, "Non", value: false, class: "form-check-label" %>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Numéro de téléphone</label>
+  <p class="text-muted small mb-2">Personnalisez le numéro de téléphone dans les invitations et convocations.</p>
+  <%= f.text_field :phone_number,
+                   class: "form-control",
+                   placeholder: organisation.phone_number.presence || "01 23 45 67 89 (par défaut)" %>
+</div>

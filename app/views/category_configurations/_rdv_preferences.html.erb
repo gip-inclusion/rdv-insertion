@@ -1,0 +1,39 @@
+<%# locals: (category_configuration:, organisation:) %>
+
+<%= turbo_frame_tag dom_id(category_configuration, :rdv_preferences) do %>
+  <div class="mb-4 background-blue-paler p-4 rounded-3">
+    <h3 class="h5 mb-2 fw-bold text-dark-blue">Préférence de rendez-vous</h3>
+
+    <div class="mx-3 mb-4">
+      <%= render "common/attribute_display_inline",
+          record: category_configuration,
+          attribute: :invitation_formats,
+          as: :inline_list,
+          i18n_scope: "invitation_formats" %>
+
+      <%= render "common/attribute_display_inline",
+          record: category_configuration,
+          attribute: :rdv_with_referents,
+          label: "Rendez-vous avec référent" %>
+
+      <%= render "common/attribute_display_inline",
+          record: category_configuration,
+          attribute: :convene_user,
+          label: "Convocation possible" %>
+
+      <%= render "common/attribute_display_inline",
+          record: category_configuration,
+          attribute: :phone_number,
+          default_indicator: true,
+          tooltip: { content: "Ce numéro sera utilisé dans les invitations et convocations envoyées pour cette catégorie." } %>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <%= link_to edit_rdv_preferences_organisation_category_configuration_path(organisation, category_configuration),
+                  class: "btn btn-blue",
+                  data: { turbo_frame: "remote_modal" } do %>
+        Modifier
+      <% end %>
+    </div>
+  </div>
+<% end %>

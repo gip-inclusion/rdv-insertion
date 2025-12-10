@@ -1,0 +1,5 @@
+<%= turbo_stream.replace dom_id(@category_configuration, :rdv_preferences) do %>
+  <%= render "category_configurations/rdv_preferences",
+             category_configuration: @category_configuration,
+             organisation: @organisation %>
+<% end %>

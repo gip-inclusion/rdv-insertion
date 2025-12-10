@@ -1,6 +1,6 @@
 <%# Displays a model attribute in inline format (label left, value right) %>
-<%# 2 locals are mandatory : record (a class instance) and attribute (a key corresponding to a class attribute) %>
-<%# Optional: label (custom label text or html_safe string), tooltip (hash with content key) %>
+<%# Mandatory: record, attribute %>
+<%# Optional: label, tooltip, as (:inline_list), i18n_scope, default_indicator, suffix, blank_text %>
 
 <div id="<%= local_assigns[:id] %>" class="row py-2 align-items-center">
   <div class="col-4 d-flex align-items-center">
@@ -13,12 +13,19 @@
     <% end %>
   </div>
   <div class="col-4">
-    <% if record.send(attribute).blank? %>
-      <span class="text-muted">-</span>
-    <% elsif record[attribute].in?([true, false]) %>
+    <% value = record.send(attribute) %>
+    <% if record[attribute].in?([true, false]) %>
       <%= I18n.t("boolean.#{record[attribute]}") %>
+    <% elsif value.blank? %>
+      <span class="text-muted"><%= local_assigns[:blank_text] || "-" %></span>
+    <% elsif local_assigns[:as] == :inline_list %>
+      <% items = local_assigns[:i18n_scope] ? value.map { |v| I18n.t("#{i18n_scope}.#{v}") } : value %>
+      <%= items.join(", ") %>
     <% else %>
-      <%= record.send(attribute) %>
+      <%= value %><%= " #{local_assigns[:suffix]}" if local_assigns[:suffix] %>
+      <% if local_assigns[:default_indicator] && record.attributes[attribute.to_s].blank? %>
+        <span>(par défaut)</span>
+      <% end %>
     <% end %>
   </div>
 </div>

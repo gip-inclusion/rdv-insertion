@@ -1,0 +1,17 @@
+<%# locals: (f:) %>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Rendez-vous pris</label>
+  <p class="text-muted small mb-2">Notifier l'adresse email suivante de toutes les prises de rendez-vous ayant lieu pour cette catégorie de motifs :</p>
+  <%= f.email_field :email_to_notify_rdv_changes,
+                    class: "form-control",
+                    placeholder: "prénom.nom@mail.com" %>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Créneaux indisponibles</label>
+  <p class="text-muted small mb-2">Notifier l'adresse email suivante dès lors qu'il n'y a plus de créneaux disponibles sur les motifs de cette catégorie :</p>
+  <%= f.email_field :email_to_notify_no_available_slots,
+                    class: "form-control",
+                    placeholder: "prénom.nom@mail.com" %>
+</div>

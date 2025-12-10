@@ -96,7 +96,8 @@
     min-width: 200px;
   }
 
-  .btn-blue {
+  .btn-blue,
+  input[type="submit"].btn-blue {
     background-color: $dark-blue;
     border-color: $dark-blue;
     color: white;

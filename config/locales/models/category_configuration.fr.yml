@@ -10,7 +10,7 @@ fr:
         day_of_the_month_periodic_invites: Jour du mois auquel envoyer les invitations récurrentes
         invite_to_user_organisations_only: Invitation limitée aux organisations du bénéficiaire
         rdv_with_referents: RDV avec référent
-        phone_number: Numéro de téléphone (si différent de celui de l'organisation)
+        phone_number: Numéro de téléphone
         invitation_formats: Formats d'invitations
         motif_category: Catégorie de motifs
         file_configuration: Fichier d'import

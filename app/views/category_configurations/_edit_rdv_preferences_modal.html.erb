@@ -1,0 +1,16 @@
+<%= render "common/remote_modal", title: "Modifier les préférences de rendez-vous de cette catégorie" do %>
+  <%= form_with model: @category_configuration,
+                url: update_rdv_preferences_organisation_category_configuration_path(@organisation, @category_configuration),
+                method: :patch,
+                data: { turbo_frame: "remote_modal" } do |f| %>
+    <%= turbo_frame_tag "error_list" %>
+    <%= render "rdv_preferences_form", f: f, organisation: @organisation %>
+
+    <hr class="hr-bleed">
+
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-blue-out" data-bs-dismiss="modal">Annuler</button>
+      <%= f.submit "Enregistrer", class: "btn btn-blue" %>
+    </div>
+  <% end %>
+<% end %>
