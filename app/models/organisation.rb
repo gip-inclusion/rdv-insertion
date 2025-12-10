@@ -38,7 +38,7 @@ class Organisation < ApplicationRecord
   has_many :tags, through: :tag_organisations
   has_many :file_configurations, through: :category_configurations
 
-  has_and_belongs_to_many :invitations, dependent: :nullify
+  has_and_belongs_to_many :invitations, dependent: :destroy
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 
