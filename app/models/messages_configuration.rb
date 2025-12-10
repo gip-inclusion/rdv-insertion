@@ -4,12 +4,15 @@ class MessagesConfiguration < ApplicationRecord
     "image/png",
     "image/jpeg"
   ].freeze
+  LOGO_TYPES = %w[department europe france_travail].freeze
 
   before_save :remove_blank_array_fields
   after_save :purge_signature_if_requested
 
   belongs_to :organisation
   has_one_attached :signature_image
+
+  delegate :department, to: :organisation
 
   attr_accessor :remove_signature
 
@@ -22,6 +25,8 @@ class MessagesConfiguration < ApplicationRecord
                               accepted_formats: { formats: SIGNATURE_ACCEPTED_FORMATS,
                                                   mime_types: SIGNATURE_MIME_TYPES },
                               allow_nil: true
+
+  validates :displayed_logos, inclusion: { in: LOGO_TYPES }
 
   private
 

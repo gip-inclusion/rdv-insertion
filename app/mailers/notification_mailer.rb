@@ -4,7 +4,7 @@ class NotificationMailer < ApplicationMailer
   include ActsAsRdvSolidaritesConcern
 
   before_action :set_notification, :set_user, :set_rdv, :set_organisation, :set_department, :set_rdv_subject,
-                :set_signature_lines, :set_rdv_title, :set_rdv_title_by_phone, :set_user_designation,
+                :set_signature_lines, :set_displayed_logos, :set_rdv_title, :set_rdv_title_by_phone, :set_user_designation,
                 :set_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv, :set_rdv_purpose,
                 :verify_phone_number_presence, :set_organisation_logo_path, :set_department_logo_path,
                 :set_x_mailin_custom_header
@@ -90,6 +90,10 @@ class NotificationMailer < ApplicationMailer
 
   def set_signature_lines
     @signature_lines = @notification.signature_lines
+  end
+
+  def set_displayed_logos
+    @displayed_logos = @notification.displayed_logos
   end
 
   def set_rdv_title

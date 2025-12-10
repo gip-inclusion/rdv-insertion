@@ -1,5 +1,5 @@
 <div class="letter-footer">
-  <% if display_europe_logos %>
+  <% if displayed_logos.include?("europe") %>
     <div id="europe-logos">
       <%= image_tag("logos/europe-logos.jpg") %>
     </div>
@@ -7,14 +7,15 @@
   <div>
     <%= image_tag("logos/rdv-solidarites.png") %>
   </div>
-  <% if display_department_logo %>
+  <% if displayed_logos.include?("department") %>
     <div id="department-logo">
       <%= image_tag(department.logo.url) %>
     </div>
   <% end %>
-  <% if display_france_travail_logo %>
+  <% if displayed_logos.include?("france_travail") %>
     <div id="france-travail-logo">
       <%= image_tag("logos/france-travail.png") %>
     </div>
   <% end %>
 </div>
+

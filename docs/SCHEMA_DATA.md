@@ -496,7 +496,7 @@ Configuration des en-têtes et signatures des messages par organisation.
 - `letter_sender_name` : Nom de l'expéditeur courrier
 - `signature_lines` : Lignes de signature
 - `sms_sender_name` : Nom d'expéditeur SMS
-- `display_europe_logos`, `display_department_logo`, `display_france_travail_logo` : Affichage des logos
+- `displayed_logos` : Affichage des logos
 
 ---
 

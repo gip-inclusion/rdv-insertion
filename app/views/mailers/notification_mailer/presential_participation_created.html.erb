@@ -15,4 +15,4 @@
 <p>En cas d'empêchement, contactez-nous :</p>
 <%= render "mailers/contact_infos", help_phone_number: @rdv.phone_number, help_email: @organisation.email, help_website: @organisation.website %>
 <%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
-<%= render "mailers/logos", display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<%= render "mailers/logos", displayed_logos: @displayed_logos, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
