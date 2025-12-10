@@ -24,7 +24,7 @@ class OrganisationsController < ApplicationController
     if update_organisation.success?
       redirect_to organisation_path(@organisation)
     else
-      render :edit, status: :unprocessable_entity
+      turbo_stream_replace_error_list_with(update_organisation.errors)
     end
   end
 
@@ -37,7 +37,7 @@ class OrganisationsController < ApplicationController
     if @organisation.save
       redirect_to show_data_retention_organisation_path(@organisation)
     else
-      render :edit_data_retention, status: :unprocessable_entity
+      turbo_stream_replace_error_list_with(@organisation.errors.full_messages)
     end
   end
 

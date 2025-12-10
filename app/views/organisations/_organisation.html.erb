@@ -7,40 +7,36 @@
 
     <div class="mb-4">
       <%= render "common/attribute_display_inline",
-        record: @organisation,
-        attribute: :name,
-        label: "Nom de l'organisation"
-      %>
+                 record: @organisation,
+                 attribute: :name,
+                 label: "Nom de l'organisation" %>
 
       <%= render "common/attribute_display_inline",
-        record: @organisation,
-        attribute: :phone_number,
-        label: "Numéro de téléphone",
-        tooltip: {
-          icon: "ri-question-line",
-          content: "Le numéro de téléphone de l'organisation doit être renseigné pour inviter les usagers."
-        }
-      %>
+                 record: @organisation,
+                 attribute: :phone_number,
+                 label: "Numéro de téléphone",
+                 tooltip: {
+                   icon: "ri-question-line",
+                   content: "Le numéro de téléphone de l'organisation doit être renseigné pour inviter les usagers."
+                 } %>
 
       <%= render "common/attribute_display_inline",
-        record: @organisation,
-        attribute: :email,
-        label: "Adresse email",
-        tooltip: {
-          icon: "ri-question-line",
-          content: "Renseigner une adresse email vous permettra :<br>• de recevoir des alertes liées aux rendez-vous<br>• de fournir aux usagers un moyen de contacter l'organisation en cas de blocage lors de la prise de rendez-vous."
-        }
-      %>
+                 record: @organisation,
+                 attribute: :email,
+                 label: "Adresse email",
+                 tooltip: {
+                   icon: "ri-question-line",
+                   content: "Renseigner une adresse email vous permettra :<br>• de recevoir des alertes liées aux rendez-vous<br>• de fournir aux usagers un moyen de contacter l'organisation en cas de blocage lors de la prise de rendez-vous."
+                 } %>
 
       <%= render "common/attribute_display_inline",
-        record: @organisation,
-        attribute: :slug,
-        label: "Désignation de l'organisation<br>dans le fichier d'import",
-        tooltip: {
-          icon: "ri-question-line",
-          content: "Permet de rattacher les usagers à l'organisation via le fichier d'import."
-        }
-      %>
+                 record: @organisation,
+                 attribute: :slug,
+                 label: "Désignation de l'organisation<br>dans le fichier d'import",
+                 tooltip: {
+                   icon: "ri-question-line",
+                   content: "Permet de rattacher les usagers à l'organisation via le fichier d'import."
+                 } %>
     </div>
 
     <div class="mb-4 mt-5">

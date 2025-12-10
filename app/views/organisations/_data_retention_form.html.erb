@@ -6,9 +6,7 @@
         En tant qu'administrateur de cette organisation, vous pouvez configurer la durée de conservation des données personnelles des usagers.
       </p>
 
-      <% if @organisation.errors.any? %>
-        <%= render "common/error_list", errors: @organisation.errors.full_messages %>
-      <% end %>
+      <%= turbo_frame_tag "error_list" %>
       <div class="d-flex align-items-center mb-4">
         <span class="fw-bold me-3">Durée de conservation des données personnelles :</span>
         <%= f.select :data_retention_duration_in_months,
