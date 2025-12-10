@@ -28,6 +28,46 @@ class MessagesConfiguration < ApplicationRecord
 
   validates :displayed_logos, inclusion: { in: LOGO_TYPES }
 
+  def effective_sms_sender_name
+    sms_sender_name || default_sms_sender_name
+  end
+
+  def effective_letter_sender_name
+    letter_sender_name || default_letter_sender_name
+  end
+
+  def effective_sender_city
+    sender_city || default_sender_city
+  end
+
+  def effective_direction_names
+    direction_names.presence || default_direction_names
+  end
+
+  def effective_signature_lines
+    signature_lines.presence || default_signature_lines
+  end
+
+  def default_sms_sender_name
+    "Dept#{department.number}"
+  end
+
+  def default_letter_sender_name
+    "le Conseil départemental"
+  end
+
+  def default_sender_city
+    department.capital
+  end
+
+  def default_direction_names
+    [organisation.name]
+  end
+
+  def default_signature_lines
+    ["Le département #{I18n.t("with_prefix.#{department.pronoun}", name: department.name)}"]
+  end
+
   private
 
   def remove_blank_array_fields
