@@ -25,9 +25,9 @@ class Sidekiq::Scheduler
   end
 
   def existing_job
-    scheduled_set.find do |job|
-      job.display_class == @job_class.to_s && job.display_args == @args &&
-        job.queue == @queue
+    @existing_job ||= scheduled_set.find do |job|
+      job.queue == @queue && job.display_class == @job_class.to_s &&
+        job.display_args == @args
     end
   end
 
