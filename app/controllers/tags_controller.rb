@@ -9,7 +9,7 @@ class TagsController < ApplicationController
 
     @organisation.tags << tag
 
-    redirect_to organisation_category_configurations_path(@organisation)
+    redirect_to organisation_configuration_tags_path(@organisation)
   rescue ActiveRecord::ActiveRecordError => e
     turbo_stream_display_error_modal(e.record.errors.full_messages)
   end
@@ -20,7 +20,7 @@ class TagsController < ApplicationController
 
     tag.destroy! unless tag.organisations.any?
 
-    render turbo_stream: turbo_stream.remove("tag_#{params[:id]}")
+    render turbo_stream: turbo_stream.remove("tag_#{tag.id}")
   end
 
   private
