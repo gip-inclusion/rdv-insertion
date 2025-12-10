@@ -1,11 +1,11 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
-    :department_id, :safir_code
+    :department_id, :safir_code, :logo, :remove_logo
   ].freeze
 
   before_action :set_organisation, :set_department,
-                only: [:show, :edit, :update, :update_data_retention]
+                only: [:show, :edit, :update, :show_data_retention, :edit_data_retention, :update_data_retention]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
@@ -22,20 +22,22 @@ class OrganisationsController < ApplicationController
   def update
     @organisation.assign_attributes(organisation_params)
     if update_organisation.success?
-      render :show
+      redirect_to organisation_path(@organisation)
     else
-      flash.now[:error] = update_organisation.errors&.join(",")
-      render :edit, status: :unprocessable_entity
+      turbo_stream_replace_error_list_with(update_organisation.errors)
     end
   end
 
+  def show_data_retention; end
+
+  def edit_data_retention; end
+
   def update_data_retention
     @organisation.assign_attributes(data_retention_params)
-
     if @organisation.save
-      turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès")
+      redirect_to show_data_retention_organisation_path(@organisation)
     else
-      turbo_stream_display_error_modal(@organisation.errors.full_messages)
+      turbo_stream_replace_error_list_with(@organisation.errors.full_messages)
     end
   end
 
