@@ -1,10 +1,10 @@
-<%= render "common/remote_modal", title: "Modifier les préférences de rendez-vous de cette catégorie" do %>
+<%= render "common/remote_modal", title: "Modifier les préférences de rendez-vous de cette catégorie", size: :large do %>
   <%= form_with model: @category_configuration,
                 url: update_rdv_preferences_organisation_category_configuration_path(@organisation, @category_configuration),
                 method: :patch,
                 data: { turbo_frame: "remote_modal" } do |f| %>
     <%= turbo_frame_tag "error_list" %>
-    <%= render "rdv_preferences_form", f: f, organisation: @organisation %>
+    <div class="px-4"><%= render "rdv_preferences_form", f: f, organisation: @organisation %></div>
 
     <hr class="hr-bleed">
 

@@ -1,10 +1,10 @@
-<%= render "common/remote_modal", title: "Modifier les préférences de messages de cette catégorie" do %>
+<%= render "common/remote_modal", title: "Modifier les préférences de messages de cette catégorie", size: :large do %>
   <%= form_with model: @category_configuration,
                 url: update_messages_organisation_category_configuration_path(@organisation, @category_configuration),
                 method: :patch,
                 data: { turbo_frame: "remote_modal" } do |f| %>
     <%= turbo_frame_tag "error_list" %>
-    <%= render "messages_form", f: f %>
+    <div class="px-4"><%= render "messages_form", f: f %></div>
 
     <hr class="hr-bleed">
 
