@@ -2,7 +2,9 @@
 
 <div class="mb-4">
   <label class="form-label fw-bold">Formats d'invitations</label>
-  <p class="text-muted small mb-2">Sélectionnez les canaux pour communiquer avec les usagers.</p>
+  <p class="text-muted small mb-2">
+    Cette option vous permet de désactiver ou d'activer les fonctionnalités liées aux canaux de communications. Si les canaux sont cochés, les canaux sont disponibles sur rdv-insertion.
+  </p>
   <div class="d-flex gap-4">
     <div class="form-check">
       <%= f.check_box :invitation_formats, { multiple: true, class: "form-check-input" }, "sms", nil %>
@@ -21,7 +23,9 @@
 
 <div class="mb-4">
   <label class="form-label fw-bold">Rendez-vous avec référent</label>
-  <p class="text-muted small mb-2">L'usager pourra prendre rendez-vous uniquement avec son référent.</p>
+  <p class="text-muted small mb-2">
+    Si cette option est active, l'usager ne pourra prendre rendez-vous qu'avec son référent. Les usagers sans référent ne pourront pas prendre de rendez-vous. Assurez-vous d'avoir coché "RDV de suivi" sur les motifs de rendez-vous.
+  </p>
   <div class="d-flex gap-4">
     <div class="form-check">
       <%= f.radio_button :rdv_with_referents, true, class: "form-check-input" %>
@@ -51,8 +55,10 @@
 
 <div class="mb-4">
   <label class="form-label fw-bold">Numéro de téléphone</label>
-  <p class="text-muted small mb-2">Personnalisez le numéro de téléphone dans les invitations et convocations.</p>
+  <p class="text-muted small mb-2">
+    Par défaut, le numéro téléphone de l'organisation est utilisé dans les invitations et convocations envoyées dans cette catégorie. Vous pouvez définir un autre numéro pour cette catégorie.
+  </p>
   <%= f.text_field :phone_number,
-                   class: "form-control",
-                   placeholder: organisation.phone_number.presence || "01 23 45 67 89 (par défaut)" %>
+                   class: "form-control w-25",
+                   placeholder: "#{organisation.phone_number.presence} (par défaut)" || "01 23 45 67 89 (par défaut)" %>
 </div>

@@ -18,6 +18,7 @@ class CategoryConfigurationsController < ApplicationController
                        :edit_notifications, :update_notifications]
   before_action :set_department, :set_file_configurations, :set_authorized_motif_categories,
                 only: [:new, :create, :edit, :update]
+  before_action :set_available_motif_categories, only: [:new]
 
   def index
     # We keep this action to redirect to the new /configuration page in case this url was saved by the agent
@@ -40,8 +41,7 @@ class CategoryConfigurationsController < ApplicationController
       flash[:success] = "La configuration a été créée avec succès"
       redirect_to organisation_configuration_categories_path(@organisation)
     else
-      flash.now[:error] = create_configuration.errors.join(",")
-      render :new, status: :unprocessable_entity
+      turbo_stream_replace_error_list_with(create_configuration.errors)
     end
   end
 
@@ -58,8 +58,8 @@ class CategoryConfigurationsController < ApplicationController
 
   def destroy
     @category_configuration.destroy!
-    flash.now[:success] = "La configuration a été supprimée avec succès"
-    respond_to :turbo_stream
+    flash[:success] = "La configuration a été supprimée avec succès"
+    redirect_to organisation_configuration_categories_path(@organisation)
   end
 
   def edit_rdv_preferences; end
@@ -166,7 +166,9 @@ class CategoryConfigurationsController < ApplicationController
     authorize @organisation, :configure?
   end
 
-  def set_authorized_motif_categories
-    @authorized_motif_categories = MotifCategoryPolicy.authorized_for_organisation(@organisation)
+  def set_available_motif_categories
+    already_configured_ids = @organisation.category_configurations.pluck(:motif_category_id)
+    @available_motif_categories = MotifCategoryPolicy.authorized_for_organisation(@organisation)
+                                                     .where.not(id: already_configured_ids)
   end
 end

@@ -2,6 +2,12 @@ fr:
   activerecord:
     models:
       category_configuration: CategoryConfiguration
+    errors:
+      models:
+        category_configuration:
+          attributes:
+            organisation:
+              taken: a déjà une configuration pour cette catégorie de motif
     attributes:
       category_configuration:
         convene_user: Convocation possible

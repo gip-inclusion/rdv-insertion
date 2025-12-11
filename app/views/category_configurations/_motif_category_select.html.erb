@@ -1,0 +1,73 @@
+<%# locals: (available_motif_categories:) %>
+
+<%# Custom searchable dropdown for motif category selection %>
+<%# Controllers: dropdown--show-options (open/close), dropdown--filter-options (search), dropdown--select-option (selection + keyboard) %>
+<div class="position-relative w-100 dropdown-select-container"
+     data-controller="dropdown--show-options dropdown--filter-options dropdown--select-option"
+     data-action="keydown->dropdown--select-option#handleKeydown dropdown--select-option:selected->dropdown--show-options#close dropdown--select-option:selected->dropdown--filter-options#reset dropdown--select-option:close->dropdown--show-options#close">
+
+  <%# Hidden input for HTML5 validation %>
+  <input type="text"
+         name="category_configuration[motif_category_id]"
+         id="motif_category_id"
+         data-dropdown--select-option-target="hiddenInput"
+         required="true"
+         class="visually-hidden">
+
+  <%# Trigger button to open/close dropdown %>
+  <button type="button"
+          class="form-select text-start d-flex justify-content-between align-items-center"
+          data-action="click->dropdown--show-options#toggle"
+          data-dropdown--show-options-target="button"
+          data-dropdown--select-option-target="button"
+          aria-haspopup="true"
+          aria-expanded="false">
+    <span data-dropdown--select-option-target="label" class="dropdown-select-label">Choisir une catégorie</span>
+  </button>
+
+  <%# Dropdown menu with search and options list %>
+  <div class="dropdown-menu py-0 mt-2 w-100 dropdown-select-menu"
+       data-dropdown--show-options-target="dropdown"
+       data-dropdown--select-option-target="dropdown">
+
+    <%# Search bar to filter elements %>
+    <div class="dropdown-search">
+      <input type="text"
+             class="form-control"
+             placeholder="Rechercher une catégorie..."
+             data-dropdown--filter-options-target="input"
+             data-action="input->dropdown--filter-options#search"
+             autocomplete="off">
+    </div>
+
+    <%# Category options grouped by type %>
+    <div class="dropdown-options">
+      <% motif_category_types = I18n.t("activerecord.attributes.motif_category.motif_category_types").keys.map(&:to_s) %>
+      <% grouped_motif_categories = available_motif_categories.group_by(&:motif_category_type) %>
+      <% motif_category_types.each do |motif_category_type| %>
+        <% next unless grouped_motif_categories[motif_category_type].present? %>
+        <div class="dropdown-group">
+          <div class="dropdown-group-header">
+            <%= I18n.t("activerecord.attributes.motif_category.motif_category_types.#{motif_category_type}") %>
+          </div>
+          <% grouped_motif_categories[motif_category_type].each do |motif_category| %>
+            <div class="dropdown-item py-2 dropdown-select-option dropdown-group-item"
+                 data-dropdown--filter-options-target="item"
+                 data-dropdown--select-option-target="option"
+                 data-action="click->dropdown--select-option#select"
+                 data-value="<%= motif_category.id %>"
+                 data-label="<%= motif_category.name %>">
+              <%= motif_category.name %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# No results message (shown when search returns nothing) %>
+    <div class="dropdown-item py-2 text-muted text-center d-none"
+         data-dropdown--filter-options-target="noResults">
+      Aucun résultat
+    </div>
+  </div>
+</div>

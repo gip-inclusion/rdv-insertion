@@ -2,7 +2,9 @@
 
 <div class="mb-4">
   <label class="form-label fw-bold">Invitation limitée aux organisations de l'usager</label>
-  <p class="text-muted small mb-2">Un usager peut être rattaché dans plusieurs organisations de votre département. Si vous cochez "non", l'usager pourra prendre rendez-vous dans une autre organisation.</p>
+  <p class="text-muted small mb-2">
+    L'usager ne pourra prendre rendez-vous que dans les organisations auxquelles il est rattaché.
+  </p>
   <div class="d-flex gap-4">
     <div class="form-check">
       <%= f.radio_button :invite_to_user_organisations_only, true, class: "form-check-input" %>
@@ -17,7 +19,9 @@
 
 <div class="mb-4">
   <label class="form-label fw-bold">Durée de validité des liens d'invitations</label>
-  <p class="text-muted small mb-2">Le lien permettant de prendre rendez-vous expirera après cette période.</p>
+  <p class="text-muted small mb-2">
+    Le lien permettant de prendre rendez-vous dans les invitations expirera au-delà de la période définie ci-dessous. L'usager ne pourra plus prendre rendez-vous au-delà de cette période.
+  </p>
   <div class="d-flex align-items-center gap-2">
     <%= f.number_field :number_of_days_before_invitations_expire,
                        class: "form-control input-small-width",

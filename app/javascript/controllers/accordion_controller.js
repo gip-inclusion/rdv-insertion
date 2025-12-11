@@ -1,37 +1,74 @@
 import { Controller } from "@hotwired/stimulus"
 
+// Accordion controller for expandable/collapsible sections.
+// Tracks which sections are expanded and toggles visibility on click.
+// Also used as a stepper: enableAndOpenAll() unlocks all sections, activates badges and enables submit.
 export default class extends Controller {
-  static targets = ["item", "content", "icon"]
-
-  static values = { openIndex: { type: Number, default: -1 } }
+  static targets = ["content", "icon", "badge", "submitButton"]
 
   connect() {
-    if (this.openIndexValue >= 0) {
-      this.#updateDisplay()
-    }
+    this.expandedSections = new Set()
+    this.#detectInitialState()
   }
 
   toggle(event) {
-    const clickedIndex = parseInt(event.currentTarget.dataset.index, 10)
-    // -1 means no item is open
-    this.openIndexValue = this.openIndexValue === clickedIndex ? -1 : clickedIndex
+    const header = event.currentTarget
+    if (header.classList.contains("disabled")) return
+
+    const index = parseInt(header.dataset.index, 10)
+
+    if (this.expandedSections.has(index)) {
+      this.expandedSections.delete(index)
+    } else {
+      this.expandedSections.add(index)
+    }
+
     this.#updateDisplay()
   }
 
-  #updateDisplay() {
-    this.itemTargets.forEach((_, index) => {
-      const content = this.contentTargets[index]
-      const icon = this.iconTargets[index]
+  enableAndOpenAll() {
+    this.#enableAllHeaders()
+    this.#activateBadges()
+    this.#enableSubmitButton()
+    this.contentTargets.forEach((_, index) => this.expandedSections.add(index))
+    this.#updateDisplay()
+  }
 
-      if (index === this.openIndexValue) {
-        content.classList.remove("d-none")
-        icon.classList.add("ri-arrow-up-s-line")
-        icon.classList.remove("ri-arrow-down-s-line")
-      } else {
-        content.classList.add("d-none")
-        icon.classList.remove("ri-arrow-up-s-line")
-        icon.classList.add("ri-arrow-down-s-line")
+  #detectInitialState() {
+    this.contentTargets.forEach((content, index) => {
+      if (!content.classList.contains("d-none")) {
+        this.expandedSections.add(index)
       }
+    })
+  }
+
+  #enableAllHeaders() {
+    this.element.querySelectorAll("[data-index].disabled").forEach(header => {
+      header.classList.remove("disabled")
+    })
+  }
+
+  #activateBadges() {
+    this.badgeTargets.forEach(badge => {
+      badge.classList.remove("inactive")
+      badge.classList.add("active")
+    })
+  }
+
+  #enableSubmitButton() {
+    if (this.hasSubmitButtonTarget) {
+      this.submitButtonTarget.disabled = false
+    }
+  }
+
+  #updateDisplay() {
+    this.contentTargets.forEach((content, index) => {
+      const icon = this.iconTargets[index]
+      const isOpen = this.expandedSections.has(index)
+
+      content?.classList.toggle("d-none", !isOpen)
+      icon?.classList.toggle("ri-arrow-up-s-line", isOpen)
+      icon?.classList.toggle("ri-arrow-down-s-line", !isOpen)
     })
   }
 }

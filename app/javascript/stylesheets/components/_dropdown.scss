@@ -88,3 +88,63 @@
     background-color: var(--bs-dropdown-link-hover-bg, #e9ecef);
   }
 }
+
+// Grouped dropdown with search
+.dropdown-select-menu:has(.dropdown-options) {
+  overflow: hidden;
+}
+
+.dropdown-search {
+  padding: 0.75rem;
+  background-color: $light;
+  border-bottom: 1px solid $light-grey;
+
+  .form-control {
+    border: none;
+    background-color: transparent;
+
+    &::placeholder {
+      color: $dark-grey;
+    }
+
+    &:focus {
+      box-shadow: none;
+      background-color: transparent;
+    }
+  }
+}
+
+.dropdown-options {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.dropdown-group {
+  // Hide the entire group when all items inside are hidden (filtered out)
+  &:not(:has(.dropdown-group-item:not(.d-none))) {
+    display: none;
+  }
+}
+
+.dropdown-group-header {
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: $dark-blue;
+  font-size: 0.95rem;
+  background-color: $white;
+  margin-top: 0.5rem;
+
+  .dropdown-group:first-child & {
+    margin-top: 0;
+  }
+}
+
+.dropdown-group-item {
+  padding-left: 1.5rem;
+}
+
+.dropdown-item {
+  &:hover {
+    background-color: $light;
+  }
+}

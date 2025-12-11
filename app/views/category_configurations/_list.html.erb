@@ -10,8 +10,13 @@
   <% end %>
 
   <% if category_configurations.empty? %>
-    <div class="card-white text-center py-5">
-      <p class="text-muted mb-0">Aucune catégorie de motifs configurée pour cette organisation.</p>
+    <div class="background-blue-paler rounded-3 text-center py-5">
+      <%= image_tag "illustrations/empty-results.png", alt: "", width: 200, class: "mb-3" %>
+      <p class="mb-1">Il n'y a pas encore de catégorie configurée pour cette organisation.</p>
+      <p class="mb-0">
+        Pour commencer à inviter des usagers depuis cette organisation,
+        <%= link_to "ajoutez une catégorie de motifs.", new_organisation_category_configuration_path(organisation), class: "text-underline", data: { turbo_frame: "_top" } %>
+      </p>
     </div>
   <% end %>
 </div>
