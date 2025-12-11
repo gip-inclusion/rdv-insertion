@@ -13,8 +13,11 @@
     <% end %>
   </div>
   <div class="col-4">
-    <% value = record.send(attribute) %>
-    <% if record[attribute].in?([true, false]) %>
+    <% if local_assigns[:value].present? %>
+      <%= local_assigns[:value] %>
+    <% elsif record.send(attribute).blank? %>
+      <span class="text-muted">-</span>
+    <% elsif record[attribute].in?([true, false]) %>
       <%= I18n.t("boolean.#{record[attribute]}") %>
     <% elsif value.blank? %>
       <span class="text-muted"><%= local_assigns[:blank_text] || "-" %></span>

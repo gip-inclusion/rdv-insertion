@@ -61,10 +61,15 @@ Rails.application.routes.draw do
   resources :notification_center, only: [:index]
   resource :cookies_consent, only: [:new, :create, :update, :edit]
 
-  resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
+  resources :organisations, only: [:index, :show, :edit, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
-    patch :update_data_retention, on: :member
+
+    member do
+      get :show_data_retention
+      get :edit_data_retention
+      patch :update_data_retention
+    end
     resources :convocations, only: [:new]
     scope module: :user_list_uploads do
       resources :user_list_uploads, only: [:new, :create] do

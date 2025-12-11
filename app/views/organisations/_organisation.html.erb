@@ -1,38 +1,63 @@
-<%= turbo_frame_tag organisation do %>
-  <div class="row card-white justify-content-center mb-2">
-    <div class="row d-flex justify-content-start flex-wrap">
-      <%= render "common/attribute_display", record: organisation, attribute: :name %>
-      <%= render "common/attribute_display", record: organisation, attribute: :email %>
-      <%= render "common/attribute_display", record: organisation, attribute: :phone_number %>
-      <%= render(
-            "common/attribute_display",
-            record: organisation,
-            attribute: :slug,
-            tooltip: {
-              content: "Si l'assignation des usagers à l'organisation se fait via une colonne du fichier d'import " \
-                         "des usagers, les cases de cette colonne devront faire référence à la valeur définie ici."
-            }
-          ) %>
-      <%= render(
-            "common/attribute_display",
-            record: organisation,
-            attribute: :safir_code,
-            tooltip: { content: "Il ne concerne que les agences France Travail" }
-          ) %>
-      <div class="col-12 col-md-6 px-5 mb-3">
-        <h4>Logo</h4>
-        <% if organisation.logo.attached? %>
-          <%= image_tag organisation.logo.url, class: "organisation-configuration-logo", alt: "Logo utilisé pour représenter l'organisation" %>
-        <% else %>
-          <p>Pas de logo défini - le logo du département sera utilisé</p>
-          <p>Contactez l'équipe rdv-insertion pour en ajouter un</p>
-        <% end %>
-      </div>
+<%= turbo_frame_tag "organisation" do %>
+  <div class="card-white p-4 mb-4">
+    <h3 class="h5 mb-2 fw-bold">Informations générales</h3>
+    <p class="text-muted mb-4">
+      Ces informations permettent d'identifier l'organisation, notamment dans les messages envoyés aux usagers.
+    </p>
+
+    <div class="mb-4">
+      <%= render "common/attribute_display_inline",
+                 record: @organisation,
+                 attribute: :name,
+                 label: "Nom de l'organisation" %>
+
+      <%= render "common/attribute_display_inline",
+                 record: @organisation,
+                 attribute: :phone_number,
+                 label: "Numéro de téléphone",
+                 tooltip: {
+                   icon: "ri-question-line",
+                   content: "Le numéro de téléphone de l'organisation doit être renseigné pour inviter les usagers."
+                 } %>
+
+      <%= render "common/attribute_display_inline",
+                 record: @organisation,
+                 attribute: :email,
+                 label: "Adresse email",
+                 tooltip: {
+                   icon: "ri-question-line",
+                   content: "Renseigner une adresse email vous permettra :<br>• de recevoir des alertes liées aux rendez-vous<br>• de fournir aux usagers un moyen de contacter l'organisation en cas de blocage lors de la prise de rendez-vous."
+                 } %>
+
+      <%= render "common/attribute_display_inline",
+                 record: @organisation,
+                 attribute: :slug,
+                 label: "Désignation de l'organisation<br>dans le fichier d'import",
+                 tooltip: {
+                   icon: "ri-question-line",
+                   content: "Permet de rattacher les usagers à l'organisation via le fichier d'import."
+                 } %>
     </div>
-  </div>
-  <div class="d-flex justify-content-end mb-4">
-    <%= link_to edit_organisation_path(organisation) do %>
-      <button class="btn btn-blue">Modifier</button>
-    <% end %>
+
+    <div class="mb-4 mt-5">
+      <h4 class="h6 fw-bold mb-1">Logo de l'organisation</h4>
+      <p class="text-muted small mb-3">Logo au format .png ou .jpg</p>
+      <% if @organisation.logo.attached? %>
+        <div class="bg-light p-3 d-inline-block col-8 text-center">
+          <%= image_tag @organisation.logo, class: "img-fluid uploaded-image-preview", alt: "Logo de l'organisation" %>
+        </div>
+      <% else %>
+        <div class="bg-light p-4 text-center col-8">
+          <i class="ri-forbid-line text-muted fs-4 d-block mb-2"></i>
+          <span>Aucun logo pour cette organisation</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <%= link_to edit_organisation_path(@organisation), class: "btn btn-blue" do %>
+        Modifier
+      <% end %>
+    </div>
   </div>
 <% end %>
