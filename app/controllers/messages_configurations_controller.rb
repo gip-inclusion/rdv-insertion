@@ -2,7 +2,7 @@ class MessagesConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
     { direction_names: [] }, :sender_city, :letter_sender_name, { signature_lines: [] },
     { displayed_logos: [] }, :help_address, :sms_sender_name, :signature_image,
-    :remove_signature
+    :remove_signature_image
   ].freeze
 
   before_action :set_organisation, only: [:show, :new, :edit, :create, :update]
@@ -10,32 +10,14 @@ class MessagesConfigurationsController < ApplicationController
 
   def show; end
 
-  def new
-    @messages_configuration = MessagesConfiguration.new(organisation: @organisation)
-  end
-
   def edit; end
 
-  def create
-    @messages_configuration = MessagesConfiguration.new(organisation: @organisation)
-    @messages_configuration.assign_attributes(formatted_params)
-    if @messages_configuration.save
-      flash.now[:success] = "Les réglages ont été modifiés avec succès"
-      redirect_to organisation_category_configurations_path(@organisation)
-    else
-      flash.now[:error] = @messages_configuration.errors.full_messages.to_sentence
-      render :new, status: :unprocessable_entity
-    end
-  end
-
   def update
-    @messages_configuration.assign_attributes(formatted_params)
+    @messages_configuration.assign_attributes(messages_configuration_params)
     if @messages_configuration.save
-      flash.now[:success] = "Les réglages ont été modifiés avec succès"
-      render :show
+      redirect_to organisation_messages_configuration_path(@organisation, @messages_configuration)
     else
-      flash.now[:error] = @messages_configuration.errors.full_messages.to_sentence
-      render :edit, status: :unprocessable_entity
+      turbo_stream_display_error_modal(@messages_configuration.errors.full_messages)
     end
   end
 
@@ -43,13 +25,6 @@ class MessagesConfigurationsController < ApplicationController
 
   def messages_configuration_params
     params.expect(messages_configuration: PERMITTED_PARAMS).to_h.deep_symbolize_keys
-  end
-
-  def formatted_params
-    # we nullify some blank params
-    messages_configuration_params.to_h do |k, v|
-      [k, k.in?([:sms_sender_name, :letter_sender_name, :sender_city]) ? v.presence : v]
-    end
   end
 
   def set_messages_configuration

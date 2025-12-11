@@ -1,31 +1,31 @@
 <% attribute_list = f.object.send(attribute_name) %>
 <% if attribute_list.blank? %>
     <div class="text-array">
-      <div class="text-array__row d-flex justify-content-between">
-        <%= f.text_field attribute_name, class: "array-input", name: field_name(f.object.class.name.underscore, attribute_name, multiple: true) %>
+      <div class="text-array__row d-flex justify-content-between mb-2">
+        <%= f.text_field attribute_name, class: "array-input form-control", placeholder: local_assigns[:placeholder], name: field_name(f.object.class.name.underscore, attribute_name, multiple: true) %>
         <div class="text-array__remove"
           data-controller="array-fields-input"
           data-action="click->array-fields-input#remove">
-          <i class="ri-delete-bin-line" ></i>
+          <i class="ri-delete-bin-line ms-2 text-dark-blue" ></i>
         </div>
       </div>
     </div>
 <% else %>
   <div class="text-array">
     <% attribute_list.each_with_index do |attribute, index| %>
-      <div class="text-array__row d-flex justify-content-between">
-        <%= f.text_field attribute_name, class: "array-input", name: field_name(f.object.class.name.underscore, attribute_name, multiple: true), value: attribute %>
+      <div class="text-array__row d-flex justify-content-between mb-2">
+        <%= f.text_field attribute_name, class: "array-input form-control", name: field_name(f.object.class.name.underscore, attribute_name, multiple: true), value: attribute %>
         <div class="text-array__remove"
           data-controller="array-fields-input"
           data-action="click->array-fields-input#remove">
-          <i class="ri-delete-bin-line" ></i>
+          <i class="ri-delete-bin-line ms-2 text-dark-blue" ></i>
         </div>
       </div>
     <% end %>
   </div>
 <% end %>
-<button class="btn-sm btn-blue px-2 text-array__add"
+<button type="button" class="btn btn-sm btn-blue-out px-2 text-array__add"
         data-controller="array-fields-input"
         data-action="click->array-fields-input#add">
-  Ajouter une ligne
+  <i class="ri-add-line"></i> Ajouter une ligne
 </button>

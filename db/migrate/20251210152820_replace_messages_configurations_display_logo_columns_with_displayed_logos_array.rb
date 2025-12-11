@@ -7,7 +7,7 @@ class ReplaceMessagesConfigurationsDisplayLogoColumnsWithDisplayedLogosArray < A
       logos << "department" if config.display_department_logo
       logos << "europe" if config.display_europe_logos
       logos << "france_travail" if config.display_france_travail_logo
-      config.update_column(:displayed_logos, logos)
+      config.update!(displayed_logos: logos)
     end
 
     remove_column :messages_configurations, :display_europe_logos

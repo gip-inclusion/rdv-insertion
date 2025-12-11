@@ -12,9 +12,11 @@
       ></i>
     <% end %>
   </div>
-  <div class="col-4">
-    <% if local_assigns[:value].present? %>
-      <%= local_assigns[:value] %>
+  <div class="<%= local_assigns[:html_class] || 'col-4' %>">
+    <% if block_given? && result = yield.presence %>
+      <%= result %>
+    <% elsif local_assigns.key?(:value) %>
+      <%= sanitize(local_assigns[:value], tags: %w[br]) %>
     <% elsif record.send(attribute).blank? %>
       <span class="text-muted">-</span>
     <% elsif record[attribute].in?([true, false]) %>

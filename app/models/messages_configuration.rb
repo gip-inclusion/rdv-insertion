@@ -14,7 +14,7 @@ class MessagesConfiguration < ApplicationRecord
 
   delegate :department, to: :organisation
 
-  attr_accessor :remove_signature
+  attr_accessor :remove_signature_image
 
   validates :sms_sender_name, length: { maximum: 11, message: "ne doit pas dépasser 11 caractères" },
                               format: { with: /\A[a-zA-Z0-9]+\z/,
@@ -27,6 +27,8 @@ class MessagesConfiguration < ApplicationRecord
                               allow_nil: true
 
   validates :displayed_logos, inclusion: { in: LOGO_TYPES }
+
+  nullify_blank :sms_sender_name, :letter_sender_name, :sender_city, :help_address
 
   def effective_sms_sender_name
     sms_sender_name || default_sms_sender_name
@@ -68,6 +70,12 @@ class MessagesConfiguration < ApplicationRecord
     ["Le département #{I18n.t("with_prefix.#{department.pronoun}", name: department.name)}"]
   end
 
+  def displayed_logos_names
+    displayed_logos.map do |logo|
+      I18n.t("activerecord.attributes.messages_configuration.logo_types.#{logo}")
+    end.join(", ")
+  end
+
   private
 
   def remove_blank_array_fields
@@ -77,6 +85,6 @@ class MessagesConfiguration < ApplicationRecord
   end
 
   def purge_signature_if_requested
-    signature_image.purge_later if remove_signature == "true" && signature_image.attached?
+    signature_image.purge_later if remove_signature_image == "true" && signature_image.attached?
   end
 end

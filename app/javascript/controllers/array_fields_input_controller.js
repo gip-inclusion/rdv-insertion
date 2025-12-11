@@ -20,6 +20,7 @@ export default class extends Controller {
       .querySelector(".text-array__row")
       .cloneNode(true);
 
+    newRow.querySelector(".array-input").placeholder = "";
     newRow.querySelector(".array-input").value = "";
     this.element.previousElementSibling.appendChild(newRow);
   }

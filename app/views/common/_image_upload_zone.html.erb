@@ -1,0 +1,54 @@
+<%# Required locals: f, record, attribute, remove_attribute %>
+<%# Optional locals: input_id, alt, placeholder_text %>
+
+<% image_attached = record.send(attribute).attached? %>
+<% input_id = local_assigns[:input_id] || "#{attribute}_input" %>
+<% alt = local_assigns[:alt] || attribute.to_s.humanize %>
+
+<div data-controller="image-upload">
+  <%= f.hidden_field remove_attribute, value: "false", data: { image_upload_target: "removeField" } %>
+  <%= f.file_field attribute,
+                  class: "d-none",
+                  id: input_id,
+                  accept: "image/png, image/jpeg",
+                  data: { image_upload_target: "input", action: "change->image-upload#handleFileSelect" } %>
+
+  <div class="upload-zone rounded p-4 text-center col-8"
+      data-image-upload-target="dropZone"
+      data-action="dragover->image-upload#handleDragOver dragleave->image-upload#handleDragLeave drop->image-upload#handleDrop">
+
+    <%# Preview %>
+    <div data-image-upload-target="previewContainer" class="<%= image_attached ? '' : 'd-none' %>">
+      <div class="mb-3">
+        <% if image_attached %>
+          <%= image_tag record.send(attribute),
+                        class: "img-fluid uploaded-image-preview",
+                        alt: alt,
+                        data: { image_upload_target: "previewImage" } %>
+        <% else %>
+          <img class="img-fluid uploaded-image-preview" alt="<%= alt %>" data-image-upload-target="previewImage">
+        <% end %>
+      </div>
+      <p class="small mb-2">
+        <span data-image-upload-target="fileName"><%= record.send(attribute).filename if image_attached %></span>
+        <a href="#" class="text-danger ms-1" data-action="click->image-upload#handleFileRemove">
+          <i class="ri-close-line"></i>
+        </a>
+      </p>
+      <label for="<%= input_id %>" class="btn btn-link p-0 text-decoration-none" tabindex="0" data-action="keydown->image-upload#handleOpenPickerKeydown">
+        <i class="ri-folder-line me-1"></i><span class="text-decoration-underline">Changer de fichier</span>
+      </label>
+    </div>
+
+    <%# Placeholder %>
+    <div data-image-upload-target="placeholder" class="<%= image_attached ? 'd-none' : '' %>">
+      <i class="ri-upload-cloud-2-line text-muted fs-2 d-block mb-2"></i>
+      <p class="mb-1"><%= local_assigns[:placeholder_text] || "Glisser/déposer l'image ici" %></p>
+      <p class="text-muted mb-2">ou</p>
+      <label for="<%= input_id %>" class="btn btn-link p-0 text-decoration-none" tabindex="0" data-action="keydown->image-upload#handleOpenPickerKeydown">
+        <i class="ri-folder-line me-1"></i><span class="text-decoration-underline">Chercher dans vos fichiers</span>
+      </label>
+    </div>
+  </div>
+</div>
+

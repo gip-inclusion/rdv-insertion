@@ -1,63 +1,97 @@
-<div>
-  <div class="row card-white rdv-insertion-form justify-content-center mb-2">
-    <div class="mb-4">
-      <div class="row d-flex justify-content-start flex-wrap">
-        <h4 class="pb-2">Courrier</h4>
-        <%= render(
-              "common/attribute_input",
-              f:f,
-              attribute: :direction_names,
-              as: :array,
-              tooltip: {
-                content: "Si aucun en-tête n'est défini, c'est le nom de l'organisation qui sera utilisé en haut à gauche du courrier."
-              }
-            ) %>
-        <div class="col-12 col-md-6 px-5">
-          <%= render "messages_configurations/signature_inputs", f: f %>
+<%= turbo_frame_tag messages_configuration do %>
+  <div class="card-white p-4 mb-4">
+    <h3 class="h5 mb-2 fw-bold">Identité de l'expéditeur</h3>
+    <p class="text-muted mb-4">
+      Ces informations permettront d’identifier l’organisation dans les invitations et les convocations envoyées aux usagers.
+    </p>
+
+    <%= form_with model: [organisation, messages_configuration] do |f| %>
+      <div class="mb-4">
+        <div class="p-2">
+          <h4 class="h6 fw-bold text-dark-blue mb-1">Paramètres liés aux mails et courriers</h4>
+          <div class="p-3">
+            <div class="mb-4">
+              <%= render "common/attribute_input_inline",
+                        f: f,
+                        attribute: :displayed_logos,
+                        as: :collection_check_boxes,
+                        collection: messages_configuration_logo_types_collection
+                        %>
+              <div class="my-2">
+                <p class="fw-bold mb-2">Signatures</p>
+                <p class="text-muted col-8">Vous avez la possibilité de personnaliser la signature du mail et du courrier. Vous pouvez également joindre une signature manuscrite au format .png, .jpg ou .pdf</p>
+                <%= render "common/attribute_input_inline",
+                          f: f,
+                          attribute: :signature_lines,
+                          as: :array,
+                          label: "Signature texte",
+                          placeholder: messages_configuration_placeholder(messages_configuration, :signature_lines)
+                          %>
+                <div class="row py-4 align-items-center">
+                  <div class="col-4 fw-bold">
+                    <%= f.label :signature_image, "Signature jointe" %>
+                  </div>
+                  <div class="col-6">
+                    <%= render "common/image_upload_zone",
+                              f: f,
+                              record: messages_configuration,
+                              attribute: :signature_image,
+                              remove_attribute: :remove_signature_image,
+                              placeholder_text: "Glisser/déposer la signature ici" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <%= render(
-              "common/attribute_input",
-              f:f,
-              attribute: :sender_city,
-              tooltip: {
-                content: "Si aucune ville n'est définie, c'est la préfecture du département qui sera utilisée."
-              }
-            ) %>
-        <%= render(
-              "common/attribute_input",
-              f:f,
-              attribute: :letter_sender_name,
-              tooltip: { content: letter_sender_name_tooltip_content }
-            ) %>
-        <%= render "common/attribute_input", f:f, attribute: :display_department_logo, as: :boolean %>
-        <%= render "common/attribute_input", f:f, attribute: :display_europe_logos, as: :boolean %>
-        <%= render "common/attribute_input", f:f, attribute: :display_france_travail_logo, as: :boolean %>
-        <%= render(
-              "common/attribute_input",
-              f:f,
-              attribute: :help_address,
-              tooltip: { content: help_address_tooltip_content }
-            ) %>
-        <h4 class="pt-5 pb-2">SMS</h4>
-        <%= render(
-              "common/attribute_input",
-              f:f,
-              attribute: :sms_sender_name,
-              tooltip: { content: sms_sender_name_tooltip_content }
-            ) %>
+
+        <div class="p-2">
+          <h4 class="h6 fw-bold text-dark-blue mb-1">Paramètres propres aux courriers</h4>
+          <div class="p-3">
+            <%= render "common/attribute_input_inline",
+                      f: f,
+                      attribute: :direction_names,
+                      as: :array,
+                      placeholder: messages_configuration_placeholder(messages_configuration, :direction_names),
+                      html_class: "col-6",
+                      tooltip: {
+                        content: "L’en-tête des courriers d’invitations et de convocations permet à l’usager d’identifier l’expéditeur. Le nom de l’organisation est utilisé par défaut."
+                      }
+                      %>
+            <%= render "common/attribute_input_inline",
+                      f: f,
+                      attribute: :sender_city,
+                      as: :text_field,
+                      placeholder: messages_configuration_placeholder(messages_configuration, :sender_city),
+                      tooltip: {
+                        content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisé par défaut."
+                      }
+                      %>
+            <%= render "common/attribute_input_inline",
+                      f: f,
+                      attribute: :help_address,
+                      tooltip: {
+                        content: "Permet d’ajouter un lieu d'accueil physique pour aider les usagers en difficultés avec le rendez-vous."
+                      }
+                      %>
+            <%= render "common/attribute_input_inline",
+                      f: f,
+                      attribute: :letter_sender_name,
+                      as: :text_field,
+                      placeholder: messages_configuration_placeholder(messages_configuration, :letter_sender_name),
+                      tooltip: {
+                        content: "Permet d’identifier l’expéditeur dans le contenu des courriers.  Le « conseil départemental » est utilisé par défaut."
+                      }
+                      %>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <%= link_to organisation_messages_configuration_path(organisation, messages_configuration), class: "btn btn-blue-out me-2" do %>
+              Annuler
+            <% end %>
+            <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+          </div>
       </div>
-    </div>
-  </div>
-  <div class="d-flex justify-content-end mb-4">
-    <%= button_tag("Enregistrer", type: "submit", class: "btn btn-blue") %>
-    <% if action == :edit %>
-      <%= link_to organisation_messages_configuration_path(organisation, messages_configuration) do %>
-        <button class="btn btn-blue-out mx-2">Annuler</button>
-      <% end %>
-    <% elsif action == :new %>
-      <%= link_to organisation_category_configurations_path(organisation), data: { "turbo-frame" => "_top" } do %>
-        <button class="btn btn-blue-out mx-2">Annuler</button>
-      <% end %>
     <% end %>
   </div>
-</div>
+<% end %>
