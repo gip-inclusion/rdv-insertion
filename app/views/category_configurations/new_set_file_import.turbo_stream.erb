@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "new_file_import_selector" do %>
+  <%= render "new_file_import_selector",
+             file_configuration: @selected_file_configuration,
+             organisation: @organisation %>
+<% end %>

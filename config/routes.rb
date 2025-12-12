@@ -111,7 +111,11 @@ Rails.application.routes.draw do
       resource :closings, only: [:create, :destroy]
     end
     # we need to nest in organisations the different category_configurations record to correctly authorize them
-    resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
+    resources :category_configurations, only: [:new, :create, :destroy] do
+      collection do
+        get :new_select_file_import
+        post :new_set_file_import
+      end
       member do
         get :edit_rdv_preferences
         patch :update_rdv_preferences
@@ -119,6 +123,8 @@ Rails.application.routes.draw do
         patch :update_messages
         get :edit_notifications
         patch :update_notifications
+        get :edit_file_import
+        patch :update_file_import
       end
     end
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"

@@ -20,142 +20,15 @@ describe CategoryConfigurationsController do
     sign_in(agent)
   end
 
-  describe "#show" do
-    let!(:show_params) { { id: category_configuration.id, organisation_id: organisation.id } }
-
-    it "renders the category_configuration page" do
-      get :show, params: show_params
-
-      expect(response).to be_successful
-      expect(response.body).to match(/Catégorie/)
-      expect(response.body).to match(/Formats d&#39;invitations/)
-      expect(response.body).to match(/Fichier d'import/)
-    end
-
-    it "displays the file_configuration details of the category_configuration" do
-      get :show, params: show_params
-
-      expect(response.body).to match(/#{category_configuration.file_configuration.sheet_name}/)
-    end
-
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        get :show, params: show_params
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
-    context "when not authorized because not admin in the right organisation" do
-      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [another_organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects the agent" do
-        get :show, params: show_params
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-    end
-  end
-
   describe "#new" do
     let!(:new_configuration) { build(:category_configuration, organisation: organisation) }
     let!(:new_params) { { organisation_id: organisation.id } }
 
-    it "renders the new user page" do
+    it "renders the new category page" do
       get :new, params: new_params
 
       expect(response).to be_successful
-      expect(response.body).to match(/Créer configuration/)
-    end
-
-    describe "file_configurations" do
-      let!(:organisation_agent_belongs_to) { create(:organisation, department: department, agents: [agent]) }
-      let!(:organisation_agent_belongs_to_another_department) do
-        create(:organisation, department: create(:department), agents: [agent])
-      end
-      let!(:organisation_agent_does_not_belong_to) { create(:organisation, department: create(:department)) }
-      let!(:config_of_organisation_agent_belongs_to) do
-        create(:category_configuration, organisation: organisation_agent_belongs_to)
-      end
-      let!(:config_of_organisation_agent_belongs_to_another_department) do
-        create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
-      end
-      let!(:config_of_organisation_agent_does_not_belong_to) do
-        create(:category_configuration, organisation: organisation_agent_does_not_belong_to)
-      end
-      let!(:file_configuration_created_by_agent_and_not_used) do
-        create(:file_configuration, created_by_agent: agent, category_configurations: [])
-      end
-      let!(:file_configuration_created_by_agent_and_unused) do
-        create(:file_configuration, created_by_agent: agent, category_configurations: [])
-      end
-      let!(:file_configuration_created_by_agent_and_used_in_same_department) do
-        create(
-          :file_configuration,
-          created_by_agent: agent,
-          category_configurations: [create(:category_configuration, organisation: organisation_agent_belongs_to)]
-        )
-      end
-      let!(:file_configuration_created_by_agent_and_used_in_another_department) do
-        create(
-          :file_configuration,
-          created_by_agent: agent,
-          category_configurations: [
-            create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
-          ]
-        )
-      end
-      let!(:file_configuration_created_by_another_agent) do
-        create(:file_configuration, created_by_agent: create(:agent), category_configurations: [])
-      end
-
-      # rubocop:disable RSpec/ExampleLength
-      it "displays the file_configurations of the department" do
-        get :new, params: new_params
-
-        expect(response.body).to match(
-          "category_configuration_file_configuration_#{category_configuration.file_configuration.id}"
-        )
-        expect(response.body).to match(
-          "category_configuration_file_configuration_#{config_of_organisation_agent_belongs_to.file_configuration.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{
-            config_of_organisation_agent_belongs_to_another_department.file_configuration.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{
-            config_of_organisation_agent_does_not_belong_to.file_configuration.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
-        )
-        expect(response.body).to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_not_used.id}"
-        )
-        expect(response.body).to match(
-          "category_configuration_file_configuration_" \
-          "#{file_configuration_created_by_agent_and_used_in_same_department.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_" \
-          "#{file_configuration_created_by_agent_and_used_in_another_department.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_another_agent.id}"
-        )
-      end
-      # rubocop:enable RSpec/ExampleLength
+      expect(response.body).to match(/Ajouter une catégorie/)
     end
 
     context "when not authorized because not admin" do
@@ -181,125 +54,6 @@ describe CategoryConfigurationsController do
 
       it "redirects the agent" do
         get :new, params: new_params
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-    end
-  end
-
-  describe "#edit" do
-    let!(:edit_params) { { organisation_id: organisation.id, id: category_configuration.id } }
-
-    it "renders the edit user page" do
-      get :edit, params: edit_params
-
-      expect(response).to be_successful
-      expect(unescaped_response_body).to include("Modifier \"#{category_configuration.motif_category_name}\"")
-    end
-
-    describe "file_configurations" do
-      let!(:organisation_agent_belongs_to) { create(:organisation, department: department, agents: [agent]) }
-      let!(:organisation_agent_belongs_to_another_department) do
-        create(:organisation, department: create(:department), agents: [agent])
-      end
-      let!(:organisation_agent_does_not_belong_to) { create(:organisation, department: create(:department)) }
-      let!(:config_of_organisation_agent_belongs_to) do
-        create(:category_configuration, organisation: organisation_agent_belongs_to)
-      end
-      let!(:config_of_organisation_agent_belongs_to_another_department) do
-        create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
-      end
-      let!(:config_of_organisation_agent_does_not_belong_to) do
-        create(:category_configuration, organisation: organisation_agent_does_not_belong_to)
-      end
-      let!(:file_configuration_created_by_agent_and_not_used) do
-        create(:file_configuration, created_by_agent: agent, category_configurations: [])
-      end
-      let!(:file_configuration_created_by_agent_and_unused) do
-        create(:file_configuration, created_by_agent: agent, category_configurations: [])
-      end
-      let!(:file_configuration_created_by_agent_and_used_in_same_department) do
-        create(
-          :file_configuration,
-          created_by_agent: agent,
-          category_configurations: [create(:category_configuration, organisation: organisation_agent_belongs_to)]
-        )
-      end
-      let!(:file_configuration_created_by_agent_and_used_in_another_department) do
-        create(
-          :file_configuration,
-          created_by_agent: agent,
-          category_configurations: [
-            create(:category_configuration, organisation: organisation_agent_belongs_to_another_department)
-          ]
-        )
-      end
-      let!(:file_configuration_created_by_another_agent) do
-        create(:file_configuration, created_by_agent: create(:agent), category_configurations: [])
-      end
-
-      # rubocop:disable RSpec/ExampleLength
-      it "displays the file_configurations of the department" do
-        get :edit, params: edit_params
-
-        expect(response.body).to match(
-          "category_configuration_file_configuration_#{category_configuration.file_configuration.id}"
-        )
-        expect(response.body).to match(
-          "category_configuration_file_configuration_#{config_of_organisation_agent_belongs_to.file_configuration.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{
-            config_of_organisation_agent_belongs_to_another_department.file_configuration.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{
-            config_of_organisation_agent_does_not_belong_to.file_configuration.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{config_of_other_dep.file_configuration.id}"
-        )
-        expect(response.body).to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_agent_and_not_used.id}"
-        )
-        expect(response.body).to match(
-          "category_configuration_file_configuration_" \
-          "#{file_configuration_created_by_agent_and_used_in_same_department.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_" \
-          "#{file_configuration_created_by_agent_and_used_in_another_department.id}"
-        )
-        expect(response.body).not_to match(
-          "category_configuration_file_configuration_#{file_configuration_created_by_another_agent.id}"
-        )
-      end
-      # rubocop:enable RSpec/ExampleLength
-    end
-
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        get :edit, params: edit_params
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
-    context "when not authorized because not admin in the right organisation" do
-      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [another_organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects the agent" do
-        get :edit, params: edit_params
         expect(response).to redirect_to(root_path)
         expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
@@ -338,7 +92,7 @@ describe CategoryConfigurationsController do
     context "when the creation succeeds" do
       it "is a success" do
         post :create, params: create_params
-        expect(response).to redirect_to(organisation_category_configuration_path(organisation, category_configuration))
+        expect(response).to redirect_to(organisation_configuration_categories_path(organisation))
       end
     end
 
@@ -353,12 +107,11 @@ describe CategoryConfigurationsController do
             ["Catégorie de motifs doit exister"]))
       end
 
-      it "renders the new page" do
+      it "renders turbo_stream with error" do
         post :create, params: create_params
         expect(response).not_to be_successful
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to match(/Créer configuration/)
-        expect(unescaped_response_body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/error_list/)
         expect(unescaped_response_body).to match(/Catégorie de motifs doit exister/)
       end
     end
@@ -392,86 +145,9 @@ describe CategoryConfigurationsController do
     end
   end
 
-  describe "#update" do
-    let!(:update_params) do
-      {
-        category_configuration: {
-          invitation_formats: %w[sms email postal], convene_user: false,
-          rdv_with_referents: true, invite_to_user_organisations_only: true,
-          number_of_days_before_invitations_expire: nil
-        },
-        organisation_id: organisation.id, id: category_configuration.id
-      }
-    end
-
-    it "updates the category_configuration" do
-      patch :update, params: update_params
-      expect(category_configuration.reload.invitation_formats).to eq(%w[sms email postal])
-      expect(category_configuration.reload.convene_user).to eq(false)
-      expect(category_configuration.reload.rdv_with_referents).to eq(true)
-      expect(category_configuration.reload.invite_to_user_organisations_only).to eq(true)
-      expect(category_configuration.reload.number_of_days_before_invitations_expire).to eq(nil)
-    end
-
-    context "when the update fails" do
-      let!(:update_params) do
-        {
-          category_configuration: {
-            number_of_days_before_invitations_expire: 2
-          },
-          organisation_id: organisation.id, id: category_configuration.id
-        }
-      end
-
-      it "renders the edit page" do
-        patch :update, params: update_params
-        expect(response).not_to be_successful
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(unescaped_response_body).to include("Modifier \"#{category_configuration.motif_category_name}\"")
-        expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/Le délai d'expiration de l'invitation doit être supérieur à 3 jours/)
-      end
-    end
-
-    context "when the update succeeds" do
-      it "is a success" do
-        patch :update, params: update_params
-        expect(response).to redirect_to(organisation_category_configuration_path(organisation, category_configuration))
-      end
-    end
-
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        patch :update, params: update_params
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
-    context "when not authorized because not admin in the right organisation" do
-      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [another_organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects the agent" do
-        patch :update, params: update_params
-        expect(response).to redirect_to(root_path)
-        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
-      end
-    end
-  end
-
   describe "#destroy" do
     let!(:destroy_params) do
-      { organisation_id: organisation.id, id: category_configuration.id, format: "turbo_stream" }
+      { organisation_id: organisation.id, id: category_configuration.id }
     end
 
     it "destroys the category_configuration" do
@@ -482,10 +158,10 @@ describe CategoryConfigurationsController do
     end
 
     context "when the destroy succeeds" do
-      it "is a success" do
+      it "redirects with success flash" do
         delete :destroy, params: destroy_params
-        expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/La configuration a été supprimée avec succès/)
+        expect(response).to redirect_to(organisation_configuration_categories_path(organisation))
+        expect(flash[:success]).to eq("La configuration a été supprimée avec succès")
       end
     end
 
@@ -499,7 +175,7 @@ describe CategoryConfigurationsController do
       it "redirects to the homepage" do
         delete :destroy, params: destroy_params
 
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to redirect_to(root_path)
       end
     end
 
@@ -512,8 +188,8 @@ describe CategoryConfigurationsController do
 
       it "redirects the agent" do
         delete :destroy, params: destroy_params
-        expect(response).to have_http_status(:forbidden)
-        expect(response.body.to_s).to include("Vous n'avez pas les droits")
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
   end

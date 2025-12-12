@@ -1,10 +1,23 @@
-<%# Displays a model attribute in inline format (label left, value right) %>
-<%# Mandatory: record, attribute %>
-<%# Optional: label, tooltip, as (:inline_list), i18n_scope, default_indicator, suffix, blank_text %>
+<%# Displays an attribute in inline format (label left, value right) %>
+<%# Mode 1 - with record: record, attribute (+ optional: label, tooltip, as, i18n_scope, default_indicator, suffix, blank_text) %>
+<%# Mode 2 - without record: label, value (+ optional: tooltip, blank_text) %>
+
+<%
+  mode = local_assigns.key?(:value) ? :value_only : :record
+  blank_text = local_assigns[:blank_text] || "-"
+
+  if mode == :value_only
+    display_label = local_assigns[:label]&.html_safe
+    display_value = local_assigns[:value]
+  else
+    display_label = local_assigns[:label]&.html_safe || record.class.human_attribute_name(attribute)
+    display_value = record.send(attribute)
+  end
+%>
 
 <div id="<%= local_assigns[:id] %>" class="row py-2 align-items-center">
   <div class="col-4 d-flex align-items-center">
-    <span class="fw-bold"><%= local_assigns[:label]&.html_safe || record.class.human_attribute_name(attribute) %></span>
+    <span class="fw-bold"><%= display_label %></span>
     <% if local_assigns[:tooltip].is_a?(Hash) %>
       <i
         class="<%= local_assigns[:tooltip][:icon] || 'ri-question-line' %> text-dark-blue ms-2 fs-4"
@@ -13,19 +26,17 @@
     <% end %>
   </div>
   <div class="col-4">
-    <% if local_assigns[:value].present? %>
-      <%= local_assigns[:value] %>
-    <% elsif record.send(attribute).blank? %>
-      <span class="text-muted">-</span>
+    <% if mode == :value_only %>
+      <%= display_value.present? ? display_value : content_tag(:span, blank_text, class: "text-muted") %>
     <% elsif record[attribute].in?([true, false]) %>
       <%= I18n.t("boolean.#{record[attribute]}") %>
-    <% elsif value.blank? %>
-      <span class="text-muted"><%= local_assigns[:blank_text] || "-" %></span>
+    <% elsif display_value.blank? %>
+      <span class="text-muted"><%= blank_text %></span>
     <% elsif local_assigns[:as] == :inline_list %>
-      <% items = local_assigns[:i18n_scope] ? value.map { |v| I18n.t("#{i18n_scope}.#{v}") } : value %>
+      <% items = local_assigns[:i18n_scope] ? display_value.map { |v| I18n.t("#{i18n_scope}.#{v}") } : display_value %>
       <%= items.join(", ") %>
     <% else %>
-      <%= value %><%= " #{local_assigns[:suffix]}" if local_assigns[:suffix] %>
+      <%= display_value %><%= " #{local_assigns[:suffix]}" if local_assigns[:suffix] %>
       <% if local_assigns[:default_indicator] && record.attributes[attribute.to_s].blank? %>
         <span>(par défaut)</span>
       <% end %>

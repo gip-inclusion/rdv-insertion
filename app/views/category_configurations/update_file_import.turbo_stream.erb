@@ -1,5 +1,5 @@
-<%= turbo_stream.replace dom_id(@category_configuration, :messages) do %>
-  <%= render "messages",
+<%= turbo_stream.replace dom_id(@category_configuration, :file_import) do %>
+  <%= render "file_import",
              category_configuration: @category_configuration,
              organisation: @organisation %>
 <% end %>
