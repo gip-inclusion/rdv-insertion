@@ -1,4 +1,4 @@
-<%# locals: (category_configuration:, organisation:) %>
+<%# locals: (category_configuration:, motifs:, organisation:) %>
 
 <div class="pt-4">
   <%= render "category_configurations/rdv_preferences",
@@ -6,7 +6,7 @@
              organisation: organisation %>
 
   <%= render "category_configurations/motifs",
-             category_configuration: category_configuration,
+             motifs: motifs,
              organisation: organisation %>
 
   <%= render "category_configurations/messages",

@@ -1,10 +1,11 @@
-<%# locals: (category_configurations:, motifs_count_by_category:, organisation:) %>
+<%# locals: (category_configurations:, motifs_by_category:, organisation:) %>
 
 <div data-controller="accordion">
   <% category_configurations.each_with_index do |category_configuration, index| %>
+    <% motifs = motifs_by_category[category_configuration.motif_category_id] || [] %>
     <%= render "category_configurations/accordion_item",
                category_configuration: category_configuration,
-               motifs_count: motifs_count_by_category[category_configuration.motif_category_id] || 0,
+               motifs: motifs,
                organisation: organisation,
                index: index %>
   <% end %>

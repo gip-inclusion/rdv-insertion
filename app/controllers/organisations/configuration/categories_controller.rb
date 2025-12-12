@@ -5,10 +5,9 @@ module Organisations
         @category_configurations = @organisation.category_configurations
                                                 .includes(:motif_category, :file_configuration)
                                                 .order("motif_categories.name")
-        @motifs_count_by_category = @organisation.motifs
-                                                 .active
-                                                 .group(:motif_category_id)
-                                                 .count
+        @motifs_by_category = @organisation.motifs
+                                           .active
+                                           .group_by(&:motif_category_id)
       end
     end
   end
