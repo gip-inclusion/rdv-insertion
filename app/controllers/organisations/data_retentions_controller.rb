@@ -19,8 +19,7 @@ module Organisations
 
     def set_organisation
       @organisation = policy_scope(Organisation).find(params[:organisation_id])
-      authorize @organisation
-      @department = @organisation.department
+      authorize @organisation, :configure?
     end
 
     def data_retention_params
@@ -28,4 +27,3 @@ module Organisations
     end
   end
 end
-

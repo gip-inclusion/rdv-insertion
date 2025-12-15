@@ -7,11 +7,11 @@
 
     <p>
       <span class="fw-bold">Durée de conservation des données personnelles :</span>
-      <%= @organisation.data_retention_duration_in_months %> mois
+      <%= organisation.data_retention_duration_in_months %> mois
     </p>
 
     <div class="d-flex justify-content-end">
-      <%= link_to edit_organisation_data_retention_path(@organisation), class: "btn btn-blue" do %>
+      <%= link_to edit_organisation_data_retention_path(organisation), class: "btn btn-blue" do %>
         Modifier
       <% end %>
     </div>
