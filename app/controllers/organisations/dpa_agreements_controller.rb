@@ -24,7 +24,7 @@ module Organisations
     end
 
     def set_organisation
-      @organisation = current_organisation
+      @organisation = Organisation.find(params[:organisation_id])
       authorize @organisation, :can_accept_dpa?
     end
   end
