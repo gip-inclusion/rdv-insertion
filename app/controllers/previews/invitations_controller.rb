@@ -83,7 +83,8 @@ module Previews
         mandatory_warning: @invitation.mandatory_warning(format: "email"),
         punishable_warning: @invitation.punishable_warning,
         custom_sentence: @invitation.custom_sentence,
-        signature_lines: @organisation.messages_configuration&.signature_lines
+        signature_lines: @invitation.signature_lines,
+        displayed_logos: @invitation.displayed_logos
       }
     end
 

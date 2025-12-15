@@ -82,7 +82,8 @@ module Previews
         punishable_warning: @notification.punishable_warning,
         custom_sentence: @notification.custom_sentence,
         signature_lines: @notification.signature_lines,
-        instruction_for_rdv: @notification.instruction_for_rdv
+        instruction_for_rdv: @notification.instruction_for_rdv,
+        displayed_logos: @notification.displayed_logos
       }
     end
 

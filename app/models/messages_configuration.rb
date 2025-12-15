@@ -31,15 +31,15 @@ class MessagesConfiguration < ApplicationRecord
   nullify_blank :sms_sender_name, :letter_sender_name, :sender_city, :help_address
 
   def effective_sms_sender_name
-    sms_sender_name || default_sms_sender_name
+    sms_sender_name.presence || default_sms_sender_name
   end
 
   def effective_letter_sender_name
-    letter_sender_name || default_letter_sender_name
+    letter_sender_name.presence || default_letter_sender_name
   end
 
   def effective_sender_city
-    sender_city || default_sender_city
+    sender_city.presence || default_sender_city
   end
 
   def effective_direction_names

@@ -13,5 +13,15 @@
       </div>
 
       <%= render "organisations/messages_configurations/messages_configuration", organisation: @organisation, messages_configuration: @messages_configuration %>
+      <div class="card-white p-4 mb-4">
+        <h3 class="h5 mb-2 fw-bold">Contenu des messages</h3>
+        <p class="text-muted mb-4">
+          Personnalisez le modèle par défaut des messages d’invitations et de convocations pour chacune des catégories.
+        </p>
+
+        <% @category_configurations.each do |category_configuration| %>
+          <%= render "organisations/category_configurations/template_overrides/template_override", organisation: @organisation, category_configuration: category_configuration %>
+        <% end %>
+    </div>
   <% end %>
 </div>

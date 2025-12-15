@@ -81,6 +81,9 @@ Rails.application.routes.draw do
       resources :tags, only: [:create, :destroy]
       resources :dpa_agreements, only: :create
       resources :messages_configurations, only: [:show, :edit, :update]
+      resources :category_configurations, only: [:show], module: :category_configurations do
+        resource :template_overrides, only: [:show, :edit, :update]
+      end
 
       namespace :configuration do
         resource :informations, only: [:show]

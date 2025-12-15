@@ -15,8 +15,13 @@ fr:
         motif_category: Catégorie de motifs
         file_configuration: Fichier d'import
         template_rdv_title_override: Titre du rendez-vous
+        template_rdv_title: Titre du rendez-vous
         template_rdv_title_by_phone_override: Titre du rendez-vous téléphonique
+        template_rdv_title_by_phone: Titre du rendez-vous téléphonique
         template_rdv_purpose_override: But du rendez-vous
+        template_rdv_purpose: But du rendez-vous
         template_user_designation_override: Désignation de la personne
+        template_user_designation: Désignation de la personne
         email_to_notify_rdv_changes: Email de destination des notifications de prise de RDV
         email_to_notify_no_available_slots: Email de destination des notifications de créneaux épuisés
+
