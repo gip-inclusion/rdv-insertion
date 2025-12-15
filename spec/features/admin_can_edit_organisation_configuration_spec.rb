@@ -39,7 +39,7 @@ describe "Admin can edit organisation configuration", :js do
 
       visit organisation_configuration_informations_path(organisation)
 
-      within "turbo-frame#organisation" do
+      within "turbo-frame#organisation_#{organisation.id}" do
         click_link "Modifier"
       end
 
@@ -82,7 +82,7 @@ describe "Admin can edit organisation configuration", :js do
 
       visit organisation_configuration_informations_path(organisation)
 
-      within "turbo-frame#organisation" do
+      within "turbo-frame#organisation_#{organisation.id}" do
         click_link "Modifier"
       end
 
@@ -109,7 +109,7 @@ describe "Admin can edit organisation configuration", :js do
 
       visit organisation_configuration_informations_path(organisation)
 
-      within "turbo-frame#organisation" do
+      within "turbo-frame#organisation_#{organisation.id}" do
         click_link "Modifier"
       end
 
