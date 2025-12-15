@@ -26,12 +26,12 @@
 
           <%= turbo_frame_tag "tags", class: "d-flex flex-wrap px-0" do %>
             <% @organisation.tags.each do |tag| %>
-              <%= render "tags/organisation_tag", tag: tag, organisation: @organisation, user_count: @user_count_by_tag_id[tag.id] || 0 %>
+              <%= render "organisations/tags/tag", tag: tag, organisation: @organisation, user_count: @user_count_by_tag_id[tag.id] || 0 %>
             <% end %>
           <% end %>
 
           <h4 class="h6 mb-2 fw-bold text-dark-blue my-4">Créer un nouveau tag*</h4>
-          <%= render "tags/tag_form", existing_tags: @department.tags.distinct %>
+          <%= render "organisations/tags/tag_form", existing_tags: @department.tags.distinct %>
           <div class="text-muted px-0 mt-3 mb-2">
             <small>
               *Ce champ est une zone de commentaires libres : veillez à utiliser des termes objectifs, pertinents, non excessifs et/ou insultants.

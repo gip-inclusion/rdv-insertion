@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "data_retention" do %>
-  <%= form_with model: @organisation, url: update_data_retention_organisation_path(@organisation), method: :patch do |f| %>
+  <%= form_with model: @organisation, url: organisation_data_retention_path(@organisation), method: :patch do |f| %>
     <div class="card-white p-4 mb-4">
       <h3 class="h5 mb-2 fw-bold">Gestion des données personnelles</h3>
       <p class="text-muted small mb-4">
@@ -17,7 +17,7 @@
       </div>
 
       <div class="d-flex justify-content-end">
-        <%= link_to show_data_retention_organisation_path(@organisation), class: "btn btn-blue-out me-2" do %>
+        <%= link_to organisation_data_retention_path(@organisation), class: "btn btn-blue-out me-2" do %>
           Annuler
         <% end %>
         <%= f.submit "Enregistrer", class: "btn btn-primary" %>
@@ -25,3 +25,4 @@
     </div>
   <% end %>
 <% end %>
+

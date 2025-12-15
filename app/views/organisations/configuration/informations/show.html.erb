@@ -12,9 +12,9 @@
         <% end %>
       </div>
 
-      <%= render "organisations/organisation" %>
+      <%= render "organisations/general_informations/general_information", organisation: @organisation %>
 
-      <%= render "organisations/data_retention" %>
+      <%= render "organisations/data_retentions/data_retention", organisation: @organisation  %>
     </div>
   <% end %>
 </div>

@@ -23,7 +23,7 @@
     >
     </i>
   </h4>
-  <%= render "organisations/organisation", organisation: @organisation %>
+  <%= render "organisations/general_informations/general_information", organisation: @organisation %>
 
   <h4>Catégories de motifs configurés</h4>
   <%= render "category_configurations/category_configurations_list", category_configurations: @category_configurations, organisation: @organisation, department: @department %>
@@ -57,7 +57,7 @@
 
     <h6 class="px-0 mb-3">Créer un nouveau tag*</h6>
 
-      <%= render "tags/tag_form" %>
+      <%= render "organisations/tags/tag_form" %>
 
     <div class="text-light-blue px-0 mt-3 mb-2">
       <small>

@@ -61,15 +61,10 @@ Rails.application.routes.draw do
   resources :notification_center, only: [:index]
   resource :cookies_consent, only: [:new, :create, :update, :edit]
 
-  resources :organisations, only: [:index, :show, :edit, :update] do
+  resources :organisations, only: [:index] do
     get :geolocated, on: :collection
     get :search, on: :collection
 
-    member do
-      get :show_data_retention
-      get :edit_data_retention
-      patch :update_data_retention
-    end
     resources :convocations, only: [:new]
     scope module: :user_list_uploads do
       resources :user_list_uploads, only: [:new, :create] do
@@ -79,9 +74,13 @@ Rails.application.routes.draw do
     namespace :user_list_uploads do
       resources :category_selections, only: [:new]
     end
-    resource :configuration, only: [:show]
 
     scope module: :organisations do
+      resource :general_information, only: [:show, :edit, :update]
+      resource :data_retention, only: [:show, :edit, :update]
+      resources :tags, only: [:create, :destroy]
+      resources :dpa_agreements, only: :create
+
       namespace :configuration do
         resource :informations, only: [:show]
         resource :agents, only: [:show]
@@ -90,7 +89,6 @@ Rails.application.routes.draw do
         resource :tags, only: [:show]
       end
     end
-    resources :dpa_agreements, only: :create, module: :organisations
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         get :default_list
@@ -113,7 +111,6 @@ Rails.application.routes.draw do
     # we need to nest in organisations the different category_configurations record to correctly authorize them
     resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
-    resources :tags, only: [:create, :destroy]
     resources :agent_roles, module: :agent_roles, only: [] do
       collection do
         resources :csv_export_authorizations, only: [:index]
