@@ -27,7 +27,7 @@ module Organisations
     end
 
     def set_organisation
-      @organisation = policy_scope(Organisation).find(params[:organisation_id])
+      @organisation = Organisation.find(params[:organisation_id])
       authorize @organisation, :configure?
     end
 
