@@ -137,8 +137,9 @@ Rails.application.routes.draw do
         # MIGRATED: rdv_preferences -> Organisations::CategoryConfigurations::RdvPreferencesController
         # get :edit_rdv_preferences
         # patch :update_rdv_preferences
-        get :edit_messages
-        patch :update_messages
+        # MIGRATED: messages -> Organisations::CategoryConfigurations::MessagesController
+        # get :edit_messages
+        # patch :update_messages
         get :edit_notifications
         patch :update_notifications
         get :edit_file_import
