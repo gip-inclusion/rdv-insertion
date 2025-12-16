@@ -7,7 +7,7 @@ class Organisations::CategoryConfigurations::TemplateOverridesController < Appli
 
   def update
     if @category_configuration.update(template_override_params)
-      redirect_to organisation_category_configuration_template_overrides_path(@organisation, @category_configuration)
+      redirect_to organisation_category_configuration_template_override_path(@organisation, @category_configuration)
     else
       turbo_stream_replace_error_list_with(@category_configuration.errors.full_messages)
     end
