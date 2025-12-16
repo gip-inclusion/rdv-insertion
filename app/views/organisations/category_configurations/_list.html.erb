@@ -3,7 +3,7 @@
 <div data-controller="accordion">
   <% category_configurations.each_with_index do |category_configuration, index| %>
     <% motifs = motifs_by_category[category_configuration.motif_category_id] || [] %>
-    <%= render "category_configurations/accordion_item",
+    <%= render "organisations/category_configurations/accordion_item",
                category_configuration: category_configuration,
                motifs: motifs,
                organisation: organisation,
