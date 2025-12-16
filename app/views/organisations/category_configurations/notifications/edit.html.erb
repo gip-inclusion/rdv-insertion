@@ -1,10 +1,10 @@
 <%= render "common/remote_modal", title: "Notifier pour informer sur les prises de rendez-vous", size: :large do %>
   <%= form_with model: @category_configuration,
-                url: update_notifications_organisation_category_configuration_path(@organisation, @category_configuration),
+                url: organisation_category_configuration_notifications_path(@organisation, @category_configuration),
                 method: :patch,
                 data: { turbo_frame: "remote_modal" } do |f| %>
     <%= turbo_frame_tag "error_list" %>
-    <div class="px-4"><%= render "notifications_form", f: f %></div>
+    <div class="px-4"><%= render "form", f: f %></div>
 
     <hr class="hr-bleed">
 

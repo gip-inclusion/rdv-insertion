@@ -140,8 +140,9 @@ Rails.application.routes.draw do
         # MIGRATED: messages -> Organisations::CategoryConfigurations::MessagesController
         # get :edit_messages
         # patch :update_messages
-        get :edit_notifications
-        patch :update_notifications
+        # MIGRATED: notifications -> Organisations::CategoryConfigurations::NotificationsController
+        # get :edit_notifications
+        # patch :update_notifications
         get :edit_file_import
         patch :update_file_import
       end
