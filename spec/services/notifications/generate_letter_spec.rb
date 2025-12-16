@@ -31,7 +31,7 @@ describe Notifications::GenerateLetter, type: :service do
   let!(:organisation) { create(:organisation, department: department) }
   let!(:messages_configuration) do
     create(:messages_configuration, organisation: organisation,
-                                    direction_names: ["Direction départemental"], display_department_logo: false)
+                                    direction_names: ["Direction départemental"], displayed_logos: [])
   end
   let!(:category_configuration) do
     create(:category_configuration, motif_category: category_rsa_orientation, organisation: organisation)
@@ -183,7 +183,7 @@ describe Notifications::GenerateLetter, type: :service do
 
     context "when the department logo is configured to be displayed" do
       let!(:messages_configuration) do
-        create(:messages_configuration, organisation: organisation, display_department_logo: true)
+        create(:messages_configuration, organisation: organisation, displayed_logos: %w[department])
       end
 
       it "generates the pdf string with the department logo" do
@@ -194,7 +194,7 @@ describe Notifications::GenerateLetter, type: :service do
 
     context "when the europe logos are configured to be displayed" do
       let!(:messages_configuration) do
-        create(:messages_configuration, organisation: organisation, display_europe_logos: true)
+        create(:messages_configuration, organisation: organisation, displayed_logos: %w[europe])
       end
 
       it "generates the pdf string with the europe logos" do
@@ -205,7 +205,7 @@ describe Notifications::GenerateLetter, type: :service do
 
     context "when the pole emploi logo is configured to be displayed" do
       let!(:messages_configuration) do
-        create(:messages_configuration, organisation: organisation, display_france_travail_logo: true)
+        create(:messages_configuration, organisation: organisation, displayed_logos: %w[france_travail])
       end
 
       it "generates the pdf string with the pole emploi logo" do
