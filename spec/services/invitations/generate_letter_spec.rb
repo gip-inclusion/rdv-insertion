@@ -20,7 +20,7 @@ describe Invitations::GenerateLetter, type: :service do
   let!(:organisation) { create(:organisation, department: department) }
   let!(:messages_configuration) do
     create(:messages_configuration, organisation: organisation,
-                                    direction_names: ["Direction départemental"], displayed_logos: [])
+                                    direction_names: ["Direction départemental"], logos_to_display: [])
   end
   let!(:category_configuration) do
     create(:category_configuration, motif_category: category_rsa_orientation, organisation: organisation)
@@ -123,7 +123,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     context "when the department logo is configured to be displayed" do
       let!(:messages_configuration) do
-        create(:messages_configuration, organisation: organisation, displayed_logos: %w[department])
+        create(:messages_configuration, organisation: organisation, logos_to_display: %w[department])
       end
 
       it "generates the pdf string with the department logo" do
@@ -134,7 +134,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     context "when the europe logos are configured to be displayed" do
       let!(:messages_configuration) do
-        create(:messages_configuration, organisation: organisation, displayed_logos: %w[europe])
+        create(:messages_configuration, organisation: organisation, logos_to_display: %w[europe])
       end
 
       it "generates the pdf string with the europe logos" do
@@ -145,7 +145,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     context "when the pole emploi logo is configured to be displayed" do
       let!(:messages_configuration) do
-        create(:messages_configuration, organisation: organisation, displayed_logos: %w[france_travail])
+        create(:messages_configuration, organisation: organisation, logos_to_display: %w[france_travail])
       end
 
       it "generates the pdf string with the pole emploi logo" do

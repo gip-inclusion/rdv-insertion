@@ -35,7 +35,7 @@ module Invitations
         signature_lines: @invitation.signature_lines,
         signature_image: @invitation.signature_image,
         help_address: @invitation.help_address,
-        displayed_logos: @invitation.displayed_logos,
+        logos_to_display: @invitation.logos_to_display,
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
         user_designation: @invitation.user_designation,

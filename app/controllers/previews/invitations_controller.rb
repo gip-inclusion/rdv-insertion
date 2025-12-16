@@ -84,7 +84,7 @@ module Previews
         punishable_warning: @invitation.punishable_warning,
         custom_sentence: @invitation.custom_sentence,
         signature_lines: @invitation.signature_lines,
-        displayed_logos: @invitation.displayed_logos
+        logos_to_display: @invitation.logos_to_display
       }
     end
 
@@ -99,7 +99,7 @@ module Previews
         signature_lines: @invitation.signature_lines,
         signature_image: @invitation.signature_image,
         help_address: @invitation.help_address,
-        displayed_logos: @invitation.displayed_logos,
+        logos_to_display: @invitation.logos_to_display,
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
         user_designation: @invitation.user_designation,

@@ -25,7 +25,7 @@
   </div>
 </div>
 
-<%= render "letters/footer", displayed_logos: displayed_logos, department: department %>
+<%= render "letters/footer", logos_to_display: logos_to_display, department: department %>
 
 <div class="mail-object">
   <%= image_tag "illustrations/parcours-drome-courriers-footer.png", alt: "Mentions légales et protection de données du parcours du demandeur", class: 'w-100' if department.number == "26" && motif_category&.name == "RSA Main Tendue" %>

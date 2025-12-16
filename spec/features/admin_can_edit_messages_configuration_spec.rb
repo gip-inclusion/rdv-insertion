@@ -49,7 +49,7 @@ describe "Admin can edit messages configuration", :js do
 
       expect(messages_configuration.reload.sender_city).to eq("Lyon")
       expect(messages_configuration.letter_sender_name).to eq("le Président")
-      expect(messages_configuration.displayed_logos).to include("department", "europe")
+      expect(messages_configuration.logos_to_display).to include("department", "europe")
     end
 
     it "allows to add and edit signature lines" do

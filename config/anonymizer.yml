@@ -217,7 +217,7 @@ tables:
     non_anonymized_column_names:
       - created_at
       - updated_at
-      - displayed_logos
+      - logos_to_display
       - sms_sender_name
       - organisation_id
 

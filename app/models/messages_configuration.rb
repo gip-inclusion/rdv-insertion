@@ -26,7 +26,7 @@ class MessagesConfiguration < ApplicationRecord
                                                   mime_types: SIGNATURE_MIME_TYPES },
                               allow_nil: true
 
-  validates :displayed_logos, inclusion: { in: LOGO_TYPES }
+  validates :logos_to_display, inclusion: { in: LOGO_TYPES }
 
   nullify_blank :sms_sender_name, :letter_sender_name, :sender_city, :help_address
 
@@ -70,8 +70,8 @@ class MessagesConfiguration < ApplicationRecord
     ["Le département #{I18n.t("with_prefix.#{department.pronoun}", name: department.name)}"]
   end
 
-  def displayed_logos_names
-    displayed_logos.map do |logo|
+  def logos_to_display_names
+    logos_to_display.map do |logo|
       I18n.t("activerecord.attributes.messages_configuration.logo_types.#{logo}")
     end.join(", ")
   end

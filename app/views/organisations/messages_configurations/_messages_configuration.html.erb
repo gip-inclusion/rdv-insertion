@@ -10,8 +10,8 @@
         <h4 class="h6 fw-bold text-dark-blue mb-1">Paramètres liés aux mails et courriers</h4>
         <div class="p-3">
           <%= render "common/attribute_display_inline",
-                    label: MessagesConfiguration.human_attribute_name(:displayed_logos),
-                    value: messages_configuration.displayed_logos_names %>
+                    label: MessagesConfiguration.human_attribute_name(:logos_to_display),
+                    value: messages_configuration.logos_to_display_names %>
 
           <%= render "common/attribute_display_inline",
                     label: "Signature texte",

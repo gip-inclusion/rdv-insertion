@@ -2,7 +2,7 @@ module Organisations
   class MessagesConfigurationsController < ApplicationController
     PERMITTED_PARAMS = [
       { direction_names: [] }, :sender_city, :letter_sender_name, { signature_lines: [] },
-      { displayed_logos: [] }, :help_address, :sms_sender_name, :signature_image,
+      { logos_to_display: [] }, :help_address, :sms_sender_name, :signature_image,
       :remove_signature_image
     ].freeze
 

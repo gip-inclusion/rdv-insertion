@@ -35,7 +35,7 @@ module Notifications
         signature_lines: @notification.signature_lines,
         signature_image: @notification.signature_image,
         organisation: @notification.organisation,
-        displayed_logos: @notification.displayed_logos,
+        logos_to_display: @notification.logos_to_display,
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,

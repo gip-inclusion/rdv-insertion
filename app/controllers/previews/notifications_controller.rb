@@ -83,7 +83,7 @@ module Previews
         custom_sentence: @notification.custom_sentence,
         signature_lines: @notification.signature_lines,
         instruction_for_rdv: @notification.instruction_for_rdv,
-        displayed_logos: @notification.displayed_logos
+        logos_to_display: @notification.logos_to_display
       }
     end
 
@@ -109,7 +109,7 @@ module Previews
         signature_image: @notification.signature_image,
         motif_category: @notification.motif_category,
         organisation: @notification.organisation,
-        displayed_logos: @notification.displayed_logos,
+        logos_to_display: @notification.logos_to_display,
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,

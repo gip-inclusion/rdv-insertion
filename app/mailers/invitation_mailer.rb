@@ -1,7 +1,7 @@
 class InvitationMailer < ApplicationMailer
   include ActsAsRdvSolidaritesConcern
 
-  before_action :set_invitation, :set_user, :set_department, :set_signature_lines, :set_displayed_logos,
+  before_action :set_invitation, :set_user, :set_department, :set_signature_lines, :set_logos_to_display,
                 :set_organisation_logo_path, :set_department_logo_path, :set_rdv_title, :set_user_designation,
                 :set_mandatory_warning, :set_punishable_warning, :set_rdv_purpose, :set_rdv_subject,
                 :set_custom_sentence, :set_x_mailin_custom_header
@@ -101,8 +101,8 @@ class InvitationMailer < ApplicationMailer
     @signature_lines = @invitation.signature_lines
   end
 
-  def set_displayed_logos
-    @displayed_logos = @invitation.displayed_logos
+  def set_logos_to_display
+    @logos_to_display = @invitation.logos_to_display
   end
 
   def set_organisation_logo_path

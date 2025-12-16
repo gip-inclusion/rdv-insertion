@@ -10,7 +10,7 @@ fr:
         signature_image: Signature jointe
         letter_sender_name: Nom de l'expéditeur
         help_address: Adresse d'accueil
-        displayed_logos: Logos affichés
+        logos_to_display: Logos affichés
         sms_sender_name: Nom de l'expéditeur
         logo_types:
           department: Département
