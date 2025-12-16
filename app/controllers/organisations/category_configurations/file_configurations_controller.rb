@@ -12,8 +12,7 @@ module Organisations
       end
 
       # Uses params[:file_configuration_id] directly (not strong params) because:
-      # - The shared _select_modal uses radio_button_tag which sends params at root level
-      # - No mass assignment risk: we explicitly set a single attribute
+      # The shared _select_modal uses radio_button_tag which sends params at root level
       def update
         if params[:file_configuration_id].blank?
           return turbo_stream_replace_error_list_with(["Veuillez sélectionner un modèle de fichier"])
