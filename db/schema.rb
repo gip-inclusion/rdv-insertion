@@ -305,7 +305,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_15_224154) do
     t.string "help_address"
     t.string "sms_sender_name"
     t.bigint "organisation_id"
-    t.string "displayed_logos", default: [], array: true
+    t.string "displayed_logos", default: ["department"], array: true
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 

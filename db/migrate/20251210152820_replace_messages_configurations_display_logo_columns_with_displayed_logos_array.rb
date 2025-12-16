@@ -1,6 +1,6 @@
 class ReplaceMessagesConfigurationsDisplayLogoColumnsWithDisplayedLogosArray < ActiveRecord::Migration[8.0]
   def up
-    add_column :messages_configurations, :displayed_logos, :string, array: true, default: []
+    add_column :messages_configurations, :displayed_logos, :string, array: true, default: %w[department]
 
     MessagesConfiguration.find_each do |config|
       logos = []
