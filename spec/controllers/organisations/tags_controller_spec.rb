@@ -1,4 +1,4 @@
-describe TagsController do
+describe Organisations::TagsController do
   let!(:organisation) { create(:organisation) }
   let!(:organisation2) { create(:organisation) }
   let!(:admin_agent) do

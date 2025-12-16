@@ -1,5 +1,5 @@
-<%= turbo_frame_tag "organisation" do %>
-  <%= form_with model: @organisation, url: organisation_path(@organisation), method: :patch do |f| %>
+<%= turbo_frame_tag organisation do %>
+  <%= form_with model: organisation, url: organisation_general_information_path(organisation), method: :patch do |f| %>
     <div class="card-white p-4 mb-4">
       <h3 class="h5 mb-2 fw-bold">Informations générales</h3>
       <p class="text-muted mb-4">
@@ -59,10 +59,10 @@
              data-action="dragover->image-upload#handleDragOver dragleave->image-upload#handleDragLeave drop->image-upload#handleDrop">
 
           <%# Preview (visible if logo exists or after file selection) %>
-          <div data-image-upload-target="previewContainer" class="<%= @organisation.logo.attached? ? '' : 'd-none' %>">
+          <div data-image-upload-target="previewContainer" class="<%= organisation.logo.attached? ? '' : 'd-none' %>">
             <div class="mb-3">
-              <% if @organisation.logo.attached? %>
-                <%= image_tag @organisation.logo,
+              <% if organisation.logo.attached? %>
+                <%= image_tag organisation.logo,
                               class: "img-fluid uploaded-image-preview",
                               alt: "Logo",
                               data: { image_upload_target: "previewImage" } %>
@@ -71,7 +71,7 @@
               <% end %>
             </div>
             <p class="small mb-2">
-              <span data-image-upload-target="fileName"><%= @organisation.logo.filename if @organisation.logo.attached? %></span>
+              <span data-image-upload-target="fileName"><%= organisation.logo.filename if organisation.logo.attached? %></span>
               <a href="#" class="text-danger ms-1" data-action="click->image-upload#handleFileRemove">
                 <i class="ri-close-line"></i>
               </a>
@@ -82,7 +82,7 @@
           </div>
 
           <%# Placeholder (visible when no logo) %>
-          <div data-image-upload-target="placeholder" class="<%= @organisation.logo.attached? ? 'd-none' : '' %>">
+          <div data-image-upload-target="placeholder" class="<%= organisation.logo.attached? ? 'd-none' : '' %>">
             <i class="ri-upload-cloud-2-line text-muted fs-2 d-block mb-2"></i>
             <p class="mb-1">Glisser/déposer le logo ici</p>
             <p class="text-muted mb-2">ou</p>
@@ -98,7 +98,7 @@
       </p>
 
       <div class="d-flex justify-content-end">
-        <%= link_to organisation_path(@organisation), class: "btn btn-blue-out me-2" do %>
+        <%= link_to organisation_general_information_path(organisation), class: "btn btn-blue-out me-2" do %>
           Annuler
         <% end %>
         <%= f.submit "Enregistrer", class: "btn btn-primary" %>
@@ -106,3 +106,4 @@
     </div>
   <% end %>
 <% end %>
+

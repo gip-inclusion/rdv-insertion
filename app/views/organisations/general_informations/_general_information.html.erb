@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "organisation" do %>
+<%= turbo_frame_tag organisation do %>
   <div class="card-white p-4 mb-4">
     <h3 class="h5 mb-2 fw-bold">Informations générales</h3>
     <p class="text-muted mb-4">
@@ -7,12 +7,12 @@
 
     <div class="mb-4">
       <%= render "common/attribute_display_inline",
-                 record: @organisation,
+                 record: organisation,
                  attribute: :name,
                  label: "Nom de l'organisation" %>
 
       <%= render "common/attribute_display_inline",
-                 record: @organisation,
+                 record: organisation,
                  attribute: :phone_number,
                  label: "Numéro de téléphone",
                  tooltip: {
@@ -21,7 +21,7 @@
                  } %>
 
       <%= render "common/attribute_display_inline",
-                 record: @organisation,
+                 record: organisation,
                  attribute: :email,
                  label: "Adresse email",
                  tooltip: {
@@ -30,7 +30,7 @@
                  } %>
 
       <%= render "common/attribute_display_inline",
-                 record: @organisation,
+                 record: organisation,
                  attribute: :slug,
                  label: "Désignation de l'organisation<br>dans le fichier d'import",
                  tooltip: {
@@ -42,9 +42,9 @@
     <div class="mb-4 mt-5">
       <h4 class="h6 fw-bold mb-1">Logo de l'organisation</h4>
       <p class="text-muted small mb-3">Logo au format .png ou .jpg</p>
-      <% if @organisation.logo.attached? %>
+      <% if organisation.logo.attached? %>
         <div class="bg-light p-3 d-inline-block col-8 text-center">
-          <%= image_tag @organisation.logo, class: "img-fluid uploaded-image-preview", alt: "Logo de l'organisation" %>
+          <%= image_tag organisation.logo, class: "img-fluid uploaded-image-preview", alt: "Logo de l'organisation" %>
         </div>
       <% else %>
         <div class="bg-light p-4 text-center col-8">
@@ -55,9 +55,10 @@
     </div>
 
     <div class="d-flex justify-content-end">
-      <%= link_to edit_organisation_path(@organisation), class: "btn btn-blue" do %>
+      <%= link_to edit_organisation_general_information_path(organisation), class: "btn btn-blue" do %>
         Modifier
       <% end %>
     </div>
   </div>
 <% end %>
+

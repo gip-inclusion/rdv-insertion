@@ -11,10 +11,6 @@ describe MatomoHelper do
       expect(helper.matomo_page_url).to eq(expected_pattern)
     end
 
-    it "rewrites organisation IDs to route pattern" do
-      test_url_rewriting("/organisations/123", "/organisations/:id")
-    end
-
     it "rewrites nested organisation and user IDs to route pattern" do
       test_url_rewriting("/organisations/123/users/456", "/organisations/:organisation_id/users/:id")
     end
