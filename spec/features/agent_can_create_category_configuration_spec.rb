@@ -47,7 +47,7 @@ describe "Agent can create category configuration", :js do
       fill_in "category_configuration_phone_number", with: "3949"
       fill_in "category_configuration_number_of_days_before_invitations_expire", with: "15"
 
-      within("#new_file_import_selector") do
+      within("#file_configuration_selection") do
         click_link "Sélectionner un modèle de fichier"
       end
 
@@ -77,7 +77,7 @@ describe "Agent can create category configuration", :js do
       find("button[data-dropdown--select-option-target='button']").click
       find("div[data-dropdown--select-option-target='option']", text: "RSA Orientation").click
 
-      within("#new_file_import_selector") do
+      within("#file_configuration_selection") do
         click_link "Sélectionner un modèle de fichier"
       end
 
@@ -100,7 +100,7 @@ describe "Agent can create category configuration", :js do
 
       click_button "Fermer"
 
-      within("#new_file_import_selector") do
+      within("#file_configuration_selection") do
         click_link "Sélectionner un modèle de fichier"
       end
 

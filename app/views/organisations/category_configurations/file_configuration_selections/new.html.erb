@@ -1,6 +1,6 @@
 <%= render "file_configurations/select_modal",
            title: "Sélectionner un modèle de fichier",
-           form_url: new_set_file_import_organisation_category_configurations_path(@organisation),
+           form_url: organisation_file_configuration_selection_path(@organisation),
            form_method: :post,
            file_configurations: @file_configurations,
            current_file_configuration: @current_file_configuration,

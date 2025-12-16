@@ -2,6 +2,7 @@ module Organisations
   module CategoryConfigurations
     class BaseController < ApplicationController
       before_action :set_organisation
+      before_action :set_department
       before_action :set_category_configuration
 
       private

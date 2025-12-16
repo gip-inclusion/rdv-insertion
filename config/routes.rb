@@ -129,8 +129,9 @@ Rails.application.routes.draw do
     # TODO: Remove after Phase 3 complete (new/create/destroy migrated)
     resources :category_configurations, only: [:new, :create, :destroy] do
       collection do
-        get :new_select_file_import
-        post :new_set_file_import
+        # MIGRATED: file_configuration_selection -> Organisations::CategoryConfigurations::FileConfigurationSelectionsController
+        # get :new_select_file_import
+        # post :new_set_file_import
       end
       member do
         # OLD section routes - Remove as each section is migrated in Phase 2

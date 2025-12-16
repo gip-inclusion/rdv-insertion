@@ -1,6 +1,6 @@
 <%# locals: (file_configuration: nil, organisation:) %>
 
-<%= turbo_frame_tag "new_file_import_selector" do %>
+<%= turbo_frame_tag "file_configuration_selection" do %>
   <div class="mb-4">
     <p class="text-muted small mb-3">
       Vous pouvez choisir le modèle de fichier d'import que vous souhaitez utiliser pour cette catégorie.
@@ -12,13 +12,13 @@
         <span class="fw-medium">Modèle sélectionné :</span>
         <span class="text-dark-blue"><%= file_configuration.sheet_name %></span>
       </div>
-      <%= link_to new_select_file_import_organisation_category_configurations_path(organisation, selected_file_configuration_id: file_configuration.id),
+      <%= link_to new_organisation_file_configuration_selection_path(organisation, selected_file_configuration_id: file_configuration.id),
                   data: { turbo_frame: "remote_modal" },
                   class: "btn btn-blue-out" do %>
         Changer de modèle
       <% end %>
     <% else %>
-      <%= link_to new_select_file_import_organisation_category_configurations_path(organisation),
+      <%= link_to new_organisation_file_configuration_selection_path(organisation),
                   data: { turbo_frame: "remote_modal" },
                   class: "btn btn-blue-out" do %>
         Sélectionner un modèle de fichier
