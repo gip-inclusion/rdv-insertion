@@ -217,10 +217,7 @@ tables:
     non_anonymized_column_names:
       - created_at
       - updated_at
-      - display_france_travail_logo
-      - display_europe_logos
-      - display_department_logo
-      - display_pole_emploi_logo
+      - displayed_logos
       - sms_sender_name
       - organisation_id
 
