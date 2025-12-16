@@ -25,7 +25,7 @@
                           attribute: :signature_lines,
                           as: :array,
                           label: "Signature texte",
-                          placeholder: messages_configuration_placeholder(messages_configuration, :signature_lines)
+                          placeholder: placeholder_with_default(messages_configuration, :signature_lines)
                           %>
                 <div class="row py-4 align-items-center">
                   <div class="col-4 fw-bold">
@@ -52,7 +52,7 @@
                       f: f,
                       attribute: :direction_names,
                       as: :array,
-                      placeholder: messages_configuration_placeholder(messages_configuration, :direction_names),
+                      placeholder: placeholder_with_default(messages_configuration, :direction_names),
                       html_class: "col-6",
                       tooltip: {
                         content: "L’en-tête des courriers d’invitations et de convocations permet à l’usager d’identifier l’expéditeur. Le nom de l’organisation est utilisé par défaut."
@@ -62,7 +62,7 @@
                       f: f,
                       attribute: :sender_city,
                       as: :text_field,
-                      placeholder: messages_configuration_placeholder(messages_configuration, :sender_city),
+                      placeholder: placeholder_with_default(messages_configuration, :sender_city),
                       tooltip: {
                         content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisé par défaut."
                       }
@@ -78,7 +78,7 @@
                       f: f,
                       attribute: :letter_sender_name,
                       as: :text_field,
-                      placeholder: messages_configuration_placeholder(messages_configuration, :letter_sender_name),
+                      placeholder: placeholder_with_default(messages_configuration, :letter_sender_name),
                       tooltip: {
                         content: "Permet d’identifier l’expéditeur dans le contenu des courriers.  Le « conseil départemental » est utilisé par défaut."
                       }

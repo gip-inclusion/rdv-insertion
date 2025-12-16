@@ -58,6 +58,10 @@ class MessagesConfiguration < ApplicationRecord
     ["Le département #{I18n.t("with_prefix.#{department.pronoun}", name: department.name)}"]
   end
 
+  def fallback_value_for(attribute)
+    send("default_#{attribute}")
+  end
+
   def logos_to_display_names
     logos_to_display.map do |logo|
       I18n.t("activerecord.attributes.messages_configuration.logo_types.#{logo}")

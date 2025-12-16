@@ -15,4 +15,8 @@ module CategoryConfiguration::TemplateOverride
   def template_rdv_title_by_phone = template_rdv_title_by_phone_override.presence || default_template_rdv_title_by_phone
   def template_user_designation = template_user_designation_override.presence || default_template_user_designation
   def template_rdv_purpose = template_rdv_purpose_override.presence || default_template_rdv_purpose
+
+  def fallback_value_for(attribute)
+    send(attribute.to_s.gsub("_override", ""))
+  end
 end
