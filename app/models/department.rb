@@ -19,6 +19,8 @@ class Department < ApplicationRecord
   has_one :stat, as: :statable, dependent: :destroy
   has_many :csv_exports, as: :structure, dependent: :destroy
 
+  validates :name, :capital, :number, :pronoun, :region, :logo, presence: true
+
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
 
   def name_with_region
