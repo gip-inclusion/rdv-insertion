@@ -88,6 +88,23 @@ Rails.application.routes.draw do
         resource :messages, only: [:show]
         resource :tags, only: [:show]
       end
+
+      # Category configurations with nested section resources
+      # NOTE: :index only for now. :new, :create, :destroy will be added in Phase 3
+      # when old CategoryConfigurationsController is removed
+      resources :category_configurations, only: [:index] do
+        collection do
+          # File configuration selection during NEW form (no category_configuration id yet)
+          resource :file_configuration_selection, only: [:new, :create], module: :category_configurations
+        end
+
+        # Section resources for existing category_configurations (Phase 2)
+        resource :rdv_preferences, only: [:show, :edit, :update], module: :category_configurations
+        resource :messages, only: [:show, :edit, :update], module: :category_configurations
+        resource :notifications, only: [:show, :edit, :update], module: :category_configurations
+        resource :file_configurations, only: [:show, :edit, :update], module: :category_configurations
+        resource :motifs, only: [:show], module: :category_configurations
+      end
     end
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
@@ -108,15 +125,18 @@ Rails.application.routes.draw do
     resources :follow_ups, module: :follow_ups, only: [] do
       resource :closings, only: [:create, :destroy]
     end
-    # we need to nest in organisations the different category_configurations record to correctly authorize them
+    # OLD ROUTES - Kept during migration for incremental testing
+    # TODO: Remove after Phase 3 complete (new/create/destroy migrated)
     resources :category_configurations, only: [:new, :create, :destroy] do
       collection do
         get :new_select_file_import
         post :new_set_file_import
       end
       member do
-        get :edit_rdv_preferences
-        patch :update_rdv_preferences
+        # OLD section routes - Remove as each section is migrated in Phase 2
+        # MIGRATED: rdv_preferences -> Organisations::CategoryConfigurations::RdvPreferencesController
+        # get :edit_rdv_preferences
+        # patch :update_rdv_preferences
         get :edit_messages
         patch :update_messages
         get :edit_notifications
