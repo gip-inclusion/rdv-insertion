@@ -37,4 +37,3 @@ module Organisations
     end
   end
 end
-

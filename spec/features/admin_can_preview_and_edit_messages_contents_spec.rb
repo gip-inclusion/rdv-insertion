@@ -7,7 +7,7 @@ describe "Admins can preview and editmessages contents", :js do
   let!(:category_configuration) do
     create(
       :category_configuration, motif_category: category_rsa_orientation, organisation:,
-      convene_user: true
+                               convene_user: true
     )
   end
 
@@ -154,7 +154,7 @@ describe "Admins can preview and editmessages contents", :js do
     let!(:category_configuration) do
       create(
         :category_configuration, motif_category: category_rsa_insertion_offer, organisation:,
-        convene_user: false
+                                 convene_user: false
       )
     end
 

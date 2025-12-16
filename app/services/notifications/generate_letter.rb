@@ -24,7 +24,7 @@ module Notifications
       )
     end
 
-    def locals # rubocop:disable Metrics/AbcSize
+    def locals
       {
         department: @notification.department,
         user: @notification.user,
