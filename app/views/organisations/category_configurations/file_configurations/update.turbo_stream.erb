@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@category_configuration, :file_import) do %>
+  <%= render "file_configuration", category_configuration: @category_configuration, organisation: @organisation %>
+<% end %>

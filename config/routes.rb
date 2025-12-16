@@ -143,8 +143,9 @@ Rails.application.routes.draw do
         # MIGRATED: notifications -> Organisations::CategoryConfigurations::NotificationsController
         # get :edit_notifications
         # patch :update_notifications
-        get :edit_file_import
-        patch :update_file_import
+        # MIGRATED: file_import -> Organisations::CategoryConfigurations::FileConfigurationsController
+        # get :edit_file_import
+        # patch :update_file_import
       end
     end
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"

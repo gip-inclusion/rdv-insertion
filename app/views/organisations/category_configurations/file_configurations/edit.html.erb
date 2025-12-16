@@ -1,6 +1,6 @@
 <%= render "file_configurations/select_modal",
            title: "Changer le modèle de fichier",
-           form_url: update_file_import_organisation_category_configuration_path(@organisation, @category_configuration),
+           form_url: organisation_category_configuration_file_configurations_path(@organisation, @category_configuration),
            form_method: :patch,
            file_configurations: @file_configurations,
            current_file_configuration: @current_file_configuration,
