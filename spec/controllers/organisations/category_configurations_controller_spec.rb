@@ -1,4 +1,4 @@
-describe CategoryConfigurationsController do
+describe Organisations::CategoryConfigurationsController do
   let!(:department) { create(:department) }
   let!(:organisation) do
     create(:organisation, name: "PIE Pantin", slug: "pie-pantin", email: "pie@pantin.fr", phone_number: "0102030405",
