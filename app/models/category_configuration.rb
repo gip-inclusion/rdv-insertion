@@ -39,7 +39,7 @@ class CategoryConfiguration < ApplicationRecord
   end
 
   def phone_number_with_default
-    "#{phone_number}#{' (par défaut)' unless attributes['phone_number'].present?}"
+    "#{phone_number}#{' (par défaut)' if attributes['phone_number'].blank?}"
   end
 
   def invitation_formats_list

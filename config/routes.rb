@@ -89,7 +89,7 @@ Rails.application.routes.draw do
         resource :tags, only: [:show]
       end
 
-      resources :category_configurations, only: [:index, :new, :create, :destroy] do
+      resources :category_configurations, only: [:new, :create, :destroy] do
         collection do
           # File configuration selection during NEW form (no category_configuration id yet)
           resource :file_configuration_selection, only: [:new, :create], module: :category_configurations

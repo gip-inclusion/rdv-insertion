@@ -4,13 +4,6 @@ module Organisations
     before_action :set_department, :set_available_motif_categories, only: [:new]
     before_action :set_category_configuration, only: [:destroy]
 
-    def index
-      @category_configurations = @organisation.category_configurations
-                                              .includes(:motif_category, :file_configuration)
-                                              .order(:position)
-      @motifs_by_category = @organisation.motifs.group_by(&:motif_category_id)
-    end
-
     def new
       @category_configuration = CategoryConfiguration.new(organisation: @organisation)
       render layout: "no_footer_white_bg"
