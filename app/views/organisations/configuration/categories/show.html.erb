@@ -20,10 +20,14 @@
         </div>
       </div>
 
-      <%= render "organisations/category_configurations/list",
-                 category_configurations: @category_configurations,
-                 motifs_by_category: @motifs_by_category,
-                 organisation: @organisation %>
+      <%= turbo_frame_tag "category_configurations_list",
+                         src: organisation_category_configurations_path(@organisation) do %>
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+      <% end %>
 
       <div class="d-flex justify-content-end mt-4">
         <%= link_to new_organisation_category_configuration_path(@organisation),
