@@ -89,14 +89,12 @@ Rails.application.routes.draw do
         resource :tags, only: [:show]
       end
 
-      # Category configurations with nested section resources
       resources :category_configurations, only: [:index, :new, :create, :destroy] do
         collection do
           # File configuration selection during NEW form (no category_configuration id yet)
           resource :file_configuration_selection, only: [:new, :create], module: :category_configurations
         end
 
-        # Section resources for existing category_configurations (Phase 2)
         resource :rdv_preferences, only: [:show, :edit, :update], module: :category_configurations
         resource :messages, only: [:show, :edit, :update], module: :category_configurations
         resource :notifications, only: [:show, :edit, :update], module: :category_configurations
