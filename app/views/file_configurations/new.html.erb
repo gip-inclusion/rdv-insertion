@@ -4,7 +4,7 @@
                 method: :post,
                 data: { turbo_frame: "remote_modal" } do |f| %>
     <%= turbo_frame_tag "error_list" %>
-    <div class="px-4"><%= render "form", f: f %></div>
+    <div class="px-4"><%= render "file_configuration_form", f: f %></div>
 
     <hr class="hr-bleed">
 

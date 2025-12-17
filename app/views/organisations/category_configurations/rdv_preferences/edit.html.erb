@@ -4,7 +4,7 @@
                 method: :patch,
                 data: { turbo_frame: "remote_modal" } do |f| %>
     <%= turbo_frame_tag "error_list" %>
-    <div class="px-4"><%= render "form", f: f, organisation: @organisation %></div>
+    <div class="px-4"><%= render "rdv_preference_form", f: f, organisation: @organisation %></div>
 
     <hr class="hr-bleed">
 
