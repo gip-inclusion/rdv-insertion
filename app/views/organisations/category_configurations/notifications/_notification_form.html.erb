@@ -1,21 +1,16 @@
-<%# locals: (f:) %>
+<%# locals: (category_configuration:, url:) %>
 
-<div class="mb-4">
-  <label class="form-label fw-bold">Rendez-vous pris</label>
-  <p class="text-muted small mb-2">
-    Recevoir un email pour chaque créneau réservé sur cette catégorie.
-  </p>
-  <%= f.email_field :email_to_notify_rdv_changes,
-                    class: "form-control w-25",
-                    placeholder: "prenom.nom@mail.com" %>
-</div>
+<%= form_with model: category_configuration,
+              url: url,
+              method: :patch,
+              data: { turbo_frame: "remote_modal" } do |f| %>
+  <%= turbo_frame_tag "error_list" %>
+  <div class="px-4"><%= render "notification_fields", f: f %></div>
 
-<div class="mb-4">
-  <label class="form-label fw-bold">Créneaux indisponibles</label>
-  <p class="text-muted small mb-2">
-    Recevoir un email lorsque les usagers ne peuvent plus prendre rendez-vous sur cette catégorie.
-  </p>
-  <%= f.email_field :email_to_notify_no_available_slots,
-                    class: "form-control w-25",
-                    placeholder: "prenom.nom@mail.com" %>
-</div>
+  <hr class="hr-bleed">
+
+  <div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn btn-blue-out" data-bs-dismiss="modal">Annuler</button>
+    <%= f.submit "Enregistrer", class: "btn btn-blue" %>
+  </div>
+<% end %>

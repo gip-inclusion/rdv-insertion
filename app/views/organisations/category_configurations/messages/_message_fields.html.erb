@@ -1,0 +1,33 @@
+<%# locals: (f:) %>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Invitation limitée aux organisations de l'usager</label>
+  <p class="text-muted small mb-2">
+    L'usager ne pourra prendre rendez-vous que dans les organisations auxquelles il est rattaché.
+  </p>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <%= f.radio_button :invite_to_user_organisations_only, true, class: "form-check-input" %>
+      <%= f.label :invite_to_user_organisations_only, "Oui", value: true, class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.radio_button :invite_to_user_organisations_only, false, class: "form-check-input" %>
+      <%= f.label :invite_to_user_organisations_only, "Non", value: false, class: "form-check-label" %>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Durée de validité des liens d'invitations</label>
+  <p class="text-muted small mb-2">
+    Le lien permettant de prendre rendez-vous dans les invitations expirera au-delà de la période définie ci-dessous. L'usager ne pourra plus prendre rendez-vous au-delà de cette période.
+  </p>
+  <div class="d-flex align-items-center gap-2">
+    <%= f.number_field :number_of_days_before_invitations_expire,
+                       class: "form-control input-small-width",
+                       min: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER,
+                       placeholder: "-" %>
+    <span>jours</span>
+  </div>
+  <p class="text-muted small mt-1">Laissez vide pour que les invitations n'expirent jamais.</p>
+</div>

@@ -57,7 +57,7 @@
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
         </div>
         <div class="stepper-step-content d-none" data-accordion-target="content">
-          <%= render "organisations/category_configurations/rdv_preferences/rdv_preference_form", f: f, organisation: @organisation %>
+          <%= render "organisations/category_configurations/rdv_preferences/rdv_preference_fields", f: f, organisation: @organisation %>
         </div>
       </div>
 
@@ -94,7 +94,7 @@
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
         </div>
         <div class="stepper-step-content d-none" data-accordion-target="content">
-          <%= render "organisations/category_configurations/messages/message_form", f: f %>
+          <%= render "organisations/category_configurations/messages/message_fields", f: f %>
         </div>
       </div>
 
@@ -127,7 +127,7 @@
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
         </div>
         <div class="stepper-step-content d-none" data-accordion-target="content">
-          <%= render "organisations/category_configurations/notifications/notification_form", f: f %>
+          <%= render "organisations/category_configurations/notifications/notification_fields", f: f %>
         </div>
       </div>
     </div>

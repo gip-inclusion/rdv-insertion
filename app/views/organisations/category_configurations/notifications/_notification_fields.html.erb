@@ -1,0 +1,21 @@
+<%# locals: (f:) %>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Rendez-vous pris</label>
+  <p class="text-muted small mb-2">
+    Recevoir un email pour chaque créneau réservé sur cette catégorie.
+  </p>
+  <%= f.email_field :email_to_notify_rdv_changes,
+                    class: "form-control w-25",
+                    placeholder: "prenom.nom@mail.com" %>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Créneaux indisponibles</label>
+  <p class="text-muted small mb-2">
+    Recevoir un email lorsque les usagers ne peuvent plus prendre rendez-vous sur cette catégorie.
+  </p>
+  <%= f.email_field :email_to_notify_no_available_slots,
+                    class: "form-control w-25",
+                    placeholder: "prenom.nom@mail.com" %>
+</div>
