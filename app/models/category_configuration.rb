@@ -38,10 +38,6 @@ class CategoryConfiguration < ApplicationRecord
     attributes["phone_number"].presence || organisation.phone_number
   end
 
-  def motifs
-    organisation.motifs.active.where(motif_category: motif_category)
-  end
-
   def notify_no_available_slots? = email_to_notify_no_available_slots.present?
   def notify_rdv_changes? = email_to_notify_rdv_changes.present?
 
