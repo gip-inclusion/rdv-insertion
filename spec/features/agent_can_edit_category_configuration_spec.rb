@@ -104,7 +104,7 @@ describe "Agent can edit category configuration", :js do
 
       find("[data-action='click->accordion#toggle']").click
 
-      within("##{dom_id(category_configuration, :file_import)}") do
+      within("##{dom_id(category_configuration, :file_configuration)}") do
         expect(page).to have_content("Feuille Import")
         click_link "Changer de modèle"
       end
@@ -114,7 +114,7 @@ describe "Agent can edit category configuration", :js do
       find("input[type='radio'][value='#{new_file_config.id}']").click
       click_button "Sélectionner ce modèle"
 
-      within("##{dom_id(category_configuration, :file_import)}") do
+      within("##{dom_id(category_configuration, :file_configuration)}") do
         expect(page).to have_content("Nouveau Fichier")
       end
 
