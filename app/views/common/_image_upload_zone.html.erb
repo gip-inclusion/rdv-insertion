@@ -1,12 +1,11 @@
-<%# Required locals: f, record, attribute, remove_attribute %>
-<%# Optional locals: input_id, alt, placeholder_text %>
+<%# locals: (f:, record:, attribute:, input_id: nil, alt: nil, placeholder_text: nil) %>
 
 <% image_attached = record.send(attribute).attached? %>
 <% input_id = local_assigns[:input_id] || "#{attribute}_input" %>
 <% alt = local_assigns[:alt] || attribute.to_s.humanize %>
 
 <div data-controller="image-upload">
-  <%= f.hidden_field remove_attribute, value: "false", data: { image_upload_target: "removeField" } %>
+  <%= f.hidden_field :"remove_#{attribute}", value: "false", data: { image_upload_target: "removeField" } %>
   <%= f.file_field attribute,
                   class: "d-none",
                   id: input_id,
