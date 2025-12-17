@@ -98,7 +98,7 @@ Rails.application.routes.draw do
         resource :rdv_preferences, only: [:show, :edit, :update], module: :category_configurations
         resource :messages, only: [:show, :edit, :update], module: :category_configurations
         resource :notifications, only: [:show, :edit, :update], module: :category_configurations
-        resource :file_configurations, only: [:show, :edit, :update], module: :category_configurations
+        resource :file_configuration_selection, only: [:edit, :update], module: :category_configurations
         resource :motifs, only: [:show], module: :category_configurations
       end
     end
