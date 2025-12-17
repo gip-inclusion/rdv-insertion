@@ -11,6 +11,10 @@ module Organisations
         set_new_context
       end
 
+      def edit
+        set_edit_context
+      end
+
       # Uses params[:file_configuration_id] directly (not strong params) because:
       # The shared _select_modal uses radio_button_tag which sends params at root level
       def create
@@ -19,10 +23,6 @@ module Organisations
         end
 
         @selected_file_configuration = FileConfiguration.find(params[:file_configuration_id])
-      end
-
-      def edit
-        set_edit_context
       end
 
       # Uses params[:file_configuration_id] directly (not strong params) because:
