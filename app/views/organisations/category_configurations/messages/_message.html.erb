@@ -9,10 +9,8 @@
           label: "Invitation limitée aux organisations de l'usager" %>
 
       <%= render "common/attribute_display_inline",
-          record: category_configuration,
-          attribute: :number_of_days_before_invitations_expire,
           label: "Durée de validité des liens d'invitations",
-          suffix: "jours",
+          value: category_configuration.invitations_validity_in_days,
           blank_text: "Pas de limite" %>
 
       <div class="row py-2 align-items-center">

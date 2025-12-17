@@ -1,5 +1,5 @@
 <%# Displays an attribute in inline format (label left, value right) %>
-<%# Mode 1 - with record: record, attribute (+ optional: label, tooltip, as, i18n_scope, default_indicator, suffix, blank_text) %>
+<%# Mode 1 - with record: record, attribute (+ optional: label, tooltip, as, blank_text) %>
 <%# Mode 2 - without record: label, value (+ optional: tooltip, blank_text) %>
 
 <%
@@ -33,13 +33,9 @@
     <% elsif display_value.blank? %>
       <span class="text-muted"><%= blank_text %></span>
     <% elsif local_assigns[:as] == :inline_list %>
-      <% items = local_assigns[:i18n_scope] ? display_value.map { |v| I18n.t("#{i18n_scope}.#{v}") } : display_value %>
-      <%= items.join(", ") %>
+      <%= display_value.join(", ") %>
     <% else %>
-      <%= display_value %><%= " #{local_assigns[:suffix]}" if local_assigns[:suffix] %>
-      <% if local_assigns[:default_indicator] && record.attributes[attribute.to_s].blank? %>
-        <span>(par défaut)</span>
-      <% end %>
+      <%= display_value %>
     <% end %>
   </div>
 </div>

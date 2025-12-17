@@ -4,10 +4,8 @@
 
     <div class="mx-3 mb-4">
       <%= render "common/attribute_display_inline",
-          record: category_configuration,
-          attribute: :invitation_formats,
-          as: :inline_list,
-          i18n_scope: "invitation_formats" %>
+          label: CategoryConfiguration.human_attribute_name(:invitation_formats),
+          value: category_configuration.invitation_formats_list %>
 
       <%= render "common/attribute_display_inline",
           record: category_configuration,
@@ -20,9 +18,8 @@
           label: "Convocation possible" %>
 
       <%= render "common/attribute_display_inline",
-          record: category_configuration,
-          attribute: :phone_number,
-          default_indicator: true,
+          label: CategoryConfiguration.human_attribute_name(:phone_number),
+          value: category_configuration.phone_number_with_default,
           tooltip: { content: "Ce numéro sera utilisé dans les invitations et convocations envoyées pour cette catégorie." } %>
     </div>
 
