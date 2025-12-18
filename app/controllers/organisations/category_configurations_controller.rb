@@ -16,7 +16,7 @@ module Organisations
         flash[:success] = "La configuration a été créée avec succès"
         redirect_to organisation_configuration_categories_path(@organisation)
       else
-        turbo_stream_replace_error_list_with(create_configuration.errors)
+        turbo_stream_display_error_modal(create_configuration.errors)
       end
     end
 
