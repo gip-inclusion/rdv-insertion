@@ -101,7 +101,6 @@ Rails.application.routes.draw do
           resource :invitation_settings, only: [:show, :edit, :update]
           resource :alertings, only: [:show, :edit, :update]
           resource :file_configuration_selection, only: [:edit, :update]
-          resources :motifs, only: [:index]
         end
       end
     end
