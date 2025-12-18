@@ -1,12 +1,12 @@
 module Organisations
   module CategoryConfigurations
-    class NotificationsController < BaseController
+    class InvitationSettingsController < BaseController
       def show; end
 
       def edit; end
 
       def update
-        @category_configuration.assign_attributes(notifications_params)
+        @category_configuration.assign_attributes(invitation_settings_params)
         if @category_configuration.save
           render :update
         else
@@ -16,8 +16,9 @@ module Organisations
 
       private
 
-      def notifications_params
-        params.expect(category_configuration: [:email_to_notify_rdv_changes, :email_to_notify_no_available_slots])
+      def invitation_settings_params
+        params.expect(category_configuration: [:invite_to_user_organisations_only,
+                                               :number_of_days_before_invitations_expire])
       end
     end
   end

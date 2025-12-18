@@ -96,10 +96,10 @@ Rails.application.routes.draw do
         end
 
         resource :rdv_preferences, only: [:show, :edit, :update], module: :category_configurations
-        resource :messages, only: [:show, :edit, :update], module: :category_configurations
-        resource :notifications, only: [:show, :edit, :update], module: :category_configurations
+        resource :invitation_settings, only: [:show, :edit, :update], module: :category_configurations
+        resource :alertings, only: [:show, :edit, :update], module: :category_configurations
         resource :file_configuration_selection, only: [:edit, :update], module: :category_configurations
-        resource :motifs, only: [:show], module: :category_configurations
+        resources :motifs, only: [:index], module: :category_configurations
       end
     end
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do

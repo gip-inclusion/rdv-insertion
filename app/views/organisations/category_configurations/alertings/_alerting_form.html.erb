@@ -3,7 +3,7 @@
               method: :patch,
               data: { turbo_frame: "remote_modal" } do |f| %>
   <%= turbo_frame_tag "error_list" %>
-  <div class="px-4"><%= render "notification_fields", f: f %></div>
+  <div class="px-4"><%= render "alerting_fields", f: f %></div>
 
   <hr class="hr-bleed">
 

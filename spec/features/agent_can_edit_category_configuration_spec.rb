@@ -60,16 +60,16 @@ describe "Agent can edit category configuration", :js do
       expect(category_configuration.reload.phone_number).to eq("3949")
     end
 
-    it "edits messages settings via modal" do
+    it "edits invitation settings via modal" do
       visit organisation_configuration_categories_path(organisation)
 
       find("[data-action='click->accordion#toggle']").click
 
-      within("##{dom_id(category_configuration, :messages)}") do
+      within("##{dom_id(category_configuration, :invitation_settings)}") do
         click_link "Modifier"
       end
 
-      expect(page).to have_content("Modifier les préférences de messages")
+      expect(page).to have_content("Modifier les paramètres d'invitation")
 
       fill_in "category_configuration_number_of_days_before_invitations_expire", with: "10"
 
@@ -78,12 +78,12 @@ describe "Agent can edit category configuration", :js do
       expect(category_configuration.reload.number_of_days_before_invitations_expire).to eq(10)
     end
 
-    it "edits notifications via modal" do
+    it "edits alertings via modal" do
       visit organisation_configuration_categories_path(organisation)
 
       find("[data-action='click->accordion#toggle']").click
 
-      within("##{dom_id(category_configuration, :notifications)}") do
+      within("##{dom_id(category_configuration, :alertings)}") do
         click_link "Modifier"
       end
 

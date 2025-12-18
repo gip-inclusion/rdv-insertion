@@ -1,6 +1,6 @@
-<%= turbo_frame_tag dom_id(category_configuration, :messages) do %>
+<%= turbo_frame_tag dom_id(category_configuration, :invitation_settings) do %>
   <div class="mb-4 background-blue-paler p-4 rounded-3">
-    <h3 class="h5 mb-2 fw-bold text-dark-blue">Messages</h3>
+    <h3 class="h5 mb-2 fw-bold text-dark-blue">Paramètres d'invitation</h3>
 
     <div class="mx-3 mb-4">
       <%= render "common/attribute_display_inline",
@@ -28,7 +28,7 @@
     </div>
 
     <div class="d-flex justify-content-end">
-      <%= link_to edit_organisation_category_configuration_messages_path(organisation, category_configuration),
+      <%= link_to edit_organisation_category_configuration_invitation_settings_path(organisation, category_configuration),
                   class: "btn btn-blue",
                   data: { turbo_frame: "remote_modal" } do %>
         Modifier
