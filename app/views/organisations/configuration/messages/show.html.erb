@@ -22,6 +22,19 @@
         <% @category_configurations.each do |category_configuration| %>
           <%= render "organisations/category_configurations/template_overrides/template_override", organisation: @organisation, category_configuration: category_configuration %>
         <% end %>
+        <% if @category_configurations.empty? %>
+          <div class="background-blue-paler rounded-3 text-center py-5">
+            <%= image_tag "illustrations/empty-results.png", alt: "", width: 200, class: "mb-3" %>
+            <p class="mb-1">Il n'y a pas encore de catégorie sur cette organisation.</p>
+            <p class="mb-4">
+              Pour configurer le contenu des messages, vous devez d'abord ajouter une catégorie de motifs.
+            </p>
+            <%= link_to new_organisation_category_configuration_path(@organisation), class: "btn btn-blue", data: { turbo_frame: "_top" } do %>
+              <i class="ri-add-line me-1"></i> Ajouter une catégorie
+            <% end %>
+          </div>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>
