@@ -6,8 +6,7 @@ module Organisations
       def edit; end
 
       def update
-        @category_configuration.assign_attributes(invitation_settings_params)
-        if @category_configuration.save
+        if @category_configuration.update(invitation_settings_params)
           render :update
         else
           turbo_stream_replace_error_list_with(@category_configuration.errors.full_messages)

@@ -13,8 +13,7 @@ module Organisations
     def edit; end
 
     def update
-      @messages_configuration.assign_attributes(messages_configuration_params)
-      if @messages_configuration.save
+      if @messages_configuration.update(messages_configuration_params)
         redirect_to organisation_messages_configuration_path(@organisation, @messages_configuration)
       else
         turbo_stream_display_error_modal(@messages_configuration.errors.full_messages)

@@ -38,8 +38,7 @@ class FileConfigurationsController < ApplicationController
   end
 
   def update
-    @file_configuration.assign_attributes(**file_configuration_params)
-    if @file_configuration.save
+    if @file_configuration.update(file_configuration_params)
       turbo_stream_display_success_modal("Le fichier d'import a été modifié avec succès")
     else
       turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)

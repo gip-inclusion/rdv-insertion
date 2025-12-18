@@ -6,8 +6,7 @@ module Organisations
       def edit; end
 
       def update
-        @category_configuration.assign_attributes(alertings_params)
-        if @category_configuration.save
+        if @category_configuration.update(alertings_params)
           render :update
         else
           turbo_stream_replace_error_list_with(@category_configuration.errors.full_messages)

@@ -21,8 +21,7 @@ module Organisations
         file_configuration = FileConfiguration.find(params[:file_configuration_id])
         authorize file_configuration, :show?
 
-        @category_configuration.file_configuration = file_configuration
-        if @category_configuration.save
+        if @category_configuration.update(file_configuration:)
           render :update
         else
           turbo_stream_replace_error_list_with(@category_configuration.errors.full_messages)

@@ -7,8 +7,7 @@ module Organisations
     def edit; end
 
     def update
-      @organisation.assign_attributes(data_retention_params)
-      if @organisation.save
+      if @organisation.update(data_retention_params)
         redirect_to organisation_data_retention_path(@organisation)
       else
         turbo_stream_replace_error_list_with(@organisation.errors.full_messages)
