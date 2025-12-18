@@ -39,7 +39,9 @@ class CategoryConfiguration < ApplicationRecord
   def phone_number
     attributes["phone_number"].presence || default_phone_number
   end
+
   def default_phone_number = organisation.phone_number
+
   def default_phone_number?
     phone_number == default_phone_number
   end
