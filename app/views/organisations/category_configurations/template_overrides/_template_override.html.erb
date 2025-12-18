@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "category_configuration_template_overrides_#{category_configuration.id}" do %>
-  <div class="mb-4 p-4 background-light">
+  <div class="mb-4 p-4 background-blue-paler rounded-3">
     <h3 class="h5 mb-2 text-dark-blue">Messages de la catégorie « <span class="text-underline"><%= category_configuration.motif_category_name %></span> »</h3>
     <div class="p-3">
       <%= render "common/attribute_display_inline", record: category_configuration, attribute: :template_rdv_title %>
