@@ -81,9 +81,6 @@ Rails.application.routes.draw do
       resources :tags, only: [:create, :destroy]
       resources :dpa_agreements, only: :create
       resources :messages_configurations, only: [:show, :edit, :update]
-      resources :category_configurations, only: [:show], module: :category_configurations do
-        resource :template_override, only: [:show, :edit, :update]
-      end
 
       namespace :configuration do
         resource :informations, only: [:show]
@@ -94,16 +91,18 @@ Rails.application.routes.draw do
       end
 
       resources :category_configurations, only: [:new, :create, :destroy] do
-        collection do
-          # File configuration selection during NEW form (no category_configuration id yet)
-          resource :file_configuration_selection, only: [:new, :create], module: :category_configurations
-        end
+        scope module: :category_configurations do
+          collection do
+            resource :file_configuration_selection, only: [:new, :create]
+          end
 
-        resource :rdv_preferences, only: [:show, :edit, :update], module: :category_configurations
-        resource :invitation_settings, only: [:show, :edit, :update], module: :category_configurations
-        resource :alertings, only: [:show, :edit, :update], module: :category_configurations
-        resource :file_configuration_selection, only: [:edit, :update], module: :category_configurations
-        resources :motifs, only: [:index], module: :category_configurations
+          resource :template_override, only: [:show, :edit, :update]
+          resource :rdv_preferences, only: [:show, :edit, :update]
+          resource :invitation_settings, only: [:show, :edit, :update]
+          resource :alertings, only: [:show, :edit, :update]
+          resource :file_configuration_selection, only: [:edit, :update]
+          resources :motifs, only: [:index]
+        end
       end
     end
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
