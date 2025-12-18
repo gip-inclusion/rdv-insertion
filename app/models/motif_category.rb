@@ -3,6 +3,7 @@ class MotifCategory < ApplicationRecord
     :name, :short_name
   ].freeze
 
+  MOTIF_CATEGORY_TYPES_SORTED = %w[rsa_orientation rsa_accompagnement siae autre].freeze
   RSA_RELATED_TYPES = %w[rsa_orientation rsa_accompagnement].freeze
 
   has_many :category_configurations, dependent: :restrict_with_exception
@@ -18,6 +19,7 @@ class MotifCategory < ApplicationRecord
   delegate :model, to: :template, prefix: true
   delegate :atelier?, to: :template
 
-  enum :motif_category_type, { autre: "autre", siae: "siae", rsa_orientation: "rsa_orientation",
-                               rsa_accompagnement: "rsa_accompagnement" }
+  enum :motif_category_type, MOTIF_CATEGORY_TYPES_SORTED.index_by(&:itself)
+
+  scope :grouped_by_type, -> { group_by(&:motif_category_type).slice(*MOTIF_CATEGORY_TYPES_SORTED) }
 end

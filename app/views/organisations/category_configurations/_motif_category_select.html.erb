@@ -6,7 +6,7 @@
      data-controller="dropdown--show-options dropdown--filter-options dropdown--select-option"
      data-action="keydown->dropdown--select-option#handleKeydown dropdown--select-option:selected->dropdown--show-options#close dropdown--select-option:selected->dropdown--filter-options#reset dropdown--select-option:close->dropdown--show-options#close">
 
-  <%# Hidden input for HTML5 validation %>
+  <%# Hidden input to enable native HTML5 required validation on custom dropdown %>
   <input type="text"
          name="category_configuration[motif_category_id]"
          id="motif_category_id"
@@ -42,15 +42,12 @@
 
     <%# Category options grouped by type %>
     <div class="dropdown-options">
-      <% motif_category_types = I18n.t("activerecord.attributes.motif_category.motif_category_types").keys.map(&:to_s) %>
-      <% grouped_motif_categories = available_motif_categories.group_by(&:motif_category_type) %>
-      <% motif_category_types.each do |motif_category_type| %>
-        <% next unless grouped_motif_categories[motif_category_type].present? %>
+      <% available_motif_categories.grouped_by_type.each do |type, categories| %>
         <div class="dropdown-group">
           <div class="dropdown-group-header">
-            <%= I18n.t("activerecord.attributes.motif_category.motif_category_types.#{motif_category_type}") %>
+            <%= I18n.t("activerecord.attributes.motif_category.motif_category_types.#{type}") %>
           </div>
-          <% grouped_motif_categories[motif_category_type].each do |motif_category| %>
+          <% categories.each do |motif_category| %>
             <div class="dropdown-item py-2 dropdown-select-option dropdown-group-item"
                  data-dropdown--filter-options-target="item"
                  data-dropdown--select-option-target="option"

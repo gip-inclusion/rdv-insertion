@@ -1,8 +1,8 @@
-<% content_for :title, "Ajouter une catégorie - #{@organisation.name} - rdv-insertion" %>
+<% content_for :title, "Ajouter une catégorie - #{organisation.name} - rdv-insertion" %>
 
 <div class="container mt-5 mb-5 pb-5">
-  <%= form_with model: @category_configuration,
-                url: organisation_category_configurations_path(@organisation),
+  <%= form_with model: category_configuration,
+                url: organisation_category_configurations_path(organisation),
                 method: :post,
                 data: {
                   controller: "accordion",
@@ -41,7 +41,7 @@
         <div class="stepper-step-content" data-accordion-target="content">
           <p class="text-muted mb-3">Choisissez parmi les catégories de motif disponibles sur rdv-insertion</p>
           <%= render "motif_category_select",
-                     available_motif_categories: @available_motif_categories %>
+                     available_motif_categories: available_motif_categories %>
         </div>
       </div>
 
@@ -57,7 +57,7 @@
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
         </div>
         <div class="stepper-step-content d-none" data-accordion-target="content">
-          <%= render "organisations/category_configurations/rdv_preferences/rdv_preference_fields", f: f, organisation: @organisation %>
+          <%= render "organisations/category_configurations/rdv_preferences/rdv_preference_fields", f: f, organisation: organisation %>
         </div>
       </div>
 
@@ -76,7 +76,7 @@
           <p class="text-muted small mb-3">
             Pour permettre l'envoi des invitations et des convocations, vous devez créer des motifs de rendez-vous sur RDV-Solidarité et les rattacher à la catégorie RSA.
           </p>
-          <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{@organisation.rdv_solidarites_organisation_id}/motifs", target: "_blank", class: "btn btn-blue-out" do %>
+          <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs", target: "_blank", class: "btn btn-blue-out" do %>
             <span>Créer les motifs de rendez-vous</span> <i class="ri-external-link-line ms-1"></i>
           <% end %>
         </div>
@@ -110,8 +110,18 @@
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
         </div>
         <div class="stepper-step-content d-none" data-accordion-target="content">
-          <%= render "organisations/category_configurations/file_configuration_selections/file_configuration_selection",
-                     organisation: @organisation %>
+          <%= turbo_frame_tag "file_configuration_selection" do %>
+            <div class="mb-4">
+              <p class="text-muted small mb-3">
+                Vous pouvez choisir le modèle de fichier d'import que vous souhaitez utiliser pour cette catégorie.
+              </p>
+              <%= link_to new_organisation_file_configuration_selection_path(organisation),
+                          data: { turbo_frame: "remote_modal" },
+                          class: "btn btn-blue-out" do %>
+                Sélectionner un modèle de fichier
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
 
@@ -135,7 +145,7 @@
     <%# Sticky footer %>
     <div class="stepper-footer">
       <div class="container d-flex justify-content-between">
-        <%= link_to organisation_configuration_categories_path(@organisation),
+        <%= link_to organisation_configuration_categories_path(organisation),
                     class: "btn btn-blue-out",
                     data: { turbo_frame: "_top" } do %>
           Annuler

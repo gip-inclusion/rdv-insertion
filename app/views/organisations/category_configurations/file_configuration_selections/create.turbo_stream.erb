@@ -1,5 +1,5 @@
 <%= turbo_stream.replace "file_configuration_selection" do %>
-  <%= render "file_configuration_selection",
+  <%= render "selected_file_configuration",
              file_configuration: @selected_file_configuration,
              organisation: @organisation %>
 <% end %>
