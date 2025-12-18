@@ -58,6 +58,6 @@ class FileConfigurationsController < ApplicationController
   end
 
   def set_return_to_path
-    @return_to_path = params[:return_to_path]
+    @return_to_path = url_from(params[:return_to_path])
   end
 end
