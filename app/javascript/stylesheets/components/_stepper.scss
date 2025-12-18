@@ -1,0 +1,57 @@
+.stepper {
+  &-step {
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      cursor: pointer;
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    &-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      margin-right: 1rem;
+      flex-shrink: 0;
+
+      &.active {
+        background-color: $dark-blue;
+        color: white;
+      }
+
+      &.inactive {
+        background-color: white;
+        border: 2px solid $light-grey;
+        color: $dark-grey;
+      }
+    }
+
+    &-content {
+      margin-left: 48px;
+      padding-bottom: 1rem;
+    }
+  }
+}
+
+.stepper-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.07);
+  padding: 1rem 2rem;
+  z-index: 100;
+}

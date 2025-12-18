@@ -1,11 +1,39 @@
 <% content_for :title, "Configuration - Catégories - #{@organisation.name} - rdv-insertion" %>
 
-<div class="container text-dark-blue mt-5 mb-5">
+<div class="container mt-5 mb-5">
   <%= turbo_frame_tag "configuration_tab" do %>
     <%= render "organisations/configuration/header", tab: "categories", organisation: @organisation %>
 
     <div class="tab-content mt-4">
-      <p class="text-muted">Contenu de l'onglet Catégories à implémenter</p>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="h4 text-dark-blue fw-bold">Catégories de motifs</h2>
+          <p class="text-muted mb-0 w-90">
+            Une catégorie de motifs permet de grouper les dossiers usagers dans une liste de suivi.
+            Un ou plusieurs motifs de rendez-vous peuvent être associés à cette catégorie.
+          </p>
+        </div>
+        <div>
+          <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
+            <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
+          <% end %>
+        </div>
+      </div>
+
+      <%= turbo_frame_tag "category_configurations_list" do %>
+        <%= render "organisations/category_configurations/list",
+                   category_configurations: @category_configurations,
+                   motifs_by_category: @motifs_by_category,
+                   organisation: @organisation %>
+      <% end %>
+
+      <div class="d-flex justify-content-end mt-4">
+        <%= link_to new_organisation_category_configuration_path(@organisation),
+                    class: "btn btn-blue",
+                    data: { turbo_frame: "_top" } do %>
+          <i class="ri-add-line me-1"></i> Ajouter une catégorie
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>

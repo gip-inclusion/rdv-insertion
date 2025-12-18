@@ -14,6 +14,14 @@ export default class extends Controller {
     });
   }
 
+  disconnect() {
+    // Clean up backdrop if modal was removed while open (multiple modals scenario)
+    document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
+    document.body.classList.remove("modal-open");
+    document.body.style.removeProperty("overflow");
+    document.body.style.removeProperty("padding-right");
+  }
+
   hideBeforeRender(event) {
     if (this.isOpen()) {
       event.preventDefault();

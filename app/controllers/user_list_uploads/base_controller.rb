@@ -1,5 +1,5 @@
 class UserListUploads::BaseController < ApplicationController
-  layout "user_list_upload"
+  layout "no_footer_white_bg"
 
   include SortParams
 

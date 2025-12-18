@@ -81,9 +81,6 @@ Rails.application.routes.draw do
       resources :tags, only: [:create, :destroy]
       resources :dpa_agreements, only: :create
       resources :messages_configurations, only: [:show, :edit, :update]
-      resources :category_configurations, only: [:show], module: :category_configurations do
-        resource :template_override, only: [:show, :edit, :update]
-      end
 
       namespace :configuration do
         resource :informations, only: [:show]
@@ -91,6 +88,20 @@ Rails.application.routes.draw do
         resource :categories, only: [:show]
         resource :messages, only: [:show]
         resource :tags, only: [:show]
+      end
+
+      resources :category_configurations, only: [:new, :create, :destroy] do
+        scope module: :category_configurations do
+          collection do
+            resource :file_configuration_selection, only: [:new, :create]
+          end
+
+          resource :template_override, only: [:show, :edit, :update]
+          resource :rdv_preferences, only: [:show, :edit, :update]
+          resource :invitation_settings, only: [:show, :edit, :update]
+          resource :alertings, only: [:show, :edit, :update]
+          resource :file_configuration_selection, only: [:edit, :update]
+        end
       end
     end
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
@@ -112,8 +123,6 @@ Rails.application.routes.draw do
     resources :follow_ups, module: :follow_ups, only: [] do
       resource :closings, only: [:create, :destroy]
     end
-    # we need to nest in organisations the different category_configurations record to correctly authorize them
-    resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :agent_roles, module: :agent_roles, only: [] do
       collection do

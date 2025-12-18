@@ -67,3 +67,12 @@
   @extend .scrollable-list;
   max-height: 80vh;
 }
+
+.hr-bleed {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  background-color: #dee2e6;
+  opacity: 1;
+}

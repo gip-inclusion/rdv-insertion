@@ -1,0 +1,14 @@
+<%= turbo_frame_tag "file_configuration_selection" do %>
+  <div class="mb-4">
+    <%= hidden_field_tag "category_configuration[file_configuration_id]", selected_file_configuration.id %>
+    <div class="mb-3 p-3 background-blue-light rounded-3">
+      <span class="fw-medium">Modèle sélectionné :</span>
+      <span class="text-dark-blue"><%= selected_file_configuration.sheet_name %></span>
+    </div>
+    <%= link_to new_organisation_file_configuration_selection_path(organisation),
+                data: { turbo_frame: "remote_modal" },
+                class: "btn btn-blue-out" do %>
+      Changer de modèle
+    <% end %>
+  </div>
+<% end %>

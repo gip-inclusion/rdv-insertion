@@ -1,0 +1,38 @@
+<%= turbo_frame_tag dom_id(category_configuration, :invitation_settings) do %>
+  <div class="mb-4 background-blue-paler p-4 rounded-3">
+    <h3 class="h5 mb-2 fw-bold text-dark-blue">Paramètres d'invitation</h3>
+
+    <div class="mx-3 mb-4">
+      <%= render "common/attribute_display_inline",
+          record: category_configuration,
+          attribute: :invite_to_user_organisations_only
+      %>
+
+      <%= render "common/attribute_display_inline",
+          label: CategoryConfiguration.human_attribute_name(:number_of_days_before_invitations_expire),
+          value: display_number_of_days_before_invitations_expire(category_configuration.number_of_days_before_invitations_expire)
+      %>
+
+      <div class="row py-2 align-items-center">
+        <div class="col-4 d-flex align-items-center">
+          <span class="fw-bold">Contenu des messages de la catégorie</span>
+        </div>
+        <div class="col-4">
+          <%= link_to previews_invitations_path(category_configuration_id: category_configuration.id),
+                      data: { turbo_frame: "remote_modal" },
+                      class: "text-decoration-underline" do %>
+            Consulter les messages
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <%= link_to edit_organisation_category_configuration_invitation_settings_path(organisation, category_configuration),
+                  class: "btn btn-blue",
+                  data: { turbo_frame: "remote_modal" } do %>
+        Modifier
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,5 @@
+<%= render "common/remote_modal", title: "Notifier pour informer sur les prises de rendez-vous", size: :large do %>
+  <%= render "alerting_form",
+             category_configuration: @category_configuration,
+             url: organisation_category_configuration_alertings_path(@organisation, @category_configuration) %>
+<% end %>

@@ -1,0 +1,28 @@
+<%= render "common/remote_modal", title: title, size: :large do %>
+  <%= form_with url: form_url, method: form_method, data: { turbo_frame: "remote_modal" } do |f| %>
+    <%= turbo_frame_tag "error_list" %>
+    <div class="px-4">
+      <% file_configurations.each do |file_configuration| %>
+        <%= render "file_configuration_selection_form_input",
+                   file_configuration: file_configuration,
+                   current_file_configuration: current_file_configuration,
+                   department: department %>
+      <% end %>
+
+      <% if file_configurations.empty? %>
+        <p class="text-muted text-center py-4">Aucun modèle de fichier disponible.</p>
+      <% end %>
+    </div>
+
+    <hr class="hr-bleed">
+
+    <div class="d-flex justify-content-between">
+      <%= link_to new_file_configuration_path(return_to_path: request.path),
+                  data: { turbo_frame: "remote_modal" },
+                  class: "btn btn-blue-out" do %>
+        <i class="ri-add-line"></i> Créer un nouveau modèle
+      <% end %>
+      <%= f.submit "Sélectionner ce modèle", class: "btn btn-blue" %>
+    </div>
+  <% end %>
+<% end %>

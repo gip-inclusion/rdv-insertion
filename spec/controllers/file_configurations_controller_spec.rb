@@ -58,10 +58,8 @@ describe FileConfigurationsController do
       get :new
 
       expect(response).to be_successful
-      expect(unescaped_response_body).to match(/Créer fichier d'import/)
-      expect(unescaped_response_body).to match(/new_file_configuration/)
-      expect(unescaped_response_body).to match(/Information collectée/)
-      expect(unescaped_response_body).to match(/Nom de la colonne dans le fichier/)
+      expect(unescaped_response_body).to match(/Créer un fichier d'import/)
+      expect(unescaped_response_body).to match(/file_configuration\[sheet_name\]/)
     end
   end
 
@@ -72,10 +70,8 @@ describe FileConfigurationsController do
       get :edit, params: edit_params
 
       expect(response).to be_successful
-      expect(unescaped_response_body).to match(/Modifier fichier d'import/)
-      expect(unescaped_response_body).to match(/edit_file_configuration/)
-      expect(unescaped_response_body).to match(/Information collectée/)
-      expect(unescaped_response_body).to match(/Nom de la colonne dans le fichier/)
+      expect(unescaped_response_body).to match(/Modifier le modèle de fichier/)
+      expect(unescaped_response_body).to match(/file_configuration\[sheet_name\]/)
     end
 
     context "when not authorized because not admin" do

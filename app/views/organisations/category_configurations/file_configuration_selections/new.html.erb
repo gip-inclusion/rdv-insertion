@@ -1,0 +1,7 @@
+<%= render "file_configuration_selection_form",
+           title: "Sélectionner un modèle de fichier",
+           form_url: organisation_file_configuration_selection_path(@organisation),
+           form_method: :post,
+           file_configurations: @file_configurations,
+           current_file_configuration: @current_file_configuration,
+           department: @department %>

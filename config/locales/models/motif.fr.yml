@@ -29,3 +29,7 @@ fr:
           siae_interview: Entretien SIAE
           siae_collective_information: Info coll. SIAE
           siae_follow_up: Suivi SIAE
+        location_types:
+          public_office: Sur place
+          phone: Par téléphone
+          home: À domicile

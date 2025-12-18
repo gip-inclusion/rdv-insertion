@@ -1,33 +1,27 @@
-<%= render "common/remote_modal", title: title, size: :large do %>
-  <%= form_for(file_configuration, url: url, method: method) do |f| %>
-    <%= turbo_frame_tag "error_list" %>
-    <div class="container rdv-insertion-form text-dark-blue h4-as-labels mt-4">
-      <div class="mb-4">
-        <h4>Nom de l'onglet Excel</h4>
-        <div class="col-12 col-md-6">
-          <p><%= f.text_field :sheet_name %></p>
-        </div>
-        <table class="table table-hover table-responsive text-dark-blue">
-          <thead>
-            <th class="col">Information collectée</th>
-            <th class="col">Nom de la colonne dans le fichier</th>
-          </thead>
-          <tbody>
-            <% FileConfiguration.column_attributes_names.each do |column_name| %>
-              <% user_attribute_name = FileConfiguration.matching_user_attribute_name(column_name) %>
-              <% next if user_attribute_name && !assignable_user_attribute?(User.new, user_attribute_name) %>
-              <tr>
-                <td><%= FileConfiguration.human_attribute_name(column_name) %></td>
-                <td><%= f.text_field column_name %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+<%# locals: (f:) %>
 
-      <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-blue">Enregistrer</button>
-      </div>
-    </div>
-  <% end %>
-<% end %>
+<div class="mb-4">
+  <h4 class="fw-bold">Nom de l'onglet Excel</h4>
+  <div class="col-12 col-md-6">
+    <%= f.text_field :sheet_name, class: "form-control" %>
+  </div>
+</div>
+
+<table class="table table-hover table-responsive text-dark-blue">
+  <thead>
+    <tr>
+      <th class="col">Information collectée</th>
+      <th class="col">Nom de la colonne dans le fichier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% FileConfiguration.column_attributes_names.each do |column_name| %>
+      <% user_attribute_name = FileConfiguration.matching_user_attribute_name(column_name) %>
+      <% next if user_attribute_name && !assignable_user_attribute?(User.new, user_attribute_name) %>
+      <tr>
+        <td><%= FileConfiguration.human_attribute_name(column_name) %></td>
+        <td><%= f.text_field column_name, class: "form-control" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

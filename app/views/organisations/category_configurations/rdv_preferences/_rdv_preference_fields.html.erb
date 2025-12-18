@@ -1,0 +1,62 @@
+<div class="mb-4">
+  <label class="form-label fw-bold">Formats des invitations</label>
+  <p class="text-muted small mb-2">
+    Cette option vous permet de désactiver ou d'activer les fonctionnalités liées aux canaux de communications. Si les canaux sont cochés, les canaux sont disponibles sur rdv-insertion.
+  </p>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <%= f.check_box :invitation_formats, { multiple: true, class: "form-check-input" }, "sms", nil %>
+      <%= f.label :invitation_formats, "SMS", value: "sms", class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :invitation_formats, { multiple: true, class: "form-check-input" }, "email", nil %>
+      <%= f.label :invitation_formats, "Email", value: "email", class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :invitation_formats, { multiple: true, class: "form-check-input" }, "postal", nil %>
+      <%= f.label :invitation_formats, "Courrier", value: "postal", class: "form-check-label" %>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Rendez-vous avec référent</label>
+  <p class="text-muted small mb-2">
+    Si cette option est active, l'usager ne pourra prendre rendez-vous qu'avec son référent. Les usagers sans référent ne pourront pas prendre de rendez-vous. Assurez-vous d'avoir coché "RDV de suivi" sur les motifs de rendez-vous.
+  </p>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <%= f.radio_button :rdv_with_referents, true, class: "form-check-input" %>
+      <%= f.label :rdv_with_referents, "Oui", value: true, class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.radio_button :rdv_with_referents, false, class: "form-check-input" %>
+      <%= f.label :rdv_with_referents, "Non", value: false, class: "form-check-label" %>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Convocation possible</label>
+  <p class="text-muted small mb-2">Par défaut, l'envoi de convocations est possible sur les catégories. Mais vous pouvez la désactiver sur cette catégorie.</p>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <%= f.radio_button :convene_user, true, class: "form-check-input" %>
+      <%= f.label :convene_user, "Oui", value: true, class: "form-check-label" %>
+    </div>
+    <div class="form-check">
+      <%= f.radio_button :convene_user, false, class: "form-check-input" %>
+      <%= f.label :convene_user, "Non", value: false, class: "form-check-label" %>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <label class="form-label fw-bold">Numéro de téléphone</label>
+  <p class="text-muted small mb-2">
+    Par défaut, le numéro téléphone de l'organisation est utilisé dans les invitations et convocations envoyées dans cette catégorie. Vous pouvez définir un autre numéro pour cette catégorie.
+  </p>
+  <%= f.text_field :phone_number,
+                   class: "form-control w-25",
+                   placeholder: "#{organisation.phone_number.presence} (par défaut)" || "01 23 45 67 89 (par défaut)" %>
+</div>

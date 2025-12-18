@@ -1,4 +1,17 @@
 <%= render "common/remote_modal", title: "Détails du fichier d'import", size: :large do %>
-  <%= render "file_configuration", file_configuration: @file_configuration %>
-<% end %>
+  <div class="px-4"><%= render "file_configuration", file_configuration: @file_configuration %></div>
 
+  <hr class="hr-bleed">
+
+  <div class="d-flex justify-content-end">
+    <% if @return_to_path %>
+      <%= link_to @return_to_path, data: { turbo_frame: "remote_modal" }, class: "btn btn-blue" do %>
+        Retour
+      <% end %>
+    <% else %>
+      <button type="button" class="btn btn-blue" data-bs-dismiss="modal">
+        Fermer l'aperçu
+      </button>
+    <% end %>
+  </div>
+<% end %>

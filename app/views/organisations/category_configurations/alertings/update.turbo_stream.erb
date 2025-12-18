@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@category_configuration, :alertings) do %>
+  <%= render "alerting", category_configuration: @category_configuration, organisation: @organisation %>
+<% end %>

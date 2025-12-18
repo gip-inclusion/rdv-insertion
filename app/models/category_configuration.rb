@@ -37,7 +37,13 @@ class CategoryConfiguration < ApplicationRecord
   end
 
   def phone_number
-    attributes["phone_number"].presence || organisation.phone_number
+    attributes["phone_number"].presence || default_phone_number
+  end
+
+  def default_phone_number = organisation.phone_number
+
+  def default_phone_number?
+    phone_number == default_phone_number
   end
 
   def notify_no_available_slots? = email_to_notify_no_available_slots.present?

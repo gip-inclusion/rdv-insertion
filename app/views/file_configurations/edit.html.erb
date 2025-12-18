@@ -1,4 +1,22 @@
-<%= render "file_configuration_form", title: "Modifier fichier d'import",
-                                      file_configuration: @file_configuration,
-                                      url: file_configuration_path(@file_configuration),
-                                      method: :patch %>
+<%= render "common/remote_modal", title: "Modifier le modèle de fichier", size: :large do %>
+  <%= form_with model: @file_configuration,
+                url: file_configuration_path(@file_configuration),
+                method: :patch,
+                data: { turbo_frame: "remote_modal" } do |f| %>
+    <%= turbo_frame_tag "error_list" %>
+    <div class="px-4"><%= render "file_configuration_form", f: f %></div>
+
+    <hr class="hr-bleed">
+
+    <div class="d-flex justify-content-end gap-2">
+      <% if @return_to_path %>
+        <%= link_to @return_to_path, data: { turbo_frame: "remote_modal" }, class: "btn btn-blue-out" do %>
+          Annuler
+        <% end %>
+      <% else %>
+        <button type="button" class="btn btn-blue-out" data-bs-dismiss="modal">Annuler</button>
+      <% end %>
+      <%= f.submit "Enregistrer les modifications", class: "btn btn-blue" %>
+    </div>
+  <% end %>
+<% end %>

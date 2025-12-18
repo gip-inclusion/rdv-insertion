@@ -1,0 +1,5 @@
+<%= render "common/remote_modal", title: "Modifier les paramètres d'invitation", size: :large do %>
+  <%= render "invitation_setting_form",
+             category_configuration: @category_configuration,
+             url: organisation_category_configuration_invitation_settings_path(@organisation, @category_configuration) %>
+<% end %>
