@@ -38,27 +38,11 @@ class CategoryConfiguration < ApplicationRecord
     attributes["phone_number"].presence || organisation.phone_number
   end
 
-  def phone_number_with_default
-    "#{phone_number}#{' (par défaut)' if attributes['phone_number'].blank?}"
-  end
-
-  def invitation_formats_list
-    return if invitation_formats.blank?
-
-    invitation_formats.map { |format| I18n.t("invitation_formats.#{format}") }.join(", ")
-  end
-
   def notify_no_available_slots? = email_to_notify_no_available_slots.present?
   def notify_rdv_changes? = email_to_notify_rdv_changes.present?
 
   def invitations_expire? = number_of_days_before_invitations_expire.present?
   def invitations_never_expire? = !invitations_expire?
-
-  def invitations_validity_in_days
-    return unless invitations_expire?
-
-    "#{number_of_days_before_invitations_expire} jours"
-  end
 
   def new_invitation_will_expire_at
     return if invitations_never_expire?

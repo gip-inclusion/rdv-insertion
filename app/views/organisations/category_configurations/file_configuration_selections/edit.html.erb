@@ -1,8 +1,7 @@
-<%= render "file_configurations/select_modal",
+<%= render "file_configuration_selection_form",
            title: "Changer le modèle de fichier",
            form_url: organisation_category_configuration_file_configuration_selection_path(@organisation, @category_configuration),
            form_method: :patch,
            file_configurations: @file_configurations,
            current_file_configuration: @current_file_configuration,
-           department: @department,
-           return_to_selection_path: @return_to_selection_path %>
+           department: @department %>

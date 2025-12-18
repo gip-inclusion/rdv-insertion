@@ -8,6 +8,7 @@ class FileConfigurationsController < ApplicationController
   ].freeze
 
   before_action :set_file_configuration, only: [:show, :edit, :update, :download_template]
+  before_action :set_return_to_path, only: [:show, :new, :edit]
 
   def show; end
 
@@ -54,5 +55,9 @@ class FileConfigurationsController < ApplicationController
   def set_file_configuration
     @file_configuration = FileConfiguration.find(params[:id] || params[:file_configuration_id])
     authorize @file_configuration
+  end
+
+  def set_return_to_path
+    @return_to_path = params[:return_to_path]
   end
 end

@@ -10,7 +10,7 @@
 
       <%= render "common/attribute_display_inline",
           label: "Durée de validité des liens d'invitations",
-          value: category_configuration.invitations_validity_in_days,
+          value: invitations_validity_in_days(category_configuration),
           blank_text: "Pas de limite" %>
 
       <div class="row py-2 align-items-center">

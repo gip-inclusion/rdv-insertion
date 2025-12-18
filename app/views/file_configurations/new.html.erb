@@ -9,8 +9,8 @@
     <hr class="hr-bleed">
 
     <div class="d-flex justify-content-end gap-2">
-      <% if params[:return_to_selection_path].present? %>
-        <%= link_to params[:return_to_selection_path], data: { turbo_frame: "remote_modal" }, class: "btn btn-blue-out" do %>
+      <% if @return_to_path %>
+        <%= link_to @return_to_path, data: { turbo_frame: "remote_modal" }, class: "btn btn-blue-out" do %>
           Annuler
         <% end %>
       <% else %>

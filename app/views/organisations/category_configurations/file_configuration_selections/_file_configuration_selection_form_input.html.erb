@@ -1,5 +1,3 @@
-<%# locals: (file_configuration:, current_file_configuration:, department:, return_to_selection_path: nil) %>
-
 <% is_selected = current_file_configuration&.id == file_configuration.id %>
 <% relevant_category_configs = file_configuration.category_configurations
                                                  .select { |cc| cc.department_id == department.id && policy(cc).show? } %>
@@ -37,13 +35,13 @@
   </div>
 
   <div class="d-flex flex-column gap-2">
-    <%= link_to file_configuration_path(file_configuration, return_to_selection_path: return_to_selection_path),
+    <%= link_to file_configuration_path(file_configuration, return_to_path: request.path),
                 data: { turbo_frame: "remote_modal" },
                 class: "btn btn-blue-out btn-sm" do %>
       Voir le détail
     <% end %>
     <% if policy(file_configuration).edit? %>
-      <%= link_to edit_file_configuration_path(file_configuration, return_to_selection_path: return_to_selection_path),
+      <%= link_to edit_file_configuration_path(file_configuration, return_to_path: request.path),
                   data: { turbo_frame: "remote_modal" },
                   class: "btn btn-blue-out btn-sm" do %>
         Modifier

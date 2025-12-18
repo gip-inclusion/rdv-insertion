@@ -5,7 +5,7 @@
     <div class="mx-3 mb-4">
       <%= render "common/attribute_display_inline",
           label: CategoryConfiguration.human_attribute_name(:invitation_formats),
-          value: category_configuration.invitation_formats_list %>
+          value: invitation_formats_list(category_configuration) %>
 
       <%= render "common/attribute_display_inline",
           record: category_configuration,
@@ -19,7 +19,7 @@
 
       <%= render "common/attribute_display_inline",
           label: CategoryConfiguration.human_attribute_name(:phone_number),
-          value: category_configuration.phone_number_with_default,
+          value: phone_number_with_default(category_configuration),
           tooltip: { content: "Ce numéro sera utilisé dans les invitations et convocations envoyées pour cette catégorie." } %>
     </div>
 
