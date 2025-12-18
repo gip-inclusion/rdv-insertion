@@ -67,4 +67,12 @@ module ApplicationHelper
       structure.name
     end
   end
+
+  def placeholder_with_default(record, attribute)
+    return if record.send(attribute).present?
+
+    fallback_value = record.fallback_value_for(attribute)
+    fallback_value = fallback_value.first if fallback_value.is_a?(Array)
+    "#{fallback_value} (par défaut)"
+  end
 end

@@ -6,7 +6,7 @@
   </div>
   <div class="header-right">
     <div>
-      <p><%= sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
+      <p><%= sender_city %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
       <br/>
       <p>À l'attention de</p>
       <br/><br/>
@@ -19,11 +19,7 @@
   </div>
 </div>
 <div class="direction-names">
-  <% if direction_names.blank? %>
-    <p><%= organisation.name.upcase %></p>
-  <% else %>
-    <% direction_names.each do |direction_name| %>
-      <p><%= direction_name.upcase %></p>
-    <% end %>
+  <% direction_names.each do |direction_name| %>
+    <p><%= direction_name.upcase %></p>
   <% end %>
 </div>

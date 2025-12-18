@@ -3,6 +3,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   include Sanitizeable
   include Serializable
+  include HasAttachedImage
 
   def self.first(*args)
     if column_for_attribute(:id).type == :uuid && args.empty?

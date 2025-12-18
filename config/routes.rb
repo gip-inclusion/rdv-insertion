@@ -80,6 +80,10 @@ Rails.application.routes.draw do
       resource :data_retention, only: [:show, :edit, :update]
       resources :tags, only: [:create, :destroy]
       resources :dpa_agreements, only: :create
+      resources :messages_configurations, only: [:show, :edit, :update]
+      resources :category_configurations, only: [:show], module: :category_configurations do
+        resource :template_override, only: [:show, :edit, :update]
+      end
 
       namespace :configuration do
         resource :informations, only: [:show]
@@ -134,7 +138,6 @@ Rails.application.routes.draw do
                 :convocation_dates_filterings,
                 :creation_dates_filterings, only: [:new]
     end
-    resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
   end
 
   resources :user_list_uploads, module: :user_list_uploads, only: [:show] do

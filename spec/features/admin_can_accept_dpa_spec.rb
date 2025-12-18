@@ -1,4 +1,4 @@
-describe "Agents can accept dpa", :js do
+describe "Admins can accept dpa", :js do
   let(:agent) { create(:agent) }
   let(:organisation) { create(:organisation, :without_dpa_agreement, created_at: 2.months.ago) }
   let!(:agent_role) { create(:agent_role, agent:, access_level: "admin", organisation:) }

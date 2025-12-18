@@ -82,7 +82,8 @@ module Previews
         punishable_warning: @notification.punishable_warning,
         custom_sentence: @notification.custom_sentence,
         signature_lines: @notification.signature_lines,
-        instruction_for_rdv: @notification.instruction_for_rdv
+        instruction_for_rdv: @notification.instruction_for_rdv,
+        logos_to_display: @notification.logos_to_display
       }
     end
 
@@ -108,9 +109,7 @@ module Previews
         signature_image: @notification.signature_image,
         motif_category: @notification.motif_category,
         organisation: @notification.organisation,
-        display_europe_logos: @notification.display_europe_logos,
-        display_department_logo: @notification.display_department_logo,
-        display_france_travail_logo: @notification.display_france_travail_logo,
+        logos_to_display: @notification.logos_to_display,
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,
