@@ -1,7 +1,5 @@
 class Department < ApplicationRecord
-  include HasLogo
-
-  validates :name, :capital, :number, :pronoun, :region, :logo, presence: true
+  has_attached_image :logo
 
   has_many :organisations, dependent: :nullify
   has_many :orientation_types, dependent: :nullify
@@ -20,6 +18,8 @@ class Department < ApplicationRecord
   has_many :tags, through: :organisations
   has_one :stat, as: :statable, dependent: :destroy
   has_many :csv_exports, as: :structure, dependent: :destroy
+
+  validates :name, :capital, :number, :pronoun, :region, :logo, presence: true
 
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
 

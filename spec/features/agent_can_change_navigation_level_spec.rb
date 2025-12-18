@@ -207,12 +207,6 @@ describe "Agents can sort users on index page", :js do
         include_examples "a page with an organisation navigation button"
       end
 
-      context "on configure category configuration page" do
-        let!(:page_path) { organisation_category_configuration_path(organisation, category_configuration) }
-
-        include_examples "a page with an organisation navigation button"
-      end
-
       context "on stats page" do
         it "does not show the organisation navigation button in header" do
           visit stats_path

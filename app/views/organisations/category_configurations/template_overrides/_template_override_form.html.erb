@@ -1,0 +1,30 @@
+<%= turbo_frame_tag "category_configuration_template_overrides_#{category_configuration.id}" do %>
+  <div class="mb-4 p-4 background-light">
+    <h3 class="h5 mb-2 text-dark-blue">Messages de la catégorie « <span class="text-underline"><%= category_configuration.motif_category_name %></span> »</h3>
+    <div class="p-3">
+      <%= turbo_frame_tag "error_list" %>
+      <%= form_with model: [organisation, category_configuration], url: organisation_category_configuration_template_override_path(organisation, category_configuration), method: :patch do |f| %>
+        <%= render "common/attribute_input_inline", f: f, attribute: :template_rdv_title_override, placeholder: placeholder_with_default(category_configuration, :template_rdv_title_override), html_class: "col-6" %>
+        <%= render "common/attribute_input_inline", f: f, attribute: :template_rdv_title_by_phone_override, placeholder: placeholder_with_default(category_configuration, :template_rdv_title_by_phone_override), html_class: "col-6" %>
+        <%= render "common/attribute_input_inline", f: f, attribute: :template_user_designation_override, placeholder: placeholder_with_default(category_configuration, :template_user_designation_override), html_class: "col-6" %>
+        <%= render "common/attribute_input_inline", f: f, attribute: :template_rdv_purpose_override, placeholder: placeholder_with_default(category_configuration, :template_rdv_purpose_override), html_class: "col-6" %>
+        <div class="d-flex justify-content-between mt-4">
+          <div>
+            <button type="button" class="btn btn-blue-out" disabled aria-disabled="true">
+              <i class="ri-eye-fill"></i> Invitations
+            </button>
+            <button type="button" class="btn btn-blue-out" disabled aria-disabled="true">
+              <i class="ri-eye-fill"></i> Convocations <%= " (désactivées)" if !category_configuration.convene_user? %>
+            </button>
+          </div>
+          <div>
+            <%= link_to organisation_category_configuration_template_override_path(organisation, category_configuration), class: "btn btn-blue-out" do %>
+              Annuler
+            <% end %>
+            <%= f.submit "Enregistrer", class: "btn btn-blue" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

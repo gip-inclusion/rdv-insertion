@@ -1,4 +1,6 @@
 class CategoryConfiguration < ApplicationRecord
+  include CategoryConfiguration::TemplateOverride
+
   has_paper_trail
 
   belongs_to :motif_category

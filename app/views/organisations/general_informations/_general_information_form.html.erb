@@ -43,54 +43,15 @@
                    } %>
       </div>
 
-      <div class="mb-4 mt-5" data-controller="image-upload">
+      <div class="mb-4 mt-5">
         <h4 class="h6 fw-bold mb-1">Logo de l'organisation</h4>
         <p class="text-muted small mb-3">Logo au format .png ou .jpg. Taille de fichier maximale : 2 Mo</p>
 
-        <%= f.hidden_field :remove_logo, value: "false", data: { image_upload_target: "removeField" } %>
-        <%= f.file_field :logo,
-                         class: "d-none",
-                         id: "logo_input",
-                         accept: "image/png, image/jpeg",
-                         data: { image_upload_target: "input", action: "change->image-upload#handleFileSelect" } %>
-
-        <div class="upload-zone rounded p-4 text-center col-8"
-             data-image-upload-target="dropZone"
-             data-action="dragover->image-upload#handleDragOver dragleave->image-upload#handleDragLeave drop->image-upload#handleDrop">
-
-          <%# Preview (visible if logo exists or after file selection) %>
-          <div data-image-upload-target="previewContainer" class="<%= organisation.logo.attached? ? '' : 'd-none' %>">
-            <div class="mb-3">
-              <% if organisation.logo.attached? %>
-                <%= image_tag organisation.logo,
-                              class: "img-fluid uploaded-image-preview",
-                              alt: "Logo",
-                              data: { image_upload_target: "previewImage" } %>
-              <% else %>
-                <img class="img-fluid uploaded-image-preview" alt="Logo" data-image-upload-target="previewImage">
-              <% end %>
-            </div>
-            <p class="small mb-2">
-              <span data-image-upload-target="fileName"><%= organisation.logo.filename if organisation.logo.attached? %></span>
-              <a href="#" class="text-danger ms-1" data-action="click->image-upload#handleFileRemove">
-                <i class="ri-close-line"></i>
-              </a>
-            </p>
-            <label for="logo_input" class="btn btn-link p-0 text-decoration-none" tabindex="0" data-action="keydown->image-upload#handleOpenPickerKeydown">
-              <i class="ri-folder-line me-1"></i><span class="text-decoration-underline">Changer de fichier</span>
-            </label>
-          </div>
-
-          <%# Placeholder (visible when no logo) %>
-          <div data-image-upload-target="placeholder" class="<%= organisation.logo.attached? ? 'd-none' : '' %>">
-            <i class="ri-upload-cloud-2-line text-muted fs-2 d-block mb-2"></i>
-            <p class="mb-1">Glisser/déposer le logo ici</p>
-            <p class="text-muted mb-2">ou</p>
-            <label for="logo_input" class="btn btn-link p-0 text-decoration-none" tabindex="0" data-action="keydown->image-upload#handleOpenPickerKeydown">
-              <i class="ri-folder-line me-1"></i><span class="text-decoration-underline">Chercher dans vos fichiers</span>
-            </label>
-          </div>
-        </div>
+        <%= render "common/image_upload_zone",
+                   f: f,
+                   record: @organisation,
+                   attribute: :logo,
+                   placeholder_text: "Glisser/déposer le logo ici" %>
       </div>
 
       <p class="text-muted small mb-3">

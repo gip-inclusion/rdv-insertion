@@ -4,10 +4,23 @@
 
 <div class="row py-2 align-items-center">
   <div class="col-4 fw-bold">
-    <%= (local_assigns[:label] || f.object.class.human_attribute_name(attribute)).html_safe %><%= "*" if local_assigns[:mandatory] %>
+    <%= f.label attribute, (local_assigns[:label] || f.object.class.human_attribute_name(attribute)).html_safe %><%= "*" if local_assigns[:mandatory] %>
   </div>
-  <div class="col-4">
-    <%= f.text_field attribute, class: "form-control" %>
+  <div class="<%= local_assigns[:html_class] || 'col-4' %>">
+    <% if local_assigns[:as] == :array %>
+      <%= render "common/array_fields/input", attribute_name: attribute, f: f, placeholder: local_assigns[:placeholder] %>
+    <% elsif local_assigns[:as] == :collection_check_boxes %>
+      <div class="d-flex flex-column gap-2">
+        <%= f.collection_check_boxes attribute, collection, ->(element) { element[0] }, ->(element) { element[1] }, include_hidden: false do |b| %>
+          <div class="form-check">
+            <%= b.check_box(class: "form-check-input") %>
+            <%= b.label(class: "form-check-label") %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <%= f.text_field attribute, class: "form-control", placeholder: local_assigns[:placeholder] %>
+    <% end %>
   </div>
   <div class="col-1 d-flex align-items-center">
     <% if local_assigns[:tooltip].is_a?(Hash) %>

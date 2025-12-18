@@ -83,7 +83,8 @@ module Previews
         mandatory_warning: @invitation.mandatory_warning(format: "email"),
         punishable_warning: @invitation.punishable_warning,
         custom_sentence: @invitation.custom_sentence,
-        signature_lines: @organisation.messages_configuration&.signature_lines
+        signature_lines: @invitation.signature_lines,
+        logos_to_display: @invitation.logos_to_display
       }
     end
 
@@ -98,9 +99,7 @@ module Previews
         signature_lines: @invitation.signature_lines,
         signature_image: @invitation.signature_image,
         help_address: @invitation.help_address,
-        display_europe_logos: @invitation.display_europe_logos,
-        display_department_logo: @invitation.display_department_logo,
-        display_france_travail_logo: @invitation.display_france_travail_logo,
+        logos_to_display: @invitation.logos_to_display,
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
         user_designation: @invitation.user_designation,

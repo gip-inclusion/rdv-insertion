@@ -1,13 +1,13 @@
 <%# height is hard-coded because Outlook sometime is not applying "height" or "max-height" %>
-<% if display_europe_logos %>
+<% if logos_to_display.include?("europe") %>
   <%= image_tag "logos/europe-logos.jpg", alt: "Logo de l'Union européene", class: "structure-logo", height: "30" %>
 <% end %>
-<% if display_france_travail_logo %>
+<% if logos_to_display.include?("france_travail") %>
   <%= image_tag "logos/france-travail.png", alt: "Logo de France Travail", class: "structure-logo", height: "50" %>
 <% end %>
 <% if organisation_logo_path %>
   <%= image_tag organisation_logo_path, alt: "Logo de l'organisation", class: "structure-logo", height: "50" %>
 <% end %>
-<% if department_logo_path && display_department_logo %>
+<% if department_logo_path && logos_to_display.include?("department") %>
   <%= image_tag department_logo_path, alt: "Logo du département", class: "structure-logo", height: "50" %>
 <% end %>

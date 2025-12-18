@@ -1,0 +1,78 @@
+<%= turbo_frame_tag messages_configuration do %>
+  <div class="card-white p-4 mb-4">
+    <h3 class="h5 mb-2 fw-bold">Identité de l'expéditeur</h3>
+    <p class="text-muted mb-4">
+      Ces informations permettront d’identifier l’organisation dans les invitations et les convocations envoyées aux usagers.
+    </p>
+
+    <div class="mb-4">
+      <div class="p-2">
+        <h4 class="h6 fw-bold text-dark-blue mb-1">Paramètres liés aux mails et courriers</h4>
+        <div class="p-3">
+          <%= render "common/attribute_display_inline",
+                    label: MessagesConfiguration.human_attribute_name(:logos_to_display),
+                    value: messages_configuration.logos_to_display_names %>
+
+          <%= render "common/attribute_display_inline",
+                    label: "Signature texte",
+                    value: messages_configuration.effective_signature_lines.join("<br>") %>
+
+          <%= render "common/attribute_display_inline", label: "Signature jointe" do %>
+            <% if messages_configuration.signature_image.attached? %>
+              <%= image_tag messages_configuration.signature_image, class: "img-fluid uploaded-image-preview", alt: "Signature jointe" %>
+            <% else %>
+              Aucune signature jointe
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="p-2">
+        <h4 class="h6 fw-bold text-dark-blue mb-1">Paramètres propres aux courriers</h4>
+        <div class="p-3">
+          <%= render "common/attribute_display_inline",
+                    label: MessagesConfiguration.human_attribute_name(:direction_names),
+                    value: messages_configuration.effective_direction_names.join("<br>"),
+                    html_class: "col-6",
+                    tooltip: {
+                      content: "L’en-tête des courriers d’invitations et de convocations permet à l’usager d’identifier l’expéditeur. Le nom de l’organisation est utilisé par défaut."
+                    } %>
+
+          <%= render "common/attribute_display_inline",
+                    label: MessagesConfiguration.human_attribute_name(:sender_city),
+                    value: messages_configuration.effective_sender_city,
+                    tooltip: {
+                      content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisé par défaut."
+                    } %>
+
+          <%= render "common/attribute_display_inline",
+                    label: MessagesConfiguration.human_attribute_name(:help_address),
+                    value: messages_configuration.help_address,
+                    tooltip: {
+                      content: "Permet d’ajouter un lieu d'accueil physique pour aider les usagers en difficultés avec le rendez-vous."
+                    } %>
+
+          <%= render "common/attribute_display_inline",
+                    label: MessagesConfiguration.human_attribute_name(:letter_sender_name),
+                    value: messages_configuration.effective_letter_sender_name,
+                    tooltip: {
+                      content: "Permet d’identifier l’expéditeur dans le contenu des courriers.  Le « conseil départemental » est utilisé par défaut."
+                    } %>
+        </div>
+      </div>
+    </div>
+    <div class="p-2">
+        <h4 class="h6 fw-bold text-dark-blue mb-1">Paramètres propres aux SMS</h4>
+        <div class="p-3">
+          <%= render "common/attribute_display_inline",
+                    label: MessagesConfiguration.human_attribute_name(:sms_sender_name),
+                    value: messages_configuration.effective_sms_sender_name %>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end mt-2 me-2">
+      <%= link_to edit_organisation_messages_configuration_path(organisation, messages_configuration), class: "btn btn-blue" do %>
+        Modifier
+      <% end %>
+    </div>
+  </div>
+<% end %>

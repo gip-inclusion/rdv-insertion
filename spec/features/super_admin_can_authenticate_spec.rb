@@ -1,4 +1,4 @@
-describe "Agent can authenticate as super admin", :js do
+describe "Super admins can authenticate", :js do
   let!(:super_admin) { create(:agent, :super_admin) }
   let!(:regular_agent) { create(:agent) }
 
