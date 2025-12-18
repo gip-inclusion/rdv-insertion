@@ -1,23 +1,21 @@
 <%# Displays an attribute in inline format (label left, value right) %>
-<%# Mode 1 - with record: record, attribute (+ optional: label, tooltip, as, blank_text) %>
-<%# Mode 2 - without record: label, value (+ optional: tooltip, blank_text) %>
+<%# Mode 1 - with record: record, attribute %>
+<%# Mode 2 - without record: label, value or block %>
 
 <%
-  mode = local_assigns.key?(:value) ? :value_only : :record
-  blank_text = local_assigns[:blank_text] || "-"
-
-  if mode == :value_only
-    display_label = local_assigns[:label]&.html_safe
-    display_value = local_assigns[:value]
+  label = local_assigns[:label]&.html_safe || record.class.human_attribute_name(attribute)
+  value = if block_given? && yield.present?
+    yield
+  elsif local_assigns.key?(:value)
+    sanitize(local_assigns[:value], tags: %w[br])
   else
-    display_label = local_assigns[:label]&.html_safe || record.class.human_attribute_name(attribute)
-    display_value = record.send(attribute)
+    record.send(attribute)
   end
 %>
 
 <div id="<%= local_assigns[:id] %>" class="row py-2 align-items-center">
   <div class="col-4 d-flex align-items-center">
-    <span class="fw-bold"><%= display_label %></span>
+    <span class="fw-bold"><%= label %></span>
     <% if local_assigns[:tooltip].is_a?(Hash) %>
       <i
         class="<%= local_assigns[:tooltip][:icon] || 'ri-question-line' %> text-dark-blue ms-2 fs-4"
@@ -25,17 +23,13 @@
       ></i>
     <% end %>
   </div>
-  <div class="col-4">
-    <% if mode == :value_only %>
-      <%= display_value.present? ? display_value : content_tag(:span, blank_text, class: "text-muted") %>
-    <% elsif record[attribute].in?([true, false]) %>
-      <%= I18n.t("boolean.#{record[attribute]}") %>
-    <% elsif display_value.blank? %>
-      <span class="text-muted"><%= blank_text %></span>
-    <% elsif local_assigns[:as] == :inline_list %>
-      <%= display_value.join(", ") %>
+  <div class="<%= local_assigns[:html_class] || 'col-4' %>">
+    <% if value.nil? || value == "" %>
+      <span class="text-muted">-</span>
+    <% elsif value.in?([true, false]) %>
+      <%= I18n.t("boolean.#{value}") %>
     <% else %>
-      <%= display_value %>
+      <%= value %>
     <% end %>
   </div>
 </div>
