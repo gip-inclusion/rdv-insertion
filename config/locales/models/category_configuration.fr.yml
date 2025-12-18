@@ -11,10 +11,10 @@ fr:
     attributes:
       category_configuration:
         convene_user: Convocation possible
-        number_of_days_before_invitations_expire: Durée de validité du lien d'invitation (en jours)
+        number_of_days_before_invitations_expire: Durée de validité du lien d'invitation
         number_of_days_between_periodic_invites: Délai entre 2 invitations récurrentes (en jours)
         day_of_the_month_periodic_invites: Jour du mois auquel envoyer les invitations récurrentes
-        invite_to_user_organisations_only: Invitation limitée aux organisations du bénéficiaire
+        invite_to_user_organisations_only: Invitation limitée aux organisations de l'usager
         rdv_with_referents: RDV avec référent
         phone_number: Numéro de téléphone
         invitation_formats: Formats des invitations
