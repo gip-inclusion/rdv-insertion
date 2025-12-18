@@ -60,7 +60,6 @@
             <%= render "common/attribute_input_inline",
                       f: f,
                       attribute: :sender_city,
-                      as: :text_field,
                       placeholder: placeholder_with_default(messages_configuration, :sender_city),
                       tooltip: {
                         content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisé par défaut."
@@ -76,20 +75,29 @@
             <%= render "common/attribute_input_inline",
                       f: f,
                       attribute: :letter_sender_name,
-                      as: :text_field,
                       placeholder: placeholder_with_default(messages_configuration, :letter_sender_name),
                       tooltip: {
                         content: "Permet d’identifier l’expéditeur dans le contenu des courriers.  Le « conseil départemental » est utilisé par défaut."
                       }
                       %>
           </div>
-
-          <div class="d-flex justify-content-end">
-            <%= link_to organisation_messages_configuration_path(organisation, messages_configuration), class: "btn btn-blue-out me-2" do %>
-              Annuler
-            <% end %>
-            <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+        </div>
+        <div class="p-2">
+          <h4 class="h6 fw-bold text-dark-blue mb-1">Paramètres propres aux SMS</h4>
+          <div class="p-3">
+            <%= render "common/attribute_input_inline",
+                      f: f,
+                      attribute: :sms_sender_name,
+                      placeholder: placeholder_with_default(messages_configuration, :sms_sender_name)
+                    %>
           </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <%= link_to organisation_messages_configuration_path(organisation, messages_configuration), class: "btn btn-blue-out me-2" do %>
+            Annuler
+          <% end %>
+          <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+        </div>
       </div>
     <% end %>
   </div>

@@ -18,6 +18,7 @@ describe "Admin can edit messages configuration", :js do
         expect(page).to have_content("Organisation Test") # default direction_names
         expect(page).to have_content("Valence") # default sender_city (capital)
         expect(page).to have_content("le Conseil départemental") # default letter_sender_name
+        expect(page).to have_content("Dept26") # default sms_sender_name
       end
       within "turbo-frame#messages_configuration_#{messages_configuration.id}" do
         click_link "Modifier"
@@ -35,6 +36,7 @@ describe "Admin can edit messages configuration", :js do
       fill_in "messages_configuration_sender_city", with: "Lyon"
       fill_in "messages_configuration_letter_sender_name", with: "le Président"
       fill_in "messages_configuration_help_address", with: "12 rue de la Mairie, 26000 Valence"
+      fill_in "messages_configuration_sms_sender_name", with: "myOrg"
 
       check "Département"
       check "Européens"
@@ -44,12 +46,14 @@ describe "Admin can edit messages configuration", :js do
       expect(page).to have_content("Lyon")
       expect(page).to have_content("le Président")
       expect(page).to have_content("12 rue de la Mairie, 26000 Valence")
+      expect(page).to have_content("myOrg")
       expect(page).to have_content("Département")
       expect(page).to have_content("Européens")
 
       expect(messages_configuration.reload.sender_city).to eq("Lyon")
       expect(messages_configuration.letter_sender_name).to eq("le Président")
       expect(messages_configuration.logos_to_display).to include("department", "europe")
+      expect(messages_configuration.sms_sender_name).to eq("myOrg")
     end
 
     it "allows to add and edit signature lines" do
