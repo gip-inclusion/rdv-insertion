@@ -3,7 +3,7 @@ module Organisations
     class MessagesController < BaseController
       def show
         @messages_configuration = @organisation.messages_configuration
-        @category_configurations = @organisation.category_configurations.includes([:motif_category])
+        @category_configurations = @organisation.category_configurations.includes(motif_category: :template)
       end
     end
   end
