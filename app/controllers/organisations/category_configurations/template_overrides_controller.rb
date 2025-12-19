@@ -23,7 +23,7 @@ module Organisations
             :template_user_designation_override,
             :template_rdv_purpose_override
           ]
-          )
+        )
       end
     end
   end
