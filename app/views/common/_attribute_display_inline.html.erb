@@ -3,7 +3,11 @@
 <%# Mode 2 - without record: label, value or block %>
 
 <%
-  label = local_assigns[:label] || record.class.human_attribute_name(attribute)
+  label = if local_assigns.key?(:label)
+    sanitize(local_assigns[:label], tags: %w[br])
+  else
+    record.class.human_attribute_name(attribute)
+  end
   value = if block_given? && yield.present?
     yield
   elsif local_assigns.key?(:value)
