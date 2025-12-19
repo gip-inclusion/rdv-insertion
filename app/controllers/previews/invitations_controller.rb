@@ -19,7 +19,7 @@ module Previews
         user: @user, organisations: [@organisation],
         follow_up: FollowUp.new(motif_category: @motif_category),
         expires_at: @category_configuration.new_invitation_will_expire_at,
-        help_phone_number: @category_configuration.phone_number,
+        help_phone_number: @category_configuration.effective_phone_number,
         department: @department,
         uuid: SecureRandom.send(:choose, [*"A".."Z", *"0".."9"], 8)
       )
