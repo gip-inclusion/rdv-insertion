@@ -120,68 +120,6 @@ describe UsersController do
         end
       end
     end
-
-    context "when json request" do
-      before { request.accept = "application/json" }
-
-      let(:user_params) do
-        {
-          user: {
-            uid: "123xz", first_name: "john", last_name: "doe", email: "johndoe@example.com",
-            affiliation_number: "1234", role: "conjoint"
-          },
-          organisation_id: organisation.id
-        }
-      end
-
-      context "when not authorized" do
-        let!(:another_organisation) { create(:organisation) }
-
-        it "renders the errors" do
-          post :create, params: user_params.merge(organisation_id: another_organisation.id)
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:forbidden)
-          expect(response.parsed_body["errors"]).to eq(["Votre compte ne vous permet pas d'effectuer cette action"])
-        end
-      end
-
-      context "when the creation succeeds" do
-        let!(:user) { create(:user, organisations: [organisation]) }
-
-        it "is a success" do
-          post :create, params: user_params
-          expect(response).to be_successful
-          expect(response.parsed_body["success"]).to eq(true)
-        end
-
-        it "renders the user" do
-          post :create, params: user_params
-          expect(response).to be_successful
-          expect(response.parsed_body["user"]["id"]).to eq(user.id)
-        end
-      end
-
-      context "when the creation fails" do
-        before do
-          allow(Users::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
-        end
-
-        it "is not a success" do
-          post :create, params: user_params
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.parsed_body["success"]).to eq(false)
-        end
-
-        it "renders the errors" do
-          post :create, params: user_params
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.parsed_body["errors"]).to eq(["some error"])
-        end
-      end
-    end
   end
 
   describe "#show" do
@@ -609,18 +547,18 @@ describe UsersController do
           :user,
           organisations: [organisation],
           first_name: "Michael",
-          tag_users_attributes: [{ tag_id: tags[0].id }]
+          tags: [tags[0]]
         )
       end
 
       let!(:user2) do
         create(:user, organisations: [organisation], first_name: "Marie",
-                      tag_users_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
+                      tags: [tags[0], tags[1]])
       end
 
       let!(:user3) do
         create(:user, organisations: [organisation], first_name: "Oliva",
-                      tag_users_attributes: [{ tag_id: tags[2].id }])
+                      tags: [tags[2]])
       end
 
       let!(:index_params) do
@@ -714,7 +652,9 @@ describe UsersController do
       end
 
       context "when one invitation is expired" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 7.days.ago) }
+        before do
+          follow_up2.update!(status: "invitation_expired")
+        end
 
         it "filters by action required" do
           get :index, params: index_params
@@ -724,8 +664,6 @@ describe UsersController do
       end
 
       context "when no invitation expired" do
-        let!(:invitation) { create(:invitation, user: user2, follow_up: follow_up2, expires_at: 3.days.from_now) }
-
         it "filters by action required" do
           get :index, params: index_params
           expect(response.body).not_to match(/Baer/)
@@ -1012,177 +950,6 @@ describe UsersController do
 
     before do
       sign_in(agent)
-    end
-
-    context "when json request" do
-      let(:update_params) do
-        {
-          user: {
-            birth_date: "20/12/1988"
-          },
-          id: user.id,
-          organisation_id: organisation.id,
-          format: "json"
-        }
-      end
-
-      before do
-        allow(Users::Save).to receive(:call)
-          .and_return(OpenStruct.new)
-      end
-
-      it "calls the service" do
-        expect(Users::Save).to receive(:call)
-        post :update, params: update_params
-      end
-
-      context "when not authorized" do
-        let!(:another_organisation) { create(:organisation) }
-        let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
-
-        before do
-          sign_in(another_agent)
-        end
-
-        it "raises a not found error" do
-          expect do
-            post :update, params: update_params
-          end.to raise_error(ActiveRecord::RecordNotFound)
-        end
-      end
-
-      context "when the update succeeds" do
-        before do
-          allow(Users::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: true, user: user))
-        end
-
-        it "is a success" do
-          post :update, params: update_params
-          expect(response).to be_successful
-          expect(response.parsed_body["success"]).to eq(true)
-        end
-      end
-
-      context "with tags" do
-        let(:tag) { create(:tag) }
-        let(:update_params) do
-          {
-            user: {
-              tag_users_attributes: [{ tag_id: tag.id }]
-            },
-            id: user.id,
-            organisation_id: organisation.id,
-            format: "json"
-          }
-        end
-        let!(:existing_tag) { create(:tag, value: "lol") }
-
-        before do
-          allow(Users::Save).to receive(:call).and_call_original
-          allow_any_instance_of(Users::Save).to receive(:push_user_to_rdv_solidarites)
-            .and_return true
-          organisation.tags << tag
-          organisation.tags << existing_tag
-          user.tags << existing_tag
-        end
-
-        it "updates the tags" do
-          post :update, params: update_params
-          expect(user.reload.tags.size).to eq(1)
-          expect(user.reload.tags.first.id).to eq(tag.id)
-        end
-
-        context "with empty tags" do
-          let(:update_params) do
-            {
-              user: {
-                birth_date: "20/12/1988",
-                tag_users_attributes: []
-              },
-              id: user.id,
-              organisation_id: organisation.id,
-              format: "json"
-            }
-          end
-
-          before do
-            # This is unfortunately required because without it Rspec removes all params
-            # that return false to .present? and tag_users_attributes
-            # being an empty array, the controller doesn't receive it
-            allow_any_instance_of(described_class).to receive(:params).and_return(
-              ActionController::Parameters.new(update_params)
-            )
-          end
-
-          it "removes all existing tags" do
-            post :update, params: update_params
-            expect(user.reload.tags.size).to eq(0)
-          end
-
-          context "with tags on other organisations" do
-            let(:other_organisation) { create(:organisation) }
-            let(:other_tag) { create(:tag, value: "ok") }
-
-            before do
-              other_organisation.tags << other_tag
-              user.tags << other_tag
-            end
-
-            it "removes only correct tags" do
-              post :update, params: update_params
-              expect(user.reload.tags.first).to eq(other_tag)
-              expect(user.reload.tags.size).to eq(1)
-            end
-          end
-        end
-
-        context "without tags given" do
-          let(:update_params) do
-            {
-              user: {
-                birth_date: "20/12/1988",
-                tag_users_attributes: nil
-              },
-              id: user.id,
-              organisation_id: organisation.id,
-              format: "json"
-            }
-          end
-
-          before do
-            allow_any_instance_of(described_class).to receive(:params).and_return(
-              ActionController::Parameters.new(update_params)
-            )
-          end
-
-          it "does not remove existing tags" do
-            post :update, params: update_params
-            expect(user.reload.tags.first).to eq(existing_tag)
-          end
-        end
-      end
-
-      context "when the creation fails" do
-        before do
-          allow(Users::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
-        end
-
-        it "is not a success" do
-          post :update, params: update_params
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.parsed_body["success"]).to eq(false)
-        end
-
-        it "renders the errors" do
-          post :update, params: update_params
-          expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.parsed_body["errors"]).to eq(["some error"])
-        end
-      end
     end
 
     context "when html request" do

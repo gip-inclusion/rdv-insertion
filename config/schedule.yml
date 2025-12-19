@@ -36,7 +36,7 @@ upsert_monthly_stats_job:
 
 refresh_out_of_date_follow_up_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
-  class: "RefreshOutOfDateFollowUpStatusesJob"
+  class: "FollowUps::RefreshOutOfDateStatusesJob"
 store_all_number_of_creneaux_available_job:
   cron: "0 5 * * *" # we refresh out of date statuses once a day, at 21:00
   class: "Creneaux::StoreAllNumberOfCreneauxAvailableJob"
@@ -46,3 +46,6 @@ rgpd_cleanup_job:
 delete_unused_file_configurations_job:
   cron: "0 7 * * *" # we delete unused file configurations once a day, at 07:00
   class: "FileConfigurations::DeleteUnusedJob"
+purge_api_calls_job:
+  cron: "0 2 * * *" # we purge api calls older than 1 year once a day, at 02:00
+  class: "PurgeApiCallsJob"

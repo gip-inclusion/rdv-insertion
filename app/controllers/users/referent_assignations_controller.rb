@@ -8,15 +8,9 @@ module Users
 
     def create
       if assign_referent.success?
-        respond_to do |format|
-          format.turbo_stream { redirect_to request.referer }
-          format.json { render json: { success: true, user: @user } }
-        end
+        redirect_to(request.referer)
       else
-        respond_to do |format|
-          format.turbo_stream { turbo_stream_display_error_modal(assign_referent.errors) }
-          format.json { render json: { success: false }, status: :unprocessable_entity }
-        end
+        turbo_stream_display_error_modal(assign_referent.errors)
       end
     end
 

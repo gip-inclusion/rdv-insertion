@@ -10,10 +10,14 @@
 <div class="main-content">
   <p><%= user.title_in_letter %>,</p>
   <p>Vous êtes <%= user_designation %> et à ce titre vous êtes <%= user.conjugate("convoqué") %> à un <%= rdv_title %> pour <%= rdv_purpose %>.</p>
-  <p>Vous êtes <%= user.conjugate("attendu") %> le <strong><%= I18n.l(rdv.starts_at, format: :human) %></strong>, à l'adresse suivante: </p>
+  <p>Vous êtes <%= user.conjugate("attendu") %> le <strong><%= I18n.l(rdv.starts_at, format: :human) %></strong>, à l'adresse suivante&nbsp;:</p>
   <div class="rdv-address">
-    <div class="text-center">🕐<strong><%= rdv.lieu.name %></strong></div>
-    <div class="text-center">📍 <%= rdv.lieu.address %></div>
+    <div class="text-center">
+      <%= pdf_clock_icon %> <strong><%= rdv.lieu.name %></strong>
+    </div>
+    <div class="text-center">
+      <%= pdf_map_pin_icon %> <%= rdv.lieu.address %>
+    </div>
   </div>
   <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
   <%= tag.p tag.span(instruction_for_rdv) if instruction_for_rdv.present? %>

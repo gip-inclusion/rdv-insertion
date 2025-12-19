@@ -151,15 +151,7 @@ module Exporters
     def human_follow_up_status(user)
       return "" if @motif_category.nil? || follow_up_for_export(user).nil?
 
-      follow_up_for_export(user).human_status + display_follow_up_status_notice(follow_up_for_export(user))
-    end
-
-    def display_follow_up_status_notice(follow_up)
-      if @structure.present? && follow_up.no_upcoming_rdv_and_all_invitations_expired?
-        " (Délai dépassé)"
-      else
-        ""
-      end
+      follow_up_for_export(user).human_status
     end
 
     def display_date(date)

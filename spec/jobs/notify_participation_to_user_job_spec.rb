@@ -14,8 +14,7 @@ describe NotifyParticipationToUserJob do
       allow(Notifications::SaveAndSend).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
       allow(Participation).to receive(:find).and_return(participation)
-      allow(participation).to receive_messages(user: user, notifiable?: true)
-      allow(user).to receive(:notifiable?).and_return(true)
+      allow(participation).to receive(:notifiable?).and_return(true)
     end
 
     it "calls the notify user service" do
@@ -70,15 +69,6 @@ describe NotifyParticipationToUserJob do
             expect(Notifications::SaveAndSend).not_to receive(:call)
             subject
           end
-        end
-      end
-
-      context "when the user is not notifiable" do
-        before { allow(user).to receive(:notifiable?).and_return(false) }
-
-        it "does notify the user" do
-          expect(Notifications::SaveAndSend).not_to receive(:call)
-          subject
         end
       end
 

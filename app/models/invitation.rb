@@ -32,7 +32,8 @@ class Invitation < ApplicationRecord
   enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid
-  after_commit :set_follow_up_status
+  after_commit :refresh_follow_up_status
+  after_commit :plan_follow_up_status_refresh, on: [:create, :update]
 
   scope :valid, -> { where("expires_at > ?", Time.zone.now).or(never_expire) }
   scope :expired, -> { where(expires_at: ..Time.zone.now) }
@@ -132,7 +133,11 @@ class Invitation < ApplicationRecord
     end
   end
 
-  def set_follow_up_status
-    RefreshFollowUpStatusesJob.perform_later(follow_up_id) if follow_up_id?
+  def refresh_follow_up_status
+    FollowUps::RefreshStatusesJob.perform_later(follow_up_id)
+  end
+
+  def plan_follow_up_status_refresh
+    FollowUps::PlanStatusRefreshJob.perform_later(follow_up_id)
   end
 end

@@ -12,11 +12,11 @@ RSpec.configure do |config|
 
       built_assets = Rails.root.glob("app/assets/builds/*.{js,css}")
 
-      source_last_modified = source_files.map { |f| File.mtime(f) }.max
+      source_last_modified_at = source_files.map { |f| File.mtime(f) }.max
 
-      assets_last_modified = built_assets.map { |f| File.mtime(f) }.max
+      assets_last_modified_at = built_assets.map { |f| File.mtime(f) }.max
 
-      if assets_last_modified.nil? || source_last_modified > assets_last_modified
+      if assets_last_modified_at.nil? || source_last_modified_at > assets_last_modified_at
         puts "Assets are not up-to-date; Building assets..."
         system("RAILS_ENV=test yarn build")
       end

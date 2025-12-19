@@ -6,6 +6,7 @@ module Api
 
       before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
                     :set_current_agent
+      after_action :log_api_call
 
       include AuthorizationConcern
       include Api::V1::PaperTrailConcern
@@ -64,6 +65,26 @@ module Api
 
       def current_agent
         authenticated_agent
+      end
+
+      def log_api_call
+        ApiCall.create!(
+          http_method: request.method,
+          path: request.fullpath,
+          host: request.host,
+          controller_name: controller_name,
+          action_name: action_name,
+          agent_id: current_agent&.id
+        )
+      rescue StandardError => e
+        Sentry.capture_exception(
+          e,
+          extra: {
+            http_method: request.method,
+            path: request.fullpath,
+            agent_id: current_agent&.id
+          }
+        )
       end
     end
   end

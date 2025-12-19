@@ -99,7 +99,7 @@ class Rdv < ApplicationRecord
   private
 
   def refresh_follow_up_statuses
-    RefreshFollowUpStatusesJob.perform_later(follow_up_ids)
+    FollowUps::RefreshStatusesJob.perform_later(follow_up_ids)
   end
 
   def notify_participations_to_users

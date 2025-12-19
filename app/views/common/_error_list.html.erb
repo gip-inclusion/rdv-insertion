@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "error_list" do  %>
   <ul>
     <% errors.each do |error| %>
-      <p>❌ <%= raw(error) %></p>
+      <p>❌ <%= error %></p>
     <% end %>
   </ul>
 <% end %>
