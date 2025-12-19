@@ -4,7 +4,7 @@
 # For further information see the following documentation
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
-s3_bucket = "rdv-insertion-medias-production.s3.fr-par.scw.cloud"
+s3_bucket = "rdv-insertion-medias-#{ENV['ENVIRONMENT_NAME']}.s3.fr-par.scw.cloud"
 rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
 matomo = "matomo.inclusion.beta.gouv.fr"
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
