@@ -1,5 +1,5 @@
-class RemoveUnecessaryTemplateOverrides < ActiveRecord::Migration[8.0]
-  # rubocop:disable Metrics/AbcSize
+class RemoveUnecessaryCategoryConfigurationAttributes < ActiveRecord::Migration[8.0]
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def change
     up_only do
       CategoryConfiguration.find_each do |category_configuration|
@@ -20,9 +20,13 @@ class RemoveUnecessaryTemplateOverrides < ActiveRecord::Migration[8.0]
           category_configuration.template_rdv_purpose_override = nil
         end
 
+        if category_configuration.phone_number == category_configuration.organisation.phone_number ||
+           category_configuration.phone_number == ""
+          category_configuration.phone_number = nil
+        end
         category_configuration.save! if category_configuration.changed?
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

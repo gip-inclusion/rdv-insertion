@@ -1,11 +1,11 @@
 module Organisations::CategoryConfigurationsHelper
   def display_category_configuration_phone_number(category_configuration)
-    return if category_configuration.phone_number.blank?
+    return if category_configuration.effective_phone_number.blank?
 
     if category_configuration.default_phone_number?
-      "#{category_configuration.phone_number} (par défaut)"
+      "#{category_configuration.effective_phone_number} (par défaut)"
     else
-      category_configuration.phone_number
+      category_configuration.effective_phone_number
     end
   end
 
@@ -21,5 +21,11 @@ module Organisations::CategoryConfigurationsHelper
     else
       "#{number_of_days_before_invitations_expire} jours"
     end
+  end
+
+  def category_configuration_phone_number_placeholder(organisation_phone_number)
+    return if organisation_phone_number.blank?
+
+    "#{organisation_phone_number} (par défaut)"
   end
 end

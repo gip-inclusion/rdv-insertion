@@ -28,7 +28,7 @@ class CategoryConfiguration < ApplicationRecord
   delegate :department, :department_id, :rdv_solidarites_organisation_id, to: :organisation
   delegate :template, to: :motif_category
 
-  nullify_blank :email_to_notify_no_available_slots, :email_to_notify_rdv_changes
+  nullify_blank :email_to_notify_no_available_slots, :email_to_notify_rdv_changes, :phone_number
 
   def self.template_override_attributes
     attribute_names.select do |attribute_name|
@@ -36,15 +36,13 @@ class CategoryConfiguration < ApplicationRecord
     end
   end
 
-  def phone_number
-    attributes["phone_number"].presence || default_phone_number
+  def effective_phone_number
+    phone_number.presence || default_phone_number
   end
 
   def default_phone_number = organisation.phone_number
 
-  def default_phone_number?
-    phone_number == default_phone_number
-  end
+  def default_phone_number? = phone_number.blank?
 
   def notify_no_available_slots? = email_to_notify_no_available_slots.present?
   def notify_rdv_changes? = email_to_notify_rdv_changes.present?

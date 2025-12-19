@@ -58,5 +58,5 @@
   </p>
   <%= f.text_field :phone_number,
                    class: "form-control w-25",
-                   placeholder: "#{organisation.phone_number.presence} (par défaut)" || "01 23 45 67 89 (par défaut)" %>
+                   placeholder: category_configuration_phone_number_placeholder(organisation.phone_number)%>
 </div>
