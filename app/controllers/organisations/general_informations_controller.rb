@@ -1,8 +1,7 @@
 module Organisations
   class GeneralInformationsController < ApplicationController
     PERMITTED_PARAMS = [
-      :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
-      :department_id, :safir_code, :logo, :remove_logo
+      :name, :phone_number, :email, :slug, :logo, :remove_logo
     ].freeze
 
     before_action :set_organisation
