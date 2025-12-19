@@ -19,7 +19,7 @@
 
           <%= render "common/attribute_display_inline", label: "Signature jointe" do %>
             <% if messages_configuration.signature_image.attached? %>
-              <%= image_tag messages_configuration.signature_image, class: "img-fluid uploaded-image-preview", alt: "Signature jointe" %>
+              <%= image_tag messages_configuration.signature_image.url, class: "img-fluid uploaded-image-preview", alt: "Signature jointe" %>
             <% else %>
               Aucune signature jointe
             <% end %>
