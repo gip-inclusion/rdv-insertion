@@ -1,0 +1,13 @@
+<%= form_for(:tag, url: organisation_tags_path, method: :post, class: "d-flex", data: { controller: :tags, action: "turbo:submit-end->tags#clear" }) do |f| %>
+  <div class="autocomplete-container" data-controller="autocomplete">
+    <%= f.text_field :value, class: "form-control", placeholder: "Nom du tag", autocomplete: "off" %>
+    <div class="autocomplete d-none">
+      <% existing_tags.each do |tag| %>
+        <button type="button"><%= tag.value %></button>
+      <% end %>
+    </div>
+  </div>
+  <%= button_tag type: 'submit', class: "btn btn-primary mx-2" do %>
+    <i class="ri-add-line"></i> Créer un tag
+  <% end  %>
+<% end %>

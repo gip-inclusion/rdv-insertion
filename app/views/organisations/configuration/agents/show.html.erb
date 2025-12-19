@@ -1,0 +1,64 @@
+<% content_for :title, "Configuration - Agents - #{@organisation.name} - rdv-insertion" %>
+
+<div class="container mt-5 mb-5">
+  <%= turbo_frame_tag "configuration_tab" do %>
+    <%= render "organisations/configuration/header", tab: "agents", organisation: @organisation %>
+
+    <div class="mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="h4 text-dark-blue fw-bold">Gestion des agents</h2>
+        </div>
+        <div>
+          <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
+            <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
+          <% end %>
+        </div>
+      </div>
+
+      <div class="card-white p-4 mb-4">
+        <h3 class="h5 mb-2 fw-bold">Agents de l'organisation</h3>
+        <p class="text-muted mb-4">
+          Gérer la liste des agents de votre organisation sur RDV-Solidarités.
+        </p>
+        <div class="mt-4">
+          <%= render "common/attribute_display_inline", label: "Nombre d'agents", value: custom_pluralize(@agent_roles.length, "agent") %>
+          <%= render "common/attribute_display_inline", label: "Niveaux de permissions", value: agent_roles_count_text(@agent_roles.count(&:admin?), @agent_roles.count(&:basic?)) %>
+        </div>
+        <div class="d-flex justify-content-end mt-2 me-2">
+          <%= link_to(agents_index_url(@organisation), target: "_blank", **with_rdv_solidarites_impersonation_warning) do %>
+            <button class="btn btn-blue-out me-2" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
+              <i class="ri-external-link-line mx-1"></i>Voir les agents
+            </button>
+            <%= render "common/rdvs_impersonation_warning", url: agents_index_url(@organisation) if agent_impersonated? %>
+          <% end %>
+          <%= link_to(add_agent_url(@organisation), target: "_blank", **with_rdv_solidarites_impersonation_warning) do %>
+            <button class="btn btn-blue" <% if agent_impersonated? %>data-action="click->confirmation-modal#show" <% end %>>
+              <i class="ri-user-add-fill mx-1"></i>Ajouter un agent
+            </button>
+            <%= render "common/rdvs_impersonation_warning", url: add_agent_url(@organisation) if agent_impersonated? %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="card-white p-4 mb-4">
+        <h3 class="h5 mb-2 fw-bold">Autorisations d'export</h3>
+        <p class="text-muted mb-4">
+          Sélectionner les agents non-administrateurs de votre organisation qui peuvent avoir accès à la fonctionnalité d’export.
+        </p>
+        <div class="mt-4">
+          <%= render(
+                "common/attribute_display_inline",
+                label: "Agents autorisés à exporter",
+                value: basic_roles_count_text(@agent_roles.basic.authorized_to_export_csv.count)
+              ) %>
+        </div>
+        <div class="d-flex justify-content-end mt-2 me-2">
+          <%= link_to organisation_csv_export_authorizations_path(@organisation), class: "btn btn-blue", data: { turbo_frame: 'remote_modal' } do %>
+            Gérer les autorisations
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

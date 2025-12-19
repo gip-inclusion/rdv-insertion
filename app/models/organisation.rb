@@ -2,18 +2,12 @@ class Organisation < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email, :website].freeze
   SEARCH_ATTRIBUTES = [:name, :slug].freeze
 
-  include HasLogo
   include Searchable
   include Organisation::Archivable
 
   before_create { build_messages_configuration }
 
-  validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
-  validates :name, :organisation_type, presence: true
-  validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validates :phone_number, phone_number: { allow_4_digits_numbers: true }
-  validates :data_retention_duration_in_months, presence: true
-  validate :data_retention_duration_in_months_bounds
+  has_attached_image :logo
 
   belongs_to :department
   has_one :stat, as: :statable, dependent: :destroy
@@ -26,6 +20,7 @@ class Organisation < ApplicationRecord
   has_many :lieux, dependent: :restrict_with_exception
   has_many :motifs, dependent: :restrict_with_exception
   has_many :agent_roles, dependent: :destroy
+
   has_many :users_organisations, dependent: :destroy
   has_many :tag_organisations, dependent: :destroy
   has_many :orientations, dependent: :restrict_with_error
@@ -38,7 +33,14 @@ class Organisation < ApplicationRecord
   has_many :tags, through: :tag_organisations
   has_many :file_configurations, through: :category_configurations
 
-  has_and_belongs_to_many :invitations, dependent: :nullify
+  has_and_belongs_to_many :invitations, dependent: :destroy
+
+  validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
+  validates :name, :organisation_type, presence: true
+  validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
+  validates :phone_number, phone_number: { allow_4_digits_numbers: true }
+  validates :data_retention_duration_in_months, presence: true
+  validate :data_retention_duration_in_months_bounds
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 

@@ -1,0 +1,50 @@
+<% content_for :title, "Configuration - Gestion des tags - #{@organisation.name} - rdv-insertion" %>
+
+<div class="container text-dark-blue mt-5 mb-5">
+  <%= turbo_frame_tag "configuration_tab" do %>
+    <%= render "organisations/configuration/header", tab: "tags", organisation: @organisation %>
+
+    <div class="tab-content mt-4">
+      <div class="mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h4 text-dark-blue fw-bold">Gestion des tags</h2>
+            <p class="text-muted">Les tags permettent de catégoriser, différencier les dossiers usagers selon des critères propres à l’organisation.</p>
+          </div>
+          <div>
+            <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
+              <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
+            <% end %>
+          </div>
+        </div>
+
+        <div class="card-white p-4 mb-4">
+          <h3 class="h5 mb-2 fw-bold">Tags utilisés dans cette organisation</h3>
+          <p class="text-muted mb-4">
+            Les tags utilisés sont visibles et utilisables par tous les agents de votre organisation
+          </p>
+
+          <%= turbo_frame_tag "tags", class: "d-flex flex-wrap px-0" do %>
+            <% @organisation.tags.each do |tag| %>
+              <%= render "organisations/tags/tag", tag: tag, organisation: @organisation, user_count: @user_count_by_tag_id[tag.id] || 0 %>
+            <% end %>
+          <% end %>
+
+          <h4 class="h6 mb-2 fw-bold text-dark-blue my-4">Créer un nouveau tag*</h4>
+          <%= render "organisations/tags/tag_form", existing_tags: @department.tags.distinct %>
+          <div class="text-muted px-0 mt-3 mb-2">
+            <small>
+              *Ce champ est une zone de commentaires libres : veillez à utiliser des termes objectifs, pertinents, non excessifs et/ou insultants.
+              <br>
+              Conformément aux articles 9 et 10 du RGPD, les données sensibles telles que celles relatives à la santé, à la vie sexuelle des personnes,
+              <br>
+              à leur situation judiciaire (infractions, condamnations et mesures de sureté) sont proscrites. L’équipe de rdv-insertion se réserve un droit
+              <br>
+              de suppression des informations qui seraient considérées comme sensibles.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

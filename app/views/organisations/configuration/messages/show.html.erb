@@ -1,0 +1,40 @@
+<% content_for :title, "Configuration - Messages - #{@organisation.name} - rdv-insertion" %>
+
+<div class="container mt-5 mb-5">
+  <%= turbo_frame_tag "configuration_tab" do %>
+    <%= render "organisations/configuration/header", tab: "messages", organisation: @organisation %>
+
+    <div class="mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 text-dark-blue fw-bold">Configuration des messages</h2>
+        <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
+          <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
+        <% end %>
+      </div>
+
+      <%= render "organisations/messages_configurations/messages_configuration", organisation: @organisation, messages_configuration: @messages_configuration %>
+      <div class="card-white p-4 mb-4">
+        <h3 class="h5 mb-2 fw-bold">Contenu des messages</h3>
+        <p class="text-muted mb-4">
+          Personnalisez le modèle par défaut des messages d’invitations et de convocations pour chacune des catégories.
+        </p>
+
+        <% @category_configurations.each do |category_configuration| %>
+          <%= render "organisations/category_configurations/template_overrides/template_override", organisation: @organisation, category_configuration: category_configuration %>
+        <% end %>
+        <% if @category_configurations.empty? %>
+          <div class="background-blue-paler rounded-3 text-center py-5">
+            <%= image_tag "illustrations/empty-results.png", alt: "", width: 200, class: "mb-3" %>
+            <p class="mb-1">Il n'y a pas encore de catégorie sur cette organisation.</p>
+            <p class="mb-4">
+              Pour configurer le contenu des messages, vous devez d'abord ajouter une catégorie de motifs.
+            </p>
+            <%= link_to new_organisation_category_configuration_path(@organisation), class: "btn btn-blue", data: { turbo_frame: "_top" } do %>
+              <i class="ri-add-line me-1"></i> Ajouter une catégorie
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

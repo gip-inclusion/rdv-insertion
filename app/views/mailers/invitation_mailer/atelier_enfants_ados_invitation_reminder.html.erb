@@ -10,4 +10,4 @@
 <p>En cas de problème, contactez-nous :</p>
 <%= render "mailers/contact_infos", help_phone_number: @invitation.help_phone_number, help_email: @invitation.help_email, help_website: @invitation.help_website %>
 <%= render "common/organisation_signature", signature_lines: @signature_lines, department: @department %>
-<%= render "mailers/logos", display_europe_logos: @invitation.display_europe_logos, display_france_travail_logo: @invitation.display_france_travail_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<%= render "mailers/logos", logos_to_display: @logos_to_display, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

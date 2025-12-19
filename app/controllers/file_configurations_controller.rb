@@ -8,6 +8,7 @@ class FileConfigurationsController < ApplicationController
   ].freeze
 
   before_action :set_file_configuration, only: [:show, :edit, :update, :download_template]
+  before_action :set_return_to_path, only: [:show, :new, :edit]
 
   def show; end
 
@@ -30,15 +31,14 @@ class FileConfigurationsController < ApplicationController
   def create
     @file_configuration = FileConfiguration.new(file_configuration_params.merge(created_by_agent: current_agent))
     if @file_configuration.save
-      turbo_stream_display_success_modal("Le fichier d'import a été créé avec succès", reload_on_close: true)
+      turbo_stream_display_success_modal("Le fichier d'import a été créé avec succès")
     else
       turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
     end
   end
 
   def update
-    @file_configuration.assign_attributes(**file_configuration_params)
-    if @file_configuration.save
+    if @file_configuration.update(file_configuration_params)
       turbo_stream_display_success_modal("Le fichier d'import a été modifié avec succès")
     else
       turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
@@ -54,5 +54,9 @@ class FileConfigurationsController < ApplicationController
   def set_file_configuration
     @file_configuration = FileConfiguration.find(params[:id] || params[:file_configuration_id])
     authorize @file_configuration
+  end
+
+  def set_return_to_path
+    @return_to_path = url_from(params[:return_to_path])
   end
 end

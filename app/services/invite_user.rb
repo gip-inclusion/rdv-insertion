@@ -29,7 +29,7 @@ class InviteUser < BaseService
       # the validity of an invitation is equal to the number of days before an action is required,
       # then the organisation usually convene the user
       expires_at: @current_configuration.new_invitation_will_expire_at,
-      help_phone_number: @current_configuration.phone_number,
+      help_phone_number: @current_configuration.effective_phone_number,
       rdv_with_referents: @current_configuration.rdv_with_referents,
       **@invitation_attributes
     )

@@ -83,14 +83,14 @@ describe MessagesConfiguration do
         )
       end
 
-      it "purges signature when remove_signature is true" do
-        messages_configuration.remove_signature = "true"
+      it "purges signature when remove_signature_image is true" do
+        messages_configuration.remove_signature_image = "true"
         expect(messages_configuration.signature_image).to receive(:purge_later)
         messages_configuration.save!
       end
 
-      it "does not purge when remove_signature is false" do
-        messages_configuration.remove_signature = "false"
+      it "does not purge when remove_signature_image is false" do
+        messages_configuration.remove_signature_image = "false"
         expect(messages_configuration.signature_image).not_to receive(:purge_later)
         messages_configuration.save!
       end

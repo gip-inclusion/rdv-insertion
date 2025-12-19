@@ -3,35 +3,7 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.organisations.include?(record)
   end
 
-  def create?
-    pundit_user.super_admin?
-  end
-
-  def show?
-    configure?
-  end
-
-  def new?
-    create?
-  end
-
-  def update?
-    configure?
-  end
-
-  def update_data_retention?
-    configure?
-  end
-
-  def edit?
-    configure?
-  end
-
   def create_and_invite_users?
-    access?
-  end
-
-  def batch_actions?
     access?
   end
 

@@ -1,0 +1,33 @@
+<%= turbo_frame_tag "category_configuration_template_overrides_#{category_configuration.id}" do %>
+  <div class="mb-4 p-4 background-blue-paler rounded-3">
+    <h3 class="h5 mb-2 text-dark-blue">Messages de la catégorie « <span class="text-underline"><%= category_configuration.motif_category_name %></span> »</h3>
+    <div class="p-3">
+      <%= render "common/attribute_display_inline", record: category_configuration, attribute: :template_rdv_title %>
+      <%= render "common/attribute_display_inline", record: category_configuration, attribute: :template_rdv_title_by_phone %>
+      <%= render "common/attribute_display_inline", record: category_configuration, attribute: :template_user_designation %>
+      <%= render "common/attribute_display_inline", record: category_configuration, attribute: :template_rdv_purpose %>
+
+      <div class="d-flex justify-content-between mt-4">
+        <div>
+          <%= link_to previews_invitations_path(category_configuration_id: category_configuration.id), data: { turbo_frame: 'remote_modal' }, class: "btn btn-blue-out" do %>
+            <i class="ri-eye-fill"></i> Invitations
+          <% end %>
+          <% if category_configuration.convene_user? %>
+            <%= link_to previews_notifications_path(category_configuration_id: category_configuration.id), data: { turbo_frame: 'remote_modal' }, class: "btn btn-blue-out" do %>
+              <i class="ri-eye-fill"></i> Convocations
+            <% end %>
+          <% else %>
+            <button type="button" class="btn btn-blue-out" disabled aria-disabled="true">
+              <i class="ri-eye-fill"></i> Convocations (désactivées)
+            </button>
+          <% end %>
+        </div>
+        <div>
+          <%= link_to edit_organisation_category_configuration_template_override_path(organisation, category_configuration), class: "btn btn-blue" do %>
+            Modifier
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,20 @@
+<div id="<%= dom_id(category_configuration) %>" class="card-white mb-3">
+  <div class="clickable d-flex justify-content-between align-items-center"
+       data-action="click->accordion#toggle"
+       data-index="<%= index %>"
+       role="button"
+       aria-expanded="false">
+    <div>
+      <span class="fw-bold h5">Catégorie « <%= category_configuration.motif_category_name %> »</span>
+      <span class="text-muted ms-2">- <%= motifs.size %> <%= "motif".pluralize(motifs.size) %> <%= "rattaché".pluralize(motifs.size) %></span>
+    </div>
+    <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
+  </div>
+
+  <div class="d-none" data-accordion-target="content">
+    <%= render "organisations/category_configurations/accordion_content",
+               category_configuration: category_configuration,
+               motifs: motifs,
+               organisation: organisation %>
+  </div>
+</div>

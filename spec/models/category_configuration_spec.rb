@@ -78,7 +78,7 @@ describe CategoryConfiguration do
       it "adds errors" do
         expect(new_configuration).not_to be_valid
         expect(new_configuration.errors.full_messages.to_sentence)
-          .to include("Organisation a déjà une category_configuration pour cette catégorie de motif")
+          .to include("Organisation a déjà une configuration pour cette catégorie de motif")
       end
     end
   end

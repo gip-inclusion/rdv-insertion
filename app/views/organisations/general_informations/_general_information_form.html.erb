@@ -1,0 +1,70 @@
+<%= turbo_frame_tag organisation do %>
+  <%= form_with model: organisation, url: organisation_general_information_path(organisation), method: :patch do |f| %>
+    <div class="card-white p-4 mb-4">
+      <h3 class="h5 mb-2 fw-bold">Informations générales</h3>
+      <p class="text-muted mb-4">
+        Ces informations permettent d'identifier l'organisation, notamment dans les messages envoyés aux usagers.
+      </p>
+
+      <%= turbo_frame_tag "error_list" %>
+
+      <div class="mb-4">
+        <%= render "common/attribute_input_inline",
+                   f: f,
+                   attribute: :name,
+                   label: "Nom de l'organisation",
+                   mandatory: true %>
+
+        <%= render "common/attribute_input_inline",
+                   f: f,
+                   attribute: :phone_number,
+                   label: "Numéro de téléphone",
+                   tooltip: {
+                     icon: "ri-question-line",
+                     content: "Le numéro de téléphone de l'organisation doit être renseigné pour inviter les usagers."
+                   } %>
+
+        <%= render "common/attribute_input_inline",
+                   f: f,
+                   attribute: :email,
+                   label: "Adresse email",
+                   tooltip: {
+                     icon: "ri-question-line",
+                     content: "Renseigner une adresse email vous permettra :<br>• de recevoir des alertes liées aux rendez-vous<br>• de fournir aux usagers un moyen de contacter l'organisation en cas de blocage lors de la prise de rendez-vous."
+                   } %>
+
+        <%= render "common/attribute_input_inline",
+                   f: f,
+                   attribute: :slug,
+                   label: "Désignation de l'organisation<br>dans le fichier",
+                   tooltip: {
+                     icon: "ri-question-line",
+                     content: "Permet de rattacher les usagers à l'organisation via le fichier d'import."
+                   } %>
+      </div>
+
+      <div class="mb-4 mt-5">
+        <h4 class="h6 fw-bold mb-1">Logo de l'organisation</h4>
+        <p class="text-muted small mb-3">Logo au format .png ou .jpg. Taille de fichier maximale : 2 Mo</p>
+
+        <%= render "common/image_upload_zone",
+                   f: f,
+                   record: @organisation,
+                   attribute: :logo,
+                   placeholder_text: "Glisser/déposer le logo ici" %>
+      </div>
+
+      <p class="text-muted small mb-3">
+        *Informations obligatoires pour garantir le bon fonctionnement de rdv-insertion.
+      </p>
+
+      <div class="d-flex justify-content-end">
+        <%= link_to organisation_general_information_path(organisation), class: "btn btn-blue-out me-2" do %>
+          Annuler
+        <% end %>
+        <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+

@@ -1,11 +1,3 @@
-<% content_for :header do %>
-  <%= render 'common/header_website' %>
-<% end %>
-
-<% content_for :footer do %>
-  <%= render 'common/footer_website' %>
-<% end %>
-
-<%= render "layouts/application_base", keep_dsfr_defaults: true do %>
+<%= render "layouts/application_base", header: "common/header_website", footer: "common/footer_website", keep_dsfr_defaults: true do %>
   <%= yield %>
 <% end %>

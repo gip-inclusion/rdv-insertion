@@ -1,29 +1,38 @@
-<%= turbo_frame_tag file_configuration do %>
-  <div class="row card-white d-flex justify-content-between mb-5">
-    <%= render "common/attribute_display", record: file_configuration, attribute: :sheet_name %>
-    <div class="col-6 text-align-right">
-      <%= link_to file_configuration_download_template_path(file_configuration), download: true do %>
-        <button class="btn btn-blue-out">
-          <i class="ri-download-line"></i> Télécharger le modèle de fichier
-        </button>
-      <% end %>
-    </div>
-    <div class="col-12 col-md-9 justify-content-start px-5 mt-3">
-      <h4 class="text-center">Colonnes obligatoires</h4>
-      <table class="table table-hover table-responsive text-dark-blue">
-        <thead>
-          <th class="col">Nom de la colonne dans le fichier</th>
-          <th class="col">Information correspondante</th>
-        </thead>
-        <tbody>
-          <% file_configuration.column_attributes.each do |key, value| %>
-            <tr>
-              <td><%= display_attribute value %></td>
-              <td><%= FileConfiguration.human_attribute_name(key) %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+<%# locals: (file_configuration:) %>
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Nom de l'onglet Excel</h4>
+    <p class="text-dark-blue mb-0"><%= file_configuration.sheet_name %></p>
   </div>
-<% end %>
+  <div class="d-flex gap-2">
+    <%= link_to edit_file_configuration_path(file_configuration),
+                data: { turbo_frame: "remote_modal" },
+                class: "btn btn-blue-out" do %>
+      <i class="ri-pencil-line"></i> Modifier le modèle
+    <% end %>
+    <%= link_to file_configuration_download_template_path(file_configuration),
+                download: true,
+                class: "btn btn-blue-out" do %>
+      <i class="ri-download-line"></i> Télécharger le modèle de fichier
+    <% end %>
+  </div>
+</div>
+
+<h4 class="text-center fw-bold mb-3">Colonnes obligatoires</h4>
+<table class="table table-hover table-responsive text-dark-blue">
+  <thead>
+    <tr>
+      <th class="col">Nom de la colonne dans le fichier</th>
+      <th class="col">Information correspondante</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% file_configuration.column_attributes.each do |key, value| %>
+      <tr>
+        <td><%= display_attribute value %></td>
+        <td><%= FileConfiguration.human_attribute_name(key) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

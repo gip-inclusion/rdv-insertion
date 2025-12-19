@@ -6,11 +6,13 @@ fr:
       messages_configuration:
         direction_names: En-têtes
         sender_city: Ville d'expédition
-        signature_lines: Signature
-        signature_image: Signature (image)
+        signature_lines: Signature texte
+        signature_image: Signature jointe
         letter_sender_name: Nom de l'expéditeur
         help_address: Adresse d'accueil
-        display_europe_logos: Afficher les logos européens
-        display_france_travail_logo: Afficher le logo de France Travail
-        display_department_logo: Afficher le logo du département
+        logos_to_display: Logos affichés
         sms_sender_name: Nom de l'expéditeur
+        logo_types:
+          department: Département
+          europe: Européens
+          france_travail: France Travail

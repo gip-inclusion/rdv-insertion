@@ -2,21 +2,32 @@ fr:
   activerecord:
     models:
       category_configuration: CategoryConfiguration
+    errors:
+      models:
+        category_configuration:
+          attributes:
+            organisation:
+              taken: a déjà une configuration pour cette catégorie de motif
     attributes:
       category_configuration:
         convene_user: Convocation possible
-        number_of_days_before_invitations_expire: Durée de validité du lien d'invitation (en jours)
+        number_of_days_before_invitations_expire: Durée de validité du lien d'invitation
         number_of_days_between_periodic_invites: Délai entre 2 invitations récurrentes (en jours)
         day_of_the_month_periodic_invites: Jour du mois auquel envoyer les invitations récurrentes
-        invite_to_user_organisations_only: Invitation limitée aux organisations du bénéficiaire
+        invite_to_user_organisations_only: Invitation limitée aux organisations de l'usager
         rdv_with_referents: RDV avec référent
-        phone_number: Numéro de téléphone (si différent de celui de l'organisation)
-        invitation_formats: Formats d'invitations
+        phone_number: Numéro de téléphone
+        invitation_formats: Formats des invitations
         motif_category: Catégorie de motifs
         file_configuration: Fichier d'import
         template_rdv_title_override: Titre du rendez-vous
+        template_rdv_title: Titre du rendez-vous
         template_rdv_title_by_phone_override: Titre du rendez-vous téléphonique
+        template_rdv_title_by_phone: Titre du rendez-vous téléphonique
         template_rdv_purpose_override: But du rendez-vous
+        template_rdv_purpose: But du rendez-vous
         template_user_designation_override: Désignation de la personne
+        template_user_designation: Désignation de la personne
         email_to_notify_rdv_changes: Email de destination des notifications de prise de RDV
         email_to_notify_no_available_slots: Email de destination des notifications de créneaux épuisés
+

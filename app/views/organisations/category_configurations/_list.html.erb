@@ -1,0 +1,21 @@
+<div data-controller="accordion">
+  <% category_configurations.each_with_index do |category_configuration, index| %>
+    <% motifs = motifs_by_category[category_configuration.motif_category_id] || [] %>
+    <%= render "organisations/category_configurations/accordion_item",
+               category_configuration: category_configuration,
+               motifs: motifs,
+               organisation: organisation,
+               index: index %>
+  <% end %>
+
+  <% if category_configurations.empty? %>
+    <div class="background-blue-paler rounded-3 text-center py-5">
+      <%= image_tag "illustrations/empty-results.png", alt: "", width: 200, class: "mb-3" %>
+      <p class="mb-1">Il n'y a pas encore de catégorie configurée pour cette organisation.</p>
+      <p class="mb-0">
+        Pour commencer à inviter des usagers depuis cette organisation,
+        <%= link_to "ajoutez une catégorie de motifs.", new_organisation_category_configuration_path(organisation), class: "text-underline", data: { turbo_frame: "_top" } %>
+      </p>
+    </div>
+  <% end %>
+</div>

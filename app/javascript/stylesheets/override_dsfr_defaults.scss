@@ -37,6 +37,16 @@
       color: $dark-blue;
     }
   }
+  .btn-red-out {
+    &:hover {
+      background-color: $light-grey-2 !important;
+      color: $dark-red;
+    }
+
+    &:disabled {
+      color: $dark-red;
+    }
+  }
   .btn-primary {
     &:hover {
       background-color: $light-blue !important;
@@ -86,7 +96,8 @@
     min-width: 200px;
   }
 
-  .btn-blue {
+  .btn-blue,
+  input[type="submit"].btn-blue {
     background-color: $dark-blue;
     border-color: $dark-blue;
     color: white;
@@ -107,6 +118,15 @@
     color: $dark-blue;
     &:hover {
       background-color: $dark-blue;
+    }
+  }
+
+  .btn-red-out {
+    border-color: $dark-red;
+    background-color: white;
+    color: $dark-red;
+    &:hover {
+      background-color: $dark-red;
     }
   }
 
@@ -141,7 +161,7 @@
     background-image: none !important;
     padding: initial !important;
   }
-  
+
   // Override DSFR hover styles for SweetAlert 2 buttons
   .swal2-actions button:hover {
     background-color: #1212FF !important;

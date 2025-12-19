@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<%= render "letters/footer", display_europe_logos: display_europe_logos, display_france_travail_logo: display_france_travail_logo, display_department_logo: display_department_logo, department: department %>
+<%= render "letters/footer", logos_to_display: logos_to_display, department: department %>
 
 <div class="mail-object">
   <%= image_tag "illustrations/parcours-drome-courriers-footer.png", alt: "Mentions légales et protection de données du parcours du demandeur", class: 'w-100' if department.number == "26" && motif_category&.name == "RSA Main Tendue" %>

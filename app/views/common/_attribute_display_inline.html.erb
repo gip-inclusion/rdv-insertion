@@ -1,0 +1,39 @@
+<%# Displays an attribute in inline format (label left, value right) %>
+<%# Mode 1 - with record: record, attribute %>
+<%# Mode 2 - without record: label, value or block %>
+
+<%
+  label = if local_assigns.key?(:label)
+    sanitize(local_assigns[:label], tags: %w[br])
+  else
+    record.class.human_attribute_name(attribute)
+  end
+  value = if block_given? && yield.present?
+    yield
+  elsif local_assigns.key?(:value)
+    sanitize(local_assigns[:value], tags: %w[br])
+  else
+    record.send(attribute)
+  end
+%>
+
+<div id="<%= local_assigns[:id] %>" class="row py-2 align-items-center">
+  <div class="col-4 d-flex align-items-center">
+    <span class="fw-bold"><%= label %></span>
+    <% if local_assigns[:tooltip].is_a?(Hash) %>
+      <i
+        class="<%= local_assigns[:tooltip][:icon] || 'ri-question-line' %> text-dark-blue ms-2 fs-4"
+        <%= tooltip(content: local_assigns[:tooltip][:content], placement: local_assigns[:tooltip][:placement] || 'top') %>
+      ></i>
+    <% end %>
+  </div>
+  <div class="<%= local_assigns[:html_class] || 'col-4' %>">
+    <% if value.nil? || value == "" %>
+      <span class="text-muted">-</span>
+    <% elsif value.in?([true, false]) %>
+      <%= I18n.t("boolean.#{value}") %>
+    <% else %>
+      <%= value %>
+    <% end %>
+  </div>
+</div>

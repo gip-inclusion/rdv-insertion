@@ -1,10 +1,7 @@
 class CategoryConfigurationPolicy < ApplicationPolicy
   def show?
+    # Used in /file_configurations/_select_item.html.erb
     pundit_user.organisation_ids.include?(record.organisation_id)
-  end
-
-  def edit?
-    record.organisation_id.in?(pundit_user.admin_organisations_ids)
   end
 
   class Scope < Scope

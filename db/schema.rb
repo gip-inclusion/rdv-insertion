@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_26_113455) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_15_224154) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -316,11 +316,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_26_113455) do
     t.string "letter_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
-    t.boolean "display_europe_logos", default: false
     t.string "sms_sender_name"
-    t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
-    t.boolean "display_france_travail_logo", default: false
+    t.string "logos_to_display", default: ["department"], array: true
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 

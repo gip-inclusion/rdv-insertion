@@ -1,42 +1,10 @@
 class OrganisationsController < ApplicationController
-  PERMITTED_PARAMS = [
-    :name, :phone_number, :email, :slug, :rdv_solidarites_organisation_id,
-    :department_id, :safir_code
-  ].freeze
-
-  before_action :set_organisation, :set_department,
-                only: [:show, :edit, :update, :update_data_retention]
-
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     return unless @organisations.to_a.length == 1
 
     redirect_to default_list_organisation_users_path(@organisations.first)
-  end
-
-  def show; end
-
-  def edit; end
-
-  def update
-    @organisation.assign_attributes(organisation_params)
-    if update_organisation.success?
-      render :show
-    else
-      flash.now[:error] = update_organisation.errors&.join(",")
-      render :edit, status: :unprocessable_entity
-    end
-  end
-
-  def update_data_retention
-    @organisation.assign_attributes(data_retention_params)
-
-    if @organisation.save
-      turbo_stream_display_success_modal("Durée de conservation mise à jour avec succès")
-    else
-      turbo_stream_display_error_modal(@organisation.errors.full_messages)
-    end
   end
 
   def geolocated
@@ -60,19 +28,6 @@ class OrganisationsController < ApplicationController
   end
 
   private
-
-  def organisation_params
-    params.expect(organisation: PERMITTED_PARAMS)
-  end
-
-  def set_organisation
-    @organisation = policy_scope(Organisation).find(params[:id])
-    authorize @organisation
-  end
-
-  def set_department
-    @department = @organisation.department
-  end
 
   def department
     @department ||= Department.find_by!(number: params[:department_number])
@@ -112,13 +67,5 @@ class OrganisationsController < ApplicationController
     @department_organisations.select do |org|
       org.rdv_solidarites_organisation_id.in?(retrieved_rdv_solidarites_organisations.map(&:id))
     end
-  end
-
-  def update_organisation
-    @update_organisation ||= Organisations::Update.call(organisation: @organisation)
-  end
-
-  def data_retention_params
-    params.expect(organisation: [:data_retention_duration_in_months])
   end
 end
