@@ -44,7 +44,7 @@
       <p class="text-muted small mb-3">Logo au format .png ou .jpg</p>
       <% if organisation.logo.attached? %>
         <div class="bg-light p-3 d-inline-block col-8 text-center">
-          <%= image_tag organisation.logo, class: "img-fluid uploaded-image-preview", alt: "Logo de l'organisation" %>
+          <%= image_tag organisation.logo.url, class: "img-fluid uploaded-image-preview", alt: "Logo de l'organisation" %>
         </div>
       <% else %>
         <div class="bg-light p-4 text-center col-8">

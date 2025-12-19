@@ -20,7 +20,7 @@
     <div data-image-upload-target="previewContainer" class="<%= image_attached ? '' : 'd-none' %>">
       <div class="mb-3">
         <% if image_attached %>
-          <%= image_tag record.send(attribute),
+          <%= image_tag record.send(attribute).url,
                         class: "img-fluid uploaded-image-preview",
                         alt: alt,
                         data: { image_upload_target: "previewImage" } %>
