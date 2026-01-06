@@ -2,9 +2,9 @@ name: SAST
 
 on:
   push:
-    branches: [main, staging, develop]
+    branches: [main, staging]
   pull_request:
-    branches: [main, staging, develop]
+    branches: [main, staging]
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
