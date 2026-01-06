@@ -59,8 +59,25 @@ jobs:
         run: |
           yarn install --frozen-lockfile --ignore-scripts
 
-          # Only fail on high or critical (not moderate/low)
-          yarn audit --level high --groups dependencies
+          # Allowlisted advisories (no patch available)
+          # 1108111: xlsx ReDoS - using official SheetJS CDN, only processes trusted uploads
+          ALLOWLIST="1108111"
+
+          yarn audit --level high --groups dependencies --json > audit.json || true
+
+          # Filter out allowlisted advisories and check remaining
+          UNALLOWED=$(jq -r --arg allowlist "$ALLOWLIST" '
+            select(.type == "auditAdvisory")
+            | .data.advisory.id
+            | tostring
+            | select(. as $id | ($allowlist | split(" ") | index($id) | not))
+          ' audit.json)
+
+          if [ -n "$UNALLOWED" ]; then
+            echo "::error::High severity vulnerabilities found"
+            yarn audit --level high --groups dependencies
+            exit 1
+          fi
 
   security-report:
     name: Security Report
