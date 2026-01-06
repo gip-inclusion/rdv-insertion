@@ -1,7 +1,7 @@
 class Motif < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :deleted_at, :location_type, :name, :reservable_online, :rdv_solidarites_service_id, :collectif,
-    :follow_up, :instruction_for_rdv
+    :follow_up, :instruction_for_rdv, :default_duration_in_min
   ].freeze
 
   enum :location_type, { public_office: "public_office", phone: "phone", home: "home" }
@@ -11,7 +11,7 @@ class Motif < ApplicationRecord
   has_many :rdvs, dependent: :nullify
 
   validates :rdv_solidarites_motif_id, uniqueness: true, presence: true
-  validates :name, :location_type, presence: true
+  validates :name, :location_type, :default_duration_in_min, presence: true
   validates :collectif, inclusion: { in: [true, false] }
 
   delegate :rdv_solidarites_organisation_id, to: :organisation
