@@ -1,0 +1,85 @@
+name: Gitleaks
+
+on:
+  push:
+    branches: [main, staging, develop]
+  pull_request:
+    branches: [main, staging, develop]
+  schedule:
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+    inputs:
+      scan_mode:
+        type: choice
+        options: ["protect", "detect"]
+        default: "protect"
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  gitleaks-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks (PR - changed files only)
+        if: github.event_name == 'pull_request'
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect \
+            --source /repo \
+            --config /repo/.gitleaks.toml \
+            --verbose --redact \
+            --log-opts="--cherry-pick ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" \
+            --report-format sarif \
+            --report-path /repo/results.sarif
+
+      - name: Gitleaks (Push/Schedule - full scan)
+        if: github.event_name != 'pull_request'
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect \
+            --source /repo \
+            --config /repo/.gitleaks.toml \
+            --verbose --redact \
+            --report-format sarif \
+            --report-path /repo/results.sarif
+
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+          category: gitleaks
+        continue-on-error: true
+
+  pr-comment:
+    name: PR Comment
+    runs-on: ubuntu-latest
+    needs: gitleaks-scan
+    if: failure() && github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚨 Secrets detected
+
+            **DO NOT MERGE** - Secrets were found in this PR.
+
+            ### Required actions
+            1. [View logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            2. Remove secrets (git rebase if necessary)
+            3. Rotate exposed secrets (<4h CRITICAL, <24h IMPORTANT)
+
+            Procedure: \`docs/security/PROCEDURE-GITLEAKS.md\``
+            })
