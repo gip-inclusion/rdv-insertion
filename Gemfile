@@ -99,6 +99,9 @@ gem "dsfr-assets"
 # CORS support
 gem "rack-cors"
 
+# Rate limiting and throttling (RISK-GENERAL-006)
+gem "rack-attack"
+
 # Sending ZIP
 gem "rubyzip"
 

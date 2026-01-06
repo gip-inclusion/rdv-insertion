@@ -47,3 +47,5 @@ dump.rdb
 
 .cursor/
 .gemini/
+.claude
+.osk
