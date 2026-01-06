@@ -1,0 +1,17 @@
+# CODEOWNERS - Auto-request reviews for critical files
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Security configurations
+/.github/workflows/gitleaks.yml    @aminedhobb @Holist
+/.github/workflows/sast.yml        @aminedhobb @Holist
+/.github/workflows/security-scan.yml @aminedhobb @Holist
+/.github/dependabot.yml            @aminedhobb @Holist
+/.gitleaks.toml                    @aminedhobb @Holist
+/.pre-commit-config.yaml           @aminedhobb @Holist
+
+# Security documentation
+/docs/security/                    @aminedhobb @Holist @Scttpr
+
+# Sensitive configurations
+/config/initializers/rack_attack.rb @aminedhobb @Holist
+/.env.example                      @aminedhobb @Holist
