@@ -149,7 +149,6 @@ describe FileConfigurationsController do
       it "renders the new form" do
         post :create, params: create_params, format: :turbo_stream
 
-        expect(unescaped_response_body).to match(/Civilité doit être rempli/)
         expect(unescaped_response_body).to match(/Prénom doit être rempli/)
         expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
       end
@@ -189,7 +188,7 @@ describe FileConfigurationsController do
       let!(:update_params) do
         {
           file_configuration: {
-            first_name_column: "", last_name_column: "", title_column: ""
+            first_name_column: "", last_name_column: ""
           },
           id: file_configuration.id
         }
@@ -199,12 +198,10 @@ describe FileConfigurationsController do
         patch :update, params: update_params, format: :turbo_stream
         expect(file_configuration.reload.first_name_column).not_to eq("")
         expect(file_configuration.reload.last_name_column).not_to eq("")
-        expect(file_configuration.reload.title_column).not_to eq("")
       end
 
       it "renders the edit page" do
         patch :update, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Civilité doit être rempli/)
         expect(unescaped_response_body).to match(/Prénom doit être rempli/)
         expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
       end

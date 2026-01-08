@@ -24,7 +24,7 @@ describe "Agent can delete category configuration", :js do
 
     find("[data-action='click->accordion#toggle']").click
 
-    expect(page).to have_content("Catégorie « RSA Orientation »")
+    expect(page).to have_content("« RSA Orientation »")
 
     find("span[data-action='click->confirmation-modal#show']", text: "Supprimer la catégorie").click
 

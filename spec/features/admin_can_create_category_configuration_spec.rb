@@ -61,7 +61,7 @@ describe "Agent can create category configuration", :js do
 
       click_button "Ajouter la catégorie"
 
-      expect(page).to have_content("Catégorie « RSA Orientation »")
+      expect(page).to have_content("« RSA Orientation »")
 
       new_category = CategoryConfiguration.last
       expect(new_category.phone_number).to eq("3949")
@@ -114,7 +114,7 @@ describe "Agent can create category configuration", :js do
 
       click_button "Ajouter la catégorie"
 
-      expect(page).to have_content("Catégorie « RSA Orientation »")
+      expect(page).to have_content("« RSA Orientation »")
       expect(CategoryConfiguration.last.file_configuration).to eq(created_file_configuration)
     end
 

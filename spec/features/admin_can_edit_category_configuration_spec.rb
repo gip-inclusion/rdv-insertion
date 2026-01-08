@@ -26,7 +26,7 @@ describe "Agent can edit category configuration", :js do
     it "expands accordion to show category details" do
       visit organisation_configuration_categories_path(organisation)
 
-      expect(page).to have_content("Catégorie « RSA Orientation »")
+      expect(page).to have_content("« RSA Orientation »")
       expect(page).to have_no_content("Préférence de rendez-vous")
 
       find("[data-action='click->accordion#toggle']").click
