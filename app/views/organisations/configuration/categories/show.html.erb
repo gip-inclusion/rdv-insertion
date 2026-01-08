@@ -8,16 +8,14 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 class="h4 text-dark-blue fw-bold">Catégories de motifs</h2>
-          <p class="text-muted mb-0 w-90">
+          <p class="text-muted small mb-0 w-90">
             Une catégorie de motifs permet de grouper les dossiers usagers dans une liste de suivi.
             Un ou plusieurs motifs de rendez-vous peuvent être associés à cette catégorie.
           </p>
         </div>
-        <div>
-          <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
-            <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
-          <% end %>
-        </div>
+        <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/configuration/configuration-rdv-insertion-and-rdv-solidarites/configuration-rdv-insertion/categories-de-motifs", target: "_blank", class: "text-info border-bottom border-info" do %>
+          <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
+        <% end %>
       </div>
 
       <%= turbo_frame_tag "category_configurations_list" do %>

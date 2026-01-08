@@ -39,7 +39,7 @@ describe "Admin can edit messages configuration", :js do
       fill_in "messages_configuration_sms_sender_name", with: "myOrg"
 
       check "Département"
-      check "Européens"
+      check "Européen"
 
       click_button "Enregistrer"
 
@@ -48,7 +48,7 @@ describe "Admin can edit messages configuration", :js do
       expect(page).to have_content("12 rue de la Mairie, 26000 Valence")
       expect(page).to have_content("myOrg")
       expect(page).to have_content("Département")
-      expect(page).to have_content("Européens")
+      expect(page).to have_content("Européen")
 
       expect(messages_configuration.reload.sender_city).to eq("Lyon")
       expect(messages_configuration.letter_sender_name).to eq("le Président")

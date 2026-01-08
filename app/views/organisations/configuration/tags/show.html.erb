@@ -9,18 +9,16 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
             <h2 class="h4 text-dark-blue fw-bold">Gestion des tags</h2>
-            <p class="text-muted">Les tags permettent de catégoriser, différencier les dossiers usagers selon des critères propres à l’organisation.</p>
+            <p class="text-muted small">Les tags permettent de catégoriser, différencier les dossiers usagers selon des critères propres à l’organisation.</p>
           </div>
-          <div>
-            <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
-              <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
-            <% end %>
-          </div>
+          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/configuration/configuration-rdv-insertion-and-rdv-solidarites/configuration-rdv-insertion/gestion-des-tags", target: "_blank", class: "text-info border-bottom border-info" do %>
+            <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
+          <% end %>
         </div>
 
         <div class="card-white p-4 mb-4">
           <h3 class="h5 mb-2 fw-bold">Tags utilisés dans cette organisation</h3>
-          <p class="text-muted mb-4">
+          <p class="text-muted small mb-4">
             Les tags utilisés sont visibles et utilisables par tous les agents de votre organisation
           </p>
 

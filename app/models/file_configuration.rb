@@ -4,7 +4,7 @@ class FileConfiguration < ApplicationRecord
   has_many :category_configurations, dependent: :restrict_with_error
   has_many :organisations, through: :category_configurations
 
-  validates :sheet_name, :last_name_column, :first_name_column, :title_column, presence: true
+  validates :sheet_name, :last_name_column, :first_name_column, presence: true
   validate :column_names_uniqueness
 
   def self.column_attributes_names
