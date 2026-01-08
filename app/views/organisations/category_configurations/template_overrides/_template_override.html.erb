@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "category_configuration_template_overrides_#{category_configuration.id}" do %>
   <div class="mb-4 p-4 background-blue-paler rounded-3">
-    <h3 class="h5 mb-2 text-dark-blue">Messages de la catégorie « <span class="text-underline"><%= category_configuration.motif_category_name %></span> »</h3>
+    <h3 class="h5 mb-2 text-dark-blue">Messages de la catégorie « <%= link_to category_configuration.motif_category_name, organisation_configuration_categories_path(organisation, open: dom_id(category_configuration)), class: "text-underline", data: { turbo_frame: "_top" } %> »</h3>
     <div class="p-3">
       <%= render "common/attribute_display_inline", record: category_configuration, attribute: :template_rdv_title %>
       <%= render "common/attribute_display_inline", record: category_configuration, attribute: :template_rdv_title_by_phone %>

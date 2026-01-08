@@ -9,6 +9,19 @@ export default class extends Controller {
   connect() {
     this.expandedSections = new Set()
     this.#detectInitialState()
+    this.#openFromQueryParam()
+  }
+
+  #openFromQueryParam() {
+    const elementId = new URLSearchParams(window.location.search).get("open")
+    if (!elementId) return
+
+    const item = this.element.querySelector(`#${elementId}`)
+    const index = item?.querySelector("[data-index]")?.dataset.index
+    if (!index) return
+
+    this.expandedSections.add(parseInt(index, 10))
+    this.#updateDisplay()
   }
 
   toggle(event) {
