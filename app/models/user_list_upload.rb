@@ -12,6 +12,7 @@ class UserListUpload < ApplicationRecord
   belongs_to :agent
 
   has_many :user_rows, class_name: "UserListUpload::UserRow", dependent: :destroy
+  has_many :processing_logs, class_name: "UserListUpload::ProcessingLog", dependent: :destroy
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", through: :user_rows
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", through: :user_rows
 
