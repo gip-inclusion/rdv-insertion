@@ -436,7 +436,7 @@ Motif.create!(
   rdv_solidarites_motif_id: 1,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Orientation : rdv sur site",
-  reservable_online: true,
+  bookable_publicly: true,
   rdv_solidarites_service_id: 1,
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
@@ -451,7 +451,7 @@ Motif.create!(
   rdv_solidarites_motif_id: 2,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA accompagnement",
-  reservable_online: true,
+  bookable_publicly: true,
   deleted_at: nil,
   rdv_solidarites_service_id: 1,
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
@@ -467,7 +467,7 @@ Motif.create!(
   rdv_solidarites_motif_id: 4,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "Convocation RSA - Orientation : rdv sur site",
-  reservable_online: false,
+  bookable_publicly: false,
   deleted_at: nil,
   rdv_solidarites_service_id: 1,
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
@@ -491,7 +491,7 @@ Motif.create!(
   rdv_solidarites_motif_id: 3,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Orientation : rdv sur site",
-  reservable_online: true,
+  bookable_publicly: true,
   deleted_at: nil,
   rdv_solidarites_service_id: 1,
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
@@ -507,7 +507,7 @@ Motif.create!(
   rdv_solidarites_motif_id: 5,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Codiagnostic d'orientation",
-  reservable_online: false,
+  bookable_publicly: false,
   deleted_at: nil,
   rdv_solidarites_service_id: 1,
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
@@ -523,7 +523,7 @@ Motif.create!(
   rdv_solidarites_motif_id: 6,
   # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Orientation : rdv téléphonique",
-  reservable_online: false,
+  bookable_publicly: false,
   deleted_at: nil,
   rdv_solidarites_service_id: 1,
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites

@@ -273,7 +273,7 @@ Représente les motifs de RDV spécifiques dans RDV-Solidarités.
 - `motif_category_id` : Catégorie de rattachement
 - `name` : Nom du motif
 - `location_type` : "public_office" (présentiel), "phone" (téléphone), "home" (domicile)
-- `reservable_online` : Réservable en ligne ?
+- `bookable_publicly` : Réservable en ligne ?
 - `collectif` : RDV collectif ou individuel ?
 - `follow_up` : Est un motif de suivi avec référent ? (ne pas confondre avec la table **follow_up** de rdv-i)
 - `deleted_at` : Date de suppression (soft delete)

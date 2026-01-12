@@ -1,7 +1,7 @@
 module RdvSolidarites
   class Motif < Base
     RECORD_ATTRIBUTES = [
-      :id, :deleted_at, :location_type, :name, :reservable_online, :service_id, :collectif, :follow_up,
+      :id, :deleted_at, :location_type, :name, :bookable_publicly, :service_id, :collectif, :follow_up,
       :instruction_for_rdv
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
