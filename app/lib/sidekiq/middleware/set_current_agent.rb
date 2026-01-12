@@ -16,7 +16,7 @@ module Sidekiq
       def set_current_agent(job) # rubocop:disable Naming/AccessorMethodName
         return unless job["current_agent_id"]
 
-        Current.agent = Agent.find(job["current_agent_id"].to_i)
+        Current.agent = Agent.find_by(id: job["current_agent_id"].to_i)
       end
 
       def log_job_started(job)
