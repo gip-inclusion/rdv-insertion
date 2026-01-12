@@ -6,5 +6,6 @@ FactoryBot.define do
     location_type { "public_office" }
     organisation
     collectif { false }
+    default_duration_in_min { 30 }
   end
 end
