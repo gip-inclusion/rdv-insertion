@@ -18,8 +18,8 @@
           <span class="fw-bold">Contenu des messages de la catégorie</span>
         </div>
         <div class="col-4">
-          <%= link_to previews_invitations_path(category_configuration_id: category_configuration.id),
-                      data: { turbo_frame: "remote_modal" },
+          <%= link_to organisation_configuration_messages_path(organisation, anchor: "category_configuration_template_overrides_#{category_configuration.id}"),
+                      data: { turbo_frame: "_top" },
                       class: "text-decoration-underline" do %>
             Consulter les messages
           <% end %>
