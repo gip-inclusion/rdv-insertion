@@ -17,9 +17,8 @@ class CategoryConfiguration < ApplicationRecord
 
   validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
             format: {
-              with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/,
-              allow_nil: true
-            }
+              with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/
+            }, allow_nil: true
 
   validates :phone_number, phone_number: { allow_4_digits_numbers: true }
 

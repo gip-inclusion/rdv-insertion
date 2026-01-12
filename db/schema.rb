@@ -350,6 +350,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_142253) do
     t.boolean "follow_up", default: false
     t.bigint "motif_category_id"
     t.text "instruction_for_rdv", default: ""
+    t.integer "default_duration_in_min"
     t.index ["motif_category_id"], name: "index_motifs_on_motif_category_id"
     t.index ["organisation_id"], name: "index_motifs_on_organisation_id"
     t.index ["rdv_solidarites_motif_id"], name: "index_motifs_on_rdv_solidarites_motif_id", unique: true

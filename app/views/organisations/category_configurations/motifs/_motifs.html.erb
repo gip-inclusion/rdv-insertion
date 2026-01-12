@@ -8,6 +8,7 @@
           <tr>
             <th>Nom du motif</th>
             <th>Type de rendez-vous</th>
+            <th>Durée</th>
             <th>Invitations</th>
             <th>Action</th>
           </tr>
@@ -17,6 +18,7 @@
             <tr>
               <td><%= motif.name %></td>
               <td><%= I18n.t("activerecord.attributes.motif.location_types.#{motif.location_type}") %></td>
+              <td><%= motif.default_duration_in_min %> min</td>
               <td><%= motif.bookable_publicly ? "oui" : "non" %></td>
               <td>
                 <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs/#{motif.rdv_solidarites_motif_id}/edit",

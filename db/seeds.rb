@@ -444,7 +444,8 @@ Motif.create!(
   motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
-  follow_up: false
+  follow_up: false,
+  default_duration_in_min: 30
 )
 
 Motif.create!(
@@ -460,7 +461,8 @@ Motif.create!(
   motif_category: accompagnement_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
-  follow_up: false
+  follow_up: false,
+  default_duration_in_min: 30
 )
 
 Motif.create!(
@@ -476,7 +478,8 @@ Motif.create!(
   motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
-  follow_up: false
+  follow_up: false,
+  default_duration_in_min: 30
 )
 
 Lieu.create!( # Nécessaire pour la convoc
@@ -500,7 +503,8 @@ Motif.create!(
   motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome2_organisation.id,
-  follow_up: false
+  follow_up: false,
+  default_duration_in_min: 30
 )
 
 Motif.create!(
@@ -516,7 +520,8 @@ Motif.create!(
   motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: yonne_organisation.id,
-  follow_up: false
+  follow_up: false,
+  default_duration_in_min: 30
 )
 
 Motif.create!(
@@ -532,7 +537,8 @@ Motif.create!(
   motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: yonne_organisation.id,
-  follow_up: false
+  follow_up: false,
+  default_duration_in_min: 30
 )
 
 # --------------------------------------------------------------------------------------------------------------------
