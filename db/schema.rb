@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_134456) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_142253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -338,7 +338,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_134456) do
   create_table "motifs", force: :cascade do |t|
     t.bigint "rdv_solidarites_motif_id"
     t.string "name"
-    t.boolean "reservable_online"
+    t.boolean "bookable_publicly"
     t.datetime "deleted_at"
     t.bigint "rdv_solidarites_service_id"
     t.boolean "collectif"

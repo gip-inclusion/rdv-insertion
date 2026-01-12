@@ -1,6 +1,6 @@
 class Motif < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
-    :deleted_at, :location_type, :name, :reservable_online, :rdv_solidarites_service_id, :collectif,
+    :deleted_at, :location_type, :name, :bookable_publicly, :rdv_solidarites_service_id, :collectif,
     :follow_up, :instruction_for_rdv, :default_duration_in_min
   ].freeze
 

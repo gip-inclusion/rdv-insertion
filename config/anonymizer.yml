@@ -239,7 +239,7 @@ tables:
       - name
       - rdv_solidarites_service_id
       - rdv_solidarites_motif_id
-      - reservable_online
+      - bookable_publicly
       - deleted_at
       - collectif
       - location_type
