@@ -36,6 +36,10 @@ class CategoryConfiguration < ApplicationRecord
     end
   end
 
+  def self.minimum_number_of_days_before_invitations_expire
+    Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER + 1
+  end
+
   def effective_phone_number
     phone_number.presence || default_phone_number
   end
@@ -58,7 +62,7 @@ class CategoryConfiguration < ApplicationRecord
 
   def minimum_invitation_duration
     return if invitations_never_expire? ||
-              number_of_days_before_invitations_expire > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+              number_of_days_before_invitations_expire >= CategoryConfiguration.minimum_number_of_days_before_invitations_expire
 
     errors.add(:base, "Le délai d'expiration de l'invitation doit être supérieur " \
                       "à #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours")

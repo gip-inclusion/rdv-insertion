@@ -9,19 +9,20 @@ export default class extends Controller {
   connect() {
     this.expandedSections = new Set()
     this.#detectInitialState()
-    this.#openFromQueryParam()
+    this.#openFromAnchor()
   }
 
-  #openFromQueryParam() {
-    const elementId = new URLSearchParams(window.location.search).get("open")
-    if (!elementId) return
+  #openFromAnchor() {
+    const anchorId = window.location.hash.replace("#", "")
+    if (!anchorId) return
 
-    const item = this.element.querySelector(`#${elementId}`)
+    const item = this.element.querySelector(`#${anchorId}`)
     const index = item?.querySelector("[data-index]")?.dataset.index
     if (!index) return
 
     this.expandedSections.add(parseInt(index, 10))
     this.#updateDisplay()
+    setTimeout(() => item.scrollIntoView({ block: "start" }), 0)
   }
 
   toggle(event) {
