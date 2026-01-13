@@ -1,10 +1,19 @@
 # Pre-commit hooks configuration
-# Installation: pip install pre-commit && pre-commit install
+#
+# Installation:
+#   pip install pre-commit && pre-commit install
+#   # or with Homebrew:
+#   brew install pre-commit && pre-commit install
+#
+# Gitleaks installation (required):
+#   brew install gitleaks
+#   # or see: https://github.com/gitleaks/gitleaks#installing
+#
 # Usage: pre-commit run --all-files (manual test)
 # Auto-run: Before each git commit
 
 repos:
-  # Gitleaks - Secret detection in Git
+  # Gitleaks - Secret detection in Git (requires gitleaks binary)
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.21.2
     hooks:
@@ -14,7 +23,7 @@ repos:
         entry: gitleaks protect --verbose --redact --staged
         language: system
         pass_filenames: false
-        stages: [commit]
+        stages: [pre-commit]
 
   # Optional: Standard Ruby/Rails hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks

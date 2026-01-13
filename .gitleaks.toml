@@ -90,7 +90,6 @@ id = "rdv-solidarites-secret"
 description = "RDV-Solidarités Shared Secret"
 regex = '''(SHARED_SECRET_FOR_AGENTS_AUTH|RDV_SOLIDARITES_SECRET)\s*=\s*['\"]?([^'\"\\s]{20,})['\"]?'''
 keywords = ["SHARED_SECRET_FOR_AGENTS_AUTH", "RDV_SOLIDARITES_SECRET"]
-# Exception for example values in .env.example
+# Example values allowed (global paths allowlist already excludes .env.example)
 [rules.allowlist]
-paths = ['''^\.env\.example$''']
 regexes = ['''S3cr3T''', '''rdv-solidarites''']
