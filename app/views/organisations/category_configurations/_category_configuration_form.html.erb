@@ -1,6 +1,6 @@
 <% content_for :title, "Ajouter une catégorie - #{organisation.name} - rdv-insertion" %>
 
-<div class="container mt-5 mb-5 pb-5">
+<div class="container mt-5 mb-5 pb-5 px-5">
   <%= form_with model: category_configuration,
                 url: organisation_category_configurations_path(organisation),
                 method: :post,

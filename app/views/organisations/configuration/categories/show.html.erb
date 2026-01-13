@@ -1,6 +1,6 @@
 <% content_for :title, "Configuration - Catégories - #{@organisation.name} - rdv-insertion" %>
 
-<div class="container mt-5 mb-5">
+<div class="container mt-5 mb-5 px-5">
   <%= turbo_frame_tag "configuration_tab" do %>
     <%= render "organisations/configuration/header", tab: "categories", organisation: @organisation %>
 
