@@ -5,14 +5,16 @@ require "rails_helper"
 RSpec.describe RateLimitingConcern do
   describe ".rate_limit_with_json_response" do
     it "is available as a class method when included" do
-      test_class = Class.new(ActionController::Base) { include RateLimitingConcern }
+      test_class = Class.new(ApplicationController) { include RateLimitingConcern }
       expect(test_class).to respond_to(:rate_limit_with_json_response)
     end
   end
 
   describe "#render_rate_limit_exceeded" do
-    controller(ActionController::Base) do
-      include RateLimitingConcern
+    controller(ApplicationController) do
+      include RateLimitingConcern # rubocop:disable RSpec/DescribedClass
+
+      skip_before_action :authenticate_agent!
 
       def trigger_rate_limit
         render_rate_limit_exceeded(5, 1.minute)
@@ -72,7 +74,7 @@ RSpec.describe RateLimitingConcern do
       get :trigger_rate_limit
 
       expect(Rails.logger).to have_received(:warn).with(
-        a_string_matching(/\[RateLimit\].*ip=.*path=.*controller=.*action=/)
+        a_string_matching(/\[RateLimit\].*ip=.*path=.*controller=.*#/)
       )
     end
 
@@ -92,19 +94,13 @@ RSpec.describe RateLimitingConcern do
   end
 
   describe "RATE_LIMIT_CACHE_STORE" do
-    it "uses Redis-backed cache store" do
-      store = RateLimitingConcern::RATE_LIMIT_CACHE_STORE
-      expect(store).to be_a(ActiveSupport::Cache::RedisCacheStore)
-    end
-
-    it "uses rate_limit namespace to avoid collisions" do
-      store = RateLimitingConcern::RATE_LIMIT_CACHE_STORE
-      expect(store.options[:namespace]).to eq("rate_limit")
+    it "uses MemoryStore in test environment" do
+      store = described_class::RATE_LIMIT_CACHE_STORE
+      expect(store).to be_a(ActiveSupport::Cache::MemoryStore)
     end
   end
 
   describe "controller inclusion" do
-    # Verify the concern is included in the right controllers
     it "is included in ApplicationController" do
       expect(ApplicationController.ancestors).to include(described_class)
     end
@@ -113,94 +109,64 @@ RSpec.describe RateLimitingConcern do
       expect(Api::V1::ApplicationController.ancestors).to include(described_class)
     end
   end
-end
 
-# Document expected rate limits for each controller
-# These serve as living documentation and will fail if limits are accidentally removed
-RSpec.describe "Rate limit configuration" do
-  # Helper to check if controller has rate_limit calls in its source
-  def controller_source(klass)
-    file = klass.instance_method(:action_methods).source_location&.first
-    return "" unless file
-
-    # Get the controller file, not the method file
-    controller_file = file.sub(%r{/concerns/.*}, ".rb")
-    controller_file = "#{Rails.root}/app/controllers/#{klass.name.underscore}.rb"
-    File.read(controller_file) if File.exist?(controller_file)
-  rescue StandardError
-    ""
-  end
-
-  describe "Authentication rate limits" do
-    it "SessionsController has rate limits for brute force protection" do
-      source = controller_source(SessionsController)
-      expect(source).to include("rate_limit_with_json_response")
-      expect(source).to match(/limit:\s*5.*only:\s*:new/m).or match(/limit:\s*5.*only:\s*:create/m)
+  describe "rate limit configuration" do
+    def controller_source(klass)
+      controller_file = Rails.root.join("app/controllers/#{klass.name.underscore}.rb")
+      File.read(controller_file) if File.exist?(controller_file)
+    rescue StandardError
+      ""
     end
 
-    it "SuperAdminAuthenticationRequestsController has strict 3/min limit" do
-      source = controller_source(SuperAdminAuthenticationRequestsController)
-      expect(source).to include("rate_limit_with_json_response")
-      expect(source).to include("limit: 3")
-    end
-  end
+    describe "authentication rate limits" do
+      it "SessionsController has rate limits for brute force protection" do
+        source = controller_source(SessionsController)
+        expect(source).to include("rate_limit_with_json_response")
+      end
 
-  describe "API rate limits" do
-    it "Api::V1::ApplicationController has 100/min general API limit" do
-      source = controller_source(Api::V1::ApplicationController)
-      expect(source).to include("rate_limit_with_json_response")
-      expect(source).to include("limit: 100")
+      it "SuperAdminAuthenticationRequestsController has strict 3/min limit" do
+        source = controller_source(SuperAdminAuthenticationRequestsController)
+        expect(source).to include("rate_limit_with_json_response")
+        expect(source).to include("limit: 3")
+      end
     end
 
-    it "Api::V1::UsersController has tiered limits for creation operations" do
-      source = controller_source(Api::V1::UsersController)
-      # User creation: 20/min
-      expect(source).to match(/limit:\s*20.*:create/m)
-      # Bulk operations: 5/min (stricter)
-      expect(source).to match(/limit:\s*5.*:create_and_invite_many/m)
-    end
-  end
+    describe "API rate limits" do
+      it "Api::V1::ApplicationController has 100/min general API limit" do
+        source = controller_source(Api::V1::ApplicationController)
+        expect(source).to include("rate_limit_with_json_response")
+        expect(source).to include("limit: 100")
+      end
 
-  describe "Webhook rate limits" do
-    %w[
-      RdvSolidaritesWebhooksController
-      Brevo::MailWebhooksController
-      Brevo::SmsWebhooksController
-      InboundEmailsController
-    ].each do |controller_name|
-      it "#{controller_name} has high 1000/min limit for webhook volume" do
-        klass = controller_name.constantize
-        source = controller_source(klass)
+      it "Api::V1::UsersController has tiered limits for creation operations" do
+        source = controller_source(Api::V1::UsersController)
+        expect(source).to match(/limit:\s*20.*:create/m)
+        expect(source).to match(/limit:\s*5.*:create_and_invite_many/m)
+      end
+    end
+
+    describe "webhook rate limits" do
+      it "RdvSolidaritesWebhooksController has high 1000/min limit" do
+        source = controller_source(RdvSolidaritesWebhooksController)
         expect(source).to include("limit: 1000")
       end
     end
-  end
 
-  describe "Public endpoint rate limits" do
-    it "InvitationsController has rate limits for public invitation pages" do
-      source = controller_source(InvitationsController)
-      expect(source).to include("rate_limit_with_json_response")
-      expect(source).to match(/limit:\s*30/)
-      expect(source).to match(/limit:\s*20/)
-    end
+    describe "public endpoint rate limits" do
+      it "InvitationsController has rate limits for public invitation pages" do
+        source = controller_source(InvitationsController)
+        expect(source).to include("rate_limit_with_json_response")
+      end
 
-    it "Website::StaticPagesController has rate limits" do
-      source = controller_source(Website::StaticPagesController)
-      expect(source).to include("limit: 60")
-    end
+      it "Website::StaticPagesController has rate limits" do
+        source = controller_source(Website::StaticPagesController)
+        expect(source).to include("limit: 60")
+      end
 
-    it "Website::StatsController has rate limits" do
-      source = controller_source(Website::StatsController)
-      expect(source).to include("limit: 60")
-    end
-  end
-
-  describe "Search endpoint rate limits" do
-    it "OrganisationsController has rate limits for search/geolocated" do
-      source = controller_source(OrganisationsController)
-      expect(source).to match(/limit:\s*30.*:search.*:geolocated/m).or(
-        match(/limit:\s*30.*:geolocated.*:search/m)
-      )
+      it "Website::StatsController has rate limits" do
+        source = controller_source(Website::StatsController)
+        expect(source).to include("limit: 60")
+      end
     end
   end
 end

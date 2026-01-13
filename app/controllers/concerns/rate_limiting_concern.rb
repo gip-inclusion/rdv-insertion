@@ -5,10 +5,15 @@
 module RateLimitingConcern
   extend ActiveSupport::Concern
 
-  RATE_LIMIT_CACHE_STORE = ActiveSupport::Cache::RedisCacheStore.new(
-    url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
-    namespace: "rate_limit"
-  )
+  RATE_LIMIT_CACHE_STORE =
+    if Rails.env.test?
+      ActiveSupport::Cache::MemoryStore.new
+    else
+      ActiveSupport::Cache::RedisCacheStore.new(
+        url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
+        namespace: "rate_limit"
+      )
+    end
 
   class_methods do
     # Custom rate_limit wrapper with consistent response format
@@ -16,8 +21,12 @@ module RateLimitingConcern
     # @param period [ActiveSupport::Duration] Time window
     # @param options [Hash] Additional options (:only, :except, :by)
     def rate_limit_with_json_response(limit:, period:, **options)
+      # Use high limits in test environment to avoid interfering with feature tests
+      # Rate limiting specs test the mechanism directly via render_rate_limit_exceeded
+      effective_limit = Rails.env.test? ? 10_000 : limit
+
       rate_limit(
-        to: limit,
+        to: effective_limit,
         within: period,
         store: RATE_LIMIT_CACHE_STORE,
         with: -> { render_rate_limit_exceeded(limit, period) },
@@ -29,23 +38,33 @@ module RateLimitingConcern
   private
 
   def render_rate_limit_exceeded(limit, period)
-    now = Time.zone.now
-    retry_after = period.to_i - (now.to_i % period.to_i)
-    reset_time = now + retry_after
+    retry_after = compute_retry_after(period)
 
     log_rate_limit_exceeded(limit)
     report_rate_limit_to_sentry
+    set_rate_limit_headers(limit, retry_after)
 
+    render json: rate_limit_error_body(retry_after), status: :too_many_requests
+  end
+
+  def compute_retry_after(period)
+    now = Time.zone.now
+    period.to_i - (now.to_i % period.to_i)
+  end
+
+  def set_rate_limit_headers(limit, retry_after)
     response.headers["Retry-After"] = retry_after.to_s
     response.headers["X-RateLimit-Limit"] = limit.to_s
     response.headers["X-RateLimit-Remaining"] = "0"
-    response.headers["X-RateLimit-Reset"] = reset_time.iso8601
+    response.headers["X-RateLimit-Reset"] = (Time.zone.now + retry_after).iso8601
+  end
 
-    render json: {
+  def rate_limit_error_body(retry_after)
+    {
       error: "Rate limit exceeded",
       retry_after: retry_after,
       message: "You have exceeded the allowed number of requests. Please retry in #{retry_after} seconds."
-    }, status: :too_many_requests
+    }
   end
 
   def log_rate_limit_exceeded(limit)

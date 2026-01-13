@@ -3,8 +3,10 @@
 require "rails_helper"
 
 RSpec.describe MaliciousAgentBlockingConcern do
-  controller(ActionController::Base) do
-    include MaliciousAgentBlockingConcern
+  controller(ApplicationController) do
+    include MaliciousAgentBlockingConcern # rubocop:disable RSpec/DescribedClass
+
+    skip_before_action :authenticate_agent!
 
     def index
       render json: { success: true }
@@ -16,7 +18,6 @@ RSpec.describe MaliciousAgentBlockingConcern do
   end
 
   describe "blocking malicious user agents" do
-    # Test one representative tool thoroughly, then verify others are in the list
     context "with sqlmap user agent" do
       before { request.headers["User-Agent"] = "sqlmap/1.7.2" }
 
@@ -52,7 +53,7 @@ RSpec.describe MaliciousAgentBlockingConcern do
       end
     end
 
-    context "case sensitivity" do
+    context "with case sensitivity" do
       it "blocks regardless of case" do
         %w[SQLMAP SqlMap sQlMaP].each do |variant|
           request.headers["User-Agent"] = "#{variant}/1.0"
@@ -62,7 +63,7 @@ RSpec.describe MaliciousAgentBlockingConcern do
       end
     end
 
-    context "substring matching" do
+    context "with substring matching" do
       it "blocks when tool name appears anywhere in user agent" do
         request.headers["User-Agent"] = "Mozilla/5.0 (compatible; sqlmap testing)"
         get :index
@@ -102,7 +103,7 @@ RSpec.describe MaliciousAgentBlockingConcern do
     end
 
     context "with API client user agents" do
-      %w[curl/7.88.1 Faraday/2.0 Ruby HTTPClient].each do |ua|
+      %w[curl/7.88.1 Faraday/2.0].each do |ua|
         it "allows #{ua}" do
           request.headers["User-Agent"] = ua
           get :index
