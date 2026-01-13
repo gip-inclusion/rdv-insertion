@@ -15,9 +15,10 @@
 
           <%= render "common/attribute_display_inline",
                     label: "Signature texte",
+                    align: "start",
                     value: messages_configuration.effective_signature_lines.join("<br>") %>
 
-          <%= render "common/attribute_display_inline", label: "Signature jointe" do %>
+          <%= render "common/attribute_display_inline", label: "Signature jointe", align: "start" do %>
             <% if messages_configuration.signature_image.attached? %>
               <%= image_tag messages_configuration.signature_image.url, class: "img-fluid uploaded-image-preview", alt: "Signature jointe" %>
             <% else %>
@@ -33,6 +34,7 @@
                     label: MessagesConfiguration.human_attribute_name(:direction_names),
                     value: messages_configuration.effective_direction_names.join("<br>"),
                     html_class: "col-6",
+                    align: "start",
                     tooltip: {
                       content: "L’en-tête des courriers d’invitations et de convocations permet à l’usager d’identifier l’expéditeur. Le nom de l’organisation est utilisé par défaut."
                     } %>

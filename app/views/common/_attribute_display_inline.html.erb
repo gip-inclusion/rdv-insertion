@@ -17,7 +17,7 @@
   end
 %>
 
-<div id="<%= local_assigns[:id] %>" class="row py-2 align-items-center">
+<div id="<%= local_assigns[:id] %>" class="row py-2 align-items-<%= local_assigns[:align] || 'center' %>">
   <div class="col-4 d-flex align-items-center">
     <span class="fw-bold"><%= label %></span>
     <% if local_assigns[:tooltip].is_a?(Hash) %>
