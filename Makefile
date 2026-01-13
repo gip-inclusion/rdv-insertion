@@ -1,5 +1,14 @@
 install: ## Setup development environment
 	bin/setup
+	@$(MAKE) setup-hooks
+
+setup-hooks: ## Install git pre-commit hooks (requires: brew install pre-commit gitleaks)
+	@if command -v pre-commit >/dev/null 2>&1; then \
+		pre-commit install; \
+		echo "✓ Pre-commit hooks installed"; \
+	else \
+		echo "⚠ pre-commit not found. Install with: brew install pre-commit gitleaks"; \
+	fi
 
 run: ## Start the application (web, jobs et webpack)
 	foreman s -f Procfile.dev
@@ -26,3 +35,13 @@ help: ## Display available commands
 
 rswag:
 	SWAGGER_DRY_RUN=0 RAILS_ENV=test rake rswag:specs:swaggerize PATTERN="spec/requests/api/**/*_spec.rb"
+
+# Documentation
+docs: ## Build documentation with mdBook
+	mdbook build
+
+docs-serve: ## Serve documentation locally with hot reload
+	mdbook serve --open
+
+docs-clean: ## Clean built documentation
+	rm -rf docs-build
