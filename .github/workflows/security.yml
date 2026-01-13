@@ -1,0 +1,268 @@
+name: Security
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+  schedule:
+    - cron: "0 1 * * *"  # Daily at 1am
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  code-scan:
+    name: Code Scan (SAST)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: false
+
+      - name: Install Brakeman
+        run: gem install brakeman
+
+      - name: Run Brakeman
+        id: brakeman
+        run: |
+          brakeman --format json --output brakeman.json --confidence-level 2 --except CheckRender -i config/brakeman.ignore . || true
+
+          HIGH=$(jq '.warnings | map(select(.confidence == "High")) | length' brakeman.json)
+          MEDIUM=$(jq '.warnings | map(select(.confidence == "Medium")) | length' brakeman.json)
+
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          echo "medium=$MEDIUM" >> $GITHUB_OUTPUT
+
+          echo "### Brakeman" >> $GITHUB_STEP_SUMMARY
+          echo "High: $HIGH | Medium: $MEDIUM" >> $GITHUB_STEP_SUMMARY
+
+      - name: Run Semgrep
+        id: semgrep
+        run: |
+          docker run --rm -v "$PWD:/src" semgrep/semgrep semgrep scan \
+            --config p/security-audit \
+            --config p/rails \
+            --config p/owasp-top-ten \
+            --config p/javascript \
+            --sarif --output /src/semgrep.sarif \
+            --metrics=off /src || true
+
+          ERROR=$(jq '.runs[0].results | map(select(.level == "error")) | length' semgrep.sarif)
+          WARNING=$(jq '.runs[0].results | map(select(.level == "warning")) | length' semgrep.sarif)
+
+          echo "error=$ERROR" >> $GITHUB_OUTPUT
+          echo "warning=$WARNING" >> $GITHUB_OUTPUT
+
+          echo "### Semgrep" >> $GITHUB_STEP_SUMMARY
+          echo "Error: $ERROR | Warning: $WARNING" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Brakeman SARIF
+        if: always()
+        run: brakeman --format sarif --output brakeman.sarif --confidence-level 2 -i config/brakeman.ignore . || true
+
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: brakeman.sarif
+          category: brakeman
+        continue-on-error: true
+
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
+        continue-on-error: true
+
+      - name: Check results
+        run: |
+          if [ "${{ steps.brakeman.outputs.high }}" -gt 0 ] || [ "${{ steps.brakeman.outputs.medium }}" -gt 0 ]; then
+            echo "::error::Brakeman found high/medium vulnerabilities"
+            exit 1
+          fi
+
+          if [ "${{ steps.semgrep.outputs.error }}" -gt 0 ] || [ "${{ steps.semgrep.outputs.warning }}" -gt 10 ]; then
+            echo "::error::Semgrep found too many issues"
+            exit 1
+          fi
+
+  dependency-scan:
+    name: Dependency Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # For gitleaks history scan
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - name: Bundler audit
+        id: bundler-audit
+        run: |
+          gem install bundler-audit
+          bundle audit update
+          bundle audit check --format json > bundler-audit.json || true
+
+          HIGH_CRIT=$(jq '[.results[].advisory.criticality | select(. == "high" or . == "critical")] | length' bundler-audit.json)
+          TOTAL=$(jq '.results | length' bundler-audit.json)
+
+          echo "high_crit=$HIGH_CRIT" >> $GITHUB_OUTPUT
+
+          echo "### Bundler Audit" >> $GITHUB_STEP_SUMMARY
+          echo "Total: $TOTAL | High/Critical: $HIGH_CRIT" >> $GITHUB_STEP_SUMMARY
+
+      - name: Yarn audit
+        id: yarn-audit
+        run: |
+          yarn install --frozen-lockfile --ignore-scripts
+
+          # Allowlisted advisories (no patch available)
+          # 1108111: xlsx ReDoS - using official SheetJS CDN, only processes trusted uploads
+          ALLOWLIST="1108111"
+
+          yarn audit --level high --groups dependencies --json > yarn-audit.json || true
+
+          # Filter out allowlisted advisories
+          UNALLOWED=$(jq -r --arg allowlist "$ALLOWLIST" '
+            select(.type == "auditAdvisory")
+            | .data.advisory.id
+            | tostring
+            | select(. as $id | ($allowlist | split(" ") | index($id) | not))
+          ' yarn-audit.json | wc -l)
+
+          echo "unallowed=$UNALLOWED" >> $GITHUB_OUTPUT
+
+          echo "### Yarn Audit" >> $GITHUB_STEP_SUMMARY
+          echo "Unallowed high vulnerabilities: $UNALLOWED" >> $GITHUB_STEP_SUMMARY
+
+      - name: Gitleaks (PR - changed files only)
+        if: github.event_name == 'pull_request'
+        id: gitleaks-pr
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect \
+            --source /repo \
+            --config /repo/.gitleaks.toml \
+            --verbose --redact \
+            --log-opts="--cherry-pick ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" \
+            --report-format sarif \
+            --report-path /repo/gitleaks.sarif || echo "leaks_found=true" >> $GITHUB_OUTPUT
+
+          echo "### Gitleaks" >> $GITHUB_STEP_SUMMARY
+          if [ -f gitleaks.sarif ]; then
+            LEAKS=$(jq '.runs[0].results | length' gitleaks.sarif)
+            echo "Secrets found: $LEAKS" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Gitleaks (Push/Schedule - full scan)
+        if: github.event_name != 'pull_request'
+        id: gitleaks-full
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect \
+            --source /repo \
+            --config /repo/.gitleaks.toml \
+            --verbose --redact \
+            --report-format sarif \
+            --report-path /repo/gitleaks.sarif || echo "leaks_found=true" >> $GITHUB_OUTPUT
+
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always() && hashFiles('gitleaks.sarif') != ''
+        with:
+          sarif_file: gitleaks.sarif
+          category: gitleaks
+        continue-on-error: true
+
+      - name: Check results
+        run: |
+          FAILED=false
+
+          if [ "${{ steps.bundler-audit.outputs.high_crit }}" -gt 0 ]; then
+            echo "::error::High/critical Ruby vulnerabilities found"
+            FAILED=true
+          fi
+
+          if [ "${{ steps.yarn-audit.outputs.unallowed }}" -gt 0 ]; then
+            echo "::error::High severity JS vulnerabilities found"
+            FAILED=true
+          fi
+
+          if [ "${{ steps.gitleaks-pr.outputs.leaks_found }}" == "true" ] || [ "${{ steps.gitleaks-full.outputs.leaks_found }}" == "true" ]; then
+            echo "::error::Secrets detected in code"
+            FAILED=true
+          fi
+
+          if [ "$FAILED" == "true" ]; then
+            exit 1
+          fi
+
+      - name: PR Comment on secrets found
+        if: failure() && github.event_name == 'pull_request' && (steps.gitleaks-pr.outputs.leaks_found == 'true')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Secrets detected
+
+            **DO NOT MERGE** - Secrets were found in this PR.
+
+            ### Required actions
+            1. [View logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            2. Remove secrets (git rebase if necessary)
+            3. Rotate exposed secrets (<4h CRITICAL, <24h IMPORTANT)`
+            })
+
+  # Generate security report artifact (only on schedule/manual)
+  security-report:
+    name: Security Report
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: [code-scan, dependency-scan]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - name: Generate reports
+        run: |
+          mkdir -p tmp/security-reports
+          DATE=$(date +%Y%m%d-%H%M%S)
+
+          gem install bundler-audit brakeman
+          bundle audit update
+          bundle audit check --format json > "tmp/security-reports/bundler-${DATE}.json" || true
+          brakeman --format json --output "tmp/security-reports/brakeman-${DATE}.json" -i config/brakeman.ignore . || true
+
+          yarn install --frozen-lockfile --ignore-scripts
+          yarn audit --json > "tmp/security-reports/yarn-${DATE}.json" || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: security-report-${{ github.run_id }}
+          path: tmp/security-reports/
+          retention-days: 90
