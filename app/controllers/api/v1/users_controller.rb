@@ -4,6 +4,11 @@ module Api
     class UsersController < ApplicationController
       include ParamsValidationConcern
 
+      # User creation rate limit: 20 requests per minute
+      rate_limit_with_json_response limit: 20, period: 1.minute, only: [:create, :create_and_invite]
+      # Bulk operations rate limit: 5 requests per minute (very strict)
+      rate_limit_with_json_response limit: 5, period: 1.minute, only: :create_and_invite_many
+
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
         :nir, :france_travail_id, :birth_date, :birth_name, :rights_opening_date, :address, :department_internal_id,

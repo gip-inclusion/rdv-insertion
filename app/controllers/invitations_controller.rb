@@ -1,5 +1,10 @@
 class InvitationsController < ApplicationController
   layout "invited_user", only: [:invitation_code, :redirect]
+
+  # Public invitation endpoints rate limits
+  rate_limit_with_json_response limit: 30, period: 1.minute, only: [:invitation_code, :redirect_shortcut]
+  rate_limit_with_json_response limit: 20, period: 1.minute, only: :redirect
+
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
   before_action :set_invitation, :set_organisations_with_contact, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]

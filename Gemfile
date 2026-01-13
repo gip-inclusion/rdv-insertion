@@ -99,8 +99,8 @@ gem "dsfr-assets"
 # CORS support
 gem "rack-cors"
 
-# Rate limiting and throttling (RISK-GENERAL-006)
-gem "rack-attack"
+# Rate limiting: Using Rails 8 built-in rate_limit (RISK-GENERAL-006)
+# See: app/controllers/concerns/rate_limiting_concern.rb
 
 # Sending ZIP
 gem "rubyzip"

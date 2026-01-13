@@ -1,4 +1,7 @@
 class SuperAdminAuthenticationRequestsController < ApplicationController
+  # Very strict rate limit for super admin authentication - 3/min
+  rate_limit_with_json_response limit: 3, period: 1.minute
+
   before_action :verify_super_admin
 
   def create

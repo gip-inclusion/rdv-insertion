@@ -2,6 +2,9 @@ class RdvSolidaritesWebhooksController < ApplicationController
   skip_before_action :authenticate_agent!
   skip_forgery_protection
 
+  # High volume webhook rate limit: 1000 requests per minute
+  rate_limit_with_json_response limit: 1000, period: 1.minute
+
   include FilterRdvSolidaritesWebhooksConcern
 
   def create

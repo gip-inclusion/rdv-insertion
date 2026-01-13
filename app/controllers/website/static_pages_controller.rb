@@ -1,5 +1,8 @@
 module Website
   class StaticPagesController < BaseController
+    # Static pages rate limit
+    rate_limit_with_json_response limit: 60, period: 1.minute
+
     skip_before_action :authenticate_agent!
 
     include CguHelper

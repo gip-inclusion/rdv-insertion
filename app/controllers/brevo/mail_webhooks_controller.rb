@@ -3,6 +3,9 @@ module Brevo
     include Brevo::IpWhitelistConcern
     skip_before_action :authenticate_agent!, :verify_authenticity_token
 
+    # High volume webhook rate limit: 1000 requests per minute
+    rate_limit_with_json_response limit: 1000, period: 1.minute
+
     PERMITTED_PARAMS = %i[
       email
       event

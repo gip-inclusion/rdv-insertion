@@ -14,6 +14,11 @@ class ApplicationController < ActionController::Base
   include AgentLoggingConcern
   include CookiesConsentConcern
   include MatomoConcern
+  include RateLimitingConcern
+  include MaliciousAgentBlockingConcern
+
+  # General rate limit: 300 requests per 5 minutes (safety net)
+  rate_limit_with_json_response limit: 300, period: 5.minutes
 
   protect_from_forgery with: :exception
   before_action :set_sentry_context
