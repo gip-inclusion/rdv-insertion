@@ -13,7 +13,7 @@
       <div class="mb-3 mt-3 flex-wrap d-flex justify-content-center w-100" id="header_tags_list">
         <% @user_tags.each do |tag| %>
           <%= link_to(structure_user_path(@user.id, anchor: "tags_list"), class: "d-flex text-truncate", target: "_top") do %>
-            <%= render "user_tag", user: @user, tag:, with_delete: false %>
+            <%= render "users/user_tag", user: @user, tag:, with_delete: false %>
           <% end %>
         <% end %>
       </div>
