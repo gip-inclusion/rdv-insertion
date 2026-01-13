@@ -1,7 +1,7 @@
 <%# locals: (f:) %>
 
 <div class="mb-4">
-  <h4 class="fw-bold">Nom de l'onglet Excel</h4>
+  <h4 class="fw-bold">Nom de l'onglet Excel *</h4>
   <div class="col-12 col-md-6">
     <%= f.text_field :sheet_name, class: "form-control" %>
   </div>
@@ -18,8 +18,9 @@
     <% FileConfiguration.column_attributes_names.each do |column_name| %>
       <% user_attribute_name = FileConfiguration.matching_user_attribute_name(column_name) %>
       <% next if user_attribute_name && !assignable_user_attribute?(User.new, user_attribute_name) %>
+      <% required = FileConfiguration.validators_on(column_name).any?(ActiveRecord::Validations::PresenceValidator) %>
       <tr>
-        <td><%= FileConfiguration.human_attribute_name(column_name) %></td>
+        <td><%= FileConfiguration.human_attribute_name(column_name) %><%= " *" if required %></td>
         <td><%= f.text_field column_name, class: "form-control" %></td>
       </tr>
     <% end %>

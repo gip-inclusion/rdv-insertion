@@ -15,12 +15,13 @@
                         f: f,
                         attribute: :logos_to_display,
                         as: :collection_check_boxes,
-                        collection: messages_configuration_logo_types_collection
+                        collection: messages_configuration_logo_types_collection,
+                        align: "start"
                         %>
               <div class="my-2">
                 <p class="fw-bold mb-2">Signatures</p>
                 <p class="text-muted small col-8">Vous avez la possibilité de personnaliser la signature du mail et du courrier. Vous pouvez également joindre une signature manuscrite au format .png, .jpg ou .pdf</p>
-                <div class="row py-2 align-items-center">
+                <div class="row py-2 align-items-start">
                   <div class="col-4 medium">
                     <%= f.label :signature_lines, "Signature texte" %>
                   </div>
@@ -28,7 +29,7 @@
                     <%= render "common/array_fields/input", attribute_name: :signature_lines, f: f, placeholder: placeholder_with_default(messages_configuration, :signature_lines) %>
                   </div>
                 </div>
-                <div class="row py-4 align-items-center">
+                <div class="row py-4 align-items-start">
                   <div class="col-4 medium">
                     <%= f.label :signature_image, "Signature jointe" %>
                   </div>
@@ -54,8 +55,9 @@
                       as: :array,
                       placeholder: placeholder_with_default(messages_configuration, :direction_names),
                       html_class: "col-6",
+                      align: "start",
                       tooltip: {
-                        content: "L’en-tête des courriers d’invitations et de convocations permet à l’usager d’identifier l’expéditeur. Le nom de l’organisation est utilisé par défaut."
+                        content: "L'en-tête des courriers d'invitations et de convocations permet à l'usager d'identifier l'expéditeur. Le nom de l'organisation est utilisé par défaut."
                       }
                       %>
             <%= render "common/attribute_input_inline",

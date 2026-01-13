@@ -1,8 +1,8 @@
 <%# Displays an attribute input field in inline format (label left, input right) %>
 <%# 2 locals are mandatory : f (a form) and attribute (a key corresponding to a class attribute) %>
-<%# Optional: label (custom label text or html_safe string), mandatory (adds *), tooltip (hash with content and optional icon) %>
+<%# Optional: label (custom label text or html_safe string), mandatory (adds *), tooltip (hash with content and optional icon), align (start or center, default center) %>
 
-<div class="row py-2 align-items-center">
+<div class="row py-2 align-items-<%= local_assigns[:align] || 'center' %>">
   <div class="col-4 fw-bold">
     <%= f.label attribute, (local_assigns[:label] || f.object.class.human_attribute_name(attribute)).html_safe %><%= "*" if local_assigns[:mandatory] %>
   </div>
