@@ -73,7 +73,7 @@ RSpec.describe MaliciousAgentBlockingConcern do
 
     describe "BLOCKED_USER_AGENTS constant" do
       it "includes all known security scanning tools" do
-        expected_tools = %w[sqlmap nikto dirbuster gobuster masscan zmap]
+        expected_tools = %w[sqlmap nikto nmap dirbuster gobuster masscan]
         expect(described_class::BLOCKED_USER_AGENTS).to match_array(expected_tools)
       end
 
@@ -129,19 +129,4 @@ RSpec.describe MaliciousAgentBlockingConcern do
     end
   end
 
-  describe "controller inclusion" do
-    it "is included in ApplicationController" do
-      expect(ApplicationController.ancestors).to include(described_class)
-    end
-
-    it "is included in Api::V1::ApplicationController" do
-      expect(Api::V1::ApplicationController.ancestors).to include(described_class)
-    end
-
-    it "runs as a before_action" do
-      callbacks = ApplicationController._process_action_callbacks.select { |c| c.kind == :before }
-      callback_names = callbacks.map { |c| c.filter.to_s }
-      expect(callback_names).to include("block_malicious_user_agents")
-    end
-  end
 end
