@@ -14,12 +14,7 @@
   text-decoration: underline;
 }
 
-.text-truncate-100 {
-  @extend .text-truncate;
-  max-width: 100px;
-}
-
-.text-truncate-150 {
+.text-truncate-150px {
   @extend .text-truncate;
   max-width: 150px;
 }

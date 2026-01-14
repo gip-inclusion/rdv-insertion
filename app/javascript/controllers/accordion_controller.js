@@ -17,7 +17,7 @@ export default class extends Controller {
     if (!anchorId) return
 
     const item = this.element.querySelector(`#${anchorId}`)
-    const index = item?.querySelector("[data-index]")?.dataset.index
+    const index = item?.querySelector("[data-index]")?.dataset?.index
     if (!index) return
 
     this.expandedSections.add(parseInt(index, 10))
