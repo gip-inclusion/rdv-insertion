@@ -33,6 +33,17 @@ describe "Agents can edit users tags", :js do
       expect(page).to have_no_content("hello")
       expect(user.reload.tags).to contain_exactly(first_tag)
 
+      # it should display the tags in other tabs
+      visit organisation_user_follow_ups_path(organisation, user)
+      expect(page).to have_content("coucou")
+      expect(page).to have_no_content("hello")
+
+      visit organisation_user_parcours_path(organisation, user)
+      expect(page).to have_content("coucou")
+      expect(page).to have_no_content("hello")
+
+      visit organisation_user_path(organisation, user)
+
       click_button("Ajouter un tag")
       expect(page).to have_content("Tag déjà sélectionné")
       expect(page).to have_css(".badge", text: "coucou")

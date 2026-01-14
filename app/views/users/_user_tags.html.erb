@@ -5,7 +5,7 @@
       -
     <% else %>
       <% tags.each do |tag| %>
-        <%= render "user_tag", user: @user, tag:, with_delete: true %>
+        <%= render "users/user_tag", user: @user, tag:, with_delete: true %>
       <% end %>
     <% end %>
   </div>
