@@ -128,5 +128,4 @@ RSpec.describe MaliciousAgentBlockingConcern do
       end
     end
   end
-
 end
