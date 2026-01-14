@@ -4,8 +4,6 @@ module Api
     class UsersController < ApplicationController
       include ParamsValidationConcern
 
-      # User creation rate limit: 20 requests per minute
-      rate_limit_with_json_response limit: 20, period: 1.minute, only: [:create, :create_and_invite]
       # Bulk operations rate limit: 5 requests per minute (very strict)
       rate_limit_with_json_response limit: 5, period: 1.minute, only: :create_and_invite_many
 
