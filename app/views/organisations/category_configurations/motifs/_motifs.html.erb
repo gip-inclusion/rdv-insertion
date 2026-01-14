@@ -12,7 +12,7 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="border-top-0">
           <% motifs.each do |motif| %>
             <tr>
               <td><%= motif.name %></td>
@@ -48,7 +48,7 @@
     <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs",
                 target: "_blank",
                 class: "btn btn-blue-out" do %>
-      Consulter les motifs <i class="ri-external-link-line ms-1"></i>
+      Consulter tous les motifs <i class="ri-external-link-line ms-1"></i>
     <% end %>
     <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs/new",
                 target: "_blank",

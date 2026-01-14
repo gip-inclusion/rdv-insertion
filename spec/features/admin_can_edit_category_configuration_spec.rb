@@ -109,7 +109,7 @@ describe "Agent can edit category configuration", :js do
         click_link "Changer de modèle"
       end
 
-      expect(page).to have_content("Changer le modèle de fichier")
+      expect(page).to have_content("Changer de modèle de fichier")
 
       find("input[type='radio'][value='#{new_file_config.id}']").click
       click_button "Sélectionner ce modèle"
@@ -134,12 +134,12 @@ describe "Agent can edit category configuration", :js do
           click_link "Voir le détail"
         end
 
-        expect(page).to have_content("Détails du fichier d'import")
+        expect(page).to have_content("Détails du modèle de fichier")
         expect(page).to have_content("Feuille Import")
 
         click_link "Retour"
 
-        expect(page).to have_content("Changer le modèle de fichier")
+        expect(page).to have_content("Changer de modèle de fichier")
       end
 
       it "returns to selection modal when canceling file configuration creation" do
@@ -152,11 +152,11 @@ describe "Agent can edit category configuration", :js do
           click_link "Créer un nouveau modèle"
         end
 
-        expect(page).to have_content("Créer un fichier d'import")
+        expect(page).to have_content("Créer un nouveau modèle")
 
         click_link "Annuler"
 
-        expect(page).to have_content("Changer le modèle de fichier")
+        expect(page).to have_content("Changer de modèle de fichier")
       end
 
       it "returns to selection modal when canceling file configuration edit" do
@@ -173,7 +173,7 @@ describe "Agent can edit category configuration", :js do
 
         click_link "Annuler"
 
-        expect(page).to have_content("Changer le modèle de fichier")
+        expect(page).to have_content("Changer de modèle de fichier")
       end
     end
 
@@ -193,7 +193,7 @@ describe "Agent can edit category configuration", :js do
         fill_in "file_configuration_sheet_name", with: "Fichier Modifié"
         click_button "Enregistrer les modifications"
 
-        expect(page).to have_content("Le fichier d'import a été modifié avec succès")
+        expect(page).to have_content("Le modèle de fichier a été modifié avec succès")
         expect(file_configuration.reload.sheet_name).to eq("Fichier Modifié")
       end
 
@@ -207,7 +207,7 @@ describe "Agent can edit category configuration", :js do
           click_link "Créer un nouveau modèle"
         end
 
-        expect(page).to have_content("Créer un fichier d'import")
+        expect(page).to have_content("Créer un nouveau modèle")
 
         fill_in "file_configuration_sheet_name", with: "Nouveau Fichier"
         fill_in "file_configuration_title_column", with: "Civilité"
@@ -215,7 +215,7 @@ describe "Agent can edit category configuration", :js do
         fill_in "file_configuration_last_name_column", with: "Nom"
         click_button "Créer"
 
-        expect(page).to have_content("Le fichier d'import a été créé avec succès")
+        expect(page).to have_content("Le modèle de fichier a été créé avec succès")
         expect(FileConfiguration.last.sheet_name).to eq("Nouveau Fichier")
       end
     end

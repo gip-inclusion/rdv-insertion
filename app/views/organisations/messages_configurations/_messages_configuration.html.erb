@@ -43,7 +43,7 @@
                     label: MessagesConfiguration.human_attribute_name(:sender_city),
                     value: messages_configuration.effective_sender_city,
                     tooltip: {
-                      content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisé par défaut."
+                      content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisée par défaut."
                     } %>
 
           <%= render "common/attribute_display_inline",
@@ -67,7 +67,11 @@
       <div class="p-3">
         <%= render "common/attribute_display_inline",
                   label: MessagesConfiguration.human_attribute_name(:sms_sender_name),
-                  value: messages_configuration.effective_sms_sender_name %>
+                  value: messages_configuration.effective_sms_sender_name,
+                  tooltip: {
+                    content: "Par défaut, le nom de l'expéditeur des SMS reçus par les usagers est : <b>Dept#{organisation.department_number}</b> (le numéro change en fonction du département). Vous pouvez modifier l'expéditeur affiché ici. Attention, le nom ne doit pas dépasser 11 caractères et ne comporter aucun espace.<br><b>Nous vous recommandons de ne pas modifier cette option.</b>"
+                  }
+        %>
       </div>
     </div>
     <div class="d-flex justify-content-end mt-2 me-2">
