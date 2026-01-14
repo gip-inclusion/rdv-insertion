@@ -129,7 +129,7 @@ describe FileConfigurationsController do
       it "redirects to the category_configuration" do
         post :create, params: create_params, format: :turbo_stream
         expect(response).to be_successful
-        expect(unescaped_response_body).to match(/Le fichier d'import a été créé avec succès/)
+        expect(unescaped_response_body).to match(/Le modèle de fichier a été créé avec succès/)
       end
     end
 
@@ -180,7 +180,7 @@ describe FileConfigurationsController do
       it "is a success" do
         patch :update, params: update_params, format: :turbo_stream
         expect(response).to be_successful
-        expect(unescaped_response_body).to match(/Le fichier d'import a été modifié avec succès/)
+        expect(unescaped_response_body).to match(/Le modèle de fichier a été modifié avec succès/)
       end
     end
 
