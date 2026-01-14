@@ -58,7 +58,7 @@ describe FileConfigurationsController do
       get :new
 
       expect(response).to be_successful
-      expect(unescaped_response_body).to match(/Créer un fichier d'import/)
+      expect(unescaped_response_body).to match(/Créer un nouveau modèle/)
       expect(unescaped_response_body).to match(/file_configuration\[sheet_name\]/)
     end
   end
