@@ -4,7 +4,7 @@
 module MaliciousAgentBlockingConcern
   extend ActiveSupport::Concern
 
-  BLOCKED_USER_AGENTS = %w[sqlmap nikto dirbuster gobuster masscan zmap].freeze
+  BLOCKED_USER_AGENTS = %w[sqlmap nikto nmap dirbuster gobuster masscan].freeze
 
   included do
     before_action :block_malicious_user_agents
