@@ -36,8 +36,6 @@ module MaliciousAgentBlockingConcern
   end
 
   def report_blocked_request_to_sentry
-    return unless defined?(Sentry)
-
     Sentry.capture_message(
       "Blocked malicious request",
       level: :error,
