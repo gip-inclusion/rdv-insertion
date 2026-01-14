@@ -23,7 +23,7 @@ module RateLimitingConcern
     def rate_limit_with_json_response(limit:, period:, **options)
       # Use high limits in test environment to avoid interfering with feature tests
       # Rate limiting specs test the mechanism directly via render_rate_limit_exceeded
-      effective_limit = Rails.env.test? ? 10_000 : limit
+      effective_limit = Rails.env.local? ? 10_000 : limit
 
       rate_limit(
         to: effective_limit,
