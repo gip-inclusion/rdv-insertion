@@ -41,7 +41,6 @@ module RateLimitingConcern
     retry_after = compute_retry_after(period)
 
     log_rate_limit_exceeded(limit)
-    report_rate_limit_to_sentry
     set_rate_limit_headers(limit, retry_after)
 
     render json: rate_limit_error_body(retry_after), status: :too_many_requests
@@ -74,22 +73,6 @@ module RateLimitingConcern
       "path=#{request.path} " \
       "limit=#{limit} " \
       "controller=#{controller_name}##{action_name}"
-    )
-  end
-
-  def report_rate_limit_to_sentry
-    return unless defined?(Sentry)
-
-    Sentry.capture_message(
-      "Rate limit exceeded",
-      level: :warning,
-      extra: {
-        ip: request.ip,
-        path: request.path,
-        controller: controller_name,
-        action: action_name,
-        user_agent: request.user_agent
-      }
     )
   end
 end
