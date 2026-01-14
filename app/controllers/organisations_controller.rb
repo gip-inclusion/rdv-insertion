@@ -1,6 +1,6 @@
 class OrganisationsController < ApplicationController
-  # Search endpoints rate limit - enumeration prevention
-  rate_limit_with_json_response limit: 30, period: 1.minute, only: [:search, :geolocated]
+  # Geolocation endpoint rate limit - enumeration prevention
+  rate_limit_with_json_response limit: 30, period: 1.minute, only: :geolocated
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
