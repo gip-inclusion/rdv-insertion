@@ -26,7 +26,7 @@
       <%= render "common/attribute_input", f:f, attribute: :birth_date, as: :date, start_year: Date.today.year - 100 %>
       <%= render "common/attribute_input", f:f, attribute: :address %>
       <%= render "common/attribute_input", f:f, attribute: :phone_number %>
-      <%= render "common/attribute_input", f:f, attribute: :rights_opening_date, as: :date, start_year: Date.today.year - 10 %>
+      <%= render "common/attribute_input", f:f, attribute: :rights_opening_date, as: :date, start_year: 2000 %>
     </div>
     <div class="row d-flex justify-content-end">
       <button type="submit" class="btn btn-blue w-auto">Enregistrer</button>
