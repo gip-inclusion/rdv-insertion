@@ -59,4 +59,28 @@ describe Orientation do
         .to include("La date de fin doit être postérieure à la date de début")
     end
   end
+
+  describe "active? method" do
+    let(:orientation) { create(:orientation, starts_at: 7.days.ago, ends_at: 1.day.from_now) }
+
+    it "returns true if the orientation is active" do
+      expect(orientation).to be_active
+    end
+
+    context "when the orientation does not have an end date" do
+      let(:orientation) { create(:orientation, starts_at: 1.day.ago, ends_at: nil) }
+
+      it "returns true if the orientation is active" do
+        expect(orientation).to be_active
+      end
+    end
+
+    context "when the orientation already ended" do
+      let(:orientation) { create(:orientation, starts_at: 10.days.ago, ends_at: 1.day.ago) }
+
+      it "returns false if the orientation is not active" do
+        expect(orientation).not_to be_active
+      end
+    end
+  end
 end
