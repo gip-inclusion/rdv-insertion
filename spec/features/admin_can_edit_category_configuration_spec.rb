@@ -69,7 +69,7 @@ describe "Agent can edit category configuration", :js do
         click_link "Modifier"
       end
 
-      expect(page).to have_content("Modifier les préférences de messages de cette catégorie")
+      expect(page).to have_content("Modifier les paramètres d’invitation")
 
       fill_in "category_configuration_number_of_days_before_invitations_expire", with: "10"
 
