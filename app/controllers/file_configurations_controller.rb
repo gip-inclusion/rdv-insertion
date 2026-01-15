@@ -31,7 +31,7 @@ class FileConfigurationsController < ApplicationController
   def create
     @file_configuration = FileConfiguration.new(file_configuration_params.merge(created_by_agent: current_agent))
     if @file_configuration.save
-      turbo_stream_display_success_modal("Le fichier d'import a été créé avec succès")
+      turbo_stream_display_success_modal("Le modèle de fichier a été créé avec succès")
     else
       turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
     end
@@ -39,7 +39,7 @@ class FileConfigurationsController < ApplicationController
 
   def update
     if @file_configuration.update(file_configuration_params)
-      turbo_stream_display_success_modal("Le fichier d'import a été modifié avec succès")
+      turbo_stream_display_success_modal("Le modèle de fichier a été modifié avec succès")
     else
       turbo_stream_replace_error_list_with(@file_configuration.errors.full_messages)
     end

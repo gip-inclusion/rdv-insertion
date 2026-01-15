@@ -19,12 +19,6 @@ describe FileConfiguration do
     it { expect(file_configuration).not_to be_valid }
   end
 
-  context "when no title_column" do
-    before { file_configuration.title_column = nil }
-
-    it { expect(file_configuration).not_to be_valid }
-  end
-
   context "when columns have identic names" do
     before do
       file_configuration.email_column = "email"

@@ -1,13 +1,13 @@
 <% content_for :title, "Configuration - Messages - #{@organisation.name} - rdv-insertion" %>
 
-<div class="container mt-5 mb-5">
+<div class="container mt-5 mb-5 px-5">
   <%= turbo_frame_tag "configuration_tab" do %>
     <%= render "organisations/configuration/header", tab: "messages", organisation: @organisation %>
 
     <div class="mt-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="h4 text-dark-blue fw-bold">Configuration des messages</h2>
-        <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
+        <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/configuration/configuration-rdv-insertion-and-rdv-solidarites/configuration-rdv-insertion/configuration-des-messages", target: "_blank", class: "text-info border-bottom border-info" do %>
           <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
         <% end %>
       </div>
@@ -15,7 +15,7 @@
       <%= render "organisations/messages_configurations/messages_configuration", organisation: @organisation, messages_configuration: @messages_configuration %>
       <div class="card-white p-4 mb-4">
         <h3 class="h5 mb-2 fw-bold">Contenu des messages</h3>
-        <p class="text-muted mb-4">
+        <p class="text-muted small mb-4">
           Personnalisez le modèle par défaut des messages d’invitations et de convocations pour chacune des catégories.
         </p>
 

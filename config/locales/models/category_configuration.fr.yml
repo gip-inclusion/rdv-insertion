@@ -8,6 +8,8 @@ fr:
           attributes:
             organisation:
               taken: a déjà une configuration pour cette catégorie de motif
+            number_of_days_before_invitations_expire:
+              greater_than: doit être supérieur à %{count} jours
     attributes:
       category_configuration:
         convene_user: Convocation possible
@@ -30,4 +32,3 @@ fr:
         template_user_designation: Désignation de la personne
         email_to_notify_rdv_changes: Email de destination des notifications de prise de RDV
         email_to_notify_no_available_slots: Email de destination des notifications de créneaux épuisés
-

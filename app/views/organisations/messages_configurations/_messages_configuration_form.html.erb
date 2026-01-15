@@ -1,7 +1,7 @@
 <%= turbo_frame_tag messages_configuration do %>
   <div class="card-white p-4 mb-4">
     <h3 class="h5 mb-2 fw-bold">Identité de l'expéditeur</h3>
-    <p class="text-muted mb-4">
+    <p class="text-muted small mb-4">
       Ces informations permettront d’identifier l’organisation dans les invitations et les convocations envoyées aux usagers.
     </p>
 
@@ -15,20 +15,22 @@
                         f: f,
                         attribute: :logos_to_display,
                         as: :collection_check_boxes,
-                        collection: messages_configuration_logo_types_collection
+                        collection: messages_configuration_logo_types_collection,
+                        align: "start"
                         %>
               <div class="my-2">
                 <p class="fw-bold mb-2">Signatures</p>
-                <p class="text-muted col-8">Vous avez la possibilité de personnaliser la signature du mail et du courrier. Vous pouvez également joindre une signature manuscrite au format .png, .jpg ou .pdf</p>
-                <%= render "common/attribute_input_inline",
-                          f: f,
-                          attribute: :signature_lines,
-                          as: :array,
-                          label: "Signature texte",
-                          placeholder: placeholder_with_default(messages_configuration, :signature_lines)
-                          %>
-                <div class="row py-4 align-items-center">
-                  <div class="col-4 fw-bold">
+                <p class="text-muted small col-8">Vous avez la possibilité de personnaliser la signature du mail et du courrier. Vous pouvez également joindre une signature manuscrite au format .png, .jpg ou .pdf</p>
+                <div class="row py-2 align-items-start">
+                  <div class="col-4 medium">
+                    <%= f.label :signature_lines, "Signature texte" %>
+                  </div>
+                  <div class="col-4">
+                    <%= render "common/array_fields/input", attribute_name: :signature_lines, f: f, placeholder: placeholder_with_default(messages_configuration, :signature_lines) %>
+                  </div>
+                </div>
+                <div class="row py-4 align-items-start">
+                  <div class="col-4 medium">
                     <%= f.label :signature_image, "Signature jointe" %>
                   </div>
                   <div class="col-6">
@@ -53,8 +55,9 @@
                       as: :array,
                       placeholder: placeholder_with_default(messages_configuration, :direction_names),
                       html_class: "col-6",
+                      align: "start",
                       tooltip: {
-                        content: "L’en-tête des courriers d’invitations et de convocations permet à l’usager d’identifier l’expéditeur. Le nom de l’organisation est utilisé par défaut."
+                        content: "L'en-tête des courriers d'invitations et de convocations permet à l'usager d'identifier l'expéditeur. Le nom de l'organisation est utilisé par défaut."
                       }
                       %>
             <%= render "common/attribute_input_inline",
@@ -62,7 +65,7 @@
                       attribute: :sender_city,
                       placeholder: placeholder_with_default(messages_configuration, :sender_city),
                       tooltip: {
-                        content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisé par défaut."
+                        content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisée par défaut."
                       }
                       %>
             <%= render "common/attribute_input_inline",
@@ -88,7 +91,10 @@
             <%= render "common/attribute_input_inline",
                       f: f,
                       attribute: :sms_sender_name,
-                      placeholder: placeholder_with_default(messages_configuration, :sms_sender_name)
+                      placeholder: placeholder_with_default(messages_configuration, :sms_sender_name),
+                      tooltip: {
+                        content: "Par défaut, le nom de l'expéditeur des SMS reçus par les usagers est : <b>Dept#{organisation.department_number}</b> (le numéro change en fonction du département). Vous pouvez modifier l'expéditeur affiché ici. Attention, le nom ne doit pas dépasser 11 caractères et ne comporter aucun espace.<br><b>Nous vous recommandons de ne pas modifier cette option.</b>"
+                      }
                     %>
           </div>
         </div>

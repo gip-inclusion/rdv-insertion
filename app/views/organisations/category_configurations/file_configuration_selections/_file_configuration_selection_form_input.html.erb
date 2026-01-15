@@ -13,9 +13,12 @@
 
   <div class="flex-grow-1">
     <div class="d-flex align-items-center gap-2 mb-1">
-      <label for="file_configuration_<%= file_configuration.id %>" class="fw-bold text-dark-blue mb-0 cursor-pointer">
+      <label for="file_configuration_<%= file_configuration.id %>" class="medium text-dark-blue mb-0 cursor-pointer">
         Fichier "<%= file_configuration.sheet_name %>"
       </label>
+      <% if is_selected %>
+        <span class="text-dark-green medium">Sélectionné</span>
+      <% end %>
     </div>
 
     <div class="text-dark-blue small">

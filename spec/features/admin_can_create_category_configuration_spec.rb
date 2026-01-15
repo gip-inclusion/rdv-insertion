@@ -61,7 +61,7 @@ describe "Agent can create category configuration", :js do
 
       click_button "Ajouter la catégorie"
 
-      expect(page).to have_content("Catégorie « RSA Orientation »")
+      expect(page).to have_content("« RSA Orientation »")
 
       new_category = CategoryConfiguration.last
       expect(new_category.phone_number).to eq("3949")
@@ -85,7 +85,7 @@ describe "Agent can create category configuration", :js do
         click_link "Créer un nouveau modèle"
       end
 
-      expect(page).to have_content("Créer un fichier d'import")
+      expect(page).to have_content("Créer un nouveau modèle")
 
       fill_in "file_configuration_sheet_name", with: "Nouveau Fichier"
       fill_in "file_configuration_title_column", with: "Civilité"
@@ -93,7 +93,7 @@ describe "Agent can create category configuration", :js do
       fill_in "file_configuration_last_name_column", with: "Nom"
       click_button "Créer"
 
-      expect(page).to have_content("Le fichier d'import a été créé avec succès")
+      expect(page).to have_content("Le modèle de fichier a été créé avec succès")
 
       created_file_configuration = FileConfiguration.last
       expect(created_file_configuration.sheet_name).to eq("Nouveau Fichier")
@@ -114,7 +114,7 @@ describe "Agent can create category configuration", :js do
 
       click_button "Ajouter la catégorie"
 
-      expect(page).to have_content("Catégorie « RSA Orientation »")
+      expect(page).to have_content("« RSA Orientation »")
       expect(CategoryConfiguration.last.file_configuration).to eq(created_file_configuration)
     end
 

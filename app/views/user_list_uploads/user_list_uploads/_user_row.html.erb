@@ -19,7 +19,7 @@
       <div class="d-flex justify-content-between align-items-center"
             id="user-row-cell-<%= user_row.id %>-<%= attribute %>"
             data-action="dblclick->user-list-upload--user-row-cell#edit">
-        <span class="<%= "text-truncate-150" if attribute.in?([:affiliation_number]) %>"><%= display_attribute(user_row.user.send(attribute)) %></span>
+        <span class="<%= "text-truncate-150px" if attribute.in?([:affiliation_number]) %>"><%= display_attribute(user_row.user.send(attribute)) %></span>
         <%= user_row_icon_for_attribute(user_row, attribute) %>
       </div>
     </td>

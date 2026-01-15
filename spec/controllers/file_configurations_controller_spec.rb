@@ -58,7 +58,7 @@ describe FileConfigurationsController do
       get :new
 
       expect(response).to be_successful
-      expect(unescaped_response_body).to match(/Créer un fichier d'import/)
+      expect(unescaped_response_body).to match(/Créer un nouveau modèle/)
       expect(unescaped_response_body).to match(/file_configuration\[sheet_name\]/)
     end
   end
@@ -129,7 +129,7 @@ describe FileConfigurationsController do
       it "redirects to the category_configuration" do
         post :create, params: create_params, format: :turbo_stream
         expect(response).to be_successful
-        expect(unescaped_response_body).to match(/Le fichier d'import a été créé avec succès/)
+        expect(unescaped_response_body).to match(/Le modèle de fichier a été créé avec succès/)
       end
     end
 
@@ -149,7 +149,6 @@ describe FileConfigurationsController do
       it "renders the new form" do
         post :create, params: create_params, format: :turbo_stream
 
-        expect(unescaped_response_body).to match(/Civilité doit être rempli/)
         expect(unescaped_response_body).to match(/Prénom doit être rempli/)
         expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
       end
@@ -181,7 +180,7 @@ describe FileConfigurationsController do
       it "is a success" do
         patch :update, params: update_params, format: :turbo_stream
         expect(response).to be_successful
-        expect(unescaped_response_body).to match(/Le fichier d'import a été modifié avec succès/)
+        expect(unescaped_response_body).to match(/Le modèle de fichier a été modifié avec succès/)
       end
     end
 
@@ -189,7 +188,7 @@ describe FileConfigurationsController do
       let!(:update_params) do
         {
           file_configuration: {
-            first_name_column: "", last_name_column: "", title_column: ""
+            first_name_column: "", last_name_column: ""
           },
           id: file_configuration.id
         }
@@ -199,12 +198,10 @@ describe FileConfigurationsController do
         patch :update, params: update_params, format: :turbo_stream
         expect(file_configuration.reload.first_name_column).not_to eq("")
         expect(file_configuration.reload.last_name_column).not_to eq("")
-        expect(file_configuration.reload.title_column).not_to eq("")
       end
 
       it "renders the edit page" do
         patch :update, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Civilité doit être rempli/)
         expect(unescaped_response_body).to match(/Prénom doit être rempli/)
         expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
       end

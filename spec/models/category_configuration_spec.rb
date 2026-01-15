@@ -37,7 +37,7 @@ describe CategoryConfiguration do
       it "adds errors" do
         expect(category_configuration).not_to be_valid
         expect(category_configuration.errors.full_messages.to_sentence)
-          .to include("Le délai d'expiration de l'invitation doit être supérieur à 3 jours")
+          .to include("Durée de validité du lien d'invitation doit être supérieur à 3 jours")
       end
     end
   end

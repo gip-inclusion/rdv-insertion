@@ -1,6 +1,6 @@
 <% content_for :title, "Ajouter une catégorie - #{organisation.name} - rdv-insertion" %>
 
-<div class="container mt-5 mb-5 pb-5">
+<div class="container mt-5 mb-5 pb-5 px-5">
   <%= form_with model: category_configuration,
                 url: organisation_category_configurations_path(organisation),
                 method: :post,
@@ -12,16 +12,14 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h2 class="h4 text-dark-blue fw-bold">Ajouter une catégorie de motifs</h2>
-        <p class="text-muted mb-0 w-90">
+        <p class="text-muted mb-0 w-90 small">
           Une catégorie permet de grouper les dossiers usagers dans une liste de suivi.
           Elle est reliée à un ou plusieurs motifs de rendez-vous.
         </p>
       </div>
-      <div>
-        <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
-          <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
-        <% end %>
-      </div>
+      <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/configuration/configuration-rdv-insertion-and-rdv-solidarites/configuration-rdv-insertion/categories-de-motifs", target: "_blank", class: "text-info border-bottom border-info" do %>
+        <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
+      <% end %>
     </div>
 
     <div class="stepper w-75">
@@ -37,7 +35,7 @@
           <i class="ri-arrow-up-s-line fs-4" data-accordion-target="icon"></i>
         </div>
         <div class="stepper-step-content" data-accordion-target="content">
-          <p class="text-muted mb-3">Choisissez parmi les catégories de motif disponibles sur rdv-insertion</p>
+          <p class="text-muted mb-3 small">Choisissez parmi les catégories de motif disponibles sur rdv-insertion</p>
           <%= render "motif_category_select",
                      available_motif_categories: available_motif_categories %>
         </div>

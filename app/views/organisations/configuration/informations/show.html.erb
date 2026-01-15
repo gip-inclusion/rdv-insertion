@@ -1,13 +1,13 @@
-<% content_for :title, "Informations - #{@organisation.name} - rdv-insertion" %>
+<% content_for :title, "Configuration - Informations - #{@organisation.name} - rdv-insertion" %>
 
-<div class="container mt-5 mb-5">
+<div class="container mt-5 mb-5 px-5">
   <%= turbo_frame_tag "configuration_tab" do %>
     <%= render "organisations/configuration/header", tab: "informations", organisation: @organisation %>
 
     <div class="mt-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="h4 text-dark-blue fw-bold">Informations de l'organisation</h2>
-        <%= link_to "https://doc.rdv-insertion.fr/", target: "_blank", class: "border-bottom border-primary" do %>
+        <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion-and-faq/configuration/configurer-loutil/configuration-rdv-insertion/informations-de-lorganisation", target: "_blank", class: "text-info border-bottom border-info" do %>
           <i class="ri-book-2-fill me-1"></i>Guide d'utilisation
         <% end %>
       </div>

@@ -19,13 +19,15 @@
   <label class="form-label fw-bold">Durée de validité des liens d'invitations</label>
   <p class="text-muted small mb-2">
     Le lien permettant de prendre rendez-vous dans les invitations expirera au-delà de la période définie ci-dessous. L'usager ne pourra plus prendre rendez-vous au-delà de cette période.
+    <br>
+    Si ce champ est vide, les invitations n’auront pas de date d’expiration.
   </p>
+  <p class="text-muted small"></p>
   <div class="d-flex align-items-center gap-2">
     <%= f.number_field :number_of_days_before_invitations_expire,
                        class: "form-control input-small-width",
-                       min: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER,
+                       min: CategoryConfiguration.minimum_number_of_days_before_invitations_expire,
                        placeholder: "-" %>
     <span>jours</span>
   </div>
-  <p class="text-muted small mt-1">Laissez vide pour que les invitations n'expirent jamais.</p>
 </div>

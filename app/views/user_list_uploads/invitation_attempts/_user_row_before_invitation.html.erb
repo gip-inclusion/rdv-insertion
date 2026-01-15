@@ -14,12 +14,12 @@
   </td>
 
   <% [:first_name, :last_name, :phone_number, :email, :post_code, :city].each do |attribute| %>
-    <td class="border-light <%= "text-truncate-150" if attribute.in?([:email]) %>">
+    <td class="border-light <%= "text-truncate-150px" if attribute.in?([:email]) %>">
       <span><%= display_attribute(user_row.user.send(attribute)) %></span>
     </td>
   <% end %>
   <% if @user_list_upload.department_level? %>
-    <td class="border-light text-truncate-150">
+    <td class="border-light text-truncate-150px">
       <span <%= tooltip(content: user_row.user_department_organisation_names) %>>
         <%= display_attribute(user_row.user_department_organisation_names) %>
       </span>

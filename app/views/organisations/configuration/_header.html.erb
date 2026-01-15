@@ -1,12 +1,14 @@
-<div class="d-flex justify-content-between align-items-center mb-5">
-  <div>
+<div class="row align-items-center mb-32px">
+  <div class="col-3">
     <i class="ri-arrow-left-s-line"></i>
     <%= link_to "Retour", structure_users_path, class: "text-dark-blue fw-bold", data: { turbo_frame: "_top" } %>
   </div>
-  <h1 class="h3 mb-0"><%= organisation.name %></h1>
-  <%= link_to organisation.rdv_solidarites_configuration_url, target: "_blank", class: "btn btn-blue" do %>
-    Voir sur RDV-Solidarités <i class="ri-external-link-line ms-1"></i>
-  <% end %>
+  <h1 class="col-6 h3 mb-0 text-center"><%= organisation.name %></h1>
+  <div class="col-3 text-end">
+    <%= link_to organisation.rdv_solidarites_configuration_url, target: "_blank", class: "btn btn-blue" do %>
+      Voir sur RDV-Solidarités <i class="ri-external-link-line ms-1"></i>
+    <% end %>
+  </div>
 </div>
 
 <%= render "organisations/configuration/tabs_navigation", tab: tab, organisation: organisation %>

@@ -1,7 +1,7 @@
 <%= turbo_frame_tag messages_configuration do %>
   <div class="card-white p-4 mb-4">
     <h3 class="h5 mb-2 fw-bold">Identité de l'expéditeur</h3>
-    <p class="text-muted mb-4">
+    <p class="text-muted small mb-4">
       Ces informations permettront d’identifier l’organisation dans les invitations et les convocations envoyées aux usagers.
     </p>
 
@@ -15,9 +15,10 @@
 
           <%= render "common/attribute_display_inline",
                     label: "Signature texte",
+                    align: "start",
                     value: messages_configuration.effective_signature_lines.join("<br>") %>
 
-          <%= render "common/attribute_display_inline", label: "Signature jointe" do %>
+          <%= render "common/attribute_display_inline", label: "Signature jointe", align: "start" do %>
             <% if messages_configuration.signature_image.attached? %>
               <%= image_tag messages_configuration.signature_image.url, class: "img-fluid uploaded-image-preview", alt: "Signature jointe" %>
             <% else %>
@@ -33,6 +34,7 @@
                     label: MessagesConfiguration.human_attribute_name(:direction_names),
                     value: messages_configuration.effective_direction_names.join("<br>"),
                     html_class: "col-6",
+                    align: "start",
                     tooltip: {
                       content: "L’en-tête des courriers d’invitations et de convocations permet à l’usager d’identifier l’expéditeur. Le nom de l’organisation est utilisé par défaut."
                     } %>
@@ -41,7 +43,7 @@
                     label: MessagesConfiguration.human_attribute_name(:sender_city),
                     value: messages_configuration.effective_sender_city,
                     tooltip: {
-                      content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisé par défaut."
+                      content: "Vous pouvez personnaliser la ville d’expédition du courrier. La  préfecture du département est utilisée par défaut."
                     } %>
 
           <%= render "common/attribute_display_inline",
@@ -65,7 +67,11 @@
       <div class="p-3">
         <%= render "common/attribute_display_inline",
                   label: MessagesConfiguration.human_attribute_name(:sms_sender_name),
-                  value: messages_configuration.effective_sms_sender_name %>
+                  value: messages_configuration.effective_sms_sender_name,
+                  tooltip: {
+                    content: "Par défaut, le nom de l'expéditeur des SMS reçus par les usagers est : <b>Dept#{organisation.department_number}</b> (le numéro change en fonction du département). Vous pouvez modifier l'expéditeur affiché ici. Attention, le nom ne doit pas dépasser 11 caractères et ne comporter aucun espace.<br><b>Nous vous recommandons de ne pas modifier cette option.</b>"
+                  }
+        %>
       </div>
     </div>
     <div class="d-flex justify-content-end mt-2 me-2">

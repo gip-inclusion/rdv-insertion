@@ -1,10 +1,18 @@
 <%# Displays an attribute input field in inline format (label left, input right) %>
 <%# 2 locals are mandatory : f (a form) and attribute (a key corresponding to a class attribute) %>
-<%# Optional: label (custom label text or html_safe string), mandatory (adds *), tooltip (hash with content and optional icon) %>
+<%# Optional: label (custom label text or html_safe string), mandatory (adds *), tooltip (hash with content and optional icon), align (start or center, default center) %>
 
-<div class="row py-2 align-items-center">
-  <div class="col-4 fw-bold">
-    <%= f.label attribute, (local_assigns[:label] || f.object.class.human_attribute_name(attribute)).html_safe %><%= "*" if local_assigns[:mandatory] %>
+<div class="row py-2 align-items-<%= local_assigns[:align] || 'center' %>">
+  <div class="col-4">
+    <%= f.label attribute, class: "fw-bold d-inline" do %>
+      <%= (local_assigns[:label] || f.object.class.human_attribute_name(attribute)).html_safe %><%= "*" if local_assigns[:mandatory] %>
+      <% if local_assigns[:tooltip].is_a?(Hash) %>
+        <i
+          class="<%= local_assigns[:tooltip][:icon] || 'ri-question-line' %> text-dark-blue fs-4 ms-2 fw-normal"
+          <%= tooltip(content: local_assigns[:tooltip][:content], placement: local_assigns[:tooltip][:placement] || 'top') %>
+        ></i>
+      <% end %>
+    <% end %>
   </div>
   <div class="<%= local_assigns[:html_class] || 'col-4' %>">
     <% if local_assigns[:as] == :array %>
@@ -20,14 +28,6 @@
       </div>
     <% else %>
       <%= f.text_field attribute, class: "form-control", placeholder: local_assigns[:placeholder] %>
-    <% end %>
-  </div>
-  <div class="col-1 d-flex align-items-center">
-    <% if local_assigns[:tooltip].is_a?(Hash) %>
-      <i
-        class="<%= local_assigns[:tooltip][:icon] || 'ri-question-line' %> text-dark-blue fs-4"
-        <%= tooltip(content: local_assigns[:tooltip][:content], placement: local_assigns[:tooltip][:placement] || 'top') %>
-      ></i>
     <% end %>
   </div>
 </div>
