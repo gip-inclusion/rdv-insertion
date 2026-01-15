@@ -4,6 +4,7 @@ module SuperAdmins
 
     before_action :set_agent_to_impersonate, only: [:create]
     skip_before_action :authenticate_super_admin!, only: [:destroy]
+    before_action :ensure_valid_impersonation_session, only: [:destroy]
 
     def create
       # only super admins can impersonate agents ; this is ensured in the parent controller
@@ -21,6 +22,14 @@ module SuperAdmins
 
     def set_agent_to_impersonate
       @agent_to_impersonate = Agent.find(params[:agent_id])
+    end
+
+    def ensure_valid_impersonation_session
+      return if agent_session&.valid? && agent_session&.impersonated?
+
+      clear_session
+      flash[:notice] = "Votre session a expiré. Veuillez vous reconnecter pour accéder à cette page"
+      redirect_to root_path
     end
   end
 end
