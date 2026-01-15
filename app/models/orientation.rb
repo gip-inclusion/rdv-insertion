@@ -28,7 +28,7 @@ class Orientation < ApplicationRecord
   }
 
   def time_range
-    starts_at...(ends_at.presence || Time.zone.today)
+    starts_at...(ends_at.presence || Time.zone.now)
   end
 
   def current?
@@ -36,7 +36,7 @@ class Orientation < ApplicationRecord
   end
 
   def active?
-    time_range.cover?(Time.zone.today)
+    time_range.cover?(Time.zone.today.beginning_of_day)
   end
 
   private
