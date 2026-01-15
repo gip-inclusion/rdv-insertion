@@ -25,10 +25,10 @@ module SuperAdmins
     end
 
     def ensure_valid_impersonation_session
-      return if agent_session&.valid? && agent_session&.impersonated?
+      return if agent_impersonated?
 
       clear_session
-      flash[:notice] = "Votre session a expiré. Veuillez vous reconnecter pour accéder à cette page"
+      flash[:notice] = "Veuillez vous reconnecter pour accéder à cette page."
       redirect_to root_path
     end
   end
