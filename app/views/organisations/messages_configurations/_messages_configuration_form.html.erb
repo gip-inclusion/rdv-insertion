@@ -18,30 +18,14 @@
                         collection: messages_configuration_logo_types_collection,
                         align: "start"
                         %>
-              <div class="my-2">
-                <p class="fw-bold mb-2">Signatures</p>
-                <p class="text-muted small col-8">Vous avez la possibilité de personnaliser la signature du mail et du courrier. Vous pouvez également joindre une signature manuscrite au format .png, .jpg ou .pdf</p>
-                <div class="row py-2 align-items-start">
-                  <div class="col-4 medium">
-                    <%= f.label :signature_lines, "Signature texte" %>
-                  </div>
-                  <div class="col-4">
-                    <%= render "common/array_fields/input", attribute_name: :signature_lines, f: f, placeholder: placeholder_with_default(messages_configuration, :signature_lines) %>
-                  </div>
-                </div>
-                <div class="row py-4 align-items-start">
-                  <div class="col-4 medium">
-                    <%= f.label :signature_image, "Signature jointe" %>
-                  </div>
-                  <div class="col-6">
-                    <%= render "common/image_upload_zone",
-                              f: f,
-                              record: messages_configuration,
-                              attribute: :signature_image,
-                              placeholder_text: "Glisser/déposer la signature ici" %>
-                  </div>
-                </div>
-              </div>
+              <%= render "common/attribute_input_inline",
+                      f: f,
+                      attribute: :signature_lines,
+                      label: "Signature texte",
+                      as: :array,
+                      placeholder: placeholder_with_default(messages_configuration, :signature_lines),
+                      align: "start"
+                      %>
             </div>
           </div>
         </div>
@@ -83,6 +67,23 @@
                         content: "Permet d’identifier l’expéditeur dans le contenu des courriers.  Le « conseil départemental » est utilisé par défaut."
                       }
                       %>
+            <div class="row py-2 align-items-start">
+              <div class="col-4">
+                <%= f.label :signature_image, class: "fw-bold d-inline" do %>
+                  Signature jointe
+                  <i class="ri-question-line text-dark-blue fs-4 ms-2 fw-normal"
+                     <%= tooltip(content: "Vous avez la possibilité de joindre une signature manuscrite au courrier (.png, .jpg ou .pdf)") %>
+                  ></i>
+                <% end %>
+              </div>
+              <div class="col-6">
+                <%= render "common/image_upload_zone",
+                          f: f,
+                          record: messages_configuration,
+                          attribute: :signature_image,
+                          placeholder_text: "Glisser/déposer la signature ici" %>
+              </div>
+            </div>
           </div>
         </div>
         <div class="p-2">

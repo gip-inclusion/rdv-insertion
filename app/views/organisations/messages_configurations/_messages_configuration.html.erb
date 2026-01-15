@@ -17,14 +17,6 @@
                     label: "Signature texte",
                     align: "start",
                     value: messages_configuration.effective_signature_lines.join("<br>") %>
-
-          <%= render "common/attribute_display_inline", label: "Signature jointe", align: "start" do %>
-            <% if messages_configuration.signature_image.attached? %>
-              <%= image_tag messages_configuration.signature_image.url, class: "img-fluid uploaded-image-preview", alt: "Signature jointe" %>
-            <% else %>
-              Aucune signature jointe
-            <% end %>
-          <% end %>
         </div>
       </div>
       <div class="p-2">
@@ -59,6 +51,19 @@
                     tooltip: {
                       content: "Permet d’identifier l’expéditeur dans le contenu des courriers.  Le « conseil départemental » est utilisé par défaut."
                     } %>
+
+          <%= render "common/attribute_display_inline",
+                    label: "Signature jointe",
+                    align: "start",
+                    tooltip: {
+                      content: "Vous avez la possibilité de joindre une signature manuscrite au courrier (.png, .jpg ou .pdf)"
+                    } do %>
+            <% if messages_configuration.signature_image.attached? %>
+              <%= image_tag messages_configuration.signature_image.url, class: "img-fluid uploaded-image-preview", alt: "Signature jointe" %>
+            <% else %>
+              Aucune signature jointe
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>
