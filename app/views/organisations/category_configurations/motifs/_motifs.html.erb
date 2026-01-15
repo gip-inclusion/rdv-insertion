@@ -19,7 +19,7 @@
               <td><%= motif.name %></td>
               <td><%= I18n.t("activerecord.attributes.motif.location_types.#{motif.location_type}") %></td>
               <td><%= motif.default_duration_in_min %> min</td>
-              <td><%= motif.bookable_publicly ? "oui" : "non" %></td>
+              <td><%= motif.bookable_by_invited_users? ? "oui" : "non" %></td>
               <td>
                 <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs/#{motif.rdv_solidarites_motif_id}/edit",
                             target: "_blank",
