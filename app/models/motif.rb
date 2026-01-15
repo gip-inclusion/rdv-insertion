@@ -1,6 +1,6 @@
 class Motif < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
-    :deleted_at, :location_type, :name, :bookable_publicly, :rdv_solidarites_service_id, :collectif,
+    :deleted_at, :location_type, :name, :bookable_by, :rdv_solidarites_service_id, :collectif,
     :follow_up, :instruction_for_rdv, :default_duration_in_min
   ].freeze
 
@@ -32,6 +32,10 @@ class Motif < ApplicationRecord
 
   def convocation?
     name.downcase.include?("convocation")
+  end
+
+  def bookable_by_invited_users?
+    bookable_by.in?(%w[agents_and_prescripteurs_and_invited_users])
   end
 
   def link_to_take_rdv_for(rdv_solidarites_user_id)

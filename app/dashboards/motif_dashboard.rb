@@ -23,7 +23,7 @@ class MotifDashboard < Administrate::BaseDashboard
     rdv_solidarites_motif_id: Field::Number,
     rdv_solidarites_service_id: Field::Number,
     rdvs: Field::HasMany,
-    bookable_publicly: Field::Boolean,
+    bookable_by: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -38,7 +38,7 @@ class MotifDashboard < Administrate::BaseDashboard
     name
     collectif
     follow_up
-    bookable_publicly
+    bookable_by
     organisation
   ].freeze
 
