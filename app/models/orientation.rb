@@ -14,8 +14,6 @@ class Orientation < ApplicationRecord
 
   validate :ends_at_after_starts_at, :starts_at_in_the_past, :time_range_is_sufficiently_long
 
-  scope :active, -> { where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)", Time.zone.today, Time.zone.today) }
-
   # The end date of these orientations might be shrinked to the day before the start of the next one.
   # To ensure the duration of the orientation we shrink remains valid, we verify that its start date is at least:
   #  MINIMUM_DURATION_IN_DAYS + 1 days before its potentially adjusted end date.
@@ -28,7 +26,7 @@ class Orientation < ApplicationRecord
   }
 
   def time_range
-    starts_at...(ends_at.presence || Time.zone.today)
+    starts_at...(ends_at.presence || Time.zone.now)
   end
 
   def current?
@@ -36,7 +34,7 @@ class Orientation < ApplicationRecord
   end
 
   def active?
-    time_range.cover?(Time.zone.today)
+    time_range.cover?(Time.zone.today.beginning_of_day)
   end
 
   private
