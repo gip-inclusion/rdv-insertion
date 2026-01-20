@@ -12,7 +12,7 @@ module AuthenticatedControllerConcern
     return if logged_in?
 
     clear_session
-    session[:agent_return_to] = request.env["PATH_INFO"]
+    session[:agent_return_to] = request.fullpath if request.get? && !request.xhr?
     flash[:notice] = "Veuillez vous connecter"
     redirect_to root_path
   end
