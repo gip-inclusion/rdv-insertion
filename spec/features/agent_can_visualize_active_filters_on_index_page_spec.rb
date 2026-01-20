@@ -31,7 +31,7 @@ describe "Agents can visualize active filters on index page", :js do
       follow_up_statuses: ["rdv_seen"],
       search_query: "coucou",
       motif_category_id: motif_category.id,
-      referent_id: agent.id,
+      referent_ids: [agent.id],
       convocation_date_before: "2025-05-07",
       convocation_date_after: "2025-05-03",
       creation_date_after: "2025-05-05",
