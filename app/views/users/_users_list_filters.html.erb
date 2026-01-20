@@ -6,7 +6,7 @@
       <div class="d-flex flex-wrap">
         <span class="d-flex align-items-center me-2 ">Filtrer par :</span>
         <%= render "users/filters/by_follow_up_statuses_button" if @current_category_configuration %>
-        <%= render "users/filters/by_referent_button" %>
+        <%= render "users/filters/by_referents_button" %>
         <%= render "users/filters/by_tags_button" if @tags.any? %>
         <%= render "users/filters/by_orientation_type_button" if show_orientations_filter? %>
         <%= render "users/filters/by_creation_dates_button" if @current_category_configuration.nil? %>

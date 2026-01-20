@@ -3,9 +3,7 @@
   <% if active_filter_list.any? %>
     <% active_filters_without_specific_display.each do |filter| %>
       <span class="d-flex me-2 active-filter-badge">
-        <% if filter == :referent_id %>
-          Suivi par <%= @referent %>
-        <% elsif filter == :orientation_type %>
+        <% if filter == :orientation_type %>
           Orientation : <%= params[filter] %>
         <% elsif filter == :action_required %>
           Intervention nécessaire
@@ -15,6 +13,7 @@
         <% end %>
       </span>
     <% end %>
+    <%= render "users/active_filters_recap/referents" %>
     <%= render "users/active_filters_recap/tag_ids" %>
     <%= render "users/active_filters_recap/follow_up_statuses" %>
     <%= render "users/active_filters_recap/creation_date" %>
