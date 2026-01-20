@@ -35,13 +35,3 @@ help: ## Display available commands
 
 rswag:
 	SWAGGER_DRY_RUN=0 RAILS_ENV=test rake rswag:specs:swaggerize PATTERN="spec/requests/api/**/*_spec.rb"
-
-# Documentation
-docs: ## Build documentation with mdBook
-	mdbook build
-
-docs-serve: ## Serve documentation locally with hot reload
-	mdbook serve --open
-
-docs-clean: ## Clean built documentation
-	rm -rf docs-build
