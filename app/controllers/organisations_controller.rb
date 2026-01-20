@@ -1,6 +1,6 @@
 class OrganisationsController < ApplicationController
   # Geolocation endpoint rate limit - enumeration prevention
-  rate_limit_with_json_response limit: 30, period: 1.minute, only: :geolocated
+  rate_limit_with_json_response limit: ENV["RATE_LIMIT_DEFAULT"].to_i, period: 1.minute, only: :geolocated
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :category_configurations)

@@ -5,7 +5,8 @@ module Api
       include ParamsValidationConcern
 
       # Bulk operations rate limit: 5 requests per minute (very strict)
-      rate_limit_with_json_response limit: 5, period: 1.minute, only: :create_and_invite_many
+      rate_limit_with_json_response limit: ENV.fetch("RATE_LIMIT_API_BULK", ENV["RATE_LIMIT_DEFAULT"]).to_i,
+                                    period: 1.minute, only: :create_and_invite_many
 
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
