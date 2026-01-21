@@ -14,6 +14,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   before_save :format_attributes, :set_matching_user
   before_create :assign_default_selection
+  after_update :reapply_default_selection_if_eligible
   after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
@@ -378,6 +379,17 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def selectable_by_default_for_invitation?
     user_list_upload.handle_invitation_only? && invitable?
+  end
+
+  def reapply_default_selection_if_eligible
+    return unless user_attribute_changed?
+    return if selected_for_user_save?
+
+    update_column(:selected_for_user_save, true) if selectable_by_default_for_user_save?
+  end
+
+  def user_attribute_changed?
+    previous_changes.keys.map(&:to_sym).intersect?(EDITABLE_ATTRIBUTES)
   end
 end
 # rubocop:enable Metrics/ClassLength

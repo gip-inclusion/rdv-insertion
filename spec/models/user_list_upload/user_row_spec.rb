@@ -386,6 +386,49 @@ describe UserListUpload::UserRow do
     end
   end
 
+  describe "#reapply_default_selection_if_eligible" do
+    let(:user_list_upload) { create(:user_list_upload) }
+
+    context "when user row has validation errors and is not selected" do
+      let(:user_row) do
+        create(:user_row, user_list_upload:, first_name: nil, selected_for_user_save: false)
+      end
+
+      context "when error is corrected" do
+        before do
+          allow(user_row).to receive(:selectable_by_default_for_user_save?).and_return(true)
+        end
+
+        it "automatically selects the user row for save" do
+          user_row.update!(first_name: "John")
+          expect(user_row.reload.selected_for_user_save).to be true
+        end
+      end
+
+      context "when error is corrected but user is still not selectable by default" do
+        before do
+          allow(user_row).to receive(:selectable_by_default_for_user_save?).and_return(false)
+        end
+
+        it "does not select the user row" do
+          user_row.update!(first_name: "John")
+          expect(user_row.reload.selected_for_user_save).to be false
+        end
+      end
+    end
+
+    context "when a non-editable attribute is changed" do
+      let(:user_row) do
+        create(:user_row, user_list_upload:, selected_for_user_save: false)
+      end
+
+      it "does not trigger reselection" do
+        expect(user_row).not_to receive(:selectable_by_default_for_user_save?)
+        user_row.update!(nir: "123456789012345")
+      end
+    end
+  end
+
   describe "status methods" do
     let(:user_list_upload) { create(:user_list_upload) }
     let(:user_row) { create(:user_row, user_list_upload: user_list_upload) }
