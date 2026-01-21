@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.4.2"
+ruby "4.0.1"
 
 gem "activerecord-import"
 
@@ -132,9 +132,18 @@ gem "paper_trail"
 # CSV is not part of the standard library anymore
 gem "csv"
 
+# ostruct is not part of the standard library anymore
+gem "ostruct"
+
+# mutex_m is not part of the standard library anymore
+gem "mutex_m"
+
+# tsort will be removed from the standard library
+gem "tsort"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+  gem "byebug"
   gem "rspec-rails"
   # Strategies for cleaning databases. Can be used to ensure a clean slate for testing.
   gem "database_cleaner"
@@ -170,6 +179,3 @@ group :test do
   gem "rack_session_access"
   gem "webmock"
 end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
