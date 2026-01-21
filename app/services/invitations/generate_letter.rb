@@ -12,6 +12,7 @@ module Invitations
       verify_format!(@invitation)
       verify_address!(@invitation)
       generate_letter
+      generate_pdf
     end
 
     private
@@ -51,6 +52,41 @@ module Invitations
 
     def organisation
       (@invitation.user.organisations & @invitation.organisations).last
+    end
+
+    def generate_pdf
+      response = PdfGeneratorClient.generate_pdf(content: @invitation.content)
+      handle_pdf_response(response)
+    rescue Faraday::TimeoutError => e
+      handle_pdf_error(:timeout, exception: e.class.name, message: e.message)
+    rescue Faraday::ConnectionFailed => e
+      handle_pdf_error(:connection_failed, exception: e.class.name, message: e.message)
+    end
+
+    def handle_pdf_response(response)
+      if response.success?
+        result.pdf_data = Base64.decode64(response.body)
+      else
+        handle_pdf_error(:server_error, status: response.status, body: response.body)
+      end
+    end
+
+    def handle_pdf_error(error_type, extra_info = {})
+      Sentry.capture_message("PDF generation failed", extra: { invitation_id: @invitation.id, **extra_info })
+      result.error_type = error_type
+      fail!(pdf_error_message(error_type))
+    end
+
+    def pdf_error_message(error_type)
+      case error_type
+      when :timeout
+        "La génération du PDF a pris trop de temps. Veuillez réessayer dans quelques instants."
+      when :connection_failed
+        "Le service de génération de PDF est temporairement indisponible. Veuillez réessayer plus tard."
+      when :server_error
+        "Une erreur est survenue lors de la génération du PDF. " \
+        "L'équipe a été notifiée de l'erreur et tente de la résoudre."
+      end
     end
   end
 end

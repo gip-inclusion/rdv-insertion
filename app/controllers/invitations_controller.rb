@@ -8,7 +8,7 @@ class InvitationsController < ApplicationController
     if invite_user.success?
       respond_to do |format|
         format.json { render json: { success: true, invitation: invitation } }
-        format.pdf { pdf.present? ? send_pdf_data : handle_pdf_generation_error }
+        format.pdf { send_pdf_data }
         format.turbo_stream { redirect_to structure_user_follow_ups_path(user_id: @user.id) }
       end
     else
@@ -68,35 +68,7 @@ class InvitationsController < ApplicationController
   end
 
   def send_pdf_data
-    send_data pdf, filename: pdf_filename, layout: "application/pdf"
-  end
-
-  def handle_pdf_generation_error
-    render json: {
-             success: false,
-             errors: [
-               "Une erreur est survenue lors de la génération du PDF.
-               L'équipe a été notifiée de l'erreur et tente de la résoudre."
-             ]
-           },
-           status: :internal_server_error
-  end
-
-  def pdf
-    response = PdfGeneratorClient.generate_pdf(content: invitation.content)
-    if response.success?
-      Base64.decode64(response.body)
-    else
-      Sentry.capture_message(
-        "PDF generation failed",
-        extra: {
-          status: response.status,
-          body: response.body,
-          invitation_id: invitation.id
-        }
-      )
-      nil
-    end
+    send_data invite_user.pdf_data, filename: pdf_filename, layout: "application/pdf"
   end
 
   def pdf_filename

@@ -28,6 +28,7 @@ module Notifications
 
     def send_notification
       send_to_user = @notification.send_to_user
+      result.pdf_data = send_to_user.pdf_data if send_to_user.respond_to?(:pdf_data)
       return if send_to_user.success?
 
       result.errors += send_to_user.errors

@@ -38,6 +38,8 @@ describe Notifications::GenerateLetter, type: :service do
   end
 
   describe "#call" do
+    before { mock_pdf_service }
+
     it("is a success") { is_a_success }
 
     it "generates the matching content" do
@@ -234,6 +236,23 @@ describe Notifications::GenerateLetter, type: :service do
           [
             "Le format de l'adresse est invalide. Le format attendu est le suivant: 10 rue de l'envoi 12345 - La Ville"
           ]
+        )
+      end
+    end
+
+    context "when PDF generation fails" do
+      before do
+        allow(Sentry).to receive(:capture_message)
+        allow(PdfGeneratorClient).to receive(:generate_pdf).and_return(
+          instance_double(Faraday::Response, success?: false, status: 500, body: "Internal Server Error")
+        )
+      end
+
+      it "notifies Sentry with context" do
+        subject
+        expect(Sentry).to have_received(:capture_message).with(
+          "PDF generation failed",
+          extra: hash_including(notification_id: notification.id, status: 500)
         )
       end
     end
