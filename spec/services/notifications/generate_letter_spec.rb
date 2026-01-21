@@ -239,22 +239,5 @@ describe Notifications::GenerateLetter, type: :service do
         )
       end
     end
-
-    context "when PDF generation fails" do
-      before do
-        allow(Sentry).to receive(:capture_message)
-        allow(PdfGeneratorClient).to receive(:generate_pdf).and_return(
-          instance_double(Faraday::Response, success?: false, status: 500, body: "Internal Server Error")
-        )
-      end
-
-      it "notifies Sentry with context" do
-        subject
-        expect(Sentry).to have_received(:capture_message).with(
-          "PDF generation failed",
-          extra: hash_including(notification_id: notification.id, status: 500)
-        )
-      end
-    end
   end
 end

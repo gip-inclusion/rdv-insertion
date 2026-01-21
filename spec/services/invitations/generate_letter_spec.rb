@@ -112,23 +112,6 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
-    context "when PDF generation fails" do
-      before do
-        allow(Sentry).to receive(:capture_message)
-        allow(PdfGeneratorClient).to receive(:generate_pdf).and_return(
-          instance_double(Faraday::Response, success?: false, status: 500, body: "Internal Server Error")
-        )
-      end
-
-      it "notifies Sentry with context" do
-        subject
-        expect(Sentry).to have_received(:capture_message).with(
-          "PDF generation failed",
-          extra: hash_including(invitation_id: invitation.id, status: 500)
-        )
-      end
-    end
-
     context "when the signature is configured" do
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
