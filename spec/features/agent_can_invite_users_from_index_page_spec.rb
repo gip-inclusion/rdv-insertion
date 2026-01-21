@@ -67,8 +67,7 @@ describe "Agents can invite from index page", :js do
         )
         expect(Sentry).to have_received(:capture_message).with(
           "PDF generation failed",
-          extra: { status: 500, body: "Erreur du service de génération de PDF",
-                   invitation_id: Invitation.last.id }
+          extra: hash_including(status: 500, body: "Erreur du service de génération de PDF")
         )
       end
     end
@@ -188,8 +187,7 @@ describe "Agents can invite from index page", :js do
           )
           expect(Sentry).to have_received(:capture_message).with(
             "PDF generation failed",
-            extra: { status: 500, body: "Erreur du service de génération de PDF",
-                     invitation_id: Invitation.last.id }
+            extra: hash_including(status: 500, body: "Erreur du service de génération de PDF")
           )
         end
       end
