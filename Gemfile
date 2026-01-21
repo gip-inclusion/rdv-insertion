@@ -28,9 +28,6 @@ gem "sprockets-rails", require: "sprockets/railtie"
 # JavaScript Bundling for Rails
 gem "jsbundling-rails"
 
-# Easy use of react with rails
-gem "react-rails"
-
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.7"
 
