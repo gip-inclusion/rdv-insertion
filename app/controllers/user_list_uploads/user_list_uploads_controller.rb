@@ -41,7 +41,7 @@ module UserListUploads
       if @user_list_upload.save
         render json: { redirect_path: @user_list_upload.redirect_path_after_creation }
       else
-        render json: { errors: @user_list_upload.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @user_list_upload.errors.full_messages }, status: :unprocessable_content
       end
     end
 
@@ -55,7 +55,7 @@ module UserListUploads
       @user_list_upload.save_with_existing_users!(@users)
       render json: { redirect_path: @user_list_upload.redirect_path_after_creation }
     rescue ActiveRecord::RecordInvalid => e
-      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
     end
 
     private

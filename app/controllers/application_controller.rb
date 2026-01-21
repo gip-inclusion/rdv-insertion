@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
       format.turbo_stream do
         flash.now[:error] = "L'usager n'est plus lié à rdv-solidarités: #{push.errors.map(&:to_s)}"
       end
-      format.json { render json: { errors: push.errors.map(&:to_s) }, status: :unprocessable_entity }
+      format.json { render json: { errors: push.errors.map(&:to_s) }, status: :unprocessable_content }
     end
   end
 end

@@ -236,37 +236,12 @@ describe Invitations::SendSms, type: :service do
 
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        before do
-          follow_up.motif_category = send(motif_category)
-          category_configuration.motif_category = send(motif_category)
-        end
-
-        it("is a success") { is_a_success }
-
-        it "calls the send transactional service with the right content" do
-          expect(Sms::SendWithBrevo).to receive(:call)
-            .with(
-              phone_number: phone_number, content: content,
-              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
-            )
-          subject
-        end
-
-        context "when it is a reminder" do
-          let!(:content) do
-            "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours " \
-              "à prendre rendez-vous pour démarrer un parcours d'accompagnement. " \
-              "Choisissez un créneau sur " \
-              "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
-              "Lien valable 5 jours. " \
-              "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
-              "votre RSA pourra être suspendu ou réduit. " \
-              "En cas de problème, contactez le 0147200001."
-          end
-
           before do
-            invitation.update!(trigger: "reminder", expires_at: 5.days.from_now)
+            follow_up.motif_category = send(motif_category)
+            category_configuration.motif_category = send(motif_category)
           end
+
+          it("is a success") { is_a_success }
 
           it "calls the send transactional service with the right content" do
             expect(Sms::SendWithBrevo).to receive(:call)
@@ -276,7 +251,32 @@ describe Invitations::SendSms, type: :service do
               )
             subject
           end
-        end
+
+          context "when it is a reminder" do
+            let!(:content) do
+              "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et vous avez été invité il y a 3 jours " \
+                "à prendre rendez-vous pour démarrer un parcours d'accompagnement. " \
+                "Choisissez un créneau sur " \
+                "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}. " \
+                "Lien valable 5 jours. " \
+                "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
+                "votre RSA pourra être suspendu ou réduit. " \
+                "En cas de problème, contactez le 0147200001."
+            end
+
+            before do
+              invitation.update!(trigger: "reminder", expires_at: 5.days.from_now)
+            end
+
+            it "calls the send transactional service with the right content" do
+              expect(Sms::SendWithBrevo).to receive(:call)
+                .with(
+                  phone_number: phone_number, content: content,
+                  sender_name: sms_sender_name, record_identifier: invitation.record_identifier
+                )
+              subject
+            end
+          end
       end
     end
 

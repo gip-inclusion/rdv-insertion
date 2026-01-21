@@ -3,6 +3,7 @@
 RSpec.configure do |config|
   config.before(:suite) do
     # Skip asset building in CI environment
+    # rubocop:disable RSpec/Output
     if ENV["CI"]
       puts "CI environment detected; skipping asset build."
     # We only run this if feature specs are being run
@@ -21,5 +22,6 @@ RSpec.configure do |config|
         system("RAILS_ENV=test yarn build")
       end
     end
+    # rubocop:enable RSpec/Output
   end
 end

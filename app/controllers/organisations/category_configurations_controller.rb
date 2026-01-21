@@ -1,5 +1,11 @@
 module Organisations
   class CategoryConfigurationsController < ApplicationController
+    PERMITTED_PARAMS = [
+      { invitation_formats: [] }, :convene_user, :rdv_with_referents, :file_configuration_id,
+      :invite_to_user_organisations_only, :number_of_days_before_invitations_expire, :motif_category_id,
+      :phone_number, :email_to_notify_no_available_slots, :email_to_notify_rdv_changes
+    ].freeze
+
     before_action :set_organisation
     before_action :set_department, :set_available_motif_categories, only: [:new]
     before_action :set_category_configuration, only: [:destroy]
@@ -27,12 +33,6 @@ module Organisations
     end
 
     private
-
-    PERMITTED_PARAMS = [
-      { invitation_formats: [] }, :convene_user, :rdv_with_referents, :file_configuration_id,
-      :invite_to_user_organisations_only, :number_of_days_before_invitations_expire, :motif_category_id,
-      :phone_number, :email_to_notify_no_available_slots, :email_to_notify_rdv_changes
-    ].freeze
 
     def category_configuration_params
       params.expect(category_configuration: PERMITTED_PARAMS).to_h.deep_symbolize_keys

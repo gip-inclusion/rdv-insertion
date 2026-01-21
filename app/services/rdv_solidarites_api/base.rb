@@ -1,8 +1,6 @@
 module RdvSolidaritesApi
   class Base < BaseService
-    def rdv_solidarites_client
-      Current.rdv_solidarites_client
-    end
+    delegate :rdv_solidarites_client, to: :Current
 
     protected
 

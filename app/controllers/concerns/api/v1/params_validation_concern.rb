@@ -13,19 +13,19 @@ module Api
 
         return if @params_validation_errors.empty?
 
-        render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_entity
+        render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_content
       end
 
       def validate_user_params
         @params_validation_errors = []
         user_attrs = user_params.except(:invitation)
         validate_user_params_content(user_attrs.except(:referents_to_add, :tags_to_add))
-        Array(user_attrs[:referents_to_add]).each { validate_referent_exists(_1[:email]) }
-        Array(user_attrs[:tags_to_add]).each { validate_tag_exists(_1[:value]) }
+        Array(user_attrs[:referents_to_add]).each { validate_referent_exists(it[:email]) }
+        Array(user_attrs[:tags_to_add]).each { validate_tag_exists(it[:value]) }
 
         return if @params_validation_errors.empty?
 
-        render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_entity
+        render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_content
       end
 
       def validate_users_params_length
@@ -40,8 +40,8 @@ module Api
         users_params.each_with_index do |user_params_item, idx|
           user_params = user_params_item.to_h.deep_symbolize_keys
           validate_user_params_content(user_params.except(:invitation, :referents_to_add, :tags_to_add), idx)
-          Array(user_params[:referents_to_add]).each { validate_referent_exists(_1[:email], idx) }
-          Array(user_params[:tags_to_add]).each { validate_tag_exists(_1[:value], idx) }
+          Array(user_params[:referents_to_add]).each { validate_referent_exists(it[:email], idx) }
+          Array(user_params[:tags_to_add]).each { validate_tag_exists(it[:value], idx) }
         end
       end
 

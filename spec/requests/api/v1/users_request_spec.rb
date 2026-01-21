@@ -363,7 +363,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(parsed_response_body["success"]).to eq(true)
           expect(parsed_response_body["users"]).to be_an(Array)
           expect(parsed_response_body["users"].length).to eq(2)
-          user_names = parsed_response_body["users"].map { |u| u["first_name"] }
+          user_names = parsed_response_body["users"].pluck("first_name")
           expect(user_names).to include("Didier", "Dimitri")
           expect(parsed_response_body["pagination"]["total_count"]).to eq(2)
         end

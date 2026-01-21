@@ -44,14 +44,14 @@ describe "Agents can generate convocation pdf", :js do
           }
         )
         .to_return do |request|
-        # we get the content of the notification from the request body
-        request_body = JSON.parse(request.body)
-        notification_content = request_body["htmlContent"]
-        {
-          status: 200,
-          body: Base64.encode64(notification_content),
-          headers: { "Content-Type" => "application/json" }
-        }
+          # we get the content of the notification from the request body
+          request_body = JSON.parse(request.body)
+          notification_content = request_body["htmlContent"]
+          {
+            status: 200,
+            body: Base64.encode64(notification_content),
+            headers: { "Content-Type" => "application/json" }
+          }
       end
     end
 

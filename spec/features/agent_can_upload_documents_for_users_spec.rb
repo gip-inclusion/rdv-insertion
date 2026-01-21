@@ -193,7 +193,7 @@ describe "Agents can upload documents for users", :js do
 
         context "when the agent is an admin in the org" do
           before do
-            agent.agent_roles.find { _1.organisation_id == organisation.id }.update!(access_level: "admin")
+            agent.agent_roles.find { it.organisation_id == organisation.id }.update!(access_level: "admin")
           end
 
           it "can edit the document" do

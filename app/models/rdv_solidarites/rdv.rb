@@ -13,7 +13,7 @@ module RdvSolidarites
     end
 
     def users
-      @attributes[:users].map { RdvSolidarites::User.new(_1) }.reject(&:deleted?)
+      @attributes[:users].map { RdvSolidarites::User.new(it) }.reject(&:deleted?)
     end
 
     def participations
@@ -23,7 +23,7 @@ module RdvSolidarites
     end
 
     def participation_for(user)
-      participations.find { _1.user.id == user.rdv_solidarites_user_id }
+      participations.find { it.user.id == user.rdv_solidarites_user_id }
     end
 
     # rubocop:disable Rails/Delegate
@@ -45,7 +45,7 @@ module RdvSolidarites
     end
 
     def agents
-      @attributes[:agents].map { RdvSolidarites::Agent.new(_1) }
+      @attributes[:agents].map { RdvSolidarites::Agent.new(it) }
     end
 
     def user_ids

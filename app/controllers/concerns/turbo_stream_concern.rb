@@ -2,7 +2,7 @@ module TurboStreamConcern
   def turbo_stream_replace_error_list_with(errors)
     render(
       turbo_stream: turbo_stream.replace("error_list", partial: "common/error_list", locals: { errors: }),
-      status: :unprocessable_entity
+      status: :unprocessable_content
     )
   end
 

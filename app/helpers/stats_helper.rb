@@ -10,10 +10,10 @@ module StatsHelper
     grouped_organisations = department.organisations.displayed_in_stats
                                       .group_by(&:organisation_type)
                                       .map do |type, orgs|
-      [
-        type.humanize,
-        orgs.map { |o| [o.name.to_s, o.id] }
-      ]
+                                        [
+                                          type.humanize,
+                                          orgs.map { |o| [o.name.to_s, o.id] }
+                                        ]
     end
     default_option + grouped_organisations
   end

@@ -272,7 +272,7 @@ describe "Super admin can manage organisations" do
       expect(page).to have_css("label[for=\"organisation_slug\"]", text: "Désignation dans le fichier usagers")
       expect(page).to have_field("organisation[slug]", with: organisation1.slug)
       expect(page).to have_css("label[for=\"organisation_department_id-selectized\"]", text: "Département")
-      within(all("div.selectize-input").first) do
+      within(first("div.selectize-input")) do
         expect(page).to have_field("organisation_department_id-selectized")
         expect(page).to have_css("div.item", text: department1.name)
       end

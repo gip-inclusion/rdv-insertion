@@ -10,7 +10,7 @@ module BeforeActionOverride
   # we have to use method_missing hook to call the matching method.
 
   class_methods do
-    def before_action(*names, &block)
+    def before_action(*names, &)
       names_dup = names.dup
       opts = names_dup.extract_options!
       if opts[:for].present?
@@ -24,7 +24,7 @@ module BeforeActionOverride
           end.push(action_opts)
         end
         new_names_by_action.each_value do |new_names|
-          super(*new_names, &block)
+          super(*new_names, &)
         end
       else
         super
