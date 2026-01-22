@@ -1,7 +1,6 @@
 class SuperAdminAuthenticationRequestVerificationsController < ApplicationController
   # Very strict rate limit for super admin verification - 3/min
-  rate_limit_with_json_response limit: ENV.fetch("RATE_LIMIT_SUPER_ADMIN_VERIFY", ENV["RATE_LIMIT_DEFAULT"]).to_i,
-                                period: 1.minute
+  rate_limit_with_json_response limit: RATE_LIMITS[:super_admin_auth]
 
   before_action :verify_super_admin
   before_action :set_super_admin_authentication_request, only: [:create]

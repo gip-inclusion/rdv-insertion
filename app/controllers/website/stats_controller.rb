@@ -1,7 +1,6 @@
 module Website
   class StatsController < BaseController
-    rate_limit_with_json_response limit: ENV.fetch("RATE_LIMIT_STATS", ENV["RATE_LIMIT_DEFAULT"]).to_i,
-                                  period: 1.minute
+    rate_limit_with_json_response limit: RATE_LIMITS[:stats]
 
     skip_before_action :authenticate_agent!, only: [:index, :show, :deployment_map]
     before_action :set_organisation, :set_department, :set_stat, only: [:show]

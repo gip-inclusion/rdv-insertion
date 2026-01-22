@@ -7,9 +7,7 @@ module Api
       include RateLimitingConcern
       include MaliciousAgentBlockingConcern
 
-      # API rate limit: 100 requests per minute
-      rate_limit_with_json_response limit: ENV.fetch("RATE_LIMIT_API", ENV["RATE_LIMIT_DEFAULT"]).to_i,
-                                    period: 1.minute
+      rate_limit_with_json_response limit: RATE_LIMITS[:default], period: 5.minutes
 
       before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
                     :set_current_agent

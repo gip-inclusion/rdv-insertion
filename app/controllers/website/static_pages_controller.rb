@@ -1,7 +1,6 @@
 module Website
   class StaticPagesController < BaseController
-    rate_limit_with_json_response limit: ENV.fetch("RATE_LIMIT_STATIC_PAGES", ENV["RATE_LIMIT_DEFAULT"]).to_i,
-                                  period: 1.minute
+    rate_limit_with_json_response limit: RATE_LIMITS[:static_pages]
 
     skip_before_action :authenticate_agent!
 

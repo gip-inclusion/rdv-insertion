@@ -1,9 +1,7 @@
 class InboundEmailsController < ApplicationController
   skip_before_action :authenticate_agent!, :verify_authenticity_token
 
-  # High volume webhook rate limit: 1000 requests per minute
-  rate_limit_with_json_response limit: ENV.fetch("RATE_LIMIT_INBOUND_EMAILS", ENV["RATE_LIMIT_DEFAULT"]).to_i,
-                                period: 1.minute
+  rate_limit_with_json_response limit: RATE_LIMITS[:inbound_emails]
 
   before_action :authenticate_brevo, :store_last_inbound_email_received_at
 

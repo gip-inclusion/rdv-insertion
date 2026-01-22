@@ -28,8 +28,8 @@ RSpec.describe RateLimitingConcern do
 
       body = response.parsed_body
       expect(body).to include(
-        "error" => "Rate limit exceeded",
-        "message" => a_string_including("exceeded the allowed number of requests")
+        "error" => "Limite de requêtes atteinte",
+        "message" => a_string_including("Vous avez atteint le nombre de requêtes autorisées")
       )
       expect(body["retry_after"]).to be_a(Integer).and be_between(1, 60)
     end
@@ -69,6 +69,16 @@ RSpec.describe RateLimitingConcern do
       expect(Rails.logger).to have_received(:warn).with(
         a_string_matching(/\[RateLimit\].*ip=.*path=.*controller=.*#/)
       )
+    end
+  end
+
+  describe ".rate_limit_with_json_response" do
+    it "raises ArgumentError when limit is nil" do
+      expect do
+        Class.new(ApplicationController) do
+          rate_limit_with_json_response limit: nil, period: 1.minute
+        end
+      end.to raise_error(ArgumentError, /a limit must be provided/)
     end
   end
 end

@@ -17,8 +17,7 @@ class ApplicationController < ActionController::Base
   include RateLimitingConcern
   include MaliciousAgentBlockingConcern
 
-  # General rate limit: 500 requests per 5 minutes (safety net)
-  rate_limit_with_json_response limit: 500, period: 5.minutes
+  rate_limit_with_json_response limit: RATE_LIMITS[:default], period: 5.minutes
 
   protect_from_forgery with: :exception
   before_action :set_sentry_context

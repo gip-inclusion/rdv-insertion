@@ -1,32 +1,32 @@
-# frozen_string_literal: true
-
 # Protects against brute force, enumeration, and DoS attacks
-# Uses Rails 8 built-in rate_limit method
 module RateLimitingConcern
   extend ActiveSupport::Concern
 
   RATE_LIMIT_CACHE_STORE =
-    if Rails.env.test?
-      ActiveSupport::Cache::MemoryStore.new
-    else
-      ActiveSupport::Cache::RedisCacheStore.new(
-        url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
-        namespace: "rate_limit"
-      )
-    end
+    ActiveSupport::Cache::RedisCacheStore.new(
+      url: Rails.configuration.x.redis_url,
+      namespace: "rate_limit"
+    )
+
+  RATE_LIMITS = {
+    default: ENV.fetch("RATE_LIMIT_DEFAULT", 500).to_i,
+    rdv_solidarites_webhooks: ENV.fetch("RATE_LIMIT_RDV_SOLIDARITES_WEBHOOKS", 1000).to_i,
+    api_bulk: ENV.fetch("RATE_LIMIT_API_BULK", 5).to_i,
+    inbound_emails: ENV.fetch("RATE_LIMIT_INBOUND_EMAILS", 1000).to_i,
+    brevo_webhooks: ENV.fetch("RATE_LIMIT_BREVO_WEBHOOKS", 1000).to_i,
+    sessions: ENV.fetch("RATE_LIMIT_SESSIONS", 5).to_i,
+    invitations: ENV.fetch("RATE_LIMIT_INVITATIONS", 30).to_i,
+    stats: ENV.fetch("RATE_LIMIT_STATS", 60).to_i,
+    static_pages: ENV.fetch("RATE_LIMIT_STATIC_PAGES", 60).to_i,
+    super_admin_auth: ENV.fetch("RATE_LIMIT_SUPER_ADMIN_AUTH", 3).to_i
+  }
 
   class_methods do
-    # Custom rate_limit wrapper with consistent response format
-    # @param limit [Integer] Maximum number of requests
-    # @param period [ActiveSupport::Duration] Time window
-    # @param options [Hash] Additional options (:only, :except, :by)
-    def rate_limit_with_json_response(limit:, period:, **options)
-      # Use high limits in test environment to avoid interfering with feature tests
-      # Rate limiting specs test the mechanism directly via render_rate_limit_exceeded
-      effective_limit = Rails.env.local? ? 500 : limit
+    def rate_limit_with_json_response(limit:, period: 1.minute, **options)
+      raise ArgumentError, "a limit must be provided" if limit.nil?
 
       rate_limit(
-        to: effective_limit,
+        to: Rails.env.local? ? 10_000 : limit,
         within: period,
         store: RATE_LIMIT_CACHE_STORE,
         with: -> { render_rate_limit_exceeded(limit, period) },
@@ -60,9 +60,9 @@ module RateLimitingConcern
 
   def rate_limit_error_body(retry_after)
     {
-      error: "Rate limit exceeded",
+      error: "Limite de requêtes atteinte",
       retry_after: retry_after,
-      message: "You have exceeded the allowed number of requests. Please retry in #{retry_after} seconds."
+      message: "Vous avez atteint le nombre de requêtes autorisées. Veuillez réessayer dans #{retry_after} secondes."
     }
   end
 
