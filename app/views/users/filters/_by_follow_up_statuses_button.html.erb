@@ -15,21 +15,23 @@
     <% end %>
   </button>
   <div class="dropdown-menu px-2" data-dropdown--show-options-target="dropdown" style="min-width: 280px;">
-    <% options_for_select_status(@statuses_count).each do |label, value| %>
-      <% selected = params[:follow_up_statuses].present? && params[:follow_up_statuses].include?(value) %>
-      <div class="form-check">
-        <input class="form-check-input"
-                type="checkbox"
-                value="<%= value %>"
-                id="status_<%= value %>"
-                data-users-list-filter-target="input"
-                <%= 'checked' if selected %>>
-        <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="status_<%= value %>">
-          <%= label %>
-        </label>
-      </div>
-    <% end %>
-    <div class="mt-3">
+    <div class="filter-options-list">
+      <% options_for_select_status(@statuses_count).each do |label, value| %>
+        <% selected = params[:follow_up_statuses].present? && params[:follow_up_statuses].include?(value) %>
+        <div class="form-check">
+          <input class="form-check-input"
+                  type="checkbox"
+                  value="<%= value %>"
+                  id="status_<%= value %>"
+                  data-users-list-filter-target="input"
+                  <%= 'checked' if selected %>>
+          <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="status_<%= value %>">
+            <%= label %>
+          </label>
+        </div>
+      <% end %>
+    </div>
+    <div class="filter-apply-button">
       <button type="button" class="btn btn-blue" data-action="users-list-filter#apply">
         Appliquer
       </button>
