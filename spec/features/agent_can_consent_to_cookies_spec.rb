@@ -87,11 +87,11 @@ describe "Agent can consent to cookies", :js do
 
       click_link "Personnaliser"
 
-      expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
+      expect(page).to have_css(".modal.show", wait: 10)
       expect(page).to have_content("Panneau de gestion des cookies")
 
       # Test case: Accept tracking but refuse support
-      within("dialog#cookies-consent-customization-modal") do
+      within(".modal.show") do
         find("label[for='tracking-accept']").click
         find("label[for='support-refuse']").click
         click_button "Confirmer mes choix"
@@ -124,11 +124,11 @@ describe "Agent can consent to cookies", :js do
 
       click_link "Personnaliser"
 
-      expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
+      expect(page).to have_css(".modal.show", wait: 10)
       expect(page).to have_content("Panneau de gestion des cookies")
 
       # Test case: Refuse tracking but accept support
-      within("dialog#cookies-consent-customization-modal") do
+      within(".modal.show") do
         find("label[for='tracking-refuse']").click
         find("label[for='support-accept']").click
         click_button "Confirmer mes choix"
@@ -175,11 +175,11 @@ describe "Agent can consent to cookies", :js do
           click_link "Gestion des cookies"
         end
 
-        expect(page).to have_css("dialog#cookies-consent-customization-modal", wait: 10)
+        expect(page).to have_css(".modal.show", wait: 10)
         expect(page).to have_content("Panneau de gestion des cookies")
 
         # Modify preferences: refuse support but keep tracking
-        within("dialog#cookies-consent-customization-modal") do
+        within(".modal.show") do
           find("label[for='tracking-accept']").click
           find("label[for='support-refuse']").click
           click_button "Confirmer mes choix"
