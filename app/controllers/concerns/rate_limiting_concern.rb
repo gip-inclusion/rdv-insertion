@@ -19,7 +19,7 @@ module RateLimitingConcern
     stats: ENV.fetch("RATE_LIMIT_STATS", 60).to_i,
     static_pages: ENV.fetch("RATE_LIMIT_STATIC_PAGES", 60).to_i,
     super_admin_auth: ENV.fetch("RATE_LIMIT_SUPER_ADMIN_AUTH", 3).to_i
-  }
+  }.freeze
 
   class_methods do
     def rate_limit_with_json_response(limit:, period: 1.minute, **options)
