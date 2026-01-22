@@ -12,7 +12,7 @@ module Invitations
       verify_format!(@invitation)
       verify_address!(@invitation)
       generate_letter_content
-      generate_pdf
+      generate_pdf(sendable: @invitation, content: @content)
     end
 
     private
@@ -52,20 +52,6 @@ module Invitations
 
     def organisation
       (@invitation.user.organisations & @invitation.organisations).last
-    end
-
-    def generate_pdf
-      pdf_result = PdfGeneration::Generate.call(
-        content: @content,
-        context: { invitation_id: @invitation.id }
-      )
-
-      if pdf_result.success?
-        @invitation.pdf_data = pdf_result.pdf_data
-      else
-        result.error_type = pdf_result.error_type
-        fail!(pdf_result.errors.first)
-      end
     end
   end
 end

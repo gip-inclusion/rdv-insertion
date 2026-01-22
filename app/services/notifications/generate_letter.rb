@@ -12,7 +12,7 @@ module Notifications
       verify_notification_event!
       verify_user_phone_number! if @notification.rdv.by_phone?
       generate_letter_content
-      generate_pdf
+      generate_pdf(sendable: @notification, content: @content)
     end
 
     private
@@ -70,20 +70,6 @@ module Notifications
         if @notification.user.phone_number.blank?
       fail!("Le numéro de téléphone de l'usager n'est pas un mobile") \
         unless @notification.user.phone_number_is_mobile?
-    end
-
-    def generate_pdf
-      pdf_result = PdfGeneration::Generate.call(
-        content: @content,
-        context: { notification_id: @notification.id }
-      )
-
-      if pdf_result.success?
-        @notification.pdf_data = pdf_result.pdf_data
-      else
-        result.error_type = pdf_result.error_type
-        fail!(pdf_result.errors.first)
-      end
     end
   end
 end
