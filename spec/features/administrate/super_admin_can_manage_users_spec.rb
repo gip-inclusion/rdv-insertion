@@ -158,7 +158,7 @@ describe "Super admin can manage users" do
       click_button("Enregistrer")
 
       expect(page).to have_current_path(super_admins_user_path(user))
-      expect(page).to have_content("Usager a été correctement modifié(e)")
+      expect(page).to have_content("Usager a été correctement modifié(e).")
       expect(page).to have_content("Détails #{user.first_name} Newname")
 
       expect(page).to have_content("Historique des modifications")
@@ -172,7 +172,7 @@ describe "Super admin can manage users" do
 
         click_button("Enregistrer")
 
-        expect(page).to have_content("1 erreur ont empêché Usager d'être sauvegardé(e)")
+        expect(page).to have_content("1 erreur ont empêché Usager d'être sauvegardé(e) :")
         expect(page).to have_content("Prénom doit être rempli(e)")
         expect(page).to have_no_content("Détails #{user.first_name} Newname")
       end

@@ -186,7 +186,7 @@ describe "Super admin can manage organisations" do
 
       click_button("Enregistrer")
 
-      expect(page).to have_content("Organisation a été correctement créé(e)", wait: 10)
+      expect(page).to have_content("Organisation a été correctement créé(e).", wait: 10)
       expect(page).to have_content("Détails Some name", wait: 10)
       expect(page).to have_current_path(super_admins_organisation_path(Organisation.last))
       expect(stub_retrieve_rdv_solidarites_organisation).to have_been_requested
@@ -227,7 +227,7 @@ describe "Super admin can manage organisations" do
 
         click_button("Enregistrer")
 
-        expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)", wait: 10)
+        expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e) :", wait: 10)
         expect(page).to have_content("Département doit exister", wait: 10)
         expect(page).to have_no_content("Détails Some name", wait: 10)
         expect(stub_retrieve_rdv_solidarites_organisation).to have_been_requested
@@ -286,7 +286,7 @@ describe "Super admin can manage organisations" do
 
       click_button("Enregistrer")
 
-      expect(page).to have_content("Organisation a été correctement modifié(e)", wait: 10)
+      expect(page).to have_content("Organisation a été correctement modifié(e).", wait: 10)
       expect(page).to have_content("Détails Some other name", wait: 10)
       expect(stub_update_rdv_solidarites_organisation).to have_been_requested
       expect(page).to have_current_path(super_admins_organisation_path(organisation1))
@@ -305,7 +305,7 @@ describe "Super admin can manage organisations" do
         click_button("Enregistrer")
 
         expect(stub_update_rdv_solidarites_organisation).not_to have_been_requested
-        expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)")
+        expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e) :")
         expect(page).to have_content("Nom doit être rempli(e)")
         expect(page).to have_no_content("Détails #{organisation1.name} (#{department1.name})")
       end

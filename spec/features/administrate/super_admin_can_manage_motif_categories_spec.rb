@@ -106,7 +106,7 @@ describe "Super admin can manage motif categories" do
 
       click_button("Enregistrer")
 
-      expect(page).to have_content("Catégorie de motifs a été correctement créé(e)", wait: 10)
+      expect(page).to have_content("Catégorie de motifs a été correctement créé(e).", wait: 10)
       expect(page).to have_content("Détails MotifCategory ##{MotifCategory.last.id}", wait: 10)
       expect(stub_create_motif_category).to have_been_requested
       expect(page).to have_current_path(super_admins_motif_category_path(MotifCategory.last))

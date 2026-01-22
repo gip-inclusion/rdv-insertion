@@ -7,7 +7,7 @@ module SuperAdmins
       page = Administrate::Page::Collection.new(dashboard, order:)
       resources = order.apply(scoped_resource).page(params[:page]).per(records_per_page)
 
-      render locals: { resources:, search_term: params[:search], page:, show_search_bar: true }
+      render locals: { resources:, search_term: params[:search], page:, show_search_bar: true, filters: [] }
     end
 
     def update
