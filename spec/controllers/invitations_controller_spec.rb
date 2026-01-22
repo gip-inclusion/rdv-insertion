@@ -142,8 +142,8 @@ describe InvitationsController do
 
         context "when the PDF generation fails" do
           let!(:error_message) do
-            "Une erreur est survenue lors de la génération du PDF. " \
-              "L'équipe a été notifiée de l'erreur et tente de la résoudre."
+            "Une erreur est survenue lors de la génération du PDF." \
+              " L'équipe a été notifiée de l'erreur et tente de la résoudre."
           end
 
           before do
