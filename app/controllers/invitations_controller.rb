@@ -68,7 +68,7 @@ class InvitationsController < ApplicationController
   end
 
   def send_pdf_data
-    send_data invite_user.pdf_data, filename: pdf_filename, layout: "application/pdf"
+    send_data invitation.pdf_data, filename: pdf_filename, layout: "application/pdf"
   end
 
   def pdf_filename

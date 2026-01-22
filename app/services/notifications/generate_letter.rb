@@ -11,14 +11,14 @@ module Notifications
       verify_address!(@notification)
       verify_notification_event!
       verify_user_phone_number! if @notification.rdv.by_phone?
-      generate_letter
+      generate_letter_content
       generate_pdf
     end
 
     private
 
-    def generate_letter
-      @notification.content = ApplicationController.render(
+    def generate_letter_content
+      @content = ApplicationController.render(
         template: "letters/notifications/#{template}",
         layout: "pdf",
         locals: locals
@@ -74,12 +74,12 @@ module Notifications
 
     def generate_pdf
       pdf_result = PdfGeneration::Generate.call(
-        content: @notification.content,
+        content: @content,
         context: { notification_id: @notification.id }
       )
 
       if pdf_result.success?
-        result.pdf_data = pdf_result.pdf_data
+        @notification.pdf_data = pdf_result.pdf_data
       else
         result.error_type = pdf_result.error_type
         fail!(pdf_result.errors.first)

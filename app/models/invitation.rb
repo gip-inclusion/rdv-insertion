@@ -18,7 +18,7 @@ class Invitation < ApplicationRecord
   has_many :webhook_endpoints, through: :organisations
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
-  attr_accessor :content
+  attr_accessor :pdf_data
 
   validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, presence: true
   validates :uuid, uniqueness: true, allow_nil: true

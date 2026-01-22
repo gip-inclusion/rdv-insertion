@@ -11,14 +11,14 @@ module Invitations
     def call
       verify_format!(@invitation)
       verify_address!(@invitation)
-      generate_letter
+      generate_letter_content
       generate_pdf
     end
 
     private
 
-    def generate_letter
-      @invitation.content = ApplicationController.render(
+    def generate_letter_content
+      @content = ApplicationController.render(
         template: "letters/invitations/#{@invitation.template_model}",
         layout: "pdf",
         locals: locals
@@ -56,12 +56,12 @@ module Invitations
 
     def generate_pdf
       pdf_result = PdfGeneration::Generate.call(
-        content: @invitation.content,
+        content: @content,
         context: { invitation_id: @invitation.id }
       )
 
       if pdf_result.success?
-        result.pdf_data = pdf_result.pdf_data
+        @invitation.pdf_data = pdf_result.pdf_data
       else
         result.error_type = pdf_result.error_type
         fail!(pdf_result.errors.first)

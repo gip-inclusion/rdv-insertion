@@ -12,7 +12,7 @@ class PdfGeneratorClient
     @conn ||= Faraday.new(url: ENV["PDF_GENERATOR_URL"]) do |f|
       f.headers["Authorization"] = ENV["PDF_GENERATOR_API_KEY"]
       f.headers["Content-Type"] = "application/json"
-      f.options.timeout = 45
+      f.options.timeout = 15
       f.options.open_timeout = 10
     end
   end

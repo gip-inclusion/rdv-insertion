@@ -13,7 +13,7 @@ describe Invitations::GenerateLetter, type: :service do
   let!(:follow_up) { create(:follow_up, motif_category: category_rsa_orientation) }
   let!(:invitation) do
     create(
-      :invitation, content: nil, user: user, organisations: [organisation],
+      :invitation, user: user, organisations: [organisation],
                    department: department, format: "postal", follow_up: follow_up
     )
   end
@@ -33,7 +33,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     it "generates the pdf string with the invitation code" do
       subject
-      content = strip_tags(invitation.content)
+      content = strip_tags(letter_content(invitation))
       expect(content).to include("20 AVENUE DE SEGUR")
       expect(content).to include("DIRECTION DÉPARTEMENTAL")
       expect(content).to include(
@@ -56,7 +56,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string without the user title" do
         subject
-        expect(invitation.content).to include("Madame, Monsieur,")
+        expect(letter_content(invitation)).to include("Madame, Monsieur,")
       end
     end
 
@@ -71,7 +71,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "includes signature image in generated letter" do
         subject
-        content = unescape_html(invitation.content)
+        content = unescape_html(letter_content(invitation))
 
         expect(content).to include("signature.png")
         expect(content).to include("<img")
@@ -119,7 +119,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the right signature" do
         subject
-        expect(invitation.content).to include("Fabienne Bouchet")
+        expect(letter_content(invitation)).to include("Fabienne Bouchet")
       end
     end
 
@@ -130,7 +130,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the department logo" do
         subject
-        expect(invitation.content).to include("department-logo")
+        expect(letter_content(invitation)).to include("department-logo")
       end
     end
 
@@ -141,7 +141,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
-        expect(invitation.content).to include("europe-logos")
+        expect(letter_content(invitation)).to include("europe-logos")
       end
     end
 
@@ -152,7 +152,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the pole emploi logo" do
         subject
-        expect(invitation.content).to include("france-travail-logo")
+        expect(letter_content(invitation)).to include("france-travail-logo")
       end
     end
 
@@ -164,21 +164,21 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "renders the mail with the help address" do
         subject
-        expect(invitation.content).to include("10, rue du Conseil départemental 75001 Paris")
+        expect(letter_content(invitation)).to include("10, rue du Conseil départemental 75001 Paris")
       end
     end
 
     context "when the invitation is not in a referent context" do
       it "generates the pdf with no reference to a referent" do
         subject
-        expect(invitation.content).not_to include("Référent de parcours")
+        expect(letter_content(invitation)).not_to include("Référent de parcours")
       end
     end
 
     context "when the invitation is in a referent context and the user has a referent" do
       let!(:invitation) do
         create(
-          :invitation, content: nil, user: user, organisations: [organisation],
+          :invitation, user: user, organisations: [organisation],
                        department: department, format: "postal", follow_up: follow_up, rdv_with_referents: true
         )
       end
@@ -189,7 +189,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "displays the name of the referent" do
         subject
-        expect(invitation.content).to include("Référent de parcours : Kylian MBAPPÉ")
+        expect(letter_content(invitation)).to include("Référent de parcours : Kylian MBAPPÉ")
       end
     end
 
@@ -198,7 +198,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include("Objet : Rendez-vous d'orientation dans le cadre de votre RSA")
         expect(content).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
@@ -225,7 +225,7 @@ describe Invitations::GenerateLetter, type: :service do
 
         it "generates the pdf with the overriden content" do
           subject
-          content = strip_tags(invitation.content)
+          content = strip_tags(letter_content(invitation))
           expect(content).to include("Objet : Nouveau type de rendez-vous dans le cadre de votre RSA")
           expect(content).to include(
             "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un " \
@@ -248,7 +248,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous d'orientation dans le cadre de votre RSA"
         )
@@ -275,7 +275,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include("Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA")
         expect(content).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
@@ -298,7 +298,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous de signature de CER dans le cadre de votre RSA"
         )
@@ -323,7 +323,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous de suivi dans le cadre de votre RSA"
         )
@@ -348,7 +348,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Entretien d'embauche dans le cadre de votre candidature SIAE"
         )
@@ -375,7 +375,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous de suivi dans le cadre de votre suivi SIAE"
         )
@@ -401,7 +401,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous collectif d'information dans le cadre de votre candidature SIAE"
         )
@@ -428,7 +428,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
@@ -453,7 +453,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
@@ -478,7 +478,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
@@ -502,7 +502,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous d’orientation dans le cadre de votre RSA"
         )
@@ -524,7 +524,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(invitation.content)
+        content = strip_tags(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier"
         )

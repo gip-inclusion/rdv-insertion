@@ -121,11 +121,10 @@ describe InvitationsController do
           { format: "postal" }
         end
 
-        let!(:pdf_data) { "mock pdf content" }
-
         before do
+          invitation.pdf_data = "mock pdf content"
           allow(InviteUser).to receive(:call)
-            .and_return(OpenStruct.new(success?: true, invitation:, pdf_data:))
+            .and_return(OpenStruct.new(success?: true, invitation:))
         end
 
         it "is a success" do

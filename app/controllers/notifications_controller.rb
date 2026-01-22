@@ -35,8 +35,10 @@ class NotificationsController < ApplicationController
     )
   end
 
+  def notification = notify_participation.notification
+
   def send_pdf_data
-    send_data notify_participation.pdf_data, filename: pdf_filename, layout: "application/pdf"
+    send_data notification.pdf_data, filename: pdf_filename, layout: "application/pdf"
   end
 
   def pdf_filename

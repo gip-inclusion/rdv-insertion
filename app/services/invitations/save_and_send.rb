@@ -24,7 +24,6 @@ module Invitations
 
     def send_invitation
       send_to_user = @invitation.send_to_user
-      result.pdf_data = send_to_user.pdf_data if send_to_user.respond_to?(:pdf_data)
       return if send_to_user.success?
 
       result.errors += send_to_user.errors

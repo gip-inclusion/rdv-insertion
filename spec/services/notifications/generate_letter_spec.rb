@@ -44,7 +44,7 @@ describe Notifications::GenerateLetter, type: :service do
 
     it "generates the matching content" do
       subject
-      content = strip_tags(notification.content).gsub("&nbsp;", " ")
+      content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
       expect(content).to include("20 AVENUE DE SEGUR")
       expect(content).to include("DIRECTION DÉPARTEMENTAL")
       expect(content).to include("Convocation à un rendez-vous d'orientation dans le cadre de votre RSA")
@@ -70,8 +70,8 @@ describe Notifications::GenerateLetter, type: :service do
       it "includes signature image in generated notification" do
         subject
 
-        expect(notification.content).to include("signature.png")
-        expect(notification.content).to include("<img")
+        expect(letter_content(notification)).to include("signature.png")
+        expect(letter_content(notification)).to include("<img")
       end
     end
 
@@ -80,7 +80,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = strip_tags(notification.content).gsub("&nbsp;", " ")
+        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
       end
     end
@@ -90,7 +90,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = strip_tags(notification.content).gsub("&nbsp;", " ")
+        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
         expect(content).to include("Convocation à un rendez-vous d'orientation téléphonique dans le cadre de votre RSA")
@@ -130,7 +130,7 @@ describe Notifications::GenerateLetter, type: :service do
 
         it "generates the content with the overriden attributes" do
           subject
-          content = strip_tags(notification.content).gsub("&nbsp;", " ")
+          content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
           expect(content).to include("20 AVENUE DE SEGUR")
           expect(content).to include("DIRECTION DÉPARTEMENTAL")
           expect(content).to include(
@@ -151,7 +151,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = strip_tags(notification.content).gsub("&nbsp;", " ")
+        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
         expect(content).to include(
@@ -190,7 +190,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the pdf string with the department logo" do
         subject
-        expect(notification.content).to include("department-logo")
+        expect(letter_content(notification)).to include("department-logo")
       end
     end
 
@@ -201,7 +201,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
-        expect(notification.content).to include("europe-logos")
+        expect(letter_content(notification)).to include("europe-logos")
       end
     end
 
@@ -212,7 +212,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the pdf string with the pole emploi logo" do
         subject
-        expect(notification.content).to include("france-travail-logo")
+        expect(letter_content(notification)).to include("france-travail-logo")
       end
     end
 
