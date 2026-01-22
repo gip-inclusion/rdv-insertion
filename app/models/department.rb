@@ -4,7 +4,7 @@ class Department < ApplicationRecord
   has_many :organisations, dependent: :nullify
   has_many :orientation_types, dependent: :nullify
   has_many :invitations, dependent: :nullify
-  has_many :archives, dependent: :restrict_with_error
+  has_many :archives
 
   has_many :users, through: :organisations
   has_many :category_configurations, through: :organisations
