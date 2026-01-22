@@ -27,19 +27,10 @@ module PdfGeneration
     def handle_error(error_type, extra_info = {})
       Sentry.capture_message("PDF generation failed", extra: @context.merge(extra_info))
       result.error_type = error_type
-      fail!(error_message(error_type))
-    end
-
-    def error_message(error_type)
-      case error_type
-      when :timeout
-        "La génération du PDF a pris trop de temps. Veuillez réessayer dans quelques instants."
-      when :connection_failed
-        "Le service de génération de PDF est temporairement indisponible. Veuillez réessayer plus tard."
-      when :server_error
-        "Une erreur est survenue lors de la génération du PDF. " \
-        "L'équipe a été notifiée de l'erreur et tente de la résoudre."
-      end
+      fail!(
+        "Une erreur est survenue lors de la génération du PDF." \
+        " L'équipe a été notifiée de l'erreur et tente de la résoudre."
+      )
     end
   end
 end
