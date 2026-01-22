@@ -4,7 +4,6 @@ class Department < ApplicationRecord
   has_many :organisations, dependent: :nullify
   has_many :orientation_types, dependent: :nullify
   has_many :invitations, dependent: :nullify
-  has_many :archives
 
   has_many :users, through: :organisations
   has_many :category_configurations, through: :organisations
@@ -16,6 +15,7 @@ class Department < ApplicationRecord
   has_many :participations, through: :rdvs
   has_many :follow_ups, through: :users
   has_many :tags, through: :organisations
+  has_many :archives, through: :organisations
   has_one :stat, as: :statable, dependent: :destroy
   has_many :csv_exports, as: :structure, dependent: :destroy
 
