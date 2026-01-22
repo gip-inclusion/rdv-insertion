@@ -14,22 +14,24 @@
     <% end %>
   </button>
   <div class="dropdown-menu px-2" data-dropdown--show-options-target="dropdown" style="min-width: 280px;">
-    <% @orientation_types.each do |orientation_type| %>
-      <% selected = params[:orientation_type] == orientation_type.name %>
-      <div class="form-check">
-        <input class="form-check-input"
-                type="radio"
-                name="orientation_type"
-                value="<%= orientation_type.name %>"
-                id="orientation_type_<%= orientation_type.name %>"
-                data-users-list-filter-target="input"
-                <%= 'checked' if selected %>>
-        <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="orientation_type_<%= orientation_type.name %>">
-          <%= orientation_type.name %>
-        </label>
-      </div>
-    <% end %>
-    <div class="mt-3">
+    <div class="filter-options-list">
+      <% @orientation_types.each do |orientation_type| %>
+        <% selected = params[:orientation_type] == orientation_type.name %>
+        <div class="form-check">
+          <input class="form-check-input"
+                  type="radio"
+                  name="orientation_type"
+                  value="<%= orientation_type.name %>"
+                  id="orientation_type_<%= orientation_type.name %>"
+                  data-users-list-filter-target="input"
+                  <%= 'checked' if selected %>>
+          <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="orientation_type_<%= orientation_type.name %>">
+            <%= orientation_type.name %>
+          </label>
+        </div>
+      <% end %>
+    </div>
+    <div class="filter-apply-button">
       <button type="button" class="btn btn-blue" data-action="users-list-filter#apply">
         Appliquer
       </button>

@@ -14,22 +14,24 @@
     <% end %>
   </button>
   <div class="dropdown-menu px-2" data-dropdown--show-options-target="dropdown" style="min-width: 280px;">
-    <% options_for_select_referent(@referents_list).each do |label, id| %>
-      <% selected = params[:referent_id] == id.to_s %>
-      <div class="form-check">
-        <input class="form-check-input"
-                type="radio"
-                value="<%= id %>"
-                id="referent_<%= id %>"
-                name="referent_id"
-                data-users-list-filter-target="input"
-                <%= 'checked' if selected %>>
-        <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="referent_<%= id %>">
-          <%= label %>
-        </label>
-      </div>
-    <% end %>
-    <div class="mt-3">
+    <div class="filter-options-list">
+      <% options_for_select_referent(@referents_list).each do |label, id| %>
+        <% selected = params[:referent_id] == id.to_s %>
+        <div class="form-check">
+          <input class="form-check-input"
+                  type="radio"
+                  value="<%= id %>"
+                  id="referent_<%= id %>"
+                  name="referent_id"
+                  data-users-list-filter-target="input"
+                  <%= 'checked' if selected %>>
+          <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="referent_<%= id %>">
+            <%= label %>
+          </label>
+        </div>
+      <% end %>
+    </div>
+    <div class="filter-apply-button">
       <button type="button" class="btn btn-blue" data-action="users-list-filter#apply">
         Appliquer
       </button>
