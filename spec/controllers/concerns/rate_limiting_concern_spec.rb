@@ -1,7 +1,3 @@
-# frozen_string_literal: true
-
-require "rails_helper"
-
 RSpec.describe RateLimitingConcern do
   describe "#render_rate_limit_exceeded" do
     controller(ApplicationController) do

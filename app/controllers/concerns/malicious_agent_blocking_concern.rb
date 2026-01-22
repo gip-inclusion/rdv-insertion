@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Blocks requests from known malicious user agents (security scanners, bots)
 module MaliciousAgentBlockingConcern
   extend ActiveSupport::Concern
