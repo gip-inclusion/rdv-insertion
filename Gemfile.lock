@@ -712,7 +712,6 @@ DEPENDENCIES
   skylight
   spring (~> 3.0.0)
   sprockets-rails
-  tsort
   turbo-rails
   web-console (>= 3.3.0)
   webmock

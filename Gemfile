@@ -126,17 +126,15 @@ gem "activerecord-safer_migrations"
 # Use paper_trail to track changes
 gem "paper_trail"
 
-# CSV is not part of the standard library anymore
+# CSV is not part of the standard library anymore and is required in the app
 gem "csv"
 
-# ostruct is not part of the standard library anymore
+# ostruct is not part of the standard library anymore and is required in the app
 gem "ostruct"
 
-# mutex_m is not part of the standard library anymore
+# mutex_m is not part of the standard library anymore. It is required by the "spring" gem
+# so we need to install it explicitly.
 gem "mutex_m"
-
-# tsort will be removed from the standard library
-gem "tsort"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
