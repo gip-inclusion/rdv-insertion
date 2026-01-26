@@ -19,6 +19,7 @@ describe "Agents can edit users tags", :js do
     it "allows to edit tags" do
       visit organisation_user_path(organisation, user)
 
+      expect(page).to have_button("Ajouter un tag")
       expect(page).to have_no_content("coucou")
       click_button("Ajouter un tag")
 

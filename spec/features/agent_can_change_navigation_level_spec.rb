@@ -46,6 +46,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit root_path
 
+        expect(page).to have_content("Demander une démo")
         expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
@@ -54,6 +55,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit stats_path
 
+        expect(page).to have_content("Statistiques")
         expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
@@ -68,6 +70,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit organisations_path
 
+        expect(page).to have_content(organisation.name)
         expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
@@ -133,6 +136,7 @@ describe "Agents can sort users on index page", :js do
         it "does not show the organisation navigation button in header" do
           visit stats_path
 
+          expect(page).to have_content("Statistiques")
           expect(page).to have_no_css("button#rdvi_header_organisation-nav")
         end
       end
@@ -205,6 +209,7 @@ describe "Agents can sort users on index page", :js do
         it "does not show the organisation navigation button in header" do
           visit stats_path
 
+          expect(page).to have_content("Statistiques")
           expect(page).to have_no_css("button#rdvi_header_organisation-nav")
         end
       end

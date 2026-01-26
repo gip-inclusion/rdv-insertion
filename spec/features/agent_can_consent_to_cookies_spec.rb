@@ -10,6 +10,8 @@ describe "Agent can consent to cookies", :js do
   context "when agent is not logged in" do
     it "cannot consent to cookies" do
       visit root_path
+
+      expect(page).to have_content("Demander une démo")
       expect(page).to have_no_css("div.fr-consent-banner")
       expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
     end
@@ -43,14 +45,15 @@ describe "Agent can consent to cookies", :js do
       expect(agent.reload.cookies_consent).to be_tracking_accepted
 
       visit organisation_users_path(organisation)
-      expect(page).to have_no_css("div.fr-consent-banner")
-      expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
 
       ## It has matomo script tag element
       expect(page).to have_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
-
       ## It has crisp element
       expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
+
+      # It does not have the consent banner
+      expect(page).to have_no_css("div.fr-consent-banner")
+      expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
     end
 
     it "can refuse all cookies" do
@@ -67,6 +70,10 @@ describe "Agent can consent to cookies", :js do
       expect(agent.reload.cookies_consent).not_to be_tracking_accepted
 
       visit organisation_users_path(organisation)
+
+      expect(page).to have_content(organisation.name)
+
+      # It does not have the consent banner
       expect(page).to have_no_css("div.fr-consent-banner")
       expect(page).to have_no_content("À propos des cookies sur rdv-insertion.fr")
 
@@ -105,10 +112,11 @@ describe "Agent can consent to cookies", :js do
       expect(agent.reload.cookies_consent).not_to be_support_accepted
 
       visit organisation_users_path(organisation)
-      expect(page).to have_no_css("div.fr-consent-banner")
 
       # It has matomo script tag element
       expect(page).to have_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
+      # It does not have the consent banner
+      expect(page).to have_no_css("div.fr-consent-banner")
       # It does not have crisp element
       expect(page).to have_no_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
     end
@@ -142,12 +150,14 @@ describe "Agent can consent to cookies", :js do
       expect(agent.reload.cookies_consent).to be_support_accepted
 
       visit organisation_users_path(organisation)
+      # It has crisp element
+      expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
+
+      # It does not have the consent banner
       expect(page).to have_no_css("div.fr-consent-banner")
 
       # It does not have matomo script tag element
       expect(page).to have_no_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
-      # It has crisp element
-      expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
     end
 
     context "when agent already has cookies consent" do
@@ -160,12 +170,12 @@ describe "Agent can consent to cookies", :js do
       it "can modify cookies preferences from footer link" do
         visit organisation_users_path(organisation)
 
-        # Banner should not be displayed
-        expect(page).to have_no_css("div.fr-consent-banner")
-
         # Both matomo and crisp should be enabled
         expect(page).to have_css('div[data-controller="matomo-script-tag"]', visible: :hidden)
         expect(page).to have_css('div[data-controller="crisp"][data-crisp-display-crisp-value="true"]')
+
+        # Banner should not be displayed
+        expect(page).to have_no_css("div.fr-consent-banner")
 
         # We specify the current path to avoid referer issues
         visit current_path

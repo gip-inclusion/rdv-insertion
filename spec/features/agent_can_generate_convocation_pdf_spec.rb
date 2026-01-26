@@ -100,6 +100,7 @@ describe "Agents can generate convocation pdf", :js do
       it "cannot generate a pdf" do
         visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
+        expect(page).to have_content(user.last_name.upcase)
         expect(page).to have_no_button "Télécharger le courrier"
       end
     end
@@ -110,6 +111,7 @@ describe "Agents can generate convocation pdf", :js do
       it "cannot generate a pdf" do
         visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
+        expect(page).to have_content(user.last_name.upcase)
         expect(page).to have_no_button "Télécharger le courrier"
       end
     end

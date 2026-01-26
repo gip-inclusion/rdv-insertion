@@ -188,6 +188,8 @@ describe "Agents can convene user to rdv", :js do
 
         it "does not show a convocation button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+
+          expect(page).to have_content(user.last_name)
           expect(page).to have_no_content("📅 Convoquer")
         end
       end
@@ -201,6 +203,8 @@ describe "Agents can convene user to rdv", :js do
           follow_up.set_status
           follow_up.save!
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+
+          expect(page).to have_content(user.last_name)
           expect(page).to have_no_content("📅 Convoquer")
         end
       end
@@ -232,6 +236,8 @@ describe "Agents can convene user to rdv", :js do
 
         it "does not show a convocation button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+
+          expect(page).to have_content(user.last_name)
           expect(page).to have_no_link("📅 Convoquer")
         end
       end

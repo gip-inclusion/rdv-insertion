@@ -92,8 +92,8 @@ describe "Super admin can log in as another agent", :js do
     it "can log in as another agent" do
       visit super_admins_agent_path(agent.id)
 
-      expect(page).to have_no_content("Se logger en tant que")
       expect(page).to have_current_path(organisations_path)
+      expect(page).to have_no_content("Se logger en tant que")
     end
   end
 end

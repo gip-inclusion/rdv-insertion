@@ -183,6 +183,3 @@ Capybara/SpecificMatcher:
 
 Capybara/ClickLinkOrButtonStyle:
   Enabled: false
-
-Capybara/NegationMatcherAfterVisit:
-  Enabled: false

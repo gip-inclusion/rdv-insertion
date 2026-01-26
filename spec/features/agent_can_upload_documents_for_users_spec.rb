@@ -61,6 +61,8 @@ describe "Agents can upload documents for users", :js do
 
       it "cannot see the parcours tab" do
         visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+
+        expect(page).to have_content(user.last_name.upcase)
         expect(page).to have_no_content("Parcours")
       end
     end
@@ -70,6 +72,8 @@ describe "Agents can upload documents for users", :js do
 
       it "cannot see the parcours tab" do
         visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+
+        expect(page).to have_content(user.last_name.upcase)
         expect(page).to have_no_content("Parcours")
       end
     end
@@ -95,6 +99,8 @@ describe "Agents can upload documents for users", :js do
 
       it "cannot see the parcours tab" do
         visit department_user_path(id: user.id, department_id: department.id)
+
+        expect(page).to have_content(user.last_name.upcase)
         expect(page).to have_no_content("Parcours")
       end
 
