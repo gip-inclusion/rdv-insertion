@@ -24,5 +24,16 @@
     position: absolute;
     top: 40px;
     left: 0px;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-bottom: 0;
+  }
+
+  .filter-apply-button {
+    position: sticky;
+    bottom: 0;
+    padding: 0.5rem 0 0.5rem;
+    margin-top: 0.75rem;
+    background-color: white;
   }
 }
