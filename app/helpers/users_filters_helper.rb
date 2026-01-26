@@ -6,7 +6,7 @@ module UsersFiltersHelper
       :follow_up_statuses,
       :orientation_type,
       :action_required,
-      :referent_id,
+      :referent_ids,
       :creation_date_after,
       :creation_date_before,
       :convocation_date_before,
@@ -19,7 +19,7 @@ module UsersFiltersHelper
   end
 
   def filters_without_specific_display
-    [:orientation_type, :action_required, :referent_id]
+    [:orientation_type, :action_required]
   end
 
   def active_filters_without_specific_display

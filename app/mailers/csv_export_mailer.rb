@@ -11,7 +11,7 @@ class CsvExportMailer < ApplicationMailer
 
   def set_request_filters
     set_follow_up_statuses_filter
-    set_referent_filter
+    set_referents_filter
     set_creation_dates_filter
     set_invitation_dates_filter
     set_tags_filter
@@ -33,8 +33,8 @@ class CsvExportMailer < ApplicationMailer
     @follow_up_statuses_filter = @request_params[:follow_up_statuses]
   end
 
-  def set_referent_filter
-    @referent_filter = @request_params[:referent_id].present? ? Agent.find_by(id: @request_params[:referent_id]) : nil
+  def set_referents_filter
+    @referents_filter = @request_params[:referent_ids].present? ? Agent.where(id: @request_params[:referent_ids]) : nil
   end
 
   def set_creation_dates_filter

@@ -15,8 +15,8 @@
       <%= @follow_up_statuses_filter.map { |status| I18n.t("activerecord.attributes.follow_up.statuses.#{status}") }.join(", ") %>
     </li>
   <% end %>
-  <% if @referent_filter %>
-    <li><strong>Référent</strong>&nbsp;: <%= @referent_filter.to_s %></li>
+  <% if @referents_filter&.any? %>
+    <li><strong><%= @referents_filter.size > 1 ? "Référents" : "Référent" %></strong>&nbsp;: <%= @referents_filter.map(&:to_s).join(", ") %></li>
   <% end %>
   <% if @creation_dates_before || @creation_dates_after %>
     <li><strong>Date de création</strong>&nbsp;:

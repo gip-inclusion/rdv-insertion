@@ -25,6 +25,12 @@ describe "Agents can filter users with multiselect filters", :js do
   let!(:follow_up2) { create(:follow_up, user: user2, motif_category: motif_category, status: "rdv_seen") }
   let!(:follow_up3) { create(:follow_up, user: user3, motif_category: motif_category, status: "not_invited") }
 
+  let!(:referent1) { create(:agent, first_name: "Jean", last_name: "Dupont", organisations: [organisation]) }
+  let!(:referent2) { create(:agent, first_name: "Marie", last_name: "Martin", organisations: [organisation]) }
+
+  let!(:referent_assignation1) { create(:referent_assignation, user: user1, agent: referent1) }
+  let!(:referent_assignation2) { create(:referent_assignation, user: user2, agent: referent2) }
+
   before do
     setup_agent_session(agent)
     visit organisation_users_path(organisation, motif_category_id: motif_category.id)
@@ -45,6 +51,26 @@ describe "Agents can filter users with multiselect filters", :js do
       click_button("Tags")
       uncheck("tag_#{tag2.id}")
       click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_content(user3.first_name)
+
+      expect(current_url.scan("tag_ids%5B%5D").count).to eq(0)
+    end
+
+    it "can remove tag filter by clicking on the cross" do
+      click_button("Tags")
+      check("tag_#{tag2.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+
+      within(".active-filter-badge", text: tag2.value) do
+        find("i.ri-close-line").click
+      end
 
       expect(page).to have_content(user1.first_name)
       expect(page).to have_content(user2.first_name)
@@ -75,6 +101,82 @@ describe "Agents can filter users with multiselect filters", :js do
       expect(page).to have_content(user3.first_name)
 
       expect(current_url.scan("follow_up_statuses%5B%5D").count).to eq(0)
+    end
+
+    it "can remove status filter by clicking on the cross" do
+      click_button("Statut")
+      check("status_rdv_pending")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_no_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+
+      within(".active-filter-badge", text: "RDV à venir") do
+        find("i.ri-close-line").click
+      end
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_content(user3.first_name)
+
+      expect(current_url.scan("follow_up_statuses%5B%5D").count).to eq(0)
+    end
+  end
+
+  context "with referent filters" do
+    it "can select and deselect referents" do
+      click_button("Référent")
+      check("referent_#{referent1.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_no_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+
+      expect(current_url.scan("referent_ids%5B%5D").count).to eq(1)
+
+      click_button("Référent")
+      check("referent_#{referent2.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+
+      expect(current_url.scan("referent_ids%5B%5D").count).to eq(2)
+
+      click_button("Référent")
+      uncheck("referent_#{referent1.id}")
+      uncheck("referent_#{referent2.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_content(user3.first_name)
+
+      expect(current_url.scan("referent_ids%5B%5D").count).to eq(0)
+    end
+
+    it "can remove referent filter by clicking on the cross" do
+      click_button("Référent")
+      check("referent_#{referent1.id}")
+      check("referent_#{referent2.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+
+      within(".active-filter-badge", text: "Suivi par #{referent1}") do
+        find("i.ri-close-line").click
+      end
+
+      expect(page).to have_no_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+
+      expect(current_url.scan("referent_ids%5B%5D").count).to eq(1)
     end
   end
 end

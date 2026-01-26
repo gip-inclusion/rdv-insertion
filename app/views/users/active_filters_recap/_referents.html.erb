@@ -1,0 +1,10 @@
+<% if params[:referent_ids] %>
+  <% @filtered_referents.each do |referent| %>
+    <span class="d-flex me-2 active-filter-badge">
+      Suivi par <%= referent %>
+      <%= link_to structure_users_path(url_params.merge(referent_ids: params[:referent_ids].map(&:to_i) - [referent.id])) do %>
+        <i class="ri-close-line"></i>
+      <% end %>
+    </span>
+  <% end %>
+<% end %>

@@ -672,18 +672,18 @@ describe UsersController do
       end
     end
 
-    context "when referent_id is passed" do
+    context "when referent_ids is passed" do
       let!(:index_params) do
         {
           organisation_id: organisation.id,
-          referent_id: agent.id,
+          referent_ids: [agent.id],
           motif_category_id: category_orientation.id
         }
       end
 
       before { user.referents = [agent] }
 
-      it "filters on the users assigned to the agent" do
+      it "filters on the users assigned to the agents" do
         get :index, params: index_params
         expect(response.body).to match(/Chabat/)
         expect(response.body).not_to match(/Baer/)

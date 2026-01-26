@@ -6,7 +6,7 @@ module Users::Filterable
   def filter_users
     filter_users_by_search_query
     filter_users_by_action_required
-    filter_users_by_referent
+    filter_users_by_referents
     filter_users_by_follow_up_statuses
     filter_users_by_orientation_type
     filter_users_by_creation_date_after
@@ -60,11 +60,11 @@ module Users::Filterable
     @users = @users.joins(:follow_ups).where(follow_ups: @follow_ups.action_required)
   end
 
-  def filter_users_by_referent
-    return if params[:referent_id].blank?
+  def filter_users_by_referents
+    return if params[:referent_ids].blank?
 
-    @referent = Agent.find(params[:referent_id])
-    @users = @users.joins(:referents).where(referents: { id: @referent.id })
+    @filtered_referents = current_structure.agents.where(id: params[:referent_ids])
+    @users = @users.joins(:referents).where(referents: { id: @filtered_referents }).distinct
   end
 
   def filter_users_by_search_query

@@ -1,0 +1,41 @@
+<div class="mb-1 me-2 position-relative text-center d-flex align-items-center justify-content-center"
+    data-controller="users-list-filter dropdown--show-options"
+    data-users-list-filter-param-name-value="referent_ids">
+  <% selected_referent_ids_count = params[:referent_ids]&.map(&:to_i)&.count || 0 %>
+  <button type="button"
+          class="btn btn-grey dropdown-toggle <%= "border-blue" if selected_referent_ids_count > 0 %>"
+          data-action="dropdown--show-options#toggle"
+          data-dropdown--show-options-target="button"
+          aria-expanded="false"
+          id="rdvi_index-nav_filter-referent-button">
+    Référents
+    <% if selected_referent_ids_count > 0 %>
+      <span class="filter-active ms-1">
+        <%= selected_referent_ids_count %>
+      </span>
+    <% end %>
+  </button>
+  <div class="dropdown-menu px-2" data-dropdown--show-options-target="dropdown" style="min-width: 280px; max-height: 300px; overflow-y: auto;">
+    <div class="filter-options-list">
+      <% options_for_select_referent(@referents_list).each do |label, id| %>
+        <% selected = params[:referent_ids]&.include?(id.to_s) %>
+        <div class="form-check">
+          <input class="form-check-input"
+                type="checkbox"
+                value="<%= id %>"
+                id="referent_<%= id %>"
+                data-users-list-filter-target="input"
+                <%= 'checked' if selected %>>
+          <label class="form-check-label<%= ' filter-label-checked' if selected %>" for="referent_<%= id %>">
+            <%= label %>
+          </label>
+        </div>
+      <% end %>
+    </div>
+    <div class="filter-apply-button">
+      <button type="button" class="btn btn-blue" data-action="users-list-filter#apply">
+        Appliquer
+      </button>
+    </div>
+  </div>
+</div>
