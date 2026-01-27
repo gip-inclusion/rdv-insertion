@@ -365,19 +365,16 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def assign_selection_for_user_save
-    return if explicitly_deselected_for_user_save?
+    return if selected_for_user_save?
+    return if selected_for_user_save_was # user explicitly deselected
 
-    self.selected_for_user_save = selectable_for_user_save?
-  end
-
-  def explicitly_deselected_for_user_save?
-    selected_for_user_save_changed? && selected_for_user_save_was
+    self.selected_for_user_save = true if selectable_for_user_save?
   end
 
   def assign_selection_for_invitation
     return if selected_for_invitation?
 
-    self.selected_for_invitation = selectable_for_invitation?
+    self.selected_for_invitation = true if selectable_for_invitation?
   end
 
   def selectable_for_user_save?

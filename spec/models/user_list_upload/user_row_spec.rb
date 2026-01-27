@@ -444,21 +444,6 @@ describe UserListUpload::UserRow do
         expect(user_row.reload.selected_for_user_save).to be false
       end
     end
-
-    context "when selected user row becomes invalid after update" do
-      let(:user_row) do
-        create(:user_row, user_list_upload:, first_name: "Jane", selected_for_user_save: true)
-      end
-
-      before do
-        allow(user_row).to receive(:selectable_for_user_save?).and_return(false)
-      end
-
-      it "deselects the user row" do
-        user_row.update!(first_name: nil)
-        expect(user_row.reload.selected_for_user_save).to be false
-      end
-    end
   end
 
   describe "status methods" do
