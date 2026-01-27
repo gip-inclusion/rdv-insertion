@@ -5,7 +5,7 @@ class Notification < ApplicationRecord
   include Deliverable
   include HasSmsProvider
 
-  attr_accessor :content
+  attr_accessor :pdf_data
 
   belongs_to :participation
 

@@ -11,13 +11,14 @@ module Notifications
       verify_address!(@notification)
       verify_notification_event!
       verify_user_phone_number! if @notification.rdv.by_phone?
-      generate_letter
+      generate_letter_content
+      generate_pdf(sendable: @notification, content: @content)
     end
 
     private
 
-    def generate_letter
-      @notification.content = ApplicationController.render(
+    def generate_letter_content
+      @content = ApplicationController.render(
         template: "letters/notifications/#{template}",
         layout: "pdf",
         locals: locals

@@ -12,6 +12,9 @@ class PdfGeneratorClient
     @conn ||= Faraday.new(url: ENV["PDF_GENERATOR_URL"]) do |f|
       f.headers["Authorization"] = ENV["PDF_GENERATOR_API_KEY"]
       f.headers["Content-Type"] = "application/json"
+      # server is crashing on purpose on timeout, so we need to set a timeout on our side
+      # https://github.com/gip-inclusion/pdf-generator/pull/21
+      f.options.open_timeout = 10
     end
   end
 

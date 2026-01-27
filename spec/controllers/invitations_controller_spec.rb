@@ -122,7 +122,9 @@ describe InvitationsController do
         end
 
         before do
-          mock_pdf_service(success: true)
+          invitation.pdf_data = "mock pdf content"
+          allow(InviteUser).to receive(:call)
+            .and_return(OpenStruct.new(success?: true, invitation:))
         end
 
         it "is a success" do
@@ -139,17 +141,21 @@ describe InvitationsController do
         end
 
         context "when the PDF generation fails" do
-          before do
-            mock_pdf_service(success: false)
-            allow(Sentry).to receive(:capture_message)
+          let!(:error_message) do
+            "Une erreur est survenue lors de la génération du PDF." \
+              " L'équipe a été notifiée de l'erreur et tente de la résoudre."
           end
 
-          it "informs Sentry of the error" do
+          before do
+            allow(InviteUser).to receive(:call)
+              .and_return(OpenStruct.new(success?: false, errors: [error_message]))
+          end
+
+          it "returns an error response" do
             post :create, params: create_params
-            expect(Sentry).to have_received(:capture_message).with(
-              "PDF generation failed",
-              extra: { status: 500, body: "error", invitation_id: invitation.id }
-            )
+            expect(response).not_to be_successful
+            expect(parsed_response_body["success"]).to eq(false)
+            expect(parsed_response_body["errors"]).to include(error_message)
           end
         end
       end

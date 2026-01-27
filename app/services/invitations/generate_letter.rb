@@ -11,13 +11,14 @@ module Invitations
     def call
       verify_format!(@invitation)
       verify_address!(@invitation)
-      generate_letter
+      generate_letter_content
+      generate_pdf(sendable: @invitation, content: @content)
     end
 
     private
 
-    def generate_letter
-      @invitation.content = ApplicationController.render(
+    def generate_letter_content
+      @content = ApplicationController.render(
         template: "letters/invitations/#{@invitation.template_model}",
         layout: "pdf",
         locals: locals

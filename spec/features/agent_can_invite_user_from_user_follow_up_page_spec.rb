@@ -68,8 +68,7 @@ describe "Agents can invite user from user follow up page", :js do
         )
         expect(Sentry).to have_received(:capture_message).with(
           "PDF generation failed",
-          extra: { status: 500, body: "Erreur du service de génération de PDF",
-                   invitation_id: Invitation.last.id }
+          extra: { status: 500, body: "Erreur du service de génération de PDF" }
         )
       end
     end
