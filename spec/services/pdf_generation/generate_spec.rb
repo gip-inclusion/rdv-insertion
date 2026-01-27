@@ -1,8 +1,7 @@
 describe PdfGeneration::Generate, type: :service do
-  subject { described_class.call(content: content, context: context) }
+  subject { described_class.call(content: content) }
 
   let(:content) { "<html><body>Test content</body></html>" }
-  let(:context) { { invitation_id: 123 } }
 
   describe "#call" do
     context "when PDF generation succeeds" do
@@ -31,11 +30,11 @@ describe PdfGeneration::Generate, type: :service do
           expect(subject.error_type).to eq(:server_error)
         end
 
-        it "notifies Sentry with context" do
+        it "notifies Sentry" do
           subject
           expect(Sentry).to have_received(:capture_message).with(
             "PDF generation failed",
-            extra: hash_including(invitation_id: 123, status: 500)
+            extra: { status: 500, body: "Internal Server Error" }
           )
         end
       end
@@ -51,11 +50,11 @@ describe PdfGeneration::Generate, type: :service do
           expect(subject.error_type).to eq(:timeout)
         end
 
-        it "notifies Sentry with context" do
+        it "notifies Sentry" do
           subject
           expect(Sentry).to have_received(:capture_message).with(
             "PDF generation failed",
-            extra: hash_including(invitation_id: 123, exception: "Faraday::TimeoutError")
+            extra: hash_including(exception: "Faraday::TimeoutError")
           )
         end
       end
@@ -73,11 +72,11 @@ describe PdfGeneration::Generate, type: :service do
           expect(subject.error_type).to eq(:connection_failed)
         end
 
-        it "notifies Sentry with context" do
+        it "notifies Sentry" do
           subject
           expect(Sentry).to have_received(:capture_message).with(
             "PDF generation failed",
-            extra: hash_including(invitation_id: 123, exception: "Faraday::ConnectionFailed")
+            extra: hash_including(exception: "Faraday::ConnectionFailed")
           )
         end
       end

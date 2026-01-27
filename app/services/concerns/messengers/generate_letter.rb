@@ -12,16 +12,7 @@ module Messengers::GenerateLetter
   end
 
   def generate_pdf(sendable:, content:)
-    pdf_result = PdfGeneration::Generate.call(
-      content: content,
-      context: { "#{sendable.model_name.singular}_id" => sendable.id }
-    )
-
-    if pdf_result.success?
-      sendable.pdf_data = pdf_result.pdf_data
-    else
-      result.error_type = pdf_result.error_type
-      fail!(pdf_result.errors.first)
-    end
+    pdf_result = call_service!(PdfGeneration::Generate, content: content)
+    sendable.pdf_data = pdf_result.pdf_data
   end
 end

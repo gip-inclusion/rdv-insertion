@@ -1,8 +1,7 @@
 module PdfGeneration
   class Generate < BaseService
-    def initialize(content:, context: {})
+    def initialize(content:)
       @content = content
-      @context = context
     end
 
     def call
@@ -25,7 +24,7 @@ module PdfGeneration
     end
 
     def handle_error(error_type, extra_info = {})
-      Sentry.capture_message("PDF generation failed", extra: @context.merge(extra_info))
+      Sentry.capture_message("PDF generation failed", extra: extra_info)
       result.error_type = error_type
       fail!(
         "Une erreur est survenue lors de la génération du PDF." \
