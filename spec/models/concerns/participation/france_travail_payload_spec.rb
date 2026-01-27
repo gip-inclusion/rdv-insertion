@@ -52,22 +52,30 @@ describe Participation::FranceTravailPayload, type: :concern do
   end
 
   describe "france_travail_motif" do
-    context "when participation motif category is rsa_orientation" do
-      it "returns ORI" do
-        expect(payload[:motif]).to eq("ORI")
-      end
-    end
-
-    context "when participation motif category is rsa_accompagnement" do
-      before { motif_category.update(motif_category_type: "rsa_accompagnement") }
+    context "when motif category name is a first accompaniement rdv" do
+      before { motif_category.update(name: "RSA Premier RDV d'accompagnement") }
 
       it "returns ACC" do
         expect(payload[:motif]).to eq("ACC")
       end
     end
 
-    context "when participation motif category is not rsa_orientation or rsa_accompagnement" do
-      before { allow(participation.motif.motif_category).to receive(:motif_category_type).and_return(nil) }
+    context "when participation motif category is rsa_orientation" do
+      it "returns ORI" do
+        expect(payload[:motif]).to eq("ORI")
+      end
+    end
+
+    context "when participation motif category is rsa_accompagnement but not first accompaniement rdv" do
+      before { motif_category.update(motif_category_type: "rsa_accompagnement", name: "RSA Accompagnement") }
+
+      it "returns AUT" do
+        expect(payload[:motif]).to eq("AUT")
+      end
+    end
+
+    context "when participation motif category is neither rsa_orientation nor first accompaniement rdv" do
+      before { motif_category.update(motif_category_type: "autre", name: "Autre catégorie") }
 
       it "returns AUT" do
         expect(payload[:motif]).to eq("AUT")

@@ -1,6 +1,8 @@
 module Participation::FranceTravailPayload
   extend ActiveSupport::Concern
 
+  MOTIF_CATEGORY_NAMES_FOR_PREMIER_RDV_ACCOMPAGNEMENT_RSA = ["RSA Premier RDV d'accompagnement"].freeze
+
   # rubocop:disable Metrics/AbcSize
   def to_ft_payload
     {
@@ -22,7 +24,7 @@ module Participation::FranceTravailPayload
       },
       statut: france_travail_statut,
       telephoneContactUsager: user.phone_number,
-      theme: motif.name,
+      theme: motif.motif_category.name,
       typeReception: france_travail_type_reception,
       interlocuteur: {
         email: agents.first&.email,
@@ -45,16 +47,13 @@ module Participation::FranceTravailPayload
     created_by_user? ? "USAGER" : "PARTENAIRE"
   end
 
-  # Liste des motifs FT : AUT, ACC, ORI
+  # Liste des motifs FT : AUT, ACC, ORI. ACC ne concerne que le premier rdv d'accompagnement RSA
+  # On filtre donc sur le nom de la catégorie de motif
   def france_travail_motif
-    case motif.motif_category&.motif_category_type
-    when "rsa_orientation"
-      "ORI"
-    when "rsa_accompagnement"
-      "ACC"
-    else
-      "AUT"
-    end
+    return "ACC" if MOTIF_CATEGORY_NAMES_FOR_PREMIER_RDV_ACCOMPAGNEMENT_RSA.include?(motif.motif_category.name)
+    return "ORI" if motif.motif_category.motif_category_type == "rsa_orientation"
+
+    "AUT"
   end
 
   # Liste des codes organismes FT : IND, FT, CD, DCD, ML, CE
