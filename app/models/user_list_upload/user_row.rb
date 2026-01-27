@@ -12,9 +12,8 @@ class UserListUpload::UserRow < ApplicationRecord
 
   encrypts :nir
 
-  before_save :format_attributes, :set_matching_user
-  before_create :assign_default_selection
-  after_update :reapply_default_selection_if_eligible
+  before_save :format_attributes, :set_matching_user, :assign_selection_for_user_save
+  before_create :assign_selection_for_invitation
   after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
@@ -296,8 +295,8 @@ class UserListUpload::UserRow < ApplicationRecord
   # rubocop:enable Metrics/AbcSize
 
   def assign_default_selection
-    select_for_user_save! if selectable_by_default_for_user_save?
-    select_for_invitation! if selectable_by_default_for_invitation?
+    assign_selection_for_user_save
+    assign_selection_for_invitation
   end
 
   private
@@ -365,31 +364,28 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def select_for_user_save!
-    self.selected_for_user_save = true
+  def assign_selection_for_user_save
+    return if explicitly_deselected_for_user_save?
+
+    self.selected_for_user_save = selectable_for_user_save?
   end
 
-  def select_for_invitation!
-    self.selected_for_invitation = true
+  def explicitly_deselected_for_user_save?
+    selected_for_user_save_changed? && selected_for_user_save_was
   end
 
-  def selectable_by_default_for_user_save?
+  def assign_selection_for_invitation
+    return if selected_for_invitation?
+
+    self.selected_for_invitation = selectable_for_invitation?
+  end
+
+  def selectable_for_user_save?
     user_list_upload.handle_user_save? && user_valid? && !archived? && !matching_user_follow_up_closed?
   end
 
-  def selectable_by_default_for_invitation?
+  def selectable_for_invitation?
     user_list_upload.handle_invitation_only? && invitable?
-  end
-
-  def reapply_default_selection_if_eligible
-    return unless user_attribute_changed?
-    return if selected_for_user_save?
-
-    update_column(:selected_for_user_save, true) if selectable_by_default_for_user_save?
-  end
-
-  def user_attribute_changed?
-    previous_changes.keys.map(&:to_sym).intersect?(EDITABLE_ATTRIBUTES)
   end
 end
 # rubocop:enable Metrics/ClassLength
