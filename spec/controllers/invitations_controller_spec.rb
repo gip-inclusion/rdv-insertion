@@ -154,9 +154,8 @@ describe InvitationsController do
           it "returns an error response" do
             post :create, params: create_params
             expect(response).not_to be_successful
-            parsed = JSON.parse(response.body) # rubocop:disable Rails/ResponseParsedBody
-            expect(parsed["success"]).to eq(false)
-            expect(parsed["errors"]).to include(error_message)
+            expect(parsed_response_body["success"]).to eq(false)
+            expect(parsed_response_body["errors"]).to include(error_message)
           end
         end
       end
