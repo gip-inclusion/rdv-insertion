@@ -128,50 +128,50 @@ RSpec.describe InvitationMailer do
 
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        before { follow_up.motif_category = send(motif_category) }
+          before { follow_up.motif_category = send(motif_category) }
 
-        it "renders the headers" do
-          expecting_mail_to_have_correct_headers
-        end
-
-        it "renders the subject" do
-          email_subject = unescape_html(subject.subject)
-          expect(email_subject).to eq("RSA - Prenez rendez-vous dans le cadre de votre RSA")
-        end
-
-        it "renders the body" do
-          body_string = strip_tags(subject.body.encoded)
-          expect(body_string).to match("Bonjour Jean Valjean")
-          expect(body_string).to match("Le département de la Drôme")
-          expect(body_string).to match(
-            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
-            "à un rendez-vous d'accompagnement pour démarrer un parcours d'accompagnement"
-          )
-          expect(body_string).to match("Ce rendez-vous est obligatoire.")
-          expect(body_string).to match(
-            "votre RSA pourra être suspendu ou réduit."
-          )
-          expect(subject.body.encoded).to match("/i/r/#{invitation.uuid}")
-          expect(body_string).to match("Ce lien de prise de rendez-vous est valable 3 jours.")
-          expect(body_string).to match("En cas de problème, contactez-nous :")
-          expect(body_string).to match("Tel : 0139393939")
-          expect(body_string).to match("Site web : https://www.organisation.fr")
-          expect(unescape_html(subject.body.encoded)).to match("Logo du département")
-          expect(unescape_html(subject.body.encoded)).to match("Logo de l'Union européene")
-          expect(unescape_html(subject.body.encoded)).to match("Logo de France Travail")
-        end
-
-        context "when the display logos options are disabled" do
-          let!(:messages_configuration) do
-            create(:messages_configuration, organisation: organisation, logos_to_display: [])
+          it "renders the headers" do
+            expecting_mail_to_have_correct_headers
           end
 
-          it "does not display the different optional logos" do
-            expect(unescape_html(subject.body.encoded)).not_to match("Logo du département")
-            expect(unescape_html(subject.body.encoded)).not_to match("Logo de l'Union européene")
-            expect(unescape_html(subject.body.encoded)).not_to match("Logo de France Travail")
+          it "renders the subject" do
+            email_subject = unescape_html(subject.subject)
+            expect(email_subject).to eq("RSA - Prenez rendez-vous dans le cadre de votre RSA")
           end
-        end
+
+          it "renders the body" do
+            body_string = strip_tags(subject.body.encoded)
+            expect(body_string).to match("Bonjour Jean Valjean")
+            expect(body_string).to match("Le département de la Drôme")
+            expect(body_string).to match(
+              "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+              "à un rendez-vous d'accompagnement pour démarrer un parcours d'accompagnement"
+            )
+            expect(body_string).to match("Ce rendez-vous est obligatoire.")
+            expect(body_string).to match(
+              "votre RSA pourra être suspendu ou réduit."
+            )
+            expect(subject.body.encoded).to match("/i/r/#{invitation.uuid}")
+            expect(body_string).to match("Ce lien de prise de rendez-vous est valable 3 jours.")
+            expect(body_string).to match("En cas de problème, contactez-nous :")
+            expect(body_string).to match("Tel : 0139393939")
+            expect(body_string).to match("Site web : https://www.organisation.fr")
+            expect(unescape_html(subject.body.encoded)).to match("Logo du département")
+            expect(unescape_html(subject.body.encoded)).to match("Logo de l'Union européene")
+            expect(unescape_html(subject.body.encoded)).to match("Logo de France Travail")
+          end
+
+          context "when the display logos options are disabled" do
+            let!(:messages_configuration) do
+              create(:messages_configuration, organisation: organisation, logos_to_display: [])
+            end
+
+            it "does not display the different optional logos" do
+              expect(unescape_html(subject.body.encoded)).not_to match("Logo du département")
+              expect(unescape_html(subject.body.encoded)).not_to match("Logo de l'Union européene")
+              expect(unescape_html(subject.body.encoded)).not_to match("Logo de France Travail")
+            end
+          end
       end
     end
 
@@ -868,48 +868,48 @@ RSpec.describe InvitationMailer do
     context "for rsa_accompagnement" do
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        before { follow_up.motif_category = send(motif_category) }
+          before { follow_up.motif_category = send(motif_category) }
 
-        it "renders the headers" do
-          expect(subject.to).to eq([user.email])
-        end
-
-        it "renders the subject" do
-          email_subject = strip_tags(subject.subject)
-          expect(email_subject).to eq("RSA - Plus que 7 jours pour prendre rendez-vous")
-        end
-
-        it "renders the body" do
-          body_string = strip_tags(subject.body.encoded)
-          expect(body_string).to match("Bonjour Jean Valjean")
-          expect(body_string).to match("Le département de la Drôme")
-          expect(body_string).to match(
-            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
-            "à un rendez-vous d'accompagnement " \
-            "pour démarrer un parcours d'accompagnement."
-          )
-          expect(body_string).to match("Ce rendez-vous est obligatoire.")
-          expect(body_string).to match("votre RSA pourra être suspendu ou réduit.")
-          expect(subject.body.encoded).to match("/i/r/#{invitation.uuid}")
-          expect(body_string).to match(
-            "Il ne vous reste que 7 jours pour prendre rendez-vous"
-          )
-          expect(unescape_html(subject.body.encoded)).to match("Logo du département")
-          expect(unescape_html(subject.body.encoded)).to match("Logo de l'Union européene")
-          expect(unescape_html(subject.body.encoded)).to match("Logo de France Travail")
-        end
-
-        context "when the display logos options are disabled" do
-          let!(:messages_configuration) do
-            create(:messages_configuration, organisation: organisation, logos_to_display: [])
+          it "renders the headers" do
+            expect(subject.to).to eq([user.email])
           end
 
-          it "does not display the different optional logos" do
-            expect(unescape_html(subject.body.encoded)).not_to match("Logo du département")
-            expect(unescape_html(subject.body.encoded)).not_to match("Logo de l'Union européene")
-            expect(unescape_html(subject.body.encoded)).not_to match("Logo de France Travail")
+          it "renders the subject" do
+            email_subject = strip_tags(subject.subject)
+            expect(email_subject).to eq("RSA - Plus que 7 jours pour prendre rendez-vous")
           end
-        end
+
+          it "renders the body" do
+            body_string = strip_tags(subject.body.encoded)
+            expect(body_string).to match("Bonjour Jean Valjean")
+            expect(body_string).to match("Le département de la Drôme")
+            expect(body_string).to match(
+              "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
+              "à un rendez-vous d'accompagnement " \
+              "pour démarrer un parcours d'accompagnement."
+            )
+            expect(body_string).to match("Ce rendez-vous est obligatoire.")
+            expect(body_string).to match("votre RSA pourra être suspendu ou réduit.")
+            expect(subject.body.encoded).to match("/i/r/#{invitation.uuid}")
+            expect(body_string).to match(
+              "Il ne vous reste que 7 jours pour prendre rendez-vous"
+            )
+            expect(unescape_html(subject.body.encoded)).to match("Logo du département")
+            expect(unescape_html(subject.body.encoded)).to match("Logo de l'Union européene")
+            expect(unescape_html(subject.body.encoded)).to match("Logo de France Travail")
+          end
+
+          context "when the display logos options are disabled" do
+            let!(:messages_configuration) do
+              create(:messages_configuration, organisation: organisation, logos_to_display: [])
+            end
+
+            it "does not display the different optional logos" do
+              expect(unescape_html(subject.body.encoded)).not_to match("Logo du département")
+              expect(unescape_html(subject.body.encoded)).not_to match("Logo de l'Union européene")
+              expect(unescape_html(subject.body.encoded)).not_to match("Logo de France Travail")
+            end
+          end
       end
     end
 

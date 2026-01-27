@@ -14,7 +14,7 @@ class InvitationsController < ApplicationController
     else
       respond_to do |format|
         format.pdf do
-          render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
+          render json: { success: false, errors: invite_user.errors }, status: :unprocessable_content
         end
         format.json do
           render json: {
@@ -27,7 +27,7 @@ class InvitationsController < ApplicationController
             turbo_stream_html: turbo_stream.replace("remote_modal", partial: "common/custom_errors_modal",
                                                                     locals: { errors: invite_user.errors,
                                                                               title: "Impossible d'inviter l'usager" })
-          }, status: :unprocessable_entity
+          }, status: :unprocessable_content
         end
         format.turbo_stream do
           turbo_stream_display_custom_error_modal(errors: invite_user.errors, title: "Impossible d'inviter l'usager")

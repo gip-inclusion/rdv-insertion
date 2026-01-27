@@ -99,14 +99,14 @@ describe "Agents can see convocation history", :js do
         }
       )
       .to_return do |request|
-      # we get the content of the notification from the request body
-      request_body = JSON.parse(request.body)
-      notification_content = request_body["htmlContent"]
-      {
-        status: 200,
-        body: Base64.encode64(notification_content),
-        headers: { "Content-Type" => "application/json" }
-      }
+        # we get the content of the notification from the request body
+        request_body = JSON.parse(request.body)
+        notification_content = request_body["htmlContent"]
+        {
+          status: 200,
+          body: Base64.encode64(notification_content),
+          headers: { "Content-Type" => "application/json" }
+        }
     end
   end
 
@@ -116,15 +116,15 @@ describe "Agents can see convocation history", :js do
 
     within("tr.motif-category-1-last-convocable_participations") do
       # Vérification de la notification SMS
-      within all("td")[0] { expect(page).to have_content("-") }
+      within first("td") { expect(page).to have_content("-") }
       # Vérification de la notification email
       within all("td")[1] { expect(page).to have_content("-") }
       # Vérification de la notification postal
       within all("td")[2] { expect(page).to have_button "Télécharger le courrier" }
     end
 
-    within all("tr.motif-category-1-other-convocable_participations")[0] do
-      within all("td")[0] do
+    within first("tr.motif-category-1-other-convocable_participations") do
+      within first("td") do
         expect(page).to have_content("14/06/2022")
         expect(page).to have_content("Délivrée à 11:30 (le 16/06/2022)")
       end
@@ -139,7 +139,7 @@ describe "Agents can see convocation history", :js do
     end
 
     within all("tr.motif-category-1-other-convocable_participations")[1] do
-      within all("td")[0] do
+      within first("td") do
         expect(page).to have_content("08/08/2021")
         within ".text-danger" do
           expect(page).to have_content("Non délivrée")

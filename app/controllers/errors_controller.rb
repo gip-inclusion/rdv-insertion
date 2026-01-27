@@ -15,10 +15,10 @@ class ErrorsController < ApplicationController
 
   def unprocessable_entity
     respond_to do |format|
-      format.html { render status: :unprocessable_entity }
-      format.turbo_stream { render status: :unprocessable_entity }
+      format.html { render status: :unprocessable_content }
+      format.turbo_stream { render status: :unprocessable_content }
       format.json do
-        render json: { success: false, errors: [@unprocessable_entity_error_message] }, status: :unprocessable_entity
+        render json: { success: false, errors: [@unprocessable_entity_error_message] }, status: :unprocessable_content
       end
     end
   end

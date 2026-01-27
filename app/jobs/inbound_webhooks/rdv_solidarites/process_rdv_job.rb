@@ -186,7 +186,7 @@ module InboundWebhooks
       end
 
       def follow_up_for(user)
-        follow_ups.find { _1.user_id == user.id }
+        follow_ups.find { it.user_id == user.id }
       end
 
       def organisation

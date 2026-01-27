@@ -160,8 +160,8 @@ describe "Admins can preview and editmessages contents", :js do
 
     it "disables the convocation link" do
       visit organisation_configuration_messages_path(organisation)
-      expect(page).to have_no_link("Convocations")
       expect(page).to have_button("Convocations (désactivées)", disabled: true)
+      expect(page).to have_no_link("Convocations")
     end
   end
 end

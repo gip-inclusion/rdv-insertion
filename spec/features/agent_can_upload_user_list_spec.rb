@@ -610,12 +610,12 @@ describe "Agents can upload user list", :js do
           expect(page).to have_css("input[type='checkbox']:not(:checked)", wait: 5)
 
           # Check archiving reason is in the tooltip
-          badge = find(".badge.rounded-pill", match: :first, wait: 5)
+          badge = first(".badge.rounded-pill", wait: 5)
           expect(badge["data-tooltip-content"]).to include("Dossier archivé")
           expect(badge["data-tooltip-content"]).to include("Déménagement")
 
           # Check expanded row has archive badge
-          find(".ri-arrow-down-s-line", match: :first).click
+          first(".ri-arrow-down-s-line").click
           expect(page).to have_content("Archivé", wait: 10)
         end
 
@@ -640,7 +640,7 @@ describe "Agents can upload user list", :js do
           expect(page).to have_css("input[type='checkbox']:not(:checked)", wait: 5)
 
           # Check tooltip content using data-tooltip-content attribute
-          badge = find(".badge.rounded-pill", match: :first, wait: 5)
+          badge = first(".badge.rounded-pill", wait: 5)
           expect(badge["data-tooltip-content"]).to include("Dossier traité")
         end
       end

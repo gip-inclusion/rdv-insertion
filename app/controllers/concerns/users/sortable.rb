@@ -43,6 +43,6 @@ module Users::Sortable
   def order_by_created_at
     @users = @users.select("users.*, MIN(users_organisations.created_at) AS min_created_at")
                    .group("users.id")
-                   .order("min_created_at DESC")
+                   .order(min_created_at: :desc)
   end
 end

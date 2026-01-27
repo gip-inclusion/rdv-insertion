@@ -43,7 +43,8 @@ module Api
       def mark_agent_as_logged_in!
         return if authenticated_agent.update(last_sign_in_at: Time.zone.now)
 
-        render json: { success: false, errors: authenticated_agent.errors.full_messages }, status: :unprocessable_entity
+        render json: { success: false, errors: authenticated_agent.errors.full_messages },
+               status: :unprocessable_content
       end
 
       def authenticated_agent
@@ -56,7 +57,7 @@ module Api
 
       def render_errors(error_messages)
         errors = error_messages.map { |error_msg| { error_details: error_msg } }
-        render json: { success: false, errors: }, status: :unprocessable_entity
+        render json: { success: false, errors: }, status: :unprocessable_content
       end
 
       def set_current_agent

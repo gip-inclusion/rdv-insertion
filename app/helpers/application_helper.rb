@@ -33,9 +33,7 @@ module ApplicationHelper
     department_name.parameterize.capitalize
   end
 
-  def asset_exists?(asset_path)
-    AssetHelper.asset_exists?(asset_path)
-  end
+  delegate :asset_exists?, to: :AssetHelper
 
   def show_organisation_navigation_button?
     return false if current_structure_type_in_params.blank?

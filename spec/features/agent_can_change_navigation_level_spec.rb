@@ -46,6 +46,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit root_path
 
+        expect(page).to have_content("Demander une démo")
         expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
@@ -54,6 +55,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit stats_path
 
+        expect(page).to have_content("Statistiques")
         expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
@@ -68,6 +70,7 @@ describe "Agents can sort users on index page", :js do
       it "does not show the organisation navigation button in header" do
         visit organisations_path
 
+        expect(page).to have_content(organisation.name)
         expect(page).to have_no_css("button#rdvi_header_organisation-nav")
       end
     end
@@ -78,61 +81,62 @@ describe "Agents can sort users on index page", :js do
       context "on users index page" do
         let!(:page_path) { department_users_path(department) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on users index page with motif_category_id" do
         let!(:page_path) { department_users_path(department, motif_category: motif_category) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on archived users index page" do
         let!(:page_path) { department_users_path(department, users_scope: "archived") }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on new user page" do
         let!(:page_path) { new_department_user_path(department) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on upload users page" do
         let!(:page_path) { new_department_user_list_uploads_category_selection_path(department) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user page" do
         let!(:page_path) { department_user_path(department, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user edit page" do
         let!(:page_path) { edit_department_user_path(department, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user follow-up page" do
         let!(:page_path) { department_user_follow_ups_path(department, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user parcours page" do
         let!(:page_path) { department_user_parcours_path(department, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on stats page" do
         it "does not show the organisation navigation button in header" do
           visit stats_path
 
+          expect(page).to have_content("Statistiques")
           expect(page).to have_no_css("button#rdvi_header_organisation-nav")
         end
       end
@@ -144,67 +148,68 @@ describe "Agents can sort users on index page", :js do
       context "on users index page" do
         let!(:page_path) { organisation_users_path(organisation) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on users index page with motif_category_id" do
         let!(:page_path) { organisation_users_path(organisation, motif_category: motif_category) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on archived users index page" do
         let!(:page_path) { organisation_users_path(organisation, users_scope: "archived") }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on new user page" do
         let!(:page_path) { new_organisation_user_path(organisation) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on upload users page" do
         let!(:page_path) { new_organisation_user_list_uploads_category_selection_path(organisation) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user page" do
         let!(:page_path) { organisation_user_path(organisation, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user edit page" do
         let!(:page_path) { edit_organisation_user_path(organisation, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user follow-up page" do
         let!(:page_path) { organisation_user_follow_ups_path(organisation, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on user parcours page" do
         let!(:page_path) { organisation_user_parcours_path(organisation, user) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on configure categories page" do
         let!(:page_path) { organisation_configuration_categories_path(organisation) }
 
-        include_examples "a page with an organisation navigation button"
+        it_behaves_like "a page with an organisation navigation button"
       end
 
       context "on stats page" do
         it "does not show the organisation navigation button in header" do
           visit stats_path
 
+          expect(page).to have_content("Statistiques")
           expect(page).to have_no_css("button#rdvi_header_organisation-nav")
         end
       end

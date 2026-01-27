@@ -200,6 +200,7 @@ describe "Agents can update user through form", :js do
         it "does not show nir and department_internal_idd" do
           visit organisation_user_path(organisation, user)
 
+          expect(page).to have_button("Modifier")
           expect(page).to have_no_content("Numéro de sécurité sociale")
           expect(page).to have_no_content("ID interne au département")
 
@@ -216,8 +217,8 @@ describe "Agents can update user through form", :js do
         it "does not show nir and department_internal_idd" do
           visit organisation_user_path(organisation, user)
 
-          expect(page).to have_no_content("Numéro de sécurité sociale")
           expect(page).to have_content("ID interne au département")
+          expect(page).to have_no_content("Numéro de sécurité sociale")
 
           click_button "Modifier"
 
@@ -237,8 +238,8 @@ describe "Agents can update user through form", :js do
         it "shows the informations from the organisation that has the most privileges" do
           visit department_user_path(department, user)
 
-          expect(page).to have_no_content("Numéro de sécurité sociale")
           expect(page).to have_content("ID interne au département")
+          expect(page).to have_no_content("Numéro de sécurité sociale")
 
           click_button "Modifier"
 

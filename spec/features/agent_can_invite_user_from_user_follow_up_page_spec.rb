@@ -78,13 +78,13 @@ describe "Agents can invite user from user follow up page", :js do
   context "when agent is at department level" do
     before { visit department_user_follow_ups_path(department_id: department.id, user_id: user.id) }
 
-    include_examples "agent can invite user"
+    it_behaves_like "agent can invite user"
   end
 
   context "when agent is at organisation level" do
     before { visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id) }
 
-    include_examples "agent can invite user"
+    it_behaves_like "agent can invite user"
   end
 
   def invite_user(format)

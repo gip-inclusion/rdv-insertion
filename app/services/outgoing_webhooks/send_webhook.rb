@@ -11,14 +11,14 @@ module OutgoingWebhooks
     def call
       ActiveRecord::Base
         .with_advisory_lock("send_#{resource_model}_#{resource_id}_to_endpoint_#{@webhook_endpoint.id}") do
-        with_webhook_receipt(
-          resource_model: resource_model,
-          resource_id: resource_id,
-          timestamp: timestamp,
-          webhook_endpoint_id: @webhook_endpoint.id
-        ) do
-          send_webhook
-        end
+          with_webhook_receipt(
+            resource_model: resource_model,
+            resource_id: resource_id,
+            timestamp: timestamp,
+            webhook_endpoint_id: @webhook_endpoint.id
+          ) do
+            send_webhook
+          end
       end
     end
 

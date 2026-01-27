@@ -118,9 +118,9 @@ class UsersController < ApplicationController
       format.turbo_stream { turbo_stream_replace_flash_messages(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
-        render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
+        render(action_name == "update" ? :edit : :new, status: :unprocessable_content)
       end
-      format.json { render json: { success: false, errors: errors }, status: :unprocessable_entity }
+      format.json { render json: { success: false, errors: errors }, status: :unprocessable_content }
     end
   end
 

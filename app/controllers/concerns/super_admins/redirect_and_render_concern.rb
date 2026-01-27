@@ -13,7 +13,7 @@ module SuperAdmins
       flash[:error] = errors.join("<br/>")
       render page, locals: {
         page: Administrate::Page::Form.new(dashboard, record)
-      }, status: :unprocessable_entity
+      }, status: :unprocessable_content
     end
   end
 end

@@ -9,7 +9,7 @@ module CguHelper
          .sort
          .reverse
          .map do |file|
-      File.basename(file, ".html.erb").sub(/^_/, "")
+           File.basename(file, ".html.erb").sub(/^_/, "")
     end
   end
 

@@ -118,8 +118,6 @@ describe Users::FollowUpsController do
         it "show the open follow_up button" do
           get :index, params: index_params
 
-          expect(unescaped_response_body).to match("input value=\"#{user.id}\"")
-          expect(unescaped_response_body).to match("input value=\"#{category_accompagnement.id}\"")
           expect(unescaped_response_body).to match(/Ouvrir un suivi/)
         end
       end

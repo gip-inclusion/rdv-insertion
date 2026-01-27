@@ -30,8 +30,7 @@ Sidekiq::Testing.fake!
 # If you are not using ActiveRecord, you can remove these lines.
 begin
   ActiveRecord::Migration.maintain_test_schema!
-rescue ActiveRecord::PendingMigrationError => e
-  puts e.to_s.strip
+rescue ActiveRecord::PendingMigrationError
   exit 1
 end
 RSpec.configure do |config|
@@ -78,7 +77,7 @@ RSpec.configure do |config|
   end
 
   config.before do
-    ActiveSupport::CurrentAttributes.reset_all
+    ActiveSupport::CurrentAttributes.reset
     # ensure that ActiveStorage::Current.url_options is set for all requests
     ActiveStorage::Current.url_options = { host: ENV["HOST"] }
     DatabaseCleaner.clean_with(:truncation)

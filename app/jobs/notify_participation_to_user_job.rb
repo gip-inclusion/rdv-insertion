@@ -32,7 +32,7 @@ class NotifyParticipationToUserJob < ApplicationJob
       # would let us double check anyway.
       @participation.notifications
                     .where(event: "participation_updated", format: @format)
-                    .where("created_at > ?", 1.hour.ago).count > 1
+                    .where("created_at > ?", 1.hour.ago).many?
     else
       @participation.notifications.find_by(event: @event, format: @format).present?
     end

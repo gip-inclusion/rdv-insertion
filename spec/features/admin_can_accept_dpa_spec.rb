@@ -57,6 +57,8 @@ describe "Admins can accept dpa", :js do
 
     it "does not require the agent to accept the dpa" do
       visit department_users_path(organisation.department)
+
+      expect(page).to have_content(organisation.department.name)
       expect(page).to have_no_content("Contrat de sous-traitance")
 
       visit organisation_users_path(organisation)

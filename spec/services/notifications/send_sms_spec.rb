@@ -385,84 +385,18 @@ describe Notifications::SendSms, type: :service do
     describe "RSA accompagnement" do
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        let!(:follow_up) { create(:follow_up, motif_category: send(motif_category)) }
-
-        let!(:content) do
-          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
-            "rendez-vous d'accompagnement. Vous êtes attendu " \
-            "le 20/12/21 à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
-            "Ce RDV est obligatoire. " \
-            "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-            "En cas d’empêchement, contactez le 0101010101."
-        end
-
-        it "sends the sms with the right content" do
-          expect(Sms::SendWithBrevo).to receive(:call)
-            .with(
-              phone_number: phone_number, content: content,
-              sender_name: sms_sender_name, record_identifier: notification.record_identifier
-            )
-          subject
-        end
-
-        context "when is an update notification" do
-          let!(:notification) do
-            create(:notification, participation: participation, format: "sms", event: "participation_updated")
-          end
-
-          let!(:content) do
-            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
-              "Vous êtes attendu le 20/12/21 à " \
-              "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
-              "Ce RDV est obligatoire. " \
-              "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-              "En cas d’empêchement, contactez le 0101010101."
-          end
-
-          it "sends the sms with the right content" do
-            expect(Sms::SendWithBrevo).to receive(:call)
-              .with(
-                phone_number: phone_number, content: content,
-                sender_name: sms_sender_name, record_identifier: notification.record_identifier
-              )
-            subject
-          end
-        end
-
-        context "when it is a cancelled notification" do
-          let!(:notification) do
-            create(:notification, participation: participation, format: "sms", event: "participation_cancelled")
-          end
-
-          let!(:content) do
-            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement du 20/12/21 à 10h " \
-              "dans le cadre de votre RSA a été annulé. " \
-              "Pour plus d'informations, contactez le 0101010101."
-          end
-
-          it "sends the sms with the right content" do
-            expect(Sms::SendWithBrevo).to receive(:call)
-              .with(
-                phone_number: phone_number, content: content,
-                sender_name: sms_sender_name, record_identifier: notification.record_identifier
-              )
-            subject
-          end
-        end
-
-        context "when it is a phone rdv" do
-          let!(:motif) { create(:motif, location_type: "phone") }
+          let!(:follow_up) { create(:follow_up, motif_category: send(motif_category)) }
 
           let!(:content) do
             "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
-              "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
-              "vous appellera le 20/12/21 à partir de 10h sur ce numéro. " \
+              "rendez-vous d'accompagnement. Vous êtes attendu " \
+              "le 20/12/21 à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
               "En cas d’empêchement, contactez le 0101010101."
           end
 
-          it "calls the send transactional service with the right content" do
+          it "sends the sms with the right content" do
             expect(Sms::SendWithBrevo).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
@@ -471,16 +405,58 @@ describe Notifications::SendSms, type: :service do
             subject
           end
 
-          context "when it is an update notification" do
+          context "when is an update notification" do
             let!(:notification) do
               create(:notification, participation: participation, format: "sms", event: "participation_updated")
             end
 
             let!(:content) do
-              "Bonjour John Doe,\nVotre rendez-vous d'accompagnement téléphonique " \
-                "dans le cadre de votre RSA a été modifié. " \
-                "Un conseiller d'insertion vous appellera le 20/12/21 à " \
-                "partir de 10h sur ce numéro. " \
+              "Bonjour John Doe,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+                "Vous êtes attendu le 20/12/21 à " \
+                "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
+                "Ce RDV est obligatoire. " \
+                "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
+                "En cas d’empêchement, contactez le 0101010101."
+            end
+
+            it "sends the sms with the right content" do
+              expect(Sms::SendWithBrevo).to receive(:call)
+                .with(
+                  phone_number: phone_number, content: content,
+                  sender_name: sms_sender_name, record_identifier: notification.record_identifier
+                )
+              subject
+            end
+          end
+
+          context "when it is a cancelled notification" do
+            let!(:notification) do
+              create(:notification, participation: participation, format: "sms", event: "participation_cancelled")
+            end
+
+            let!(:content) do
+              "Bonjour John Doe,\nVotre rendez-vous d'accompagnement du 20/12/21 à 10h " \
+                "dans le cadre de votre RSA a été annulé. " \
+                "Pour plus d'informations, contactez le 0101010101."
+            end
+
+            it "sends the sms with the right content" do
+              expect(Sms::SendWithBrevo).to receive(:call)
+                .with(
+                  phone_number: phone_number, content: content,
+                  sender_name: sms_sender_name, record_identifier: notification.record_identifier
+                )
+              subject
+            end
+          end
+
+          context "when it is a phone rdv" do
+            let!(:motif) { create(:motif, location_type: "phone") }
+
+            let!(:content) do
+              "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+                "rendez-vous d'accompagnement téléphonique. Un conseiller d'insertion " \
+                "vous appellera le 20/12/21 à partir de 10h sur ce numéro. " \
                 "Ce RDV est obligatoire. " \
                 "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
                 "En cas d’empêchement, contactez le 0101010101."
@@ -494,8 +470,32 @@ describe Notifications::SendSms, type: :service do
                 )
               subject
             end
+
+            context "when it is an update notification" do
+              let!(:notification) do
+                create(:notification, participation: participation, format: "sms", event: "participation_updated")
+              end
+
+              let!(:content) do
+                "Bonjour John Doe,\nVotre rendez-vous d'accompagnement téléphonique " \
+                  "dans le cadre de votre RSA a été modifié. " \
+                  "Un conseiller d'insertion vous appellera le 20/12/21 à " \
+                  "partir de 10h sur ce numéro. " \
+                  "Ce RDV est obligatoire. " \
+                  "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
+                  "En cas d’empêchement, contactez le 0101010101."
+              end
+
+              it "calls the send transactional service with the right content" do
+                expect(Sms::SendWithBrevo).to receive(:call)
+                  .with(
+                    phone_number: phone_number, content: content,
+                    sender_name: sms_sender_name, record_identifier: notification.record_identifier
+                  )
+                subject
+              end
+            end
           end
-        end
       end
     end
 

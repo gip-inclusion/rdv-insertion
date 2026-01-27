@@ -2,7 +2,7 @@ module HasAttachedImage
   extend ActiveSupport::Concern
 
   class_methods do
-    # rubocop:disable Naming/PredicateName
+    # rubocop:disable Naming/PredicatePrefix
     def has_attached_image(
       name, max_size: 2.megabytes, formats: %w[PNG JPG], mime_types: ["image/png", "image/jpeg"]
     )
@@ -16,8 +16,8 @@ module HasAttachedImage
 
       after_save -> { purge_attached_image(name) if send(remover_attr) == "true" }
     end
+    # rubocop:enable Naming/PredicatePrefix
   end
-  # rubocop:enable Naming/PredicateName
 
   private
 

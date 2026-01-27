@@ -18,7 +18,7 @@ describe Brevo::MailWebhooksController do
     context "when called with non-matching IP" do
       let(:params) { valid_mail_params }
 
-      include_examples "returns 403 for non-whitelisted IP", "18.12.12.12"
+      it_behaves_like "returns 403 for non-whitelisted IP", "18.12.12.12"
     end
 
     context "when X-Mailin-custom header is present and environment matches" do

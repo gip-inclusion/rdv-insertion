@@ -22,7 +22,7 @@ module Exporters
 
     def filename
       if @structure.present?
-        "Export_#{resource_human_name}_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
+        "Export_#{resource_human_name}_#{"#{@motif_category.short_name}_" if @motif_category.present?}" \
           "#{@structure.class.model_name.human.downcase}_" \
           "#{@structure.name.parameterize(separator: '_')}.csv"
       else

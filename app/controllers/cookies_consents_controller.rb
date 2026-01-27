@@ -26,12 +26,11 @@ class CookiesConsentsController < ApplicationController
 
   def save_and_respond
     if @cookies_consent.save
-      redirect_back(notice: "Vos préférences ont été enregistrées.", fallback_location: authenticated_root_path)
+      redirect_back_or_to(authenticated_root_path, notice: "Vos préférences ont été enregistrées.")
     else
-      redirect_back(
-        alert: "Une erreur est survenue lors de l'enregistrement de vos préférences: " \
-               "#{@cookies_consent.errors.full_messages.join(', ')}",
-        fallback_location: authenticated_root_path
+      redirect_back_or_to(
+        authenticated_root_path, alert: "Une erreur est survenue lors de l'enregistrement de vos préférences: " \
+                                        "#{@cookies_consent.errors.full_messages.join(', ')}"
       )
     end
   end

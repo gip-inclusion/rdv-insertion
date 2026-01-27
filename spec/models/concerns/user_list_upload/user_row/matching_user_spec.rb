@@ -185,7 +185,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
           user_row.save!
         end
 
-        include_examples "matches user correctly"
+        it_behaves_like "matches user correctly"
       end
     end
 

@@ -13,7 +13,7 @@ describe Brevo::SmsWebhooksController do
     context "when called with non-matching IP" do
       let(:params) { valid_sms_params }
 
-      include_examples "returns 403 for non-whitelisted IP", "18.12.12.12"
+      it_behaves_like "returns 403 for non-whitelisted IP", "18.12.12.12"
     end
 
     it "enqueues the job for processing SMS delivery status" do

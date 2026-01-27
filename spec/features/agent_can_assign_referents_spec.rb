@@ -21,6 +21,7 @@ describe "Agents can assign referents", :js do
     it "allows to assign referents" do
       visit organisation_user_path(organisation, user)
 
+      expect(page).to have_button("Ajouter un référent")
       expect(page).to have_no_content("Derek SHEPERD")
       expect(page).to have_no_content("Meredith GREY")
       click_button("Ajouter un référent")

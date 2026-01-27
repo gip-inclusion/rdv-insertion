@@ -419,6 +419,7 @@ describe "Agents can create user through form", :js do
         it "does not show nir and department_internal_idd" do
           visit new_organisation_user_path(organisation.id)
 
+          expect(page).to have_field("user_first_name")
           expect(page).to have_no_content("Numéro de sécurité sociale")
           expect(page).to have_no_content("ID interne au département")
         end
@@ -430,8 +431,8 @@ describe "Agents can create user through form", :js do
         it "does not show nir and department_internal_idd" do
           visit new_organisation_user_path(organisation.id)
 
-          expect(page).to have_no_content("Numéro de sécurité sociale")
           expect(page).to have_content("ID interne au département")
+          expect(page).to have_no_content("Numéro de sécurité sociale")
         end
       end
 
@@ -444,8 +445,8 @@ describe "Agents can create user through form", :js do
         it "shows the lowest informations possible from the organisations" do
           visit new_department_user_path(department.id)
 
-          expect(page).to have_no_content("Numéro de sécurité sociale")
           expect(page).to have_content("ID interne au département")
+          expect(page).to have_no_content("Numéro de sécurité sociale")
         end
       end
     end

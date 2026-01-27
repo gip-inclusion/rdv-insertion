@@ -1,0 +1,15 @@
+// Ensure cookies consent modal appears above DSFR consent banner (z-index ~2000)
+.modal[data-cookies-consent-modal] {
+  z-index: 2100;
+
+  .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+// When cookies consent modal is shown, increase backdrop z-index
+// The body gets .modal-open class when any modal is open
+body:has(.modal[data-cookies-consent-modal].show) .modal-backdrop {
+  z-index: 2050;
+}
