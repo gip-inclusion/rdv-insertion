@@ -65,7 +65,6 @@ module FranceTravailApi
     def connection
       @connection ||= Faraday.new(url: request_url) do |faraday|
         faraday.request :url_encoded
-        faraday.options.timeout = 15.seconds
       end
     end
 
