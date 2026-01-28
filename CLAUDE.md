@@ -34,6 +34,10 @@ make autocorrect      # Auto-fix rubocop issues
 
 # API Documentation
 make rswag            # Generate OpenAPI docs from request specs
+                      # Docs visible at /api-docs
+
+# Database schema diagram
+rake erd              # Regenerate domain_model.png in docs/
 ```
 
 ## Architecture
@@ -68,33 +72,38 @@ All services inherit from `BaseService` (`app/services/base_service.rb`):
 
 ### RDV-Solidarités Integration
 
-- `RdvSolidaritesClient` (`app/clients/rdv_solidarites_client.rb`) handles API calls
-- Webhooks received at `/rdv_solidarites_webhooks` sync data
-- Shared attributes between apps are defined in model constants (e.g., `SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES`)
+Two-way sync between apps:
+- RDV-I → RDV-S: Synchronous API calls via `RdvSolidaritesClient` within transactions
+- RDV-S → RDV-I: Webhooks received at `/rdv_solidarites_webhooks`, processed async via jobs
+
+Shared attributes between apps are defined in model constants (e.g., `SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES`)
 
 ### Background Jobs
 
-Uses Sidekiq for job processing. Key job patterns:
-- `FollowUps::RefreshStatusesJob` - Updates follow-up statuses
-- `NotifyParticipationToUserJob` - Sends notifications
-- Webhook jobs for external integrations
+Uses Sidekiq for job processing. Key patterns:
+- `LockedJobs`: Advisory lock to prevent parallel execution on the same resource
+- `LockedAndOrderedJobs`: Lock + timestamp check to ignore outdated jobs (useful for webhooks arriving out of order)
 
 ### Frontend
 
-- Uses Hotwire/Turbo for dynamic updates (preferred over React)
-- React exists for user file uploads but is being phased out
+- Uses Hotwire/Turbo for dynamic updates
 - DSFR (Design System de l'État français) for UI components
 - Stimulus for JavaScript controllers
 
 ## Code Conventions
 
-- **Always use double quotes** for strings
+- Always use double quotes for strings
 - Use concerns extensively to isolate behavior (Basecamp style)
-- Use POROs for domain logic
-- Service objects only when procedures are complex
-- Keep models and controllers lean - business logic in services
+- Use POROs for domain logic (Basecamp style)
+- Service objects for procedural logic with success/failure states (sequential actions, external calls)
+- Keep models and controllers lean
 - Follow Basecamp/37signals Rails conventions
 - Max line length: 120 characters
+- Comments only for code that is truly difficult to understand (avoid unnecessary comments)
+- Do not reference AI tools (Claude, Cursor, etc.) in code, comments, or commits
+- Avoid unnecessary guard clauses and intermediate variable assignments
+- When a method becomes complex, extract into well-named private methods for readability
+- Prefer native framework solutions over custom implementations
 
 ## Testing
 
@@ -105,7 +114,7 @@ Uses Sidekiq for job processing. Key job patterns:
 ## Environment
 
 Requires:
-- Ruby 3.4.2
+- Ruby 4.0.1
 - PostgreSQL >= 12
 - Redis (for Sidekiq)
 - Node.js + Yarn
