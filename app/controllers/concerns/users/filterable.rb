@@ -8,7 +8,7 @@ module Users::Filterable
     filter_users_by_action_required
     filter_users_by_referents
     filter_users_by_follow_up_statuses
-    filter_users_by_orientation_type
+    filter_users_by_orientation_types
     filter_users_by_creation_date_after
     filter_users_by_creation_date_before
     filter_users_by_first_invitations
@@ -43,15 +43,17 @@ module Users::Filterable
     @users = @users.joins(:follow_ups).where(follow_ups: @follow_ups.status(params[:follow_up_statuses]))
   end
 
-  def filter_users_by_orientation_type
-    return if params[:orientation_type].blank?
+  def filter_users_by_orientation_types
+    return if params[:orientation_type_ids].blank?
 
+    @filtered_orientation_types = OrientationType.where(id: params[:orientation_type_ids])
     @users = @users
              .joins(orientations: :orientation_type)
-             .where(orientation_types: { name: params[:orientation_type] })
+             .where(orientation_types: { id: @filtered_orientation_types })
              .where(orientations: { organisations: { department_id: current_department_id } })
              .where(orientations: { starts_at: ..Time.zone.now })
              .where("orientations.ends_at IS NULL OR orientations.ends_at >= ?", Time.zone.now)
+             .distinct
   end
 
   def filter_users_by_action_required

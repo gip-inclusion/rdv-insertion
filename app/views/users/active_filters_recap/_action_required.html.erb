@@ -1,0 +1,8 @@
+<% if params[:action_required].present? %>
+  <span class="d-flex me-2 active-filter-badge">
+    Intervention nécessaire
+    <%= link_to structure_users_path(url_params.except(:action_required)) do %>
+      <i class="ri-close-line"></i>
+    <% end %>
+  </span>
+<% end %>
