@@ -7,7 +7,7 @@ class Organisation < ApplicationRecord
 
   before_create { build_messages_configuration }
 
-  has_attached_image :logo
+  has_attached_image :logo, publicly_accessible: true
 
   belongs_to :department
   has_one :stat, as: :statable, dependent: :destroy
