@@ -40,9 +40,7 @@ class RdvSolidaritesClient
   end
 
   def delete_user_profile(user_id, organisation_id)
-    connection.delete("/api/v1/user_profiles") do |req|
-      req.body = { user_id: user_id, organisation_id: organisation_id }
-    end
+    connection.delete("/api/v1/user_profiles", { user_id: user_id, organisation_id: organisation_id })
   end
 
   def get_organisations(geo_params = {})
@@ -68,9 +66,7 @@ class RdvSolidaritesClient
   end
 
   def delete_referent_assignation(user_id, agent_id)
-    connection.delete("/api/v1/referent_assignations") do |req|
-      req.body = { user_id: user_id, agent_id: agent_id }
-    end
+    connection.delete("/api/v1/referent_assignations", { user_id: user_id, agent_id: agent_id })
   end
 
   def get_webhook_endpoint(organisation_id)
