@@ -14,7 +14,7 @@ describe Participation::FranceTravailPayload, type: :concern do
         id: participation.france_travail_id,
         date: participation.starts_at.to_datetime,
         duree: participation.duration_in_min,
-        theme: participation.motif.name
+        theme: participation.motif.motif_category.name
       )
     end
   end
