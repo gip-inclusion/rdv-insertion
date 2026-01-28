@@ -1,7 +1,7 @@
 module Participation::FranceTravailPayload
   extend ActiveSupport::Concern
 
-  MOTIF_CATEGORY_NAMES_FOR_PREMIER_RDV_ACCOMPAGNEMENT_RSA = ["RSA Premier RDV d'accompagnement"].freeze
+  MOTIF_CATEGORY_NAMES_FOR_FIRST_ACCOMPANIEMENT_RSA_RDV = ["RSA Premier RDV d'accompagnement"].freeze
 
   # rubocop:disable Metrics/AbcSize
   def to_ft_payload
@@ -50,7 +50,7 @@ module Participation::FranceTravailPayload
   # Liste des motifs FT : AUT, ACC, ORI. ACC ne concerne que le premier rdv d'accompagnement RSA
   # On filtre donc sur le nom de la catégorie de motif
   def france_travail_motif
-    return "ACC" if MOTIF_CATEGORY_NAMES_FOR_PREMIER_RDV_ACCOMPAGNEMENT_RSA.include?(motif.motif_category.name)
+    return "ACC" if MOTIF_CATEGORY_NAMES_FOR_FIRST_ACCOMPANIEMENT_RSA_RDV.include?(motif.motif_category.name)
     return "ORI" if motif.motif_category.motif_category_type == "rsa_orientation"
 
     "AUT"
