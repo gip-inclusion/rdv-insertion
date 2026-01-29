@@ -118,18 +118,5 @@ module UsersHelper
       ]
     )
   end
-
-  def dora_url_for_user(user)
-    if user.city_code.blank? || user.city.blank?
-      return "https://dora.inclusion.gouv.fr/?mtm_campaign=rdvi&mtm_kwd=usager-ndef"
-    end
-
-    params = { city: user.city_code, cl: user.city, locs: "en-presentiel", mtm_campaign: "rdvi", mtm_kwd: "usager-loc" }
-    "https://dora.inclusion.gouv.fr/recherche?#{params.to_query}"
-  end
-
-  def dom_id_for_dora_user_link(user)
-    user.city_code.present? && user.city.present? ? "dora-link-user-loc" : "dora-link-user-ndef"
-  end
 end
 # rubocop:enable Metrics/ModuleLength
