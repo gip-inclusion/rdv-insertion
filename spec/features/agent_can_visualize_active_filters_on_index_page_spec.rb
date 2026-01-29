@@ -27,7 +27,7 @@ describe "Agents can visualize active filters on index page", :js do
     setup_agent_session(agent)
     visit organisation_users_path(
       organisation,
-      orientation_type: "Sociale",
+      orientation_type_ids: [orientation_type.id],
       follow_up_statuses: ["rdv_seen"],
       search_query: "coucou",
       motif_category_id: motif_category.id,

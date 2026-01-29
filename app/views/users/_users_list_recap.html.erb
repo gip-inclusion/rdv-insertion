@@ -1,18 +1,8 @@
 <div class="active-users-recap align-items-center d-flex flex-wrap">
   <%= render "users_count", users_count: @users_count, motif_category: @current_motif_category %>
   <% if active_filter_list.any? %>
-    <% active_filters_without_specific_display.each do |filter| %>
-      <span class="d-flex me-2 active-filter-badge">
-        <% if filter == :orientation_type %>
-          Orientation : <%= params[filter] %>
-        <% elsif filter == :action_required %>
-          Intervention nécessaire
-        <% end %>
-        <%= link_to structure_users_path(url_params.except(filter)) do %>
-          <i class="ri-close-line"></i>
-        <% end %>
-      </span>
-    <% end %>
+    <%= render "users/active_filters_recap/action_required" %>
+    <%= render "users/active_filters_recap/orientation_types" %>
     <%= render "users/active_filters_recap/referents" %>
     <%= render "users/active_filters_recap/tag_ids" %>
     <%= render "users/active_filters_recap/follow_up_statuses" %>

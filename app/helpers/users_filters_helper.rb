@@ -4,7 +4,7 @@ module UsersFiltersHelper
       :search_query,
       :tag_ids,
       :follow_up_statuses,
-      :orientation_type,
+      :orientation_type_ids,
       :action_required,
       :referent_ids,
       :creation_date_after,
@@ -16,14 +16,6 @@ module UsersFiltersHelper
       :last_invitation_date_before,
       :last_invitation_date_after
     ]
-  end
-
-  def filters_without_specific_display
-    [:orientation_type, :action_required]
-  end
-
-  def active_filters_without_specific_display
-    filters_without_specific_display & active_filter_list
   end
 
   def active_filter_list

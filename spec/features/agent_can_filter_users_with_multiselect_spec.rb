@@ -1,6 +1,7 @@
 describe "Agents can filter users with multiselect filters", :js do
+  let!(:department) { create(:department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, department: department) }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
@@ -30,6 +31,20 @@ describe "Agents can filter users with multiselect filters", :js do
 
   let!(:referent_assignation1) { create(:referent_assignation, user: user1, agent: referent1) }
   let!(:referent_assignation2) { create(:referent_assignation, user: user2, agent: referent2) }
+
+  let!(:orientation_type1) do
+    create(:orientation_type, name: "Sociale", casf_category: "social", department: department)
+  end
+  let!(:orientation_type2) do
+    create(:orientation_type, name: "Professionnelle", casf_category: "pro", department: department)
+  end
+
+  let!(:orientation1) do
+    create(:orientation, organisation: organisation, user: user1, orientation_type: orientation_type1)
+  end
+  let!(:orientation2) do
+    create(:orientation, organisation: organisation, user: user2, orientation_type: orientation_type2)
+  end
 
   before do
     setup_agent_session(agent)
@@ -177,6 +192,61 @@ describe "Agents can filter users with multiselect filters", :js do
       expect(page).to have_no_content(user3.first_name)
 
       expect(current_url.scan("referent_ids%5B%5D").count).to eq(1)
+    end
+  end
+
+  context "with orientation type filters" do
+    it "can select, deselect orientation types and remove filter by clicking on the cross" do
+      click_button("Type d'orientation")
+      check("orientation_type_#{orientation_type1.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_no_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+      expect(current_url.scan("orientation_type_ids%5B%5D").count).to eq(1)
+
+      click_button("Type d'orientation")
+      check("orientation_type_#{orientation_type2.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+      expect(current_url.scan("orientation_type_ids%5B%5D").count).to eq(2)
+
+      click_button("Type d'orientation")
+      uncheck("orientation_type_#{orientation_type1.id}")
+      uncheck("orientation_type_#{orientation_type2.id}")
+      click_button("Appliquer")
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_content(user3.first_name)
+      expect(current_url.scan("orientation_type_ids%5B%5D").count).to eq(0)
+
+      click_button("Type d'orientation")
+      check("orientation_type_#{orientation_type1.id}")
+      check("orientation_type_#{orientation_type2.id}")
+      click_button("Appliquer")
+
+      within(".active-filter-badge", text: "Orientation : #{orientation_type1.name}") do
+        find("i.ri-close-line").click
+      end
+
+      expect(page).to have_no_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_no_content(user3.first_name)
+      expect(current_url.scan("orientation_type_ids%5B%5D").count).to eq(1)
+
+      within(".active-filter-badge", text: "Orientation : #{orientation_type2.name}") do
+        find("i.ri-close-line").click
+      end
+
+      expect(page).to have_content(user1.first_name)
+      expect(page).to have_content(user2.first_name)
+      expect(page).to have_content(user3.first_name)
+      expect(current_url.scan("orientation_type_ids%5B%5D").count).to eq(0)
     end
   end
 end

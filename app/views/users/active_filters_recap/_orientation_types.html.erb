@@ -1,0 +1,10 @@
+<% if params[:orientation_type_ids] %>
+  <% @filtered_orientation_types.each do |orientation_type| %>
+    <span class="d-flex me-2 active-filter-badge">
+      Orientation : <%= orientation_type.name %>
+      <%= link_to structure_users_path(url_params.merge(orientation_type_ids: params[:orientation_type_ids].map(&:to_i) - [orientation_type.id])) do %>
+        <i class="ri-close-line"></i>
+      <% end %>
+    </span>
+  <% end %>
+<% end %>

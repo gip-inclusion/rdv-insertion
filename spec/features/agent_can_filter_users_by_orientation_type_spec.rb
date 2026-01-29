@@ -25,7 +25,7 @@ describe "Agents can sort users by orientation on index page", :js do
 
   before do
     setup_agent_session(agent)
-    visit organisation_users_path(organisation, orientation_type: "Sociale")
+    visit organisation_users_path(organisation, orientation_type_ids: [orientation_type.id])
   end
 
   it "filters users" do
