@@ -26,11 +26,11 @@ tables:
 
   - table_name: agents
     anonymized_column_names:
-      - email
       - first_name
       - last_name
       - crisp_token
     non_anonymized_column_names:
+      - email
       - super_admin
       - last_sign_in_at
       - cgu_accepted_at
