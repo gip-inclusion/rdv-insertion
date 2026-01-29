@@ -57,6 +57,18 @@ RSpec.describe RateLimitingConcern do
       end
     end
 
+    it "reports the rate limit exceeded to Sentry" do
+      expect(Sentry).to receive(:capture_message).with(
+        "Rate limit exceeded",
+        extra: hash_including(
+          path: "/trigger_rate_limit",
+          controller: "anonymous",
+          action: "trigger_rate_limit"
+        )
+      )
+      get :trigger_rate_limit
+    end
+
     it "logs the throttled request with useful context" do
       allow(Rails.logger).to receive(:warn)
 
