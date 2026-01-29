@@ -1,4 +1,10 @@
 class RetrieveAndAssignUserAddressGeocodingJob < ApplicationJob
+  include LockedJobs
+
+  def self.lock_key(user_id)
+    "#{base_lock_key}:#{user_id}"
+  end
+
   def perform(user_id)
     @user = User.find_by(id: user_id)
     return unless @user
