@@ -22,7 +22,7 @@ module RateLimitingConcern
   }.freeze
 
   class_methods do
-    def rate_limit_with_json_response(limit:, period: 1.minute, **options)
+    def rate_limit_with_json_response(limit:, period: 1.minute, **)
       raise ArgumentError, "a limit must be provided" if limit.nil?
 
       rate_limit(
@@ -30,7 +30,7 @@ module RateLimitingConcern
         within: period,
         store: RATE_LIMIT_CACHE_STORE,
         with: -> { render_rate_limit_exceeded(limit, period) },
-        **options
+        **
       )
     end
   end
