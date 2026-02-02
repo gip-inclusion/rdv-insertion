@@ -14,3 +14,12 @@ scaleway:
   # see: https://edgeguides.rubyonrails.org/active_storage_overview.html#s3-service-amazon-s3-and-s3-compatible-apis
   endpoint: https://s3.fr-par.scw.cloud
   bucket: rdv-insertion-medias-<%= ENV["ENVIRONMENT_NAME"] %>
+
+scaleway_public:
+  service: S3
+  access_key_id: <%= ENV['SCALEWAY_ACCESS_KEY_ID'] %>
+  secret_access_key: <%= ENV['SCALEWAY_SECRET_ACCESS_KEY'] %>
+  region: fr-par
+  endpoint: https://s3.fr-par.scw.cloud
+  bucket: rdv-insertion-medias-<%= ENV["ENVIRONMENT_NAME"] %>
+  public: true

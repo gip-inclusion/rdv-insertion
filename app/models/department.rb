@@ -1,5 +1,5 @@
 class Department < ApplicationRecord
-  has_attached_image :logo
+  has_attached_image :logo, publicly_accessible: true
 
   has_many :organisations, dependent: :nullify
   has_many :orientation_types, dependent: :nullify
