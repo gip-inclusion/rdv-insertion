@@ -73,9 +73,8 @@ class Rdv < ApplicationRecord
   end
 
   def phone_number
-    return lieu.phone_number if lieu&.phone_number.present?
-
-    organisation.phone_number
+    lieu&.phone_number.presence || current_category_configuration&.phone_number.presence ||
+      organisation.phone_number
   end
 
   def motif_category
