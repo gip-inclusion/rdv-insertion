@@ -2,7 +2,7 @@ RSpec.describe NotificationMailer do
   include_context "with all existing categories"
 
   let!(:notification) { create(:notification, participation: participation) }
-  let!(:participation) { create(:participation, user: user, rdv: rdv, follow_up: follow_up) }
+  let!(:participation) { create(:participation, user: user, follow_up: follow_up) }
   let!(:user) { create(:user, email: "someone@gmail.com", title: "monsieur", phone_number: "0607070707") }
   let!(:motif) do
     create(
@@ -12,7 +12,7 @@ RSpec.describe NotificationMailer do
   end
   let!(:rdv) do
     create(
-      :rdv, motif: motif, lieu: lieu,
+      :rdv, motif: motif, lieu: lieu, participations: [participation],
             starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation
     )
   end
@@ -160,6 +160,33 @@ RSpec.describe NotificationMailer do
           expect(body_string).to include("En cas d'empêchement, contactez-nous :")
           expect(body_string).to include("Site web : https://www.organisation.fr")
           expect(body_string).to include("Tel : 0101010101")
+        end
+      end
+
+      context "when the lieu doesn't have a phone number" do
+        before do
+          lieu.update!(phone_number: nil)
+        end
+
+        context "when the category configuration has a phone number" do
+          before do
+            category_configuration.update!(phone_number: "0101010102")
+          end
+
+          it "renders the category configuration phone number" do
+            expect(strip_tags(mail.body.encoded)).to include("Tel : 0101010102")
+          end
+        end
+
+        context "when the category configuration doesn't have a phone number" do
+          before do
+            category_configuration.update!(phone_number: nil)
+            organisation.update!(phone_number: "0101010103")
+          end
+
+          it "renders the organisation phone number" do
+            expect(strip_tags(mail.body.encoded)).to include("Tel : 0101010103")
+          end
         end
       end
     end
