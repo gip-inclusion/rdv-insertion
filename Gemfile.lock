@@ -2,20 +2,20 @@ GIT
   remote: https://github.com/betagouv/rdv-service-public.git
   revision: b76a872316df03c87f806782e61a870f4992263a
   branch: production
-  glob: lib/anonymizer/anonymizer.gemspec
-  specs:
-    anonymizer (0.1.0)
-      activerecord (>= 7.0)
-
-GIT
-  remote: https://github.com/betagouv/rdv-service-public.git
-  revision: b76a872316df03c87f806782e61a870f4992263a
-  branch: production
   glob: lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec
   specs:
     omniauth-rdv-service-public (0.1.1)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.8)
+
+GIT
+  remote: https://github.com/betagouv/rdv-service-public.git
+  revision: d6615530e34e91b0f770c1bafb3fdd2809a6700e
+  branch: production
+  glob: lib/anonymizer/anonymizer.gemspec
+  specs:
+    anonymizer (0.1.0)
+      activerecord (>= 7.0)
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
@@ -241,7 +241,7 @@ GEM
     jmespath (1.6.2)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.18.0)
+    json (2.18.1)
     json-schema (6.1.0)
       addressable (~> 2.8)
       bigdecimal (>= 3.1, < 5)
@@ -387,7 +387,7 @@ GEM
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
-    prism (1.8.0)
+    prism (1.9.0)
     prosopite (2.1.2)
     psych (5.3.1)
       date
