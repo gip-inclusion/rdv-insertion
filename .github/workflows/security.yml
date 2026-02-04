@@ -100,8 +100,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # For gitleaks history scan
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -151,6 +149,33 @@ jobs:
           echo "### Yarn Audit" >> $GITHUB_STEP_SUMMARY
           echo "Unallowed high vulnerabilities: $UNALLOWED" >> $GITHUB_STEP_SUMMARY
 
+      - name: Check results
+        run: |
+          FAILED=false
+
+          if [ "${{ steps.bundler-audit.outputs.high_crit }}" -gt 0 ]; then
+            echo "::error::High/critical Ruby vulnerabilities found"
+            FAILED=true
+          fi
+
+          if [ "${{ steps.yarn-audit.outputs.unallowed }}" -gt 0 ]; then
+            echo "::error::High severity JS vulnerabilities found"
+            FAILED=true
+          fi
+
+          if [ "$FAILED" == "true" ]; then
+            exit 1
+          fi
+
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Gitleaks (PR - changed files only)
         if: github.event_name == 'pull_request'
         id: gitleaks-pr
@@ -189,24 +214,8 @@ jobs:
 
       - name: Check results
         run: |
-          FAILED=false
-
-          if [ "${{ steps.bundler-audit.outputs.high_crit }}" -gt 0 ]; then
-            echo "::error::High/critical Ruby vulnerabilities found"
-            FAILED=true
-          fi
-
-          if [ "${{ steps.yarn-audit.outputs.unallowed }}" -gt 0 ]; then
-            echo "::error::High severity JS vulnerabilities found"
-            FAILED=true
-          fi
-
           if [ "${{ steps.gitleaks-pr.outputs.leaks_found }}" == "true" ] || [ "${{ steps.gitleaks-full.outputs.leaks_found }}" == "true" ]; then
             echo "::error::Secrets detected in code"
-            FAILED=true
-          fi
-
-          if [ "$FAILED" == "true" ]; then
             exit 1
           fi
 
@@ -234,7 +243,7 @@ jobs:
     name: Security Report
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    needs: [code-scan, dependency-scan]
+    needs: [code-scan, dependency-scan, secrets-scan]
 
     steps:
       - uses: actions/checkout@v4

@@ -52,6 +52,9 @@ regexes = [
   '''<secret>''',
   '''<api_key>''',
   '''<token>''',
+  # swagger API documentation example values
+  '''SFYBngO55ImjD1HOcv-ivQ''',
+  '''Z6EihQAY9NWsZByfZ47i_Q''',
 ]
 
 # Stopwords (words that indicate examples, not real secrets)
