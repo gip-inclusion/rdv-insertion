@@ -68,14 +68,14 @@ jobs:
         if: always()
         run: brakeman --format sarif --output brakeman.sarif --confidence-level 2 -i config/brakeman.ignore . || true
 
-      - uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: brakeman.sarif
           category: brakeman
         continue-on-error: true
 
-      - uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: semgrep.sarif
@@ -180,7 +180,7 @@ jobs:
             --report-format sarif \
             --report-path /repo/gitleaks.sarif || echo "leaks_found=true" >> $GITHUB_OUTPUT
 
-      - uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v4
         if: always() && hashFiles('gitleaks.sarif') != ''
         with:
           sarif_file: gitleaks.sarif
