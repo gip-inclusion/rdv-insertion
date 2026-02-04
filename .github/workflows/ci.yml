@@ -18,7 +18,7 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
       - name: Cache js dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: node_modules-${{ hashFiles('yarn.lock') }}
           path: node_modules
@@ -63,7 +63,7 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
       - name: Cache js dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: node_modules-${{ hashFiles('yarn.lock') }}
           path: node_modules
@@ -76,7 +76,7 @@ jobs:
           mkdir -p tmp
           ls spec/**/*.rb | grep -v spec/features > tmp/unit_spec_files.txt
       - name: Cache parallel test unit spec runtime log
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: unit-spec-runtime-log-${{ hashFiles('tmp/unit_spec_files.txt') }}
           path: tmp/parallel_runtime_rspec.log
@@ -131,7 +131,7 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
       - name: Cache js dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: node_modules-${{ hashFiles('yarn.lock') }}
           path: node_modules
