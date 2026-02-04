@@ -4,6 +4,8 @@ class SessionsController < ApplicationController
   respond_to :json, only: :create
   layout "website"
 
+  rate_limit_with_json_response limit: RATE_LIMITS[:sessions], only: [:new, :create]
+
   before_action :retrieve_agent!, :mark_agent_as_logged_in!,
                 :set_agent_return_to_url,
                 only: [:create]

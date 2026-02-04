@@ -1,0 +1,92 @@
+# Gitleaks configuration
+# Documentation: https://github.com/gitleaks/gitleaks
+
+title = "RDV-Insertion Gitleaks Configuration"
+
+[extend]
+# Use default Gitleaks rules
+useDefault = true
+
+# Paths to exclude from scan
+[allowlist]
+paths = [
+  # Test files (often contain fake secrets)
+  '''spec/.*''',
+  '''test/.*''',
+  '''tests/.*''',
+
+  # Documentation
+  '''docs/.*\.md$''',
+  '''README.*''',
+  '''CHANGELOG.*''',
+
+  # Example configurations (no real secrets)
+  '''\.env\.example$''',
+  '''config/.*\.example''',
+  '''\.env\.template$''',
+
+  # Assets/builds
+  '''public/packs/.*''',
+  '''public/assets/.*''',
+  '''node_modules/.*''',
+  '''vendor/.*''',
+
+  # Logs
+  '''log/.*''',
+  '''tmp/.*''',
+]
+
+# Patterns to ignore (known false positives)
+regexes = [
+  # UUID v4 (often false positives)
+  '''[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}''',
+
+  # Example secrets in documentation
+  '''example_api_key''',
+  '''your_secret_here''',
+  '''change_me''',
+  '''CHANGEME''',
+  '''placeholder''',
+  '''PLACEHOLDER''',
+  '''xxxxxxxx''',
+  '''<secret>''',
+  '''<api_key>''',
+  '''<token>''',
+]
+
+# Stopwords (words that indicate examples, not real secrets)
+stopwords = [
+  "example",
+  "test",
+  "fake",
+  "dummy",
+  "placeholder",
+  "changeme",
+  "your_key_here",
+  "your_secret_here",
+]
+
+# Custom rules (optional - complement default rules)
+[[rules]]
+id = "scalingo-api-token"
+description = "Scalingo API Token"
+regex = '''scalingo_[a-zA-Z0-9]{40}'''
+keywords = ["scalingo_"]
+
+[[rules]]
+id = "france-travail-client-secret"
+description = "France Travail OAuth Client Secret"
+regex = '''FRANCE_TRAVAIL_CLIENT_SECRET\s*=\s*['\"]?([a-zA-Z0-9_-]{32,})['\"]?'''
+keywords = ["FRANCE_TRAVAIL_CLIENT_SECRET"]
+
+[[rules]]
+id = "brevo-api-key"
+description = "Brevo (Sendinblue) API Key"
+regex = '''xkeysib-[a-f0-9]{64}'''
+keywords = ["xkeysib-", "brevo", "sendinblue"]
+
+[[rules]]
+id = "rdv-solidarites-secret"
+description = "RDV-Solidarités Shared Secret"
+regex = '''(SHARED_SECRET_FOR_AGENTS_AUTH|RDV_SOLIDARITES_SECRET)\s*=\s*['\"]?([^'\"\\s]{20,})['\"]?'''
+keywords = ["SHARED_SECRET_FOR_AGENTS_AUTH", "RDV_SOLIDARITES_SECRET"]

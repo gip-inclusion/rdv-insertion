@@ -4,6 +4,8 @@ module Brevo
 
     skip_before_action :authenticate_agent!, :verify_authenticity_token
 
+    rate_limit_with_json_response limit: RATE_LIMITS[:brevo_webhooks]
+
     PERMITTED_PARAMS = %i[
       email
       event

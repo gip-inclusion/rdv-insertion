@@ -1,5 +1,14 @@
 install: ## Setup development environment
 	bin/setup
+	@$(MAKE) setup-hooks
+
+setup-hooks: ## Install git pre-commit hooks (requires: brew install pre-commit gitleaks)
+	@if command -v pre-commit >/dev/null 2>&1; then \
+		pre-commit install; \
+		echo "✓ Pre-commit hooks installed"; \
+	else \
+		echo "⚠ pre-commit not found. Install with: brew install pre-commit gitleaks"; \
+	fi
 
 run: ## Start the application (web, jobs et webpack)
 	foreman s -f Procfile.dev

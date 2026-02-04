@@ -1,5 +1,7 @@
 module Website
   class StatsController < BaseController
+    rate_limit_with_json_response limit: RATE_LIMITS[:stats]
+
     skip_before_action :authenticate_agent!, only: [:index, :show, :deployment_map]
     before_action :set_organisation, :set_department, :set_stat, only: [:show]
     before_action :set_departments, only: [:index, :show]

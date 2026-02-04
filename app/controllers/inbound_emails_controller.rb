@@ -1,6 +1,8 @@
 class InboundEmailsController < ApplicationController
   skip_before_action :authenticate_agent!, :verify_authenticity_token
 
+  rate_limit_with_json_response limit: RATE_LIMITS[:inbound_emails]
+
   before_action :authenticate_brevo, :store_last_inbound_email_received_at
 
   def brevo

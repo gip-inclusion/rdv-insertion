@@ -1,0 +1,14 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "59a31608cb8eb14f0f9eec756ee31b7f80920ca125563ae875b7e67bf4142fa3",
+      "note": "Webhook controller intentionally accepts variable payload structure from RdvSolidarites. Data is validated in background jobs."
+    },
+    {
+      "fingerprint": "a615c255718a8b7cce0d03a0d40ecc2903b8e82411e84bd1ddf21660e3335a8f",
+      "note": "Webhook controller intentionally accepts variable meta structure from RdvSolidarites. Data is validated in background jobs."
+    }
+  ],
+  "updated": "2026-01-06",
+  "brakeman_version": "7.1.1"
+}

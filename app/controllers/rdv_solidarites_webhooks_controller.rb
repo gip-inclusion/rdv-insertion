@@ -2,6 +2,8 @@ class RdvSolidaritesWebhooksController < ApplicationController
   skip_before_action :authenticate_agent!
   skip_forgery_protection
 
+  rate_limit_with_json_response limit: RATE_LIMITS[:rdv_solidarites_webhooks]
+
   include FilterRdvSolidaritesWebhooksConcern
 
   def create

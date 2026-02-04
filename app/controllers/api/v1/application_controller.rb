@@ -4,6 +4,11 @@ module Api
       skip_before_action :verify_authenticity_token
       respond_to :json
 
+      include RateLimitingConcern
+      include MaliciousAgentBlockingConcern
+
+      rate_limit_with_json_response limit: RATE_LIMITS[:default], period: 5.minutes
+
       before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
                     :set_current_agent
       after_action :log_api_call
