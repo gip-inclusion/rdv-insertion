@@ -261,7 +261,7 @@ jobs:
           yarn install --frozen-lockfile --ignore-scripts
           yarn audit --json > "tmp/security-reports/yarn-${DATE}.json" || true
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: security-report-${{ github.run_id }}
           path: tmp/security-reports/
