@@ -221,7 +221,7 @@ jobs:
 
       - name: PR Comment on secrets found
         if: failure() && github.event_name == 'pull_request' && (steps.gitleaks-pr.outputs.leaks_found == 'true')
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.createComment({
