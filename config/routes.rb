@@ -107,10 +107,6 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         get :default_list
-        scope module: :users do
-          resources :uploads, only: [:new]
-          get "uploads/category_selection", to: "uploads#category_selection"
-        end
       end
       scope module: :users do
         resources :follow_ups, only: [:index]
@@ -220,10 +216,6 @@ Rails.application.routes.draw do
     end
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
-        scope module: :users do
-          resources :uploads, only: [:new]
-          get "uploads/category_selection", to: "uploads#category_selection"
-        end
         get :default_list
       end
       scope module: :users do
