@@ -386,16 +386,16 @@ describe UserListUpload::UserRow do
     end
   end
 
-  describe "#assign_selection_for_user_save" do
+  describe "#auto_select_for_user_save" do
     let(:user_list_upload) { create(:user_list_upload) }
 
-    context "when user row is not selected and becomes selectable after update" do
+    context "when user row is not selected and becomes saveable after update" do
       let(:user_row) do
         create(:user_row, user_list_upload:, first_name: nil, selected_for_user_save: false)
       end
 
       before do
-        allow(user_row).to receive(:selectable_for_user_save?).and_return(true)
+        allow(user_row).to receive(:user_saveable?).and_return(true)
       end
 
       it "automatically selects the user row for save" do
@@ -404,13 +404,13 @@ describe UserListUpload::UserRow do
       end
     end
 
-    context "when user row is not selected and is still not selectable after update" do
+    context "when user row is not selected and is still not saveable after update" do
       let(:user_row) do
         create(:user_row, user_list_upload:, first_name: nil, selected_for_user_save: false)
       end
 
       before do
-        allow(user_row).to receive(:selectable_for_user_save?).and_return(false)
+        allow(user_row).to receive(:user_saveable?).and_return(false)
       end
 
       it "does not select the user row" do
@@ -430,13 +430,13 @@ describe UserListUpload::UserRow do
       end
     end
 
-    context "when user explicitly deselects the row" do
+    context "when user explicitly deselects the row in the same transaction" do
       let(:user_row) do
         create(:user_row, user_list_upload:, first_name: "Jane", selected_for_user_save: true)
       end
 
       before do
-        allow(user_row).to receive(:selectable_for_user_save?).and_return(true)
+        allow(user_row).to receive(:user_saveable?).and_return(true)
       end
 
       it "does not reselect the user row" do
