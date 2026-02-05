@@ -51,7 +51,7 @@
             <span class="attribute-label">Organisations :</span>
             <% if user_row.organisations.any? %>
               <% user_row.organisations.each do |organisation| %>
-                <span class="badge badge-tag <%= badge_class_for_user_row_organisation(user_row, organisation) %>"><%= organisation.name %></span>
+                <span class="badge badge-tag <%= specific_badge_class_for_user_row_organisation(user_row, organisation) %>"><%= organisation.name %></span>
               <% end %>
             <% else %>
               <span>
@@ -70,7 +70,7 @@
             <span class="attribute-label">Suivi sur :</span>
             <% if user_row.motif_categories.any? %>
               <% user_row.motif_categories.each do |motif_category| %>
-                <span class="badge badge-tag <%= badge_class_for_user_row_motif_category(user_row, motif_category) %>"><%= motif_category.name %><%= " (dossier traité)" if user_row.user.follow_up_for(motif_category)&.closed? %></span>
+                <span class="badge badge-tag <%= specific_badge_class_for_user_row_motif_category(user_row, motif_category) %>"><%= motif_category.name %><%= " (dossier traité)" if user_row.user.follow_up_for(motif_category)&.closed? %></span>
               <% end %>
             <% else %>
               <span> - </span>

@@ -2,6 +2,9 @@
 class UserListUpload::UserRow < ApplicationRecord
   include UserListUpload::UserRow::Status
   include UserListUpload::UserRow::MatchingUser
+  include UserListUpload::UserRow::Selectable
+  include UserListUpload::UserRow::Invitable
+  include UserListUpload::UserRow::UserSaveable
 
   has_paper_trail
 
@@ -13,13 +16,10 @@ class UserListUpload::UserRow < ApplicationRecord
   encrypts :nir
 
   before_save :format_attributes, :set_matching_user
-  before_create :assign_default_selection
-  after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
+  before_save :auto_select_for_user_save, if: :should_auto_select_for_user_save?
 
   belongs_to :user_list_upload
   belongs_to :matching_user, class_name: "User", optional: true
-  has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", dependent: :destroy
-  has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", dependent: :destroy
 
   delegate :motif_category, :organisations, to: :user_list_upload, prefix: true
   delegate :department, :department_number, :department_id, :restricted_user_attributes, :department_level?, :origin,
@@ -71,10 +71,6 @@ class UserListUpload::UserRow < ApplicationRecord
     user_for_display.errors
   end
 
-  def saved_user
-    user_save_attempts.find(&:success?)&.user
-  end
-
   def matching_user_attribute_changed?(attribute)
     matching_user&.changed&.include?(attribute.to_s)
   end
@@ -102,10 +98,6 @@ class UserListUpload::UserRow < ApplicationRecord
 
   def matching_user_accessible?
     matching_user_id && matching_user.organisations.intersect?(user_list_upload.organisations)
-  end
-
-  def saved_user_id
-    saved_user&.id
   end
 
   def user_id
@@ -209,76 +201,6 @@ class UserListUpload::UserRow < ApplicationRecord
       user.referents != referents || user.tags != tags
   end
 
-  def save_user
-    UserListUpload::UserSaveAttempt.create_from_row(user_row: self)
-  end
-
-  def attempted_user_save?
-    user_save_attempts.any?
-  end
-
-  def last_user_save_attempt
-    user_save_attempts.max_by(&:created_at)
-  end
-
-  def user_save_succeeded?
-    last_user_save_attempt&.success?
-  end
-
-  def invitable?
-    user.persisted? && user.can_be_invited_through_phone_or_email? && !invited_less_than_24_hours_ago?
-  end
-
-  def invited_less_than_24_hours_ago?
-    previously_invited? && previously_invited_at > 24.hours.ago
-  end
-
-  def previously_invited?
-    previous_invitations.any?
-  end
-
-  def previously_invited_at
-    previous_invitations.max_by(&:created_at).created_at
-  end
-
-  def previous_invitations
-    @previous_invitations ||= user.invitations.select do |invitation|
-      # we don't consider the user as invited here if the invitation has not been sent by email or sms
-      invitation.format.in?(%w[email sms]) &&
-        invitation.motif_category_id == user_list_upload.motif_category_id &&
-        !invitation.delivery_failed?
-    end
-  end
-
-  def invite_user_by(format)
-    UserListUpload::InvitationAttempt.create_from_row(user_row: self, format:)
-  end
-
-  def invite_user
-    invite_user_by("email") if can_be_invited_through?("email")
-    invite_user_by("sms") if can_be_invited_through?("sms")
-  end
-
-  def invitation_attempted?
-    invitation_attempts.any?
-  end
-
-  def last_invitation_attempt
-    invitation_attempts.max_by(&:created_at)
-  end
-
-  def invitation_errors
-    invitation_attempts.flat_map(&:service_errors)
-  end
-
-  def all_invitations_failed?
-    invitation_attempted? && invitation_attempts.none?(&:success?)
-  end
-
-  def invitation_succeeded?
-    invitation_attempts.any?(&:success?)
-  end
-
   # rubocop:disable Metrics/AbcSize
   def format_attributes
     # formatting attributes
@@ -294,24 +216,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
   # rubocop:enable Metrics/AbcSize
 
-  def assign_default_selection
-    select_for_user_save! if selectable_by_default_for_user_save?
-    select_for_invitation! if selectable_by_default_for_invitation?
-  end
-
   private
-
-  def enqueue_save_user_job
-    UserListUpload::SaveUserJob.perform_later(id)
-  end
-
-  def should_save_user_automatically?
-    # automatic saves can only be triggered when a save has been attempted and when we change
-    # some attributes
-    attempted_user_save? && previous_changes.keys.any? do |attribute|
-      (USER_ATTRIBUTES + [:assigned_organisation_id]).include?(attribute.to_sym)
-    end
-  end
 
   def user_attributes
     symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES).tap do |attributes|
@@ -364,20 +269,8 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def select_for_user_save!
-    self.selected_for_user_save = true
-  end
-
-  def select_for_invitation!
-    self.selected_for_invitation = true
-  end
-
-  def selectable_by_default_for_user_save?
-    user_list_upload.handle_user_save? && user_valid? && !archived? && !matching_user_follow_up_closed?
-  end
-
-  def selectable_by_default_for_invitation?
-    user_list_upload.handle_invitation_only? && invitable?
+  def editable_attribute_changed?
+    changed.intersect?(EDITABLE_ATTRIBUTES.map(&:to_s))
   end
 end
 # rubocop:enable Metrics/ClassLength

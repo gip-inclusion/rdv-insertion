@@ -386,6 +386,66 @@ describe UserListUpload::UserRow do
     end
   end
 
+  describe "#auto_select_for_user_save" do
+    let(:user_list_upload) { create(:user_list_upload) }
+
+    context "when user row is not selected and becomes saveable after update" do
+      let(:user_row) do
+        create(:user_row, user_list_upload:, first_name: nil, selected_for_user_save: false)
+      end
+
+      before do
+        allow(user_row).to receive(:auto_selectable?).and_return(true)
+      end
+
+      it "automatically selects the user row for save" do
+        user_row.update!(first_name: "John")
+        expect(user_row.reload.selected_for_user_save).to be true
+      end
+    end
+
+    context "when user row is not selected and is still not saveable after update" do
+      let(:user_row) do
+        create(:user_row, user_list_upload:, first_name: nil, selected_for_user_save: false)
+      end
+
+      before do
+        allow(user_row).to receive(:auto_selectable?).and_return(false)
+      end
+
+      it "does not select the user row" do
+        user_row.update!(first_name: "John")
+        expect(user_row.reload.selected_for_user_save).to be false
+      end
+    end
+
+    context "when user row is already selected" do
+      let(:user_row) do
+        create(:user_row, user_list_upload:, first_name: "Jane", selected_for_user_save: true)
+      end
+
+      it "keeps the user row selected" do
+        user_row.update!(first_name: "John")
+        expect(user_row.reload.selected_for_user_save).to be true
+      end
+    end
+
+    context "when user explicitly deselects the row in the same transaction" do
+      let(:user_row) do
+        create(:user_row, user_list_upload:, first_name: "Jane", selected_for_user_save: true)
+      end
+
+      before do
+        allow(user_row).to receive(:auto_selectable?).and_return(true)
+      end
+
+      it "does not reselect the user row" do
+        user_row.update!(selected_for_user_save: false)
+        expect(user_row.reload.selected_for_user_save).to be false
+      end
+    end
+  end
+
   describe "status methods" do
     let(:user_list_upload) { create(:user_list_upload) }
     let(:user_row) { create(:user_row, user_list_upload: user_list_upload) }

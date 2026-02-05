@@ -1,7 +1,8 @@
 # rubocop:disable Metrics/ModuleLength
 module UserListUpload::UserListUploadHelper
-  ARCHIVED_BADGE_CLASSES = "background-brown-light text-brown".freeze
-  NEW_BADGE_CLASSES      = "background-green-light text-dark-green".freeze
+  ARCHIVED_BADGE_CLASS = "background-brown-light text-brown".freeze
+  NEW_BADGE_CLASS      = "background-green-light text-dark-green".freeze
+  FOLLOW_UP_CLOSED_BADGE_CLASS = "background-dark-green text-white".freeze
 
   def rows_with_errors?
     params[:rows_with_errors].present?
@@ -70,21 +71,16 @@ module UserListUpload::UserListUploadHelper
     user_row.matching_user_attribute_changed?(attribute) || user_row.attribute_changed_by_cnaf_data?(attribute)
   end
 
-  def badge_class_for_user_row_organisation(user_row, organisation)
-    already_persisted = user_row.association_already_persisted?(organisation, :organisations)
-    archived_in_org   = user_row.archives.any? { |a| a.organisation_id == organisation.id }
+  def specific_badge_class_for_user_row_organisation(user_row, organisation)
+    return NEW_BADGE_CLASS unless user_row.association_already_persisted?(organisation, :organisations)
 
-    archived = already_persisted && archived_in_org
-    return ARCHIVED_BADGE_CLASSES if archived
-
-    NEW_BADGE_CLASSES unless already_persisted
+    ARCHIVED_BADGE_CLASS if user_row.archives.any? { |a| a.organisation_id == organisation.id }
   end
 
-  def badge_class_for_user_row_motif_category(user_row, motif_category)
-    already_persisted = user_row.association_already_persisted?(motif_category, :motif_categories)
-    return if already_persisted
+  def specific_badge_class_for_user_row_motif_category(user_row, motif_category)
+    return NEW_BADGE_CLASS unless user_row.association_already_persisted?(motif_category, :motif_categories)
 
-    NEW_BADGE_CLASSES
+    FOLLOW_UP_CLOSED_BADGE_CLASS if user_row.user.follow_up_for(motif_category)&.closed?
   end
 
   def tooltip_for_user_row_before_save(user_row)
