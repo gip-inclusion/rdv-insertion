@@ -2,6 +2,7 @@
 class UserListUpload::UserRow < ApplicationRecord
   include UserListUpload::UserRow::Status
   include UserListUpload::UserRow::MatchingUser
+  include UserListUpload::UserRow::Selectable
 
   has_paper_trail
 
@@ -12,8 +13,7 @@ class UserListUpload::UserRow < ApplicationRecord
 
   encrypts :nir
 
-  before_save :format_attributes, :set_matching_user, :assign_selection_for_user_save
-  before_create :assign_selection_for_invitation
+  before_save :format_attributes, :set_matching_user
   after_commit :enqueue_save_user_job, if: :should_save_user_automatically?, on: :update
 
   belongs_to :user_list_upload
@@ -294,11 +294,6 @@ class UserListUpload::UserRow < ApplicationRecord
   end
   # rubocop:enable Metrics/AbcSize
 
-  def assign_default_selection
-    assign_selection_for_user_save
-    assign_selection_for_invitation
-  end
-
   private
 
   def enqueue_save_user_job
@@ -364,25 +359,5 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
-  def assign_selection_for_user_save
-    return if selected_for_user_save?
-    return if selected_for_user_save_was # user explicitly deselected
-
-    self.selected_for_user_save = true if selectable_for_user_save?
-  end
-
-  def assign_selection_for_invitation
-    return if selected_for_invitation?
-
-    self.selected_for_invitation = true if selectable_for_invitation?
-  end
-
-  def selectable_for_user_save?
-    user_list_upload.handle_user_save? && user_valid? && !archived? && !matching_user_follow_up_closed?
-  end
-
-  def selectable_for_invitation?
-    user_list_upload.handle_invitation_only? && invitable?
-  end
 end
 # rubocop:enable Metrics/ClassLength
