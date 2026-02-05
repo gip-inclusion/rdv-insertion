@@ -1,15 +1,9 @@
 module UserListUpload::UserRow::Selectable
-  extend ActiveSupport::Concern
-
-  included do
-    before_save :auto_select_for_user_save, if: :should_auto_select_for_user_save?
-  end
-
   def assign_default_selection
     if user_list_upload.handle_invitation_only?
       self.selected_for_invitation = invitable?
     else
-      self.selected_for_user_save = user_saveable?
+      self.selected_for_user_save = auto_selectable?
     end
   end
 
@@ -22,18 +16,14 @@ module UserListUpload::UserRow::Selectable
   end
 
   def auto_select_for_user_save
-    self.selected_for_user_save = user_saveable?
+    self.selected_for_user_save = auto_selectable?
   end
 
   def being_deselected_in_same_transaction?
     selected_for_user_save_changed? && selected_for_user_save_was == true
   end
 
-  def editable_attribute_changed?
-    (changed & self.class::EDITABLE_ATTRIBUTES.map(&:to_s)).any?
-  end
-
-  def user_saveable?
+  def auto_selectable?
     user_valid? && !archived? && !matching_user_follow_up_closed?
   end
 end

@@ -395,7 +395,7 @@ describe UserListUpload::UserRow do
       end
 
       before do
-        allow(user_row).to receive(:user_saveable?).and_return(true)
+        allow(user_row).to receive(:auto_selectable?).and_return(true)
       end
 
       it "automatically selects the user row for save" do
@@ -410,7 +410,7 @@ describe UserListUpload::UserRow do
       end
 
       before do
-        allow(user_row).to receive(:user_saveable?).and_return(false)
+        allow(user_row).to receive(:auto_selectable?).and_return(false)
       end
 
       it "does not select the user row" do
@@ -436,7 +436,7 @@ describe UserListUpload::UserRow do
       end
 
       before do
-        allow(user_row).to receive(:user_saveable?).and_return(true)
+        allow(user_row).to receive(:auto_selectable?).and_return(true)
       end
 
       it "does not reselect the user row" do

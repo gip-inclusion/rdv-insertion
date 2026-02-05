@@ -359,5 +359,8 @@ class UserListUpload::UserRow < ApplicationRecord
     end
   end
 
+  def editable_attribute_changed?
+    changed.intersect?(EDITABLE_ATTRIBUTES.map(&:to_s))
+  end
 end
 # rubocop:enable Metrics/ClassLength
