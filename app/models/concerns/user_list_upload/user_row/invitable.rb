@@ -38,19 +38,19 @@ module UserListUpload::UserRow::Invitable
     invitation_attempts.any?(&:success?)
   end
 
-  private
-
   def previously_invited?
     previous_invitations.any?
+  end
+
+  def previously_invited_at
+    previous_invitations.max_by(&:created_at).created_at
   end
 
   def invited_less_than_24_hours_ago?
     previously_invited? && previously_invited_at > 24.hours.ago
   end
 
-  def previously_invited_at
-    previous_invitations.max_by(&:created_at).created_at
-  end
+  private
 
   def previous_invitations
     @previous_invitations ||= user.invitations.select do |invitation|
