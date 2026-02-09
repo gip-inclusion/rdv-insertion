@@ -16,7 +16,10 @@
                         attribute: :logos_to_display,
                         as: :collection_check_boxes,
                         collection: messages_configuration_logo_types_collection,
-                        align: "start"
+                        align: "start",
+                        tooltip: {
+                          content: "Le logo de l’organisation s’affiche par défaut s’il est renseigné dans les informations."
+                        }
                         %>
               <%= render "common/attribute_input_inline",
                       f: f,

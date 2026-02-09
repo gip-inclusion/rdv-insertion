@@ -11,7 +11,10 @@
         <div class="p-3">
           <%= render "common/attribute_display_inline",
                     label: MessagesConfiguration.human_attribute_name(:logos_to_display),
-                    value: messages_configuration.logos_to_display_names %>
+                    value: messages_configuration.logos_to_display_names,
+                    tooltip: {
+                      content: "Le logo de l’organisation s’affiche par défaut s’il est renseigné dans les informations."
+                    } %>
 
           <%= render "common/attribute_display_inline",
                     label: "Signature texte",
