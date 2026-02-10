@@ -1,0 +1,16 @@
+<% if department_level? %>
+  <h5 class="mb-0 pb-2"><strong>Il n'y a pas encore d'usagers dans votre département</strong></h5>
+  <p class="mb-0 pb-2">Configurez une organisation pour inviter les usagers à prendre rendez-vous.</p>
+<% else %>
+  <% if authorized_any?(current_organisations, :configure) %>
+    <h5 class="mb-0 pb-2"><strong>Il n'y a pas encore d'usagers dans votre organisation</strong></h5>
+    <p class="mb-0 pb-2">Commencez par configurer l'organisation pour inviter les usagers à prendre rendez-vous.</p>
+    <%= link_to organisation_configuration_informations_path(@organisation), class: "btn btn-blue mt-3" do %>
+      Configurer l'organisation
+    <% end %>
+  <% else %>
+    <h5 class="mb-0 pb-2"><strong>L'organisation n'est pas encore prête</strong></h5>
+    <p class="mb-0 pb-2">Certains paramètres doivent être configurés pour utiliser rdv-insertion.</p>
+    <p class="mb-0 pb-2">Rapprochez-vous de votre administrateur pour finaliser la « configuration de l'organisation ».</p>
+  <% end %>
+<% end %>

@@ -1,0 +1,16 @@
+<ul data-controller="drag" data-drag-url="<%= structure_category_configurations_positions_update_path %>" class="<%= "draggable" if authorized_all?(current_organisations, :configure) %> nav">
+  <% @all_configurations.each do |category_configuration| %>
+    <li class="nav-item pb-0" data-id="<%= category_configuration.id %>">
+      <%= link_to structure_users_path(motif_category_id: category_configuration.motif_category_id), class: "nav-link d-flex align-items-center #{category_configuration.id == @current_category_configuration&.id ? 'active' : ''}" do %>
+        <%= category_configuration.motif_category_name %>
+        <% if authorized_all?(current_organisations, :configure) && @all_configurations.size > 1 %>
+          <i
+            class="ri-draggable"
+            <%= tooltip(content: "Vous pouvez réorganiser l'ordre d'affichage des catégories en les faisant glisser-déposer.") %>
+          >
+          </i>
+        <% end %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
