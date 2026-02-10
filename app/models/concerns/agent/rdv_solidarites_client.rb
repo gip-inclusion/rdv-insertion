@@ -1,6 +1,6 @@
 module Agent::RdvSolidaritesClient
   def rdv_solidarites_client
-    RdvSolidaritesClient.new(auth_headers: rdv_solidarites_auth_headers_with_shared_secret)
+    @rdv_solidarites_client ||= RdvSolidaritesClient.new(auth_headers: rdv_solidarites_auth_headers_with_shared_secret)
   end
 
   private
