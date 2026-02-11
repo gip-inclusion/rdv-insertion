@@ -1198,6 +1198,213 @@ RSpec.describe NotificationMailer do
     end
   end
 
+  describe "#visio_participation_created" do
+    let!(:motif) do
+      create(
+        :motif, location_type: "visio",
+                instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+      )
+    end
+    let!(:rdv) do
+      create(
+        :rdv, motif: motif, lieu: nil, participations: [participation],
+              starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation,
+              visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+      )
+    end
+    let!(:mail) do
+      described_class.with(notification: notification).visio_participation_created
+    end
+
+    it "renders the headers" do
+      expecting_mail_to_have_correct_headers
+    end
+
+    it "renders the signature" do
+      expect(mail.body.encoded).to match("Signé par la DINUM")
+    end
+
+    context "for rsa orientation" do
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Vous êtes convoqué à un rendez-vous d'orientation par visioconférence"
+        )
+      end
+
+      it "renders the body" do
+        body_string = strip_tags(mail.body.encoded)
+        expect(body_string).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué" \
+          " à un rendez-vous d'orientation par visioconférence pour démarrer un parcours d'accompagnement"
+        )
+        expect(body_string).to include("Votre rendez-vous par visioconférence")
+        expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
+        expect(body_string).to include("https://webconf.numerique.gouv.fr/RdvServicePublic123")
+        expect(body_string).to include("Ce rendez-vous est obligatoire")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité")
+        expect(body_string).not_to include(
+          "En cas d'absence, votre RSA pourra être suspendu ou réduit."
+        )
+        expect(body_string).to include("En cas d'empêchement, contactez-nous :")
+      end
+    end
+
+    context "for rsa accompagnement" do
+      let!(:motif_category) { category_rsa_accompagnement }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Vous êtes convoqué à un rendez-vous d'accompagnement par visioconférence"
+        )
+      end
+
+      it "renders the body" do
+        body_string = strip_tags(mail.body.encoded)
+        expect(body_string).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué" \
+          " à un rendez-vous d'accompagnement par visioconférence"
+        )
+        expect(body_string).to include("Votre rendez-vous par visioconférence")
+        expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
+        expect(body_string).to include("https://webconf.numerique.gouv.fr/RdvServicePublic123")
+        expect(body_string).to include("Ce rendez-vous est obligatoire")
+        expect(body_string).to include(
+          "En cas d'absence, votre RSA pourra être suspendu ou réduit."
+        )
+        expect(body_string).to include("En cas d'empêchement, contactez-nous :")
+      end
+    end
+  end
+
+  describe "#visio_participation_updated" do
+    let!(:motif) do
+      create(
+        :motif, location_type: "visio",
+                instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+      )
+    end
+    let!(:rdv) do
+      create(
+        :rdv, motif: motif, lieu: nil, participations: [participation],
+              starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation,
+              visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+      )
+    end
+    let!(:mail) do
+      described_class.with(notification: notification).visio_participation_updated
+    end
+
+    it "renders the headers" do
+      expecting_mail_to_have_correct_headers
+    end
+
+    it "renders the signature" do
+      expect(mail.body.encoded).to match("Signé par la DINUM")
+    end
+
+    context "for rsa orientation" do
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'orientation par visioconférence a été modifié"
+        )
+      end
+
+      it "renders the body" do
+        body_string = strip_tags(mail.body.encoded)
+        expect(body_string).to include(
+          "Votre rendez-vous d'orientation par visioconférence dans le cadre de votre RSA a été modifié"
+        )
+        expect(body_string).to include("Votre rendez-vous par visioconférence")
+        expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
+        expect(body_string).to include("https://webconf.numerique.gouv.fr/RdvServicePublic123")
+        expect(body_string).to include("Ce rendez-vous est obligatoire")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).not_to include(
+          "En cas d'absence, votre RSA pourra être suspendu ou réduit."
+        )
+        expect(body_string).to include("En cas d'empêchement, contactez-nous :")
+      end
+    end
+
+    context "for rsa accompagnement" do
+      let!(:motif_category) { category_rsa_accompagnement }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'accompagnement par visioconférence a été modifié"
+        )
+      end
+
+      it "renders the body" do
+        body_string = strip_tags(mail.body.encoded)
+        expect(body_string).to include(
+          "Votre rendez-vous d'accompagnement par visioconférence dans le cadre de votre RSA a été modifié"
+        )
+        expect(body_string).to include("Votre rendez-vous par visioconférence")
+        expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
+        expect(body_string).to include("https://webconf.numerique.gouv.fr/RdvServicePublic123")
+        expect(body_string).to include("Ce rendez-vous est obligatoire")
+        expect(body_string).to include(
+          "En cas d'absence, votre RSA pourra être suspendu ou réduit."
+        )
+        expect(body_string).to include("En cas d'empêchement, contactez-nous :")
+      end
+    end
+  end
+
+  describe "#visio_participation_reminder" do
+    let!(:motif) do
+      create(
+        :motif, location_type: "visio",
+                instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+      )
+    end
+    let!(:rdv) do
+      create(
+        :rdv, motif: motif, lieu: nil, participations: [participation],
+              starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation,
+              visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+      )
+    end
+    let!(:mail) do
+      described_class.with(notification: notification).visio_participation_reminder
+    end
+
+    it "renders the headers" do
+      expecting_mail_to_have_correct_headers
+    end
+
+    it "renders the signature" do
+      expect(mail.body.encoded).to match("Signé par la DINUM")
+    end
+
+    context "for rsa orientation" do
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Rappel - RSA] Vous êtes convoqué à un rendez-vous d'orientation par visioconférence"
+        )
+      end
+
+      it "renders the body" do
+        body_string = strip_tags(mail.body.encoded)
+        expect(body_string).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à " \
+          "un rendez-vous d'orientation par visioconférence"
+        )
+        expect(body_string).to include("Nous vous rappelons :")
+        expect(body_string).to include("Votre rendez-vous par visioconférence")
+        expect(body_string).to include("lundi 20 décembre 2021 à 12h00")
+        expect(body_string).to include("https://webconf.numerique.gouv.fr/RdvServicePublic123")
+        expect(body_string).to include("Ce rendez-vous est obligatoire")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).not_to include(
+          "En cas d'absence, votre RSA pourra être suspendu ou réduit."
+        )
+        expect(body_string).to include("En cas d'empêchement, contactez-nous :")
+      end
+    end
+  end
+
   def expecting_mail_to_have_correct_headers
     expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
     expect(mail.to).to eq([user.email])
