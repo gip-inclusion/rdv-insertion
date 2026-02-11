@@ -1,5 +1,6 @@
 class NotificationMailerError < StandardError; end
 
+# rubocop:disable Metrics/ClassLength
 class NotificationMailer < ApplicationMailer
   include ActsAsRdvSolidaritesConcern
 
@@ -53,6 +54,28 @@ class NotificationMailer < ApplicationMailer
     mail(
       subject: "[Rappel - #{@rdv_subject.upcase}] Vous êtes #{@user.conjugate('convoqué')}" \
                " à un #{@rdv_title_by_phone}"
+    )
+  end
+
+  ### visio ###
+
+  def visio_participation_created
+    mail(
+      subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@user.conjugate('convoqué')}" \
+               " à un #{@rdv_title} par visioconférence"
+    )
+  end
+
+  def visio_participation_updated
+    mail(
+      subject: "[Important - #{@rdv_subject.upcase}] Votre #{@rdv_title} par visioconférence a été modifié"
+    )
+  end
+
+  def visio_participation_reminder
+    mail(
+      subject: "[Rappel - #{@rdv_subject.upcase}] Vous êtes #{@user.conjugate('convoqué')}" \
+               " à un #{@rdv_title} par visioconférence"
     )
   end
 
@@ -154,3 +177,4 @@ class NotificationMailer < ApplicationMailer
     )
   end
 end
+# rubocop:enable Metrics/ClassLength

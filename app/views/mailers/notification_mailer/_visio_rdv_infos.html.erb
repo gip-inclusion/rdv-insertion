@@ -1,0 +1,20 @@
+<hr class="info-separator">
+
+<div class="info-block">
+  <div>🕐</div>
+  <div>
+    Votre rendez-vous par visioconférence
+    <p><strong><%= I18n.l(rdv.starts_at, format: :human) %></strong></p>
+  </div>
+</div>
+
+<hr class="info-separator">
+
+<div class="info-block">
+  <div>💻</div>
+  <div>
+    Vous devez vous connecter sur ce lien : <p><strong><%= link_to rdv.visio_url, rdv.visio_url %></strong></p>
+  </div>
+</div>
+
+<hr class="info-separator">
