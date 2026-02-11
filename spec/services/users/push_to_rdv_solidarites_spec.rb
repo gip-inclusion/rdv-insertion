@@ -305,7 +305,7 @@ describe Users::PushToRdvSolidarites, type: :service do
             .with(
               user_attributes:
                 rdv_solidarites_user_attributes.except(:email)
-                                               .merge(organisation_ids: [rdv_solidarites_organisation_id])
+                .merge(organisation_ids: [rdv_solidarites_organisation_id])
             )
           subject
         end
