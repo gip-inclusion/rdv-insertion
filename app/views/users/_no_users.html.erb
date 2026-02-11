@@ -1,0 +1,18 @@
+<%= image_tag "illustrations/empty-results.png", alt: "Illustration pas de résultats", class: "mt-5 mb-3", width: 250 %>
+<% if no_users_matching_filters?(@users) %>
+  <h4 class="mb-0 pb-2">Pas de résultat(s)</h4>
+  <p class="mb-0 pb-2">Aucun dossier usager ne correspond aux filtres sélectionnés</p>
+  <p class="mb-0 pb-3">Vous pouvez essayer de modifier les filtres ou utiliser la recherche</p>
+<% elsif no_search_results?(@users) %>
+  <h4 class="mb-0 pb-2">Pas de résultat(s)</h4>
+  <p class="mb-0 pb-2">Aucun dossier usager ne correspond à votre recherche</p>
+  <p class="mb-0 pb-3">Vous pouvez essayer de lancer une nouvelle recherche ou utiliser les filtres</p>
+<% elsif archived_scope?(@users_scope) %>
+  <h5 class="mb-0 pb-2"><strong>Il n'y a pas encore d'usagers archivés</strong></h5>
+<% elsif @all_configurations.empty? %>
+  <%= render "empty_state" %>
+<% else %>
+  <h5 class="mb-0 pb-2"><strong>Il n'y a pas encore d'usagers</strong></h5>
+  <p class="mb-0 pb-2">Vous pouvez <%= link_to("importer des usagers", new_structure_user_list_uploads_category_selection_path, class: "link-blue-underlined") %>
+   ou <%= link_to("ajouter un usager manuellement", new_structure_user_path, class: "link-blue-underlined") %> pour compléter cette liste</p>
+<% end %>

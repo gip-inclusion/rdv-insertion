@@ -1,0 +1,11 @@
+<ul class="nav">
+  <li class="nav-item pb-0">
+    <% if authorized_any?(current_organisations, :configure) %>
+      <%= link_to new_organisation_category_configuration_path(@organisation), class: "nav-link nav-link-primary" do %>
+        + Créer une catégorie
+      <% end %>
+    <% else %>
+      <span class="nav-link text-muted">Aucune catégorie configurée</span>
+    <% end %>
+  </li>
+</ul>

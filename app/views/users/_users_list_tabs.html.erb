@@ -6,22 +6,11 @@
         <%= link_to "Tous les contacts", structure_users_path, class: "nav-link #{@current_category_configuration.present? || archived_scope?(@users_scope) ? '' : 'active'}" %>
       </li>
       <li class="pb-0">
-        <ul data-controller="drag" data-drag-url="<%= structure_category_configurations_positions_update_path %>" class="<%= "draggable" if authorized_all?(current_organisations, :configure) %> nav">
-          <% @all_configurations.each do |category_configuration| %>
-            <li class="nav-item pb-0" data-id="<%= category_configuration.id %>">
-              <%= link_to structure_users_path(motif_category_id: category_configuration.motif_category_id), class: "nav-link d-flex align-items-center #{category_configuration.id == @current_category_configuration&.id ? 'active' : ''}" do %>
-                <%= category_configuration.motif_category_name %>
-                <% if authorized_all?(current_organisations, :configure) && @all_configurations.size > 1 %>
-                  <i
-                    class="ri-draggable"
-                    <%= tooltip(content: "Vous pouvez réorganiser l'ordre d'affichage des catégories en les faisant glisser-déposer.") %>
-                  >
-                  </i>
-                <% end %>
-              <% end %>
-            </li>
-          <% end %>
-        </ul>
+        <% if @all_configurations.any? %>
+          <%= render "users/tabs/category_configurations" %>
+        <% elsif !department_level? %>
+          <%= render "users/tabs/no_category_configuration" %>
+        <% end %>
       </li>
       <li class="nav-item pb-0">
         <%= link_to "Archivés", structure_users_path(users_scope: "archived"), class: "nav-link #{archived_scope?(@users_scope) ? 'active' : ''}" %>

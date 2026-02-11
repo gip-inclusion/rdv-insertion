@@ -125,8 +125,13 @@
 .nav {
   .nav-link {
     color: $alt-grey;
-  
+
     &.active {
+      color: $dark-blue;
+      font-weight: 600;
+    }
+
+    &.nav-link-primary {
       color: $dark-blue;
       font-weight: 600;
     }
