@@ -4,32 +4,44 @@
       <h5 class="text-center my-2"><i class="ri-chat-1-line"></i> SMS</h5>
       <p class="text-center mt-2"><i class="ri-add-line"></i> Rdv créé</p>
       <div class="d-flex justify-content-center">
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <%= simple_format(@sms_contents[:presential_participation_created]) %>
         </div>
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
           <%= simple_format(@sms_contents[:by_phone_participation_created]) %>
+        </div>
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
+          <h6>**rdv par visio**</h6>
+          <%= simple_format(@sms_contents[:visio_participation_created]) %>
         </div>
       </div>
       <p class="text-center mt-2"><i class="ri-pencil-fill"></i> Rdv mis à jour<p>
       <div class="d-flex justify-content-center">
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <%= simple_format(@sms_contents[:presential_participation_updated]) %>
         </div>
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
           <%= simple_format(@sms_contents[:by_phone_participation_updated]) %>
+        </div>
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
+          <h6>**rdv par visio**</h6>
+          <%= simple_format(@sms_contents[:visio_participation_updated]) %>
         </div>
       </div>
       <p class="text-center mt-2"><i class="ri-notification-fill"></i> Rappel 2 jours avant le rdv</p>
       <div class="d-flex justify-content-center">
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <%= simple_format(@sms_contents[:presential_participation_reminder]) %>
         </div>
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
           <%= simple_format(@sms_contents[:by_phone_participation_reminder]) %>
+        </div>
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
+          <h6>**rdv par visio**</h6>
+          <%= simple_format(@sms_contents[:visio_participation_reminder]) %>
         </div>
       </div>
       <p class="text-center mt-2"><i class="ri-prohibited-line"></i> Rdv annulé</p>
@@ -44,32 +56,44 @@
       <h5 class="text-center my-2"><i class="ri-mail-line"></i> Email</h5>
       <p class="text-center mt-2"><i class="ri-add-line"></i> Rdv créé</p>
       <div class="d-flex justify-content-center">
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <%= sanitize(@mail_contents[:presential_participation_created]) %>
         </div>
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
           <%= sanitize(@mail_contents[:by_phone_participation_created]) %>
+        </div>
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
+          <h6>**rdv par visio**</h6>
+          <%= sanitize(@mail_contents[:visio_participation_created]) %>
         </div>
       </div>
       <p class="text-center mt-2"><i class="ri-pencil-fill"></i> Rdv mis à jour<p>
       <div class="d-flex justify-content-center">
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <%= sanitize(@mail_contents[:presential_participation_updated]) %>
         </div>
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
           <%= sanitize(@mail_contents[:by_phone_participation_updated]) %>
+        </div>
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
+          <h6>**rdv par visio**</h6>
+          <%= sanitize(@mail_contents[:visio_participation_updated]) %>
         </div>
       </div>
       <p class="text-center mt-2"><i class="ri-notification-fill"></i> Rappel 2 jours avant le rdv</p>
       <div class="d-flex justify-content-center">
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <%= sanitize(@mail_contents[:presential_participation_reminder]) %>
         </div>
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
           <%= sanitize(@mail_contents[:by_phone_participation_reminder]) %>
+        </div>
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
+          <h6>**rdv par visio**</h6>
+          <%= sanitize(@mail_contents[:visio_participation_reminder]) %>
         </div>
       </div>
       <p class="text-center mt-2"><i class="ri-prohibited-line"></i> Rdv annulé</p>
@@ -85,12 +109,16 @@
       <h5 class="text-center"><i class="ri-mail-open-line"></i> Courrier</h5>
       <p class="text-center mt-2"><i class="ri-add-line"></i> Rdv créé</p>
       <div class="d-flex justify-content-center">
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <%= sanitize(@letter_contents[:presential_participation_created]) %>
         </div>
-        <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
           <h6>**rdv téléphonique**</h6>
           <%= sanitize(@letter_contents[:by_phone_participation_created]) %>
+        </div>
+        <div class="border bg-light bg-gradient col-3 p-2 m-2">
+          <h6>**rdv par visio**</h6>
+          <%= sanitize(@letter_contents[:visio_participation_created]) %>
         </div>
       </div>
       <p class="text-center mt-2"><i class="ri-prohibited-line"></i> Rdv annulé</p>
@@ -102,4 +130,3 @@
     </div>
   </div>
 <% end %>
-

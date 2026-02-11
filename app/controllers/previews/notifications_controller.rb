@@ -25,7 +25,9 @@ module Previews
         motif: Motif.new(motif_category: @motif_category),
         organisation: @organisation,
         starts_at: Time.zone.parse("10/10/2022 09:00"),
-        lieu: Lieu.new(name: "DINUM", address: "20 avenue de Ségur, 75007 Paris")
+        lieu: Lieu.new(name: "DINUM", address: "20 avenue de Ségur, 75007 Paris"),
+        # visio_url n'est présent que pour les motifs de type visio (sans lieu) mais on simplifie pour les previews
+        visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123456"
       )
     end
 
@@ -59,9 +61,9 @@ module Previews
 
     def all_actions
       [
-        :presential_participation_created, :by_phone_participation_created,
-        :presential_participation_updated, :by_phone_participation_updated,
-        :presential_participation_reminder, :by_phone_participation_reminder,
+        :presential_participation_created, :by_phone_participation_created, :visio_participation_created,
+        :presential_participation_updated, :by_phone_participation_updated, :visio_participation_updated,
+        :presential_participation_reminder, :by_phone_participation_reminder, :visio_participation_reminder,
         :participation_cancelled
       ]
     end
@@ -89,7 +91,8 @@ module Previews
 
     def set_letter_contents
       @letter_contents = {}
-      [:presential_participation_created, :by_phone_participation_created, :participation_cancelled].each do |action|
+      [:presential_participation_created, :by_phone_participation_created, :visio_participation_created,
+       :participation_cancelled].each do |action|
         @letter_contents[action] = ApplicationController.render(
           template: "letters/notifications/#{action}",
           layout: nil,
