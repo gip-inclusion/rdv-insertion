@@ -33,13 +33,14 @@ class Rdv < ApplicationRecord
 
   validates :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, allow_nil: true
+  validates :visio_url, presence: true, if: :visio?
 
   validate :follow_ups_motif_categories_are_uniq
 
   enum :created_by, { agent: "agent", user: "user", file_attente: "file_attente", prescripteur: "prescripteur" },
        prefix: true
 
-  delegate :presential?, :by_phone?, :collectif?, to: :motif
+  delegate :presential?, :by_phone?, :collectif?, :visio?, to: :motif
   delegate :department, :rdv_solidarites_organisation_id, to: :organisation
   delegate :name, to: :motif, prefix: true
   delegate :instruction_for_rdv, to: :motif
