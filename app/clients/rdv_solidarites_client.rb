@@ -117,6 +117,11 @@ class RdvSolidaritesClient
     @connection ||= Faraday.new(url: ENV["RDV_SOLIDARITES_URL"]) do |f|
       f.headers = @auth_headers.merge("Content-Type" => "application/json")
       f.options.timeout = ENV.fetch("RDV_SOLIDARITES_TIMEOUT", 60).to_i
+      f.options.open_timeout = ENV.fetch("RDV_SOLIDARITES_OPEN_TIMEOUT", 30).to_i
+
+      f.adapter :net_http do |http|
+        http.keep_alive_timeout = ENV.fetch("RDV_SOLIDARITES_KEEP_ALIVE_TIMEOUT", 30).to_i
+      end
     end
   end
 end
