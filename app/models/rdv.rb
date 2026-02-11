@@ -1,7 +1,7 @@
 class Rdv < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status, :uuid,
-    :users_count, :max_participants_count
+    :users_count, :max_participants_count, :visio_url
   ].freeze
 
   include Notificable
