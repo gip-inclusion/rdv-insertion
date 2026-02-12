@@ -1,21 +1,21 @@
 GIT
   remote: https://github.com/betagouv/rdv-service-public.git
-  revision: b76a872316df03c87f806782e61a870f4992263a
-  branch: production
-  glob: lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec
-  specs:
-    omniauth-rdv-service-public (0.1.1)
-      omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.8)
-
-GIT
-  remote: https://github.com/betagouv/rdv-service-public.git
   revision: d6615530e34e91b0f770c1bafb3fdd2809a6700e
   branch: production
   glob: lib/anonymizer/anonymizer.gemspec
   specs:
     anonymizer (0.1.0)
       activerecord (>= 7.0)
+
+GIT
+  remote: https://github.com/betagouv/rdv-service-public.git
+  revision: 86ddb51038824634f3a2145609b165e5ef99eef0
+  branch: production
+  glob: lib/omniauth-rdv-service-public/omniauth-rdv-service-public.gemspec
+  specs:
+    omniauth-rdv-service-public (0.1.1)
+      omniauth (~> 2.0)
+      omniauth-oauth2 (~> 1.8)
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
