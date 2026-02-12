@@ -26,7 +26,7 @@
     "remixicon": "^4.9.1",
     "sass": "^1.97.3",
     "sass-loader": "^14.2.1",
-    "sortablejs": "^1.15.6",
+    "sortablejs": "^1.15.7",
     "stimulus-flatpickr": "^3.0.0-0",
     "sweetalert2": "^11.26.18",
     "tippy.js": "^6.3.2",
