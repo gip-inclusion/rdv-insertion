@@ -168,8 +168,11 @@ class User < ApplicationRecord
   end
 
   def phone_number_is_mobile?
-    types = PhoneNumberHelper.parsed_number(phone_number)&.types
-    types&.include?(:mobile)
+    PhoneNumberHelper.mobile?(phone_number)
+  end
+
+  def phone_number_is_french?
+    PhoneNumberHelper.french_number?(phone_number)
   end
 
   def organisations_motif_category_ids
