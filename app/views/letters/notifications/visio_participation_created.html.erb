@@ -1,0 +1,28 @@
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
+
+<div class="mail-object">
+  <p class="bold-blue"><span class="bold-blue">Objet : Convocation à un <%= rdv_title %> par visioconférence dans le cadre de votre <%= rdv_subject %></span></p>
+  <%= tag.p("N° CAF / MSA : #{user.affiliation_number}") if user.affiliation_number %>
+</div>
+
+<div class="main-content">
+  <p><%= user.title_in_letter %>,</p>
+  <p>Vous êtes <%= user_designation %> et à ce titre vous êtes <%= user.conjugate("convoqué") %> à un <%= rdv_title %> par visioconférence pour <%= rdv_purpose %>.</p>
+  <p>Vous devez vous connecter le <strong><%= I18n.l(rdv.starts_at, format: :human) %></strong> sur le lien suivant&nbsp;:</p>
+  <div class="rdv-address">
+    <div class="text-center">
+      <strong class="bold-blue"><%= rdv.visio_url %></strong>
+    </div>
+  </div>
+  <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
+  <%= tag.p tag.span(instruction_for_rdv) if instruction_for_rdv.present? %>
+  <%= tag.p tag.strong("En cas d'absence, #{punishable_warning}.") if punishable_warning.present? %>
+  <p>En cas d'empêchement, veuillez appeler le <%= rdv.phone_number %>.</p>
+  <%= render "letters/salutation", user: user %>
+  <br/>
+  <div class="letter-signature">
+    <%= render 'common/organisation_signature', signature_lines: signature_lines, signature_image: signature_image, department: department %>
+  </div>
+</div>
+
+<%= render "letters/footer", logos_to_display: logos_to_display, department: department %>

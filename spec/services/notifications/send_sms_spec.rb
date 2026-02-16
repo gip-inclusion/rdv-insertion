@@ -58,7 +58,7 @@ describe Notifications::SendSms, type: :service do
       "rendez-vous d'orientation. Vous êtes attendu le 20/12/21" \
       " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
       "Ce RDV est obligatoire. " \
-      "En cas d’empêchement, contactez le 0101010101."
+      "En cas d'empêchement, contactez le 0101010101."
   end
 
   describe "#call" do
@@ -69,7 +69,7 @@ describe Notifications::SendSms, type: :service do
 
     it("is a success") { is_a_success }
 
-    context "when it is neither a phone or public office rdv" do
+    context "when it is neither a phone, public office or visio rdv" do
       let!(:motif) { create(:motif, location_type: "home") }
 
       it "raises an error" do
@@ -180,7 +180,7 @@ describe Notifications::SendSms, type: :service do
             "rendez-vous d'orientation. Vous êtes attendue le 20/12/21" \
             " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "calls the messenger service with the right content" do
@@ -203,7 +203,7 @@ describe Notifications::SendSms, type: :service do
             "rendez-vous d'orientation. Vous êtes attendu(e) le 20/12/21" \
             " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "calls the messenger service with the right content" do
@@ -231,7 +231,7 @@ describe Notifications::SendSms, type: :service do
             "rendez-vous d'orientation. Vous êtes attendu le 20/12/21" \
             " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "calls the messenger service with the overriden content" do
@@ -254,7 +254,7 @@ describe Notifications::SendSms, type: :service do
             "Vous êtes attendu le 20/12/21 à " \
             "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -277,7 +277,7 @@ describe Notifications::SendSms, type: :service do
             "rendez-vous d'orientation. Vous êtes attendu le 20/12/21" \
             " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -320,7 +320,7 @@ describe Notifications::SendSms, type: :service do
             " Un conseiller d'insertion vous appellera le 20/12/21 à " \
             "partir de 10h sur ce numéro. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -343,7 +343,7 @@ describe Notifications::SendSms, type: :service do
               "Un conseiller d'insertion vous appellera le 20/12/21 à " \
               "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d’empêchement, contactez le 0101010101."
+              "En cas d'empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do
@@ -367,7 +367,85 @@ describe Notifications::SendSms, type: :service do
               " Un conseiller d'insertion vous appellera le 20/12/21 à " \
               "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d’empêchement, contactez le 0101010101."
+              "En cas d'empêchement, contactez le 0101010101."
+          end
+
+          it "sends the sms with the right content" do
+            expect(Sms::SendWithBrevo).to receive(:call)
+              .with(
+                phone_number: phone_number, content: content,
+                sender_name: sms_sender_name, record_identifier: notification.record_identifier
+              )
+            subject
+          end
+        end
+      end
+
+      context "when it is a visio rdv" do
+        let!(:motif) { create(:motif, location_type: "visio") }
+        let!(:organisation) { create(:organisation, phone_number: "0101010101") }
+        let!(:rdv) do
+          create(
+            :rdv,
+            motif: motif, lieu: nil,
+            starts_at: Time.zone.parse("20/12/2021 10:00"),
+            organisation:,
+            visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+          )
+        end
+
+        let!(:content) do
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+            "rendez-vous d'orientation par visio. Vous devez vous connecter le 20/12/21 à " \
+            "10h sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+            "Ce RDV est obligatoire. " \
+            "En cas d'empêchement, contactez le 0101010101."
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Sms::SendWithBrevo).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name, record_identifier: notification.record_identifier
+            )
+          subject
+        end
+
+        context "when it is an update notification" do
+          let!(:notification) do
+            create(:notification, participation: participation, format: "sms", event: "participation_updated")
+          end
+
+          let!(:content) do
+            "Bonjour John Doe,\nVotre rendez-vous d'orientation par visio " \
+              "dans le cadre de votre RSA a été modifié. " \
+              "Vous devez vous connecter le 20/12/21 à 10h " \
+              "sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+              "Ce RDV est obligatoire. " \
+              "En cas d'empêchement, contactez le 0101010101."
+          end
+
+          it "calls the send transactional service with the right content" do
+            expect(Sms::SendWithBrevo).to receive(:call)
+              .with(
+                phone_number: phone_number, content: content,
+                sender_name: sms_sender_name, record_identifier: notification.record_identifier
+              )
+            subject
+          end
+        end
+
+        context "when it's a reminder" do
+          let!(:notification) do
+            create(:notification, participation: participation, format: "sms", event: "participation_reminder")
+          end
+
+          let!(:content) do
+            "Rappel: Bonjour John Doe,\nVous êtes bénéficiaire du RSA et avez été convoqué à un " \
+              "rendez-vous d'orientation par visio. Vous devez vous connecter le 20/12/21 à " \
+              "10h sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+              "Ce RDV est obligatoire. " \
+              "En cas d'empêchement, contactez le 0101010101."
           end
 
           it "sends the sms with the right content" do
@@ -393,7 +471,7 @@ describe Notifications::SendSms, type: :service do
               "le 20/12/21 à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-              "En cas d’empêchement, contactez le 0101010101."
+              "En cas d'empêchement, contactez le 0101010101."
           end
 
           it "sends the sms with the right content" do
@@ -416,7 +494,7 @@ describe Notifications::SendSms, type: :service do
                 "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
                 "Ce RDV est obligatoire. " \
                 "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-                "En cas d’empêchement, contactez le 0101010101."
+                "En cas d'empêchement, contactez le 0101010101."
             end
 
             it "sends the sms with the right content" do
@@ -459,7 +537,7 @@ describe Notifications::SendSms, type: :service do
                 "vous appellera le 20/12/21 à partir de 10h sur ce numéro. " \
                 "Ce RDV est obligatoire. " \
                 "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-                "En cas d’empêchement, contactez le 0101010101."
+                "En cas d'empêchement, contactez le 0101010101."
             end
 
             it "calls the send transactional service with the right content" do
@@ -483,7 +561,64 @@ describe Notifications::SendSms, type: :service do
                   "partir de 10h sur ce numéro. " \
                   "Ce RDV est obligatoire. " \
                   "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-                  "En cas d’empêchement, contactez le 0101010101."
+                  "En cas d'empêchement, contactez le 0101010101."
+              end
+
+              it "calls the send transactional service with the right content" do
+                expect(Sms::SendWithBrevo).to receive(:call)
+                  .with(
+                    phone_number: phone_number, content: content,
+                    sender_name: sms_sender_name, record_identifier: notification.record_identifier
+                  )
+                subject
+              end
+            end
+          end
+
+          context "when it is a visio rdv" do
+            let!(:motif) { create(:motif, location_type: "visio") }
+            let!(:organisation) { create(:organisation, phone_number: "0101010101") }
+            let!(:rdv) do
+              create(
+                :rdv,
+                motif: motif, lieu: nil,
+                starts_at: Time.zone.parse("20/12/2021 10:00"),
+                organisation:,
+                visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+              )
+            end
+
+            let!(:content) do
+              "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+                "rendez-vous d'accompagnement par visio. Vous devez vous connecter le 20/12/21 à " \
+                "10h sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+                "Ce RDV est obligatoire. " \
+                "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
+                "En cas d'empêchement, contactez le 0101010101."
+            end
+
+            it "calls the send transactional service with the right content" do
+              expect(Sms::SendWithBrevo).to receive(:call)
+                .with(
+                  phone_number: phone_number, content: content,
+                  sender_name: sms_sender_name, record_identifier: notification.record_identifier
+                )
+              subject
+            end
+
+            context "when it is an update notification" do
+              let!(:notification) do
+                create(:notification, participation: participation, format: "sms", event: "participation_updated")
+              end
+
+              let!(:content) do
+                "Bonjour John Doe,\nVotre rendez-vous d'accompagnement par visio " \
+                  "dans le cadre de votre RSA a été modifié. " \
+                  "Vous devez vous connecter le 20/12/21 à 10h " \
+                  "sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+                  "Ce RDV est obligatoire. " \
+                  "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
+                  "En cas d'empêchement, contactez le 0101010101."
               end
 
               it "calls the send transactional service with the right content" do
@@ -509,7 +644,7 @@ describe Notifications::SendSms, type: :service do
           "Vous êtes attendu le 20/12/21 à " \
           "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
-          "En cas d’empêchement, contactez le 0101010101."
+          "En cas d'empêchement, contactez le 0101010101."
       end
 
       it "sends the sms with the right content" do
@@ -532,7 +667,7 @@ describe Notifications::SendSms, type: :service do
             "Vous êtes attendu le 20/12/21 à " \
             "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -576,7 +711,7 @@ describe Notifications::SendSms, type: :service do
             "Un conseiller d'insertion vous appellera le 20/12/21 à " \
             "partir de 10h sur ce numéro. " \
             "Ce RDV est obligatoire. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -599,7 +734,62 @@ describe Notifications::SendSms, type: :service do
               "Un conseiller d'insertion vous appellera le 20/12/21 à " \
               "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d’empêchement, contactez le 0101010101."
+              "En cas d'empêchement, contactez le 0101010101."
+          end
+
+          it "calls the send transactional service with the right content" do
+            expect(Sms::SendWithBrevo).to receive(:call)
+              .with(
+                phone_number: phone_number, content: content,
+                sender_name: sms_sender_name, record_identifier: notification.record_identifier
+              )
+            subject
+          end
+        end
+      end
+
+      context "when it is a visio rdv" do
+        let!(:motif) { create(:motif, location_type: "visio") }
+        let!(:organisation) { create(:organisation, phone_number: "0101010101") }
+        let!(:rdv) do
+          create(
+            :rdv,
+            motif: motif, lieu: nil,
+            starts_at: Time.zone.parse("20/12/2021 10:00"),
+            organisation:,
+            visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+          )
+        end
+
+        let!(:content) do
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+            "rendez-vous de signature de CER par visio. Vous devez vous connecter le 20/12/21 à " \
+            "10h sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+            "Ce RDV est obligatoire. " \
+            "En cas d'empêchement, contactez le 0101010101."
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Sms::SendWithBrevo).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name, record_identifier: notification.record_identifier
+            )
+          subject
+        end
+
+        context "when it is an update notification" do
+          let!(:notification) do
+            create(:notification, participation: participation, format: "sms", event: "participation_updated")
+          end
+
+          let!(:content) do
+            "Bonjour John Doe,\nVotre rendez-vous de signature de CER par visio " \
+              "dans le cadre de votre RSA a été modifié. " \
+              "Vous devez vous connecter le 20/12/21 à 10h " \
+              "sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+              "Ce RDV est obligatoire. " \
+              "En cas d'empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do
@@ -623,7 +813,7 @@ describe Notifications::SendSms, type: :service do
           "rendez-vous de suivi. " \
           "Vous êtes attendu le 20/12/21 à " \
           "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
-          "En cas d’empêchement, contactez le 0101010101."
+          "En cas d'empêchement, contactez le 0101010101."
       end
 
       it "sends the sms with the right content" do
@@ -644,7 +834,7 @@ describe Notifications::SendSms, type: :service do
           "Bonjour John Doe,\nVotre rendez-vous de suivi dans le cadre de votre RSA a été modifié. " \
             "Vous êtes attendu le 20/12/21 à " \
             "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -686,7 +876,7 @@ describe Notifications::SendSms, type: :service do
             "rendez-vous de suivi téléphonique. " \
             "Un conseiller d'insertion vous appellera le 20/12/21 à " \
             "partir de 10h sur ce numéro. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -708,7 +898,60 @@ describe Notifications::SendSms, type: :service do
               " dans le cadre de votre RSA a été modifié. " \
               "Un conseiller d'insertion vous appellera le 20/12/21 à " \
               "partir de 10h sur ce numéro. " \
-              "En cas d’empêchement, contactez le 0101010101."
+              "En cas d'empêchement, contactez le 0101010101."
+          end
+
+          it "calls the send transactional service with the right content" do
+            expect(Sms::SendWithBrevo).to receive(:call)
+              .with(
+                phone_number: phone_number, content: content,
+                sender_name: sms_sender_name, record_identifier: notification.record_identifier
+              )
+            subject
+          end
+        end
+      end
+
+      context "when it is a visio rdv" do
+        let!(:motif) { create(:motif, location_type: "visio") }
+        let!(:organisation) { create(:organisation, phone_number: "0101010101") }
+        let!(:rdv) do
+          create(
+            :rdv,
+            motif: motif, lieu: nil,
+            starts_at: Time.zone.parse("20/12/2021 10:00"),
+            organisation:,
+            visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+          )
+        end
+
+        let!(:content) do
+          "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+            "rendez-vous de suivi par visio. Vous devez vous connecter le 20/12/21 à " \
+            "10h sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+            "En cas d'empêchement, contactez le 0101010101."
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Sms::SendWithBrevo).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name, record_identifier: notification.record_identifier
+            )
+          subject
+        end
+
+        context "when it is an update notification" do
+          let!(:notification) do
+            create(:notification, participation: participation, format: "sms", event: "participation_updated")
+          end
+
+          let!(:content) do
+            "Bonjour John Doe,\nVotre rendez-vous de suivi par visio " \
+              "dans le cadre de votre RSA a été modifié. " \
+              "Vous devez vous connecter le 20/12/21 à 10h " \
+              "sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+              "En cas d'empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do
@@ -733,7 +976,7 @@ describe Notifications::SendSms, type: :service do
           "le 20/12/21 à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
           "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-          "En cas d’empêchement, contactez le 0101010101."
+          "En cas d'empêchement, contactez le 0101010101."
       end
 
       it "sends the sms with the right content" do
@@ -757,7 +1000,7 @@ describe Notifications::SendSms, type: :service do
             "10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "sends the sms with the right content" do
@@ -800,7 +1043,7 @@ describe Notifications::SendSms, type: :service do
             "vous appellera le 20/12/21 à partir de 10h sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-            "En cas d’empêchement, contactez le 0101010101."
+            "En cas d'empêchement, contactez le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
@@ -824,7 +1067,64 @@ describe Notifications::SendSms, type: :service do
               "partir de 10h sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
-              "En cas d’empêchement, contactez le 0101010101."
+              "En cas d'empêchement, contactez le 0101010101."
+          end
+
+          it "calls the send transactional service with the right content" do
+            expect(Sms::SendWithBrevo).to receive(:call)
+              .with(
+                phone_number: phone_number, content: content,
+                sender_name: sms_sender_name, record_identifier: notification.record_identifier
+              )
+            subject
+          end
+        end
+      end
+
+      context "when it is a visio rdv" do
+        let!(:motif) { create(:motif, location_type: "visio") }
+        let!(:organisation) { create(:organisation, phone_number: "0101010101") }
+        let!(:rdv) do
+          create(
+            :rdv,
+            motif: motif, lieu: nil,
+            starts_at: Time.zone.parse("20/12/2021 10:00"),
+            organisation:,
+            visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123"
+          )
+        end
+
+        let!(:content) do
+          "Bonjour John Doe,\nVous êtes demandeur d'emploi et êtes convoqué à un " \
+            "rendez-vous d'accompagnement par visio. Vous devez vous connecter le 20/12/21 à " \
+            "10h sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+            "Ce RDV est obligatoire. " \
+            "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
+            "En cas d'empêchement, contactez le 0101010101."
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Sms::SendWithBrevo).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name, record_identifier: notification.record_identifier
+            )
+          subject
+        end
+
+        context "when it is an update notification" do
+          let!(:notification) do
+            create(:notification, participation: participation, format: "sms", event: "participation_updated")
+          end
+
+          let!(:content) do
+            "Bonjour John Doe,\nVotre rendez-vous d'accompagnement par visio dans le cadre de votre " \
+              "demande d'emploi a été modifié. " \
+              "Vous devez vous connecter le 20/12/21 à 10h " \
+              "sur ce lien : https://webconf.numerique.gouv.fr/RdvServicePublic123\n" \
+              "Ce RDV est obligatoire. " \
+              "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
+              "En cas d'empêchement, contactez le 0101010101."
           end
 
           it "calls the send transactional service with the right content" do

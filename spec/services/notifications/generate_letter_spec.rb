@@ -144,6 +144,31 @@ describe Notifications::GenerateLetter, type: :service do
       end
     end
 
+    context "when the rdv is by visio" do
+      let!(:motif) { create(:motif, location_type: "visio") }
+      let!(:organisation) { create(:organisation, department: department, phone_number: "0101010101") }
+      let!(:rdv) do
+        create(:rdv, lieu: nil, motif: motif, starts_at: Time.zone.parse("25/12/2022 09:30"),
+                     organisation: organisation,
+                     visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123")
+      end
+
+      it "generates the matching content" do
+        subject
+        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+        expect(content).to include("20 AVENUE DE SEGUR")
+        expect(content).to include("DIRECTION DÉPARTEMENTAL")
+        expect(content).to include(
+          "Convocation à un rendez-vous d'orientation par visioconférence dans le cadre de votre RSA"
+        )
+        expect(content).to include(
+          "Vous devez vous connecter le dimanche 25 décembre 2022 à 09h30 sur le lien suivant :"
+        )
+        expect(content).to include("https://webconf.numerique.gouv.fr/RdvServicePublic123")
+        expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
+      end
+    end
+
     context "when it is a participation cancelled notification" do
       let!(:notification) do
         create(:notification, participation: participation, event: "participation_cancelled", format: "postal")

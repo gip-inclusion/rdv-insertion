@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module Notifications
   module SmsContent
     delegate :rdv, :user, :rdv_title, :rdv_title_by_phone, :user_designation, :mandatory_warning,
@@ -16,7 +17,7 @@ module Notifications
         "#{formatted_start_time} à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, contactez le #{formatted_phone_number}."
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
     end
 
     def by_phone_participation_created_content
@@ -26,7 +27,17 @@ module Notifications
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, contactez le #{formatted_phone_number}."
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
+    end
+
+    def visio_participation_created_content
+      "Bonjour #{user},\nVous êtes #{user_designation} et êtes " \
+        "#{user.conjugate('convoqué')} à un " \
+        "#{rdv_title} par visio. Vous devez vous connecter le #{formatted_start_date} à " \
+        "#{formatted_start_time} sur ce lien : #{rdv.visio_url}\n" \
+        "#{mandatory_warning_message}" \
+        "#{punishable_warning_message}" \
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
     end
 
     ### participation_updated
@@ -37,7 +48,7 @@ module Notifications
         " à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, contactez le #{formatted_phone_number}."
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
     end
 
     def by_phone_participation_updated_content
@@ -46,7 +57,16 @@ module Notifications
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, contactez le #{formatted_phone_number}."
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
+    end
+
+    def visio_participation_updated_content
+      "Bonjour #{user},\nVotre #{rdv_title} par visio dans le cadre de votre #{rdv_subject} a été modifié. " \
+        "Vous devez vous connecter le #{formatted_start_date} à #{formatted_start_time} " \
+        "sur ce lien : #{rdv.visio_url}\n" \
+        "#{mandatory_warning_message}" \
+        "#{punishable_warning_message}" \
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
     end
 
     ### participation_reminder
@@ -58,7 +78,7 @@ module Notifications
         "#{formatted_start_time} à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, contactez le #{formatted_phone_number}."
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
     end
 
     def by_phone_participation_reminder_content
@@ -68,7 +88,17 @@ module Notifications
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, contactez le #{formatted_phone_number}."
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
+    end
+
+    def visio_participation_reminder_content
+      "Rappel: Bonjour #{user},\nVous êtes #{user_designation} et avez été " \
+        "#{user.conjugate('convoqué')} à un " \
+        "#{rdv_title} par visio. Vous devez vous connecter le #{formatted_start_date} à " \
+        "#{formatted_start_time} sur ce lien : #{rdv.visio_url}\n" \
+        "#{mandatory_warning_message}" \
+        "#{punishable_warning_message}" \
+        "En cas d'empêchement, contactez le #{formatted_phone_number}."
     end
 
     ### participation_cancelled
@@ -98,3 +128,4 @@ module Notifications
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

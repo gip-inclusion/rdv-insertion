@@ -356,6 +356,7 @@ tables:
     anonymized_column_names:
       - context
       - address
+      - visio_url
     non_anonymized_column_names:
       - rdv_solidarites_rdv_id
       - starts_at

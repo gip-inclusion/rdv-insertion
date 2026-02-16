@@ -28,6 +28,8 @@ module Notifications
         :"presential_#{@notification.event}"
       elsif @notification.rdv.by_phone?
         :"by_phone_#{@notification.event}"
+      elsif @notification.rdv.visio?
+        :"visio_#{@notification.event}"
       else
         raise EmailNotificationError, "Message de convocation non géré pour le rdv #{@notification.rdv.id}"
       end
