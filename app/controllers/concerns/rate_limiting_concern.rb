@@ -14,37 +14,73 @@ module RateLimitingConcern
     api_bulk: ENV.fetch("RATE_LIMIT_API_BULK", 5).to_i,
     inbound_emails: ENV.fetch("RATE_LIMIT_INBOUND_EMAILS", 1000).to_i,
     brevo_webhooks: ENV.fetch("RATE_LIMIT_BREVO_WEBHOOKS", 1000).to_i,
-    sessions: ENV.fetch("RATE_LIMIT_SESSIONS", 5).to_i,
+    sessions: ENV.fetch("RATE_LIMIT_SESSIONS", 10).to_i,
     invitations: ENV.fetch("RATE_LIMIT_INVITATIONS", 30).to_i,
     stats: ENV.fetch("RATE_LIMIT_STATS", 60).to_i,
     static_pages: ENV.fetch("RATE_LIMIT_STATIC_PAGES", 60).to_i,
-    super_admin_auth: ENV.fetch("RATE_LIMIT_SUPER_ADMIN_AUTH", 3).to_i
+    super_admin_auth: ENV.fetch("RATE_LIMIT_SUPER_ADMIN_AUTH", 10).to_i
   }.freeze
 
+  included do
+    rate_limit(
+      to: Rails.env.local? ? 10_000 : RATE_LIMITS[:default],
+      within: 5.minutes,
+      by: -> { "#{action_name}:#{request.remote_ip}" },
+      name: "default",
+      store: RATE_LIMIT_CACHE_STORE,
+      with: -> { render_rate_limit_exceeded(RATE_LIMITS[:default], 5.minutes) },
+      unless: :rate_limit_overridden?
+    )
+  end
+
   class_methods do
-    def rate_limit_with_json_response(limit:, period: 1.minute, **)
+    def override_rate_limit(limit:, period: 1.minute, **options)
       raise ArgumentError, "a limit must be provided" if limit.nil?
+
+      only_actions = Array(options[:only]).map(&:to_sym)
+      overridden_rate_limit_actions.merge(only_actions.presence || [:_all])
 
       rate_limit(
         to: Rails.env.local? ? 10_000 : limit,
         within: period,
+        by: options.delete(:by) || -> { "#{action_name}:#{request.remote_ip}" },
+        name: "override",
         store: RATE_LIMIT_CACHE_STORE,
         with: -> { render_rate_limit_exceeded(limit, period) },
-        **
+        **options
       )
+    end
+
+    def overridden_rate_limit_actions
+      @overridden_rate_limit_actions ||= Set.new
     end
   end
 
   private
 
-  def render_rate_limit_exceeded(limit, period)
-    retry_after = compute_retry_after(period)
+  def rate_limit_overridden?
+    overridden_actions = self.class.overridden_rate_limit_actions
+    overridden_actions.include?(:_all) || overridden_actions.include?(action_name.to_sym)
+  end
 
+  def render_rate_limit_exceeded(limit, period)
     log_rate_limit_exceeded(limit)
-    set_rate_limit_headers(limit, retry_after)
     report_rate_limit_to_sentry
 
-    render json: rate_limit_error_body(retry_after), status: :too_many_requests
+    # we cannot compute precisely the retry_after value without getting
+    # the keys from redis relying on rate limiting internals,
+    # so we use the period as a fallback
+    retry_after = period.to_i
+    response.headers["Retry-After"] = retry_after.to_s
+    response.headers["X-RateLimit-Limit"] = limit.to_s
+    response.headers["X-RateLimit-Remaining"] = "0"
+
+    render json: {
+      error: "Limite de requêtes atteinte",
+      retry_after: retry_after,
+      message: "Vous avez dépassé la limite de #{limit} requêtes autorisées. " \
+               "Veuillez réessayer dans moins de #{retry_after} secondes."
+    }, status: :too_many_requests
   end
 
   def report_rate_limit_to_sentry
@@ -58,26 +94,6 @@ module RateLimitingConcern
         user_agent: request.user_agent
       }
     )
-  end
-
-  def compute_retry_after(period)
-    now = Time.zone.now
-    period.to_i - (now.to_i % period.to_i)
-  end
-
-  def set_rate_limit_headers(limit, retry_after)
-    response.headers["Retry-After"] = retry_after.to_s
-    response.headers["X-RateLimit-Limit"] = limit.to_s
-    response.headers["X-RateLimit-Remaining"] = "0"
-    response.headers["X-RateLimit-Reset"] = (Time.zone.now + retry_after).iso8601
-  end
-
-  def rate_limit_error_body(retry_after)
-    {
-      error: "Limite de requêtes atteinte",
-      retry_after: retry_after,
-      message: "Vous avez atteint le nombre de requêtes autorisées. Veuillez réessayer dans #{retry_after} secondes."
-    }
   end
 
   def log_rate_limit_exceeded(limit)

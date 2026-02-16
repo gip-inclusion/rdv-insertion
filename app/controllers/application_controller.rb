@@ -17,8 +17,6 @@ class ApplicationController < ActionController::Base
   include RateLimitingConcern
   include MaliciousAgentBlockingConcern
 
-  rate_limit_with_json_response limit: RATE_LIMITS[:default], period: 5.minutes
-
   protect_from_forgery with: :exception
   before_action :set_sentry_context
 

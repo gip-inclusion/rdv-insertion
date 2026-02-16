@@ -25,16 +25,14 @@ RSpec.describe RateLimitingConcern do
       body = response.parsed_body
       expect(body).to include(
         "error" => "Limite de requêtes atteinte",
-        "message" => a_string_including("Vous avez atteint le nombre de requêtes autorisées")
+        "retry_after" => 60,
+        "message" => a_string_including("moins de 60 secondes")
       )
-      expect(body["retry_after"]).to be_a(Integer).and be_between(1, 60)
     end
 
-    it "sets Retry-After header with seconds until reset" do
+    it "sets Retry-After header to the period" do
       get :trigger_rate_limit
-
-      retry_after = response.headers["Retry-After"].to_i
-      expect(retry_after).to be_between(1, 60)
+      expect(response.headers["Retry-After"]).to eq("60")
     end
 
     it "sets X-RateLimit-Limit header to the configured limit" do
@@ -45,16 +43,6 @@ RSpec.describe RateLimitingConcern do
     it "sets X-RateLimit-Remaining header to 0" do
       get :trigger_rate_limit
       expect(response.headers["X-RateLimit-Remaining"]).to eq("0")
-    end
-
-    it "sets X-RateLimit-Reset header with ISO8601 timestamp" do
-      freeze_time do
-        get :trigger_rate_limit
-
-        reset_time = Time.zone.parse(response.headers["X-RateLimit-Reset"])
-        expect(reset_time).to be > Time.current
-        expect(reset_time).to be <= 1.minute.from_now
-      end
     end
 
     it "reports the rate limit exceeded to Sentry" do
@@ -80,13 +68,46 @@ RSpec.describe RateLimitingConcern do
     end
   end
 
-  describe ".rate_limit_with_json_response" do
+  describe ".override_rate_limit" do
     it "raises ArgumentError when limit is nil" do
       expect do
         Class.new(ApplicationController) do
-          rate_limit_with_json_response limit: nil, period: 1.minute
+          override_rate_limit limit: nil, period: 1.minute
         end
       end.to raise_error(ArgumentError, /a limit must be provided/)
+    end
+
+    it "marks all actions as overridden when no only: is specified" do
+      controller_class = Class.new(ApplicationController) do
+        override_rate_limit limit: 3, period: 1.minute
+      end
+
+      expect(controller_class.overridden_rate_limit_actions).to contain_exactly(:_all)
+    end
+
+    it "marks only specified actions as overridden" do
+      controller_class = Class.new(ApplicationController) do
+        override_rate_limit limit: 3, period: 1.minute, only: [:create, :update]
+      end
+
+      expect(controller_class.overridden_rate_limit_actions).to contain_exactly(:create, :update)
+    end
+
+    it "does not affect the parent class" do
+      Class.new(ApplicationController) do
+        override_rate_limit limit: 3, period: 1.minute
+      end
+
+      expect(ApplicationController.overridden_rate_limit_actions).to be_empty
+    end
+
+    it "does not affect sibling subclasses" do
+      Class.new(ApplicationController) do
+        override_rate_limit limit: 3, period: 1.minute
+      end
+
+      sibling = Class.new(ApplicationController)
+      expect(sibling.overridden_rate_limit_actions).to be_empty
     end
   end
 end
