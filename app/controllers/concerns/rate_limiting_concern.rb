@@ -41,7 +41,7 @@ module RateLimitingConcern
       overridden_rate_limit_actions.merge(only_actions.presence || [:_all])
 
       rate_limit(
-        to: Rails.env.local? ? 1 : limit,
+        to: Rails.env.local? ? 10_000 : limit,
         within: period,
         by: options.delete(:by) || -> { "#{action_name}:#{request.remote_ip}" },
         name: "override",
