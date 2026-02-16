@@ -4,7 +4,7 @@ module Api
     class UsersController < ApplicationController
       include ParamsValidationConcern
 
-      rate_limit_with_json_response limit: RATE_LIMITS[:api_bulk], only: :create_and_invite_many
+      override_rate_limit limit: RATE_LIMITS[:api_bulk], only: :create_and_invite_many
 
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,

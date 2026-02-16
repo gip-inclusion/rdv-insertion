@@ -1,6 +1,6 @@
 class SuperAdminAuthenticationRequestsController < ApplicationController
   # Very strict rate limit for super admin authentication - 3/min
-  rate_limit_with_json_response limit: RATE_LIMITS[:super_admin_auth]
+  override_rate_limit limit: RATE_LIMITS[:super_admin_auth]
 
   before_action :verify_super_admin
 

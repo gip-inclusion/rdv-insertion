@@ -1,6 +1,6 @@
 module Website
   class StaticPagesController < BaseController
-    rate_limit_with_json_response limit: RATE_LIMITS[:static_pages]
+    override_rate_limit limit: RATE_LIMITS[:static_pages]
 
     skip_before_action :authenticate_agent!
 
