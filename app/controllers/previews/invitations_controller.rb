@@ -32,6 +32,7 @@ module Previews
     def set_reminder_invitation_example
       @reminder_invitation = @invitation.dup
       @reminder_invitation.assign_attributes(
+        # we have to simulate the expires_at to simulate the number_of_days_before_expiration displayed in the reminders
         expires_at: @invitation.expires_at - Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days,
         trigger: "reminder",
         follow_up: @invitation.follow_up,
