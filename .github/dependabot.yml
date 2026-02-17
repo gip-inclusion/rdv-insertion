@@ -1,58 +1,5 @@
 version: 2
 updates:
-  # Ruby gems monitoring
-  - package-ecosystem: "bundler"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "06:00"
-      timezone: "Europe/Paris"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "security"
-    # Group minor updates to reduce noise
-    groups:
-      minor-updates:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-    # Ignore major version updates (manual review required)
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-
-  # npm/yarn packages monitoring
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "06:00"
-      timezone: "Europe/Paris"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "security"
-    groups:
-      minor-updates:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-
-  # GitHub Actions monitoring
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -62,7 +9,40 @@ updates:
       timezone: "Europe/Paris"
     labels:
       - "ci"
-      - "security"
     commit-message:
       prefix: "ci"
-      include: "scope"
+
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "06:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    groups:
+      all-updates:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "omniauth-rdv-service-public"
+      - dependency-name: "anonymizer"
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "06:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    groups:
+      all-updates:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(deps)"
