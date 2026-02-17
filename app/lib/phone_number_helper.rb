@@ -28,5 +28,16 @@ module PhoneNumberHelper
     def format_phone_number(phone_number)
       parsed_number(phone_number)&.e164
     end
+
+    def mobile?(phone_number)
+      parsed_number(phone_number)&.types&.include?(:mobile)
+    end
+
+    def french_number?(phone_number)
+      parsed = parsed_number(phone_number)
+      return false if parsed.blank?
+
+      parsed.country.in?(COUNTRY_CODES.map(&:to_s))
+    end
   end
 end

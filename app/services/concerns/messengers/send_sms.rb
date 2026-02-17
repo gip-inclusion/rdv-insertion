@@ -8,6 +8,7 @@ module Messengers::SendSms
   def verify_phone_number!(sendable)
     fail!("Le téléphone doit être renseigné") if sendable.phone_number.blank?
     fail!("Le numéro de téléphone doit être un mobile") unless sendable.phone_number_is_mobile?
+    fail!("Le numéro de téléphone doit être un numéro français") unless sendable.phone_number_is_french?
   end
 
   def send_sms(sendable, content)

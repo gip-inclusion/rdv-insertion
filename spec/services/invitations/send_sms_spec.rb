@@ -113,6 +113,16 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "when the phone number is a foreign number" do
+      let!(:phone_number) { "+447911123456" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Le numéro de téléphone doit être un numéro français"])
+      end
+    end
+
     context "when the invitation format is not sms" do
       before { invitation.format = "email" }
 
