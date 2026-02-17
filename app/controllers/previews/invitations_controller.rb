@@ -1,8 +1,9 @@
 module Previews
+  # rubocop:disable Metrics/ClassLength
   class InvitationsController < Previews::BaseController
     require "rqrcode"
 
-    before_action :set_user_example, :set_invitation_example, only: [:index]
+    before_action :set_user_example, :set_invitation_example, :set_reminder_invitation_example, only: [:index]
 
     attr_reader :user, :invitation
 
@@ -28,6 +29,18 @@ module Previews
       @invitation.association(:category_configurations).instance_variable_set("@target", [@category_configuration])
     end
 
+    def set_reminder_invitation_example
+      @reminder_invitation = @invitation.dup
+      @reminder_invitation.assign_attributes(
+        expires_at: @invitation.expires_at - Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days,
+        trigger: "reminder",
+        follow_up: @invitation.follow_up,
+        organisations: @invitation.organisations
+      )
+      @reminder_invitation.association(:category_configurations)
+                          .instance_variable_set("@target", [@category_configuration])
+    end
+
     def set_user_example
       @user = User.new(
         first_name: "Camille", last_name: "Martin",
@@ -39,7 +52,11 @@ module Previews
       @sms_contents = { first_invitation: send("#{@template.model}_content") }
       return unless respond_to?("#{@template.model}_reminder_content", true)
 
-      @sms_contents.merge!(invitation_reminder: send("#{@template.model}_reminder_content"))
+      @sms_contents.merge!(
+        invitation_reminder: with_reminder_invitation do
+          send("#{@template.model}_reminder_content")
+        end
+      )
     end
 
     def set_mail_contents
@@ -53,12 +70,22 @@ module Previews
       return unless InvitationMailer.respond_to?("#{@template.model}_invitation_reminder")
 
       @mail_contents.merge!(
-        invitation_reminder: ApplicationController.render(
-          template: "mailers/invitation_mailer/#{@template.model}_invitation_reminder",
-          assigns: mailer_instance_variables,
-          layout: nil
-        )
+        invitation_reminder: with_reminder_invitation do
+          ApplicationController.render(
+            template: "mailers/invitation_mailer/#{@template.model}_invitation_reminder",
+            assigns: mailer_instance_variables,
+            layout: nil
+          )
+        end
       )
+    end
+
+    def with_reminder_invitation
+      original_invitation = @invitation
+      @invitation = @reminder_invitation
+      yield
+    ensure
+      @invitation = original_invitation
     end
 
     def set_letter_contents
@@ -122,4 +149,5 @@ module Previews
       end.compact
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
