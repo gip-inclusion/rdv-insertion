@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: 34244f0d03c990ef024d4fdbea7c6f2caa54f21b
+  revision: f215c65d65760c104787d302e9a9f71b78755f6d
   specs:
     administrate (1.0.0)
       actionpack (>= 6.0, < 9.0)
@@ -139,7 +139,7 @@ GEM
     bigdecimal (3.3.1)
     bindex (0.8.1)
     blueprinter (1.2.1)
-    bootsnap (1.22.0)
+    bootsnap (1.23.0)
       msgpack (~> 1.2)
     builder (3.3.0)
     byebug (13.0.0)
@@ -313,21 +313,21 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.5)
-    nokogiri (1.19.0-aarch64-linux-gnu)
+    nokogiri (1.19.1-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.0-aarch64-linux-musl)
+    nokogiri (1.19.1-aarch64-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.0-arm-linux-gnu)
+    nokogiri (1.19.1-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.0-arm-linux-musl)
+    nokogiri (1.19.1-arm-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.19.0-arm64-darwin)
+    nokogiri (1.19.1-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.0-x86_64-darwin)
+    nokogiri (1.19.1-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.0-x86_64-linux-gnu)
+    nokogiri (1.19.1-x86_64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.19.0-x86_64-linux-musl)
+    nokogiri (1.19.1-x86_64-linux-musl)
       racc (~> 1.4)
     oauth2 (2.0.18)
       faraday (>= 0.17.3, < 4.0)
@@ -355,7 +355,7 @@ GEM
     parallel (1.27.0)
     parallel_tests (5.6.0)
       parallel
-    parser (3.3.10.1)
+    parser (3.3.10.2)
       ast (~> 2.4.1)
       racc
     pdf-reader (2.15.1)
@@ -394,13 +394,13 @@ GEM
       date
       stringio
     public_suffix (7.0.2)
-    puma (6.6.1)
+    puma (7.2.0)
       nio4r (~> 2.0)
     pundit (2.5.2)
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.4)
+    rack (3.2.5)
     rack-cors (3.0.0)
       logger
       rack (>= 3.0.14)
@@ -462,8 +462,9 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    redis (4.8.1)
-    redis-client (0.26.3)
+    redis (5.4.1)
+      redis-client (>= 0.22.0)
+    redis-client (0.26.4)
       connection_pool
     regexp_parser (2.11.3)
     reline (0.6.3)
@@ -474,10 +475,10 @@ GEM
       actionpack (>= 7.0)
       railties (>= 7.0)
     rexml (3.4.4)
-    rqrcode (2.2.0)
+    rqrcode (3.2.0)
       chunky_png (~> 1.0)
-      rqrcode_core (~> 1.0)
-    rqrcode_core (1.2.0)
+      rqrcode_core (~> 2.0)
+    rqrcode_core (2.1.0)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -486,7 +487,7 @@ GEM
     rspec-mocks (3.13.7)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-rails (8.0.2)
+    rspec-rails (8.0.3)
       actionpack (>= 7.2)
       activesupport (>= 7.2)
       railties (>= 7.2)
@@ -494,7 +495,7 @@ GEM
       rspec-expectations (~> 3.13)
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
-    rspec-support (3.13.6)
+    rspec-support (3.13.7)
     rswag (2.17.0)
       rswag-api (= 2.17.0)
       rswag-specs (= 2.17.0)
@@ -510,7 +511,7 @@ GEM
     rswag-ui (2.17.0)
       actionpack (>= 5.2, < 8.2)
       railties (>= 5.2, < 8.2)
-    rubocop (1.84.1)
+    rubocop (1.84.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -551,14 +552,15 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sentry-rails (6.3.0)
+    sentry-rails (6.3.1)
       railties (>= 5.2.0)
-      sentry-ruby (~> 6.3.0)
-    sentry-ruby (6.3.0)
+      sentry-ruby (~> 6.3.1)
+    sentry-ruby (6.3.1)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
-    sentry-sidekiq (6.3.0)
-      sentry-ruby (~> 6.3.0)
+      logger
+    sentry-sidekiq (6.3.1)
+      sentry-ruby (~> 6.3.1)
       sidekiq (>= 5.0)
     sib-api-v3-sdk (9.1.0)
       addressable (~> 2.3, >= 2.3.0)
@@ -582,7 +584,7 @@ GEM
     snaky_hash (2.0.3)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
-    spring (3.1.1)
+    spring (4.4.2)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -685,16 +687,16 @@ DEPENDENCIES
   phonelib
   premailer-rails
   prosopite
-  puma (< 7)
+  puma (< 8)
   pundit
   rack-cors
   rack_session_access
   rails (>= 6.0.4.1)
   rails-erd
-  redis (~> 4.0)
+  redis (~> 5.4)
   responders
   rexml
-  rqrcode (~> 2.0)
+  rqrcode (~> 3.2)
   rspec-rails
   rswag
   rubocop
@@ -711,7 +713,7 @@ DEPENDENCIES
   sidekiq-cron
   sidekiq-limit_fetch
   skylight
-  spring (~> 3.1.1)
+  spring (~> 4.4.2)
   sprockets-rails
   turbo-rails
   web-console (>= 3.3.0)
