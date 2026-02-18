@@ -7,7 +7,7 @@ describe "Admins can preview and editmessages contents", :js do
   let!(:category_configuration) do
     create(
       :category_configuration, motif_category: category_rsa_orientation, organisation:,
-                               convene_user: true
+                               convene_user: true, number_of_days_before_invitations_expire: 10
     )
   end
 
@@ -30,6 +30,11 @@ describe "Admins can preview and editmessages contents", :js do
     expect(page).to have_css("span.text-violet", text: "rendez-vous d'orientation", wait: 20)
     expect(page).to have_css("span.text-violet", text: "bénéficiaire du RSA")
     expect(page).to have_css("span.text-violet", text: "démarrer un parcours d'accompagnement")
+
+    # The first invitation shows the delay before the reminder is sent
+    expect(page).to have_content("Lien valable 3 jours")
+    # The reminder preview accounts for the 3-day delay (10 days expiration - 3 days delay = 7 days remaining)
+    expect(page).to have_content("Lien valable 7 jours")
 
     find("button.btn-close").click
 
