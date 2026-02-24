@@ -21,8 +21,16 @@ class Notification < ApplicationRecord
 
   delegate :department, :user, :rdv, :motif_category, :instruction_for_rdv, :follow_up,
            to: :participation
-  delegate :organisation, to: :rdv
+  delegate :organisation, :motif, :agents, to: :rdv
   delegate :messages_configuration, :category_configurations, to: :organisation
+
+  def display_agent_names?
+    referents_related? && agents.any?
+  end
+
+  def agents_names
+    agents.to_sentence if display_agent_names?
+  end
 
   def send_to_user
     case format
@@ -33,5 +41,11 @@ class Notification < ApplicationRecord
     when "postal"
       Notifications::GenerateLetter.call(notification: self)
     end
+  end
+
+  private
+
+  def referents_related?
+    motif.follow_up? || current_category_configuration&.rdv_with_referents?
   end
 end
