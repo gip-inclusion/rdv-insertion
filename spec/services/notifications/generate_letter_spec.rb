@@ -169,6 +169,22 @@ describe Notifications::GenerateLetter, type: :service do
       end
     end
 
+    context "when the rdv is with referents" do
+      let!(:agent) { create(:agent, first_name: "Claire", last_name: "Dupont") }
+
+      before do
+        category_configuration.update!(rdv_with_referents: true)
+        rdv.agents = [agent]
+      end
+
+      it "generates the content with the agent name" do
+        subject
+        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+        expect(content).to include("Avec :")
+        expect(content).to include("Claire DUPONT")
+      end
+    end
+
     context "when it is a participation cancelled notification" do
       let!(:notification) do
         create(:notification, participation: participation, event: "participation_cancelled", format: "postal")
