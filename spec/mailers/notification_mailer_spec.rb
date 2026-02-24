@@ -341,6 +341,21 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("Tel : 0101010101")
       end
     end
+
+    context "when the rdv is with referents" do
+      let!(:agent) { create(:agent, first_name: "Claire", last_name: "Dupont") }
+
+      before do
+        category_configuration.update!(rdv_with_referents: true)
+        rdv.agents = [agent]
+      end
+
+      it "renders the agent name in the body" do
+        body_string = strip_tags(mail.body.encoded)
+        expect(body_string).to include("Avec :")
+        expect(body_string).to include("Claire DUPONT")
+      end
+    end
   end
 
   describe "#presential_participation_updated" do
