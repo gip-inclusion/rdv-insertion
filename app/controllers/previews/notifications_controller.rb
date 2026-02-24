@@ -27,7 +27,8 @@ module Previews
         starts_at: Time.zone.parse("10/10/2022 09:00"),
         lieu: Lieu.new(name: "DINUM", address: "20 avenue de Ségur, 75007 Paris"),
         # visio_url n'est présent que pour les motifs de type visio (sans lieu) mais on simplifie pour les previews
-        visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123456"
+        visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123456",
+        agents: [Agent.new(first_name: "Camille", last_name: "Martin")]
       )
     end
 
@@ -39,6 +40,8 @@ module Previews
           organisation: @organisation
         )
       )
+      category_configuration = @category_configuration
+      @notification.define_singleton_method(:current_category_configuration) { category_configuration }
     end
 
     def set_sms_contents
@@ -85,7 +88,8 @@ module Previews
         custom_sentence: @notification.custom_sentence,
         signature_lines: @notification.signature_lines,
         instruction_for_rdv: @notification.instruction_for_rdv,
-        logos_to_display: @notification.logos_to_display
+        logos_to_display: @notification.logos_to_display,
+        agents_names: @notification.agents_names
       }
     end
 
@@ -121,7 +125,8 @@ module Previews
         punishable_warning: @notification.punishable_warning,
         instruction_for_rdv: @notification.instruction_for_rdv,
         rdv_purpose: @notification.rdv_purpose,
-        rdv_subject: @notification.rdv_subject
+        rdv_subject: @notification.rdv_subject,
+        agents_names: @notification.agents_names
       }
     end
 
