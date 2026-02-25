@@ -37,9 +37,16 @@ module Participation::FranceTravailPayload
 
   private
 
-  # Liste des modalités FT (on ne prend en compte que le physique et le telephone): PHYSIQUE, TELEPHONE, VISIO
+  # Liste des modalités FT : PHYSIQUE, TELEPHONE, VISIO
   def france_travail_modalite
-    by_phone? ? "TELEPHONE" : "PHYSIQUE"
+    case motif.location_type
+    when "phone"
+      "TELEPHONE"
+    when "visio"
+      "VISIO"
+    else
+      "PHYSIQUE"
+    end
   end
 
   # Liste des initiateurs FT : USAGER, PARTENAIRE
