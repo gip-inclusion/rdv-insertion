@@ -29,8 +29,21 @@ describe Participation::FranceTravailPayload, type: :concern do
     end
 
     context "when participation is not by phone" do
+      before { motif.update(location_type: "public_office") }
+
       it "returns PHYSIQUE" do
         expect(payload[:modaliteContact]).to eq("PHYSIQUE")
+      end
+    end
+
+    context "when participation is by visio" do
+      before do
+        rdv.update(visio_url: "https://example.com/visio")
+        motif.update(location_type: "visio")
+      end
+
+      it "returns VISIO" do
+        expect(payload[:modaliteContact]).to eq("VISIO")
       end
     end
   end
