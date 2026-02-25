@@ -55,6 +55,16 @@ class Agent < ApplicationRecord
     "#{first_name} #{last_name&.upcase}".strip
   end
 
+  def short_name
+    return if last_name.blank?
+
+    if first_name.present?
+      "#{first_name.first.upcase}. #{last_name.upcase}"
+    else
+      last_name.upcase
+    end
+  end
+
   def with_rdv_solidarites_session(&)
     # This ensure Current.rdv_solidarites_client would call the agent rdv_solidarites_client
     Current.agent = self

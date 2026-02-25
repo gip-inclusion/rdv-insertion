@@ -45,7 +45,8 @@ module Notifications
         punishable_warning: @notification.punishable_warning,
         instruction_for_rdv: @notification.instruction_for_rdv,
         rdv_purpose: @notification.rdv_purpose,
-        rdv_subject: @notification.rdv_subject
+        rdv_subject: @notification.rdv_subject,
+        agents_names: @notification.agents_names
       }
     end
 
