@@ -20,7 +20,7 @@ gem "rails", ">= 6.0.4.1"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
-gem "puma", "< 7"
+gem "puma", "< 8"
 
 # Load image assets and required for administrate gem
 gem "sprockets-rails", require: "sprockets/railtie"
@@ -33,7 +33,7 @@ gem "jbuilder", "~> 2.7"
 
 gem "responders"
 # Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.0"
+gem "redis", "~> 5.4"
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -84,7 +84,7 @@ gem "groupdate"
 gem "chartkick"
 
 # generate QR codes
-gem "rqrcode", "~> 2.0", require: false
+gem "rqrcode", "~> 3.2", require: false
 
 # gem needed to be defined explicitely with ruby 3
 gem "rexml"
@@ -161,7 +161,7 @@ group :development do
   gem "web-console", ">= 3.3.0"
   gem "listen", "~> 3.2"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem "spring", "~> 3.1.1"
+  gem "spring", "~> 4.4.2"
   gem "letter_opener_web" # Preview email in the default browser instead of sending it.
   gem "rails-erd"
 end
@@ -169,7 +169,7 @@ end
 group :test do
   # Adds support for Capybara system testing and selenium driver
   gem "capybara", ">= 2.15"
-  gem "selenium-webdriver", "~> 4.4"
+  gem "selenium-webdriver", "~> 4.41"
   gem "pdf-reader"
   gem "rack_session_access"
   gem "webmock"
