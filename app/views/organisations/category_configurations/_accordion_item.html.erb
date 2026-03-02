@@ -6,9 +6,20 @@
        aria-expanded="false">
     <div>
       <span class="fw-bold h5">« <%= category_configuration.motif_category_name %> »</span>
-      <span class="text-muted ms-2">- <%= motifs.size %> <%= "motif".pluralize(motifs.size) %> <%= "rattaché".pluralize(motifs.size) %></span>
+      <% if motifs.empty? %>
+        <span class="text-muted ms-2"> - </span><span class="text-dark-red ms-2">0 motif</span>
+      <% else %>
+        <span class="text-muted ms-2"> - </span><span class="text-muted ms-2"><%= motifs.size %> <%= "motif".pluralize(motifs.size) %> <%= "rattaché".pluralize(motifs.size) %></span>
+      <% end %>
     </div>
-    <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
+    <div class="d-flex align-items-center gap-3">
+      <% if motifs.empty? %>
+        <%= link_to rdv_solidarites_new_motif_url(organisation), target: "_blank" do %>
+          <i class="ri-add-fill"></i><span class="text-decoration-underline">Rattacher des motifs</span>
+        <% end %>
+      <% end %>
+      <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
+    </div>
   </div>
 
   <div class="d-none" data-accordion-target="content">
