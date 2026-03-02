@@ -8,6 +8,7 @@ class NotificationMailer < ApplicationMailer
                 :set_signature_lines, :set_logos_to_display,
                 :set_rdv_title, :set_rdv_title_by_phone, :set_user_designation, :set_rdv_purpose,
                 :set_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv,
+                :set_agents_names,
                 :verify_phone_number_presence, :set_organisation_logo_path, :set_department_logo_path,
                 :set_x_mailin_custom_header
 
@@ -150,6 +151,10 @@ class NotificationMailer < ApplicationMailer
 
   def set_rdv_purpose
     @rdv_purpose = @notification.rdv_purpose
+  end
+
+  def set_agents_names
+    @agents_names = @notification.agents_names
   end
 
   def set_organisation_logo_path

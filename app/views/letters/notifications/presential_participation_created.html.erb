@@ -18,6 +18,11 @@
     <div class="text-center">
       <%= pdf_map_pin_icon %> <%= rdv.lieu.address %>
     </div>
+    <% if agents_names.present? %>
+      <div class="text-center">
+        <%= pdf_user_icon %> Avec : <%= agents_names %>
+      </div>
+    <% end %>
   </div>
   <%= tag.p tag.strong("#{mandatory_warning}.") if mandatory_warning %>
   <%= tag.p tag.span(instruction_for_rdv) if instruction_for_rdv.present? %>

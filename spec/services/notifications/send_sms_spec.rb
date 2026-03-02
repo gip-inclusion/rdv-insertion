@@ -169,6 +169,32 @@ describe Notifications::SendSms, type: :service do
       end
     end
 
+    context "when the rdv is with referents" do
+      let!(:agent) { create(:agent, first_name: "Claire", last_name: "Dupont") }
+      let!(:category_configuration) do
+        create(:category_configuration, organisation:, motif_category: category_rsa_orientation,
+                                        rdv_with_referents: true)
+      end
+      let!(:content) do
+        "Bonjour John Doe,\nVous êtes bénéficiaire du RSA et êtes convoqué à un " \
+          "rendez-vous d'orientation. Vous êtes attendu par C. DUPONT le 20/12/21" \
+          " à 10h à : DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "Ce RDV est obligatoire. " \
+          "En cas d'empêchement, contactez le 0101010101."
+      end
+
+      before { rdv.agents = [agent] }
+
+      it "sends the sms with the agent name" do
+        expect(Sms::SendWithBrevo).to receive(:call)
+          .with(
+            phone_number: phone_number, content: content,
+            sender_name: sms_sender_name, record_identifier: notification.record_identifier
+          )
+        subject
+      end
+    end
+
     describe "RSA orientation" do
       it "sends the sms with the right content" do
         expect(Sms::SendWithBrevo).to receive(:call)

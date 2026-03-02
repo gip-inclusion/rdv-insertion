@@ -1,7 +1,7 @@
 <h1>Bonjour <%= @user %>,</h1>
 <p>Vous êtes <%= @user_designation %> et à ce titre vous êtes <%= @user.conjugate("convoqué") %> à un <%= @rdv_title_by_phone %> pour <%= @rdv_purpose %>.</p>
 
-<%= render "mailers/notification_mailer/by_phone_rdv_infos", user: @user, rdv: @rdv %>
+<%= render "mailers/notification_mailer/by_phone_rdv_infos", user: @user, rdv: @rdv, agents_names: @agents_names %>
 
 <%= tag.p tag.strong("#{@mandatory_warning}.") if @mandatory_warning %>
 <% if @instruction_for_rdv.present? %>

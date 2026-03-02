@@ -2,7 +2,7 @@
 module Notifications
   module SmsContent
     delegate :rdv, :user, :rdv_title, :rdv_title_by_phone, :user_designation, :mandatory_warning,
-             :punishable_warning, :rdv_subject,
+             :punishable_warning, :rdv_subject, :display_agent_names?, :agents,
              to: :notification
     delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
 
@@ -13,8 +13,8 @@ module Notifications
     def presential_participation_created_content
       "Bonjour #{user},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
-        "#{formatted_start_time} à : #{lieu.full_name}. " \
+        "#{rdv_title}. Vous êtes #{user.conjugate('attendu')}#{presential_agents_clause}" \
+        " le #{formatted_start_date} à #{formatted_start_time} à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d'empêchement, contactez le #{formatted_phone_number}."
@@ -23,7 +23,8 @@ module Notifications
     def by_phone_participation_created_content
       "Bonjour #{user},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title_by_phone}. Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
+        "#{rdv_title_by_phone}. Un conseiller d'insertion#{by_phone_agents_clause}" \
+        " vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -33,8 +34,8 @@ module Notifications
     def visio_participation_created_content
       "Bonjour #{user},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title} par visio. Vous devez vous connecter le #{formatted_start_date} à " \
-        "#{formatted_start_time} sur ce lien : #{rdv.visio_url}\n" \
+        "#{rdv_title} par visio. Vous devez vous connecter#{visio_agents_clause}" \
+        " le #{formatted_start_date} à #{formatted_start_time} sur ce lien : #{rdv.visio_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d'empêchement, contactez le #{formatted_phone_number}."
@@ -44,8 +45,8 @@ module Notifications
 
     def presential_participation_updated_content
       "Bonjour #{user},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
-        "Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
-        " à : #{lieu.full_name}. " \
+        "Vous êtes #{user.conjugate('attendu')}#{presential_agents_clause}" \
+        " le #{formatted_start_date} à #{formatted_start_time} à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d'empêchement, contactez le #{formatted_phone_number}."
@@ -53,7 +54,7 @@ module Notifications
 
     def by_phone_participation_updated_content
       "Bonjour #{user},\nVotre #{rdv_title_by_phone} dans le cadre de votre #{rdv_subject} a été modifié. " \
-        "Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
+        "Un conseiller d'insertion#{by_phone_agents_clause} vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -62,8 +63,8 @@ module Notifications
 
     def visio_participation_updated_content
       "Bonjour #{user},\nVotre #{rdv_title} par visio dans le cadre de votre #{rdv_subject} a été modifié. " \
-        "Vous devez vous connecter le #{formatted_start_date} à #{formatted_start_time} " \
-        "sur ce lien : #{rdv.visio_url}\n" \
+        "Vous devez vous connecter#{visio_agents_clause}" \
+        " le #{formatted_start_date} à #{formatted_start_time} sur ce lien : #{rdv.visio_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d'empêchement, contactez le #{formatted_phone_number}."
@@ -74,8 +75,8 @@ module Notifications
     def presential_participation_reminder_content
       "Rappel: Bonjour #{user},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
-        "#{formatted_start_time} à : #{lieu.full_name}. " \
+        "#{rdv_title}. Vous êtes #{user.conjugate('attendu')}#{presential_agents_clause}" \
+        " le #{formatted_start_date} à #{formatted_start_time} à : #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d'empêchement, contactez le #{formatted_phone_number}."
@@ -84,7 +85,8 @@ module Notifications
     def by_phone_participation_reminder_content
       "Rappel: Bonjour #{user},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title_by_phone}. Un conseiller d'insertion vous appellera le #{formatted_start_date}" \
+        "#{rdv_title_by_phone}. Un conseiller d'insertion#{by_phone_agents_clause}" \
+        " vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -94,8 +96,8 @@ module Notifications
     def visio_participation_reminder_content
       "Rappel: Bonjour #{user},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
-        "#{rdv_title} par visio. Vous devez vous connecter le #{formatted_start_date} à " \
-        "#{formatted_start_time} sur ce lien : #{rdv.visio_url}\n" \
+        "#{rdv_title} par visio. Vous devez vous connecter#{visio_agents_clause}" \
+        " le #{formatted_start_date} à #{formatted_start_time} sur ce lien : #{rdv.visio_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas d'empêchement, contactez le #{formatted_phone_number}."
@@ -110,6 +112,24 @@ module Notifications
     end
 
     ###
+
+    def presential_agents_clause
+      return "" unless display_agent_names?
+
+      " par #{agents.map(&:short_name).to_sentence}"
+    end
+
+    def visio_agents_clause
+      return "" unless display_agent_names?
+
+      " avec #{agents.map(&:short_name).to_sentence}"
+    end
+
+    def by_phone_agents_clause
+      return "" unless display_agent_names?
+
+      " (#{agents.map(&:short_name).to_sentence})"
+    end
 
     def mandatory_warning_message
       mandatory_warning ? "#{mandatory_warning}. " : ""
