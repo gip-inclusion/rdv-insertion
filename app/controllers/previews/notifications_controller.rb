@@ -28,7 +28,7 @@ module Previews
         lieu: Lieu.new(name: "DINUM", address: "20 avenue de Ségur, 75007 Paris"),
         # visio_url n'est présent que pour les motifs de type visio (sans lieu) mais on simplifie pour les previews
         visio_url: "https://webconf.numerique.gouv.fr/RdvServicePublic123456",
-        agents: [Agent.new(first_name: "Camille", last_name: "Martin")]
+        agents: [Agent.new(first_name: "Jean", last_name: "Dupont")]
       )
     end
 
