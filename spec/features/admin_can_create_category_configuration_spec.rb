@@ -63,7 +63,19 @@ describe "Agent can create category configuration", :js do
 
       expect(page).to have_content("« RSA Orientation »")
 
+      within "turbo-frame#remote_modal" do
+        expect(page).to have_content("RSA Orientation")
+        expect(page).to have_content("a bien été ajoutée")
+        expect(page).to have_button("Je le ferai plus tard")
+        expect(page).to have_link("Rattacher des motifs")
+      end
+
       new_category = CategoryConfiguration.last
+
+      # The accordion of the newly created category should be open
+      within "#category_configuration_#{new_category.id}" do
+        expect(page).to have_content("Préférence de rendez-vous")
+      end
       expect(new_category.phone_number).to eq("3949")
       expect(new_category.number_of_days_before_invitations_expire).to eq(15)
       expect(new_category.email_to_notify_rdv_changes).to eq("rdv@test.com")
