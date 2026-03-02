@@ -1,5 +1,13 @@
 <% content_for :title, "Configuration - Catégories - #{@organisation.name} - rdv-insertion" %>
 
+<% if @newly_created_category_configuration %>
+  <% content_for :remote_modal do %>
+    <%= render "organisations/category_configurations/suggest_motifs_modal",
+               category_configuration: @newly_created_category_configuration,
+               organisation: @organisation %>
+  <% end %>
+<% end %>
+
 <div class="container mt-5 mb-5 px-5">
   <%= turbo_frame_tag "configuration_tab" do %>
     <%= render "organisations/configuration/header", tab: "categories", organisation: @organisation %>
@@ -22,7 +30,8 @@
         <%= render "organisations/category_configurations/list",
                    category_configurations: @category_configurations,
                    motifs_by_category: @motifs_by_category,
-                   organisation: @organisation %>
+                   organisation: @organisation,
+                   newly_created_category_configuration: @newly_created_category_configuration %>
       <% end %>
 
       <div class="d-flex justify-content-end mt-4">

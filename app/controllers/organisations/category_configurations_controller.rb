@@ -19,8 +19,10 @@ module Organisations
       @category_configuration = CategoryConfiguration.new(organisation: @organisation)
       @category_configuration.assign_attributes(**category_configuration_params.compact_blank)
       if create_configuration.success?
-        flash[:success] = "La configuration a été créée avec succès"
-        redirect_to organisation_configuration_categories_path(@organisation)
+        redirect_to organisation_configuration_categories_path(
+          @organisation,
+          newly_created_category_configuration_id: @category_configuration.id
+        )
       else
         turbo_stream_display_error_modal(create_configuration.errors)
       end

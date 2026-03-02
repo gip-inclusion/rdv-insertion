@@ -10,13 +10,24 @@ export default class extends Controller {
     this.expandedSections = new Set()
     this.#detectInitialState()
     this.#openFromAnchor()
+    this.#openFromNewlyCreatedParam()
   }
 
   #openFromAnchor() {
     const anchorId = window.location.hash.replace("#", "")
     if (!anchorId) return
+    this.#openItemById(anchorId)
+  }
 
-    const item = this.element.querySelector(`#${anchorId}`)
+  #openFromNewlyCreatedParam() {
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get("newly_created_category_configuration_id")
+    if (!id) return
+    this.#openItemById(`category_configuration_${id}`)
+  }
+
+  #openItemById(id) {
+    const item = this.element.querySelector(`#${id}`)
     const index = item?.querySelector("[data-index]")?.dataset?.index
     if (!index) return
 
