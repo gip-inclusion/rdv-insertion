@@ -84,6 +84,20 @@ describe FranceTravailApi::RetrieveUserToken do
             expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::AccessForbidden)
           end
         end
+
+        context "when the API call returns a 500 with codeRetour R998" do
+          let(:response_body) { { "jetonUsager" => nil, "codeRetour" => "R998" }.to_json }
+
+          before do
+            allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
+              .with(payload: expected_payload, headers: headers)
+              .and_return(OpenStruct.new(success?: false, status: 500, body: response_body))
+          end
+
+          it "raises UserAddressNotFound" do
+            expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::UserAddressNotFound)
+          end
+        end
       end
 
       context "when user has a valid NIR and a valid France Travail ID" do
