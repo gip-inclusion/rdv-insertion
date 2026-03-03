@@ -23,6 +23,22 @@ describe OutgoingWebhooks::FranceTravail::UpsertParticipationJob do
         expect(FranceTravailApi::CreateParticipation).to have_received(:call)
         expect(FranceTravailApi::UpdateParticipation).not_to have_received(:call)
       end
+
+      context "when create service fails with UserAddressNotFound error" do
+        before do
+          allow(FranceTravailApi::CreateParticipation).to receive(:call)
+            .and_raise(FranceTravailApi::RetrieveUserToken::UserAddressNotFound, "Adresse introuvable")
+        end
+
+        it "discards the job without raising an error" do
+          expect do
+            described_class.perform_now(
+              participation_id: participation.id,
+              timestamp: timestamp
+            )
+          end.not_to raise_error
+        end
+      end
     end
 
     context "when participation has a france_travail_id" do
