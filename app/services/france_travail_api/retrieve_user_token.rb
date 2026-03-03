@@ -3,6 +3,7 @@ module FranceTravailApi
     # These errors are not retryable when called from the job
     class NoMatchingUser < StandardError; end
     class AccessForbidden < StandardError; end
+    class UserAddressNotFound < StandardError; end
 
     # https://francetravail.io/produits-partages/catalogue/rechercher-usager-v2/documentation#/api-reference/
     def initialize(user:, access_token:)
@@ -44,6 +45,7 @@ module FranceTravailApi
       Rails.logger.error(error_message)
 
       raise AccessForbidden, error_message if access_forbidden?
+      raise UserAddressNotFound, error_message if user_address_not_found?
 
       fail!(error_message)
     end
@@ -53,6 +55,13 @@ module FranceTravailApi
       # pas accès à l'utilisateur. Il n'y a donc pas d'intérêt à les retenter.
       # Voir https://github.com/gip-inclusion/rdv-insertion/issues/2963
       @response.status == 403 && @response_body["codeRetour"] == "R001"
+    end
+
+    def user_address_not_found?
+      # R998 signifie que l'usager n'a pas d'adresse dans le SI FT, ce qui empêche le calcul de la structure
+      # d'orientation. Ces erreurs ne sont pas retentables.
+      # https://www.notion.so/gip-inclusion/Tech-Erreur-API-France-Travail-R998-2f55f321b6048069bf98cf94b4329bef
+      @response_body["codeRetour"] == "R998"
     end
 
     def retrieve_user_token
