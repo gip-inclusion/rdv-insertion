@@ -1,27 +1,26 @@
 module Participations
-  class Update < BaseService
-    def initialize(participation:, participation_params:)
+  class UpdateStatus < BaseService
+    def initialize(participation:, status:)
       @participation = participation
-      @participation_params = participation_params
+      @status = status
     end
 
     def call
       Participation.transaction do
         update_rdv_solidarites_participation
-        @participation.update!(@participation_params)
-
-        if @participation_params[:status].present?
-          @participation.follow_up.set_status
-          @participation.follow_up.save!
-        end
+        @participation.update!(status: @status)
+        @participation.follow_up.set_status
+        @participation.follow_up.save!
       end
     end
+
+    private
 
     def update_rdv_solidarites_participation
       @update_rdv_solidarites_participation ||= call_service!(
         RdvSolidaritesApi::UpdateParticipation,
         rdv_solidarites_participation_id: @participation.rdv_solidarites_participation_id,
-        participation_attributes: @participation_params
+        participation_attributes: { status: @status }
       )
     end
   end

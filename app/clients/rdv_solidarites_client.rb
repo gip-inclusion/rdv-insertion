@@ -100,6 +100,10 @@ class RdvSolidaritesClient
     connection.patch("/api/v1/participations/#{participation_id}", request_body.to_json)
   end
 
+  def update_rdv_status(rdv_solidarites_rdv_id, status)
+    connection.patch("/api/v1/rdvs/#{rdv_solidarites_rdv_id}/update_status", { status: status }.to_json)
+  end
+
   def create_motif_category(request_body)
     connection.post("/api/rdvinsertion/motif_categories", request_body.to_json)
   end

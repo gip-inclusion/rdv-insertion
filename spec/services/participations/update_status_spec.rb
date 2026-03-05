@@ -1,25 +1,20 @@
-describe Participations::Update, type: :service do
+describe Participations::UpdateStatus, type: :service do
   subject do
-    described_class.call(
-      participation: participation,
-      participation_params: participation_params
-    )
+    described_class.call(participation: participation, status: status)
   end
 
   let(:participation) { create(:participation, status: "unknown") }
-  let(:participation_params) { { status: "seen" } }
+  let(:status) { "seen" }
 
   let(:stub_rdvs) do
     allow(RdvSolidaritesApi::UpdateParticipation).to receive(:call).once.with(
-      {
-        :participation_attributes => { :status => "seen" },
-        :rdv_solidarites_participation_id => participation.rdv_solidarites_participation_id
-      }
+      rdv_solidarites_participation_id: participation.rdv_solidarites_participation_id,
+      participation_attributes: { status: "seen" }
     )
   end
 
   describe "#call" do
-    context "RDVs update succeeds" do
+    context "when the RDVs update succeeds" do
       before { stub_rdvs.and_return(OpenStruct.new(success?: true)) }
 
       it "changes participation status" do
@@ -28,7 +23,7 @@ describe Participations::Update, type: :service do
       end
     end
 
-    context "RDVs update fails" do
+    context "when the RDVs update fails" do
       before { stub_rdvs.and_return(OpenStruct.new(success?: false)) }
 
       it "doesn't update participation status" do

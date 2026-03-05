@@ -2,16 +2,14 @@ class ParticipationsController < ApplicationController
   before_action :set_participation, only: [:update]
 
   def update
-    participation_update = Participations::Update.call(
-      participation: @participation,
-      participation_params: participation_params
-    )
+    service = @participation.collectif? ? Participations::UpdateStatus : Rdvs::UpdateStatus
+    result = service.call(participation: @participation, status: participation_params[:status])
 
-    @success = participation_update.success?
+    @success = result.success?
     if @success
       flash.now[:success] = "Le statut du rdv a bien été modifié."
     else
-      flash.now[:error] = participation_update.errors.join(", ")
+      flash.now[:error] = result.errors.join(", ")
     end
     respond_to :turbo_stream
   end
