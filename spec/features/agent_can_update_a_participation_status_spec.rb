@@ -18,7 +18,7 @@ describe "Agents can update a participation status", :js do
     create(:rdv, organisation: organisation)
   end
 
-  let(:participation) do
+  let!(:participation) do
     create(:participation, follow_up:, user:, rdv:, status: "unknown")
   end
 
