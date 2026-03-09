@@ -35,7 +35,7 @@ describe Users::Find, type: :service do
     it("is a success") { is_a_success }
 
     context "when an user with the same nir is found" do
-      let!(:user) { create(:user, nir: nir) }
+      let!(:user) { create(:user, nir: nir, department_id: department_id) }
 
       it "returns the found user" do
         expect(subject.user).to eq(user)
@@ -154,7 +154,7 @@ describe Users::Find, type: :service do
 
   describe "matching priority order" do
     context "when multiple users match different criteria" do
-      let!(:user_nir) { create(:user, nir: nir) }
+      let!(:user_nir) { create(:user, nir: nir, department_id: department_id) }
       let!(:user_department_id) do
         create(
           :user, department_internal_id: department_internal_id,

@@ -65,10 +65,11 @@ describe Users::Validate, type: :service do
           )
         end
 
-        context "when the user does is yet to be persisted and does not belong to the organisation" do
+        context "when the user does is yet to be persisted" do
           let!(:user) do
             build(
               :user,
+              department:,
               first_name: "Ramses",
               email: "ramses2@caramail.com",
               phone_number: "+33782605941",
@@ -78,18 +79,12 @@ describe Users::Validate, type: :service do
             )
           end
 
-          it("is a success") { is_a_success }
+          it("is a failure") { is_a_failure }
 
-          context "when the organisation is passed to the service" do
-            subject { described_class.call(user: user, organisation: organisation) }
-
-            it("is a failure") { is_a_failure }
-
-            it "returns an error" do
-              expect(subject.errors).to include(
-                "Un usager avec le même ID interne au département se trouve au sein du département: [1395]"
-              )
-            end
+          it "returns an error" do
+            expect(subject.errors).to include(
+              "Un usager avec le même ID interne au département se trouve au sein du département: [1395]"
+            )
           end
         end
       end
@@ -119,10 +114,11 @@ describe Users::Validate, type: :service do
           )
         end
 
-        context "when the user does is yet to be persisted and does not belong to the organisation" do
+        context "when the user does is yet to be persisted" do
           let!(:user) do
             build(
               :user,
+              department:,
               first_name: "Ramses",
               email: "ramses2@caramail.com",
               phone_number: "+33782605941",
@@ -132,18 +128,12 @@ describe Users::Validate, type: :service do
             )
           end
 
-          it("is a success") { is_a_success }
+          it("is a failure") { is_a_failure }
 
-          context "when the organisation is passed to the service" do
-            subject { described_class.call(user: user, organisation: organisation) }
-
-            it("is a failure") { is_a_failure }
-
-            it "returns an error" do
-              expect(subject.errors).to include(
-                "Un usager avec le même numéro CAF et rôle se trouve au sein du département: [1395]"
-              )
-            end
+          it "returns an error" do
+            expect(subject.errors).to include(
+              "Un usager avec le même numéro CAF et rôle se trouve au sein du département: [1395]"
+            )
           end
         end
       end
@@ -152,7 +142,7 @@ describe Users::Validate, type: :service do
     context "when an user shares the same email" do
       context "with the same first name" do
         let!(:other_user) do
-          create(:user, id: 1395, first_name: "ramses", email: "ramses2@caramail.com")
+          create(:user, id: 1395, first_name: "ramses", email: "ramses2@caramail.com", department:)
         end
 
         it("is a failure") { is_a_failure }
@@ -176,7 +166,7 @@ describe Users::Validate, type: :service do
     context "when an user shares the same phone number" do
       context "with the same first name" do
         let!(:other_user) do
-          create(:user, id: 1395, first_name: "ramses", phone_number: "0782605941")
+          create(:user, id: 1395, first_name: "ramses", phone_number: "0782605941", department:)
         end
 
         it("is a failure") { is_a_failure }
