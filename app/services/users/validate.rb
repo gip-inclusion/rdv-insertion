@@ -53,27 +53,23 @@ module Users
                        "(NIR, email, numéro de tel, ID interne, numéro CAF/rôle)"
     end
 
-    def users_from_same_departments
-      @users_from_same_departments ||= User.active.joins(:organisations).where(
-        organisations: { department_id: @user.department_ids.push(@organisation&.department_id).compact.uniq }
-      )
+    def users_from_same_department
+      @users_from_same_department ||= User.active.where(department_id: @user.department_id)
     end
 
     def users_with_same_uid
       @users_with_same_uid ||=
-        users_from_same_departments.where(
-          affiliation_number: @user.affiliation_number, role: @user.role
-        ) - [@user]
+        users_from_same_department.where(affiliation_number: @user.affiliation_number, role: @user.role) - [@user]
     end
 
     def users_with_same_department_internal_id
       @users_with_same_department_internal_id ||=
-        users_from_same_departments.where(department_internal_id: @user.department_internal_id) - [@user]
+        users_from_same_department.where(department_internal_id: @user.department_internal_id) - [@user]
     end
 
     def users_with_same_email_and_first_name
       @users_with_same_email_and_first_name ||=
-        User.active.where(email: @user.email).select do |user|
+        users_from_same_department.where(email: @user.email).select do |user|
           user.id != @user.id &&
             user.first_name.split.first.downcase == @user.first_name.split.first.downcase
         end
@@ -81,7 +77,7 @@ module Users
 
     def users_with_same_phone_number_and_first_name
       @users_with_same_phone_number_and_first_name ||=
-        User.active.where(phone_number: @user.phone_number_formatted).select do |user|
+        users_from_same_department.where(phone_number: @user.phone_number_formatted).select do |user|
           user.id != @user.id &&
             user.first_name.split.first.downcase == @user.first_name.split.first.downcase
         end

@@ -1,7 +1,7 @@
 module Users
   class FollowUpsController < ApplicationController
     before_action :set_user, :set_department, :set_organisation,
-                  :set_user_department_organisations, :set_all_configurations, :set_user_tags,
+                  :set_all_configurations, :set_user_tags,
                   :set_back_to_users_list_url, only: [:index]
 
     include BackToListConcern
@@ -45,17 +45,12 @@ module Users
         policy_scope(CategoryConfiguration)
         .joins(:organisation)
         .where(current_organisation_filter)
-        .where({ organisation: @user.department_organisations(@department.id).map(&:id) })
+        .where(organisation_id: @user.organisation_ids)
         .preload(:motif_category)
         .uniq(&:motif_category_id)
 
       @all_configurations =
         department_level? ? @all_configurations.sort_by(&:department_position) : @all_configurations.sort_by(&:position)
-    end
-
-    def set_user_department_organisations
-      @user_department_organisations =
-        policy_scope(Organisation).where(id: @user.organisation_ids, department: @department)
     end
   end
 end
