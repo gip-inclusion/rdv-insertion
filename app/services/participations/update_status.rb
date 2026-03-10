@@ -17,11 +17,20 @@ module Participations
     private
 
     def update_rdv_solidarites_participation
-      @update_rdv_solidarites_participation ||= call_service!(
-        RdvSolidaritesApi::UpdateParticipation,
-        rdv_solidarites_participation_id: @participation.rdv_solidarites_participation_id,
-        participation_attributes: { status: @status }
-      )
+      @update_rdv_solidarites_participation ||=
+        if @participation.collectif?
+          call_service!(
+            RdvSolidaritesApi::UpdateParticipation,
+            rdv_solidarites_participation_id: @participation.rdv_solidarites_participation_id,
+            participation_attributes: { status: @status }
+          )
+        else
+          call_service!(
+            RdvSolidaritesApi::UpdateRdvStatus,
+            rdv_solidarites_rdv_id: @participation.rdv_solidarites_rdv_id,
+            status: @status
+          )
+        end
     end
   end
 end
