@@ -44,19 +44,6 @@ describe "Agents can edit users tags", :js do
           expect(page).to have_no_content("Sur l'organisation orga 2")
         end
       end
-
-      context "when the second org is in another department" do
-        let!(:other_organisation) { create(:organisation, name: "orga 2", department: create(:department)) }
-
-        it "shows only one link" do
-          visit organisation_user_path(user, organisation_id: organisation.id)
-
-          expect(page).to have_link("Trouver un RDV", href: new_user_rdv_path(user, organisation_id: organisation.id))
-
-          expect(page).to have_no_content("Sur l'organisation orga 1")
-          expect(page).to have_no_content("Sur l'organisation orga 2")
-        end
-      end
     end
   end
 end

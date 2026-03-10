@@ -3,8 +3,9 @@ describe Users::AddToOrganisations, type: :service do
     described_class.call(organisations: [organisation], user:)
   end
 
-  let!(:organisation) { create(:organisation) }
-  let!(:user) { create(:user) }
+  let!(:department) { create(:department) }
+  let!(:organisation) { create(:organisation, department:) }
+  let!(:user) { create(:user, department:) }
 
   describe "#call" do
     before do

@@ -55,7 +55,7 @@ describe Archive do
 
     context "when the user is archived in another organisation" do
       let!(:existing_archive) do
-        create(:archive, user: user, organisation: create(:organisation, users: [user]))
+        create(:archive, user: user, organisation: create(:organisation, department:, users: [user]))
       end
 
       it { expect(subject).to be_valid }
