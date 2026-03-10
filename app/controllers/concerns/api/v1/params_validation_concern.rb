@@ -64,7 +64,10 @@ module Api
       end
 
       def validate_user_params_content(user_params, idx = nil)
-        user = User.new(user_params.merge(creation_origin_attributes))
+        user = User.new(
+          user_params.merge(creation_origin_attributes)
+                     .merge(department_id: @organisation.department_id)
+        )
         # since it is an upsert we don't check the uniqueness validations
         user.skip_uniqueness_validations = true
 

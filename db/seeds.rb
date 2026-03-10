@@ -394,6 +394,7 @@ user_to_convoc = User.create!(
   title: "monsieur",
   address: "60 avenue de Chabeuil 26000 Valence",
   phone_number: "0601020304",
+  department: drome,
   created_from_structure: drome1_organisation,
   created_through: "rdv_insertion_api"
 )
@@ -428,6 +429,7 @@ User.create!(
   first_name: "Jean",
   last_name: "RSAAuxerre",
   title: "monsieur",
+  department: yonne,
   created_from_structure: yonne_organisation,
   created_through: "rdv_insertion_api"
 )

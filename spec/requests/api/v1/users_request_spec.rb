@@ -146,24 +146,24 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
         run_test! do
           # Tags are converted to tag_users_attributes
-          user1_transformed = user1_params.merge(creation_source_attributes)
-                                          .except(:tags_to_add)
-                                          .merge(tag_users_attributes: [{ tag_id: 1 }])
-          user2_transformed = user2_params.merge(creation_source_attributes)
-                                          .except(:tags_to_add)
-                                          .merge(tag_users_attributes: [{ tag_id: 1 }, { tag_id: 2 }])
+          user1_params_transformed = user1_params.merge(creation_source_attributes)
+                                                 .except(:tags_to_add)
+                                                 .merge(tag_users_attributes: [{ tag_id: 1 }])
+          user2_params_transformed = user2_params.merge(creation_source_attributes)
+                                                 .except(:tags_to_add)
+                                                 .merge(tag_users_attributes: [{ tag_id: 1 }, { tag_id: 2 }])
 
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user1_transformed,
+              user1_params_transformed,
               {},
               {}
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
-              user2_transformed,
+              user2_params_transformed,
               {},
               { name: "RSA orientation" }
             )
