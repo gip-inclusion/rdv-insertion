@@ -16,8 +16,8 @@ describe Users::Save, type: :service do
   describe "#call" do
     before do
       allow(user).to receive(:save).and_return(true)
-      allow(Users::Validate).to receive(:call)
-        .with(user: user, organisation: organisation).and_return(OpenStruct.new(success?: true))
+      allow(Users::ValidateDepartmentUniqueness).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
       allow(Users::PushToRdvSolidarites).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
     end
@@ -37,6 +37,12 @@ describe Users::Save, type: :service do
     it "syncs the user with Rdv Solidarites" do
       expect(Users::PushToRdvSolidarites).to receive(:call)
         .with(user: user)
+      subject
+    end
+
+    it "validates the user's uniqueness in the department" do
+      expect(Users::ValidateDepartmentUniqueness).to receive(:call)
+        .with(user: user, organisation: organisation)
       subject
     end
 
@@ -102,7 +108,7 @@ describe Users::Save, type: :service do
 
     context "when the validation service fails" do
       before do
-        allow(Users::Validate).to receive(:call)
+        allow(Users::ValidateDepartmentUniqueness).to receive(:call)
           .with(user: user, organisation: organisation)
           .and_return(OpenStruct.new(success?: false, errors: ["invalid user"]))
       end

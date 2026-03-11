@@ -1,4 +1,4 @@
-describe Users::Validate, type: :service do
+describe Users::ValidateDepartmentUniqueness, type: :service do
   subject { described_class.call(user: user, organisation: organisation) }
 
   let!(:department) { create(:department) }
@@ -19,7 +19,7 @@ describe Users::Validate, type: :service do
 
       it "returns an error" do
         expect(subject.errors).to include(
-          "Un usager avec le même NIR se trouve au sein du département: [1395]"
+          "Un usager avec le même Numéro de sécurité sociale se trouve au sein du département: [1395]"
         )
       end
     end
@@ -64,7 +64,7 @@ describe Users::Validate, type: :service do
 
         it "returns an error" do
           expect(subject.errors).to include(
-            "Un usager avec le même NIR se trouve au sein du département: [1395]"
+            "Un usager avec le même Numéro de sécurité sociale se trouve au sein du département: [1395]"
           )
         end
       end

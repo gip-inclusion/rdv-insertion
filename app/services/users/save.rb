@@ -32,7 +32,7 @@ module Users
     end
 
     def validate_user!
-      call_service!(Users::Validate, user: @user, organisation: @organisation)
+      call_service!(Users::ValidateDepartmentUniqueness, user: @user, organisation: @organisation)
     end
 
     def push_user_to_rdv_solidarites
