@@ -3,7 +3,8 @@ describe Users::RemoveFromOrganisation, type: :service do
     described_class.call(organisation:, user:)
   end
 
-  let!(:organisation) { create(:organisation) }
+  let!(:department) { create(:department) }
+  let!(:organisation) { create(:organisation, department:) }
   let!(:user) { create(:user, organisations: [organisation]) }
 
   describe "#call" do
@@ -44,7 +45,7 @@ describe Users::RemoveFromOrganisation, type: :service do
     end
 
     context "when the user is attached to more than one org" do
-      let!(:other_organisation) { create(:organisation) }
+      let!(:other_organisation) { create(:organisation, department:) }
       let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
 
       it "does not delete the user" do

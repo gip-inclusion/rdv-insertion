@@ -3,9 +3,10 @@ describe Users::ImportAssociationsFromRdvSolidarites, type: :service do
     described_class.call(user:)
   end
 
+  let(:department) { create(:department) }
   let(:user) { create(:user, organisations: [organisation], referents: []) }
-  let(:organisation) { create(:organisation) }
-  let(:other_organisation) { create(:organisation) }
+  let(:organisation) { create(:organisation, department:) }
+  let(:other_organisation) { create(:organisation, department:) }
   let(:referent) { create(:agent) }
 
   before do

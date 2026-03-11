@@ -130,6 +130,7 @@ module InboundWebhooks
         new_users = new_rdv_solidarites_users.map do |rdv_solidarites_user|
           User.create!(
             rdv_solidarites_user_id: rdv_solidarites_user.id,
+            department_id: organisation.department_id,
             created_through: "rdv_solidarites_webhook",
             created_from_structure: organisation,
             organisations: [organisation],

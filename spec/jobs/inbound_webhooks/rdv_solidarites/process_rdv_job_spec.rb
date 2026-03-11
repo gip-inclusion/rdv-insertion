@@ -305,6 +305,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             it "creates the user with notification_email converted to email field" do
               expect(User).to receive(:create!).with(
                 rdv_solidarites_user_id: user_id1,
+                department_id: organisation.department_id,
                 organisations: [organisation],
                 first_name: "James",
                 last_name: "Cameron",

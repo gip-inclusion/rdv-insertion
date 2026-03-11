@@ -120,7 +120,9 @@ describe TransferEmailReplyJob do
   end
 
   context "when the invitation is in multiple organisations" do
-    let!(:organisation2) { create(:organisation, email: "organisation2@departement.fr") }
+    let!(:organisation2) do
+      create(:organisation, email: "organisation2@departement.fr", department: organisation.department)
+    end
     let!(:user2) do
       create(:user, email: "bene_ficiaire2@gmail.com",
                     first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation, organisation2])

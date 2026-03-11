@@ -186,12 +186,8 @@ class UserListUpload::UserRow < ApplicationRecord
     matching_user&.send(association_name)&.include?(resource)
   end
 
-  def user_department_organisations
-    user.department_organisations(department_id)
-  end
-
-  def user_department_organisation_names
-    user_department_organisations.map(&:name).join(", ")
+  def user_organisation_names
+    user.organisations.map(&:name).join(", ")
   end
 
   def will_change_matching_user?
@@ -219,9 +215,9 @@ class UserListUpload::UserRow < ApplicationRecord
   private
 
   def user_attributes
-    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES).tap do |attributes|
-      nullify_edited_to_nil_values(attributes)
-    end
+    symbolized_attributes.compact_blank.merge(cnaf_data.symbolize_keys).slice(*USER_ATTRIBUTES)
+                         .merge(department_id:)
+                         .tap { |attributes| nullify_edited_to_nil_values(attributes) }
   end
 
   def nullify_edited_to_nil_values(attributes)

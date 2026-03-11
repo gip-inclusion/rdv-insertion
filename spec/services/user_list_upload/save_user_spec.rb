@@ -89,7 +89,7 @@ describe UserListUpload::SaveUser, type: :service do
     end
 
     context "when user is archived" do
-      let!(:organisation) { create(:organisation, users: [user]) }
+      let!(:organisation) { create(:organisation, department: user.department, users: [user]) }
       let!(:archive) { create(:archive, user: user, organisation: organisation) }
 
       it "unarchives the user" do

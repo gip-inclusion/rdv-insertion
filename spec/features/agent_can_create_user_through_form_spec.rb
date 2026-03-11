@@ -150,7 +150,7 @@ describe "Agents can create user through form", :js do
           create(
             :user,
             nir: nir, email: nil, created_at: Time.zone.parse("04/05/2022"),
-            rdv_solidarites_user_id: rdv_solidarites_user_id
+            rdv_solidarites_user_id: rdv_solidarites_user_id, department:
           )
         end
 
@@ -178,7 +178,7 @@ describe "Agents can create user through form", :js do
               :user,
               nir: nir, email: nil, created_at: Time.zone.parse("04/05/2022"),
               rdv_solidarites_user_id: rdv_solidarites_user_id,
-              created_through: "rdv_insertion_upload_page", created_from_structure: department
+              created_through: "rdv_insertion_upload_page", created_from_structure: department, department:
             )
           end
 
@@ -266,7 +266,7 @@ describe "Agents can create user through form", :js do
           create(
             :user,
             first_name: "bob", email: "bob@kelso.com", phone_number: nil, created_at: Time.zone.parse("04/05/2022"),
-            rdv_solidarites_user_id: rdv_solidarites_user_id
+            rdv_solidarites_user_id: rdv_solidarites_user_id, department:
           )
         end
 
@@ -294,7 +294,7 @@ describe "Agents can create user through form", :js do
           create(
             :user,
             first_name: "bob", phone_number: "+33782605941", created_at: Time.zone.parse("04/05/2022"),
-            rdv_solidarites_user_id: rdv_solidarites_user_id
+            rdv_solidarites_user_id: rdv_solidarites_user_id, department:
           )
         end
 
