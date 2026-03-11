@@ -22,7 +22,10 @@ module Users
     def find_user_by_nir
       return if formatted_nir_attribute.blank?
 
-      User.active.find_by(nir: formatted_nir_attribute)
+      User.active.joins(:organisations).where(
+        nir: formatted_nir_attribute,
+        organisations: { department_id: @department_id }
+      ).first
     end
 
     def find_user_by_department_internal_id
@@ -37,7 +40,10 @@ module Users
     def find_user_by_email
       return if @attributes[:email].blank? || @attributes[:first_name].blank?
 
-      User.active.where(email: @attributes[:email]).find do |user|
+      User.active.joins(:organisations).where(
+        email: @attributes[:email],
+        organisations: { department_id: @department_id }
+      ).find do |user|
         user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
@@ -45,7 +51,10 @@ module Users
     def find_user_by_phone_number
       return if phone_number_formatted.blank? || @attributes[:first_name].blank?
 
-      User.active.where(phone_number: phone_number_formatted).find do |user|
+      User.active.joins(:organisations).where(
+        phone_number: phone_number_formatted,
+        organisations: { department_id: @department_id }
+      ).find do |user|
         user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
