@@ -1,0 +1,17 @@
+<%= render "common/remote_modal" do %>
+  <div class="text-center px-3 pb-3">
+    <%= image_tag "illustrations/success.svg", alt: "Illustration d'un message de succès", width: 80, class: "mb-3" %>
+    <p class="fw-bold mt-3 mb-2">
+      Votre catégorie de motifs « <%= category_configuration.motif_category_name %> » a bien été ajoutée.
+    </p>
+    <p class="text-start my-4">
+      Pour inviter ou convoquer des usagers sur cette catégorie, vous devez rattacher des motifs de rendez-vous depuis RDV-Solidarités.
+    </p>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <button type="button" class="btn btn-blue-out" data-bs-dismiss="modal">Je le ferai plus tard</button>
+      <%= link_to rdv_solidarites_motifs_url(organisation), target: "_blank", class: "btn btn-blue" do %>
+        <i class="ri-add-fill me-1"></i> Rattacher des motifs
+      <% end %>
+    </div>
+  </div>
+<% end %>

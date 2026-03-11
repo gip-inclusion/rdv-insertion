@@ -57,35 +57,14 @@
         </div>
       </div>
 
-      <%# Step 3: Motifs (informational) %>
+      <%# Step 3: Messages %>
       <div class="stepper-step">
         <div class="stepper-step-header disabled"
              data-action="click->accordion#toggle"
              data-index="2">
           <div class="d-flex align-items-center">
             <span class="stepper-step-badge inactive" data-accordion-target="badge">3</span>
-            <span class="h5 fw-bold">Motifs de rendez-vous</span>
-          </div>
-          <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
-        </div>
-        <div class="stepper-step-content d-none" data-accordion-target="content">
-          <p class="text-muted small mb-3">
-            Pour permettre l'envoi des invitations et des convocations, vous devez créer des motifs de rendez-vous sur RDV-Solidarité et les rattacher à la catégorie RSA.
-          </p>
-          <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs", target: "_blank", class: "btn btn-blue-out" do %>
-            <span>Créer les motifs de rendez-vous</span> <i class="ri-external-link-line ms-1"></i>
-          <% end %>
-        </div>
-      </div>
-
-      <%# Step 4: Messages %>
-      <div class="stepper-step">
-        <div class="stepper-step-header disabled"
-             data-action="click->accordion#toggle"
-             data-index="3">
-          <div class="d-flex align-items-center">
-            <span class="stepper-step-badge inactive" data-accordion-target="badge">4</span>
-            <span class="h5 fw-bold">Paramètres d’invitation</span>
+            <span class="h5 fw-bold">Paramètres d'invitation</span>
           </div>
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
         </div>
@@ -94,13 +73,13 @@
         </div>
       </div>
 
-      <%# Step 5: File import %>
+      <%# Step 4: File import %>
       <div class="stepper-step">
         <div class="stepper-step-header disabled"
              data-action="click->accordion#toggle"
-             data-index="4">
+             data-index="3">
           <div class="d-flex align-items-center">
-            <p class="stepper-step-badge inactive" data-accordion-target="badge">5</p>
+            <p class="stepper-step-badge inactive" data-accordion-target="badge">4</p>
             <p><span class="h5 fw-bold">Fichier d'import</span><span class="text-dark-red"> - Obligatoire</span></p>
           </div>
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
@@ -121,19 +100,40 @@
         </div>
       </div>
 
-      <%# Step 6: Notifications %>
+      <%# Step 5: Notifications %>
       <div class="stepper-step">
         <div class="stepper-step-header disabled"
              data-action="click->accordion#toggle"
-             data-index="5">
+             data-index="4">
           <div class="d-flex align-items-center">
-            <span class="stepper-step-badge inactive" data-accordion-target="badge">6</span>
+            <span class="stepper-step-badge inactive" data-accordion-target="badge">5</span>
             <span class="h5 fw-bold">Notifications</span>
           </div>
           <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
         </div>
         <div class="stepper-step-content d-none" data-accordion-target="content">
           <%= render "organisations/category_configurations/alertings/alerting_fields", f: f %>
+        </div>
+      </div>
+
+      <%# Step 6: Motifs (informational) %>
+      <div class="stepper-step">
+        <div class="stepper-step-header disabled"
+             data-action="click->accordion#toggle"
+             data-index="5">
+          <div class="d-flex align-items-center">
+            <span class="stepper-step-badge inactive" data-accordion-target="badge">6</span>
+            <span class="h5 fw-bold">Motifs de rendez-vous</span>
+          </div>
+          <i class="ri-arrow-down-s-line fs-4" data-accordion-target="icon"></i>
+        </div>
+        <div class="stepper-step-content d-none" data-accordion-target="content">
+          <p class="text-muted small mb-3">
+            Vous pourrez rattacher les
+            <%= link_to "motifs de rendez-vous RDV-S", rdv_solidarites_motifs_url(organisation), target: "_blank", class: "text-muted text-decoration-underline" %>
+            <i class="ri-external-link-line"></i>
+            , une fois cette catégorie ajoutée à l'organisation.
+          </p>
         </div>
       </div>
     </div>

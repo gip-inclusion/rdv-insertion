@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include ActionView::RecordIdentifier
   include AuthenticatedControllerConcern
   include AuthorizationConcern
   include CurrentStructure

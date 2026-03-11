@@ -21,7 +21,7 @@
               <td><%= motif.default_duration_in_min %> min</td>
               <td><%= motif.bookable_by_invited_users? ? "oui" : "non" %></td>
               <td>
-                <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs/#{motif.rdv_solidarites_motif_id}/edit",
+                <%= link_to rdv_solidarites_edit_motif_url(organisation, motif),
                             target: "_blank",
                             class: "text-decoration-none" do %>
                   <i class="ri-pencil-fill me-1"></i>
@@ -34,25 +34,28 @@
       </table>
     </div>
   <% else %>
-    <div class="text-center mx-3 mb-4">
-      <i class="ri-forbid-line fs-2 text-muted"></i>
-      <p class="text-muted my-3">Il n'y a pas encore de motifs de rendez-vous rattachés à cette catégorie.</p>
-      <p>
-        Pour rattacher un motif à cette catégorie, choisissez la catégorie dans l'onglet « réservation en ligne » d'un
-        <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs", target: "_blank" do %>
-          <span class="text-decoration-underline">motif sur RDV-Solidarités.</span> <i class="ri-external-link-line ms-1"></i>
-        <% end %>
-      </p>
+    <div class="d-flex flex-column align-items-center text-center py-4 gap-3">
+      <%= image_tag "illustrations/empty-results.png", alt: "", width: 120 %>
+      <div>
+        <p class="mb-2">Il n'y a pas encore de motifs rattachés à cette catégorie.</p>
+        <p class="text-muted small mb-0">
+          Pour commencer à ajouter et inviter des usagers sur cette catégorie,
+          <%= link_to rdv_solidarites_motifs_url(organisation), target: "_blank", class: "text-decoration-underline" do %>
+            rattachez des motifs de rendez-vous
+          <% end %>
+          <i class="ri-external-link-line text-primary"></i>.
+        </p>
+      </div>
     </div>
   <% end %>
 
   <div class="d-flex justify-content-end gap-2 mt-3">
-    <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs",
+    <%= link_to rdv_solidarites_motifs_url(organisation),
                 target: "_blank",
                 class: "btn btn-blue-out" do %>
-      Consulter tous les motifs <i class="ri-external-link-line ms-1"></i>
+      Consulter les motifs <i class="ri-external-link-line ms-1"></i>
     <% end %>
-    <%= link_to "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation.rdv_solidarites_organisation_id}/motifs/new",
+    <%= link_to rdv_solidarites_new_motif_url(organisation),
                 target: "_blank",
                 class: "btn btn-blue" do %>
       <i class="ri-add-line me-1"></i> Ajouter un motif
