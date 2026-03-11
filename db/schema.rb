@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -656,6 +656,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
     t.string "created_from_structure_type"
     t.string "created_through"
     t.datetime "deleted_at"
+    t.bigint "department_id"
     t.string "department_internal_id"
     t.string "email"
     t.string "first_name"
@@ -673,6 +674,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
     t.datetime "updated_at", null: false
     t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
+    t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
@@ -780,5 +782,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
   add_foreign_key "user_list_upload_user_save_attempts", "users"
   add_foreign_key "user_list_uploads", "agents"
   add_foreign_key "user_list_uploads", "category_configurations"
+  add_foreign_key "users", "departments"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end
