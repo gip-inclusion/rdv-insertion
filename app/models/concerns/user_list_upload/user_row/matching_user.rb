@@ -124,6 +124,6 @@ module UserListUpload::UserRow::MatchingUser
 
   def matching_attribute_changed?
     nir_changed? || phone_number_changed? || department_internal_id_changed? || affiliation_number_changed? ||
-      email_changed? || role_changed?
+      email_changed? || role_changed? || first_name_changed?
   end
 end
