@@ -14,7 +14,7 @@
     </div>
     <div class="d-flex align-items-center gap-3">
       <% if motifs.empty? %>
-        <%= link_to rdv_solidarites_new_motif_url(organisation), target: "_blank" do %>
+        <%= link_to rdv_solidarites_motifs_url(organisation), target: "_blank" do %>
           <i class="ri-add-fill"></i><span class="text-decoration-underline">Rattacher des motifs</span>
         <% end %>
       <% end %>
