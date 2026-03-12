@@ -77,10 +77,11 @@ class User < ApplicationRecord
 
   validates :last_name, :first_name, presence: true
   validates :email, allow_blank: true, format: { with: EMAIL_REGEXP }
-  validates :rdv_solidarites_user_id, :nir, :france_travail_id,
+  validates :rdv_solidarites_user_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
   validates :phone_number, phone_number: true
+  validate :identifier_must_be_present
 
   delegate :name, :number, to: :department, prefix: true
 
@@ -245,6 +246,14 @@ class User < ApplicationRecord
   end
 
   private
+
+  def identifier_must_be_present
+    return if nir? || department_internal_id? || email? || phone_number?
+    return if affiliation_number? && role?
+
+    errors.add(:base, "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
+                      "(NIR, email, numéro de tel, ID interne, numéro CAF/rôle)")
+  end
 
   def import_associations_from_rdv_solidarites
     ImportUserAssociationsFromRdvSolidaritesJob.perform_later(id)

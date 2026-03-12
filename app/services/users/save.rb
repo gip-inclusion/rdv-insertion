@@ -31,12 +31,12 @@ module Users
       @user.organisations = (@user.organisations.to_a + [@organisation]).uniq
     end
 
-    def push_user_to_rdv_solidarites
-      call_service!(Users::PushToRdvSolidarites, user: @user)
+    def validate_user!
+      call_service!(Users::ValidateDepartmentUniqueness, user: @user, organisation: @organisation)
     end
 
-    def validate_user!
-      call_service!(Users::Validate, user: @user, organisation: @organisation)
+    def push_user_to_rdv_solidarites
+      call_service!(Users::PushToRdvSolidarites, user: @user)
     end
   end
 end
