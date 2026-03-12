@@ -20,7 +20,7 @@ module Users
 
       fail!(
         "Un usager avec le même #{User.human_attribute_name(attribute)} " \
-        "se trouve au sein du département: #{conflicting_users.pluck(:id)}"
+        "se trouve au sein du département: #{conflicting_users.pluck(:id).uniq}"
       )
     end
 
