@@ -12,13 +12,15 @@
   method: :patch
 ) do |form| %>
   <div class="input-group input-group-sm" data-turbo-prefetch="false">
-    <% if attribute == "title" %>
-      <%= form.select "user_row[title]", User.titles.keys, { selected: user_row.title }, { class: "form-control" } %>
-    <% else %>
-      <%= form.text_field "user_row[#{attribute}]",
-                          value: user_row.user.send(attribute),
+    <% if attribute.to_sym.in?(UserListUpload::UserRow::EDITABLE_ATTRIBUTES) %>
+      <% if attribute == "title" %>
+        <%= form.select "user_row[title]", User.titles.keys, { selected: user_row.title }, { class: "form-control" } %>
+      <% else %>
+        <%= form.text_field "user_row[#{attribute}]",
+                            value: user_row.user.send(attribute),
                           class: "form-control",
                           data: { user_list_upload__user_row_cell_target: "textInput" } %>
+      <% end %>
     <% end %>
     <div class="edit-buttons">
       <button type="submit">
