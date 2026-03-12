@@ -1,6 +1,6 @@
 module UserListUploads
   class UserRowCellsController < ApplicationController
-    before_action :set_user_list_upload, :set_user_row
+    before_action :ensure_user_row_attribute_is_editable, :set_user_list_upload, :set_user_row
 
     def edit
       render turbo_stream: turbo_stream.replace("user-row-cell-#{params[:user_row_id]}-#{params[:attribute]}",
@@ -9,6 +9,12 @@ module UserListUploads
     end
 
     private
+
+    def ensure_user_row_attribute_is_editable
+      return if UserListUpload::UserRow::EDITABLE_ATTRIBUTES.include?(params[:attribute].to_sym)
+
+      turbo_stream_display_error_modal(["L'attribut #{params[:attribute]} n'est pas editable"])
+    end
 
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
