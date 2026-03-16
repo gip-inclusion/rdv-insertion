@@ -18,7 +18,7 @@
     "chart.js": "^3.9.1",
     "chartkick": "^4.1.1",
     "css-loader": "^6.11.0",
-    "dompurify": "^3.3.1",
+    "dompurify": "^3.3.2",
     "flatpickr": "^4.6.13",
     "js-cookie": "^3.0.5",
     "mini-css-extract-plugin": "^2.10.0",
