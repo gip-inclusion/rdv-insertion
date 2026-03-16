@@ -33,7 +33,7 @@ class ReplyTransferMailer < ApplicationMailer
   end
 
   def set_department
-    @department = @organisation&.department || @user&.departments&.last
+    @department = @organisation&.department || @user&.department
   end
 
   def set_user_page_url

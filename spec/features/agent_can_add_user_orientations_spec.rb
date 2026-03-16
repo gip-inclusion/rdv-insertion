@@ -198,9 +198,9 @@ describe "Agents can add user orientation", :js do
   describe "department scoped orientations" do
     let!(:other_department) { create(:department, number: "13") }
     let!(:other_department_agent) { create(:agent) }
+    # Legacy orientation from another department — no user membership required
     let!(:other_department_organisation) do
-      create(:organisation, department: other_department, name: "CD 13", users: [user],
-                            agents: [other_department_agent])
+      create(:organisation, department: other_department, name: "CD 13")
     end
 
     let!(:first_department_orientation) do
@@ -231,22 +231,6 @@ describe "Agents can add user orientation", :js do
       expect(page).to have_no_content("Du 12/01/2023 au 07/02/2023")
       expect(page).to have_no_content("CD 13")
       expect(page).to have_no_content("Professionnelle")
-    end
-
-    context "for another agent" do
-      before { setup_agent_session(other_department_agent) }
-
-      it "shows only the department scoped orientation" do
-        visit department_user_parcours_path(user_id: user.id, department_id: other_department.id)
-
-        expect(page).to have_content("Du 12/01/2023 au 07/02/2023")
-        expect(page).to have_content("CD 13")
-        expect(page).to have_content("Professionnelle")
-
-        expect(page).to have_no_content("Du 20/12/2022 au 03/01/2023")
-        expect(page).to have_no_content("CD 26")
-        expect(page).to have_no_content("Sociale")
-      end
     end
   end
 end

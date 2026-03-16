@@ -22,16 +22,16 @@ module Users
     def find_user_by_nir
       return if formatted_nir_attribute.blank?
 
-      User.active.find_by(nir: formatted_nir_attribute)
+      User.active.find_by(nir: formatted_nir_attribute, department_id: @department_id)
     end
 
     def find_user_by_department_internal_id
       return if @attributes[:department_internal_id].blank?
 
-      User.active.joins(:organisations).where(
+      User.active.find_by(
         department_internal_id: @attributes[:department_internal_id],
-        organisations: { department_id: @department_id }
-      ).first
+        department_id: @department_id
+      )
     end
 
     def find_user_by_email
@@ -53,10 +53,11 @@ module Users
     def find_user_by_role_and_affiliation_number
       return if @attributes[:role].blank? || @attributes[:affiliation_number].blank?
 
-      User.active.joins(:organisations).where(
+      User.active.find_by(
         affiliation_number: @attributes[:affiliation_number],
-        role: @attributes[:role], organisations: { department_id: @department_id }
-      ).first
+        role: @attributes[:role],
+        department_id: @department_id
+      )
     end
 
     def phone_number_formatted

@@ -20,11 +20,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
     }.deep_symbolize_keys
   end
 
+  let!(:department) { create(:department) }
   let!(:user) do
     create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [organisation])
   end
 
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+  let!(:organisation) do
+    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, department:)
+  end
 
   describe "#call" do
     before do
@@ -39,7 +42,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
     end
 
     context "when the user has more than one organisation" do
-      let!(:organisation2) { create(:organisation) }
+      let!(:organisation2) { create(:organisation, department:) }
       let!(:user) do
         create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id,
                       organisations: [organisation, organisation2])
@@ -115,7 +118,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       context "when the user does not belong to the org" do
-        let!(:other_org) { create(:organisation) }
+        let!(:other_org) { create(:organisation, department:) }
         let!(:user) do
           create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org])
         end
@@ -149,7 +152,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
       end
 
       context "when the user does not belong to the org" do
-        let!(:other_org) { create(:organisation) }
+        let!(:other_org) { create(:organisation, department:) }
         let!(:user) do
           create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org])
         end

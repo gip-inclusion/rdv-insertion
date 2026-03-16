@@ -1,10 +1,11 @@
 describe Organisation::UsersRetriever, type: :model do
-  let(:organisation) { create(:organisation, data_retention_duration_in_months: 24) }
+  let(:department) { create(:department) }
+  let(:organisation) { create(:organisation, department:, data_retention_duration_in_months: 24) }
   let(:retriever) { described_class.new(organisation: organisation) }
   let(:old_date) { 25.months.ago }
   let(:recent_date) { 1.month.ago }
-  let!(:inactive_user) { create(:user) }
-  let!(:active_user) { create(:user) }
+  let!(:inactive_user) { create(:user, department:) }
+  let!(:active_user) { create(:user, department:) }
   let!(:inactive_user_organisation) do
     create(:users_organisation, user: inactive_user, organisation: organisation, created_at: old_date)
   end

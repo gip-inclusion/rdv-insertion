@@ -7,9 +7,9 @@ describe "Agents can filter users with multiselect filters", :js do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
   end
 
-  let!(:user1) { create(:user, first_name: "Bertrand") }
-  let!(:user2) { create(:user, first_name: "Amanda") }
-  let!(:user3) { create(:user, first_name: "Claire") }
+  let!(:user1) { create(:user, first_name: "Bertrand", department:) }
+  let!(:user2) { create(:user, first_name: "Amanda", department:) }
+  let!(:user3) { create(:user, first_name: "Claire", department:) }
 
   let!(:users_organisation1) { create(:users_organisation, user: user1, organisation: organisation) }
   let!(:users_organisation2) { create(:users_organisation, user: user2, organisation: organisation) }

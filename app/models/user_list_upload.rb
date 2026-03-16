@@ -87,29 +87,19 @@ class UserListUpload < ApplicationRecord
     super
   end
 
-  def potential_matching_users_in_all_app
-    @potential_matching_users_in_all_app ||=
-      User.active.where(email: user_row_attributes.pluck("email").compact)
-          .or(
-            User.active.where(phone_number: user_row_attributes_formatted_phone_numbers)
-          )
-          .or(User.active.where(nir: user_row_attributes_formatted_nirs))
+  # rubocop:disable Metrics/AbcSize
+  def potential_matching_users_in_department
+    base = User.active.where(department_id: department.id)
+    @potential_matching_users_in_department ||=
+      base.where(nir: user_row_attributes_formatted_nirs)
+          .or(base.where(email: user_row_attributes.pluck("email").compact))
+          .or(base.where(phone_number: user_row_attributes_formatted_phone_numbers))
+          .or(base.where(affiliation_number: user_row_attributes.pluck("affiliation_number").compact))
+          .or(base.where(department_internal_id: user_row_attributes.pluck("department_internal_id").compact))
           # Preload associations to avoid N+1 queries when calling user_row.user_valid?
           .preload(*user_associations_to_preload)
   end
-
-  def potential_matching_users_in_department
-    @potential_matching_users_in_department ||= User.active.joins(:organisations).where(
-      affiliation_number: user_row_attributes.pluck("affiliation_number").compact,
-      organisations: { department_id: department.id }
-    ).or(
-      User.active.joins(:organisations).where(
-        department_internal_id: user_row_attributes.pluck("department_internal_id").compact,
-        organisations: { department_id: department.id }
-      )
-      # Preload associations to avoid N+1 queries when calling user_row.user_valid?
-    ).preload(*user_associations_to_preload)
-  end
+  # rubocop:enable Metrics/AbcSize
 
   def handle_user_save? = STEPS_BY_ORIGIN[origin.to_sym].include?(:user_save)
   def handle_invitation_only? = STEPS_BY_ORIGIN[origin.to_sym] == [:invitation]

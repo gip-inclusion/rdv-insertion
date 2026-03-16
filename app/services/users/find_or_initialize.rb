@@ -6,7 +6,7 @@ module Users
     end
 
     def call
-      result.user = matching_user || User.new
+      result.user = matching_user || User.new(department_id: @department_id)
       verify_nir_matches! if matching_user
     end
 

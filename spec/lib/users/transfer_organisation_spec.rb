@@ -12,10 +12,11 @@ describe Users::TransferOrganisation do
       source_motif_category_id: motif_category.id
     )
   end
+  let!(:department) { create(:department) }
   let!(:agent) { create(:agent) }
-  let(:user) { create(:user) }
-  let(:source_organisation) { create(:organisation) }
-  let(:target_organisation) { create(:organisation) }
+  let(:user) { create(:user, department:) }
+  let(:source_organisation) { create(:organisation, department:) }
+  let(:target_organisation) { create(:organisation, department:) }
   let(:motif_category) { create(:motif_category) }
   let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category) }
 

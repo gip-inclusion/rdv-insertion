@@ -215,9 +215,9 @@ describe "Agents can upload documents for users", :js do
 
     context "when user has multiple documents in multiple departments" do
       let!(:other_department) { create(:department) }
-      let!(:other_department_agent) { create(:agent) }
+      # Legacy documents from another department — no user membership required
       let!(:other_department_organisation) do
-        create(:organisation, department: other_department, users: [user], agents: [other_department_agent])
+        create(:organisation, department: other_department)
       end
       let!(:first_department_diagnostic) do
         create(:parcours_document, user:, document_date: "20/12/1995", type: "Diagnostic", department:)

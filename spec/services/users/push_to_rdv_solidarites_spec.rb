@@ -3,11 +3,12 @@ describe Users::PushToRdvSolidarites, type: :service do
     described_class.call(user:)
   end
 
+  let!(:department) { create(:department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 444 }
   let!(:rdv_solidarites_user_id) { 555 }
   let!(:organisation) do
-    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
+    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, department:)
   end
   let!(:user_attributes) do
     {
@@ -249,7 +250,7 @@ describe Users::PushToRdvSolidarites, type: :service do
       end
 
       context "when the user existed in organisations agent does not belong to" do
-        let!(:other_org) { create(:organisation) }
+        let!(:other_org) { create(:organisation, department:) }
 
         before do
           user.organisations << other_org
