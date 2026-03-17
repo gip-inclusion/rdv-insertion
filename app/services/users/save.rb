@@ -16,7 +16,6 @@ module Users
       User.with_advisory_lock "saving_user_#{lock_key}" do
         User.transaction do
           assign_organisation if @organisation.present?
-          validate_user!
           save_record!(@user)
           push_user_to_rdv_solidarites
         end
