@@ -27,6 +27,71 @@ describe User do
     end
   end
 
+  describe "#identifier_must_be_present" do
+    context "when the user has no identifier" do
+      let(:user) do
+        build(:user, nir: nil, department_internal_id: nil, email: nil, phone_number: nil, affiliation_number: nil)
+      end
+
+      it "is invalid" do
+        expect(user).not_to be_valid
+        expect(user.errors[:base]).to include(
+          "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
+          "(NIR, email, numéro de tel, ID interne, numéro CAF/rôle)"
+        )
+      end
+    end
+
+    context "when the user has only affiliation_number without role" do
+      let(:user) { build(:user, nir: nil, department_internal_id: nil, email: nil, phone_number: nil, role: nil) }
+
+      it "is invalid" do
+        expect(user).not_to be_valid
+      end
+    end
+
+    context "when the user has affiliation_number and role" do
+      let(:user) { build(:user, nir: nil, department_internal_id: nil, email: nil, phone_number: nil) }
+
+      it { expect(user).to be_valid }
+    end
+
+    context "when the user has an email" do
+      let(:user) do
+        build(:user, email: "foo@bar.com", nir: nil, department_internal_id: nil, phone_number: nil,
+                     affiliation_number: nil)
+      end
+
+      it { expect(user).to be_valid }
+    end
+
+    context "when the user has a phone number" do
+      let(:user) do
+        build(:user, phone_number: "+33612345678", nir: nil, department_internal_id: nil, email: nil,
+                     affiliation_number: nil)
+      end
+
+      it { expect(user).to be_valid }
+    end
+
+    context "when the user has a department_internal_id" do
+      let(:user) do
+        build(:user, department_internal_id: "12345", nir: nil, email: nil, phone_number: nil, affiliation_number: nil)
+      end
+
+      it { expect(user).to be_valid }
+    end
+
+    context "when the user has a nir" do
+      let(:user) do
+        build(:user, nir: generate_random_nir, department_internal_id: nil, email: nil, phone_number: nil,
+                     affiliation_number: nil)
+      end
+
+      it { expect(user).to be_valid }
+    end
+  end
+
   describe "#search_by_text" do
     subject { described_class.search_by_text(query) }
 
