@@ -26,7 +26,7 @@ describe UserListUploads::UserRowCellsController do
         subject
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to include("n&#39;est pas editable")
+        expect(response.body).to include("n&#39;est pas éditable")
       end
     end
   end

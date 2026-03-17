@@ -13,7 +13,7 @@ module UserListUploads
     def ensure_user_row_attribute_is_editable
       return if UserListUpload::UserRow::EDITABLE_ATTRIBUTES.include?(params[:attribute].to_sym)
 
-      turbo_stream_display_error_modal(["L'attribut #{params[:attribute]} n'est pas editable"])
+      turbo_stream_display_error_modal(["L'attribut #{params[:attribute]} n'est pas éditable"])
     end
 
     def set_user_list_upload
