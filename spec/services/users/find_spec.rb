@@ -35,10 +35,20 @@ describe Users::Find, type: :service do
     it("is a success") { is_a_success }
 
     context "when an user with the same nir is found" do
-      let!(:user) { create(:user, nir: nir) }
+      context "when the user is in the same department" do
+        let!(:user) { create(:user, nir: nir, organisations: [other_org_inside_the_department]) }
 
-      it "returns the found user" do
-        expect(subject.user).to eq(user)
+        it "returns the found user" do
+          expect(subject.user).to eq(user)
+        end
+      end
+
+      context "when the user is in another department" do
+        let!(:user) { create(:user, nir: nir, organisations: [other_org_outside_the_department]) }
+
+        it "does not return a matching user" do
+          expect(subject.user).to be_nil
+        end
       end
     end
 
@@ -102,46 +112,63 @@ describe Users::Find, type: :service do
     end
 
     context "when the user with the same email is found" do
-      let!(:user) do
-        create(:user, email: email)
-      end
+      context "when the user is in the same department" do
+        let!(:user) { create(:user, email: email, organisations: [other_org_inside_the_department]) }
 
-      context "when the first name matches" do
-        before { user.update! first_name: "JANE" }
+        context "when the first name matches" do
+          before { user.update! first_name: "JANE" }
 
-        it "returns the found user" do
-          expect(subject.user).to eq(user)
+          it "returns the found user" do
+            expect(subject.user).to eq(user)
+          end
+        end
+
+        context "when the first name does not match" do
+          it "does not return a matching user" do
+            expect(subject.user).to be_nil
+          end
         end
       end
 
-      context "when the first name does not match" do
+      context "when the user is in another department" do
+        let!(:user) do
+          create(:user, email: email, first_name: "JANE", organisations: [other_org_outside_the_department])
+        end
+
         it "does not return a matching user" do
           expect(subject.user).to be_nil
         end
-
-        it("is a success") { is_a_success }
       end
     end
 
     context "when the user with the same phone is found" do
-      let!(:user) do
-        create(:user, phone_number: phone_number)
-      end
+      context "when the user is in the same department" do
+        let!(:user) { create(:user, phone_number: phone_number, organisations: [other_org_inside_the_department]) }
 
-      context "when the first name matches" do
-        before { user.update! first_name: "JANE" }
+        context "when the first name matches" do
+          before { user.update! first_name: "JANE" }
 
-        it "returns the found user" do
-          expect(subject.user).to eq(user)
+          it "returns the found user" do
+            expect(subject.user).to eq(user)
+          end
+        end
+
+        context "when the first name does not match" do
+          it "does not return a matching user" do
+            expect(subject.user).to be_nil
+          end
         end
       end
 
-      context "when the first name does not match" do
+      context "when the user is in another department" do
+        let!(:user) do
+          create(:user, phone_number: phone_number, first_name: "JANE",
+                        organisations: [other_org_outside_the_department])
+        end
+
         it "does not return a matching user" do
           expect(subject.user).to be_nil
         end
-
-        it("is a success") { is_a_success }
       end
     end
 
@@ -154,15 +181,19 @@ describe Users::Find, type: :service do
 
   describe "matching priority order" do
     context "when multiple users match different criteria" do
-      let!(:user_nir) { create(:user, nir: nir) }
+      let!(:user_nir) { create(:user, nir: nir, organisations: [other_org_inside_the_department]) }
       let!(:user_department_id) do
         create(
           :user, department_internal_id: department_internal_id,
                  organisations: [other_org_inside_the_department]
         )
       end
-      let!(:user_email) { create(:user, email: email, first_name: "JANE") }
-      let!(:user_phone) { create(:user, phone_number: phone_number, first_name: "JANE") }
+      let!(:user_email) do
+        create(:user, email: email, first_name: "JANE", organisations: [other_org_inside_the_department])
+      end
+      let!(:user_phone) do
+        create(:user, phone_number: phone_number, first_name: "JANE", organisations: [other_org_inside_the_department])
+      end
       let!(:user_role_affiliation) do
         create(
           :user, role: role, affiliation_number: affiliation_number,

@@ -379,13 +379,6 @@ describe User do
       it { expect(user).to be_valid }
     end
 
-    context "when nir exists already" do
-      let!(:existing_user) { create(:user, nir: "123456789012311") }
-      let(:user) { build(:user, nir: "123456789012311") }
-
-      it { expect(user).not_to be_valid }
-    end
-
     context "when nir is not 13 or 15 characters" do
       let(:user) { build(:user, nir: "12345678901") }
 
