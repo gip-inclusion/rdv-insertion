@@ -28,10 +28,6 @@ module InboundWebhooks
         @data[:affiliation_number]
       end
 
-      def email
-        @data[:email] || @data[:notification_email]
-      end
-
       def user
         @user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
       end
@@ -40,9 +36,6 @@ module InboundWebhooks
         # if the affiliation number is nil in RDV-S following a user fusion, we cannot update to nil
         # in RDV-I because we need it to keep it for the uid.
         @data.delete(:affiliation_number) if affiliation_number.blank?
-
-        # We store the user's email in email field whether it is the devise account email or the notification email
-        @data[:email] = email if email.present?
       end
 
       def upsert_or_delete_user

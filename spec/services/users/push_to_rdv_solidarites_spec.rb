@@ -34,8 +34,6 @@ describe Users::PushToRdvSolidarites, type: :service do
 
   describe "#call" do
     before do
-      allow_any_instance_of(described_class).to receive(:retrieve_user)
-        .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: nil, email: "johndoe@example.com")))
       allow(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
@@ -75,60 +73,6 @@ describe Users::PushToRdvSolidarites, type: :service do
             rdv_solidarites_user_id: rdv_solidarites_user_id
           )
         subject
-      end
-
-      context "when handling email fields" do
-        context "when retrieved user has notification_email" do
-          before do
-            allow_any_instance_of(described_class).to receive(:retrieve_user)
-              .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: "johndoe@example.com", email: nil)))
-          end
-
-          it "updates the user with notification_email" do
-            expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
-              .with(
-                user_attributes: rdv_solidarites_user_attributes.merge(
-                  notification_email: "johndoe@example.com"
-                ).except(:email),
-                rdv_solidarites_user_id: rdv_solidarites_user_id
-              )
-            subject
-          end
-        end
-
-        context "when retrieved user has email field" do
-          before do
-            allow_any_instance_of(described_class).to receive(:retrieve_user)
-              .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: nil, email: "johndoe@example.com")))
-          end
-
-          it "updates the user with email field" do
-            expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
-              .with(
-                user_attributes: rdv_solidarites_user_attributes,
-                rdv_solidarites_user_id: rdv_solidarites_user_id
-              )
-            subject
-          end
-        end
-
-        context "when retrieved user has no email fields" do
-          before do
-            allow_any_instance_of(described_class).to receive(:retrieve_user)
-              .and_return(OpenStruct.new(user: OpenStruct.new(notification_email: nil, email: nil)))
-          end
-
-          it "updates the user with notification_email" do
-            expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
-              .with(
-                user_attributes: rdv_solidarites_user_attributes.merge(
-                  notification_email: "johndoe@example.com"
-                ).except(:email),
-                rdv_solidarites_user_id: rdv_solidarites_user_id
-              )
-            subject
-          end
-        end
       end
 
       it "is a success" do
@@ -188,13 +132,6 @@ describe Users::PushToRdvSolidarites, type: :service do
 
     context "when the rdv_solidarites_user_id is nil" do
       let!(:rdv_solidarites_user_id) { nil }
-      let!(:rdv_solidarites_user_attributes) do
-        {
-          first_name: "john", last_name: "doe",
-          address: "16 rue de la tour", notification_email: "johndoe@example.com",
-          birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
-        }
-      end
 
       before do
         allow(RdvSolidaritesApi::CreateUser).to receive(:call)
@@ -292,20 +229,6 @@ describe Users::PushToRdvSolidarites, type: :service do
             .with(
               user_attributes:
               rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id])
-            )
-          subject
-        end
-      end
-
-      context "when the user is a conjoint" do
-        before { user.update!(role: "conjoint") }
-
-        it "creates the user without the email" do
-          expect(RdvSolidaritesApi::CreateUser).to receive(:call)
-            .with(
-              user_attributes:
-                rdv_solidarites_user_attributes.except(:email)
-                .merge(organisation_ids: [rdv_solidarites_organisation_id])
             )
           subject
         end
