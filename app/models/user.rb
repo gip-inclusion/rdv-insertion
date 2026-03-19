@@ -81,7 +81,7 @@ class User < ApplicationRecord
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
   validates :phone_number, phone_number: true
-  validate :identifier_must_be_present
+  validate :identifier_must_be_present, unless: :imported_from_rdv_solidarites?
 
   delegate :name, :number, to: :department, prefix: true
 
