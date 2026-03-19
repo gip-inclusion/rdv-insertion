@@ -269,7 +269,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               )
             end
           end
-
         end
 
         context "when a user is deleted" do
