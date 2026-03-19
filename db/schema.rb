@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -260,6 +260,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
     t.bigint "user_id", null: false
     t.index ["motif_category_id"], name: "index_follow_ups_on_motif_category_id"
     t.index ["status"], name: "index_follow_ups_on_status"
+    t.index ["user_id", "motif_category_id"], name: "index_follow_ups_on_user_id_and_motif_category_id"
     t.index ["user_id"], name: "index_follow_ups_on_user_id"
   end
 
@@ -286,6 +287,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
     t.index ["expires_at"], name: "index_invitations_on_expires_at"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
     t.index ["trigger"], name: "index_invitations_on_trigger"
+    t.index ["user_id", "created_at"], name: "index_invitations_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_invitations_on_user_id"
     t.index ["uuid"], name: "index_invitations_on_uuid", unique: true
   end
@@ -366,6 +368,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
     t.bigint "rdv_solidarites_rdv_id"
     t.string "sms_provider"
     t.datetime "updated_at", null: false
+    t.index ["participation_id", "event", "created_at"], name: "idx_on_participation_id_event_created_at_9de2921da7"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
 
@@ -688,6 +691,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_105902) do
     t.datetime "updated_at"
     t.bigint "user_id", null: false
     t.index ["organisation_id", "user_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
+    t.index ["user_id"], name: "index_users_organisations_on_user_id"
   end
 
   create_table "versions", force: :cascade do |t|
