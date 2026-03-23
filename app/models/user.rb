@@ -247,10 +247,9 @@ class User < ApplicationRecord
 
   def identifier_must_be_present
     return if nir? || department_internal_id? || email? || phone_number?
-    return if affiliation_number? && role?
 
     errors.add(:base, "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
-                      "(NIR, email, numéro de tel, ID interne, numéro CAF/rôle)")
+                      "(NIR, email, numéro de tel, ID interne)")
   end
 
   def import_associations_from_rdv_solidarites
