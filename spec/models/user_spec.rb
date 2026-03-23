@@ -37,23 +37,9 @@ describe User do
         expect(user).not_to be_valid
         expect(user.errors[:base]).to include(
           "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
-          "(NIR, email, numéro de tel, ID interne, numéro CAF/rôle)"
+          "(NIR, email, numéro de tel, ID interne)"
         )
       end
-    end
-
-    context "when the user has only affiliation_number without role" do
-      let(:user) { build(:user, nir: nil, department_internal_id: nil, email: nil, phone_number: nil, role: nil) }
-
-      it "is invalid" do
-        expect(user).not_to be_valid
-      end
-    end
-
-    context "when the user has affiliation_number and role" do
-      let(:user) { build(:user, nir: nil, department_internal_id: nil, email: nil, phone_number: nil) }
-
-      it { expect(user).to be_valid }
     end
 
     context "when the user has an email" do
@@ -93,8 +79,7 @@ describe User do
 
     context "when the user is persisted and has no identifier" do
       let(:user) do
-        create(:user, :skip_validate, nir: nil, department_internal_id: nil, email: nil, phone_number: nil,
-                                      affiliation_number: nil, role: nil)
+        create(:user, :skip_validate, nir: nil, department_internal_id: nil, email: nil, phone_number: nil)
       end
 
       it "is valid on update" do
