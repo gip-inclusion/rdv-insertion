@@ -90,6 +90,18 @@ describe User do
 
       it { expect(user).to be_valid }
     end
+
+    context "when the user is persisted and has no identifier" do
+      let(:user) do
+        create(:user, :skip_validate, nir: nil, department_internal_id: nil, email: nil, phone_number: nil,
+                                      affiliation_number: nil, role: nil)
+      end
+
+      it "is valid on update" do
+        user.first_name = "Updated"
+        expect(user).to be_valid
+      end
+    end
   end
 
   describe "#search_by_text" do
