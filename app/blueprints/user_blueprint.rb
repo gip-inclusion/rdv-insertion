@@ -1,6 +1,6 @@
 class UserBlueprint < ApplicationBlueprint
   FIELD_NAMES = [
-    :uid, :affiliation_number, :role, :created_at, :department_internal_id,
+    :affiliation_number, :role, :created_at, :department_internal_id,
     :first_name, :last_name, :title, :address, :phone_number, :email, :birth_date, :rights_opening_date,
     :birth_name, :rdv_solidarites_user_id, :nir, :france_travail_id
   ].freeze
