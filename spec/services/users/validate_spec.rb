@@ -82,7 +82,10 @@ describe Users::Validate, type: :service do
         it("is a failure") { is_a_failure }
 
         it "returns an error" do
-          expect(subject.errors).to include("Impossible de retirer tous les identifiants d'un usager")
+          expect(subject.errors).to include(
+            "Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne, numéro CAF/rôle) " \
+            "d'un usager"
+          )
         end
       end
 
@@ -97,7 +100,10 @@ describe Users::Validate, type: :service do
         it("is a failure") { is_a_failure }
 
         it "returns an error" do
-          expect(subject.errors).to include("Impossible de retirer tous les identifiants d'un usager")
+          expect(subject.errors).to include(
+            "Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne, numéro CAF/rôle) " \
+            "d'un usager"
+          )
         end
       end
 
