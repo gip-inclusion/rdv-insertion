@@ -1,5 +1,5 @@
 module Users
-  class ValidateDepartmentUniqueness < BaseService
+  class Validate < BaseService
     def initialize(user:, organisation: nil)
       @user = user
       @organisation = organisation
@@ -8,6 +8,7 @@ module Users
     def call
       validate_department_uniqueness_of(:nir, @user.nir)
       validate_department_uniqueness_of(:france_travail_id, @user.france_travail_id)
+      validate_identifier_not_removed if @user.persisted?
     end
 
     private
@@ -37,6 +38,29 @@ module Users
         ids << @organisation.department_id if @organisation
         ids.uniq
       end
+    end
+
+    def validate_identifier_not_removed
+      return unless removing_all_identifiers?
+
+      fail!(
+        "Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne, numéro CAF/rôle) " \
+        "d'un usager"
+      )
+    end
+
+    def removing_all_identifiers?
+      !identifiable? && previously_identifiable?
+    end
+
+    def previously_identifiable?
+      %i[nir department_internal_id email phone_number].any? { |attr| @user.attribute_in_database(attr).present? } ||
+        (@user.attribute_in_database(:affiliation_number).present? && @user.attribute_in_database(:role).present?)
+    end
+
+    def identifiable?
+      @user.nir? || @user.department_internal_id? || @user.email? || @user.phone_number? ||
+        (@user.affiliation_number? && @user.role?)
     end
   end
 end
