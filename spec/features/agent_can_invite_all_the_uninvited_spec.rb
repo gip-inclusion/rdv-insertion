@@ -1,12 +1,12 @@
 describe "Agent can invite all the uninvited", :js do
   let!(:agent) { create(:agent) }
   let!(:organisation) { create(:organisation, agents: [agent]) }
-  let!(:uninvited_user) { create(:user, organisations: [organisation]) }
+  let!(:uninvited_user) { create(:user, first_name: "Jean", last_name: "Dupont", organisations: [organisation]) }
   let!(:motif_category) { create(:motif_category) }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
   end
-  let!(:invited_user) { create(:user, organisations: [organisation]) }
+  let!(:invited_user) { create(:user, first_name: "Marie", last_name: "Martin", organisations: [organisation]) }
   let!(:invited_follow_up) { create(:follow_up, user: invited_user, motif_category: motif_category) }
   let!(:uninvited_follow_up) { create(:follow_up, user: uninvited_user, motif_category: motif_category) }
   let!(:invitation) { create(:invitation, follow_up: invited_follow_up, user: invited_user) }
