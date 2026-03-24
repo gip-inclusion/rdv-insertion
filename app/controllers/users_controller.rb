@@ -252,7 +252,7 @@ class UsersController < ApplicationController
     return if archived_scope?
 
     @follow_ups = FollowUp.where(
-      user_id: @users.ids, motif_category: @current_motif_category
+      user: @users, motif_category: @current_motif_category
     )
     @statuses_count = @follow_ups.group(:status).count
   end

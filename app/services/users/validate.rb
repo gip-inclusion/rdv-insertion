@@ -41,12 +41,12 @@ module Users
     end
 
     def validate_identifier_not_removed
-      return unless removing_all_identifiers?
+      return unless identifiers_being_removed?
 
       fail!("Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne) d'un usager")
     end
 
-    def removing_all_identifiers?
+    def identifiers_being_removed?
       !identifiable? && previously_identifiable?
     end
 
