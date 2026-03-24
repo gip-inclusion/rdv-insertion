@@ -55,7 +55,7 @@ module Users
     end
 
     def identifiable?
-      @user.nir? || @user.department_internal_id? || @user.email? || @user.phone_number?
+      @user.identifiable?
     end
   end
 end
