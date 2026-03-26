@@ -1,8 +1,8 @@
 {
   "jobs": [
     {
-      "command": "0 4 * * * [[ -n \"${RESTARTER_BOT_API_TOKEN:-}\" ]] && install-scalingo-cli && scalingo login --api-token $RESTARTER_BOT_API_TOKEN && scalingo --region osc-secnum-fr1 --app $APP restart",
-      "description": "Restart the app once a day at 4am to prevent memory leaks"
+      "command": "30 3 * * * [[ -n \"${RESTARTER_BOT_API_TOKEN:-}\" ]] && install-scalingo-cli && scalingo login --api-token $RESTARTER_BOT_API_TOKEN && scalingo --region osc-secnum-fr1 --app $APP restart",
+      "description": "Restart the app once a day at 3:30am to prevent memory leaks"
     }
   ]
 }
