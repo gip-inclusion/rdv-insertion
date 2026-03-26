@@ -41,7 +41,6 @@ class User < ApplicationRecord
 
   encrypts :nir, deterministic: true
 
-  before_validation :generate_uid
   before_validation :format_nir, if: :nir?
 
   before_save :format_phone_number
@@ -149,7 +148,6 @@ class User < ApplicationRecord
       deleted_at: Time.zone.now,
       affiliation_number: nil,
       role: nil,
-      uid: nil,
       department_internal_id: nil,
       france_travail_id: nil,
       nir: nil,
@@ -245,14 +243,17 @@ class User < ApplicationRecord
     birth_date? && nir?
   end
 
+  def identifiable?
+    nir? || department_internal_id? || email? || phone_number?
+  end
+
   private
 
   def identifier_must_be_present
-    return if nir? || department_internal_id? || email? || phone_number?
-    return if affiliation_number? && role?
+    return if identifiable?
 
     errors.add(:base, "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
-                      "(NIR, email, numéro de tel, ID interne, numéro CAF/rôle)")
+                      "(NIR, email, numéro de tel, ID interne)")
   end
 
   def import_associations_from_rdv_solidarites
@@ -267,13 +268,6 @@ class User < ApplicationRecord
 
   def follow_up_category_handled_already?(follow_up_attributes)
     follow_up_attributes.deep_symbolize_keys[:motif_category_id]&.to_i.in?(motif_categories.map(&:id))
-  end
-
-  def generate_uid
-    return if deleted?
-    return if affiliation_number.blank? || role.blank?
-
-    self.uid = Base64.strict_encode64("#{affiliation_number} - #{role}")
   end
 
   def format_phone_number

@@ -23,7 +23,6 @@ describe SoftDeleteUserJob do
     it "soft deletes the user" do
       subject
       expect(user.deleted_at).not_to be_nil
-      expect(user.uid).to eq(nil)
       expect(user.department_internal_id).to eq(nil)
       expect(user.affiliation_number).to eq(nil)
       expect(user.role).to eq(nil)

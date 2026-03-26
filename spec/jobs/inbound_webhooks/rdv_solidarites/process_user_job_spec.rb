@@ -39,17 +39,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
       subject
     end
 
-    context "when the affiliation number received is nil" do
-      before { data.merge!(affiliation_number: nil) }
-
-      it "enqueues an upsert record job without affiliation_number" do
-        filtered_data = data.except(:affiliation_number)
-        expect(UpsertRecordJob).to receive(:perform_later)
-          .with("User", filtered_data, { last_webhook_update_received_at: timestamp })
-        subject
-      end
-    end
-
     context "when notification_email is present but email is nil" do
       let!(:data) do
         {

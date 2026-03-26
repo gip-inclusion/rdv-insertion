@@ -9,8 +9,6 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         email: "john@example.com",
         nir: "1234567890123",
         department_internal_id: "ABC123",
-        affiliation_number: "1234567890",
-        role: "demandeur",
         phone_number: "+33612345678"
       }
     end
@@ -107,28 +105,6 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         end
       end
 
-      context "when matching by affiliation number and role" do
-        let!(:matching_user) do
-          create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
-        end
-
-        it "sets the matching user" do
-          subject
-          expect(user_row.reload.matching_user).to eq(matching_user)
-        end
-
-        context "when it is outside of the department" do
-          let!(:matching_user) do
-            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_outside_department])
-          end
-
-          it "does not set the matching user" do
-            subject
-            expect(user_row.reload.matching_user).to be_nil
-          end
-        end
-      end
-
       context "when no matching user exists" do
         it "does not set a matching user" do
           subject
@@ -188,9 +164,6 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
           let!(:phone_match) do
             create(:user, phone_number: "+33612345678", first_name: "John", organisations: [org_in_department])
           end
-          let!(:affiliation_match) do
-            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
-          end
 
           it "matches by email when higher priority criteria don't match" do
             subject
@@ -198,30 +171,15 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
           end
         end
 
-        context "phone number has fourth priority" do
+        context "phone number has lowest priority" do
           # No NIR, internal ID, or email match
           let!(:phone_match) do
             create(:user, phone_number: "+33612345678", first_name: "John", organisations: [org_in_department])
-          end
-          let!(:affiliation_match) do
-            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
           end
 
           it "matches by phone number when higher priority criteria don't match" do
             subject
             expect(user_row.reload.matching_user).to eq(phone_match)
-          end
-        end
-
-        context "affiliation number and role has lowest priority" do
-          # Only affiliation number match exists
-          let!(:affiliation_match) do
-            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
-          end
-
-          it "matches by affiliation number when all other criteria don't match" do
-            subject
-            expect(user_row.reload.matching_user).to eq(affiliation_match)
           end
         end
       end
