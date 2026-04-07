@@ -2,18 +2,11 @@ class ParticipationsController < ApplicationController
   before_action :set_participation, only: [:update]
 
   def update
-    participation_update = Participations::Update.call(
-      participation: @participation,
-      participation_params: participation_params
-    )
-
-    @success = participation_update.success?
-    if @success
-      flash.now[:success] = "Le statut du rdv a bien été modifié."
+    if participation_update.success?
+      redirect_to structure_user_follow_ups_path(user_id: @participation.user_id)
     else
-      flash.now[:error] = participation_update.errors.join(", ")
+      turbo_stream_display_error_modal(participation_update.errors)
     end
-    respond_to :turbo_stream
   end
 
   private
@@ -24,5 +17,12 @@ class ParticipationsController < ApplicationController
 
   def participation_params
     params.expect(participation: [:status])
+  end
+
+  def participation_update
+    @participation_update ||= Participations::Update.call(
+      participation: @participation,
+      participation_params: participation_params
+    )
   end
 end

@@ -38,33 +38,30 @@ describe "Agents can update a participation status", :js do
 
       it "can edit a participation status" do
         visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
-        page.execute_script("window.scrollBy(0, 500)")
-        status_update_button = find_by_id("toggle-rdv-status")
-        expect(status_update_button).to have_content("Statut du RDV à préciser")
 
-        status_update_button.click
+        click_button("Statut du RDV à préciser")
 
-        expect(page).to have_css("a[data-value=seen]", text: "Rendez-vous honoré")
-        expect(page).to have_css("a[data-value=excused]", text: "Annulé (excusé)")
-        expect(page).to have_css("a[data-value=revoked]", text: "Annulé (par le service)")
-        expect(page).to have_css("a[data-value=noshow]", text: "Absence non excusée")
-
+        within(".dropdown-menu") do
+          expect(page).to have_button("Rendez-vous honoré")
+          expect(page).to have_button("Annulé (excusé)")
+          expect(page).to have_button("Annulé (par le service)")
+          expect(page).to have_button("Absence non excusée")
+        end
         expect(page).to have_no_content("Si les notifications sont activées, une alerte sera envoyée à l'usager.")
 
-        find("a[data-value=revoked]").click
+        within(".dropdown-menu") { click_button("Annulé (par le service)") }
 
-        expect(status_update_button).to have_content("Annulé (par le service)")
+        expect(page).to have_button("Annulé (par le service)")
         expect(participation.reload.status).to eq("revoked")
 
-        status_update_button.click
+        click_button("Annulé (par le service)")
 
-        expect(page).to have_css("a[data-value=seen]", text: "Rendez-vous honoré")
-        expect(page).to have_css("a[data-value=excused]", text: "Annulé (excusé)")
-        expect(page).to have_css("a[data-value=noshow]", text: "Absence non excusée")
-
-        expect(page).to have_no_css("a[data-value=revoked]")
-        expect(page).to have_no_css("a[data-value=unknown]")
-
+        within(".dropdown-menu") do
+          expect(page).to have_button("Rendez-vous honoré")
+          expect(page).to have_button("Annulé (excusé)")
+          expect(page).to have_button("Absence non excusée")
+          expect(page).to have_no_button("RDV à venir")
+        end
         expect(page).to have_no_content("Si les notifications sont activées, une alerte sera envoyée à l'usager.")
       end
     end
@@ -76,37 +73,30 @@ describe "Agents can update a participation status", :js do
 
       it "can edit a participation status" do
         visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
-        page.execute_script("window.scrollBy(0, 500)")
-        status_update_button = find_by_id("toggle-rdv-status")
-        expect(status_update_button).to have_content("RDV à venir")
 
-        status_update_button.click
+        click_button("RDV à venir")
 
-        expect(page).to have_css("a[data-value=excused]", text: "Annulé (excusé)")
-        expect(page).to have_css("a[data-value=revoked]", text: "Annulé (par le service)")
+        within(".dropdown-menu") do
+          expect(page).to have_button("Annulé (excusé)")
+          expect(page).to have_button("Annulé (par le service)")
+          expect(page).to have_no_button("Rendez-vous honoré")
+          expect(page).to have_no_button("Absence non excusée")
+        end
         expect(page).to have_text("Si les notifications sont activées, une alerte sera envoyée à l'usager.", count: 2)
 
-        expect(page).to have_no_css("a[data-value=seen]")
-        expect(page).to have_no_css("a[data-value=noshow]")
-        expect(page).to have_no_content("Rendez-vous honoré")
-        expect(page).to have_no_content("Absence non excusée")
+        within(".dropdown-menu") { click_button("Annulé (par le service)") }
 
-        find("a[data-value=revoked]").click
-
-        expect(status_update_button).to have_content("Annulé (par le service)")
+        expect(page).to have_button("Annulé (par le service)")
         expect(participation.reload.status).to eq("revoked")
 
-        status_update_button.click
+        click_button("Annulé (par le service)")
 
-        expect(page).to have_css("a[data-value=unknown]", text: "RDV à venir")
-        expect(page).to have_css("a[data-value=excused]", text: "Annulé (excusé)")
-
-        expect(page).to have_no_css("a[data-value=revoked]")
-        expect(page).to have_no_css("a[data-value=seen]")
-        expect(page).to have_no_css("a[data-value=noshow]")
-        expect(page).to have_no_content("Rendez-vous honoré")
-        expect(page).to have_no_content("Absence non excusée")
-
+        within(".dropdown-menu") do
+          expect(page).to have_button("RDV à venir")
+          expect(page).to have_button("Annulé (excusé)")
+          expect(page).to have_no_button("Rendez-vous honoré")
+          expect(page).to have_no_button("Absence non excusée")
+        end
         expect(page).to have_text("Si les notifications sont activées, une alerte sera envoyée à l'usager.", count: 1)
       end
     end
@@ -118,10 +108,9 @@ describe "Agents can update a participation status", :js do
 
       it "does not display the toggle button" do
         visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
-        page.execute_script("window.scrollBy(0, 500)")
-        expect(page).to have_content("Statut du RDV à préciser")
 
-        expect(page).to have_no_css("#toggle-rdv-status")
+        expect(page).to have_content("Statut du RDV à préciser")
+        expect(page).to have_no_button("Statut du RDV à préciser")
       end
     end
   end
