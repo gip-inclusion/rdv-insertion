@@ -34,6 +34,31 @@ describe MessagesConfiguration do
         expect(messages_configuration.direction_names).to eq(["some_field"])
       end
     end
+
+    context "some logos_to_display fields are blank" do
+      let(:messages_configuration) do
+        create(:messages_configuration, organisation: create(:organisation), logos_to_display: [""])
+      end
+
+      it "removes blank fields" do
+        expect(messages_configuration.logos_to_display).to eq([])
+      end
+    end
+  end
+
+  describe "logos_to_display_must_be_valid validation" do
+    context "with invalid logos_to_display" do
+      let(:messages_configuration) do
+        build(:messages_configuration, organisation: create(:organisation), logos_to_display: %w[some_field invalid])
+      end
+
+      it "rejects invalid logos_to_display" do
+        expect(messages_configuration).not_to be_valid
+        expect(messages_configuration.errors.full_messages).to include(
+          "Logos affichés doit contenir uniquement des logos valides"
+        )
+      end
+    end
   end
 
   describe "signature_image attachment" do
