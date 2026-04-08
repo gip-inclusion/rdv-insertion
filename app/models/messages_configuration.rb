@@ -5,7 +5,7 @@ class MessagesConfiguration < ApplicationRecord
 
   belongs_to :organisation
 
-  before_save :remove_blank_array_fields
+  before_validation :remove_blank_array_fields
 
   delegate :department, to: :organisation
 
