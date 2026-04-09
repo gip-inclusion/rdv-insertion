@@ -3,7 +3,7 @@ module User::FranceTravailWebhooks
 
   included do
     after_commit :send_pending_participations_to_france_travail, on: :update,
-                                                                 if: :became_retrievable_in_france_travail?
+                                                                 if: :retrievable_in_france_travail_and_attributes_changed?
   end
 
   def retrievable_in_france_travail?
@@ -20,16 +20,12 @@ module User::FranceTravailWebhooks
 
   private
 
-  def became_retrievable_in_france_travail?
+  def retrievable_in_france_travail_and_attributes_changed?
     retrievable_in_france_travail? &&
       (saved_change_to_nir? || saved_change_to_france_travail_id? || saved_change_to_birth_date?)
   end
 
   def send_pending_participations_to_france_travail
-    participations.where(france_travail_id: nil).find_each do |participation|
-      next unless participation.eligible_for_france_travail_webhook?
-
-      participation.send_update_to_france_travail_if_eligible(Time.current)
-    end
+    OutgoingWebhooks::FranceTravail::SendPendingParticipationsJob.perform_later(user_id: id)
   end
 end
