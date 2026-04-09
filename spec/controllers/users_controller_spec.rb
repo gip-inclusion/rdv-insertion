@@ -477,17 +477,63 @@ describe UsersController do
         expect(response.body).to match(/Filtrer par date de création/)
       end
 
+      context "ordering" do
+        it "orders archived users by most recent archive date in the current organisation first" do
+          older_archived_user = create(:user, organisations: [organisation], last_name: "Zorro")
+          create(:archive, user: older_archived_user, organisation: organisation, created_at: 2.years.ago)
+
+          get :index, params: index_params
+
+          ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+          ordered_last_names = ordered_table & %w[Barthelemy Zorro]
+          expect(ordered_last_names).to eq(%w[Barthelemy Zorro])
+        end
+
+        context "when department level" do
+          let!(:index_params) { { department_id: department.id, users_scope: "archived" } }
+
+          it "orders archived users by most recent archive date across all their organisations first" do
+            archive.update!(created_at: 2.years.ago)
+            recently_archived_in_other_org = create(
+              :user, organisations: [organisation, other_organisation], last_name: "Zorro"
+            )
+            create(:archive, user: recently_archived_in_other_org, organisation: organisation, created_at: 2.years.ago)
+            create(:archive, user: recently_archived_in_other_org, organisation: other_organisation,
+                             created_at: 1.day.ago)
+
+            get :index, params: index_params
+
+            ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+            ordered_last_names = ordered_table & %w[Zorro Barthelemy]
+            expect(ordered_last_names).to eq(%w[Zorro Barthelemy])
+          end
+        end
+      end
+
       context "when department level" do
         let!(:index_params) { { department_id: department.id, users_scope: "archived" } }
 
-        it "returns the list of archived users" do
+        it "only shows users that are archived in all their department organisations" do
           get :index, params: index_params
 
-          expect(response).to be_successful
-          expect(response.body).not_to match(/Chabat/)
-          expect(response.body).not_to match(/Baer/)
+          # archived_user belongs to organisation only and is archived in it → shown
           expect(response.body).to match(/Barthelemy/)
+          # partially_archived_user belongs to organisation + other_organisation
+          # but is only archived in other_organisation → not shown
           expect(response.body).not_to match(/Rouve/)
+        end
+
+        it "displays the pagination on the first page when users have archives in multiple organisations" do
+          # See https://www.notion.so/gip-inclusion/Bug-Archiv-s-pagination-absente-dans-la-liste-des-bRSA-3335f321b60480a88126faacce30f756
+          users = create_list(:user, 26, organisations: [organisation, other_organisation])
+          users.each do |u|
+            create(:archive, user: u, organisation: organisation)
+            create(:archive, user: u, organisation: other_organisation)
+          end
+
+          get :index, params: index_params
+
+          expect(response.body).to include("Page suivante")
         end
       end
     end
