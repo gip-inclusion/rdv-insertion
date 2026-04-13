@@ -1,4 +1,6 @@
 class MonitorWebhookActivityJob < ApplicationJob
+  queue_as :whenever
+
   MONITORS = [
     { acceptable_delay: 3.hours, model: Rdv },
     { acceptable_delay: 12.hours, model: User },

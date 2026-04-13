@@ -1,5 +1,5 @@
 class ApplicationJob < ActiveJob::Base
-  queue_as :default
+  queue_as :within_5min
 
   def self.perform_in(wait_time, *)
     set(wait: wait_time).perform_later(*)

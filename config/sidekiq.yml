@@ -1,6 +1,9 @@
 ---
 :queues:
-  - default
+  - within_30s
+  - within_5min
+  - whenever
+  # stats and creneaux have specific queues (with low priority) to specify concurrency limits
   - stats
   - creneaux
 
