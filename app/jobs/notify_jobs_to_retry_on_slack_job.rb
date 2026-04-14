@@ -1,4 +1,6 @@
 class NotifyJobsToRetryOnSlackJob < ApplicationJob
+  queue_as :whenever
+
   def perform
     SlackClient.send_to_sentry_channel(
       "*#{retry_set.size}* jobs ont échoué et sont à réessayer.\n" \

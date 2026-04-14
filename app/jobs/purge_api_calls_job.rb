@@ -1,4 +1,6 @@
 class PurgeApiCallsJob < ApplicationJob
+  queue_as :whenever
+
   RETENTION_PERIOD = 1.year
 
   def perform

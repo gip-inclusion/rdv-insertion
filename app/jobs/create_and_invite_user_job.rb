@@ -1,4 +1,6 @@
 class CreateAndInviteUserJob < ApplicationJob
+  queue_as :within_30s
+
   sidekiq_options retry: 0
 
   def perform(organisation_id, user_attributes, invitation_attributes, motif_category_attributes)

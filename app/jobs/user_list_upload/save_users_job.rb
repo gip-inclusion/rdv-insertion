@@ -1,4 +1,6 @@
 class UserListUpload::SaveUsersJob < ApplicationJob
+  queue_as :within_30s
+
   sidekiq_options retry: 0
 
   before_perform :capture_user_saves_started_at

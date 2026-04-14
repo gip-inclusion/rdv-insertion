@@ -1,4 +1,6 @@
 class SendInvitationRemindersJob < ApplicationJob
+  queue_as :whenever
+
   def perform
     @sent_reminders_user_ids = []
 
