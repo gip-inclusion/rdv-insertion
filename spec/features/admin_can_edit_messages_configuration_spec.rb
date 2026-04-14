@@ -186,5 +186,22 @@ describe "Admin can edit messages configuration", :js do
       expect(page).to have_content("Valence")
       expect(messages_configuration.reload.sender_city).to be_nil
     end
+
+    it "allows to unselect all logos" do
+      messages_configuration.update!(logos_to_display: %w[department europe])
+      visit organisation_configuration_messages_path(organisation)
+      within "turbo-frame#messages_configuration_#{messages_configuration.id}" do
+        click_link "Modifier"
+      end
+      uncheck "Département"
+      uncheck "Européen"
+      click_button "Enregistrer"
+
+      within "turbo-frame#messages_configuration_#{messages_configuration.id}" do
+        expect(page).to have_no_content("Département")
+        expect(page).to have_no_content("Européen")
+      end
+      expect(messages_configuration.reload.logos_to_display).to eq([])
+    end
   end
 end
