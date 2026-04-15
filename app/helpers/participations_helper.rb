@@ -55,7 +55,7 @@ module ParticipationsHelper
     end
   end
 
-  def participation_created_by_tooltip_content(participation)
+  def participation_created_by_description(participation)
     author_description = {
       "prescripteur" => "un prescripteur",
       "agent" => "l'agent",
@@ -67,7 +67,6 @@ module ParticipationsHelper
                        " #{author} (#{author.email})" if author.present?
                      end
 
-    "Rendez-vous pris par #{author_description}#{author_details || ''}" \
-      " le #{participation.created_at.strftime('%d/%m/%Y à %H:%M')}"
+    "#{author_description}#{author_details || ''}"
   end
 end
