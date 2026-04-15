@@ -244,7 +244,7 @@ class UsersController < ApplicationController
     @users = policy_scope(User)
              .preload(:archives, :invitations, :participations)
              .where(id: archived_user_ids_in_organisations(current_organisations))
-             .active
+             .active.distinct
   end
 
   def set_follow_ups
