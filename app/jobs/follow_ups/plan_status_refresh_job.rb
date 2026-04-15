@@ -1,4 +1,6 @@
 class FollowUps::PlanStatusRefreshJob < ApplicationJob
+  queue_as :whenever
+
   def perform(follow_up_id)
     follow_up = FollowUp.find(follow_up_id)
     return if follow_up.refresh_status_at.blank? || follow_up.refresh_status_at < Time.zone.now

@@ -1,4 +1,6 @@
 class MonitorInboundEmailsActivityJob < ApplicationJob
+  queue_as :whenever
+
   def perform
     return if inbound_email_received_less_than_4_days_ago?
 

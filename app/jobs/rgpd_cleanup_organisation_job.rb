@@ -1,4 +1,6 @@
 class RgpdCleanupOrganisationJob < ApplicationJob
+  queue_as :whenever
+
   def perform(organisation_id)
     organisation = Organisation.find(organisation_id)
     call_service!(

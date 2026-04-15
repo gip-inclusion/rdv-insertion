@@ -1,7 +1,11 @@
 <div class="header">
   <div class="header-left">
     <div class="header-logo">
-      <%= image_tag(organisation.logo.attached? ? organisation.logo.url : department.logo.url) %>
+      <% if organisation.logo.attached? %>
+        <%= image_tag(organisation.logo.url) %>
+      <% elsif logos_to_display.include?("department") && department.logo.attached? %>
+        <%= image_tag(department.logo.url) %>
+      <% end %>
     </div>
   </div>
   <div class="header-right">

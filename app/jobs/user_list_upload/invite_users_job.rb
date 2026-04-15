@@ -1,4 +1,6 @@
 class UserListUpload::InviteUsersJob < ApplicationJob
+  queue_as :within_30s
+
   sidekiq_options retry: 0
 
   before_perform :capture_invitations_started_at

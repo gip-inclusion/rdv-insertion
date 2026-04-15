@@ -31,6 +31,7 @@ class User < ApplicationRecord
   include User::Referents
   include User::CreationOrigin
   include User::Geocodable
+  include User::FranceTravailWebhooks
 
   attr_accessor :skip_uniqueness_validations
 
@@ -230,19 +231,6 @@ class User < ApplicationRecord
     attributes.reject! { |attr| tag_users.any? { |tu| tu.tag_id == attr["tag_id"] } }
 
     super
-  end
-
-  def retrievable_in_france_travail?
-    nir_and_birth_date? || valid_france_travail_id?
-  end
-
-  def valid_france_travail_id?
-    # Valid France Travail ID is exactly 11 digits
-    france_travail_id? && france_travail_id.match?(/\A\d{11}\z/)
-  end
-
-  def nir_and_birth_date?
-    birth_date? && nir?
   end
 
   private

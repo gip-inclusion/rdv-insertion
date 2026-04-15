@@ -19,7 +19,7 @@
       <%= render "common/array_fields/input", attribute_name: attribute, f: f, placeholder: local_assigns[:placeholder] %>
     <% elsif local_assigns[:as] == :collection_check_boxes %>
       <div class="d-flex flex-column gap-2">
-        <%= f.collection_check_boxes attribute, collection, ->(element) { element[0] }, ->(element) { element[1] }, include_hidden: false do |b| %>
+        <%= f.collection_check_boxes attribute, collection, ->(element) { element[0] }, ->(element) { element[1] } do |b| %>
           <div class="form-check">
             <%= b.check_box(class: "form-check-input") %>
             <%= b.label(class: "form-check-label") %>

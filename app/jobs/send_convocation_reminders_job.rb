@@ -1,4 +1,6 @@
 class SendConvocationRemindersJob < ApplicationJob
+  queue_as :whenever
+
   def perform
     NotifyParticipationsToUsersJob.perform_later(participations_to_send_reminders_to.ids, "reminder")
     notify_on_slack
