@@ -12,8 +12,11 @@ module OrganisationsBadgesHelper
     content_array = ["Archivé le #{format_date(archive.created_at)}"]
 
     if policy(archive).show?
-      content_array << tag.br
-      content_array << "Motif : #{strip_tags(archive.archiving_reason.to_s)}"
+      reason = archive.archiving_reason.to_s
+      if reason.present?
+        content_array << tag.br
+        content_array << "Motif : #{strip_tags(reason)}"
+      end
     end
 
     tooltip(content: safe_join(content_array))
