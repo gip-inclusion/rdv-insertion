@@ -26,6 +26,7 @@ module RdvInsertion
 
     # Use Sidekiq as the ActiveJob queue adapter
     config.active_job.queue_adapter = :sidekiq
+    config.active_job.default_queue_name = :within_5min
 
     # specify redis url
     config.x.redis_url = ENV.fetch("REDIS_URL") { "redis://localhost:6379" }
