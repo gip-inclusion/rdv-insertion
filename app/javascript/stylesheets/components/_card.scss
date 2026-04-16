@@ -66,7 +66,7 @@
 }
 
 // Keep the same light-blue background on the trigger row while its collapse is open.
-tr:has(+ tr[data-accordion-target="content"]:not(.d-none)) {
+tr:has(+ tr:not(.d-none) > .participation-details-cell) {
   background-color: $light;
 }
 

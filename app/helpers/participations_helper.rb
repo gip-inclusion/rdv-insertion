@@ -69,6 +69,6 @@ module ParticipationsHelper
              end
     author_details = " #{author} (#{author.email})" if author.present?
 
-    "#{author_description}#{author_details || ''}"
+    "#{author_description}#{author_details}"
   end
 end

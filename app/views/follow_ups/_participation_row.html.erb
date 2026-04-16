@@ -34,13 +34,9 @@
   <td colspan="5" class="px-4 py-3 text-start participation-details-cell">
     <dl class="participation-details-list">
       <% if participation.convocable? %>
-        <%
-          convocation_formats = ["sms", "email", "postal"].select do |format|
-            participation.last_convocation_by(format).present?
-          end
-        %>
-        <% convocation_formats.each do |format| %>
+        <% ["sms", "email", "postal"].each do |format| %>
           <% convocation = participation.last_convocation_by(format) %>
+          <% next if convocation.blank? %>
           <dt>Convocation <%= format == "sms" ? "SMS" : format %></dt>
           <dd>
             <%= format_date(convocation.created_at) %>

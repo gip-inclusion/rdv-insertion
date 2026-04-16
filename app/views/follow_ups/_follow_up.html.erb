@@ -31,8 +31,6 @@
       <div>
         <% if participations.present? %>
           <% sorted_participations = participations.sort_by(&:starts_at).reverse %>
-          <% most_recent_participation = sorted_participations.first %>
-          <% historic_participations = sorted_participations.drop(1) %>
           <div class="d-flex justify-content-center">
             <table class="card-white text-center align-middle m-4 shadow table-hover" data-controller="accordion">
               <thead>
@@ -45,26 +43,19 @@
                 </tr>
               </thead>
               <tbody>
-                <%= render "follow_ups/participation_row",
-                           participation: most_recent_participation, participation_index: 0,
-                           category_configuration: category_configuration %>
-              </tbody>
-              <% if historic_participations.any? %>
-                <tbody>
-                  <tr>
-                    <td colspan="5" class="px-4 pt-4 pb-2 text-start">
-                      <h5 class="mb-0"><strong>Historique sur le suivi</strong></h5>
-                    </td>
-                  </tr>
-                  <%# index + 1 because index 0 is taken by most_recent_participation %>
-                  <% historic_participations.each_with_index do |historic_participation, index| %>
-                    <%= render "follow_ups/participation_row",
-                               participation: historic_participation,
-                               participation_index: index + 1,
-                               category_configuration: category_configuration %>
+                <% sorted_participations.each_with_index do |participation, index| %>
+                  <% if index == 1 %>
+                    <tr>
+                      <td colspan="5" class="px-4 pt-4 pb-2 text-start">
+                        <h5 class="mb-0"><strong>Historique sur le suivi</strong></h5>
+                      </td>
+                    </tr>
                   <% end %>
-                </tbody>
-              <% end %>
+                  <%= render "follow_ups/participation_row",
+                             participation: participation, participation_index: index,
+                             category_configuration: category_configuration %>
+                <% end %>
+              </tbody>
             </table>
           </div>
         <% end %>

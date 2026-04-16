@@ -25,12 +25,7 @@ describe "Agents can see RDV details on the follow up page", :js do
     )
   end
 
-  before do
-    setup_agent_session(agent)
-    rdvs_participation_id = participation.rdv_solidarites_participation_id
-    stub_request(:patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/participations/#{rdvs_participation_id}")
-      .to_return(status: 200, body: "{}")
-  end
+  before { setup_agent_session(agent) }
 
   it "expands the details panel when clicking on the row" do
     visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
@@ -78,12 +73,7 @@ describe "Agents can see RDV details on the follow up page", :js do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_content("Historique sur le suivi")
-
-      history_section = find("h5", text: "Historique sur le suivi").ancestor("tbody")
-      within(history_section) do
-        expect(page).to have_content("Premier entretien d'orientation")
-        expect(page).to have_no_content("RDV d'orientation")
-      end
+      expect(page.text).to match(/RDV d'orientation.*Historique sur le suivi.*Premier entretien d'orientation/m)
     end
   end
 end
