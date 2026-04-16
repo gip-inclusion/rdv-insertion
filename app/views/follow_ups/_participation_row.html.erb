@@ -31,8 +31,8 @@
   </td>
 </tr>
 <tr class="d-none" data-accordion-target="content" id="<%= dom_id(participation, :details) %>">
-  <td colspan="5" class="px-4 py-3 bg-white text-start">
-    <dl class="row mb-0">
+  <td colspan="5" class="px-4 py-3 text-start participation-details-cell">
+    <dl class="participation-details-list">
       <% if participation.convocable? %>
         <%
           convocation_formats = ["sms", "email", "postal"].select do |format|
@@ -41,8 +41,8 @@
         %>
         <% convocation_formats.each do |format| %>
           <% convocation = participation.last_convocation_by(format) %>
-          <dt class="col-sm-3">Convocation <%= format == "sms" ? "SMS" : format %></dt>
-          <dd class="col-sm-9">
+          <dt>Convocation <%= format == "sms" ? "SMS" : format %></dt>
+          <dd>
             <%= format_date(convocation.created_at) %>
             <% if format != "postal" %>
               <%= render "follow_ups/delivery_status", deliverable: convocation, format: format %>
@@ -50,12 +50,12 @@
           </dd>
         <% end %>
       <% end %>
-      <dt class="col-sm-3">RDV pris le</dt>
-      <dd class="col-sm-9"><%= participation.created_at.strftime("%d/%m/%Y à %H:%M") %></dd>
-      <dt class="col-sm-3">Par</dt>
-      <dd class="col-sm-9"><%= participation_created_by_description(participation) %></dd>
-      <dt class="col-sm-3">Dans l'organisation</dt>
-      <dd class="col-sm-9 mb-0"><%= participation.rdv.organisation.name %></dd>
+      <dt>RDV pris le</dt>
+      <dd><%= participation.created_at.strftime("%d/%m/%Y à %H:%M") %></dd>
+      <dt>Par</dt>
+      <dd><%= participation_created_by_description(participation) %></dd>
+      <dt>Demandé par</dt>
+      <dd><%= participation.rdv.organisation.name %></dd>
     </dl>
   </td>
 </tr>
