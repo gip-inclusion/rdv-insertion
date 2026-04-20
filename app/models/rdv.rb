@@ -62,15 +62,20 @@ class Rdv < ApplicationRecord
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"
   end
 
+  def starts_at_in_time_zone
+    starts_at.in_time_zone(time_zone)
+  end
+
   def formatted_start_date
-    starts_at.to_datetime.strftime("%d/%m/%y")
+    starts_at_in_time_zone.strftime("%d/%m/%y")
   end
 
   def formatted_start_time
-    hour = starts_at.to_datetime.strftime("%-H")
-    minutes = starts_at.to_datetime.strftime("%M")
-
-    minutes == "00" ? "#{hour}h" : "#{hour}h#{minutes}"
+    if starts_at_in_time_zone.min.zero?
+      starts_at_in_time_zone.strftime("%-Hh")
+    else
+      starts_at_in_time_zone.strftime("%-Hh%M")
+    end
   end
 
   def phone_number
