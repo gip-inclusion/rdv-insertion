@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_20_154821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -465,6 +465,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_000000) do
     t.bigint "rdv_solidarites_rdv_id"
     t.datetime "starts_at", precision: nil
     t.string "status"
+    t.string "time_zone"
     t.datetime "updated_at", null: false
     t.integer "users_count", default: 0
     t.string "uuid"
