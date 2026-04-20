@@ -1,7 +1,7 @@
 class Rdv < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status, :uuid,
-    :users_count, :max_participants_count, :visio_url
+    :users_count, :max_participants_count, :visio_url, :time_zone
   ].freeze
 
   include Notificable
@@ -31,7 +31,7 @@ class Rdv < ApplicationRecord
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
 
-  validates :starts_at, :duration_in_min, presence: true
+  validates :starts_at, :duration_in_min, :time_zone, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, allow_nil: true
   validates :visio_url, presence: true, if: :visio?
 
