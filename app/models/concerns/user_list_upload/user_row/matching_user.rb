@@ -10,13 +10,32 @@ module UserListUpload::UserRow::MatchingUser
   end
 
   def find_matching_user
-    potential_matching_users_in_department.find do |user|
-      matches_nir?(user.nir) ||
-        matches_department_internal_id?(user.department_internal_id) ||
-        matches_email?(user.email, user.first_name) ||
-        matches_phone_number?(user.phone_number, user.first_name) ||
-        matches_affiliation_number_and_role?(user.affiliation_number, user.role)
-    end
+    users = potential_matching_users_in_department
+    find_by_nir(users) ||
+      find_by_department_internal_id(users) ||
+      find_by_email(users) ||
+      find_by_phone_number(users) ||
+      find_by_affiliation_number_and_role(users)
+  end
+
+  def find_by_nir(users)
+    users.find { |user| matches_nir?(user.nir) }
+  end
+
+  def find_by_department_internal_id(users)
+    users.find { |user| matches_department_internal_id?(user.department_internal_id) }
+  end
+
+  def find_by_email(users)
+    users.find { |user| matches_email?(user.email, user.first_name) }
+  end
+
+  def find_by_phone_number(users)
+    users.find { |user| matches_phone_number?(user.phone_number, user.first_name) }
+  end
+
+  def find_by_affiliation_number_and_role(users)
+    users.find { |user| matches_affiliation_number_and_role?(user.affiliation_number, user.role) }
   end
 
   def matches_nir?(candidate_nir)

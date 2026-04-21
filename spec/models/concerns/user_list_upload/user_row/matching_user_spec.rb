@@ -146,14 +146,13 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         let(:org_in_department) { create(:organisation, department: department) }
 
         context "NIR has highest priority" do
-          let!(:nir_match) do
-            create(:user, nir: "1234567890123", first_name: "Different", organisations: [org_in_department])
-          end
-          let!(:internal_id_match) do
-            create(:user, department_internal_id: "ABC123", first_name: "John", organisations: [org_in_department])
-          end
-          let!(:email_match) do
-            create(:user, email: "john@example.com", first_name: "John", organisations: [org_in_department])
+          let(:nir_match) { build(:user, nir: "1234567890123") }
+          let(:internal_id_match) { build(:user, department_internal_id: "ABC123", first_name: "John") }
+          let(:email_match) { build(:user, email: "john@example.com", first_name: "John") }
+
+          before do
+            allow(user_row).to receive(:potential_matching_users_in_department)
+              .and_return([internal_id_match, email_match, nir_match])
           end
 
           it "matches by NIR even when other criteria would match" do
@@ -163,15 +162,13 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         end
 
         context "department internal ID has second priority" do
-          # No NIR match
-          let!(:internal_id_match) do
-            create(:user, department_internal_id: "ABC123", first_name: "Different", organisations: [org_in_department])
-          end
-          let!(:email_match) do
-            create(:user, email: "john@example.com", first_name: "John", organisations: [org_in_department])
-          end
-          let!(:phone_match) do
-            create(:user, phone_number: "+33612345678", first_name: "John", organisations: [org_in_department])
+          let(:internal_id_match) { build(:user, department_internal_id: "ABC123") }
+          let(:email_match) { build(:user, email: "john@example.com", first_name: "John") }
+          let(:phone_match) { build(:user, phone_number: "+33612345678", first_name: "John") }
+
+          before do
+            allow(user_row).to receive(:potential_matching_users_in_department)
+              .and_return([email_match, phone_match, internal_id_match])
           end
 
           it "matches by department internal ID when NIR doesn't match" do
@@ -181,15 +178,13 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         end
 
         context "email has third priority" do
-          # No NIR match or internal ID match
-          let!(:email_match) do
-            create(:user, email: "john@example.com", first_name: "John", organisations: [org_in_department])
-          end
-          let!(:phone_match) do
-            create(:user, phone_number: "+33612345678", first_name: "John", organisations: [org_in_department])
-          end
-          let!(:affiliation_match) do
-            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
+          let(:email_match) { build(:user, email: "john@example.com", first_name: "John") }
+          let(:phone_match) { build(:user, phone_number: "+33612345678", first_name: "John") }
+          let(:affiliation_match) { build(:user, affiliation_number: "1234567890", role: "demandeur") }
+
+          before do
+            allow(user_row).to receive(:potential_matching_users_in_department)
+              .and_return([phone_match, affiliation_match, email_match])
           end
 
           it "matches by email when higher priority criteria don't match" do
@@ -199,12 +194,12 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         end
 
         context "phone number has fourth priority" do
-          # No NIR, internal ID, or email match
-          let!(:phone_match) do
-            create(:user, phone_number: "+33612345678", first_name: "John", organisations: [org_in_department])
-          end
-          let!(:affiliation_match) do
-            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
+          let(:phone_match) { build(:user, phone_number: "+33612345678", first_name: "John") }
+          let(:affiliation_match) { build(:user, affiliation_number: "1234567890", role: "demandeur") }
+
+          before do
+            allow(user_row).to receive(:potential_matching_users_in_department)
+              .and_return([affiliation_match, phone_match])
           end
 
           it "matches by phone number when higher priority criteria don't match" do
@@ -214,9 +209,11 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         end
 
         context "affiliation number and role has lowest priority" do
-          # Only affiliation number match exists
-          let!(:affiliation_match) do
-            create(:user, affiliation_number: "1234567890", role: "demandeur", organisations: [org_in_department])
+          let(:affiliation_match) { build(:user, affiliation_number: "1234567890", role: "demandeur") }
+
+          before do
+            allow(user_row).to receive(:potential_matching_users_in_department)
+              .and_return([affiliation_match])
           end
 
           it "matches by affiliation number when all other criteria don't match" do
