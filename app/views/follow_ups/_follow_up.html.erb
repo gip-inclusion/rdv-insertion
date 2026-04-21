@@ -30,7 +30,7 @@
     <div class="card-body bg-light">
       <div>
         <% if participations.present? %>
-          <% sorted_participations = participations.sort_by(&:starts_at).reverse %>
+          <% sorted_participations = participations.sort_by(&:created_at).reverse %>
           <div class="d-flex justify-content-center">
             <table class="card-white text-center align-middle m-4 shadow table-hover" data-controller="accordion">
               <thead>

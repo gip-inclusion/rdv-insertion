@@ -66,7 +66,8 @@ describe "Agents can see RDV details on the follow up page", :js do
       create(:rdv, organisation: organisation, motif: older_motif, starts_at: 2.months.ago)
     end
     let!(:older_participation) do
-      create(:participation, follow_up:, user:, rdv: older_rdv, status: "seen")
+      create(:participation, follow_up:, user:, rdv: older_rdv, status: "seen",
+                             created_at: Time.zone.parse("2024-01-15 10:00"))
     end
 
     it "displays the historical RDVs under the 'Historique sur le suivi' section" do
