@@ -1,7 +1,7 @@
 class Rdv < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status, :uuid,
-    :users_count, :max_participants_count, :visio_url
+    :users_count, :max_participants_count, :visio_url, :time_zone
   ].freeze
 
   include Notificable
@@ -31,7 +31,7 @@ class Rdv < ApplicationRecord
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
 
-  validates :starts_at, :duration_in_min, presence: true
+  validates :starts_at, :duration_in_min, :time_zone, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, allow_nil: true
   validates :visio_url, presence: true, if: :visio?
 
@@ -62,15 +62,20 @@ class Rdv < ApplicationRecord
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"
   end
 
+  def starts_at_in_time_zone
+    starts_at.in_time_zone(time_zone)
+  end
+
   def formatted_start_date
-    starts_at.to_datetime.strftime("%d/%m/%y")
+    starts_at_in_time_zone.strftime("%d/%m/%y")
   end
 
   def formatted_start_time
-    hour = starts_at.to_datetime.strftime("%-H")
-    minutes = starts_at.to_datetime.strftime("%M")
-
-    minutes == "00" ? "#{hour}h" : "#{hour}h#{minutes}"
+    if starts_at_in_time_zone.min.zero?
+      starts_at_in_time_zone.strftime("%-Hh")
+    else
+      starts_at_in_time_zone.strftime("%-Hh%M")
+    end
   end
 
   def phone_number

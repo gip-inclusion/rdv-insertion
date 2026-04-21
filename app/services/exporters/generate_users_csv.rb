@@ -185,7 +185,7 @@ module Exporters
     end
 
     def last_rdv_starts_at(user)
-      last_rdv(user)&.starts_at
+      last_rdv(user)&.starts_at_in_time_zone
     end
 
     def last_participation_created_at(user)
