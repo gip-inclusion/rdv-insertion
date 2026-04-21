@@ -1,6 +1,6 @@
 <tr class="clickable" data-action="click->accordion#toggle" data-index="<%= participation_index %>">
   <td class="px-4 py-3">
-    <%= format_date(participation.starts_at) %>
+    <%= format_date(participation.starts_at_in_time_zone) %>
   </td>
   <td class="px-2 py-3">
     <%= participation.motif.name %>
