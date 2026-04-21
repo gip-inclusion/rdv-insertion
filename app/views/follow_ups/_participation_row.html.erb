@@ -37,7 +37,8 @@
         <% ["sms", "email", "postal"].each do |format| %>
           <% convocation = participation.last_convocation_by(format) %>
           <% next if convocation.blank? %>
-          <dt>Convocation <%= format == "sms" ? "SMS" : format %></dt>
+
+          <dt>Convocation <%= t("activerecord.attributes.invitation.formats.#{format}") %></dt>
           <dd>
             <%= format_date(convocation.created_at) %>
             <% if format != "postal" %>

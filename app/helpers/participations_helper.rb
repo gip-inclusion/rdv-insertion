@@ -62,12 +62,8 @@ module ParticipationsHelper
       "user" => "l'usager"
     }[participation.created_by_type]
 
-    author = if participation.created_by_agent?
-               participation.created_by
-             elsif participation.created_by_prescripteur?
-               participation.agent_prescripteur
-             end
-    author_details = " #{author} (#{author.email})" if author.present?
+    agent_creator = participation.agent_creator
+    author_details = " #{agent_creator} (#{agent_creator.email})" if agent_creator
 
     "#{author_description}#{author_details}"
   end
