@@ -51,7 +51,7 @@
                         <%= tooltip(content: participation_created_by_tooltip_content(participation)) %>>
                       </i>
                     </td>
-                    <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
+                    <td class="px-4 py-3"><%= format_date(participation.starts_at_in_time_zone) %></td>
                     <td class="px-2 py-3"><%= participation.motif.name %></td>
                     <td class="px-4 py-3 participation_status" >
                       <% if participation.rdv.rdv_solidarites_rdv_id && policy(participation).edit?  %>
