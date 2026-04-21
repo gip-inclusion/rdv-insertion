@@ -8,7 +8,7 @@ module Participation::FranceTravailPayload
     {
       id: france_travail_id,
       adresse: address,
-      date: starts_at.to_datetime,
+      date: starts_at_in_time_zone,
       duree: duration_in_min,
       information: motif.instruction_for_rdv,
       initiateur: france_travail_initiateur,

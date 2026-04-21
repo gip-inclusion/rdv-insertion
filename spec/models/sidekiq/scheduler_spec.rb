@@ -20,7 +20,7 @@ describe Sidekiq::Scheduler do
         expect(scheduled_set.size).to eq(1)
         expect(scheduled_set.first.display_class).to eq(job_class.to_s)
         expect(scheduled_set.first.display_args).to eq(args)
-        expect(scheduled_set.first.queue).to eq("default")
+        expect(scheduled_set.first.queue).to eq("whenever")
         expect(scheduled_set.first.at.to_i).to eq(at.to_i)
       end
     end
@@ -29,7 +29,7 @@ describe Sidekiq::Scheduler do
       let!(:old_time) { 30.minutes.from_now }
 
       before do
-        job_class.set(wait_until: old_time, queue: "default")
+        job_class.set(wait_until: old_time, queue: "whenever")
                  .perform_later(*args)
       end
 
@@ -43,7 +43,7 @@ describe Sidekiq::Scheduler do
         expect(scheduled_set.size).to eq(1)
         expect(scheduled_set.first.display_class).to eq(job_class.to_s)
         expect(scheduled_set.first.display_args).to eq(args)
-        expect(scheduled_set.first.queue).to eq("default")
+        expect(scheduled_set.first.queue).to eq("whenever")
         expect(scheduled_set.first.at.to_i).to eq(at.to_i)
       end
     end

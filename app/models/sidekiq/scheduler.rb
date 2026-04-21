@@ -3,7 +3,7 @@ class Sidekiq::Scheduler
     new(job_class, *, at: at).schedule_uniq_job
   end
 
-  def initialize(job_class, *args, at:, queue: "default")
+  def initialize(job_class, *args, at:, queue: "whenever")
     @job_class = job_class
     @args = args
     @at = at

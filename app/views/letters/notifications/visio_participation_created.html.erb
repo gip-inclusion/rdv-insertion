@@ -8,7 +8,7 @@
 <div class="main-content">
   <p><%= user.title_in_letter %>,</p>
   <p>Vous êtes <%= user_designation %> et à ce titre vous êtes <%= user.conjugate("convoqué") %> à un <%= rdv_title %> par visioconférence pour <%= rdv_purpose %>.</p>
-  <p>Vous devez vous connecter le <strong><%= I18n.l(rdv.starts_at, format: :human) %></strong> sur le lien suivant&nbsp;:</p>
+  <p>Vous devez vous connecter le <strong><%= I18n.l(rdv.starts_at_in_time_zone, format: :human) %></strong> sur le lien suivant&nbsp;:</p>
   <div class="rdv-address">
     <div class="text-center">
       <strong class="bold-blue"><%= rdv.visio_url %></strong>

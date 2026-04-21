@@ -31,7 +31,7 @@ describe UpsertRecord, type: :service do
     let!(:rdv_solidarites_rdv_id) { 12 }
     let!(:rdv_solidarites_attributes) do
       { id: 12, starts_at: starts_at, duration_in_min: duration_in_min,
-        status: status, created_by_type: created_by_type }
+        status: status, created_by_type: created_by_type, time_zone: time_zone }
     end
     let!(:user) { create(:user, id: user_id) }
     let!(:follow_up) { create(:follow_up) }
@@ -41,6 +41,7 @@ describe UpsertRecord, type: :service do
     let!(:duration_in_min) { 45 }
     let!(:status) { "unknown" }
     let!(:created_by_type) { "user" }
+    let!(:time_zone) { "Europe/Paris" }
 
     describe "#call" do
       context "when the record exists" do

@@ -10,7 +10,7 @@
 <div class="main-content">
   <p><%= user.title_in_letter %>,</p>
   <p>Vous êtes <%= user_designation %> et à ce titre vous êtes <%= user.conjugate("convoqué") %> à un <%= rdv_title %> pour <%= rdv_purpose %>.</p>
-  <p>Vous êtes <%= user.conjugate("attendu") %> le <strong><%= I18n.l(rdv.starts_at, format: :human) %></strong>, à l'adresse suivante&nbsp;:</p>
+  <p>Vous êtes <%= user.conjugate("attendu") %> le <strong><%= I18n.l(rdv.starts_at_in_time_zone, format: :human) %></strong>, à l'adresse suivante&nbsp;:</p>
   <div class="rdv-address">
     <div class="text-center">
       <%= pdf_clock_icon %> <strong><%= rdv.lieu.name %></strong>
