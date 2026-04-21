@@ -111,7 +111,7 @@ module UserListUpload::UserListUploadHelper
   # rubocop:disable Metrics/AbcSize
   def tooltip_content_for_user_row_archived(user_row)
     if user_row.department_level?
-      reasons = user_row.archiving_reasons.compact_blank
+      reasons = user_row.archiving_reasons
       parts = [
         tag.b("Dossier archivé sur #{strip_tags(user_row.archives.map(&:organisation).map(&:name).join(', '))}.")
       ]
@@ -122,7 +122,7 @@ module UserListUpload::UserListUploadHelper
       parts << tag.br
       parts << "Si mis à jour dans l'organisation d'archivage, le dossier sera désarchivé dans cette organisation."
     else
-      reason = user_row.archiving_reasons.first.presence
+      reason = user_row.archiving_reasons.first
       parts = [tag.b("Dossier archivé sur cette organisation.")]
       if reason
         parts << tag.br
