@@ -18,13 +18,17 @@ module ArchivesHelper
   end
 
   def archived_banner_message(archives)
-    names = archives.map(&:organisation).sort.map(&:name).join(", ")
+    org_names = archives.map(&:organisation).sort.map(&:name).join(", ")
     wording = archives.size > 1 ? "les organisations" : "l'organisation"
-    "Cet usager est archivé sur #{wording} #{names} (#{format_archives_reason(archives)})"
+    message = "Cet usager est archivé sur #{wording} #{org_names}"
+    reason = format_archives_reason(archives)
+    reason.present? ? "#{message} (#{reason})" : message
   end
 
   def format_archives_reason(archives)
-    reason = archives.map(&:archiving_reason).uniq.join(", ")
-    "#{'motif'.pluralize(archives.size)} d'archivage : #{reason}"
+    reasons = archives.map(&:archiving_reason).compact_blank.uniq
+    return if reasons.empty?
+
+    "#{'motif'.pluralize(archives.size)} d'archivage : #{reasons.join(', ')}"
   end
 end
