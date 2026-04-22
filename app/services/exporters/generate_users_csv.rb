@@ -35,26 +35,26 @@ module Exporters
     end
 
     def each_element(&)
-      @users.each(&)
+      @users_scope.find_each(batch_size: 500, &)
     end
 
     def preload_associations
-      @users =
+      @users_scope =
         if @motif_category
-          User.preload(
-            :archives, :organisations, :tags, :referents, :rdvs, :address_geocoding,
+          User.where(id: @user_ids).preload(
+            :archives, :organisations, :tags, :referents, :address_geocoding,
             participations: [:organisation, :follow_up],
-            follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations, :users] }],
+            follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations] }],
             orientations: [:orientation_type, :organisation]
-          ).find(@user_ids)
+          )
         else
-          User.preload(
+          User.where(id: @user_ids).preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents, :address_geocoding,
             follow_ups: [:motif_category, :participations, :rdvs],
             participations: [:organisation, :rdv, { follow_up: :motif_category }],
             rdvs: [:motif, :participations],
             orientations: [:orientation_type, :organisation]
-          ).find(@user_ids)
+          )
         end
     end
 

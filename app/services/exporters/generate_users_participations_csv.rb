@@ -2,8 +2,12 @@ module Exporters
   class GenerateUsersParticipationsCsv < GenerateUsersCsv
     private
 
-    def each_element(&)
-      filtered_participations.each(&)
+    def each_element(&block)
+      # find_each doesn't support custom ordering: pluck sorted IDs first in SQL,
+      # then reload records in batches while preserving the order.
+      filtered_participations.pluck(:id).each_slice(500) do |ids|
+        @participations.where(id: ids).in_order_of(:id, ids).each(&block)
+      end
     end
 
     def filtered_participations
@@ -32,7 +36,7 @@ module Exporters
         follow_up: [
           :invitations,
           :notifications,
-          { rdvs: [:motif, :organisation, :participations, :users] }
+          { rdvs: [:motif, :organisation, :participations] }
         ]
       )
     end
