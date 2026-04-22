@@ -7,6 +7,10 @@ class CsvExportMailer < ApplicationMailer
     mail(to: email, subject: "[rdv-insertion] Export CSV")
   end
 
+  def notify_export_failure(email)
+    mail(to: email, subject: "[rdv-insertion] Échec de votre export CSV")
+  end
+
   private
 
   def set_request_filters
