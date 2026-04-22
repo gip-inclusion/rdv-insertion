@@ -20,7 +20,8 @@ describe Users::PushToRdvSolidarites, type: :service do
     {
       first_name: "john", last_name: "doe",
       address: "16 rue de la tour", email: "johndoe@example.com",
-      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
+      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567",
+      post_code: "75001", city_code: "75101", city_name: "Paris"
     }
   end
   let!(:user) do
@@ -28,6 +29,9 @@ describe Users::PushToRdvSolidarites, type: :service do
       :user,
       user_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
     )
+  end
+  let!(:address_geocoding) do
+    create(:address_geocoding, user: user, post_code: "75001", city_code: "75101", city: "Paris")
   end
 
   let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
