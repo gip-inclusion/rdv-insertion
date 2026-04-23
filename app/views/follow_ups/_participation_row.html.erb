@@ -49,10 +49,10 @@
       <% end %>
       <dt>RDV pris le</dt>
       <dd><%= participation.created_at.strftime("%d/%m/%Y à %H:%M") %></dd>
+      <dt>Dans</dt>
+      <dd><%= participation.rdv.organisation.name %></dd>
       <dt>Par</dt>
       <dd><%= participation_created_by_description(participation) %></dd>
-      <dt>Demandé par</dt>
-      <dd><%= participation.rdv.organisation.name %></dd>
     </dl>
   </td>
 </tr>
