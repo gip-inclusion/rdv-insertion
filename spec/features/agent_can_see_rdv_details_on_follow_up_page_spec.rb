@@ -37,10 +37,10 @@ describe "Agents can see RDV details on the follow up page", :js do
 
     expect(page).to have_content("RDV pris le")
     expect(page).to have_content("10/03/2024 à 14:30")
+    expect(page).to have_content("Dans")
+    expect(page).to have_content("Service RSA")
     expect(page).to have_content("Par")
     expect(page).to have_content("l'agent")
-    expect(page).to have_content("Demandé par")
-    expect(page).to have_content("Service RSA")
   end
 
   it "does not expand the details panel when clicking on the status dropdown" do
