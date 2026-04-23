@@ -57,6 +57,12 @@ class Participation < ApplicationRecord
     Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id) if created_by_agent_prescripteur?
   end
 
+  def agent_creator
+    return unless created_by_agent? || created_by_agent_prescripteur?
+
+    Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id)
+  end
+
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])
   end

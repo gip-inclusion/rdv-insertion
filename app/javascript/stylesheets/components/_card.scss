@@ -47,6 +47,29 @@
   box-shadow: 0 0 1px rgba(0,0,0,0.1);
 }
 
+// CSS Grid with minmax(0, ...) so columns can shrink below their content and
+// avoid resizing the parent table when the collapse opens.
+.participation-details-list {
+  display: grid;
+  grid-template-columns: minmax(0, 25%) minmax(0, 75%);
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
+  margin: 0;
+
+  dt, dd {
+    margin: 0;
+  }
+}
+
+.participation-details-cell {
+  background-color: $light;
+}
+
+// Keep the same light-blue background on the trigger row while its collapse is open.
+tr:has(+ tr:not(.d-none) > .participation-details-cell) {
+  background-color: $light;
+}
+
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: 600px;
