@@ -146,7 +146,7 @@ class UserListUpload::UserRow < ApplicationRecord
   end
 
   def archiving_reasons
-    archives.map(&:archiving_reason)
+    archives.map(&:archiving_reason).compact_blank
   end
 
   def matching_user_follow_up

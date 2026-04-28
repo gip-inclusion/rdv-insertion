@@ -8,6 +8,7 @@ FactoryBot.define do
     motif
     status { "unknown" }
     created_by { "user" }
+    time_zone { "Europe/Paris" }
     address { "2O avenue de Ségur, 75007 Paris" }
     lieu
     agents { [create(:agent)] }

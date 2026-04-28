@@ -32,7 +32,11 @@ module Users::Sortable
   end
 
   def archived_order
-    @users = @users.order("archives.created_at desc")
+    @users = @users.joins(:archives)
+                   .group("users.id")
+                   .select("users.*, MAX(archives.created_at) AS latest_archive_date")
+                   .order(latest_archive_date: :desc)
+    @users = @users.where(archives: { organisation_id: @organisation.id }) unless department_level?
   end
 
   def order_by_follow_ups

@@ -373,6 +373,7 @@ tables:
       - lieu_id
       - users_count
       - max_participants_count
+      - time_zone
 
   - table_name: referent_assignations
     non_anonymized_column_names:

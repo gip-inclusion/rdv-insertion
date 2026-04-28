@@ -1,4 +1,4 @@
-<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user, logos_to_display: logos_to_display %>
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : Votre <%= rdv_title %> dans le cadre de votre <%= rdv_subject %> a été annulé</span></p>
@@ -7,7 +7,7 @@
 
 <div class="main-content">
   <p><%= user.title_in_letter %>,</p>
-  <p>Votre <%= rdv_title %>, prévu le <%= I18n.l(rdv.starts_at, format: :human) %> dans le cadre de votre <%= rdv_subject %> a été annulé.</p>
+  <p>Votre <%= rdv_title %>, prévu le <%= I18n.l(rdv.starts_at_in_time_zone, format: :human) %> dans le cadre de votre <%= rdv_subject %> a été annulé.</p>
   <p>Pour plus d'informations, veuillez appeler le <%= rdv.phone_number %>.</p>
   <%= render "letters/salutation", user: user %>
   <br/>

@@ -10,7 +10,6 @@ module InboundWebhooks
         @meta = meta.deep_symbolize_keys
         return if user.blank?
 
-        remove_attributes_from_payload
         upsert_or_delete_user
       end
 
@@ -24,17 +23,8 @@ module InboundWebhooks
         @data[:id]
       end
 
-      def email
-        @data[:email] || @data[:notification_email]
-      end
-
       def user
         @user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
-      end
-
-      def remove_attributes_from_payload
-        # We store the user's email in email field whether it is the devise account email or the notification email
-        @data[:email] = email if email.present?
       end
 
       def upsert_or_delete_user

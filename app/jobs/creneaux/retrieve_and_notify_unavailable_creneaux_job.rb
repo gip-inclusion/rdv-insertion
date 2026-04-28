@@ -1,4 +1,6 @@
 class Creneaux::RetrieveAndNotifyUnavailableCreneauxJob < ApplicationJob
+  queue_as :whenever
+
   attr_reader :organisation
 
   def perform(organisation_id)

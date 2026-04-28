@@ -207,4 +207,51 @@ describe Rdv do
       rdv.update!(starts_at: 1.day.from_now)
     end
   end
+
+  describe "#starts_at_in_time_zone" do
+    context "when time_zone is Europe/Paris" do
+      let(:rdv) { build(:rdv, starts_at: Time.zone.parse("2026-04-09 08:30:00"), time_zone: "Europe/Paris") }
+
+      it "returns starts_at in Paris timezone" do
+        expect(rdv.starts_at_in_time_zone).to eq(rdv.starts_at.in_time_zone("Europe/Paris"))
+        expect(rdv.starts_at_in_time_zone.strftime("%H:%M")).to eq("08:30")
+      end
+    end
+
+    context "when time_zone is Indian/Reunion" do
+      let(:rdv) { build(:rdv, starts_at: Time.zone.parse("2026-04-09 08:30:00"), time_zone: "Indian/Reunion") }
+
+      it "returns starts_at converted to Reunion timezone" do
+        expect(rdv.starts_at_in_time_zone.strftime("%H:%M")).to eq("10:30")
+      end
+    end
+  end
+
+  describe "#formatted_start_time" do
+    context "when time_zone is Indian/Reunion" do
+      let(:rdv) { build(:rdv, starts_at: Time.zone.parse("2026-04-09 08:30:00"), time_zone: "Indian/Reunion") }
+
+      it "formats the time in the RDV timezone" do
+        expect(rdv.formatted_start_time).to eq("10h30")
+      end
+    end
+
+    context "when minutes are 00" do
+      let(:rdv) { build(:rdv, starts_at: Time.zone.parse("2026-04-09 08:00:00"), time_zone: "Indian/Reunion") }
+
+      it "omits minutes" do
+        expect(rdv.formatted_start_time).to eq("10h")
+      end
+    end
+  end
+
+  describe "#formatted_start_date" do
+    context "when time_zone is Indian/Reunion" do
+      let(:rdv) { build(:rdv, starts_at: Time.zone.parse("2026-04-09 08:30:00"), time_zone: "Indian/Reunion") }
+
+      it "formats the date in the RDV timezone" do
+        expect(rdv.formatted_start_date).to eq("09/04/26")
+      end
+    end
+  end
 end

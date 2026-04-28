@@ -1,5 +1,7 @@
 module Creneaux
   class StoreAllNumberOfCreneauxAvailableJob < ApplicationJob
+    queue_as :whenever
+
     def perform
       CategoryConfiguration
         .joins(:organisation)

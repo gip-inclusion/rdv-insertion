@@ -1,4 +1,6 @@
 class FollowUps::RefreshOutOfDateStatusesJob < ApplicationJob
+  queue_as :whenever
+
   def perform
     @follow_up_ids = []
     updatable_follow_ups.find_each do |follow_up|

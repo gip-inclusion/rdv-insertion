@@ -5,7 +5,7 @@ class MessagesConfiguration < ApplicationRecord
 
   belongs_to :organisation
 
-  before_save :remove_blank_array_fields
+  before_validation :remove_blank_array_fields
 
   delegate :department, to: :organisation
 
@@ -14,7 +14,7 @@ class MessagesConfiguration < ApplicationRecord
                                         message: "ne doit contenir que des lettres et des chiffres" },
                               allow_nil: true
 
-  validates :logos_to_display, inclusion: { in: LOGO_TYPES }
+  validate :logos_to_display_must_be_valid
 
   nullify_blank :sms_sender_name, :letter_sender_name, :sender_city, :help_address
 
@@ -74,5 +74,12 @@ class MessagesConfiguration < ApplicationRecord
     # We don't want blank signature_lines or direction_names in the invitations
     signature_lines&.compact_blank!
     direction_names&.compact_blank!
+    logos_to_display&.compact_blank!
+  end
+
+  def logos_to_display_must_be_valid
+    return if logos_to_display.all? { |logo| LOGO_TYPES.include?(logo) }
+
+    errors.add(:logos_to_display, "doit contenir uniquement des logos valides")
   end
 end

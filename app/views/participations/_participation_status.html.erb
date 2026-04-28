@@ -1,28 +1,25 @@
-<%= turbo_frame_tag dom_id(participation, :status) do %>
-  <div class="d-flex h-100 px-2 justify-content-center align-items-center">
-    <%= form_for(participation, method: :patch, data: { controller: "participation-status-dropdown", remote: true }) do |f| %>
-      <%= f.hidden_field :status %>
-      <div class="btn-group">
-        <button id="toggle-rdv-status" type="button" class="btn <%= button_classes_for_participation_status(participation) %> dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <%= participation.human_status %>
-        </button>
-        <div class="dropdown-menu">
-          <% participation.possible_new_statuses.map do |status| %>
-            <%= link_to "#", class: "dropdown-item", data: { value: status } do %>
-              <span class="bold">
-                <i class="ri-circle-line me-1 <%= text_class_for_participation_status(status) %>"></i>
-                <%= human_new_status(status) %>
-              </span><br>
-              <span><%= human_new_status_detailed(status) %>.</span>
-              <% if could_notify_status_change?(participation, status) %>
-                <br>
-                <span>Si les notifications sont activées, une alerte sera envoyée à l'usager.</span>
-              <% end %>
-            <% end %>
+<div class="d-flex h-100 px-2 justify-content-center align-items-center">
+  <div class="btn-group">
+    <button type="button" class="btn <%= button_classes_for_participation_status(participation) %> dropdown-toggle"
+            data-bs-toggle="dropdown" aria-expanded="false">
+      <%= participation.human_status %>
+    </button>
+    <div class="dropdown-menu">
+      <% participation.possible_new_statuses.each do |status| %>
+        <%= button_to participation_path(participation), method: :patch,
+                      params: { participation: { status: } },
+                      class: "dropdown-item" do %>
+          <span class="bold">
+            <i class="ri-circle-line me-1 <%= text_class_for_participation_status(status) %>"></i>
+            <%= human_new_status(status) %>
+          </span><br>
+          <span><%= human_new_status_detailed(status) %>.</span>
+          <% if could_notify_status_change?(participation, status) %>
+            <br>
+            <span>Si les notifications sont activées, une alerte sera envoyée à l'usager.</span>
           <% end %>
-        </div>
-        <%= f.submit class: 'd-none' %>
-      </div>
-    <% end %>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-<% end %>
+</div>

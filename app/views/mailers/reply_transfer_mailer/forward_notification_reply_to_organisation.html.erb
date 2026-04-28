@@ -10,7 +10,7 @@
   <%= tag.p(@user.phone_number) if @user&.phone_number %>
   <br />
   <h4>Message envoyé par rdv-insertion</h4>
-  <p>Convocation pour un rdv le <%= I18n.l(@rdv.starts_at, format: :human) %></p>
+  <p>Convocation pour un rdv le <%= I18n.l(@rdv.starts_at_in_time_zone, format: :human) %></p>
   <p>Motif : <%= @rdv.motif_name %> </p>
   <%= tag.p("Lieu : #{@rdv.lieu.name}") if @rdv.lieu.present? %>
   <%= tag.p("Adresse : #{@rdv.lieu.address}") if @rdv.lieu.present? %>

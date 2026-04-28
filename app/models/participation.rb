@@ -31,7 +31,7 @@ class Participation < ApplicationRecord
 
   enum :created_by_type, { agent: "Agent", user: "User", prescripteur: "Prescripteur" }, prefix: true
 
-  delegate :starts_at, :motif, :lieu, :collectif?, :by_phone?, :duration_in_min,
+  delegate :starts_at, :starts_at_in_time_zone, :motif, :lieu, :collectif?, :by_phone?, :duration_in_min,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv, :address,
            to: :rdv
   delegate :department, :department_id, to: :organisation
@@ -55,6 +55,12 @@ class Participation < ApplicationRecord
 
   def agent_prescripteur
     Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id) if created_by_agent_prescripteur?
+  end
+
+  def agent_creator
+    return unless created_by_agent? || created_by_agent_prescripteur?
+
+    Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_created_by_id)
   end
 
   def notifiable?

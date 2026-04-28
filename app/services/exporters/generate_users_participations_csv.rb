@@ -72,8 +72,8 @@ module Exporters
     def csv_row(participation) # rubocop:disable Metrics/AbcSize
       user = participation.user
 
-      [display_date(participation.starts_at),
-       display_time(participation.starts_at),
+      [display_date(participation.starts_at_in_time_zone),
+       display_time(participation.starts_at_in_time_zone),
        rdv_motif(participation),
        rdv_type(participation),
        rdv_taken_in_autonomy?(participation),

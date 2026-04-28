@@ -1,4 +1,6 @@
 class UserListUpload::SaveUserJob < ApplicationJob
+  queue_as :within_30s
+
   sidekiq_options retry: 0
 
   def perform(user_row_id, broadcast_refresh: true)

@@ -1,7 +1,7 @@
 <div class="mx-2">
   <div class="w-100">
     <%= link_to structure_users_path(url_params.merge(action_required: params[:action_required] == "true" ? nil : "true")) do %>
-      <button class="btn btn-grey w-100">
+      <button class="btn btn-grey w-100" id="rdvi_index-nav_filter-action-required-button">
         Intervention nécessaire
         <% if params[:action_required] == "true" %>
           <span class="filter-active ms-1">1</span>

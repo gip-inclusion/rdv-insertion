@@ -8,7 +8,7 @@ module Participation::FranceTravailWebhooks
     before_destroy :send_france_travail_delete_webhook, if: :france_travail_webhook_updatable?
   end
 
-  def send_update_to_france_travail_if_eligible(timestamp)
+  def send_update_to_france_travail_if_eligible(timestamp = updated_at)
     send_france_travail_upsert_webhook(timestamp) if eligible_for_france_travail_webhook?
   end
 

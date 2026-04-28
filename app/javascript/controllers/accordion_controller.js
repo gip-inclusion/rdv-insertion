@@ -36,6 +36,10 @@ export default class extends Controller {
     setTimeout(() => item.scrollIntoView({ block: "start" }), 0)
   }
 
+  stop(event) {
+    event.stopPropagation()
+  }
+
   toggle(event) {
     const header = event.currentTarget
     if (header.classList.contains("disabled")) return
