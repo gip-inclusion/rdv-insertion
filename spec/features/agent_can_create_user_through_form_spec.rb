@@ -231,38 +231,6 @@ describe "Agents can create user through form", :js do
         end
       end
 
-      context "through affiliation_number and role" do
-        let!(:affiliation_number) { "SDDZZDA" }
-        let!(:role) { "demandeur" }
-        let!(:user) do
-          create(
-            :user,
-            affiliation_number: affiliation_number, role: role, email: nil, created_at: Time.zone.parse("04/05/2022"),
-            rdv_solidarites_user_id: rdv_solidarites_user_id,
-            organisations: [create(:organisation, department: department)]
-          )
-        end
-
-        it "finds the matching user and update with new attributes" do
-          visit new_organisation_user_path(organisation.id)
-
-          page.fill_in "user_first_name", with: "Bob"
-          page.fill_in "user_last_name", with: "Kelso"
-          page.fill_in "user_email", with: "bob@kelso.com"
-          page.fill_in "user_affiliation_number", with: affiliation_number
-          page.select "demandeur", from: "user_role"
-
-          click_button("Enregistrer")
-
-          expect(page).to have_content("Informations")
-          expect(page).to have_content("Date de création")
-          expect(page).to have_content("04/05/2022")
-          expect(page).to have_content("bob@kelso.com")
-          expect(User.count).to eq(1)
-          expect(User.last.email).to eq("bob@kelso.com")
-        end
-      end
-
       context "through email and first name" do
         let!(:user) do
           create(

@@ -14,8 +14,7 @@ module UserListUpload::UserRow::MatchingUser
     find_by_nir(users) ||
       find_by_department_internal_id(users) ||
       find_by_email(users) ||
-      find_by_phone_number(users) ||
-      find_by_affiliation_number_and_role(users)
+      find_by_phone_number(users)
   end
 
   def find_by_nir(users)
@@ -32,10 +31,6 @@ module UserListUpload::UserRow::MatchingUser
 
   def find_by_phone_number(users)
     users.find { |user| matches_phone_number?(user.phone_number, user.first_name) }
-  end
-
-  def find_by_affiliation_number_and_role(users)
-    users.find { |user| matches_affiliation_number_and_role?(user.affiliation_number, user.role) }
   end
 
   def matches_nir?(candidate_nir)
@@ -61,13 +56,6 @@ module UserListUpload::UserRow::MatchingUser
       candidate_phone_number == phone_number
   end
 
-  def matches_affiliation_number_and_role?(candidate_affiliation_number, candidate_role)
-    affiliation_number.present? && candidate_affiliation_number.present? &&
-      role.present? && candidate_role.present? &&
-      candidate_affiliation_number == affiliation_number &&
-      candidate_role == role
-  end
-
   def potential_matching_users_in_department
     if persisted?
       retrieve_potential_matching_users_in_department
@@ -86,7 +74,6 @@ module UserListUpload::UserRow::MatchingUser
     scope = scope.or(base.where(nir: nir)) if nir.present?
     scope = scope.or(base.where(email: email)) if email.present?
     scope = scope.or(base.where(phone_number: phone_number)) if phone_number.present?
-    scope = scope.or(base.where(affiliation_number: affiliation_number)) if affiliation_number.present?
     scope = scope.or(base.where(department_internal_id: department_internal_id)) if department_internal_id.present?
 
     scope
@@ -94,7 +81,7 @@ module UserListUpload::UserRow::MatchingUser
   # rubocop:enable Metrics/AbcSize
 
   def matching_attribute_changed?
-    nir_changed? || phone_number_changed? || department_internal_id_changed? || affiliation_number_changed? ||
-      email_changed? || role_changed? || first_name_changed?
+    nir_changed? || phone_number_changed? || department_internal_id_changed? ||
+      email_changed? || first_name_changed?
   end
 end

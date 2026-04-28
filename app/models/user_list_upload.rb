@@ -96,7 +96,6 @@ class UserListUpload < ApplicationRecord
           .or(base.where(nir: user_row_attributes_formatted_nirs))
           .or(base.where(email: user_row_attributes.pluck("email").compact))
           .or(base.where(phone_number: user_row_attributes_formatted_phone_numbers))
-          .or(base.where(affiliation_number: user_row_attributes.pluck("affiliation_number").compact))
           .or(base.where(department_internal_id: user_row_attributes.pluck("department_internal_id").compact))
           # Preload associations to avoid N+1 queries when calling user_row.user_valid?
           .preload(*user_associations_to_preload)

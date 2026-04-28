@@ -673,7 +673,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_20_154821) do
     t.date "rights_opening_date"
     t.string "role"
     t.string "title"
-    t.string "uid"
     t.datetime "updated_at", null: false
     t.index ["created_from_structure_type", "created_from_structure_id"], name: "index_users_on_created_from_structure"
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
@@ -683,7 +682,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_20_154821) do
     t.index ["phone_number"], name: "index_users_on_phone_number"
     t.index ["rdv_solidarites_user_id"], name: "index_users_on_rdv_solidarites_user_id", unique: true
     t.index ["role", "affiliation_number"], name: "index_users_on_role_and_affiliation_number"
-    t.index ["uid"], name: "index_users_on_uid"
   end
 
   create_table "users_organisations", force: :cascade do |t|

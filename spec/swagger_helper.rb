@@ -147,14 +147,13 @@ RSpec.configure do |config|
               department_internal_id: { type: "string", nullable: true },
               rights_opening_date: { type: "string", nullable: true },
               title: { type: "string", enum: %w[monsieur madame] },
-              uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: { type: "string", nullable: true },
               france_travail_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" }
             },
             required: %w[
-              id uid affiliation_number role created_at department_internal_id
+              id affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id nir france_travail_id
             ]
@@ -179,7 +178,6 @@ RSpec.configure do |config|
               },
               rights_opening_date: { type: "string", nullable: true },
               title: { type: "string", enum: %w[monsieur madame] },
-              uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: {
                 type: "string", nullable: true,
@@ -200,7 +198,7 @@ RSpec.configure do |config|
               }
             },
             required: %w[
-              id uid affiliation_number role created_at department_internal_id
+              id affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id nir france_travail_id
             ]
@@ -221,7 +219,6 @@ RSpec.configure do |config|
               department_internal_id: { type: "string", nullable: true },
               rights_opening_date: { type: "string", nullable: true },
               title: { type: "string", enum: %w[monsieur madame] },
-              uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               france_travail_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
@@ -231,7 +228,7 @@ RSpec.configure do |config|
               }
             },
             required: %w[
-              id uid affiliation_number role created_at department_internal_id
+              id affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id france_travail_id
             ]
@@ -251,7 +248,6 @@ RSpec.configure do |config|
               phone_number: { type: "string", nullable: true },
               rights_opening_date: { type: "string", nullable: true },
               title: { type: "string", enum: %w[monsieur madame] },
-              uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               france_travail_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
@@ -261,7 +257,7 @@ RSpec.configure do |config|
               }
             },
             required: %w[
-              id uid affiliation_number role created_at first_name last_name title address phone_number email birth_date
+              id affiliation_number role created_at first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id france_travail_id
             ]
           },
@@ -280,7 +276,6 @@ RSpec.configure do |config|
               phone_number: { type: "string", nullable: true },
               rights_opening_date: { type: "string", nullable: true },
               title: { type: "string", enum: %w[monsieur madame] },
-              uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               france_travail_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
@@ -290,7 +285,7 @@ RSpec.configure do |config|
               }
             },
             required: %w[
-              id uid affiliation_number role created_at first_name last_name title address phone_number email birth_date
+              id affiliation_number role created_at first_name last_name title address phone_number email birth_date
               rights_opening_date birth_name rdv_solidarites_user_id france_travail_id
             ]
           },

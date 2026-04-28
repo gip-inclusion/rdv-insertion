@@ -11,7 +11,7 @@ describe Users::PushToRdvSolidarites, type: :service do
   end
   let!(:user_attributes) do
     {
-      uid: "1234xyz", first_name: "john", last_name: "doe",
+      first_name: "john", last_name: "doe",
       address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
       role: "demandeur", birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
     }

@@ -10,7 +10,6 @@ module InboundWebhooks
         @meta = meta.deep_symbolize_keys
         return if user.blank?
 
-        remove_attributes_from_payload
         upsert_or_delete_user
       end
 
@@ -24,18 +23,8 @@ module InboundWebhooks
         @data[:id]
       end
 
-      def affiliation_number
-        @data[:affiliation_number]
-      end
-
       def user
         @user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
-      end
-
-      def remove_attributes_from_payload
-        # if the affiliation number is nil in RDV-S following a user fusion, we cannot update to nil
-        # in RDV-I because we need it to keep it for the uid.
-        @data.delete(:affiliation_number) if affiliation_number.blank?
       end
 
       def upsert_or_delete_user

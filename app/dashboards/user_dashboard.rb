@@ -49,7 +49,6 @@ class UserDashboard < Administrate::BaseDashboard
     title: Field::Select.with_options(
       searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
     ),
-    uid: Field::String,
     users_organisations: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime

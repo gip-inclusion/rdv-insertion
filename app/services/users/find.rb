@@ -15,8 +15,7 @@ module Users
       find_user_by_nir ||
         find_user_by_department_internal_id ||
         find_user_by_email ||
-        find_user_by_phone_number ||
-        find_user_by_role_and_affiliation_number
+        find_user_by_phone_number
     end
 
     def find_user_by_nir
@@ -45,12 +44,6 @@ module Users
       department_users.where(phone_number: phone_number_formatted).find do |user|
         user.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
-    end
-
-    def find_user_by_role_and_affiliation_number
-      return if @attributes[:role].blank? || @attributes[:affiliation_number].blank?
-
-      department_users.find_by(affiliation_number: @attributes[:affiliation_number], role: @attributes[:role])
     end
 
     def department_users

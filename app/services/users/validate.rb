@@ -41,26 +41,21 @@ module Users
     end
 
     def validate_identifier_not_removed
-      return unless removing_all_identifiers?
+      return unless identifiers_being_removed?
 
-      fail!(
-        "Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne, numéro CAF/rôle) " \
-        "d'un usager"
-      )
+      fail!("Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne) d'un usager")
     end
 
-    def removing_all_identifiers?
+    def identifiers_being_removed?
       !identifiable? && previously_identifiable?
     end
 
     def previously_identifiable?
-      %i[nir department_internal_id email phone_number].any? { |attr| @user.attribute_in_database(attr).present? } ||
-        (@user.attribute_in_database(:affiliation_number).present? && @user.attribute_in_database(:role).present?)
+      %i[nir department_internal_id email phone_number].any? { |attr| @user.attribute_in_database(attr).present? }
     end
 
     def identifiable?
-      @user.nir? || @user.department_internal_id? || @user.email? || @user.phone_number? ||
-        (@user.affiliation_number? && @user.role?)
+      @user.identifiable?
     end
   end
 end

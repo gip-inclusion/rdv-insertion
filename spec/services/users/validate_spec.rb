@@ -74,7 +74,7 @@ describe Users::Validate, type: :service do
       context "when the user previously had an email and it gets removed" do
         let!(:user) do
           create(:user, email: "test@example.com", nir: nil, department_internal_id: nil,
-                        phone_number: nil, affiliation_number: nil, organisations: [organisation])
+                        phone_number: nil, organisations: [organisation])
         end
 
         before { user.email = nil }
@@ -83,26 +83,7 @@ describe Users::Validate, type: :service do
 
         it "returns an error" do
           expect(subject.errors).to include(
-            "Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne, numéro CAF/rôle) " \
-            "d'un usager"
-          )
-        end
-      end
-
-      context "when the user previously had affiliation_number + role and role gets removed" do
-        let!(:user) do
-          create(:user, affiliation_number: "1234", role: "demandeur", nir: nil, department_internal_id: nil,
-                        email: nil, phone_number: nil, organisations: [organisation])
-        end
-
-        before { user.role = nil }
-
-        it("is a failure") { is_a_failure }
-
-        it "returns an error" do
-          expect(subject.errors).to include(
-            "Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne, numéro CAF/rôle) " \
-            "d'un usager"
+            "Impossible de retirer tous les identifiants (NIR, email, numéro de tel, ID interne) d'un usager"
           )
         end
       end
@@ -110,7 +91,7 @@ describe Users::Validate, type: :service do
       context "when the user replaces one identifier with another" do
         let!(:user) do
           create(:user, email: "test@example.com", nir: nil, department_internal_id: nil,
-                        phone_number: nil, affiliation_number: nil, organisations: [organisation])
+                        phone_number: nil, organisations: [organisation])
         end
 
         before do
@@ -125,8 +106,8 @@ describe Users::Validate, type: :service do
         let!(:user) do
           create(
             :user, :skip_validate,
-            nir: nil, department_internal_id: nil, email: nil, phone_number: nil, affiliation_number: nil,
-            role: nil, organisations: [organisation]
+            nir: nil, department_internal_id: nil, email: nil, phone_number: nil,
+            organisations: [organisation]
           )
         end
 

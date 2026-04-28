@@ -12,9 +12,7 @@ describe Users::Find, type: :service do
       email: email,
       phone_number: phone_number,
       first_name: first_name,
-      department_internal_id: department_internal_id,
-      affiliation_number: affiliation_number,
-      role: role
+      department_internal_id: department_internal_id
     }
   end
   let!(:nir) { generate_random_nir }
@@ -22,8 +20,6 @@ describe Users::Find, type: :service do
   let!(:phone_number) { "+33605050505" }
   let!(:first_name) { "Jane" }
   let!(:department_internal_id) { "6789" }
-  let!(:role) { "demandeur" }
-  let!(:affiliation_number) { "1234" }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:department) { create(:department, id: department_id) }
   let!(:department_id) { 22 }
@@ -78,36 +74,6 @@ describe Users::Find, type: :service do
             expect(subject.user).to be_nil
           end
         end
-      end
-    end
-
-    context "when an user with the same affiliation_number and role exists" do
-      context "when the user is in the same department" do
-        let!(:user) do
-          create(
-            :user, role: role, affiliation_number: affiliation_number,
-                   organisations: [other_org_inside_the_department]
-          )
-        end
-
-        it "returns the found user" do
-          expect(subject.user).to eq(user)
-        end
-      end
-
-      context "for another_department" do
-        let!(:user) do
-          create(
-            :user, role: role, affiliation_number: affiliation_number,
-                   organisations: [other_org_outside_the_department]
-          )
-        end
-
-        it "does not return a matching user" do
-          expect(subject.user).to be_nil
-        end
-
-        it("is a success") { is_a_success }
       end
     end
 
@@ -194,12 +160,6 @@ describe Users::Find, type: :service do
       let!(:user_phone) do
         create(:user, phone_number: phone_number, first_name: "JANE", organisations: [other_org_inside_the_department])
       end
-      let!(:user_role_affiliation) do
-        create(
-          :user, role: role, affiliation_number: affiliation_number,
-                 organisations: [other_org_inside_the_department]
-        )
-      end
 
       it "prioritizes NIR over all other criteria" do
         expect(subject.user).to eq(user_nir)
@@ -208,30 +168,22 @@ describe Users::Find, type: :service do
       context "when no NIR match exists" do
         let!(:nir) { nil }
 
-        it "prioritizes department internal ID over email, phone, and role/affiliation" do
+        it "prioritizes department internal ID over email and phone" do
           expect(subject.user).to eq(user_department_id)
         end
 
         context "when no department internal ID match exists" do
           let!(:department_internal_id) { nil }
 
-          it "prioritizes email over phone and role/affiliation" do
+          it "prioritizes email over phone" do
             expect(subject.user).to eq(user_email)
           end
 
           context "when no email match exists" do
             let!(:email) { nil }
 
-            it "prioritizes phone number over role/affiliation" do
+            it "falls back to phone number matching (lowest priority)" do
               expect(subject.user).to eq(user_phone)
-            end
-
-            context "when no phone match exists" do
-              let!(:phone_number) { nil }
-
-              it "falls back to role/affiliation matching (lowest priority)" do
-                expect(subject.user).to eq(user_role_affiliation)
-              end
             end
           end
         end
