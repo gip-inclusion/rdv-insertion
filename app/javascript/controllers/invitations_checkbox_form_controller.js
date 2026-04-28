@@ -8,18 +8,17 @@ import { getFrenchFormatDateString, todaysDateString } from "../lib/datesHelper"
 export default class extends Controller {
   connect() {
     const checkbox = this.element.querySelector("input[type=checkbox]");
-    const { invitationFormat } = this.element.dataset;
     if (!checkbox) return null;
 
-    if (invitationFormat === "postal") {
-      return safeTippy(checkbox, {
-        content: "Générer courrier d'invitation",
-      });
-    }
+    const refreshLabel = checkbox.labels[0];
+    const { invitationFormat } = this.element.dataset;
+    return safeTippy(refreshLabel || checkbox, { content: this.tooltipContent(invitationFormat, !!refreshLabel) });
+  }
 
-    return safeTippy(checkbox, {
-      content: `Envoyer ${invitationFormat} d'invitation`,
-    });
+  tooltipContent(invitationFormat, alreadyInvited) {
+    if (invitationFormat === "postal") return "Générer courrier d'invitation";
+    if (alreadyInvited) return `Renvoyer ${invitationFormat} d'invitation`;
+    return `Envoyer ${invitationFormat} d'invitation`;
   }
 
   submit() {
