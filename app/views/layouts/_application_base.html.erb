@@ -17,6 +17,9 @@
       <%= yield %>
       <%= render 'common/accept_cgu_modal' if @should_display_accept_cgu %>
       <%= render 'common/accept_dpa_modal' if @should_display_accept_dpa %>
+      <% if params[:tally_form_id].present? %>
+        <div data-controller="tally" data-tally-form-id="<%= params[:tally_form_id] %>"></div>
+      <% end %>
       <%= render 'common/crisp' %>
       <%= render 'cookies_consents/cookies_consent' if @should_display_cookies_consent %>
     </div>
