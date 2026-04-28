@@ -10,7 +10,11 @@ module Users
     def index
       @follow_ups =
         FollowUp.preload(
-          :invitations, :motif_category, participations: [:notifications, { rdv: [:motif, :organisation] }]
+          :invitations, :motif_category,
+          participations: [
+            :notifications, :organisation, { post_rdv_orientation: :orientation_type },
+            { rdv: [:motif, :organisation] }
+          ]
         ).where(
           user: @user, motif_category: @all_configurations.map(&:motif_category)
         ).sort_by do |follow_up|

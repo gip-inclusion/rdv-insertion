@@ -13,6 +13,8 @@ class Participation < ApplicationRecord
   belongs_to :follow_up
   belongs_to :user
 
+  has_one :post_rdv_orientation, dependent: :destroy
+
   has_many :notifications, dependent: :destroy
   has_many :follow_up_invitations, through: :follow_up, source: :invitations
   has_many :agents, through: :rdv
@@ -28,6 +30,7 @@ class Participation < ApplicationRecord
   after_commit :plan_follow_up_status_refresh, on: [:create, :update]
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
   after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
+  after_commit :delete_post_rdv_orientation_if_unseen, on: [:update]
 
   enum :created_by_type, { agent: "Agent", user: "User", prescripteur: "Prescripteur" }, prefix: true
 
@@ -67,7 +70,15 @@ class Participation < ApplicationRecord
     convocable? && in_the_future? && status.in?(%w[unknown revoked])
   end
 
+  def post_rdv_orientation_assignable?
+    orientation? && seen? && post_rdv_orientation.nil?
+  end
+
   private
+
+  def delete_post_rdv_orientation_if_unseen
+    post_rdv_orientation&.destroy! unless seen?
+  end
 
   def refresh_follow_up_status
     FollowUps::RefreshStatusesJob.perform_later(follow_up_id)
