@@ -53,6 +53,10 @@
       <dd><%= participation.rdv.organisation.name %></dd>
       <dt>Par</dt>
       <dd><%= participation_created_by_description(participation) %></dd>
+      <% if participation.post_rdv_orientation %>
+        <dt>Orienté en</dt>
+        <dd><%= participation.post_rdv_orientation.orientation_type.name %></dd>
+      <% end %>
     </dl>
   </td>
 </tr>
