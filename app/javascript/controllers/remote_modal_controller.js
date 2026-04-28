@@ -40,10 +40,17 @@ export default class extends Controller {
     this.modal.hide();
   }
 
+  preventTurboStreamRefresh(event) {
+    if (this.#shouldPreventRefresh() && event.detail.newStream.action === "refresh") event.preventDefault();
+  }
+
   #displayErrorsInsideModal() {
     return !!this.element.querySelector("#error_list");
   }
 
+  #shouldPreventRefresh() {
+    return this.element.dataset.preventRefresh === "true";
+  }
 
   #shouldReloadOnClose() {
     return this.element.dataset.reloadOnClose === "true";
