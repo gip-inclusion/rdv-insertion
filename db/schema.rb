@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_20_154821) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -450,6 +450,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_20_154821) do
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true
   end
 
+  create_table "post_rdv_orientations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "orientation_type_id", null: false
+    t.bigint "participation_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["orientation_type_id"], name: "index_post_rdv_orientations_on_orientation_type_id"
+    t.index ["participation_id"], name: "index_post_rdv_orientations_on_participation_id", unique: true
+  end
+
   create_table "rdvs", force: :cascade do |t|
     t.string "address"
     t.datetime "cancelled_at", precision: nil
@@ -768,6 +777,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_20_154821) do
   add_foreign_key "parcours_documents", "departments"
   add_foreign_key "parcours_documents", "users"
   add_foreign_key "participations", "follow_ups"
+  add_foreign_key "post_rdv_orientations", "orientation_types"
+  add_foreign_key "post_rdv_orientations", "participations"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
