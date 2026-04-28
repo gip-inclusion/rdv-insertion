@@ -1,0 +1,7 @@
+fr:
+  activerecord:
+    models:
+      post_rdv_orientation: Orientation après RDV
+    attributes:
+      post_rdv_orientation:
+        orientation_type: Type d'orientation
