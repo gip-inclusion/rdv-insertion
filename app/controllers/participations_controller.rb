@@ -3,13 +3,32 @@ class ParticipationsController < ApplicationController
 
   def update
     if participation_update.success?
-      redirect_to structure_user_follow_ups_path(user_id: @participation.user_id)
+      handle_update_success
     else
       turbo_stream_display_error_modal(participation_update.errors)
     end
   end
 
   private
+
+  def handle_update_success
+    if show_post_rdv_orientation_form?
+      turbo_stream_display_modal(
+        partial: "post_rdv_orientations/form",
+        locals: {
+          participation: @participation,
+          orientation_types: OrientationType.for_department(@participation.department),
+          tally_form_id: ENV["POST_RDV_ORIENTATION_TALLY_ID"]
+        }
+      )
+    else
+      redirect_to structure_user_follow_ups_path(user_id: @participation.user_id)
+    end
+  end
+
+  def show_post_rdv_orientation_form?
+    @participation.post_rdv_orientation_assignable?
+  end
 
   def set_participation
     @participation = Participation.find(params[:id])

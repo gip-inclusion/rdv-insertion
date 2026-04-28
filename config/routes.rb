@@ -184,6 +184,7 @@ Rails.application.routes.draw do
   resources :csv_exports, only: :show
 
   resources :participations, only: [:update]
+  resources :post_rdv_orientations, only: [:create]
   resources :follow_ups, only: [:create]
   resources :users_organisations, only: [:index, :create]
   resource :users_organisations, only: [:destroy]

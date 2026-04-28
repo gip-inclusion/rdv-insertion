@@ -1,0 +1,22 @@
+<%= render "common/remote_modal", title: "Renseigner une orientation", dismissable: false, data_attributes: { prevent_refresh: true } do %>
+  <%= turbo_frame_tag "error_list" %>
+  <%= form_with model: PostRdvOrientation.new, url: post_rdv_orientations_path, data: { turbo_frame: "_top" } do |f| %>
+    <%= f.hidden_field :participation_id, value: participation.id %>
+    <div class="p-4 mb-4 text-center">
+      <%= f.label :orientation_type_id, "Type d'orientation", class: "form-label" %>
+      <%= f.select :orientation_type_id,
+            options_from_collection_for_select(orientation_types, :id, :name),
+            { include_blank: "Sélectionner le type d'orientation" },
+            class: "form-select w-75 mx-auto text-center",
+            required: true %>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-3 p-4" data-turbo-prefetch="false">
+      <%= link_to "Passer cette étape",
+            structure_user_follow_ups_path(user_id: participation.user_id, tally_form_id:),
+            id: "post-rdv-orientation-skip",
+            class: "btn btn-blue-out",
+            data: { turbo_frame: "_top" } %>
+      <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% end %>

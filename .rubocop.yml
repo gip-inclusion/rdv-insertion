@@ -66,6 +66,9 @@ Rails/ThreeStateBooleanColumn:
 Rails/FindByOrAssignmentMemoization:
   Enabled: false
 
+Rails/Delegate:
+  EnforceForPrefixed: false
+
 Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.
