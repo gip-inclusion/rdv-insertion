@@ -1,6 +1,10 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
+  connect() {
+    this.showPopup()
+  }
+
   async showPopup() {
     if (this.#hasAlreadyAnswered || !this.element.dataset.tallyFormId) return
 
@@ -40,7 +44,7 @@ export default class extends Controller {
   }
 
   get #hasAlreadyAnswered() {
-    return !!localStorage.getItem(this.#hasAlreadyAnsweredKey)
+    return localStorage.getItem(this.#hasAlreadyAnsweredKey) === "true"
   }
 
   get #hasAlreadyAnsweredKey() {
