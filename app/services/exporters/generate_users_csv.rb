@@ -35,26 +35,28 @@ module Exporters
     end
 
     def each_element(&)
-      @users.each(&)
+      @users_scope.find_each(batch_size: 500, &)
     end
 
     def preload_associations
-      @users =
+      @users_scope =
         if @motif_category
-          User.preload(
-            :archives, :organisations, :tags, :referents, :rdvs, :address_geocoding,
-            participations: [:organisation, :follow_up],
-            follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations, :users] }],
+          User.where(id: @user_ids).preload(
+            :archives, :organisations, :referents, :address_geocoding,
+            { tags: :organisations },
+            participations: [:organisation, { follow_up: :motif_category }],
+            follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations] }],
             orientations: [:orientation_type, :organisation]
-          ).find(@user_ids)
+          )
         else
-          User.preload(
-            :invitations, :notifications, :archives, :organisations, :tags, :referents, :address_geocoding,
+          User.where(id: @user_ids).preload(
+            :invitations, :notifications, :archives, :organisations, :referents, :address_geocoding,
+            { tags: :organisations },
             follow_ups: [:motif_category, :participations, :rdvs],
             participations: [:organisation, :rdv, { follow_up: :motif_category }],
             rdvs: [:motif, :participations],
             orientations: [:orientation_type, :organisation]
-          ).find(@user_ids)
+          )
         end
     end
 
@@ -230,9 +232,13 @@ module Exporters
 
     def scoped_user_tags(tags)
       if department_level?
-        tags.joins(:organisations).where(organisations: { id: @agent.organisation_ids, department_id: })
+        tags.select do |tag|
+          tag.organisations.any? do |org|
+            @agent.organisation_ids.include?(org.id) && org.department_id == department_id
+          end
+        end
       else
-        tags.joins(:organisations).where(organisations: @structure)
+        tags.select { |tag| tag.organisations.include?(@structure) }
       end
     end
 
