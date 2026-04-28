@@ -67,7 +67,7 @@ Rails/FindByOrAssignmentMemoization:
   Enabled: false
 
 Rails/Delegate:
-  Enabled: false
+  EnforceForPrefixed: false
 
 Lint/MissingSuper:
   Exclude:

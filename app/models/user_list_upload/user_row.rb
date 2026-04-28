@@ -67,7 +67,7 @@ class UserListUpload::UserRow < ApplicationRecord
     user.tap { |u| u.skip_uniqueness_validations = true }
   end
 
-  def user_for_display_errors # rubocop:disable Rails/Delegate
+  def user_for_display_errors
     user_for_display.errors
   end
 
