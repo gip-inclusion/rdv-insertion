@@ -120,10 +120,25 @@
   margin-left: 10px;
 }
 
-.invitation-refresh-icon {
-  font-size: 0.9em;
-  color: $dark-blue;
+.invitation-button {
+  border: none;
+  background: transparent;
+  padding: 0;
   cursor: pointer;
+  line-height: 1;
+
+  &.invitation-refresh-disabled {
+    cursor: not-allowed;
+
+    .invitation-button-icon {
+      color: $dark-grey;
+    }
+  }
+}
+
+.invitation-button-icon {
+  font-size: 1.2em;
+  color: $dark-blue;
 }
 
 .edit-row-attribute {

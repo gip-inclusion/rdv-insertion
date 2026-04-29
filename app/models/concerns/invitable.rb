@@ -65,4 +65,11 @@ module Invitable
   def last_manual_invitation_by(format)
     invitations.select { |invitation| invitation.manual? && invitation.format == format }.max_by(&:created_at)
   end
+
+  def in_cooldown_for?(format)
+    return false if format == "postal"
+
+    last_invitation = last_manual_invitation_by(format)
+    last_invitation && last_invitation.created_at > 24.hours.ago
+  end
 end

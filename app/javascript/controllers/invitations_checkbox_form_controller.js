@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus";
-import { navigator } from "@hotwired/turbo";
 import DOMPurify from "dompurify";
 import safeTippy from "../lib/safeTippy";
 import handleUserInvitation from "../lib/handleUserInvitation";
@@ -7,61 +6,89 @@ import { getFrenchFormatDateString, todaysDateString } from "../lib/datesHelper"
 
 export default class extends Controller {
   connect() {
-    const checkbox = this.element.querySelector("input[type=checkbox]");
-    if (!checkbox) return null;
+    this.button = this.element.querySelector("button[type=submit]");
+    if (!this.button) return;
 
-    const refreshLabel = checkbox.labels[0];
-    const { invitationFormat } = this.element.dataset;
-    return safeTippy(refreshLabel || checkbox, { content: this.tooltipContent(invitationFormat, !!refreshLabel) });
+    this.icon = this.button.querySelector("i");
+    this.refreshTooltip();
   }
 
-  tooltipContent(invitationFormat, alreadyInvited) {
-    if (invitationFormat === "postal") return "Générer courrier d'invitation";
-    if (alreadyInvited) return `Renvoyer ${invitationFormat} d'invitation`;
-    return `Envoyer ${invitationFormat} d'invitation`;
+  disconnect() {
+    this.tippyInstance?.destroy();
   }
 
-  submit() {
-    this.element.hidden = true;
-    if (this.element.labels[0]) {
-      this.element.labels[0].hidden = true;
+  submit(event) {
+    if (this.disabled()) {
+      event.preventDefault();
+      return;
     }
-    this.element.parentElement.classList.add("spinner-border", "spinner-border-sm");
-    navigator.submitForm(this.element.closest("form"));
+    this.showSpinner();
   }
 
   async submitStart(event) {
     // We have to use JSON instead of Turbostream because postal invitation return raw data as pdfs
     const body = Object.fromEntries(event.detail.formSubmission.fetchRequest.entries);
     event.detail.formSubmission.stop();
-    const { userId, departmentId, organisationId, followUpId } = this.element.dataset;
 
-    const isDepartmentLevel = !organisationId;
-    const result = await handleUserInvitation(
-      userId,
-      departmentId,
-      organisationId,
-      isDepartmentLevel,
-      body.motif_category_id,
-      body.invitation_format
+    const result = await this.sendInvitation(body);
+    this.hideSpinner();
+
+    if (result.success) this.handleSuccess();
+  }
+
+  sendInvitation(body) {
+    const { userId, departmentId, organisationId } = this.element.dataset;
+    return handleUserInvitation(
+      userId, departmentId, organisationId, !organisationId,
+      body.motif_category_id, body.invitation_format
     );
+  }
 
-    const checkbox = this.element.querySelector("input[type=checkbox]");
+  handleSuccess() {
+    this.switchToInvitedState();
 
-    checkbox.hidden = false;
-    checkbox.parentElement.classList.remove("spinner-border", "spinner-border-sm");
-    if (result.success) {
-      checkbox.disabled = true;
-      checkbox.classList = "";
-      this.updateFirstInvitationDate(followUpId);
-      this.updateLastInvitationDate(followUpId);
-      this.updateStatus(followUpId);
-    } else {
-      checkbox.checked = false;
-      if (checkbox.labels[0]) {
-        checkbox.labels[0].hidden = false;
-      }
-    }
+    const { followUpId } = this.element.dataset;
+    this.updateFirstInvitationDate(followUpId);
+    this.updateLastInvitationDate(followUpId);
+    this.updateStatus(followUpId);
+  }
+
+  switchToInvitedState() {
+    this.icon.classList.remove("ri-checkbox-blank-line");
+    this.icon.classList.add("ri-refresh-line");
+    this.button.classList.add("invitation-refresh-disabled");
+    this.refreshTooltip();
+  }
+
+  showSpinner() {
+    this.button.hidden = true;
+    this.button.parentElement.classList.add("spinner-border", "spinner-border-sm");
+  }
+
+  hideSpinner() {
+    this.button.hidden = false;
+    this.button.parentElement.classList.remove("spinner-border", "spinner-border-sm");
+  }
+
+  refreshTooltip() {
+    this.tippyInstance?.destroy();
+    this.tippyInstance = safeTippy(this.button, { content: this.tooltipContent() });
+  }
+
+  tooltipContent() {
+    const { invitationFormat } = this.element.dataset;
+    if (invitationFormat === "postal") return "Générer courrier d'invitation";
+    if (this.disabled()) return `Une invitation ${invitationFormat} a déjà été envoyée aujourd'hui à cet usager`;
+    if (this.alreadyInvited()) return `Renvoyer ${invitationFormat} d'invitation`;
+    return `Envoyer ${invitationFormat} d'invitation`;
+  }
+
+  alreadyInvited() {
+    return this.icon.classList.contains("ri-refresh-line");
+  }
+
+  disabled() {
+    return this.button.classList.contains("invitation-refresh-disabled");
   }
 
   updateFirstInvitationDate(followUpId) {
