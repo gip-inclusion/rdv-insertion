@@ -255,6 +255,27 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       end
     end
 
+    context "when the user has several rdvs at different dates" do
+      let!(:users) { User.where(id: [user1]) }
+
+      let!(:older_rdv) do
+        create(:rdv, starts_at: Time.zone.parse("2022-01-01"),
+                     created_by: "user", organisation: organisation, motif: motif)
+      end
+      let!(:older_participation) { create(:participation, rdv: older_rdv, user: user1, status: "seen") }
+
+      let!(:middle_rdv) do
+        create(:rdv, starts_at: Time.zone.parse("2022-03-15"),
+                     created_by: "user", organisation: organisation, motif: motif)
+      end
+      let!(:middle_participation) { create(:participation, rdv: middle_rdv, user: user1, status: "seen") }
+
+      it "orders CSV lines by rdv.starts_at descending" do
+        rows = CSV.parse(subject.csv.delete_prefix("﻿"), col_sep: ";", headers: true)
+        expect(rows.pluck("Date du RDV")).to eq(["25/05/2022", "15/03/2022", "01/01/2022"])
+      end
+    end
+
     context "when the user has multiple rdvs in multiple orgs" do
       let!(:other_organisation) { create(:organisation, department:, users: [user1]) }
       let!(:other_rdv) do
@@ -322,6 +343,35 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(subject.csv).to include("cacahuète")
           expect(subject.csv).not_to include("pistache")
           expect(subject.csv).to include("chips")
+        end
+      end
+    end
+
+    context "N+1 detection" do
+      let!(:user2_invitation) do
+        create(:invitation, user: user2, format: "email", created_at: Time.zone.parse("2022-05-21"))
+      end
+      let!(:user2_notification) do
+        create(:notification, participation: participation_rdv_prescrit, format: "email",
+                              created_at: Time.zone.parse("2022-06-22"))
+      end
+      let!(:user2_follow_up) do
+        create(:follow_up, invitations: [user2_invitation], motif_category: motif_category,
+                           participations: [participation_rdv_prescrit], user: user2,
+                           status: "rdv_needs_status_update")
+      end
+
+      it "does not trigger N+1 queries" do
+        Prosopite.enabled = true
+        Prosopite.raise = true
+        Prosopite.scan
+        begin
+          described_class.call(user_ids: users.ids, structure: structure, motif_category_id: motif_category.id,
+                               agent:)
+          Prosopite.finish
+        ensure
+          Prosopite.enabled = false
+          Prosopite.raise = false
         end
       end
     end

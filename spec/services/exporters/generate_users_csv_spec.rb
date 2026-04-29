@@ -368,5 +368,39 @@ describe Exporters::GenerateUsersCsv, type: :service do
         end
       end
     end
+
+    context "N+1 detection" do
+      let!(:user2_rdv) do
+        create(:rdv, starts_at: Time.zone.parse("2022-05-26"),
+                     created_by: "user", organisation: organisation,
+                     participations: [user2_participation])
+      end
+      let!(:user2_participation) { create(:participation, user: user2, status: "seen") }
+      let!(:user2_invitation) do
+        create(:invitation, user: user2, format: "email", created_at: Time.zone.parse("2022-05-21"))
+      end
+      let!(:user2_notification) do
+        create(:notification, participation: user2_participation, format: "email",
+                              created_at: Time.zone.parse("2022-06-22"))
+      end
+      let!(:user2_follow_up) do
+        create(:follow_up, invitations: [user2_invitation], motif_category: motif_category,
+                           participations: [user2_participation], user: user2,
+                           status: "rdv_needs_status_update")
+      end
+
+      it "does not trigger N+1 queries" do
+        Prosopite.enabled = true
+        Prosopite.raise = true
+        Prosopite.scan
+        begin
+          described_class.call(user_ids: users.ids, structure:, motif_category_id: motif_category.id, agent:)
+          Prosopite.finish
+        ensure
+          Prosopite.enabled = false
+          Prosopite.raise = false
+        end
+      end
+    end
   end
 end

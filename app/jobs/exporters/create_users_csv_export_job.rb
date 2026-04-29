@@ -1,5 +1,12 @@
 module Exporters
   class CreateUsersCsvExportJob < ApplicationJob
+    sidekiq_options retry: 0
+
+    rescue_from(StandardError) do |exception|
+      notify_failure
+      raise exception
+    end
+
     attr_reader :user_ids, :structure, :agent, :request_params
 
     def perform(user_ids, structure_type, structure_id, agent_id, request_params = nil)
@@ -13,6 +20,12 @@ module Exporters
     end
 
     private
+
+    def notify_failure
+      return if @agent.nil?
+
+      CsvExportMailer.notify_export_failure(@agent.email).deliver_now
+    end
 
     def create_export
       ActiveRecord::Base.transaction do

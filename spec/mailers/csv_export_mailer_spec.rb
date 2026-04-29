@@ -90,4 +90,19 @@ RSpec.describe CsvExportMailer do
       end
     end
   end
+
+  describe "#notify_export_failure" do
+    subject { described_class.notify_export_failure(agent.email) }
+
+    it "renders the headers" do
+      expect(subject.to).to eq([agent.email])
+      expect(subject.subject).to eq("[rdv-insertion] Échec de votre export CSV")
+    end
+
+    it "renders the body" do
+      body_string = unescape_html(subject.body.encoded)
+      expect(body_string).to match("L'export CSV que vous avez demandé n'a pas pu être généré.")
+      expect(body_string).to match("Notre équipe technique a été informée")
+    end
+  end
 end

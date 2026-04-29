@@ -3,7 +3,13 @@ module Exporters
     private
 
     def each_element(&)
-      filtered_participations.each(&)
+      # find_each doesn't support custom ordering, so we stream manually in two steps:
+      # 1. pluck the sorted IDs — raw SQL SELECT, no AR instantiation, no preloads triggered.
+      # 2. reload each batch via where(id: ids) — AR instances + preloads fire here, and the
+      #    ORDER BY from filtered_participations still applies so records come back in order.
+      filtered_participations.pluck(:id).each_slice(500) do |ids|
+        filtered_participations.where(id: ids).each(&) # rubocop:disable Rails/FindEach
+      end
     end
 
     def filtered_participations
@@ -21,18 +27,19 @@ module Exporters
     def preload_associations
       @participations =
         if @motif_category
-          Participation.preload(user: [:tags, :referents, :organisations, :address_geocoding])
+          Participation.preload(user: [{ tags: :organisations }, :referents, :organisations, :address_geocoding])
         else
-          Participation.preload(user: [:tags, :referents, :organisations, :invitations, :notifications,
-                                       :address_geocoding])
+          Participation.preload(user: [{ tags: :organisations }, :referents, :organisations, :invitations,
+                                       :notifications, :address_geocoding])
         end
 
       @participations = @participations.preload(
+        :organisation,
         rdv: [:motif, :organisation],
         follow_up: [
           :invitations,
           :notifications,
-          { rdvs: [:motif, :organisation, :participations, :users] }
+          { rdvs: [:motif, :organisation, :participations] }
         ]
       )
     end
