@@ -43,7 +43,7 @@ module Exporters
         if @motif_category
           User.where(id: @user_ids).preload(
             :archives, :organisations, :referents, :address_geocoding,
-            { tags: :organisations },
+            { tags: [:organisations, :tag_organisations] },
             participations: [:organisation, { follow_up: :motif_category }],
             follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations] }],
             orientations: [:orientation_type, :organisation]
@@ -51,7 +51,7 @@ module Exporters
         else
           User.where(id: @user_ids).preload(
             :invitations, :notifications, :archives, :organisations, :referents, :address_geocoding,
-            { tags: :organisations },
+            { tags: [:organisations, :tag_organisations] },
             follow_ups: [:motif_category, :participations, :rdvs],
             participations: [:organisation, :rdv, { follow_up: :motif_category }],
             rdvs: [:motif, :participations],
@@ -233,9 +233,8 @@ module Exporters
     def scoped_user_tags(tags)
       if department_level?
         tags.select do |tag|
-          tag.organisations.any? do |org|
-            @agent.organisation_ids.include?(org.id) && org.department_id == department_id
-          end
+          Pundit.policy!(@agent, tag).show? &&
+            tag.organisations.any? { |org| org.department_id == department_id }
         end
       else
         tags.select { |tag| tag.organisations.include?(@structure) }
