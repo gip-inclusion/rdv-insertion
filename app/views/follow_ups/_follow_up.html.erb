@@ -8,7 +8,14 @@
             <strong><%= category_configuration.motif_category_name %></strong>
             <small><%= category_configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
           </h5>
-          <%= render "follow_ups/follow_up_status_badge", follow_up: %>
+          <div class="d-flex justify-content-start align-items-center py-1">
+            <%= render "follow_ups/follow_up_status_badge", follow_up: %>
+            <% if follow_up.last_post_rdv_orientation %>
+              <div class="badge rounded-pill background-green-light text-dark-green ms-2">
+                <%= user.conjugate("Orienté") %> en <%= follow_up.last_post_rdv_orientation.orientation_type.name %>
+              </div>
+            <% end %>
+          </div>
         </div>
         <div class="d-flex justify-content-center">
           <% if should_convene_for?(follow_up, category_configuration) %>
@@ -52,7 +59,7 @@
                     </tr>
                   <% end %>
                   <%= render "follow_ups/participation_row",
-                             participation: participation, participation_index: index,
+                             participation: participation, participation_index: index, user:,
                              category_configuration: category_configuration %>
                 <% end %>
               </tbody>

@@ -1,0 +1,5 @@
+<div class="dropdown-menu">
+  <% participation.possible_new_statuses.each do |status| %>
+    <%= render "participations/participation_status_dropdown_item", participation:, status: %>
+  <% end %>
+</div>

@@ -1,0 +1,38 @@
+<% option_content = capture do %>
+  <span class="bold">
+    <i class="ri-circle-line me-1 <%= text_class_for_participation_status(status) %>"></i>
+    <%= human_new_status(status) %>
+  </span><br>
+  <span><%= human_new_status_detailed(status) %>.</span>
+  <% if could_notify_status_change?(participation, status) %>
+    <br>
+    <span>Si les notifications sont activées, une alerte sera envoyée à l'usager.</span>
+  <% end %>
+<% end %>
+<%# If the participation has a post-RDV orientation and the status is not seen,
+we show a confirmation modal because it will delete the orientation %>
+<% if participation.post_rdv_orientation && status.to_s != "seen" %>
+  <%= link_to participation_path(participation),
+              class: "dropdown-item",
+              data: {
+                controller: "confirmation-modal",
+                turbo_method: :patch,
+                turbo_payload: { participation: { status: } }.to_json
+              } do %>
+    <span data-action="click->confirmation-modal#show"><%= option_content %></span>
+    <% text_content = capture do %>
+      L'orientation « <%= participation.post_rdv_orientation.orientation_type.name %> »
+      sera supprimée si vous changez le statut. Voulez-vous continuer ?
+    <% end %>
+    <%= render "common/confirmation_modal",
+               title: "Changer le statut du RDV",
+               text_content:,
+               action_text: "Continuer" %>
+  <% end %>
+<% else %>
+  <%= button_to participation_path(participation), method: :patch,
+                params: { participation: { status: } },
+                class: "dropdown-item" do %>
+    <%= option_content %>
+  <% end %>
+<% end %>

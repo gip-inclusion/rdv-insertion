@@ -1,11 +1,9 @@
-<%= turbo_frame_tag dom_id(follow_up, :status_tag) do %>
-  <div id="js-block-status-<%= follow_up.motif_category_id %>">
-    <span class="badge rounded-pill <%= badge_css_classes_for_follow_up_status(follow_up) %>">
-      <% if follow_up.closed? %>
-        <%= "Dossier traité le #{format_date(follow_up.closed_at)}" %>
-      <% else %>
-        <%= display_follow_up_status(follow_up) %>
-      <% end %>
-    </span>
-  </div>
+<%= turbo_frame_tag dom_id(follow_up, :status_tag), class: "d-flex" do %>
+  <span class="badge rounded-pill <%= badge_css_classes_for_follow_up_status(follow_up) %>">
+    <% if follow_up.closed? %>
+      <%= "Dossier traité le #{format_date(follow_up.closed_at)}" %>
+    <% else %>
+      <%= display_follow_up_status(follow_up) %>
+    <% end %>
+  </span>
 <% end %>
