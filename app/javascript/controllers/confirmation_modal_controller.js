@@ -24,6 +24,7 @@ export default class extends Controller {
       const confirmButton = modalClone.querySelector("button[data-controller='confirm-button']");
       confirmButton.dataset.linkUrl = this.linkElement.href;
       confirmButton.dataset.turboMethod = this.element.dataset.turboMethod;
+      confirmButton.dataset.turboPayload = this.element.dataset.turboPayload || "";
 
       document.body.appendChild(modalClone);
       this.modal = new Modal(modalClone);

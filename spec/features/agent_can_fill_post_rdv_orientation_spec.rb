@@ -60,14 +60,43 @@ describe "Agent can fill a post-RDV orientation", :js do
     let(:participation) { create(:participation, follow_up:, user:, rdv:, status: "seen") }
     let!(:post_rdv_orientation) { create(:post_rdv_orientation, participation:, orientation_type:) }
 
-    it "deletes the orientation" do
+    it "shows a confirmation modal before deleting the orientation" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       click_button("Rendez-vous honoré")
-      within(".dropdown-menu") { click_button("Annulé (par le service)") }
+      within(".dropdown-menu") do
+        find("span[data-action='click->confirmation-modal#show']", text: "Annulé (par le service)").click
+      end
+
+      expect(page).to have_css(".modal.show")
+      expect(page).to have_content("Changer le statut du RDV")
+      expect(page).to have_content("sera supprimée si vous changez le statut")
+    end
+
+    it "deletes the orientation when the confirmation modal is confirmed" do
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
+
+      click_button("Rendez-vous honoré")
+      within(".dropdown-menu") do
+        find("span[data-action='click->confirmation-modal#show']", text: "Annulé (par le service)").click
+      end
+      find(".modal.show").click_button("Continuer")
 
       expect(page).to have_button("Annulé (par le service)")
       expect(PostRdvOrientation.exists?(post_rdv_orientation.id)).to be false
+    end
+
+    it "keeps the orientation when the confirmation modal is cancelled" do
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
+
+      click_button("Rendez-vous honoré")
+      within(".dropdown-menu") do
+        find("span[data-action='click->confirmation-modal#show']", text: "Annulé (par le service)").click
+      end
+      find(".modal.show").click_button("Annuler")
+
+      expect(page).to have_button("Rendez-vous honoré")
+      expect(PostRdvOrientation.exists?(post_rdv_orientation.id)).to be true
     end
   end
 end
