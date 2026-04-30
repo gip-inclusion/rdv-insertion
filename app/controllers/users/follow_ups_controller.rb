@@ -10,7 +10,7 @@ module Users
     def index
       @follow_ups =
         FollowUp.preload(
-          :invitations, :motif_category,
+          :invitations, :motif_category, :post_rdv_orientations,
           participations: [
             :notifications, :organisation, { post_rdv_orientation: :orientation_type },
             { rdv: [:motif, :organisation] }

@@ -15,7 +15,7 @@
             structure_user_follow_ups_path(user_id: participation.user_id, tally_form_id:),
             id: "post-rdv-orientation-skip",
             class: "btn btn-blue-out",
-            data: { turbo_frame: "_top" } %>
+            data: { turbo_frame: "_top", turbo_action: "replace" } %>
       <%= f.submit "Enregistrer", class: "btn btn-primary" %>
     </div>
   <% end %>

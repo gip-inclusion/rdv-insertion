@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import Rails from "@rails/ujs"
 
 export default class extends Controller {
   confirm() {
@@ -36,8 +35,7 @@ export default class extends Controller {
     this.#appendPayloadToForm(form, payload);
 
     document.body.appendChild(form);
-    // needed to use Rails submit a form that handles turbo stream response
-    Rails.fire(form, "submit");
+    form.requestSubmit();
   }
 
   #appendPayloadToForm(form, payload, prefix = "") {
