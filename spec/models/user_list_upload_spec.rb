@@ -15,6 +15,24 @@ RSpec.describe UserListUpload do
       expect(user_list_upload.user_rows.count).to eq(2)
       expect(user_list_upload.user_rows.pluck(:email)).to contain_exactly("user1@example.com", "user2@example.com")
     end
+
+    context "when some rows are entirely blank" do
+      let(:user_list_upload) do
+        create(
+          :user_list_upload,
+          user_rows_attributes: [
+            { "first_name" => "Jean", "email" => "jean@example.com" },
+            { "first_name" => nil, "email" => nil, "tag_values" => [], "address" => "" },
+            { "first_name" => "", "last_name" => "" }
+          ]
+        )
+      end
+
+      it "does not create rows with only blank values" do
+        expect(user_list_upload.user_rows.count).to eq(1)
+        expect(user_list_upload.user_rows.first.email).to eq("jean@example.com")
+      end
+    end
   end
 
   describe "#restricted_user_attributes" do

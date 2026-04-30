@@ -21,7 +21,7 @@ class UserListUpload < ApplicationRecord
 
   validates :category_configuration_id, presence: true, if: :handle_invitation_only?
 
-  accepts_nested_attributes_for :user_rows
+  accepts_nested_attributes_for :user_rows, reject_if: :all_blank
 
   delegate :user_rows_enriched_with_cnaf_data, :update_rows, :user_rows_selected_for_invitation,
            :user_rows_selected_for_user_save, :user_rows_with_errors, :user_rows_archived,
