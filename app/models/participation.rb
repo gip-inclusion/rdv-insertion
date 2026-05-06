@@ -30,7 +30,7 @@ class Participation < ApplicationRecord
   after_commit :plan_follow_up_status_refresh, on: [:create, :update]
   after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
   after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
-  after_commit :delete_post_rdv_orientation_if_unseen, on: [:update]
+  after_commit :delete_post_rdv_orientation, on: [:update], if: :unseen?
 
   enum :created_by_type, { agent: "Agent", user: "User", prescripteur: "Prescripteur" }, prefix: true
 
@@ -76,8 +76,12 @@ class Participation < ApplicationRecord
 
   private
 
-  def delete_post_rdv_orientation_if_unseen
-    post_rdv_orientation&.destroy! unless seen?
+  def delete_post_rdv_orientation
+    post_rdv_orientation&.destroy!
+  end
+
+  def unseen?
+    status_previously_was == "seen" && status != "seen"
   end
 
   def refresh_follow_up_status
