@@ -26,11 +26,9 @@ module RdvSolidarites
       participations.find { it.user.id == user.rdv_solidarites_user_id }
     end
 
-    # rubocop:disable Rails/Delegate
     def motif_id
       motif.id
     end
-    # rubocop:enable Rails/Delegate
 
     def lieu_id
       lieu&.id

@@ -616,3 +616,10 @@ tables:
       - agent_id
       - created_at
       - updated_at
+  - table_name: post_rdv_orientations
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - participation_id
+      - orientation_type_id
+      - created_at
+      - updated_at

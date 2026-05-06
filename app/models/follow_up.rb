@@ -11,6 +11,7 @@ class FollowUp < ApplicationRecord
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
+  has_many :post_rdv_orientations, through: :participations
 
   broadcasts_refreshes
 
@@ -82,6 +83,10 @@ class FollowUp < ApplicationRecord
   def refresh_status_at
     start_from = [last_invitation_expires_at, last_rdv_starts_at].compact.max
     start_from + 1.second if start_from
+  end
+
+  def last_post_rdv_orientation
+    post_rdv_orientations.max_by(&:created_at)
   end
 
   private

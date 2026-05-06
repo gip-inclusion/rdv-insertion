@@ -21,7 +21,7 @@ const context = require.context("./controllers/", true, /\.js$/);
 Stimulus.load(definitionsFromContext(context));
 
 Turbo.StreamActions.redirect = function () {
-  Turbo.visit(this.target);
+  Turbo.visit(this.target, { action: "replace" });
 }
 
 document.addEventListener("turbo:load", () => {

@@ -4,22 +4,6 @@
             data-bs-toggle="dropdown" aria-expanded="false">
       <%= participation.human_status %>
     </button>
-    <div class="dropdown-menu">
-      <% participation.possible_new_statuses.each do |status| %>
-        <%= button_to participation_path(participation), method: :patch,
-                      params: { participation: { status: } },
-                      class: "dropdown-item" do %>
-          <span class="bold">
-            <i class="ri-circle-line me-1 <%= text_class_for_participation_status(status) %>"></i>
-            <%= human_new_status(status) %>
-          </span><br>
-          <span><%= human_new_status_detailed(status) %>.</span>
-          <% if could_notify_status_change?(participation, status) %>
-            <br>
-            <span>Si les notifications sont activées, une alerte sera envoyée à l'usager.</span>
-          <% end %>
-        <% end %>
-      <% end %>
-    </div>
+    <%= render "participations/participation_status_dropdown", participation: %>
   </div>
 </div>
