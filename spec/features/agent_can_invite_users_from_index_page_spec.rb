@@ -45,6 +45,10 @@ describe "Agents can invite from index page", :js do
       expect(page).to have_css("#email_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
       expect(page).to have_css("#sms_invite_for_user_#{user.id} .ri-checkbox-blank-line")
       expect(page).to have_css("#postal_invite_for_user_#{user.id} .ri-checkbox-blank-line")
+      # In prod, Sidekiq runs the status refresh job and ActionCable broadcasts a refresh that morphs the page.
+      # In test, both are inert (Sidekiq.fake!, ActionCable test adapter), so we run the job and reload manually.
+      perform_enqueued_jobs(only: FollowUps::RefreshStatusesJob)
+      visit current_url
       expect(page).to have_content("Invitation en attente de réponse")
     end
 
@@ -165,6 +169,8 @@ describe "Agents can invite from index page", :js do
         expect(page).to have_css("#email_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
         expect(page).to have_css("#sms_invite_for_user_#{user.id} .ri-checkbox-blank-line")
         expect(page).to have_css("#postal_invite_for_user_#{user.id} .ri-checkbox-blank-line")
+        perform_enqueued_jobs(only: FollowUps::RefreshStatusesJob)
+        visit current_url
         expect(page).to have_content("Invitation en attente de réponse")
       end
 

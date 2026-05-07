@@ -13,7 +13,7 @@ class InvitationsController < ApplicationController
       respond_to do |format|
         format.json { render json: { success: true, invitation: invitation } }
         format.pdf { send_pdf_data }
-        format.turbo_stream { redirect_to structure_user_follow_ups_path(user_id: @user.id) }
+        format.turbo_stream { redirect_back_or_to structure_user_follow_ups_path(user_id: @user.id) }
       end
     else
       respond_to do |format|
