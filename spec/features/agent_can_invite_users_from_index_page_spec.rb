@@ -40,7 +40,7 @@ describe "Agents can invite from index page", :js do
       expect(page).to have_css("#postal_invite_for_user_#{user.id} .ri-checkbox-blank-line")
       expect(page).to have_content("Non invité")
 
-      find("#email_invite_for_user_#{user.id}").click
+      click_button "email_invite_for_user_#{user.id}"
 
       expect(page).to have_css("#email_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
       expect(page).to have_css("#sms_invite_for_user_#{user.id} .ri-checkbox-blank-line")
@@ -64,7 +64,7 @@ describe "Agents can invite from index page", :js do
         follow_up.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        find("#postal_invite_for_user_#{user.id}").click
+        click_button "postal_invite_for_user_#{user.id}"
         expect(page).to have_content(
           "Une erreur est survenue lors de la génération du PDF." \
           " L'équipe a été notifiée de l'erreur et tente de la résoudre."
@@ -89,7 +89,7 @@ describe "Agents can invite from index page", :js do
         follow_up.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        find("#email_invite_for_user_#{user.id}").click
+        click_button "email_invite_for_user_#{user.id}"
         expect(page).to have_content("Impossible d'inviter l'usager")
         expect(page).to have_content(
           "Il n'y a plus de créneaux disponibles pour inviter cet usager.\n" \
@@ -117,7 +117,7 @@ describe "Agents can invite from index page", :js do
       expect(page).to have_css("#email_invite_for_user_#{user.id} .ri-checkbox-blank-line")
       expect(page).to have_css("#postal_invite_for_user_#{user.id} .ri-checkbox-blank-line")
 
-      find("#email_invite_for_user_#{user.id}").click
+      click_button "email_invite_for_user_#{user.id}"
 
       expect(page).to have_css("#email_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
     end
@@ -130,7 +130,7 @@ describe "Agents can invite from index page", :js do
 
       expect(page).to have_css("#sms_invite_for_user_#{user.id} .ri-refresh-line")
 
-      find("#sms_invite_for_user_#{user.id}").click
+      click_button "sms_invite_for_user_#{user.id}"
 
       expect(page).to have_css("#sms_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
     end
@@ -164,7 +164,7 @@ describe "Agents can invite from index page", :js do
         expect(page).to have_css("#postal_invite_for_user_#{user.id} .ri-checkbox-blank-line")
         expect(page).to have_content("RDV honoré")
 
-        find("#email_invite_for_user_#{user.id}").click
+        click_button "email_invite_for_user_#{user.id}"
 
         expect(page).to have_css("#email_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
         expect(page).to have_css("#sms_invite_for_user_#{user.id} .ri-checkbox-blank-line")
@@ -186,7 +186,7 @@ describe "Agents can invite from index page", :js do
           follow_up.save!
 
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          find("#postal_invite_for_user_#{user.id}").click
+          click_button "postal_invite_for_user_#{user.id}"
           expect(page).to have_content(
             "Une erreur est survenue lors de la génération du PDF." \
             " L'équipe a été notifiée de l'erreur et tente de la résoudre."
@@ -211,7 +211,7 @@ describe "Agents can invite from index page", :js do
           follow_up.save!
 
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          find("#email_invite_for_user_#{user.id}").click
+          click_button "email_invite_for_user_#{user.id}"
           expect(page).to have_content("Impossible d'inviter l'usager")
           expect(page).to have_content(
             "Il n'y a plus de créneaux disponibles pour inviter cet usager.\n" \
@@ -239,7 +239,7 @@ describe "Agents can invite from index page", :js do
         expect(page).to have_css("#email_invite_for_user_#{user.id} .ri-checkbox-blank-line")
         expect(page).to have_css("#postal_invite_for_user_#{user.id} .ri-checkbox-blank-line")
 
-        find("#email_invite_for_user_#{user.id}").click
+        click_button "email_invite_for_user_#{user.id}"
 
         expect(page).to have_css("#email_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
       end
@@ -252,7 +252,7 @@ describe "Agents can invite from index page", :js do
 
         expect(page).to have_css("#sms_invite_for_user_#{user.id} .ri-refresh-line")
 
-        find("#sms_invite_for_user_#{user.id}").click
+        click_button "sms_invite_for_user_#{user.id}"
 
         expect(page).to have_css("#sms_invite_for_user_#{user.id}.invitation-refresh-disabled .ri-refresh-line")
       end
