@@ -1,6 +1,10 @@
 <% postal = invitation_format == "postal" %>
+<% form_data = postal ? { controller: "postal-invitation", user_id: user.id, department_id: @department.id, organisation_id: @organisation&.id, motif_category_id: motif_category.id } : {} %>
+<% button_data = postal ? { action: "click->postal-invitation#submit" } : {} %>
+<% icon = checked ? "ri-refresh-line" : "ri-checkbox-blank-line" %>
+
 <div id="user-<%= user.id %>-<%= invitation_format %>-invitation">
-  <%= form_with(url: structure_user_invitations_path(user_id: user.id), html: { method: :post }, data: postal ? { controller: "postal-invitation", user_id: user.id, department_id: @department.id, organisation_id: @organisation&.id, motif_category_id: motif_category.id } : {}) do %>
+  <%= form_with(url: structure_user_invitations_path(user_id: user.id), html: { method: :post }, data: form_data) do %>
     <%= hidden_field_tag "invitation[format]", invitation_format %>
     <%= hidden_field_tag "invitation[motif_category][id]", motif_category.id %>
     <span <%= tooltip(content: invitation_button_tooltip(invitation_format, checked: checked, in_cooldown: in_cooldown)) %>>
@@ -8,8 +12,8 @@
                      id: "#{invitation_format}_invite_for_user_#{user.id}",
                      class: ["invitation-button", ("invitation-refresh-disabled" if in_cooldown)],
                      disabled: in_cooldown || disabled,
-                     data: postal ? { action: "click->postal-invitation#submit" } : {} do %>
-        <i class="<%= checked ? "ri-refresh-line" : "ri-checkbox-blank-line" %> invitation-button-icon"></i>
+                     data: button_data do %>
+        <i class="<%= icon %> invitation-button-icon"></i>
       <% end %>
     </span>
   <% end %>
