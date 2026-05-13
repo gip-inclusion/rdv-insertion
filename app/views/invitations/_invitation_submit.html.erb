@@ -1,0 +1,5 @@
+<% if invitation_format == "postal" %>
+  <%= render "invitations/postal_invitation", user: user, invitation_format: invitation_format, motif_category: motif_category, checked: checked, in_cooldown: in_cooldown, disabled: disabled %>
+<% else %>
+  <%= render "invitations/email_or_sms_invitation", user: user, invitation_format: invitation_format, motif_category: motif_category, checked: checked, in_cooldown: in_cooldown, disabled: disabled %>
+<% end %>

@@ -28,6 +28,14 @@ module InvitationsHelper
     invitations_by_format.values.map(&:count).max
   end
 
+  def invitation_button_tooltip(format, checked:, in_cooldown:)
+    return "Générer courrier d'invitation" if format == "postal"
+    return "Une invitation #{format} a déjà été envoyée aujourd'hui à cet usager" if in_cooldown
+    return "Renvoyer #{format} d'invitation" if checked
+
+    "Envoyer #{format} d'invitation"
+  end
+
   def not_delivered_tooltip_content(format)
     case format
     when "sms"
