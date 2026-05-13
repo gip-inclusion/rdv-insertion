@@ -15,6 +15,7 @@ class SessionsController < ApplicationController
   end
 
   def create
+    authenticated_agent.generate_session_key!
     set_session_credentials
     flash[:success] = "Connexion réussie"
     redirect_to @agent_return_to_url || root_path

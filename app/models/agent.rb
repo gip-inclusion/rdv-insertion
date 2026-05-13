@@ -2,7 +2,8 @@ class Agent < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:email, :first_name, :last_name].freeze
 
   include Agent::RdvSolidaritesClient
-  include Agent::Signature
+  include Agent::SessionSigning
+
   include Agent::CookiesConsentable
   include Agent::SuperAdminAuthentication
 
@@ -75,6 +76,10 @@ class Agent < ApplicationRecord
 
   def name_for_paper_trail
     "#{first_name} #{last_name&.upcase} (#{email}) - ID RDV-S: #{rdv_solidarites_agent_id}"
+  end
+
+  def generate_session_key!
+    update!(session_key: self.class.generate_unique_secure_token)
   end
 
   private
