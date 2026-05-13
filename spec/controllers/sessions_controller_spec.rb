@@ -37,6 +37,10 @@ describe SessionsController do
       expect(agent.reload.last_sign_in_at).not_to be_nil
     end
 
+    it "generates a new session key for the agent" do
+      expect { post :create }.to(change { agent.reload.session_key })
+    end
+
     it "sets a session" do
       post :create
 
@@ -45,7 +49,7 @@ describe SessionsController do
           id: agent.id,
           created_at: timestamp.to_i,
           origin: "sign_in_form",
-          signature: agent.sign_with(timestamp.to_i)
+          signature: agent.reload.sign_with(timestamp.to_i)
         }
       )
     end

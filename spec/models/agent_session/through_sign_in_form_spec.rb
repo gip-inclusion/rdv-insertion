@@ -31,6 +31,14 @@ describe AgentSession::ThroughSignInForm do
     end
   end
 
+  context "when the agent has no session key" do
+    before { agent.update_column(:session_key, nil) }
+
+    it "is not valid" do
+      expect(subject).not_to be_valid
+    end
+  end
+
   context "8 days after its creation" do
     before { travel_to(8.days.from_now) }
 
