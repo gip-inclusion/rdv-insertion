@@ -4,7 +4,7 @@ module Agent::SessionSigning
   def sign_with(timestamp)
     raise NotSignableError unless signable?
 
-    payload = { id:, email:, timestamp:, session_key: }
+    payload = { id:, timestamp:, session_key: }
     OpenSSL::HMAC.hexdigest("SHA256", signature_key, payload.to_json)
   end
 

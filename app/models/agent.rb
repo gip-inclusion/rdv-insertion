@@ -3,7 +3,6 @@ class Agent < ApplicationRecord
 
   include Agent::RdvSolidaritesClient
   include Agent::SessionSigning
-
   include Agent::CookiesConsentable
   include Agent::SuperAdminAuthentication
 
