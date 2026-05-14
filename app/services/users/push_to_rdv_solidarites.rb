@@ -86,6 +86,7 @@ module Users
       @user.attributes
            .symbolize_keys
            .slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+           .merge(post_code: @user.post_code, city_code: @user.city_code, city_name: @user.city)
            .transform_values(&:presence)
            .compact
     end
