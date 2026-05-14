@@ -17,13 +17,33 @@ describe FileConfigurationsController do
   describe "#show" do
     let!(:show_params) { { id: file_configuration.id } }
 
-    it "displays the file_configuration" do
+    it "displays the file_configuration with an actionable edit button for an authorized admin" do
       get :show, params: show_params
 
       expect(response).to be_successful
       expect(unescaped_response_body).to match(/Nom de l'onglet Excel/)
       expect(unescaped_response_body).to match(/#{file_configuration.sheet_name}/)
       expect(unescaped_response_body).to match(/Colonnes obligatoires/)
+      expect(response.body).to include(%(href="#{edit_file_configuration_path(file_configuration)}"))
+      expect(unescaped_response_body).not_to include("Vous n'avez pas les droits pour modifier ce template")
+    end
+
+    context "when the agent can view but not edit (basic role in the organisation)" do
+      let!(:basic_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
+
+      before do
+        sign_in(basic_agent)
+      end
+
+      it "displays the file_configuration with a disabled edit button and an explanatory tooltip" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(unescaped_response_body).to match(/Nom de l'onglet Excel/)
+        expect(response.body).not_to include(%(href="#{edit_file_configuration_path(file_configuration)}"))
+        expect(response.body).to match(/<button[^>]*\bdisabled\b[^>]*>\s*Modifier le modèle/)
+        expect(unescaped_response_body).to include("Vous n'avez pas les droits pour modifier ce template")
+      end
     end
 
     context "when not authorized because does not belong to the organisation" do
