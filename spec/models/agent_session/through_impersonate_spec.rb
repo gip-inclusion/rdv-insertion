@@ -13,7 +13,8 @@ describe AgentSession::ThroughImpersonate do
   let!(:super_admin_signature) { super_admin.sign_with(super_admin_session_timestamp) }
   let!(:super_admin_auth) do
     { id: super_admin.id, signature: super_admin_signature,
-      origin: super_admin_session_origin, created_at: super_admin_session_timestamp }
+      origin: super_admin_session_origin, created_at: super_admin_session_timestamp,
+      session_key: super_admin.session_key }
   end
 
   it "is valid" do
@@ -53,6 +54,14 @@ describe AgentSession::ThroughImpersonate do
 
     it "is valid" do
       expect(subject).to be_valid
+    end
+  end
+
+  context "when the super admin has no session key" do
+    before { super_admin.update_column(:session_key, nil) }
+
+    it "is not valid" do
+      expect(subject).not_to be_valid
     end
   end
 

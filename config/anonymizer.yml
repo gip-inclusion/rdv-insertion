@@ -29,6 +29,7 @@ tables:
       - first_name
       - last_name
       - crisp_token
+      - session_key
     non_anonymized_column_names:
       - email
       - super_admin

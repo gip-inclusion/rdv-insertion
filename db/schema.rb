@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_12_151155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -86,6 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
     t.datetime "last_sign_in_at"
     t.datetime "last_webhook_update_received_at"
     t.bigint "rdv_solidarites_agent_id"
+    t.string "session_key"
     t.boolean "super_admin", default: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_agents_on_email", unique: true

@@ -11,10 +11,19 @@ module AuthenticatedControllerConcern
   def authenticate_agent!
     return if logged_in?
 
+    sign_out(notice: "Veuillez vous reconnecter")
+  end
+
+  def sign_out(flash_messages = {})
+    current_agent.invalidate_super_admin_authentication_request! if current_agent&.super_admin?
     clear_session
-    session[:agent_return_to] = request.fullpath if request.get? && !request.xhr?
-    flash[:notice] = "Veuillez vous connecter"
-    redirect_to root_path
+    flash.merge!(flash_messages)
+    sign_out_from_rdv_solidarites
+  end
+
+  def sign_out_from_rdv_solidarites
+    sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
+    redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
   end
 
   def clear_session
