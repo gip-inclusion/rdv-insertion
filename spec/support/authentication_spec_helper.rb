@@ -9,7 +9,8 @@ module AuthenticationSpecHelper
       id: agent.id,
       created_at: timestamp,
       origin: "sign_in_form",
-      signature: agent.sign_with(timestamp)
+      signature: agent.sign_with(timestamp),
+      session_key: agent.session_key
     }
   end
 
