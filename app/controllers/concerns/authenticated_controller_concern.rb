@@ -11,12 +11,13 @@ module AuthenticatedControllerConcern
   def authenticate_agent!
     return if logged_in?
 
-    session[:agent_auth].present? ? sign_out : redirect_to(root_path, notice: "Veuillez vous connecter")
+    sign_out(notice: "Veuillez vous reconnecter")
   end
 
-  def sign_out
+  def sign_out(flash_messages = {})
     current_agent.invalidate_super_admin_authentication_request! if current_agent&.super_admin?
     clear_session
+    flash.merge!(flash_messages)
     sign_out_from_rdv_solidarites
   end
 
