@@ -5,6 +5,8 @@
     <% else %>
       <%= custom_pluralize(users_count, "dossier") %> <%= custom_pluralize(users_count, "usager", with_count: false) %>
     <% end %>
+  <% elsif archived_scope?(@users_scope) %>
+    <%= custom_pluralize(users_count, "dossier") %> <%= custom_pluralize(users_count, "usager", with_count: false) %> archivés
   <% elsif motif_category %>
     <%= custom_pluralize(users_count, "dossier") %> <%= custom_pluralize(users_count, "usager", with_count: false) %> dans « <strong><%= motif_category.name %></strong> »
   <% else %>
