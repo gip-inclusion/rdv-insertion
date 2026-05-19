@@ -55,7 +55,8 @@ class SessionsController < ApplicationController
       id: authenticated_agent.id,
       created_at: timestamp,
       origin: "sign_in_form",
-      signature: authenticated_agent.sign_with(timestamp)
+      signature: authenticated_agent.sign_with(timestamp),
+      session_key: authenticated_agent.session_key
     }
   end
 end

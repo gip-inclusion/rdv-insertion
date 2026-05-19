@@ -1,9 +1,5 @@
 module AgentSession
   class ThroughImpersonate < Base
-    def max_duration
-      1.hour
-    end
-
     def valid?
       super && super_admin_session_coherent? && agent != super_admin_agent
     end
@@ -13,6 +9,10 @@ module AgentSession
     end
 
     private
+
+    def max_duration
+      1.hour
+    end
 
     def super_admin_session_coherent?
       # we cannot impersonate while impersonating
