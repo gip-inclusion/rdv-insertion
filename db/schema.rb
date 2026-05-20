@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_20_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -181,6 +181,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
     t.datetime "updated_at", null: false
     t.index ["category_configuration_id"], name: "index_creneau_availabilities_on_category_configuration_id"
     t.index ["created_at"], name: "index_creneau_availabilities_on_created_at"
+  end
+
+  create_table "creneau_opening_requests", force: :cascade do |t|
+    t.integer "available_creneaux_count", null: false
+    t.datetime "clicked_at"
+    t.datetime "created_at", null: false
+    t.datetime "email_sent_at"
+    t.text "link", null: false
+    t.bigint "recipient_agent_id", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_list_upload_id", null: false
+    t.integer "users_to_invite_count", null: false
+    t.string "uuid", null: false
+    t.index ["recipient_agent_id"], name: "index_creneau_opening_requests_on_recipient_agent_id"
+    t.index ["user_list_upload_id"], name: "index_creneau_opening_requests_on_user_list_upload_id"
+    t.index ["uuid"], name: "index_creneau_opening_requests_on_uuid", unique: true
   end
 
   create_table "csv_exports", force: :cascade do |t|
@@ -750,6 +766,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
   add_foreign_key "category_configurations", "organisations"
   add_foreign_key "cookies_consents", "agents"
   add_foreign_key "creneau_availabilities", "category_configurations"
+  add_foreign_key "creneau_opening_requests", "agents", column: "recipient_agent_id"
+  add_foreign_key "creneau_opening_requests", "user_list_uploads"
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "dpa_agreements", "agents"
   add_foreign_key "dpa_agreements", "organisations"
