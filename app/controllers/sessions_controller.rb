@@ -59,7 +59,7 @@ class SessionsController < ApplicationController
   def sign_out
     invalidate_super_admin_authentication_request_if_needed
     clear_session
-    flash[:notice] = "Veuillez vous reconnecter" unless voluntary_sign_out?
+    flash[:notice] = "Veuillez vous reconnecter" unless agent_initiated_sign_out?
     sign_out_from_rdv_solidarites
   end
 
@@ -71,8 +71,8 @@ class SessionsController < ApplicationController
     end
   end
 
-  def voluntary_sign_out?
-    params[:voluntary] == "true"
+  def agent_initiated_sign_out?
+    params[:agent_initiated] == "true"
   end
 
   def sign_out_from_rdv_solidarites
