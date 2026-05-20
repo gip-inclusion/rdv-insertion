@@ -37,4 +37,12 @@ describe CreneauOpeningRequest do
       it { expect(creneau_opening_request).not_to be_valid }
     end
   end
+
+  describe "after_commit on create" do
+    it "enqueues the send-email job" do
+      expect(CreneauOpeningRequests::SendEmailJob).to receive(:perform_later)
+
+      create(:creneau_opening_request)
+    end
+  end
 end
