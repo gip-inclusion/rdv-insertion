@@ -103,5 +103,32 @@ describe SessionsController do
         expect(agent.reload.last_super_admin_authentication_request.invalidated_at).to be_present
       end
     end
+
+    context "when the agent is impersonated by a super admin" do
+      let!(:super_admin) { create(:agent, :super_admin_verified) }
+
+      before do
+        timestamp = Time.zone.now.to_i
+        request.session["agent_auth"] = {
+          id: agent.id,
+          origin: "impersonate",
+          created_at: timestamp,
+          signature: agent.sign_with(timestamp),
+          session_key: agent.session_key,
+          super_admin_auth: {
+            id: super_admin.id,
+            origin: "sign_in_form",
+            created_at: timestamp,
+            signature: super_admin.sign_with(timestamp),
+            session_key: super_admin.session_key
+          }
+        }
+      end
+
+      it "invalidates the super admin authentication request" do
+        delete :destroy
+        expect(super_admin.reload.last_super_admin_authentication_request.invalidated_at).to be_present
+      end
+    end
   end
 end

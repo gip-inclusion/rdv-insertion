@@ -1,11 +1,12 @@
 describe AgentSession::ThroughImpersonate do
-  subject { described_class.new(id:, created_at:, signature:, origin:, super_admin_auth:) }
+  subject { described_class.new(id:, created_at:, signature:, origin:, session_key:, super_admin_auth:) }
 
   let!(:id) { agent.id }
   let!(:agent) { create(:agent) }
   let!(:created_at) { Time.zone.now.to_i }
   let!(:signature) { agent.sign_with(created_at) }
   let!(:origin) { "impersonate" }
+  let!(:session_key) { agent.session_key }
 
   let!(:super_admin) { create(:agent, :super_admin) }
   let!(:super_admin_session_timestamp) { Time.zone.now.to_i }
@@ -54,6 +55,14 @@ describe AgentSession::ThroughImpersonate do
 
     it "is valid" do
       expect(subject).to be_valid
+    end
+  end
+
+  context "when the impersonated agent has logged in again (session key changed)" do
+    before { agent.generate_session_key! }
+
+    it "is not valid" do
+      expect(subject).not_to be_valid
     end
   end
 
