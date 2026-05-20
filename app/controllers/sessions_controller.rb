@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:create, :new]
+  skip_before_action :authenticate_agent!, only: [:create, :destroy]
   wrap_parameters false
   respond_to :json, only: :create
   layout "website"
@@ -8,10 +8,6 @@ class SessionsController < ApplicationController
 
   before_action :retrieve_agent!, :mark_agent_as_logged_in!,
                 only: [:create]
-
-  def new
-    redirect_to authenticated_root_path if current_agent
-  end
 
   def create
     sign_in
@@ -58,5 +54,21 @@ class SessionsController < ApplicationController
       signature: authenticated_agent.sign_with(timestamp),
       session_key: authenticated_agent.session_key
     }
+  end
+
+  def sign_out
+    current_agent.invalidate_super_admin_authentication_request! if current_agent&.super_admin?
+    clear_session
+    flash[:notice] = "Veuillez vous reconnecter" unless voluntary_sign_out?
+    sign_out_from_rdv_solidarites
+  end
+
+  def sign_out_from_rdv_solidarites
+    sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
+    redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
+  end
+
+  def voluntary_sign_out?
+    params[:voluntary] == "true"
   end
 end

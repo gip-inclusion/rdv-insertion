@@ -24,6 +24,12 @@ Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target, { action: "replace" });
 }
 
+document.addEventListener("turbo:before-fetch-response", (event) => {
+  if (event.detail.fetchResponse.response.status === 401) {
+    window.location.href = "/sign_out"
+  }
+})
+
 document.addEventListener("turbo:load", () => {
   new DepartmentSelector();
   new OrganisationSelector();

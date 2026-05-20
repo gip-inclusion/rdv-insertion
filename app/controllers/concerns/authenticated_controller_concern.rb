@@ -11,19 +11,20 @@ module AuthenticatedControllerConcern
   def authenticate_agent!
     return if logged_in?
 
-    sign_out(notice: "Veuillez vous reconnecter")
+    if browser_navigation_request?
+      redirect_to sign_out_url, status: :see_other
+    else
+      # in most cases (all turbo requests) we can't do full redirection because of how turbo handles it,
+      # so we return a 401 instead and the client will handle the redirect in the event listener in application.js
+      head :unauthorized
+    end
   end
 
-  def sign_out(flash_messages = {})
-    current_agent.invalidate_super_admin_authentication_request! if current_agent&.super_admin?
-    clear_session
-    flash.merge!(flash_messages)
-    sign_out_from_rdv_solidarites
-  end
-
-  def sign_out_from_rdv_solidarites
-    sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
-    redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
+  def browser_navigation_request?
+    request.get? &&
+      request.format.html? &&
+      request.headers["Sec-Fetch-Mode"] == "navigate" &&
+      request.headers["Sec-Fetch-Dest"] == "document"
   end
 
   def clear_session
