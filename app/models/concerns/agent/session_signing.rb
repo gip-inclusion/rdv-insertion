@@ -1,6 +1,6 @@
 module Agent::SessionSigning
   def sign_with(timestamp)
-    payload = { id:, timestamp: }
+    payload = { id:, email:, timestamp: }
     OpenSSL::HMAC.hexdigest("SHA256", signature_key, payload.to_json)
   end
 
