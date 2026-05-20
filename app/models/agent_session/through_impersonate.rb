@@ -1,7 +1,7 @@
 module AgentSession
   class ThroughImpersonate < Base
     def valid?
-      super && super_admin_session_coherent? && agent != super_admin_agent
+      super && super_admin_session_coherent? && super_admin_session.valid?
     end
 
     def super_admin_agent
@@ -15,8 +15,11 @@ module AgentSession
     end
 
     def super_admin_session_coherent?
-      # we cannot impersonate while impersonating
-      !super_admin_session.impersonated? && super_admin_session.valid? && super_admin_agent.super_admin?
+      super_admin_agent.super_admin? &&
+        # we cannot impersonate while impersonating
+        !super_admin_session.impersonated? &&
+        # we cannot impersonate ourselves
+        agent != super_admin_agent
     end
 
     def super_admin_session
