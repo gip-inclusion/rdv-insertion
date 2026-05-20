@@ -12,23 +12,27 @@ describe "Agent single session enforcement", :js do
     page.execute_script("window.location.href = '#{organisation_users_path(organisation)}'")
 
     expect(page).to have_current_path(/rdv-solidarites-test/, url: true, wait: 10)
+    expect(page.get_rack_session["agent_auth"]).to be_nil
   end
 
   it "signs out the agent when clicking a turbo link" do
     click_link "Ajouter un usager"
 
     expect(page).to have_current_path(/rdv-solidarites-test/, url: true, wait: 10)
+    expect(page.get_rack_session["agent_auth"]).to be_nil
   end
 
   it "signs out the agent when a link is prefetched on hover" do
     find("a", text: "Ajouter un usager").hover
 
     expect(page).to have_current_path(/rdv-solidarites-test/, url: true, wait: 10)
+    expect(page.get_rack_session["agent_auth"]).to be_nil
   end
 
   it "signs out the agent when submitting a turbo form" do
     click_button "Rechercher"
 
     expect(page).to have_current_path(/rdv-solidarites-test/, url: true, wait: 10)
+    expect(page.get_rack_session["agent_auth"]).to be_nil
   end
 end
