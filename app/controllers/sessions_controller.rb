@@ -57,18 +57,26 @@ class SessionsController < ApplicationController
   end
 
   def sign_out
-    current_agent.invalidate_super_admin_authentication_request! if current_agent&.super_admin?
+    invalidate_super_admin_authentication_request_if_needed
     clear_session
     flash[:notice] = "Veuillez vous reconnecter" unless voluntary_sign_out?
     sign_out_from_rdv_solidarites
   end
 
-  def sign_out_from_rdv_solidarites
-    sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
-    redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
+  def invalidate_super_admin_authentication_request_if_needed
+    if current_agent&.super_admin?
+      current_agent.invalidate_super_admin_authentication_request!
+    elsif agent_impersonated?
+      super_admin_impersonating.invalidate_super_admin_authentication_request!
+    end
   end
 
   def voluntary_sign_out?
     params[:voluntary] == "true"
+  end
+
+  def sign_out_from_rdv_solidarites
+    sign_out_path = OmniAuth::Strategies::RdvServicePublic.sign_out_path(ENV["RDV_SOLIDARITES_OAUTH_APP_ID"])
+    redirect_to "#{ENV['RDV_SOLIDARITES_URL']}#{sign_out_path}", allow_other_host: true
   end
 end
