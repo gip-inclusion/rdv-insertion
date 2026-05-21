@@ -95,6 +95,27 @@ describe SessionsController do
       expect(response).to redirect_to(/www.rdv-solidarites-test/)
     end
 
+    it "sets a flash notice indicating the session expired" do
+      delete :destroy
+      expect(flash[:notice]).to eq("Votre session a expirée, veuillez vous reconnecter")
+    end
+
+    context "when the sign out is agent-initiated" do
+      it "does not set a flash notice" do
+        delete :destroy, params: { agent_initiated: "true" }
+        expect(flash[:notice]).to be_nil
+      end
+    end
+
+    context "when there is no session at all" do
+      before { request.session.delete("agent_auth") }
+
+      it "sets a flash notice prompting to connect" do
+        delete :destroy
+        expect(flash[:notice]).to eq("Veuillez vous connecter")
+      end
+    end
+
     context "when the agent is a super admin" do
       let!(:agent) { create(:agent, :super_admin_verified) }
 

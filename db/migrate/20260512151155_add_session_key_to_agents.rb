@@ -1,4 +1,4 @@
-class AddSessionTokenToAgents < ActiveRecord::Migration[8.1]
+class AddSessionKeyToAgents < ActiveRecord::Migration[8.1]
   def change
     add_column :agents, :session_key, :string
   end
