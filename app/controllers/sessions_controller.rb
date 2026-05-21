@@ -84,8 +84,10 @@ class SessionsController < ApplicationController
   end
 
   def add_flash_notice(session_present)
-    flash.now[:notice] =
-      session_present ? "Votre session a expirée, veuillez vous reconnecter" : "Veuillez vous reconnecter"
+    # rubocop:disable Rails/ActionControllerFlashBeforeRender
+    flash[:notice] =
+      session_present ? "Votre session a expirée, veuillez vous reconnecter" : "Veuillez vous connecter"
+    # rubocop:enable Rails/ActionControllerFlashBeforeRender
   end
 
   def sign_out_from_rdv_solidarites
