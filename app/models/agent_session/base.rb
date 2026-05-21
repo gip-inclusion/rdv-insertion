@@ -29,7 +29,8 @@ module AgentSession
     private
 
     def session_key_current?
-      @session_key.present? && agent.session_key == @session_key
+      @session_key.present? && agent.session_key.present? &&
+        ActiveSupport::SecurityUtils.secure_compare(agent.session_key, @session_key)
     end
 
     def signature_valid?
