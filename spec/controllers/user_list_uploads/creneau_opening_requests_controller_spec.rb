@@ -28,6 +28,30 @@ describe UserListUploads::CreneauOpeningRequestsController do
       expect(response.body).to include("26 créneaux disponibles")
       expect(response.body).to include(recipient_agent.to_s)
     end
+
+    context "when the upload is at department level" do
+      let!(:department) { create(:department, organisations: [organisation]) }
+      let!(:user_list_upload) { create(:user_list_upload, agent: agent, structure: department) }
+
+      it "lists agents of the department's organisations" do
+        perform_action
+
+        expect(response.body).to include(recipient_agent.to_s)
+      end
+    end
+
+    context "when the agent is not the owner of the upload" do
+      let!(:other_agent) { create(:agent, organisations: [organisation]) }
+
+      before { sign_in(other_agent) }
+
+      it "redirects with a not-authorized flash" do
+        perform_action
+
+        expect(response).to redirect_to(root_url)
+        expect(flash[:alert]).to be_present
+      end
+    end
   end
 
   describe "#create" do

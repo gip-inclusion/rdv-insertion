@@ -3,7 +3,6 @@ class CreneauOpeningRequest < ApplicationRecord
   belongs_to :recipient_agent, class_name: "Agent"
 
   validates :uuid, uniqueness: true, allow_nil: true
-  # A voir si on garde link en db ou si on le calcule quand on en a besoin ?
   validates :link, presence: true
   validates :users_to_invite_count, :available_creneaux_count,
             presence: true,

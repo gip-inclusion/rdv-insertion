@@ -8,10 +8,11 @@ describe CreneauOpeningRequests::Create, type: :service do
     )
   end
 
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: 42) }
+  let!(:department) { create(:department) }
+  let!(:organisation) { create(:organisation, department: department, rdv_solidarites_organisation_id: 42) }
   let!(:user_list_upload) { create(:user_list_upload, structure: organisation) }
-  let!(:agent_a) { create(:agent) }
-  let!(:agent_b) { create(:agent) }
+  let!(:agent_a) { create(:agent, organisations: [organisation]) }
+  let!(:agent_b) { create(:agent, organisations: [organisation]) }
   let(:recipient_agent_ids) { [agent_a.id, agent_b.id] }
 
   it "is a success" do
@@ -45,7 +46,7 @@ describe CreneauOpeningRequests::Create, type: :service do
   end
 
   context "when the upload structure is a department" do
-    let!(:user_list_upload) { create(:user_list_upload, structure: create(:department)) }
+    let!(:user_list_upload) { create(:user_list_upload, structure: department) }
 
     it "stores the RDV-Solidarités root URL as link" do
       service
@@ -63,6 +64,23 @@ describe CreneauOpeningRequests::Create, type: :service do
 
     it "returns a meaningful error" do
       expect(service.errors).to include(/destinataire/i)
+    end
+
+    it "does not create any CreneauOpeningRequest" do
+      expect { service }.not_to change(CreneauOpeningRequest, :count)
+    end
+  end
+
+  context "when a recipient_agent_id is not in the upload's organisations" do
+    let!(:foreign_agent) { create(:agent, organisations: [create(:organisation)]) }
+    let(:recipient_agent_ids) { [agent_a.id, foreign_agent.id] }
+
+    it "is a failure" do
+      expect(service).to be_failure
+    end
+
+    it "returns an authorization error" do
+      expect(service.errors).to include(/autorisé/i)
     end
 
     it "does not create any CreneauOpeningRequest" do
