@@ -55,8 +55,8 @@ describe CreneauOpeningRequestMailer do
       expect(body).to include("Maria DUPUIS")
     end
 
-    it "links the CTA to the stored RDV-Solidarités URL" do
-      expect(body).to include(creneau_opening_request.link)
+    it "links the CTA to the local tracking shortcut" do
+      expect(body).to include("/c/#{creneau_opening_request.uuid}")
     end
 
     context "when the upload structure is an organisation" do

@@ -64,7 +64,8 @@
 </ul>
 
 <p class="btn-wrapper">
-  <%= link_to @creneau_opening_request.link, target: "_blank", class: "btn-primary btn-primary--blue" do %>
+  <%= link_to redirect_creneau_opening_request_shortcut_url(uuid: @creneau_opening_request.uuid),
+              target: "_blank", class: "btn-primary btn-primary--blue" do %>
     <%= @user_list_upload.department_level? ? "Accéder à rdv-solidarites" : "Ouvrir des créneaux" %>
   <% end %>
 </p>

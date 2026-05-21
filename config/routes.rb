@@ -182,6 +182,12 @@ Rails.application.routes.draw do
     get :redirect, on: :collection
   end
 
+  get '/c/:uuid', to: "creneau_opening_requests#redirect_shortcut",
+                  as: :redirect_creneau_opening_request_shortcut
+  resources :creneau_opening_requests, only: [] do
+    get :redirect, on: :collection
+  end
+
   resources :csv_exports, only: :show
 
   resources :participations, only: [:update]
