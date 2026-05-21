@@ -12,6 +12,7 @@ import "chartkick/chart.js";
 
 import DepartmentSelector from "./components/department-selector";
 import OrganisationSelector from "./components/organisation-selector";
+import signOutOnReauthRequired from "./lib/signOutOnReauthRequired";
 
 require("@rails/ujs").start();
 require("@rails/activestorage").start();
@@ -23,12 +24,7 @@ Stimulus.load(definitionsFromContext(context));
 Turbo.StreamActions.redirect = function () {
   Turbo.visit(this.target, { action: "replace" });
 }
-
-document.addEventListener("turbo:before-fetch-response", (event) => {
-  if (event.detail.fetchResponse.response.status === 401) {
-    window.location.href = "/sign_out"
-  }
-})
+document.addEventListener("turbo:before-fetch-response", signOutOnReauthRequired)
 
 document.addEventListener("turbo:load", () => {
   new DepartmentSelector();

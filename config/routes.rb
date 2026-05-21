@@ -288,7 +288,7 @@ Rails.application.routes.draw do
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]
-  get '/sign_out', to: "sessions#destroy"
+  delete '/sign_out', to: "sessions#destroy"
 
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
   namespace :brevo do

@@ -57,9 +57,10 @@ class SessionsController < ApplicationController
   end
 
   def sign_out
+    session_present = session[:agent_auth].present?
     invalidate_super_admin_authentication_request_if_needed
     clear_session
-    flash[:notice] = "Veuillez vous reconnecter" unless agent_initiated_sign_out?
+    add_flash_notice(session_present) unless agent_initiated_sign_out?
     sign_out_from_rdv_solidarites
   end
 
@@ -73,6 +74,11 @@ class SessionsController < ApplicationController
 
   def agent_initiated_sign_out?
     params[:agent_initiated] == "true"
+  end
+
+  def add_flash_notice(session_present)
+    flash.now[:notice] =
+      session_present ? "Votre session a expirée, veuillez vous reconnecter" : "Veuillez vous reconnecter"
   end
 
   def sign_out_from_rdv_solidarites

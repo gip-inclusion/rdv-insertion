@@ -12,10 +12,12 @@ module AuthenticatedControllerConcern
     return if logged_in?
 
     if browser_navigation_request?
-      redirect_to sign_out_url, status: :see_other
+      render "sessions/unauthorized", layout: "unauthorized", status: :unauthorized
     else
-      # in most cases (all turbo requests) we can't do full redirection because of how turbo handles it,
-      # so we return a 401 instead and the client will handle the redirect in the event listener in application.js
+      # in most cases (all turbo requests) we can't render the unauthorized template because of how turbo handles it,
+      # so we return a 401 with a X-Reauth-Required header instead and the client will build and submit a sign_out
+      # form in the event listener in application.js
+      response.headers["X-Reauth-Required"] = "1"
       head :unauthorized
     end
   end
