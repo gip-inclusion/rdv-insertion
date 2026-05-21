@@ -59,16 +59,23 @@ class SessionsController < ApplicationController
   def sign_out
     session_present = session[:agent_auth].present?
     invalidate_super_admin_authentication_request_if_needed
+    rotate_session_key if agent_initiated_sign_out?
     clear_session
     add_flash_notice(session_present) unless agent_initiated_sign_out?
     sign_out_from_rdv_solidarites
   end
 
+  # this is done to invalidate the session cookie when logging out (in case the cookie has been stolen)
+  def rotate_session_key
+    agent_signing_out = agent_impersonated? ? super_admin_impersonating : current_agent
+    agent_signing_out&.rotate_session_key!
+  end
+
   def invalidate_super_admin_authentication_request_if_needed
-    if current_agent&.super_admin?
-      current_agent.invalidate_super_admin_authentication_request!
-    elsif agent_impersonated?
+    if agent_impersonated?
       super_admin_impersonating.invalidate_super_admin_authentication_request!
+    elsif current_agent&.super_admin?
+      current_agent.invalidate_super_admin_authentication_request!
     end
   end
 

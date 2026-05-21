@@ -86,6 +86,8 @@ class Agent < ApplicationRecord
     session_key
   end
 
+  def rotate_session_key! = generate_session_key!
+
   private
 
   def generate_crisp_token
