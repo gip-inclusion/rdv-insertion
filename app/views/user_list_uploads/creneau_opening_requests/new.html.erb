@@ -57,6 +57,7 @@
           <div class="position-relative mb-2">
             <i class="ri-search-line position-absolute top-50 start-0 translate-middle-y ms-2 text-muted"></i>
             <input type="text"
+                  id="rdvi_creneau-demand_search"
                   class="form-control ps-5"
                   placeholder="Rechercher un agent..."
                   autocomplete="off"
@@ -80,8 +81,11 @@
         </div>
 
         <div class="d-flex justify-content-end gap-2 mt-3">
-          <button type="button" class="btn btn-blue-out" data-bs-dismiss="modal">Annuler</button>
-          <%= f.submit "Envoyer la demande", class: "btn btn-blue" %>
+          <button type="button"
+                  id="rdvi_creneau-demand_cancel"
+                  class="btn btn-blue-out"
+                  data-bs-dismiss="modal">Annuler</button>
+          <%= f.submit "Envoyer la demande", class: "btn btn-blue", id: "rdvi_creneau-demand_send" %>
         </div>
       <% end %>
     </div>
