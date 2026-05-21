@@ -161,6 +161,7 @@ Rails.application.routes.draw do
       get :select_rows, on: :collection
       post :create_many, on: :collection
     end
+    resources :creneau_opening_requests, only: [:new, :create]
   end
   resources :accept_cgus, only: [:create]
   resources :file_configurations, only: [:show, :new, :create, :edit, :update] do

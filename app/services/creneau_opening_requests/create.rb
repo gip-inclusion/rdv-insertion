@@ -8,7 +8,6 @@ module CreneauOpeningRequests
     end
 
     def call
-      # Tester cette erreur
       fail!("Aucun agent destinataire sélectionné") if @recipient_agent_ids.blank?
 
       CreneauOpeningRequest.transaction do

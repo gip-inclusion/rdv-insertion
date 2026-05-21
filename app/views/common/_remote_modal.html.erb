@@ -12,7 +12,7 @@
       <div class="modal-content">
         <% if local_assigns[:title] %>
           <div class="modal-header">
-            <h5 class="modal-title">
+            <h5 class="modal-title <%= local_assigns[:title_class] %>">
               <%= title %>
             </h5>
             <% unless local_assigns[:dismissable] == false %>
