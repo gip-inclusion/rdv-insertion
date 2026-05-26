@@ -5,12 +5,12 @@ module Agent::SessionSigning
   end
 
   def signature_valid?(signature, timestamp)
-    signature_key.present? && ActiveSupport::SecurityUtils.secure_compare(sign_with(timestamp), signature)
+    ActiveSupport::SecurityUtils.secure_compare(sign_with(timestamp), signature)
   end
 
   private
 
   def signature_key
-    ENV["AGENT_SIGNATURE_KEY"]
+    ENV.fetch("AGENT_SIGNATURE_KEY")
   end
 end
