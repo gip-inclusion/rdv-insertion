@@ -21,6 +21,9 @@ function signOut() {
 
 const signOutOnReauthRequired = (event) => {
   if (event.detail.fetchResponse.response.headers.get("X-Reauth-Required") !== "1") return
+  // We remove the event listener to avoid multiple calls to signOut().
+  // Since /sign_out clears the session, subsequent calls would fail CSRF authenticity checks
+  // because the token is compared against a secret stored in the now-cleared session.
   document.removeEventListener("turbo:before-fetch-response", signOutOnReauthRequired)
   signOut()
 }
