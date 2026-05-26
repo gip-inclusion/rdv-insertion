@@ -5,6 +5,7 @@ class Agent < ApplicationRecord
 
   include Agent::RdvSolidaritesClient
   include Agent::SessionSigning
+  include Agent::SessionKey
   include Agent::CookiesConsentable
   include Agent::SuperAdminAuthentication
 
@@ -78,17 +79,6 @@ class Agent < ApplicationRecord
   def name_for_paper_trail
     "#{first_name} #{last_name&.upcase} (#{email}) - ID RDV-S: #{rdv_solidarites_agent_id}"
   end
-
-  def generate_session_key!
-    update!(session_key: self.class.generate_unique_secure_token)
-  end
-
-  def retrieve_or_generate_session_key!
-    generate_session_key! unless session_key
-    session_key
-  end
-
-  def rotate_session_key! = generate_session_key!
 
   private
 
