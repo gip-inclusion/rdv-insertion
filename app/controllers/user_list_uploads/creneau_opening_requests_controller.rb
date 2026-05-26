@@ -10,7 +10,7 @@ module UserListUploads
 
     def create
       if create_requests.success?
-        turbo_stream_display_success_modal(success_message, title: "Votre demande a été envoyée")
+        turbo_stream_display_success_modal(success_message, title: "Demande d’ouverture de créneaux envoyées")
       else
         turbo_stream_replace_error_list_with(create_requests.errors)
       end

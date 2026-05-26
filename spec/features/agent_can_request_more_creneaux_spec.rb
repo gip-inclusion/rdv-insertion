@@ -25,7 +25,7 @@ describe "Agent can request more creneaux", :js do
 
     click_button "Envoyer la demande"
 
-    expect(page).to have_content("Votre demande a été envoyée")
+    expect(page).to have_content("Demande d’ouverture de créneaux envoyées")
     expect(CreneauOpeningRequest.count).to eq(1)
     expect(CreneauOpeningRequest.last.recipient_agent).to eq(recipient_agent)
   end

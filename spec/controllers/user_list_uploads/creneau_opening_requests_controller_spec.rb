@@ -71,7 +71,7 @@ describe UserListUploads::CreneauOpeningRequestsController do
     it "renders the confirmation in the modal" do
       perform_action
 
-      expect(response.body).to include("Votre demande a été envoyée")
+      expect(response.body).to include("Demande d’ouverture de créneaux envoyées")
     end
 
     context "when no recipient is selected" do
