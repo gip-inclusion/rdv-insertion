@@ -77,9 +77,8 @@ tables:
       - created_at
 
   - table_name: creneau_opening_requests
-    anonymized_column_names:
-      - link
     non_anonymized_column_names:
+      - link
       - user_list_upload_id
       - recipient_agent_id
       - users_to_invite_count

@@ -42,15 +42,12 @@ module CreneauOpeningRequests
     end
 
     def link
-      @link ||= build_link
-    end
-
-    def build_link
-      base_url = ENV.fetch("RDV_SOLIDARITES_URL")
-      return base_url if @user_list_upload.department_level?
-
-      "#{base_url}/admin/organisations/" \
-        "#{@user_list_upload.organisation.rdv_solidarites_organisation_id}/planning/plage_ouvertures"
+      @link ||= if @user_list_upload.department_level?
+                  ENV.fetch("RDV_SOLIDARITES_URL")
+                else
+                  "#{ENV.fetch('RDV_SOLIDARITES_URL')}/admin/organisations/" \
+                    "#{@user_list_upload.organisation.rdv_solidarites_organisation_id}/planning/plage_ouvertures"
+                end
     end
   end
 end

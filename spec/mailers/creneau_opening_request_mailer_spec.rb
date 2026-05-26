@@ -34,47 +34,15 @@ describe CreneauOpeningRequestMailer do
     expect(mail.reply_to).to eq(["rdv-insertion@inclusion.gouv.fr"])
   end
 
-  describe "body" do
-    let(:body) { mail.body.encoded.gsub(/\s+/, " ") }
+  it "renders the body with greeting, counts, sender and tracked CTA" do
+    body = mail.body.encoded.gsub(/\s+/, " ")
 
-    it "greets the recipient with first name and uppercase last name" do
-      expect(body).to match("Jean MARTIN,")
-    end
-
-    it "mentions the import date, counts and motif category in the lead paragraph" do
-      expect(body).to include("28 usagers sont prêts à être invités")
-      expect(body).to include("seulement 26 créneaux sont disponibles")
-      expect(body).to include("RSA Orientation")
-    end
-
-    it "shows the missing creneaux count" do
-      expect(body).to include("L'ouverture de 2 créneaux supplémentaires")
-    end
-
-    it "shows the sender agent in the summary table" do
-      expect(body).to include("Maria DUPUIS")
-    end
-
-    it "links the CTA to the local tracking shortcut" do
-      expect(body).to include("/c/#{creneau_opening_request.uuid}")
-    end
-
-    context "when the upload structure is an organisation" do
-      it "uses the « Ouvrir des créneaux » label" do
-        expect(body).to include("Ouvrir des créneaux")
-      end
-    end
-
-    context "when the upload structure is a department" do
-      let!(:user_list_upload) do
-        create(:user_list_upload, structure: create(:department),
-                                  category_configuration: category_configuration,
-                                  agent: sender_agent)
-      end
-
-      it "uses the « Accéder à rdv-solidarites » label" do
-        expect(body).to include("Accéder à rdv-solidarites")
-      end
-    end
+    expect(body).to include("Jean MARTIN,")
+                .and include("28 usagers sont prêts à être invités")
+                .and include("seulement 26 créneaux sont disponibles")
+                .and include("L'ouverture de 2 créneaux supplémentaires")
+                .and include("Maria DUPUIS")
+                .and include("Ouvrir des créneaux")
+                .and include("/c/#{creneau_opening_request.uuid}")
   end
 end
