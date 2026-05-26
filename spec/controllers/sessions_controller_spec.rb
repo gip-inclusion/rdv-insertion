@@ -100,10 +100,19 @@ describe SessionsController do
       expect(flash[:notice]).to eq("Votre session a expirée, veuillez vous reconnecter")
     end
 
+    it "does not rotate the agent's session key" do
+      expect { delete :destroy }.not_to(change { agent.reload.session_key })
+    end
+
     context "when the sign out is agent-initiated" do
       it "does not set a flash notice" do
         delete :destroy, params: { agent_initiated: "true" }
         expect(flash[:notice]).to be_nil
+      end
+
+      it "rotates the agent's session key" do
+        expect { delete :destroy, params: { agent_initiated: "true" } }
+          .to(change { agent.reload.session_key })
       end
     end
 
