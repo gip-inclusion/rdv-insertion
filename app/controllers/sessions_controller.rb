@@ -67,16 +67,17 @@ class SessionsController < ApplicationController
 
   # this is done to invalidate the session cookie when logging out (in case the cookie has been stolen)
   def rotate_session_key
-    agent_signing_out = agent_impersonated? ? super_admin_impersonating : current_agent
     agent_signing_out&.rotate_session_key!
   end
 
   def invalidate_super_admin_authentication_request_if_needed
-    if agent_impersonated?
-      super_admin_impersonating.invalidate_super_admin_authentication_request!
-    elsif current_agent&.super_admin?
-      current_agent.invalidate_super_admin_authentication_request!
-    end
+    return unless agent_signing_out&.super_admin?
+
+    agent_signing_out.invalidate_super_admin_authentication_request!
+  end
+
+  def agent_signing_out
+    agent_impersonated? ? super_admin_impersonating : current_agent
   end
 
   def agent_initiated_sign_out?
