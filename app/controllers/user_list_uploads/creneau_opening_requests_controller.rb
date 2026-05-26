@@ -5,12 +5,17 @@ module UserListUploads
     def new
       @available_creneaux_count = available_creneaux_count
       @users_to_invite_count = users_to_invite_count
+      @missing_creneaux_count = @users_to_invite_count - @available_creneaux_count
       @recipient_agents = recipient_agents
     end
 
     def create
       if create_requests.success?
-        turbo_stream_display_success_modal(success_message, title: "Demande d’ouverture de créneaux envoyées")
+        turbo_stream_display_success_modal(
+          success_message,
+          title: "Demande d'ouverture de créneaux envoyée",
+          tally_form_id: ENV["CRENEAU_OPENING_REQUEST_TALLY_ID"]
+        )
       else
         turbo_stream_replace_error_list_with(create_requests.errors)
       end
