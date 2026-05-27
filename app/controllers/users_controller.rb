@@ -16,6 +16,7 @@ class UsersController < ApplicationController
 
   before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_users_scope, :set_current_category_configuration, :set_current_motif_category,
+                :set_creneau_availability,
                 :set_users, :set_follow_ups, :set_orientation_types, :set_filterable_tags,
                 :set_referents_list, :set_skip_pagination, :filter_users, :order_users,
                 for: :index
@@ -208,6 +209,14 @@ class UsersController < ApplicationController
 
   def set_current_motif_category
     @current_motif_category = @current_category_configuration&.motif_category
+  end
+
+  def set_creneau_availability
+    return if department_level?
+    return if @current_category_configuration.blank?
+    return if @current_category_configuration.rdv_with_referents?
+
+    @creneau_availability = @current_category_configuration.creneau_availabilities.order(created_at: :desc).first
   end
 
   def set_users
