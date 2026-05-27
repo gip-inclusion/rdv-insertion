@@ -1,8 +1,11 @@
 class Agent < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:email, :first_name, :last_name].freeze
 
+  has_paper_trail
+
   include Agent::RdvSolidaritesClient
-  include Agent::Signature
+  include Agent::SessionSigning
+  include Agent::SessionKey
   include Agent::CookiesConsentable
   include Agent::SuperAdminAuthentication
 

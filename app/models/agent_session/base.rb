@@ -2,16 +2,20 @@ module AgentSession
   class Base
     attr_reader :origin
 
-    def initialize(id:, created_at:, origin:, signature:, **params)
+    # rubocop:disable Metrics/ParameterLists
+    # TODO: remove default nil value for session_key
+    def initialize(id:, created_at:, origin:, signature:, session_key: nil, **params)
       @agent_id = id
       @created_at = created_at
       @signature = signature
       @origin = origin
       @params = params
+      @session_key = session_key
     end
+    # rubocop:enable Metrics/ParameterLists
 
     def valid?
-      origin_valid? && signature_valid? && !expired?
+      origin_valid? && signature_valid? && session_key_current? && !expired?
     end
 
     def agent
@@ -23,6 +27,11 @@ module AgentSession
     end
 
     private
+
+    def session_key_current?
+      @session_key.present? && agent.session_key.present? &&
+        ActiveSupport::SecurityUtils.secure_compare(agent.session_key, @session_key)
+    end
 
     def signature_valid?
       agent.present? && agent.signature_valid?(@signature, @created_at)

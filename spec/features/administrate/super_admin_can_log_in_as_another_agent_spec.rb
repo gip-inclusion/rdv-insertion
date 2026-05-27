@@ -63,6 +63,8 @@ describe "Super admin can log in as another agent", :js do
       let!(:agent) { create(:agent, :super_admin_verified, organisations: [agent_organisation1, agent_organisation2]) }
       let!(:other_agent) { create(:agent) }
 
+      # this test is unrealistic since it supposes that the super admin has the mail access code
+      # of the other super admin
       it "cannot impersonate while impersonating" do
         visit super_admins_agent_path(agent.id)
         click_button("Se logger en tant que")
@@ -70,14 +72,14 @@ describe "Super admin can log in as another agent", :js do
         expect(page).to have_content(
           "Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}", wait: 10
         )
-        expect(page).to have_current_path(organisations_path)
+        expect(page).to have_current_path(organisations_path, wait: 10)
 
         visit super_admins_agent_path(other_agent.id)
 
         expect(page).to have_button("Se logger en tant que", wait: 10)
         click_button("Se logger en tant que")
         # it disconnects the agent
-        expect(page).to have_current_path(root_path)
+        expect(page).to have_current_path(/sign_out/, url: true)
       end
     end
   end

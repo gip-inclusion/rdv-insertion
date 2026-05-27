@@ -33,7 +33,6 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
 
-  get '/sign_in', to: 'sessions#new'
   get 'auth/:provider/callback', to: 'sessions#create'
 
   resources :super_admin_authentication_requests, only: [:create]
@@ -289,7 +288,7 @@ Rails.application.routes.draw do
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]
-  get '/sign_out', to: "sessions#destroy"
+  delete '/sign_out', to: "sessions#destroy"
 
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
   namespace :brevo do
