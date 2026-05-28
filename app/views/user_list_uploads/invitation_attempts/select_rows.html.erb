@@ -19,6 +19,10 @@
         data-user-list-upload-id="<%= @user_list_upload.id %>"
         data-attribute-to-toggle="selected_for_invitation"
     >
+      <% if @user_list_upload.retrievable_creneaux_snapshot? %>
+        <%= render "creneaux_snapshot", user_list_upload: @user_list_upload, creneaux_snapshot: @creneaux_snapshot %>
+      <% end %>
+
       <div class="d-flex justify-content-between align-items-center">
         <div class="mb-4">
           <h2 class="h2-title">Inviter les usagers à prendre rendez-vous</h2>
@@ -55,7 +59,7 @@
                   <%= check_box_tag "format_sms", "SMS", checked: invitation_format_checked?("sms", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { user_list_upload__select_user_rows_target: "invitationFormatOption", action: "change->user-list-upload--select-user-rows#handleFormatOptionChange", format: "sms" } %>
                   <%= label_tag "format_sms", "SMS", class: "form-check-label" %>
                 </div>
-                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", id: "rdvi_upload_users-invit_send-invit", disabled: @number_of_user_rows_selected.zero? %>
+                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", id: "rdvi_upload_users-invit_send-invit", disabled: @number_of_user_rows_selected.zero? || @creneaux_snapshot&.no_creneaux_available? %>
               </div>
             <% end %>
           </div>

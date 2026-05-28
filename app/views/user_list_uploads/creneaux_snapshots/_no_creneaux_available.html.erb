@@ -1,0 +1,13 @@
+<%# locals: (user_list_upload:) %>
+
+<div class="alert alert-danger d-flex align-items-center justify-content-between mb-0" role="alert" data-controller="flash">
+  <div class="d-flex align-items-center">
+    <i class="ri-alert-line me-2"></i>
+    <span>
+      <strong>Aucun créneau disponible</strong>
+      sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
+      <%= link_to "Demander plus de créneaux", "#", class: "alert-link" %>
+    </span>
+  </div>
+  <button type="button" class="btn-close" data-action="flash#remove" aria-label="Fermer"></button>
+</div>

@@ -1,0 +1,13 @@
+<%# locals: (user_list_upload:, creneaux_snapshot:) %>
+
+<div class="col-12 mb-4">
+  <% if creneaux_snapshot.nil? %>
+    <%= render "user_list_uploads/creneaux_snapshots/loading", user_list_upload: %>
+  <% elsif creneaux_snapshot.no_creneaux_available? %>
+    <%= render "user_list_uploads/creneaux_snapshots/no_creneaux_available", user_list_upload: %>
+  <% elsif creneaux_snapshot.insufficient_creneaux? %>
+    <%= render "user_list_uploads/creneaux_snapshots/not_enough_creneaux", user_list_upload:, creneaux_snapshot: %>
+  <% else %>
+    <%= render "user_list_uploads/creneaux_snapshots/enough_creneaux", user_list_upload:, creneaux_snapshot: %>
+  <% end %>
+</div>

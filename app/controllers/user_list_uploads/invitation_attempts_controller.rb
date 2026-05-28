@@ -10,6 +10,7 @@ module UserListUploads
       @user_rows = @user_collection.user_rows_eligible_for_invitation
       @number_of_user_rows_selected = @user_list_upload.user_rows_selected_for_invitation.length
       @total_number_of_user_rows = @user_list_upload.user_rows.length
+      @creneaux_snapshot = @user_list_upload.last_creneaux_snapshot
     end
 
     def create_many
