@@ -4,10 +4,10 @@
       <i class="ri-calendar-line text-dark-green"></i>
     </span>
     <span class="medium text-dark-green">
-      <%= @creneau_availability.number_of_creneaux_available %> créneaux disponibles
+      <%= @latest_creneau_availability.number_of_creneaux_available %> créneaux disponibles
     </span>
     <span class="text-muted small">
-      Calculé le <%= @creneau_availability.created_at.strftime("%d/%m à %Hh%M") %>
+      Calculé le <%= @latest_creneau_availability.created_at.strftime("%d/%m à %Hh%M") %>
     </span>
   </div>
   <div class="position-absolute end-0 d-flex align-items-center gap-3 pe-3">
