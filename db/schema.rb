@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_27_115512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -574,6 +574,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
     t.string "user_designation"
   end
 
+  create_table "user_list_upload_creneaux_snapshots", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "number_of_creneaux_available"
+    t.datetime "updated_at", null: false
+    t.uuid "user_list_upload_id", null: false
+    t.index ["user_list_upload_id"], name: "idx_on_user_list_upload_id_dde82cda5f"
+  end
+
   create_table "user_list_upload_invitation_attempts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "format"
@@ -785,6 +793,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_144730) do
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
+  add_foreign_key "user_list_upload_creneaux_snapshots", "user_list_uploads"
   add_foreign_key "user_list_upload_invitation_attempts", "invitations"
   add_foreign_key "user_list_upload_invitation_attempts", "user_list_upload_user_rows", column: "user_row_id"
   add_foreign_key "user_list_upload_processing_logs", "user_list_uploads"
