@@ -13,6 +13,7 @@ class UserListUpload < ApplicationRecord
 
   has_many :user_rows, class_name: "UserListUpload::UserRow", dependent: :destroy
   has_many :processing_logs, class_name: "UserListUpload::ProcessingLog", dependent: :destroy
+  has_many :creneaux_snapshots, class_name: "UserListUpload::CreneauxSnapshot", dependent: :destroy
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", through: :user_rows
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", through: :user_rows
 
@@ -27,9 +28,11 @@ class UserListUpload < ApplicationRecord
            :user_rows_selected_for_user_save, :user_rows_with_errors, :user_rows_archived,
            :user_rows_with_closed_follow_up, :user_rows_with_user_save_success, :user_rows_with_successful_invitation,
            to: :user_collection
-  delegate :motif_category, :motif_category_id, :motif_category_name, :motif_category_short_name,
+  delegate :motif_category, :motif_category_id, :motif_category_name, :motif_category_short_name, :rdv_with_referents?,
            to: :category_configuration, allow_nil: true
   delegate :number, :id, to: :department, prefix: true
+
+  after_create_commit :create_creneaux_snapshot, if: :retrievable_creneaux_snapshot?
 
   def save_with_existing_users!(users)
     transaction do
@@ -116,6 +119,14 @@ class UserListUpload < ApplicationRecord
     end
   end
 
+  def last_creneaux_snapshot
+    creneaux_snapshots.order(created_at: :desc).first
+  end
+
+  def retrievable_creneaux_snapshot?
+    category_configuration_id? && !rdv_with_referents?
+  end
+
   private
 
   def user_row_attributes
@@ -138,5 +149,9 @@ class UserListUpload < ApplicationRecord
 
   def remove_duplicates!(attributes)
     attributes.uniq
+  end
+
+  def create_creneaux_snapshot
+    UserListUpload::CreateCreneauxSnapshotJob.perform_later(id)
   end
 end
