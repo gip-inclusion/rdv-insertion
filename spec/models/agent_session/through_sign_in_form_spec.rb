@@ -1,11 +1,12 @@
 describe AgentSession::ThroughSignInForm do
-  subject { described_class.new(id:, created_at:, signature:, origin:) }
+  subject { described_class.new(id:, created_at:, signature:, origin:, session_key:) }
 
   let!(:id) { agent.id }
   let!(:agent) { create(:agent) }
   let!(:created_at) { Time.zone.now.to_i }
   let!(:signature) { agent.sign_with(created_at) }
   let!(:origin) { "sign_in_form" }
+  let!(:session_key) { agent.session_key }
 
   it "is valid" do
     expect(subject).to be_valid
@@ -25,6 +26,22 @@ describe AgentSession::ThroughSignInForm do
 
   context "when the signature is not valid" do
     let!(:signature) { "random-signature" }
+
+    it "is not valid" do
+      expect(subject).not_to be_valid
+    end
+  end
+
+  context "when the session key does not match" do
+    let!(:session_key) { "outdated-session-key" }
+
+    it "is not valid" do
+      expect(subject).not_to be_valid
+    end
+  end
+
+  context "when the session key is absent" do
+    let!(:session_key) { nil }
 
     it "is not valid" do
       expect(subject).not_to be_valid

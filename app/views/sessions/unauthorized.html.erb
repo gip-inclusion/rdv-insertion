@@ -1,0 +1,7 @@
+<div class="text-center">
+  <p>Redirection vers la page de connexion en cours…</p>
+  <p>Si ce n'est pas le cas, cliquez simplement sur le bouton "Continuer".</p>
+  <%= form_with url: sign_out_path, method: :delete, data: { turbo: false } do |f| %>
+    <%= f.submit "Continuer", class: "btn btn-link", data: { controller: "click-on-render" } %>
+  <% end %>
+</div>

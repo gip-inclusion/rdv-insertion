@@ -86,6 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_27_115512) do
     t.datetime "last_sign_in_at"
     t.datetime "last_webhook_update_received_at"
     t.bigint "rdv_solidarites_agent_id"
+    t.string "session_key"
     t.boolean "super_admin", default: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_agents_on_email", unique: true

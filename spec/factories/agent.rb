@@ -6,6 +6,7 @@ FactoryBot.define do
 
     rdv_solidarites_agent_id { rand(1..10_000_000_000) }
     cgu_accepted_at { Time.zone.now }
+    session_key { SecureRandom.base58(24) }
 
     transient do
       basic_role_in_organisations { [] }
