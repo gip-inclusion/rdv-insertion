@@ -2,7 +2,11 @@
 
 <div class="col-12 mb-4">
   <% if creneaux_snapshot.nil? %>
-    <%= render "user_list_uploads/creneaux_snapshots/loading", user_list_upload: %>
+    <% if user_list_upload.awaiting_creneaux_snapshot? %>
+      <%= render "user_list_uploads/creneaux_snapshots/loading", user_list_upload: %>
+    <% else %>
+      <%= render "user_list_uploads/creneaux_snapshots/error" %>
+    <% end %>
   <% elsif creneaux_snapshot.no_creneaux_available? %>
     <%= render "user_list_uploads/creneaux_snapshots/no_creneaux_available", user_list_upload: %>
   <% elsif creneaux_snapshot.insufficient_creneaux? %>

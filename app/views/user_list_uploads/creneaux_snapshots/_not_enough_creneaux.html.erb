@@ -2,11 +2,11 @@
 
 <div class="alert alert-warning d-flex align-items-center justify-content-between mb-0" role="alert" data-controller="flash">
   <div class="d-flex align-items-center">
-    <i class="ri-error-warning-line me-2"></i>
-    <span>
+    <i class="ri-error-warning-line me-2 text-warning"></i>
+    <span class="text-dark">
       <strong><%= creneaux_snapshot.number_of_creneaux_available %> créneaux disponibles</strong>
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
-      <%= link_to "Demander plus de créneaux", "#", class: "alert-link" %>
+      <%= link_to "Demander plus de créneaux", "#", class: "link-blue-underlined" %>
     </span>
   </div>
   <button type="button" class="btn-close" data-action="flash#remove" aria-label="Fermer"></button>

@@ -2,12 +2,12 @@
 
 <div class="alert alert-info d-flex align-items-center justify-content-between mb-0" role="alert" data-controller="flash">
   <div class="d-flex align-items-center">
-    <i class="ri-information-line me-2"></i>
-    <span>
+    <i class="ri-information-line me-2 text-info"></i>
+    <span class="text-dark">
       <strong><%= creneaux_snapshot.number_of_creneaux_available %> créneaux disponibles</strong>
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
       <%= link_to rdv_solidarites_planning_url(user_list_upload.organisations.first),
-                  target: "_blank", rel: "noopener", class: "alert-link" do %>
+                  target: "_blank", rel: "noopener", class: "link-blue-underlined" do %>
         Consulter le planning <i class="ri-external-link-line"></i>
       <% end %>
     </span>

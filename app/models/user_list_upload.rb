@@ -1,6 +1,7 @@
 class UserListUpload < ApplicationRecord
   include UserListUpload::Metrics
   include UserListUpload::Navigation
+  include UserListUpload::CreneauxSnapshotRetrievable
 
   STEPS_BY_ORIGIN = {
     file_upload: %i[user_save invitation],
@@ -121,10 +122,6 @@ class UserListUpload < ApplicationRecord
 
   def last_creneaux_snapshot
     creneaux_snapshots.order(created_at: :desc).first
-  end
-
-  def retrievable_creneaux_snapshot?
-    category_configuration_id? && !rdv_with_referents?
   end
 
   private
