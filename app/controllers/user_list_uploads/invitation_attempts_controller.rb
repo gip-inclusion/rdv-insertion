@@ -1,6 +1,7 @@
 module UserListUploads
   class InvitationAttemptsController < BaseController
     before_action :set_user_list_upload, only: [:index, :select_rows, :create_many]
+    before_action :redirect_with_tally_form_if_creneaux_snapshot_exists, only: [:select_rows]
     before_action :capture_invitations_triggered_at, only: [:create_many]
 
     def select_rows
@@ -29,6 +30,20 @@ module UserListUploads
     end
 
     private
+
+    def redirect_with_tally_form_if_creneaux_snapshot_exists
+      return unless should_redirect_with_tally_form?
+
+      redirect_to select_rows_user_list_upload_invitation_attempts_path(
+        user_list_upload_id: @user_list_upload.id,
+        tally_form_id: ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID"]
+      )
+    end
+
+    def should_redirect_with_tally_form?
+      params[:tally_form_id].nil? && @user_list_upload.last_creneaux_snapshot &&
+        ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID"].present?
+    end
 
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
