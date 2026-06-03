@@ -106,4 +106,35 @@ describe "Agents can see créneaux availability before inviting", :js do
       expect(page).to have_no_content("Calcul du nombre de créneaux disponibles en cours...")
     end
   end
+
+  context "when the tally survey is enabled" do
+    before { ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID"] = "creneaux_form_id" }
+    after { ENV.delete("SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID") }
+
+    context "and a snapshot exists" do
+      let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 50) }
+
+      it "redirects to the same page with the tally form so the survey shows up" do
+        visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+        expect(page).to have_current_path(
+          select_rows_user_list_upload_invitation_attempts_path(
+            user_list_upload_id: user_list_upload.id, tally_form_id: "creneaux_form_id"
+          )
+        )
+        expect(page).to have_css("div[data-controller='tally'][data-tally-form-id='creneaux_form_id']", visible: :all)
+      end
+    end
+
+    context "and no snapshot exists yet" do
+      it "does not redirect with the tally form" do
+        visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+        expect(page).to have_current_path(
+          select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+        )
+        expect(page).to have_no_css("div[data-controller='tally']", visible: :all)
+      end
+    end
+  end
 end
