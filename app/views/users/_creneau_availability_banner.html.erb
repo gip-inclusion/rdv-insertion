@@ -1,0 +1,18 @@
+<div class="alert alert-info d-flex justify-content-center align-items-center mt-3 mb-1" role="alert">
+  <div class="rounded bg-white p-2 d-inline-flex align-items-center gap-2">
+    <span class="background-green-light rounded-circle p-1">
+      <i class="ri-calendar-line text-dark-green"></i>
+    </span>
+    <span class="medium text-dark-green">
+      <%= @latest_creneau_availability.number_of_creneaux_available %> créneaux disponibles
+    </span>
+    <span class="text-muted small">
+      Calculé le <%= @latest_creneau_availability.created_at.strftime("%d/%m à %Hh%M") %>
+    </span>
+  </div>
+  <div class="position-absolute end-0 d-flex align-items-center gap-3 pe-3">
+    <%= link_to "Donnez-nous votre avis",
+                request.params.merge(tally_form_id: ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_ID"]),
+                class: "text-underline" %>
+  </div>
+</div>
