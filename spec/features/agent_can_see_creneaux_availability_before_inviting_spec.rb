@@ -14,7 +14,6 @@ describe "Agents can see créneaux availability before inviting", :js do
     create(:user_list_upload, agent:, category_configuration:, structure: organisation)
   end
 
-  # the créneaux banner only compares against the number of rows selected for invitation
   let!(:first_row) do
     create(:user_row, user_list_upload:, email: "hernan@crespo.com", selected_for_invitation: true)
   end
