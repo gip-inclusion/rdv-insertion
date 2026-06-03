@@ -2,6 +2,7 @@
   <%= render "users_list_header" %>
   <div class="row card-white justify-content-center">
     <%= render "users_list_tabs" %>
+    <%= render "creneau_availability_banner" if @latest_creneau_availability %>
     <%= render "users_list_table" %>
   </div>
 </div>

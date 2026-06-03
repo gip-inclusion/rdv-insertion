@@ -68,4 +68,8 @@ class CategoryConfiguration < ApplicationRecord
       errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
     end
   end
+
+  def last_creneau_availability
+    creneau_availabilities.order(created_at: :desc).first
+  end
 end
