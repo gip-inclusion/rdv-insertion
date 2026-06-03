@@ -22,7 +22,7 @@ describe UserListUpload::CreateCreneauxSnapshot, type: :service do
     it "creates a snapshot with the retrieved number of créneaux" do
       expect { subject }.to change(UserListUpload::CreneauxSnapshot, :count).by(1)
 
-      snapshot = user_list_upload.reload.last_creneaux_snapshot
+      snapshot = user_list_upload.reload.creneaux_snapshot
       expect(snapshot.number_of_creneaux_available).to eq(8)
     end
 

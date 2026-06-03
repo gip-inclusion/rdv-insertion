@@ -11,7 +11,7 @@ module UserListUploads
       @user_rows = @user_collection.user_rows_eligible_for_invitation
       @number_of_user_rows_selected = @user_list_upload.user_rows_selected_for_invitation.length
       @total_number_of_user_rows = @user_list_upload.user_rows.length
-      @creneaux_snapshot = @user_list_upload.last_creneaux_snapshot
+      @creneaux_snapshot = @user_list_upload.creneaux_snapshot
     end
 
     def create_many
@@ -41,7 +41,7 @@ module UserListUploads
     end
 
     def should_redirect_with_tally_form?
-      params[:tally_form_id].nil? && @user_list_upload.last_creneaux_snapshot &&
+      params[:tally_form_id].nil? && @user_list_upload.creneaux_snapshot &&
         ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID"].present?
     end
 
