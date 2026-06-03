@@ -12,7 +12,8 @@
   </div>
   <div class="position-absolute end-0 d-flex align-items-center gap-3 pe-3">
     <%= link_to "Donnez-nous votre avis",
-                request.params.merge(tally_form_id: ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_ID"]),
-                class: "text-underline" %>
+                ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_URL"],
+                class: "text-underline",
+                target: "_blank" %>
   </div>
 </div>
