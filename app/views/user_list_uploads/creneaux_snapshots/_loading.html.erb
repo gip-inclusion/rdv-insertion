@@ -3,7 +3,7 @@
 <%= turbo_stream_from user_list_upload %>
 <div class="alert alert-info d-flex align-items-center mb-0" role="status"
      data-controller="refresh-page-after"
-     data-refresh-page-after-delay-value="<%= creneaux_snapshot_refresh_delay_in_ms(user_list_upload) %>">
+     data-refresh-page-after-delay-value="<%= creneaux_snapshot_refresh_delay_in_ms(user_list_upload.creneaux_snapshot_retrieval_expires_at) %>">
   <span class="spinner-border spinner-border-sm me-2 text-info" role="status" aria-hidden="true"></span>
   <span class="text-dark">Calcul du nombre de créneaux disponibles en cours...</span>
 </div>
