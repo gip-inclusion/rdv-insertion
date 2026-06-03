@@ -69,11 +69,11 @@ tables:
       - user_id
       - department_id
 
-  - table_name: creneau_availabilities
+  - table_name: category_configuration_creneau_availabilities
     non_anonymized_column_names:
       - number_of_creneaux_available
       - number_of_pending_invitations
-      - category_configuration
+      - category_configuration_id
       - updated_at
       - created_at
 
