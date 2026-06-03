@@ -10,9 +10,9 @@
       Calculé le <%= @latest_creneau_availability.created_at.strftime("%d/%m à %Hh%M") %>
     </span>
   </div>
-  <div class="position-absolute end-0 d-flex align-items-center gap-3 pe-3">
-    <%= link_to "Donnez-nous votre avis",
-                request.params.merge(tally_form_id: ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_ID"]),
-                class: "text-underline" %>
-  </div>
+  <% if (tally_url = ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_URL"]).present? %>
+    <div class="position-absolute end-0 d-flex align-items-center gap-3 pe-3">
+      <%= link_to "Donnez-nous votre avis", tally_url, class: "text-underline", target: "_blank" %>
+    </div>
+  <% end %>
 </div>
