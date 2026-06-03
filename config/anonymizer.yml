@@ -624,3 +624,10 @@ tables:
       - orientation_type_id
       - created_at
       - updated_at
+  - table_name: user_list_upload_creneaux_snapshots
+    anonymized_column_names: []
+    non_anonymized_column_names:
+      - user_list_upload_id
+      - created_at
+      - updated_at
+      - number_of_creneaux_available
