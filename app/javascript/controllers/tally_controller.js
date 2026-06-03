@@ -31,6 +31,7 @@ export default class extends Controller {
       window.Tally.openPopup(this.element.dataset.tallyFormId, {
         onSubmit: () => {
           this.#hasAlreadyAnswered = true
+          this.dispatch("answered", { detail: { formId: this.element.dataset.tallyFormId } })
 
           // Give time for the user to read success message in Tally's popup
           setTimeout(() => window.Tally.closePopup(this.element.dataset.tallyFormId), 1000);

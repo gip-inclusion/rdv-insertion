@@ -12,7 +12,10 @@
   </div>
   <div class="position-absolute end-0 d-flex align-items-center gap-3 pe-3">
     <%= link_to "Donnez-nous votre avis",
-                request.params.merge(tally_form_id: ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_ID"]),
-                class: "text-underline" %>
+                request.params.merge(tally_form_id:),
+                class: "text-underline",
+                data: { controller: "tally-link",
+                        tally_link_form_id_value: ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_ID"],
+                        action: "tally:answered@window->tally-link#hide" } %>
   </div>
 </div>
