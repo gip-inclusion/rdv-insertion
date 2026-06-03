@@ -6,7 +6,7 @@
     <span class="text-dark">
       <strong><%= creneaux_snapshot.number_of_creneaux_available %> créneaux disponibles</strong>
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
-      <%= link_to rdv_solidarites_planning_url(user_list_upload.organisations.first),
+      <%= link_to user_list_upload.organisations.first.rdv_solidarites_planning_url,
                   target: "_blank", rel: "noopener", class: "link-blue-underlined" do %>
         Consulter le planning <i class="ri-external-link-line"></i>
       <% end %>
