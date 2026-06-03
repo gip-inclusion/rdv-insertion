@@ -216,8 +216,7 @@ class UsersController < ApplicationController
     return if @current_category_configuration.blank?
     return if @current_category_configuration.rdv_with_referents?
 
-    @latest_creneau_availability = @current_category_configuration.creneau_availabilities
-                                                                  .order(created_at: :desc).first
+    @latest_creneau_availability = @current_category_configuration.last_creneau_availability
   end
 
   def set_users
