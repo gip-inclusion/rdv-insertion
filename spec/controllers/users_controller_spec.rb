@@ -992,7 +992,7 @@ describe UsersController do
       end
 
       context "when no CreneauAvailability exists for the category" do
-        before { CreneauAvailability.destroy_all }
+        before { CategoryConfiguration::CreneauAvailability.destroy_all }
 
         it "does not display the banner" do
           get :index, params: index_params

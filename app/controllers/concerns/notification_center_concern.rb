@@ -10,7 +10,7 @@ module NotificationCenterConcern
   private
 
   def set_has_important_unread_notifications
-    @has_important_unread_notifications = CreneauAvailability
+    @has_important_unread_notifications = CategoryConfiguration::CreneauAvailability
                                           .with_rsa_related_motif
                                           .joins(:category_configuration)
                                           .where(category_configuration: { organisation_id: current_organisation_id })

@@ -7,7 +7,7 @@ class CategoryConfiguration < ApplicationRecord
   belongs_to :file_configuration
   belongs_to :organisation
 
-  has_many :creneau_availabilities, dependent: :destroy
+  has_many :creneau_availabilities, class_name: "CategoryConfiguration::CreneauAvailability", dependent: :destroy
   has_many :user_list_uploads, dependent: :nullify
 
   validates :organisation, uniqueness: { scope: :motif_category,

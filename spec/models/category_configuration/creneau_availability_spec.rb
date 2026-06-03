@@ -1,4 +1,4 @@
-RSpec.describe CreneauAvailability, type: :model do
+RSpec.describe CategoryConfiguration::CreneauAvailability, type: :model do
   describe "scopes" do
     describe ".with_pending_invitations" do
       let!(:creneau_with_nil_invitations) { create(:creneau_availability, number_of_pending_invitations: nil) }
