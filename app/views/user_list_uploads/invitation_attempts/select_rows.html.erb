@@ -19,10 +19,6 @@
         data-user-list-upload-id="<%= @user_list_upload.id %>"
         data-attribute-to-toggle="selected_for_invitation"
     >
-      <% if @user_list_upload.retrievable_creneaux_snapshot? %>
-        <%= render "creneaux_snapshot", user_list_upload: @user_list_upload, creneaux_snapshot: @creneaux_snapshot %>
-      <% end %>
-
       <div class="d-flex justify-content-between align-items-center">
         <div class="mb-4">
           <h2 class="h2-title">Inviter les usagers à prendre rendez-vous</h2>
@@ -32,6 +28,11 @@
         </div>
         <%= render "user_list_uploads/search_form" %>
       </div>
+
+      <% if @user_list_upload.retrievable_creneaux_snapshot? %>
+        <%= render "creneaux_snapshot", user_list_upload: @user_list_upload, creneaux_snapshot: @creneaux_snapshot %>
+      <% end %>
+
       <%= render "user_rows_before_invitation", user_rows: @user_rows %>
 
       <div class="container sticky-footer">
