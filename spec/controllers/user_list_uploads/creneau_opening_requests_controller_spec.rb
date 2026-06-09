@@ -102,5 +102,24 @@ describe UserListUploads::CreneauOpeningRequestsController do
         expect(response.body).to include("Aucun agent destinataire sélectionné")
       end
     end
+
+    context "when a submitted recipient is not in the upload's organisations" do
+      subject(:perform_action) do
+        post :create_many, params: {
+          user_list_upload_id: user_list_upload.id,
+          available_creneaux_count: 26,
+          users_to_invite_count: 30,
+          recipient_agent_ids: [recipient_agent.id, foreign_agent.id],
+          format: "turbo_stream"
+        }
+      end
+
+      let!(:foreign_agent) { create(:agent, organisations: [create(:organisation)]) }
+
+      it "only creates requests for authorized recipients" do
+        expect { perform_action }.to change(CreneauOpeningRequest, :count).by(1)
+        expect(CreneauOpeningRequest.last.recipient_agent_id).to eq(recipient_agent.id)
+      end
+    end
   end
 end

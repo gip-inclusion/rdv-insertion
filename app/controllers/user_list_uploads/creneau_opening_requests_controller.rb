@@ -29,11 +29,14 @@ module UserListUploads
     end
 
     def recipient_agents
+      authorized_recipient_agents.order(:last_name, :first_name)
+    end
+
+    def authorized_recipient_agents
       Agent.joins(:agent_roles)
            .where(agent_roles: { organisation_id: @user_list_upload.structure_organisations.map(&:id) })
            .with_last_name
            .distinct
-           .order(:last_name, :first_name)
     end
 
     def available_creneaux_count
@@ -47,10 +50,14 @@ module UserListUploads
     def create_requests
       @create_requests ||= CreneauOpeningRequests::CreateMany.call(
         user_list_upload: @user_list_upload,
-        recipient_agent_ids: submitted_recipient_agent_ids,
+        recipient_agent_ids: authorized_recipient_agent_ids,
         available_creneaux_count: available_creneaux_count,
         users_to_invite_count: users_to_invite_count
       )
+    end
+
+    def authorized_recipient_agent_ids
+      authorized_recipient_agents.where(id: submitted_recipient_agent_ids).pluck(:id)
     end
 
     def submitted_recipient_agent_ids

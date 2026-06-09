@@ -9,7 +9,6 @@ module CreneauOpeningRequests
 
     def call
       fail!("Aucun agent destinataire sélectionné") if @recipient_agent_ids.blank?
-      fail!("Un ou plusieurs destinataires ne sont pas autorisés") if unauthorized_recipient_ids.any?
 
       CreneauOpeningRequest.transaction do
         result.creneau_opening_requests = @recipient_agent_ids.map { |id| build_and_save!(id) }
@@ -17,18 +16,6 @@ module CreneauOpeningRequests
     end
 
     private
-
-    def unauthorized_recipient_ids
-      @recipient_agent_ids.map(&:to_i) - authorized_recipient_ids
-    end
-
-    def authorized_recipient_ids
-      Agent.joins(:agent_roles)
-           .where(agent_roles: { organisation_id: @user_list_upload.structure_organisations.map(&:id) })
-           .with_last_name
-           .where(id: @recipient_agent_ids)
-           .pluck(:id)
-    end
 
     def build_and_save!(recipient_agent_id)
       creneau_opening_request = CreneauOpeningRequest.new(

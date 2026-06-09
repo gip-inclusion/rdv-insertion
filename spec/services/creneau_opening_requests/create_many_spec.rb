@@ -70,21 +70,4 @@ describe CreneauOpeningRequests::CreateMany, type: :service do
       expect { service }.not_to change(CreneauOpeningRequest, :count)
     end
   end
-
-  context "when a recipient_agent_id is not in the upload's organisations" do
-    let!(:foreign_agent) { create(:agent, organisations: [create(:organisation)]) }
-    let(:recipient_agent_ids) { [agent_a.id, foreign_agent.id] }
-
-    it "is a failure" do
-      expect(service).to be_failure
-    end
-
-    it "returns an authorization error" do
-      expect(service.errors).to include(/autorisé/i)
-    end
-
-    it "does not create any CreneauOpeningRequest" do
-      expect { service }.not_to change(CreneauOpeningRequest, :count)
-    end
-  end
 end
