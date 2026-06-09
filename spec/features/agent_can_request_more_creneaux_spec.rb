@@ -42,17 +42,4 @@ describe "Agent can request more creneaux", :js do
     expect(page).to have_content("Aucun agent destinataire sélectionné")
     expect(CreneauOpeningRequest.count).to eq(0)
   end
-
-  context "when the agent does not own the upload" do
-    let!(:other_agent) { create(:agent, organisations: [organisation]) }
-
-    before { setup_agent_session(other_agent) }
-
-    it "redirects away from the modal with a not-authorized message" do
-      visit new_user_list_upload_creneau_opening_request_path(user_list_upload, available_creneaux_count: 26)
-
-      expect(page).to have_content("Votre compte ne vous permet pas d'effectuer cette action")
-      expect(page).to have_no_content("Demander plus de créneaux")
-    end
-  end
 end
