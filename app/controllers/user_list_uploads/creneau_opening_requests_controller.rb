@@ -13,8 +13,7 @@ module UserListUploads
       if create_requests.success?
         turbo_stream_display_success_modal(
           success_message,
-          title: "Demande d'ouverture de créneaux envoyée",
-          tally_form_id: ENV["CRENEAU_OPENING_REQUEST_TALLY_ID"]
+          title: "Demande d'ouverture de créneaux envoyée"
         )
       else
         turbo_stream_replace_error_list_with(create_requests.errors)

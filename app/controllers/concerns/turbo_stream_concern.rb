@@ -37,10 +37,10 @@ module TurboStreamConcern
     turbo_stream_display_modal(partial: "common/error_modal", locals: { errors: }, status: :unprocessable_entity)
   end
 
-  def turbo_stream_display_success_modal(message, title: "✅ Succès", reload_on_close: false, tally_form_id: nil)
+  def turbo_stream_display_success_modal(message, title: "✅ Succès", reload_on_close: false)
     turbo_stream_display_modal(
       partial: "common/success_modal",
-      locals: { message:, title:, reload_on_close:, tally_form_id: },
+      locals: { message:, title:, reload_on_close: },
       status: :ok
     )
   end

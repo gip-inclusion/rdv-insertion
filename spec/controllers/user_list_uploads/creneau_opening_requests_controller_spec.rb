@@ -67,19 +67,15 @@ describe UserListUploads::CreneauOpeningRequestsController do
       }
     end
 
-    before { ENV["CRENEAU_OPENING_REQUEST_TALLY_ID"] = "xxxxx" }
-
     it "creates one CreneauOpeningRequest per recipient" do
       expect { perform_action }.to change(CreneauOpeningRequest, :count).by(1)
     end
 
-    it "renders the confirmation with a Tally feedback popup" do
+    it "renders the confirmation modal" do
       perform_action
 
       expect(unescape_html(response.body))
         .to include("Demande d'ouverture de créneaux envoyée")
-        .and include('data-controller="tally"')
-        .and include('data-tally-form-id="xxxxx"')
     end
 
     context "when no recipient is selected" do
