@@ -1,0 +1,17 @@
+<%# locals: (user_list_upload:, creneaux_snapshot:) %>
+
+<div class="alert alert-warning d-flex align-items-center justify-content-between mb-0" role="alert"
+     id="rdvi_upload_creneaux-before-invite_not-enough_banner" data-controller="flash">
+  <div class="d-flex align-items-center">
+    <i class="ri-error-warning-line me-2 text-warning"></i>
+    <span class="text-dark">
+      <strong><%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "créneau") %>
+        <%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "disponible", with_count: false) %></strong>
+      sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
+      <%= link_to "Demander plus de créneaux", "#", class: "link-blue-underlined",
+                  id: "rdvi_upload_creneaux-before-invite_not-enough_request-more" %>
+    </span>
+  </div>
+  <button type="button" class="btn-close" data-action="flash#remove" aria-label="Fermer"
+          id="rdvi_upload_creneaux-before-invite_not-enough_close"></button>
+</div>

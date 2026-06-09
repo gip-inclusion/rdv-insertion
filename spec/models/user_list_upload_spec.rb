@@ -136,4 +136,36 @@ RSpec.describe UserListUpload do
       end
     end
   end
+
+  describe "créneaux snapshot retrieval on creation" do
+    let(:agent) { create(:agent) }
+
+    context "when the upload has a category configuration without rdv_with_referents" do
+      it "enqueues the créneaux snapshot job" do
+        expect do
+          create(:user_list_upload, agent:, category_configuration: create(:category_configuration))
+        end.to have_enqueued_job(UserListUpload::CreateCreneauxSnapshotJob)
+      end
+    end
+
+    context "when the upload has no category configuration" do
+      it "does not enqueue the créneaux snapshot job" do
+        expect do
+          create(:user_list_upload, agent:, category_configuration: nil, origin: "file_upload")
+        end.not_to have_enqueued_job(UserListUpload::CreateCreneauxSnapshotJob)
+      end
+    end
+
+    context "when the category configuration uses rdv_with_referents" do
+      it "does not enqueue the créneaux snapshot job" do
+        expect do
+          create(
+            :user_list_upload,
+            agent:,
+            category_configuration: create(:category_configuration, rdv_with_referents: true)
+          )
+        end.not_to have_enqueued_job(UserListUpload::CreateCreneauxSnapshotJob)
+      end
+    end
+  end
 end

@@ -28,7 +28,7 @@ class NotificationCenterController < ApplicationController
   end
 
   def creneaux_availabilities
-    @creneaux_availabilities ||= CreneauAvailability
+    @creneaux_availabilities ||= CategoryConfiguration::CreneauAvailability
                                  .joins(:category_configuration)
                                  .preload(category_configuration: :motif_category)
                                  .where(category_configuration: { organisation_id: current_organisation_id })

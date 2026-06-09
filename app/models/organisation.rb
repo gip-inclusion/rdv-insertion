@@ -4,6 +4,7 @@ class Organisation < ApplicationRecord
 
   include Searchable
   include Organisation::Archivable
+  include Organisation::RdvSolidaritesUrls
 
   before_create { build_messages_configuration }
 
@@ -55,14 +56,6 @@ class Organisation < ApplicationRecord
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
 
   ORGANISATION_TYPES_WITH_PARCOURS_ACCESS = %w[delegataire_rsa conseil_departemental france_travail].freeze
-
-  def rdv_solidarites_url
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}"
-  end
-
-  def rdv_solidarites_configuration_url
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}/configuration"
-  end
 
   def to_s
     name

@@ -15,7 +15,7 @@ describe CategoryConfiguration do
       let!(:creneau_availability) { create(:creneau_availability, category_configuration: category_configuration) }
 
       it "destroys creneaux_availability" do
-        expect { category_configuration.destroy }.to change(CreneauAvailability, :count).by(-1)
+        expect { category_configuration.destroy }.to change(CategoryConfiguration::CreneauAvailability, :count).by(-1)
       end
     end
   end
