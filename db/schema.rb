@@ -184,16 +184,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
     t.index ["agent_id"], name: "index_cookies_consents_on_agent_id"
   end
 
-  create_table "creneau_availabilities", force: :cascade do |t|
-    t.bigint "category_configuration_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "number_of_creneaux_available"
-    t.integer "number_of_pending_invitations"
-    t.datetime "updated_at", null: false
-    t.index ["category_configuration_id"], name: "index_creneau_availabilities_on_category_configuration_id"
-    t.index ["created_at"], name: "index_creneau_availabilities_on_created_at"
-  end
-
   create_table "creneau_opening_requests", force: :cascade do |t|
     t.integer "available_creneaux_count", null: false
     t.datetime "clicked_at"
@@ -785,7 +775,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
   add_foreign_key "cookies_consents", "agents"
-  add_foreign_key "creneau_availabilities", "category_configurations"
   add_foreign_key "creneau_opening_requests", "agents", column: "recipient_agent_id"
   add_foreign_key "creneau_opening_requests", "user_list_uploads"
   add_foreign_key "csv_exports", "agents"
