@@ -1,90 +1,88 @@
-<% content_for :remote_modal do %>
-  <%= render "common/remote_modal", title: "Demander plus de créneaux", title_class: "fs-4 fw-bold" do %>
-    <div class="p-2">
-      <p class="fw-bold">Situation sur la catégorie « <%= @user_list_upload.motif_category.name %> »</p>
-      <div class="row mb-3">
-        <div class="col-md-6 mb-2">
-          <div class="card creneau-card creneau-card--creneaux text-center p-3 h-100">
-            <span class="creneau-card-icon creneau-card-icon--creneaux mx-auto">
-              <i class="ri-calendar-line"></i>
-            </span>
-            <p class="mb-0 medium"><%= @available_creneaux_count %> créneaux disponibles</p>
-          </div>
-        </div>
-        <div class="col-md-6 mb-2">
-          <div class="card creneau-card creneau-card--users text-center p-3 h-100">
-            <span class="creneau-card-icon creneau-card-icon--users mx-auto">
-              <i class="ri-user-line"></i>
-            </span>
-            <p class="mb-0 medium"><%= @users_to_invite_count %> usagers à inviter</p>
-            <p class="text-muted small mb-0">dans cet import</p>
-          </div>
+<%= render "common/remote_modal", title: "Demander plus de créneaux", title_class: "fs-4 fw-bold" do %>
+  <div class="p-2">
+    <p class="fw-bold">Situation sur la catégorie « <%= @user_list_upload.motif_category.name %> »</p>
+    <div class="row mb-3">
+      <div class="col-md-6 mb-2">
+        <div class="card creneau-card creneau-card--creneaux text-center p-3 h-100">
+          <span class="creneau-card-icon creneau-card-icon--creneaux mx-auto">
+            <i class="ri-calendar-line"></i>
+          </span>
+          <p class="mb-0 medium"><%= @available_creneaux_count %> créneaux disponibles</p>
         </div>
       </div>
-
-      <div class="d-flex gap-2 mb-3">
-        <i class="ri-error-warning-line creneau-warning-icon"></i>
-        <div class="small">
-          <strong>Il manquerait <%= @missing_creneaux_count %> créneaux</strong>
-          pour s'assurer que tous les usagers invités sur cette liste puissent prendre rendez-vous.
+      <div class="col-md-6 mb-2">
+        <div class="card creneau-card creneau-card--users text-center p-3 h-100">
+          <span class="creneau-card-icon creneau-card-icon--users mx-auto">
+            <i class="ri-user-line"></i>
+          </span>
+          <p class="mb-0 medium"><%= @users_to_invite_count %> usagers à inviter</p>
+          <p class="text-muted small mb-0">dans cet import</p>
         </div>
       </div>
-
-      <hr class="my-3" />
-
-      <p class="fw-bold mb-0">Envoyer une demande d'ouverture de créneaux à …</p>
-      <p class="text-muted small">
-        Cette demande sera envoyée
-        <% if @user_list_upload.organisation %>
-          aux agents de l'organisation <strong><%= @user_list_upload.organisation.name %></strong>
-        <% else %>
-          aux agents
-        <% end %>
-        sélectionnés ci-dessous.
-      </p>
-
-      <%= form_with url: create_many_user_list_upload_creneau_opening_requests_path(@user_list_upload),
-                    method: :post,
-                    data: { turbo_frame: "remote_modal" } do |f| %>
-        <%= turbo_frame_tag "error_list" %>
-        <%= hidden_field_tag :available_creneaux_count, @available_creneaux_count %>
-        <%= hidden_field_tag :users_to_invite_count, @users_to_invite_count %>
-
-        <div class="creneau-picker p-3 mb-3" data-controller="dropdown--filter-options">
-          <div class="position-relative mb-2">
-            <i class="ri-search-line position-absolute top-50 start-0 translate-middle-y ms-2 text-muted"></i>
-            <input type="text"
-                  id="rdvi_creneau-demand_search"
-                  class="form-control ps-5"
-                  placeholder="Rechercher un agent..."
-                  autocomplete="off"
-                  data-dropdown--filter-options-target="input"
-                  data-action="input->dropdown--filter-options#search" />
-          </div>
-          <div class="creneau-picker__list">
-            <% @recipient_agents.each do |agent| %>
-              <label class="d-flex align-items-center py-1" data-dropdown--filter-options-target="item">
-                <%= check_box_tag "recipient_agent_ids[]", agent.id, false, class: "form-check-input me-2" %>
-                <span>
-                  <strong><%= agent %></strong>
-                  <span class="text-muted ms-2"><%= agent.email %></span>
-                </span>
-              </label>
-            <% end %>
-            <div class="text-muted text-center py-2 d-none" data-dropdown--filter-options-target="noResults">
-              Aucun agent ne correspond à votre recherche.
-            </div>
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-end gap-2 mt-3">
-          <button type="button"
-                  id="rdvi_creneau-demand_cancel"
-                  class="btn btn-blue-out"
-                  data-bs-dismiss="modal">Annuler</button>
-          <%= f.submit "Envoyer la demande", class: "btn btn-blue", id: "rdvi_creneau-demand_send" %>
-        </div>
-      <% end %>
     </div>
-  <% end %>
+
+    <div class="d-flex gap-2 mb-3">
+      <i class="ri-error-warning-line creneau-warning-icon"></i>
+      <div class="small">
+        <strong>Il manquerait <%= @missing_creneaux_count %> créneaux</strong>
+        pour s'assurer que tous les usagers invités sur cette liste puissent prendre rendez-vous.
+      </div>
+    </div>
+
+    <hr class="my-3" />
+
+    <p class="fw-bold mb-0">Envoyer une demande d'ouverture de créneaux à …</p>
+    <p class="text-muted small">
+      Cette demande sera envoyée
+      <% if @user_list_upload.organisation %>
+        aux agents de l'organisation <strong><%= @user_list_upload.organisation.name %></strong>
+      <% else %>
+        aux agents
+      <% end %>
+      sélectionnés ci-dessous.
+    </p>
+
+    <%= form_with url: create_many_user_list_upload_creneau_opening_requests_path(@user_list_upload),
+                  method: :post,
+                  data: { turbo_frame: "remote_modal" } do |f| %>
+      <%= turbo_frame_tag "error_list" %>
+      <%= hidden_field_tag :available_creneaux_count, @available_creneaux_count %>
+      <%= hidden_field_tag :users_to_invite_count, @users_to_invite_count %>
+
+      <div class="creneau-picker p-3 mb-3" data-controller="dropdown--filter-options">
+        <div class="position-relative mb-2">
+          <i class="ri-search-line position-absolute top-50 start-0 translate-middle-y ms-2 text-muted"></i>
+          <input type="text"
+                id="rdvi_creneau-demand_search"
+                class="form-control ps-5"
+                placeholder="Rechercher un agent..."
+                autocomplete="off"
+                data-dropdown--filter-options-target="input"
+                data-action="input->dropdown--filter-options#search" />
+        </div>
+        <div class="creneau-picker__list">
+          <% @recipient_agents.each do |agent| %>
+            <label class="d-flex align-items-center py-1" data-dropdown--filter-options-target="item">
+              <%= check_box_tag "recipient_agent_ids[]", agent.id, false, class: "form-check-input me-2" %>
+              <span>
+                <strong><%= agent %></strong>
+                <span class="text-muted ms-2"><%= agent.email %></span>
+              </span>
+            </label>
+          <% end %>
+          <div class="text-muted text-center py-2 d-none" data-dropdown--filter-options-target="noResults">
+            Aucun agent ne correspond à votre recherche.
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-3">
+        <button type="button"
+                id="rdvi_creneau-demand_cancel"
+                class="btn btn-blue-out"
+                data-bs-dismiss="modal">Annuler</button>
+        <%= f.submit "Envoyer la demande", class: "btn btn-blue", id: "rdvi_creneau-demand_send" %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

@@ -1,5 +1,5 @@
 module UserListUploads
-  class CreneauOpeningRequestsController < BaseController
+  class CreneauOpeningRequestsController < ApplicationController
     before_action :set_user_list_upload, only: [:new, :create_many]
 
     def new
