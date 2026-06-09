@@ -12,6 +12,7 @@
 
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular "lieu", "lieux"
+  inflect.irregular "créneau", "créneaux"
 end
 
 # These inflection rules are supported but not enabled by default:

@@ -957,6 +957,50 @@ describe UsersController do
         end
       end
     end
+
+    describe "creneau availability banner" do
+      let!(:creneau_availability) do
+        create(:creneau_availability, category_configuration: category_configuration,
+                                      number_of_creneaux_available: 11)
+      end
+
+      it "displays the banner at organisation level" do
+        get :index, params: index_params
+
+        expect(response.body).to include("11 créneaux disponibles")
+                             .and include("Calculé le")
+      end
+
+      context "when at department level" do
+        let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
+
+        it "does not display the banner" do
+          get :index, params: index_params
+
+          expect(response.body).not_to include("créneaux disponibles")
+        end
+      end
+
+      context "when the category has rdv_with_referents" do
+        before { category_configuration.update!(rdv_with_referents: true) }
+
+        it "does not display the banner" do
+          get :index, params: index_params
+
+          expect(response.body).not_to include("créneaux disponibles")
+        end
+      end
+
+      context "when no CreneauAvailability exists for the category" do
+        before { CategoryConfiguration::CreneauAvailability.destroy_all }
+
+        it "does not display the banner" do
+          get :index, params: index_params
+
+          expect(response.body).not_to include("créneaux disponibles")
+        end
+      end
+    end
   end
 
   describe "#edit" do

@@ -26,15 +26,13 @@ describe SessionsController do
       request.headers.merge(request_headers)
     end
 
-    it "is a success" do
-      post :create
-      expect(flash[:success]).to eq("Connexion réussie")
-      expect(response).to have_http_status(:found)
-    end
-
     it "marks the agent as logged in" do
       post :create
       expect(agent.reload.last_sign_in_at).not_to be_nil
+    end
+
+    it "generates a new session key for the agent" do
+      expect { post :create }.to(change { agent.reload.session_key })
     end
 
     it "sets a session" do
@@ -45,36 +43,10 @@ describe SessionsController do
           id: agent.id,
           created_at: timestamp.to_i,
           origin: "sign_in_form",
-          signature: agent.sign_with(timestamp.to_i)
+          signature: agent.reload.sign_with(timestamp.to_i),
+          session_key: agent.reload.session_key
         }
       )
-    end
-
-    context "when a redirect path is in the session" do
-      before do
-        request.session[:agent_return_to] = "/some_path"
-      end
-
-      it "deletes the path from the session" do
-        post :create
-        expect(request.session[:agent_return_to]).to be_nil
-      end
-
-      it "redirects to the path" do
-        post :create
-        expect(response.location).to include("/some_path")
-      end
-    end
-
-    context "when no redirect path is in the session" do
-      before do
-        request.session[:agent_return_to] = nil
-      end
-
-      it "returns the organisations path" do
-        post :create
-        expect(response.location).to eq(root_url)
-      end
     end
 
     context "when it fails to retrieve the agent" do
@@ -118,10 +90,39 @@ describe SessionsController do
       expect(request.session[:agent_auth]).to be_nil
     end
 
-    it "redirects to root page" do
+    it "redirects to rdv-solidarités sign out" do
       delete :destroy
       expect(response).to redirect_to(/www.rdv-solidarites-test/)
-      expect(flash[:notice]).to eq("Déconnexion réussie")
+    end
+
+    it "sets a flash notice indicating the session expired" do
+      delete :destroy
+      expect(flash[:notice]).to eq("Votre session a expirée, veuillez vous reconnecter")
+    end
+
+    it "does not rotate the agent's session key" do
+      expect { delete :destroy }.not_to(change { agent.reload.session_key })
+    end
+
+    context "when the sign out is agent-initiated" do
+      it "does not set a flash notice" do
+        delete :destroy, params: { agent_initiated: "true" }
+        expect(flash[:notice]).to be_nil
+      end
+
+      it "rotates the agent's session key" do
+        expect { delete :destroy, params: { agent_initiated: "true" } }
+          .to(change { agent.reload.session_key })
+      end
+    end
+
+    context "when there is no session at all" do
+      before { request.session.delete("agent_auth") }
+
+      it "sets a flash notice prompting to connect" do
+        delete :destroy
+        expect(flash[:notice]).to eq("Veuillez vous connecter")
+      end
     end
 
     context "when the agent is a super admin" do
@@ -130,6 +131,33 @@ describe SessionsController do
       it "invalidates the super admin authentication request" do
         delete :destroy
         expect(agent.reload.last_super_admin_authentication_request.invalidated_at).to be_present
+      end
+    end
+
+    context "when the agent is impersonated by a super admin" do
+      let!(:super_admin) { create(:agent, :super_admin_verified) }
+
+      before do
+        timestamp = Time.zone.now.to_i
+        request.session["agent_auth"] = {
+          id: agent.id,
+          origin: "impersonate",
+          created_at: timestamp,
+          signature: agent.sign_with(timestamp),
+          session_key: agent.session_key,
+          super_admin_auth: {
+            id: super_admin.id,
+            origin: "sign_in_form",
+            created_at: timestamp,
+            signature: super_admin.sign_with(timestamp),
+            session_key: super_admin.session_key
+          }
+        }
+      end
+
+      it "invalidates the super admin authentication request" do
+        delete :destroy
+        expect(super_admin.reload.last_super_admin_authentication_request.invalidated_at).to be_present
       end
     end
   end

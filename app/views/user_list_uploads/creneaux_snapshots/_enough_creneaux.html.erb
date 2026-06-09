@@ -1,0 +1,20 @@
+<%# locals: (user_list_upload:, creneaux_snapshot:) %>
+
+<div class="alert alert-info d-flex align-items-center justify-content-between mb-0" role="alert"
+     id="rdvi_upload_creneaux-before-invite_enough_banner" data-controller="flash">
+  <div class="d-flex align-items-center">
+    <i class="ri-information-line me-2 text-info"></i>
+    <span class="text-dark">
+      <strong><%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "créneau") %>
+        <%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "disponible", with_count: false) %></strong>
+      sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
+      <%= link_to user_list_upload.organisations.first.rdv_solidarites_planning_url,
+                  target: "_blank", rel: "noopener", class: "link-blue-underlined",
+                  id: "rdvi_upload_creneaux-before-invite_enough_consult-planning" do %>
+        Consulter le planning <i class="ri-external-link-line"></i>
+      <% end %>
+    </span>
+  </div>
+  <button type="button" class="btn-close" data-action="flash#remove" aria-label="Fermer"
+          id="rdvi_upload_creneaux-before-invite_enough_close"></button>
+</div>

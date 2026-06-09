@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_20_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -86,6 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_20_140000) do
     t.datetime "last_sign_in_at"
     t.datetime "last_webhook_update_received_at"
     t.bigint "rdv_solidarites_agent_id"
+    t.string "session_key"
     t.boolean "super_admin", default: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_agents_on_email", unique: true
@@ -137,6 +138,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_20_140000) do
     t.bigint "user_id", null: false
     t.index ["created_at"], name: "index_blocked_users_on_created_at", order: :desc
     t.index ["user_id"], name: "index_blocked_users_on_user_id"
+  end
+
+  create_table "category_configuration_creneau_availabilities", force: :cascade do |t|
+    t.bigint "category_configuration_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "number_of_creneaux_available"
+    t.integer "number_of_pending_invitations"
+    t.datetime "updated_at", null: false
+    t.index ["category_configuration_id"], name: "idx_on_category_configuration_id_75b11a64f7"
+    t.index ["created_at"], name: "idx_on_created_at_88314c9144"
   end
 
   create_table "category_configurations", force: :cascade do |t|
@@ -590,6 +601,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_20_140000) do
     t.string "user_designation"
   end
 
+  create_table "user_list_upload_creneaux_snapshots", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "number_of_creneaux_available", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_list_upload_id", null: false
+    t.index ["user_list_upload_id"], name: "idx_on_user_list_upload_id_dde82cda5f"
+  end
+
   create_table "user_list_upload_invitation_attempts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "format"
@@ -761,6 +780,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_20_140000) do
   add_foreign_key "archives", "users"
   add_foreign_key "blocked_invitations_counters", "organisations"
   add_foreign_key "blocked_users", "users"
+  add_foreign_key "category_configuration_creneau_availabilities", "category_configurations"
   add_foreign_key "category_configurations", "file_configurations"
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
@@ -803,6 +823,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_20_140000) do
   add_foreign_key "tag_organisations", "tags"
   add_foreign_key "tag_users", "tags"
   add_foreign_key "tag_users", "users"
+  add_foreign_key "user_list_upload_creneaux_snapshots", "user_list_uploads"
   add_foreign_key "user_list_upload_invitation_attempts", "invitations"
   add_foreign_key "user_list_upload_invitation_attempts", "user_list_upload_user_rows", column: "user_row_id"
   add_foreign_key "user_list_upload_processing_logs", "user_list_uploads"

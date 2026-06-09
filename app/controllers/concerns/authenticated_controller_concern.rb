@@ -11,10 +11,22 @@ module AuthenticatedControllerConcern
   def authenticate_agent!
     return if logged_in?
 
-    clear_session
-    session[:agent_return_to] = request.fullpath if request.get? && !request.xhr?
-    flash[:notice] = "Veuillez vous connecter"
-    redirect_to root_path
+    if browser_navigation_request?
+      render "sessions/unauthorized", layout: "unauthorized", status: :unauthorized
+    else
+      # in most cases (all turbo requests) we can't render the unauthorized template because of how turbo handles it,
+      # so we return a 401 with a X-Reauth-Required header instead and the client will build and submit a sign_out
+      # form in the event listener in application.js
+      response.headers["X-Reauth-Required"] = "1"
+      head :unauthorized
+    end
+  end
+
+  def browser_navigation_request?
+    request.get? &&
+      request.format.html? &&
+      request.headers["Sec-Fetch-Mode"] == "navigate" &&
+      request.headers["Sec-Fetch-Dest"] == "document"
   end
 
   def clear_session

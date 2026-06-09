@@ -1,4 +1,6 @@
-class CreneauAvailability < ApplicationRecord
+class CategoryConfiguration::CreneauAvailability < ApplicationRecord
+  self.table_name = "category_configuration_creneau_availabilities"
+
   belongs_to :category_configuration
 
   scope :with_pending_invitations, lambda {

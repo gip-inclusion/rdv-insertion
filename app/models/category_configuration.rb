@@ -7,7 +7,7 @@ class CategoryConfiguration < ApplicationRecord
   belongs_to :file_configuration
   belongs_to :organisation
 
-  has_many :creneau_availabilities, dependent: :destroy
+  has_many :creneau_availabilities, class_name: "CategoryConfiguration::CreneauAvailability", dependent: :destroy
   has_many :user_list_uploads, dependent: :nullify
 
   validates :organisation, uniqueness: { scope: :motif_category,
@@ -67,5 +67,9 @@ class CategoryConfiguration < ApplicationRecord
 
       errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
     end
+  end
+
+  def last_creneau_availability
+    creneau_availabilities.order(created_at: :desc).first
   end
 end

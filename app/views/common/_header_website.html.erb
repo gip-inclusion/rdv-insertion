@@ -29,11 +29,9 @@
             <ul class="fr-btns-group">
               <% if current_agent %>
                 <li>
-                  <%= link_to sign_out_path, data: { turbo: false }, id: "rdvi_header_log-out" do %>
-                    <button class="fr-btn fr-icon-lock-unlock-line">
-                      Se déconnecter
-                    </button>
-                  <% end %>
+                  <%= button_to "Se déconnecter", sign_out_path, method: :delete,
+                      params: { agent_initiated: true }, data: { turbo: false },
+                      class: "fr-btn fr-icon-lock-unlock-line", id: "rdvi_header_log-out" %>
                 </li>
               <% else %>
                 <li>

@@ -20,13 +20,13 @@ describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
 
     it "stores the number of creneaux available" do
       subject
-      expect(CreneauAvailability.last.number_of_creneaux_available).to eq(3)
-      expect(CreneauAvailability.last.category_configuration).to eq(category_configuration)
+      expect(CategoryConfiguration::CreneauAvailability.last.number_of_creneaux_available).to eq(3)
+      expect(CategoryConfiguration::CreneauAvailability.last.category_configuration).to eq(category_configuration)
     end
 
     it "stores the number of pending invitations" do
       subject
-      expect(CreneauAvailability.last.number_of_pending_invitations).to eq(1)
+      expect(CategoryConfiguration::CreneauAvailability.last.number_of_pending_invitations).to eq(1)
     end
 
     context "with multiple invitations of the same follow_up" do
@@ -36,7 +36,7 @@ describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
 
       it "stores the number of pending invitations" do
         subject
-        expect(CreneauAvailability.last.number_of_pending_invitations).to eq(1)
+        expect(CategoryConfiguration::CreneauAvailability.last.number_of_pending_invitations).to eq(1)
       end
     end
   end

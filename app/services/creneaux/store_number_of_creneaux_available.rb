@@ -14,8 +14,11 @@ module Creneaux
         category_configuration.organisation
       )
 
-      save_record!(CreneauAvailability.new(category_configuration:, number_of_creneaux_available:,
-                                           number_of_pending_invitations:))
+      save_record!(
+        CategoryConfiguration::CreneauAvailability.new(
+          category_configuration:, number_of_creneaux_available:, number_of_pending_invitations:
+        )
+      )
     end
 
     private
