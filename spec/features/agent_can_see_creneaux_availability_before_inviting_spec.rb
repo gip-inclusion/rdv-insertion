@@ -46,7 +46,7 @@ describe "Agents can see créneaux availability before inviting", :js do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
       within(".alert-warning") do
-        expect(page).to have_content("1 créneaux disponibles")
+        expect(page).to have_content("1 créneau disponible")
         expect(page).to have_link("Demander plus de créneaux")
       end
 

@@ -5,7 +5,8 @@
   <div class="d-flex align-items-center">
     <i class="ri-error-warning-line me-2 text-warning"></i>
     <span class="text-dark">
-      <strong><%= creneaux_snapshot.number_of_creneaux_available %> créneaux disponibles</strong>
+      <strong><%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "créneau") %>
+        <%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "disponible", with_count: false) %></strong>
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
       <%= link_to "Demander plus de créneaux", "#", class: "link-blue-underlined",
                   id: "rdvi_upload_creneaux-before-invite_not-enough_request-more" %>
