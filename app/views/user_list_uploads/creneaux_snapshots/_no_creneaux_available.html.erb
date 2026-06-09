@@ -7,7 +7,14 @@
     <span class="text-dark">
       <strong>Aucun créneau disponible</strong>
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
-      <%= link_to "Demander plus de créneaux", "#", class: "link-blue-underlined",
+      <%= link_to "Demander plus de créneaux",
+                  new_user_list_upload_creneau_opening_request_path(
+                    user_list_upload,
+                    available_creneaux_count: 0,
+                    users_to_invite_count: user_list_upload.user_rows_selected_for_invitation.size
+                  ),
+                  class: "link-blue-underlined",
+                  data: { turbo_frame: "remote_modal" },
                   id: "rdvi_upload_creneaux-before-invite_none_request-more" %>
     </span>
   </div>
