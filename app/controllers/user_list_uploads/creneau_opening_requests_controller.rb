@@ -1,6 +1,6 @@
 module UserListUploads
   class CreneauOpeningRequestsController < BaseController
-    before_action :set_user_list_upload, only: [:new, :create]
+    before_action :set_user_list_upload, only: [:new, :create_many]
 
     def new
       @available_creneaux_count = available_creneaux_count
@@ -9,7 +9,7 @@ module UserListUploads
       @recipient_agents = recipient_agents
     end
 
-    def create
+    def create_many
       if create_requests.success?
         turbo_stream_display_success_modal(
           success_message,
@@ -25,12 +25,13 @@ module UserListUploads
 
     def set_user_list_upload
       @user_list_upload = UserListUpload.find(params[:user_list_upload_id])
-      authorize @user_list_upload, :show?
+      authorize @user_list_upload, :edit?
     end
 
     def recipient_agents
       Agent.joins(:agent_roles)
            .where(agent_roles: { organisation_id: @user_list_upload.structure_organisations.map(&:id) })
+           .with_last_name
            .distinct
            .order(:last_name, :first_name)
     end
@@ -40,12 +41,11 @@ module UserListUploads
     end
 
     def users_to_invite_count
-      params[:users_to_invite_count].presence&.to_i ||
-        @user_list_upload.user_rows_selected_for_invitation.length
+      params[:users_to_invite_count].to_i
     end
 
     def create_requests
-      @create_requests ||= CreneauOpeningRequests::Create.call(
+      @create_requests ||= CreneauOpeningRequests::CreateMany.call(
         user_list_upload: @user_list_upload,
         recipient_agent_ids: submitted_recipient_agent_ids,
         available_creneaux_count: available_creneaux_count,

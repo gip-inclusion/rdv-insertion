@@ -43,7 +43,7 @@
         sélectionnés ci-dessous.
       </p>
 
-      <%= form_with url: user_list_upload_creneau_opening_requests_path(@user_list_upload),
+      <%= form_with url: create_many_user_list_upload_creneau_opening_requests_path(@user_list_upload),
                     method: :post,
                     data: { turbo_frame: "remote_modal" } do |f| %>
         <%= turbo_frame_tag "error_list" %>

@@ -1,5 +1,5 @@
 module CreneauOpeningRequests
-  class Create < BaseService
+  class CreateMany < BaseService
     def initialize(user_list_upload:, recipient_agent_ids:, available_creneaux_count:, users_to_invite_count:)
       @user_list_upload = user_list_upload
       @recipient_agent_ids = recipient_agent_ids
@@ -25,6 +25,7 @@ module CreneauOpeningRequests
     def authorized_recipient_ids
       Agent.joins(:agent_roles)
            .where(agent_roles: { organisation_id: @user_list_upload.structure_organisations.map(&:id) })
+           .with_last_name
            .where(id: @recipient_agent_ids)
            .pluck(:id)
     end

@@ -1,4 +1,4 @@
-describe CreneauOpeningRequests::Create, type: :service do
+describe CreneauOpeningRequests::CreateMany, type: :service do
   subject(:service) do
     described_class.call(
       user_list_upload: user_list_upload,

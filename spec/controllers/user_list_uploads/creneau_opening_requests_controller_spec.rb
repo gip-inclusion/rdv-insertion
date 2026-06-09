@@ -12,7 +12,8 @@ describe UserListUploads::CreneauOpeningRequestsController do
     subject(:perform_action) do
       get :new, params: {
         user_list_upload_id: user_list_upload.id,
-        available_creneaux_count: 26
+        available_creneaux_count: 26,
+        users_to_invite_count: 30
       }
     end
 
@@ -22,10 +23,11 @@ describe UserListUploads::CreneauOpeningRequestsController do
       expect(response).to be_successful
     end
 
-    it "renders the modal with the snapshot count and recipient agent names" do
+    it "renders the modal with the counts and recipient agent names" do
       perform_action
 
       expect(response.body).to include("26 créneaux disponibles")
+      expect(response.body).to include("30 usagers à inviter")
       expect(response.body).to include(recipient_agent.to_s)
     end
 
@@ -54,11 +56,12 @@ describe UserListUploads::CreneauOpeningRequestsController do
     end
   end
 
-  describe "#create" do
+  describe "#create_many" do
     subject(:perform_action) do
-      post :create, params: {
+      post :create_many, params: {
         user_list_upload_id: user_list_upload.id,
         available_creneaux_count: 26,
+        users_to_invite_count: 30,
         recipient_agent_ids: [recipient_agent.id],
         format: "turbo_stream"
       }
@@ -81,7 +84,7 @@ describe UserListUploads::CreneauOpeningRequestsController do
 
     context "when no recipient is selected" do
       subject(:perform_action) do
-        post :create, params: {
+        post :create_many, params: {
           user_list_upload_id: user_list_upload.id,
           available_creneaux_count: 26,
           recipient_agent_ids: [],
