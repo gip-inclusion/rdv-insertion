@@ -577,7 +577,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
 
   create_table "user_list_upload_creneaux_snapshots", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "number_of_creneaux_available"
+    t.integer "number_of_creneaux_available", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_list_upload_id", null: false
     t.index ["user_list_upload_id"], name: "idx_on_user_list_upload_id_dde82cda5f"
