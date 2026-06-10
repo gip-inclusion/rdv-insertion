@@ -184,7 +184,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
     t.index ["agent_id"], name: "index_cookies_consents_on_agent_id"
   end
 
-  create_table "creneau_opening_requests", force: :cascade do |t|
+  create_table "creneau_opening_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "available_creneaux_count", null: false
     t.datetime "clicked_at"
     t.datetime "created_at", null: false
@@ -194,10 +194,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
     t.datetime "updated_at", null: false
     t.uuid "user_list_upload_id", null: false
     t.integer "users_to_invite_count", null: false
-    t.string "uuid", null: false
     t.index ["recipient_agent_id"], name: "index_creneau_opening_requests_on_recipient_agent_id"
     t.index ["user_list_upload_id"], name: "index_creneau_opening_requests_on_user_list_upload_id"
-    t.index ["uuid"], name: "index_creneau_opening_requests_on_uuid", unique: true
   end
 
   create_table "csv_exports", force: :cascade do |t|

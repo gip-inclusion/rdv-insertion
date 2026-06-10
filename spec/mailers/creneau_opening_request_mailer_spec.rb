@@ -1,5 +1,5 @@
 describe CreneauOpeningRequestMailer do
-  subject(:mail) { described_class.request_more_creneaux(creneau_opening_request: creneau_opening_request) }
+  subject { described_class.request_more_creneaux(creneau_opening_request: creneau_opening_request) }
 
   let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: 42) }
   let!(:motif_category) { create(:motif_category, name: "RSA Orientation") }
@@ -21,21 +21,21 @@ describe CreneauOpeningRequestMailer do
   end
 
   it "addresses the recipient agent" do
-    expect(mail.to).to eq(["jean.martin@example.fr"])
+    expect(subject.to).to eq(["jean.martin@example.fr"])
   end
 
   it "sets the subject with the motif category name" do
-    expect(mail.subject).to eq(
+    expect(subject.subject).to eq(
       "[Demande de créneaux] - Besoin de nouveaux créneaux sur la catégorie RSA Orientation"
     )
   end
 
   it "sets the reply-to to the team mailbox" do
-    expect(mail.reply_to).to eq(["rdv-insertion@inclusion.gouv.fr"])
+    expect(subject.reply_to).to eq(["rdv-insertion@inclusion.gouv.fr"])
   end
 
   it "renders the body with greeting, counts, sender and tracked CTA" do
-    body = mail.body.encoded.gsub(/\s+/, " ")
+    body = subject.body.encoded.gsub(/\s+/, " ")
 
     expect(body).to include("Jean MARTIN,")
                 .and include("28 usagers sont prêts à être invités")
@@ -43,6 +43,6 @@ describe CreneauOpeningRequestMailer do
                 .and include("L'ouverture de 2 créneaux supplémentaires")
                 .and include("Maria DUPUIS")
                 .and include("Ouvrir des créneaux")
-                .and include("/c/#{creneau_opening_request.uuid}")
+                .and include("/c/#{creneau_opening_request.id}")
   end
 end

@@ -84,7 +84,6 @@ tables:
       - recipient_agent_id
       - users_to_invite_count
       - available_creneaux_count
-      - uuid
       - email_sent_at
       - clicked_at
       - created_at

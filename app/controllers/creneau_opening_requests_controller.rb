@@ -3,7 +3,7 @@ class CreneauOpeningRequestsController < ApplicationController
   skip_before_action :authenticate_agent!, only: [:redirect_shortcut, :redirect]
 
   def redirect_shortcut
-    redirect_to redirect_creneau_opening_requests_path(uuid: params[:uuid])
+    redirect_to redirect_creneau_opening_requests_path(id: params[:id])
   end
 
   def redirect
@@ -14,7 +14,7 @@ class CreneauOpeningRequestsController < ApplicationController
   private
 
   def set_creneau_opening_request
-    @creneau_opening_request = CreneauOpeningRequest.find_by(uuid: params[:uuid])
+    @creneau_opening_request = CreneauOpeningRequest.find_by(id: params[:id])
     return if @creneau_opening_request.present?
 
     redirect_to root_path, flash: { error: "Ce lien n'existe pas dans notre système." }
