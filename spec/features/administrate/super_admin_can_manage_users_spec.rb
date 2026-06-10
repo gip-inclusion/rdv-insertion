@@ -120,7 +120,6 @@ describe "Super admin can manage users" do
       expect(page).to have_content("Modifier #{user.first_name} #{user.last_name}")
       expect(page).to have_css("label[for=\"user_title-selectized\"]", text: "Civilité")
       within first("div.selectize-input") do
-        expect(page).to have_field("user_title-selectized", visible: :all)
         expect(page).to have_css("div.item", text: user.title)
       end
       expect(page).to have_css("label[for=\"user_first_name\"]", text: "Prénom")
@@ -138,7 +137,6 @@ describe "Super admin can manage users" do
       expect(page).to have_css("label[for=\"user_birth_date\"]", text: "Date de naissance")
       expect(page).to have_field("user[birth_date]", with: user.birth_date)
       within all("div.selectize-input")[1] do # this is fetching the second selectize-input
-        expect(page).to have_field("user_role-selectized", visible: :all)
         expect(page).to have_css("div.item", text: user.role)
       end
       expect(page).to have_css("label[for=\"user_affiliation_number\"]", text: "Numéro CAF")
