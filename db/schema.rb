@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_10_150237) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -268,6 +268,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
   create_table "invitations", force: :cascade do |t|
     t.boolean "clicked", default: false
     t.datetime "created_at", null: false
+    t.bigint "created_by_agent_id"
     t.string "delivery_status"
     t.bigint "department_id"
     t.datetime "expires_at"
@@ -284,6 +285,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "uuid"
+    t.index ["created_by_agent_id"], name: "index_invitations_on_created_by_agent_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["expires_at"], name: "index_invitations_on_expires_at"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
@@ -765,6 +767,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_091945) do
   add_foreign_key "file_configurations", "agents", column: "created_by_agent_id"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
+  add_foreign_key "invitations", "agents", column: "created_by_agent_id"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "follow_ups"
   add_foreign_key "invitations", "users"
