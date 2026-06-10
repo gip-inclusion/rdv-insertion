@@ -11,6 +11,7 @@ class Invitation < ApplicationRecord
   belongs_to :user
   belongs_to :department
   belongs_to :follow_up
+  belongs_to :created_by_agent, class_name: "Agent", optional: true
 
   has_and_belongs_to_many :organisations
 
