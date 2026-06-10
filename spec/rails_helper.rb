@@ -77,7 +77,7 @@ RSpec.configure do |config|
   end
 
   config.before do
-    ActiveSupport::CurrentAttributes.reset
+    ActiveSupport::CurrentAttributes.clear_all
     # ensure that ActiveStorage::Current.url_options is set for all requests
     ActiveStorage::Current.url_options = { host: ENV["HOST"] }
     DatabaseCleaner.clean_with(:truncation)
