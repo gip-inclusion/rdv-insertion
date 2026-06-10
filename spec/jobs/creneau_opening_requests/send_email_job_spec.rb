@@ -1,5 +1,5 @@
 describe CreneauOpeningRequests::SendEmailJob do
-  subject(:perform_job) { described_class.new.perform(creneau_opening_request.id) }
+  subject { described_class.new.perform(creneau_opening_request.id) }
 
   let!(:creneau_opening_request) { create(:creneau_opening_request) }
 
@@ -13,11 +13,11 @@ describe CreneauOpeningRequests::SendEmailJob do
     expect(CreneauOpeningRequestMailer).to receive(:request_more_creneaux)
       .with(creneau_opening_request: creneau_opening_request)
 
-    perform_job
+    subject
   end
 
   it "stamps email_sent_at on the record" do
-    expect { perform_job }
+    expect { subject }
       .to change { creneau_opening_request.reload.email_sent_at }.from(nil)
   end
 
@@ -27,11 +27,11 @@ describe CreneauOpeningRequests::SendEmailJob do
     it "does not send the email again" do
       expect(CreneauOpeningRequestMailer).not_to receive(:request_more_creneaux)
 
-      perform_job
+      subject
     end
 
     it "does not change email_sent_at" do
-      expect { perform_job }
+      expect { subject }
         .not_to(change { creneau_opening_request.reload.email_sent_at })
     end
   end
