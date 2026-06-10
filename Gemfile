@@ -103,7 +103,7 @@ gem "rubyzip"
 gem "blueprinter"
 
 # A Rails engine for creating super-flexible admin dashboards
-gem "administrate", git: "https://github.com/thoughtbot/administrate.git"
+gem "administrate", "~> 1.0"
 
 # manage attachments from administrate dashboards
 gem "administrate-field-active_storage"
