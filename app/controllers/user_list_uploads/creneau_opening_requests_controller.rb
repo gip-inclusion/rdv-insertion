@@ -1,8 +1,8 @@
 module UserListUploads
   class CreneauOpeningRequestsController < ApplicationController
-    before_action :set_user_list_upload, only: [:new, :create_many]
+    before_action :set_user_list_upload, only: [:new_batch, :create_many]
 
-    def new
+    def new_batch
       @available_creneaux_count = available_creneaux_count
       @users_to_invite_count = users_to_invite_count
       @missing_creneaux_count = @users_to_invite_count - @available_creneaux_count

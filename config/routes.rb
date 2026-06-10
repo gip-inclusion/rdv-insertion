@@ -160,7 +160,8 @@ Rails.application.routes.draw do
       get :select_rows, on: :collection
       post :create_many, on: :collection
     end
-    resources :creneau_opening_requests, only: [:new] do
+    resources :creneau_opening_requests, only: [] do
+      get :new_batch, on: :collection
       post :create_many, on: :collection
     end
   end

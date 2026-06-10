@@ -9,7 +9,7 @@
         <%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "disponible", with_count: false) %></strong>
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
       <%= link_to "Demander plus de créneaux",
-                  new_user_list_upload_creneau_opening_request_path(
+                  new_batch_user_list_upload_creneau_opening_requests_path(
                     user_list_upload,
                     available_creneaux_count: creneaux_snapshot.number_of_creneaux_available,
                     users_to_invite_count: user_list_upload.user_rows_selected_for_invitation.size

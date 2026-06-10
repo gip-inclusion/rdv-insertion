@@ -18,7 +18,7 @@ describe "Agent can request more creneaux", :js do
   before { setup_agent_session(agent) }
 
   it "sends a creneau opening request to the selected agents" do
-    visit new_user_list_upload_creneau_opening_request_path(user_list_upload, available_creneaux_count: 26)
+    visit new_batch_user_list_upload_creneau_opening_requests_path(user_list_upload, available_creneaux_count: 26)
 
     expect(page).to have_content("Demander plus de créneaux")
     expect(page).to have_content("26 créneaux disponibles")
@@ -35,7 +35,7 @@ describe "Agent can request more creneaux", :js do
   end
 
   it "shows an inline error when no agent is selected" do
-    visit new_user_list_upload_creneau_opening_request_path(user_list_upload, available_creneaux_count: 26)
+    visit new_batch_user_list_upload_creneau_opening_requests_path(user_list_upload, available_creneaux_count: 26)
 
     click_button "Envoyer la demande"
 
