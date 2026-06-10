@@ -17,16 +17,6 @@ GIT
     anonymizer (0.1.0)
       activerecord (>= 7.0)
 
-GIT
-  remote: https://github.com/thoughtbot/administrate.git
-  revision: 34244f0d03c990ef024d4fdbea7c6f2caa54f21b
-  specs:
-    administrate (1.0.0)
-      actionpack (>= 6.0, < 9.0)
-      actionview (>= 6.0, < 9.0)
-      activerecord (>= 6.0, < 9.0)
-      kaminari (~> 1.2.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -111,11 +101,18 @@ GEM
       uri (>= 0.13.1)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
+    administrate (1.0.0)
+      actionpack (>= 6.0, < 9.0)
+      actionview (>= 6.0, < 9.0)
+      activerecord (>= 6.0, < 9.0)
+      kaminari (~> 1.2.2)
     administrate-field-active_storage (1.0.6)
       administrate (>= 0.2.2)
       rails (>= 7.0)
     afm (1.0.0)
     ast (2.4.3)
+    auth-sanitizer (0.2.1)
+      version_gem (~> 1.1, >= 1.1.10)
     aws-eventstream (1.4.0)
     aws-partitions (1.1213.0)
     aws-sdk-core (3.242.0)
@@ -330,14 +327,15 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.3-x86_64-linux-musl)
       racc (~> 1.4)
-    oauth2 (2.0.18)
+    oauth2 (2.0.22)
+      auth-sanitizer (~> 0.2, >= 0.2.1)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
       logger (~> 1.2)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 4)
-      snaky_hash (~> 2.0, >= 2.0.3)
-      version_gem (~> 1.1, >= 1.1.9)
+      snaky_hash (~> 2.0, >= 2.0.5)
+      version_gem (~> 1.1, >= 1.1.11)
     omniauth (2.1.4)
       hashie (>= 3.4.6)
       logger
@@ -580,7 +578,7 @@ GEM
       sidekiq (>= 6)
     skylight (7.0.0)
       activesupport (>= 7.1.0)
-    snaky_hash (2.0.3)
+    snaky_hash (2.0.5)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
     spring (3.1.1)
@@ -611,7 +609,7 @@ GEM
     unicode-emoji (4.2.0)
     uri (1.1.1)
     useragent (0.16.11)
-    version_gem (1.1.9)
+    version_gem (1.1.11)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -649,7 +647,7 @@ DEPENDENCIES
   activerecord-import
   activerecord-safer_migrations
   addressable
-  administrate!
+  administrate (~> 1.0)
   administrate-field-active_storage
   anonymizer!
   aws-sdk-s3
