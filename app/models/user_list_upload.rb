@@ -80,6 +80,10 @@ class UserListUpload < ApplicationRecord
     department_level? ? structure.organisations : [structure]
   end
 
+  def creneaux_availability_period
+    Creneaux::PeriodCalculator.new(motif_category:, organisations:, from: created_at).calculate
+  end
+
   def invitations_enabled? = category_configuration.present?
 
   def restricted_user_attributes

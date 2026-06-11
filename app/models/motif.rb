@@ -19,6 +19,9 @@ class Motif < ApplicationRecord
   scope :active, ->(active = true) { active ? where(deleted_at: nil) : where.not(deleted_at: nil) }
   scope :collectif, -> { where(collectif: true) }
   scope :individuel, -> { where(collectif: false) }
+  scope :bookable_by_everyone_or_invited_users, lambda {
+    where(bookable_by: %w[agents_and_prescripteurs_and_invited_users everyone])
+  }
 
   after_commit :alert_motif_category_has_changed, on: %i[update]
 

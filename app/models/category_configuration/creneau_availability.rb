@@ -33,4 +33,12 @@ class CategoryConfiguration::CreneauAvailability < ApplicationRecord
   def low_availability?
     %w[danger warning].include?(availability_level)
   end
+
+  def availability_period
+    Creneaux::PeriodCalculator.new(
+      motif_category: category_configuration.motif_category,
+      organisations: [category_configuration.organisation],
+      from: created_at
+    ).calculate
+  end
 end
