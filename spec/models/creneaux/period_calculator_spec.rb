@@ -58,6 +58,17 @@ describe Creneaux::PeriodCalculator do
     end
   end
 
+  context "when motifs have no booking delays yet (not backfilled)" do
+    before do
+      create(:motif, motif_category:, organisation:, bookable_by: "agents_and_prescripteurs_and_invited_users",
+                     min_public_booking_delay: nil, max_public_booking_delay: nil)
+    end
+
+    it "returns nil" do
+      expect(subject.calculate).to be_nil
+    end
+  end
+
   context "when there is no bookable motif for the category" do
     it "returns nil" do
       expect(subject.calculate).to be_nil
