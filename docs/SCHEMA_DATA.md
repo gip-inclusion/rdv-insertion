@@ -139,6 +139,7 @@ Représente une invitation envoyée à un usager pour qu'il prenne rendez-vous.
 - `delivery_status` : Statut de livraison (Brevo)
 - `rdv_with_referents` : Invitation à un rdv avec référent ?
 - `help_phone_number` : Numéro d'aide affiché
+- `created_by_agent_id` : Agent ayant initié l'envoi de l'invitation
 
 **Relations** :
 - Appartient à un `user`
