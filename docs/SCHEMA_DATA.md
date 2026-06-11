@@ -28,14 +28,19 @@ Représente les usagers suivis dans l'application, souvent des bénéficaires du
 **Champs clés** :
 - `rdv_solidarites_user_id` : ID dans RDV-Solidarités (synchronisation)
 - `first_name`, `last_name` : Identité
+- `birth_name` : Nom de naissance
+- `birth_date` : Date de naissance
+- `title` : Civilité ("monsieur", "madame")
 - `email`, `phone_number`, `address` : Coordonnées pour les contacter
 - `affiliation_number` : Numéro d'allocataire CAF
 - `department_internal_id` : ID de l'usager dans le SI du département
 - `france_travail_id` : Identifiant France Travail
 - `nir` : Numéro de sécurité sociale (encrypté)
 - `role` : "demandeur" ou "conjoint"
+- `rights_opening_date` : Date d'ouverture des droits RSA
 - `deleted_at` : Soft delete pour RGPD
 - `created_through` : Source de création ("rdv_insertion_upload_page", "rdv_solidarites_webhook", etc.)
+- `created_from_structure_type`, `created_from_structure_id` : Structure d'origine de création (polymorphic : Department ou Organisation)
 
 **Relations** :
 - Appartient à plusieurs `organisations` via `users_organisations`
@@ -60,8 +65,11 @@ Représente les structures qui suivent les usagers (CD, France Travail, SIAE, et
 - `organisation_type` : Type (conseil_departemental, delegataire_rsa, france_travail, siae, autre)
 - `email`, `phone_number` : Coordonnées
 - `safir_code` : Code SAFIR pour France Travail
+- `slug` : Identifiant court pour repérer l'organisation dans les fichiers d'import
+- `website` : Site web de l'organisation
 - `archived_at` : Date d'archivage si inactive
 - `data_retention_duration_in_months` : Durée de conservation des données (RGPD)
+- `display_in_stats` : Inclure l'organisation dans les statistiques ?
 
 **Relations** :
 - Appartient à un `department`
@@ -137,7 +145,10 @@ Représente une invitation envoyée à un usager pour qu'il prenne rendez-vous.
 - `clicked` : L'usager a-t-il cliqué sur le lien ?
 - `trigger` : "manual" (manuelle) ou "reminder" (relance)
 - `delivery_status` : Statut de livraison (Brevo)
+- `sms_provider` : Fournisseur SMS utilisé (pour les invitations SMS)
+- `last_brevo_webhook_received_at` : Date du dernier webhook Brevo reçu
 - `rdv_with_referents` : Invitation à un rdv avec référent ?
+- `rdv_solidarites_lieu_id` : Lieu pré-sélectionné dans le lien de prise de RDV (optionnel)
 - `help_phone_number` : Numéro d'aide affiché
 
 **Relations** :
@@ -165,6 +176,10 @@ Représente un rendez-vous créé dans RDV-Solidarités.
 - `cancelled_at` : Date d'annulation
 - `created_by` : Origine ("agent", "user", "prescripteur")
 - `context` : Contexte/notes
+- `address` : Adresse du RDV
+- `visio_url` : URL de visioconférence (RDV à distance)
+- `uuid` : Identifiant utilisé dans les URLs publiques
+- `time_zone` : Fuseau horaire du RDV
 - `users_count` : Nombre de participants
 - `max_participants_count` : Nombre max de participants RDV collectifs
 
@@ -360,6 +375,18 @@ Représente les types d'orientations possibles dans un département.
 
 ---
 
+### **post_rdv_orientations** - Orientations issues d'un RDV
+
+Représente une orientation décidée à l'issue d'un RDV (résultat d'un entretien d'orientation).
+
+**Rôle** : Lie une participation au type d'orientation retenu lors du RDV
+
+**Champs clés** :
+- `participation_id` : Participation concernée (unique : une seule orientation par participation)
+- `orientation_type_id` : Type d'orientation retenu
+
+---
+
 ### **tags** - Étiquettes
 
 Représente les tags/étiquettes à appliquer aux usagers.
@@ -450,6 +477,16 @@ Représente les tentatives d'invitation depuis un import.
 
 ---
 
+### **user_list_upload_creneaux_snapshots** - Photo des créneaux à l'import
+
+Capture le nombre de créneaux disponibles au moment d'un import, afin d'informer l'agent avant l'envoi des invitations.
+
+**Champs clés** :
+- `user_list_upload_id` : Import concerné
+- `number_of_creneaux_available` : Nombre de créneaux disponibles au moment de l'import
+
+---
+
 ## Tables de Configuration
 
 ### **file_configurations** - Configurations d'import
@@ -514,6 +551,17 @@ Représente l'acceptation du DPA (Data Processing Agreement) par une organisatio
 ---
 
 ## Tables Techniques
+
+### **api_calls** - Journal des appels API
+
+Trace les appels reçus sur l'API de rdv-insertion (audit / suivi d'usage).
+
+**Champs clés** :
+- `agent_id` : Agent à l'origine de l'appel (optionnel)
+- `controller_name`, `action_name` : Contrôleur et action appelés
+- `http_method`, `path`, `host` : Détails de la requête HTTP
+
+---
 
 ### **csv_exports** - Exports CSV
 
@@ -588,9 +636,9 @@ Nombre des invitations dont le lien renvoie vers des créneaux indisponibles par
 
 ---
 
-### **creneau_availabilities** - Disponibilités de créneaux
+### **category_configuration_creneau_availabilities** - Disponibilités de créneaux
 
-Suivi du nombre de créneaux disponibles pour une configuration.
+Suivi historisé du nombre de créneaux disponibles pour une configuration (un enregistrement par relevé, indexé sur `created_at`).
 
 **Champs clés** :
 - `category_configuration_id` : Configuration
@@ -649,6 +697,20 @@ Demandes d'authentification renforcée en tant que super-admin.
 ### **user_list_upload_processing_logs** - Log des temps de traitement d'une liste d'usager
 
 Log les temps de traitement (sauvegarde d'usagers, invitations) d'une liste d'usagers
+
+---
+
+## Tables de Jonction
+
+Tables de liaison simples (many-to-many) entre deux entités :
+
+- **users_organisations** : Lie les `users` aux `organisations` qui les suivent (`user_id`, `organisation_id`)
+- **invitations_organisations** : Lie une `invitation` aux `organisations` concernées (`invitation_id`, `organisation_id`)
+- **agents_rdvs** : Lie les `agents` aux `rdvs` auxquels ils participent (`agent_id`, `rdv_id`)
+- **tag_users** : Lie les `tags` aux `users` (`tag_id`, `user_id`)
+- **tag_organisations** : Lie les `tags` aux `organisations` qui les rendent disponibles (`tag_id`, `organisation_id`)
+
+> Les tables de jonction enrichies (avec attributs propres) sont documentées séparément : `agent_roles`, `participations`, `referent_assignations`.
 
 ## Tables Active Storage
 
