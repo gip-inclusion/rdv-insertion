@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_11_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_11_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -362,8 +362,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_11_090000) do
     t.text "instruction_for_rdv", default: ""
     t.datetime "last_webhook_update_received_at"
     t.string "location_type"
-    t.integer "max_public_booking_delay"
-    t.integer "min_public_booking_delay"
+    t.integer "max_public_booking_delay", null: false
+    t.integer "min_public_booking_delay", null: false
     t.bigint "motif_category_id"
     t.string "name"
     t.bigint "organisation_id", null: false
