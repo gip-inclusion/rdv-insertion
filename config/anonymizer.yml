@@ -263,6 +263,8 @@ tables:
       - follow_up
       - motif_category_id
       - default_duration_in_min
+      - min_public_booking_delay
+      - max_public_booking_delay
 
   - table_name: notifications
     anonymized_column_names: []
