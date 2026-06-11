@@ -39,7 +39,9 @@ module TurboStreamConcern
 
   def turbo_stream_display_success_modal(message, title: "✅ Succès", reload_on_close: false)
     turbo_stream_display_modal(
-      partial: "common/success_modal", locals: { message:, title:, reload_on_close: }, status: :ok
+      partial: "common/success_modal",
+      locals: { message:, title:, reload_on_close: },
+      status: :ok
     )
   end
 

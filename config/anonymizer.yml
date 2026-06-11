@@ -77,6 +77,18 @@ tables:
       - updated_at
       - created_at
 
+  - table_name: creneau_opening_requests
+    non_anonymized_column_names:
+      - link
+      - user_list_upload_id
+      - recipient_agent_id
+      - users_to_invite_count
+      - available_creneaux_count
+      - email_sent_at
+      - clicked_at
+      - created_at
+      - updated_at
+
   - table_name: category_configurations
     anonymized_column_names:
       - template_rdv_title_override
