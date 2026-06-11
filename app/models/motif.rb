@@ -1,7 +1,7 @@
 class Motif < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :deleted_at, :location_type, :name, :bookable_by, :rdv_solidarites_service_id, :collectif,
-    :follow_up, :instruction_for_rdv, :default_duration_in_min
+    :follow_up, :instruction_for_rdv, :default_duration_in_min, :min_public_booking_delay, :max_public_booking_delay
   ].freeze
 
   enum :location_type, { public_office: "public_office", phone: "phone", home: "home", visio: "visio" }
