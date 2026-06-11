@@ -163,4 +163,29 @@ describe UpsertRecord, type: :service do
       end
     end
   end
+
+  context "for a motif" do
+    subject do
+      described_class.call(klass: Motif, rdv_solidarites_attributes: motif_attributes)
+    end
+
+    let!(:rdv_solidarites_motif_id) { 12 }
+    let!(:motif_attributes) do
+      {
+        id: rdv_solidarites_motif_id, name: "RSA orientation", location_type: "public_office",
+        default_duration_in_min: 30, min_public_booking_delay: 1800, max_public_booking_delay: 7_889_238
+      }
+    end
+
+    describe "#call" do
+      let!(:motif) { create(:motif, rdv_solidarites_motif_id: rdv_solidarites_motif_id) }
+
+      it "assigns the booking delays" do
+        subject
+        expect(motif.reload).to have_attributes(
+          min_public_booking_delay: 1800, max_public_booking_delay: 7_889_238
+        )
+      end
+    end
+  end
 end
