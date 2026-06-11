@@ -1,4 +1,5 @@
 <%# locals: (user_list_upload:, creneaux_snapshot:) %>
+<% period = display_date_period(user_list_upload.creneaux_availability_period) %>
 
 <div class="alert alert-warning d-flex align-items-center justify-content-between mb-0" role="alert"
      id="rdvi_upload_creneaux-before-invite_not-enough_banner" data-controller="flash">
@@ -7,6 +8,9 @@
     <span class="text-dark">
       <strong><%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "créneau") %>
         <%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "disponible", with_count: false) %></strong>
+      <% if period %>
+        pour la période <%= period %>,
+      <% end %>
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
       <%= link_to "Demander plus de créneaux",
                   new_batch_user_list_upload_creneau_opening_requests_path(

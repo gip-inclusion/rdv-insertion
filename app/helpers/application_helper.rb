@@ -29,6 +29,16 @@ module ApplicationHelper
     date&.strftime("%d/%m/%Y")
   end
 
+  def display_date_period(range)
+    # "du 11 au 30 mai 2026" ou "du 25 décembre au 3 janvier 2026"
+    return if range.blank?
+
+    starts_on = range.begin.to_date
+    ends_on = range.end.to_date
+    start_format = starts_on.month == ends_on.month ? "%-d" : "%-d %B"
+    "du #{I18n.l(starts_on, format: start_format)} au #{I18n.l(ends_on, format: '%-d %B %Y')}"
+  end
+
   def component_name_for_department(department_name)
     department_name.parameterize.capitalize
   end

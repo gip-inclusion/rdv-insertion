@@ -963,12 +963,18 @@ describe UsersController do
         create(:creneau_availability, category_configuration: category_configuration,
                                       number_of_creneaux_available: 11)
       end
+      let!(:motif) do
+        create(:motif, organisation:, motif_category: category_orientation,
+                       bookable_by: "agents_and_prescripteurs_and_invited_users",
+                       min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
+      end
 
       it "displays the banner at organisation level" do
         get :index, params: index_params
 
         expect(response.body).to include("11 créneaux disponibles")
                              .and include("Calculé le")
+                             .and include("pour la période du")
       end
 
       context "when at department level" do

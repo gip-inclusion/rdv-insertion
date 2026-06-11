@@ -9,6 +9,10 @@ describe "Agents can see créneaux availability before inviting", :js do
   let!(:category_configuration) do
     create(:category_configuration, organisation:, motif_category:)
   end
+  let!(:motif) do
+    create(:motif, organisation:, motif_category:, bookable_by: "agents_and_prescripteurs_and_invited_users",
+                   min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
+  end
 
   let!(:user_list_upload) do
     create(:user_list_upload, agent:, category_configuration:, structure: organisation)
@@ -31,6 +35,7 @@ describe "Agents can see créneaux availability before inviting", :js do
 
       within(".alert-info") do
         expect(page).to have_content("50 créneaux disponibles")
+        expect(page).to have_content("pour la période du")
         expect(page).to have_content("RSA orientation")
         expect(page).to have_link("Consulter le planning")
       end
@@ -47,6 +52,7 @@ describe "Agents can see créneaux availability before inviting", :js do
 
       within(".alert-warning") do
         expect(page).to have_content("1 créneau disponible")
+        expect(page).to have_content("pour la période du")
         expect(page).to have_link("Demander plus de créneaux")
       end
 

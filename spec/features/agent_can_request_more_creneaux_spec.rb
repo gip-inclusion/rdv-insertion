@@ -5,8 +5,13 @@ describe "Agent can request more creneaux", :js do
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
   end
+  let!(:motif) do
+    create(:motif, organisation:, motif_category:, bookable_by: "agents_and_prescripteurs_and_invited_users",
+                   min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
+  end
   let!(:user_list_upload) do
-    create(:user_list_upload, structure: organisation, category_configuration: category_configuration, agent: agent)
+    create(:user_list_upload, structure: organisation, category_configuration: category_configuration, agent: agent,
+                              created_at: Time.zone.local(2026, 5, 15, 9))
   end
   let!(:recipient_agent) do
     create(:agent, organisations: [organisation], first_name: "Maria", last_name: "Dupuis")
@@ -22,6 +27,7 @@ describe "Agent can request more creneaux", :js do
 
     expect(page).to have_content("Demander plus de créneaux")
     expect(page).to have_content("26 créneaux disponibles")
+    expect(page).to have_content("du 18 mai au 14 juin 2026")
     expect(page).to have_content("RSA Orientation")
     expect(page).to have_no_content("Jean ETRANGER")
 
