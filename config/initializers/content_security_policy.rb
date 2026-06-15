@@ -6,6 +6,7 @@
 
 s3_bucket = "rdv-insertion-medias-#{ENV['ENVIRONMENT_NAME']}.s3.fr-par.scw.cloud"
 rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
+pro_connect_auth = ["auth.proconnect.gouv.fr", "auth.agentconnect.gouv.fr"]
 matomo = "matomo.inclusion.beta.gouv.fr"
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
@@ -22,7 +23,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.script_src      :self, matomo, *crisp, *flourish, tally, sentry
   policy.style_src       :self, :unsafe_inline, *crisp
   policy.connect_src     :self, rdv_solidarites, sentry, matomo, tally, *crisp
-  policy.form_action     :self, rdv_solidarites
+  policy.form_action     :self, rdv_solidarites, *pro_connect_auth
   policy.frame_ancestors :self, rdv_solidarites, matomo
   policy.worker_src      :self, :blob
   # Specify URI for violation reports
