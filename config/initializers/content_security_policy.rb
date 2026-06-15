@@ -6,7 +6,12 @@
 
 s3_bucket = "rdv-insertion-medias-#{ENV['ENVIRONMENT_NAME']}.s3.fr-par.scw.cloud"
 rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
-pro_connect_auth = ["auth.proconnect.gouv.fr", "auth.agentconnect.gouv.fr"]
+pro_connect_auth =
+  if ENV["ENVIRONMENT_NAME"] == "production"
+    ["auth.proconnect.gouv.fr", "auth.agentconnect.gouv.fr"]
+  else
+    ["*.dev-agentconnect.fr"]
+  end
 matomo = "matomo.inclusion.beta.gouv.fr"
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
