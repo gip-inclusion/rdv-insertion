@@ -1,4 +1,4 @@
-<% period = display_date_period(@latest_creneau_availability.availability_period) %>
+<% period = display_date_period(@latest_creneau_availability.creneaux_available_from, @latest_creneau_availability.creneaux_available_until) %>
 <div class="alert alert-info d-flex justify-content-center align-items-center mt-3 mb-1" role="alert">
   <div class="rounded bg-white p-2 d-inline-flex align-items-center gap-2">
     <span class="background-green-light rounded-circle p-1">
@@ -8,7 +8,7 @@
       <%= @latest_creneau_availability.number_of_creneaux_available %> créneaux disponibles
     </span>
     <span class="text-muted small">
-      Calculé le <%= @latest_creneau_availability.created_at.strftime("%d/%m à %Hh%M") %><% if period %> pour la période <%= period %><% end %>
+      Calculé le <%= @latest_creneau_availability.created_at.strftime("%d/%m à %Hh%M") %> pour la période <%= period %>
     </span>
   </div>
   <% if (tally_url = ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_URL"]).present? %>

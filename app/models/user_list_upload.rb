@@ -2,6 +2,7 @@ class UserListUpload < ApplicationRecord
   include UserListUpload::Metrics
   include UserListUpload::Navigation
   include UserListUpload::CreneauxSnapshotRetrievable
+  include Creneaux::AvailabilityPeriod
 
   STEPS_BY_ORIGIN = {
     file_upload: %i[user_save invitation],
@@ -80,8 +81,9 @@ class UserListUpload < ApplicationRecord
     department_level? ? structure.organisations : [structure]
   end
 
-  def creneaux_availability_period
-    Creneaux::PeriodCalculator.new(motif_category:, organisations:, from: created_at).calculate
+  def motifs_with_public_creneaux
+    Motif.active.bookable_by_everyone_or_invited_users.without_referents
+         .where(motif_category:, organisation: organisations)
   end
 
   def invitations_enabled? = category_configuration.present?

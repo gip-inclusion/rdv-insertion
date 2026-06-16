@@ -1,4 +1,6 @@
 class CategoryConfiguration::CreneauAvailability < ApplicationRecord
+  include Creneaux::AvailabilityPeriod
+
   self.table_name = "category_configuration_creneau_availabilities"
 
   belongs_to :category_configuration
@@ -34,11 +36,9 @@ class CategoryConfiguration::CreneauAvailability < ApplicationRecord
     %w[danger warning].include?(availability_level)
   end
 
-  def availability_period
-    Creneaux::PeriodCalculator.new(
-      motif_category: category_configuration.motif_category,
-      organisations: [category_configuration.organisation],
-      from: created_at
-    ).calculate
+  def motifs_with_public_creneaux
+    Motif.active.bookable_by_everyone_or_invited_users.without_referents
+         .where(motif_category: category_configuration.motif_category,
+                organisation: category_configuration.organisation)
   end
 end

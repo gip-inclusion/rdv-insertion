@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Demander plus de créneaux", title_class: "fs-4 fw-bold" do %>
-  <% period = display_date_period(@user_list_upload.creneaux_availability_period) %>
+  <% period = display_date_period(@user_list_upload.creneaux_available_from, @user_list_upload.creneaux_available_until) %>
   <div class="p-2">
     <p class="fw-bold">Situation sur la catégorie « <%= @user_list_upload.motif_category.name %> »</p>
     <div class="row mb-3">
@@ -9,9 +9,7 @@
             <i class="ri-calendar-line"></i>
           </span>
           <p class="mb-0 medium"><%= @available_creneaux_count %> créneaux disponibles</p>
-          <% if period %>
-            <p class="text-muted small mb-0"><%= period %></p>
-          <% end %>
+          <p class="text-muted small mb-0"><%= period %></p>
         </div>
       </div>
       <div class="col-md-6 mb-2">
