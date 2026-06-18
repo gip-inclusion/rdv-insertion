@@ -84,6 +84,17 @@ describe CreateAndInviteUserJob do
     end
   end
 
+  context "when the user has neither phone nor email" do
+    let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
+
+    before { user.update!(phone_number: nil, email: nil) }
+
+    it "still creates a follow up so the user is tracked in the category" do
+      expect { subject }.to change { user.follow_ups.count }.by(1)
+      expect(user.follow_ups.last.motif_category).to eq(motif_category)
+    end
+  end
+
   context "when the save fails" do
     let!(:department_mail) { instance_double("mail") }
 
