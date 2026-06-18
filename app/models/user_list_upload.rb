@@ -82,8 +82,7 @@ class UserListUpload < ApplicationRecord
   end
 
   def motifs_with_public_creneaux
-    Motif.active.bookable_by_everyone_or_invited_users.without_referents
-         .where(motif_category:, organisation: organisations)
+    Motif.with_public_creneaux.where(motif_category:, organisation: organisations)
   end
 
   def invitations_enabled? = category_configuration.present?

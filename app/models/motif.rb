@@ -23,15 +23,18 @@ class Motif < ApplicationRecord
     where(bookable_by: %w[agents_and_prescripteurs_and_invited_users everyone])
   }
   scope :without_referents, -> { where(follow_up: false) }
+  scope :with_public_creneaux, -> { active.bookable_by_everyone_or_invited_users.without_referents }
 
   after_commit :alert_motif_category_has_changed, on: %i[update]
 
   def self.earliest_booking_date(from:)
-    (from + minimum(:min_public_booking_delay).seconds).to_date
+    delay = minimum(:min_public_booking_delay)
+    (from + delay.seconds).to_date if delay
   end
 
   def self.latest_booking_date(from:)
-    (from + maximum(:max_public_booking_delay).seconds).to_date
+    delay = maximum(:max_public_booking_delay)
+    (from + delay.seconds).to_date if delay
   end
 
   def presential?

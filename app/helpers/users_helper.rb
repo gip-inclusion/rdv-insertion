@@ -4,10 +4,8 @@ module UsersHelper
     period = display_date_period(
       creneau_availability.creneaux_available_from, creneau_availability.creneaux_available_until
     )
-    lines = [
-      "Pour la période #{period}",
-      "Calculé le #{creneau_availability.created_at.strftime('%d/%m à %Hh%M')}"
-    ]
+    lines = ["Calculé le #{creneau_availability.created_at.strftime('%d/%m à %Hh%M')}"]
+    lines.unshift("Pour la période #{period}") if period
     tooltip(content: safe_join(lines, tag.br))
   end
 

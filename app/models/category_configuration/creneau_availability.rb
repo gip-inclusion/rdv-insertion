@@ -37,8 +37,9 @@ class CategoryConfiguration::CreneauAvailability < ApplicationRecord
   end
 
   def motifs_with_public_creneaux
-    Motif.active.bookable_by_everyone_or_invited_users.without_referents
-         .where(motif_category: category_configuration.motif_category,
-                organisation: category_configuration.organisation)
+    Motif.with_public_creneaux.where(
+      motif_category: category_configuration.motif_category,
+      organisation: category_configuration.organisation
+    )
   end
 end
