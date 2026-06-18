@@ -973,8 +973,9 @@ describe UsersController do
         get :index, params: index_params
 
         expect(response.body).to include("11 créneaux disponibles")
+                             .and include("ri-information-line")
                              .and include("Calculé le")
-                             .and include("pour la période du")
+                             .and include("Pour la période du")
       end
 
       context "when at department level" do

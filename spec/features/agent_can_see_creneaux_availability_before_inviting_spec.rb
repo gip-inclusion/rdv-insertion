@@ -30,12 +30,13 @@ describe "Agents can see créneaux availability before inviting", :js do
   context "when there are more créneaux than users to invite" do
     let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 50) }
 
+    before { user_list_upload.update_column(:created_at, Time.zone.local(2026, 5, 15, 9)) }
+
     it "shows an informative banner with a link to the planning" do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
       within(".alert-info") do
-        expect(page).to have_content("50 créneaux disponibles")
-        expect(page).to have_content("pour la période du")
+        expect(page).to have_content("50 créneaux disponibles du 18 mai au 14 juin 2026")
         expect(page).to have_content("RSA orientation")
         expect(page).to have_link("Consulter le planning")
       end
@@ -47,12 +48,13 @@ describe "Agents can see créneaux availability before inviting", :js do
   context "when there are fewer créneaux than users to invite" do
     let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 1) }
 
+    before { user_list_upload.update_column(:created_at, Time.zone.local(2026, 5, 15, 9)) }
+
     it "shows a warning banner but still allows inviting" do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
       within(".alert-warning") do
-        expect(page).to have_content("1 créneau disponible")
-        expect(page).to have_content("pour la période du")
+        expect(page).to have_content("1 créneau disponible du 18 mai au 14 juin 2026")
         expect(page).to have_link("Demander plus de créneaux")
       end
 

@@ -1,4 +1,3 @@
-<% period = display_date_period(@latest_creneau_availability.creneaux_available_from, @latest_creneau_availability.creneaux_available_until) %>
 <div class="alert alert-info d-flex justify-content-center align-items-center mt-3 mb-1" role="alert">
   <div class="rounded bg-white p-2 d-inline-flex align-items-center gap-2">
     <span class="background-green-light rounded-circle p-1">
@@ -7,9 +6,7 @@
     <span class="medium text-dark-green">
       <%= @latest_creneau_availability.number_of_creneaux_available %> créneaux disponibles
     </span>
-    <span class="text-muted small">
-      Calculé le <%= @latest_creneau_availability.created_at.strftime("%d/%m à %Hh%M") %> pour la période <%= period %>
-    </span>
+    <i class="ri-information-line text-muted" <%= creneau_availability_tooltip_content(@latest_creneau_availability) %>></i>
   </div>
   <% if (tally_url = ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_URL"]).present? %>
     <% tally_params = { email: current_agent.email,

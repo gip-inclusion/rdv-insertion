@@ -8,7 +8,7 @@
     <span class="text-dark">
       <strong><%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "créneau") %>
         <%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "disponible", with_count: false) %></strong>
-      pour la période <%= period %>,
+      <%= period %>,
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
       <%= link_to "Demander plus de créneaux",
                   new_batch_user_list_upload_creneau_opening_requests_path(
