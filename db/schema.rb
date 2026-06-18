@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_11_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_18_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -195,7 +195,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_11_090000) do
     t.uuid "user_list_upload_id", null: false
     t.integer "users_to_invite_count", null: false
     t.index ["recipient_agent_id"], name: "index_creneau_opening_requests_on_recipient_agent_id"
-    t.index ["user_list_upload_id"], name: "index_creneau_opening_requests_on_user_list_upload_id"
+    t.index ["user_list_upload_id", "recipient_agent_id"], name: "idx_on_user_list_upload_id_recipient_agent_id_b0a0d7a122", unique: true
   end
 
   create_table "csv_exports", force: :cascade do |t|
