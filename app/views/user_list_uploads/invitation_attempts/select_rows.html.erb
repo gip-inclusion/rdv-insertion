@@ -60,7 +60,7 @@
                   <%= check_box_tag "format_sms", "SMS", checked: invitation_format_checked?("sms", @user_list_upload.id), class: "form-check-input text-dark-blue", data: { user_list_upload__select_user_rows_target: "invitationFormatOption", action: "change->user-list-upload--select-user-rows#handleFormatOptionChange", format: "sms" } %>
                   <%= label_tag "format_sms", "SMS", class: "form-check-label" %>
                 </div>
-                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", id: "rdvi_upload_users-invit_send-invit", disabled: @number_of_user_rows_selected.zero? || @creneaux_snapshot&.no_creneaux_available? %>
+                <%= submit_tag "Envoyer les invitations", class: "btn btn-primary d-block mx-auto", id: "rdvi_upload_users-invit_send-invit", disabled: @number_of_user_rows_selected.zero? %>
               </div>
             <% end %>
           </div>

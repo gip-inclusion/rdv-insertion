@@ -42,4 +42,16 @@ describe "Agent can request more creneaux", :js do
     expect(page).to have_content("Aucun agent destinataire sélectionné")
     expect(CreneauOpeningRequest.count).to eq(0)
   end
+
+  context "when a request was already sent to an agent for this upload" do
+    before { create(:creneau_opening_request, user_list_upload:, recipient_agent:) }
+
+    it "shows that agent already checked and disabled" do
+      visit new_batch_user_list_upload_creneau_opening_requests_path(user_list_upload, available_creneaux_count: 26)
+
+      checkbox = find("input[type=checkbox][value='#{recipient_agent.id}']", visible: :all)
+      expect(checkbox).to be_checked
+      expect(checkbox).to be_disabled
+    end
+  end
 end

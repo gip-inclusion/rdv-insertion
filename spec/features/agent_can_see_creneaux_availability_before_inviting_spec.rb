@@ -57,7 +57,7 @@ describe "Agents can see créneaux availability before inviting", :js do
   context "when there are no créneaux available" do
     let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 0) }
 
-    it "shows a danger banner and prevents inviting" do
+    it "shows a danger banner but still allows inviting" do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
       within(".alert-danger") do
@@ -65,7 +65,7 @@ describe "Agents can see créneaux availability before inviting", :js do
         expect(page).to have_link("Demander plus de créneaux")
       end
 
-      expect(page).to have_button("Envoyer les invitations", disabled: true)
+      expect(page).to have_button("Envoyer les invitations", disabled: false)
     end
   end
 
@@ -113,12 +113,13 @@ describe "Agents can see créneaux availability before inviting", :js do
     context "and a snapshot exists" do
       let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 50) }
 
-      it "redirects to the same page with the tally form so the survey shows up" do
+      it "redirects with the tally form and the hidden fields so the survey shows up" do
         visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
         expect(page).to have_current_path(
           select_rows_user_list_upload_invitation_attempts_path(
-            user_list_upload_id: user_list_upload.id, tally_form_id: "creneaux_form_id"
+            user_list_upload_id: user_list_upload.id, tally_form_id: "creneaux_form_id",
+            email: agent.email, organisation: organisation.name, department: department.name
           )
         )
         expect(page).to have_css("div[data-controller='tally'][data-tally-form-id='creneaux_form_id']", visible: :all)

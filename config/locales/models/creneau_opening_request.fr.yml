@@ -1,0 +1,7 @@
+fr:
+  activerecord:
+    models:
+      creneau_opening_request: Demande d'ouverture de créneaux
+    attributes:
+      creneau_opening_request:
+        recipient_agent_id: Agent destinataire
