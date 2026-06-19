@@ -362,8 +362,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_110000) do
     t.text "instruction_for_rdv", default: ""
     t.datetime "last_webhook_update_received_at"
     t.string "location_type"
-    t.integer "max_public_booking_delay"
-    t.integer "min_public_booking_delay"
+    t.integer "max_public_booking_delay", null: false
+    t.integer "min_public_booking_delay", null: false
     t.bigint "motif_category_id"
     t.string "name"
     t.bigint "organisation_id", null: false
