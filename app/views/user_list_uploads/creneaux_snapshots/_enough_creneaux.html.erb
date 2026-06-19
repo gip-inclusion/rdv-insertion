@@ -7,6 +7,7 @@
     <span class="text-dark">
       <strong><%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "créneau") %>
         <%= custom_pluralize(creneaux_snapshot.number_of_creneaux_available, "disponible", with_count: false) %></strong>
+      <%= display_date_period(user_list_upload.creneaux_available_from, user_list_upload.creneaux_available_until) %>,
       sur les motifs de rendez-vous de « <%= user_list_upload.motif_category_name %> ».
       <%= link_to user_list_upload.organisations.first.rdv_solidarites_planning_url,
                   target: "_blank", rel: "noopener", class: "link-blue-underlined",

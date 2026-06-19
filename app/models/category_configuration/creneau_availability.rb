@@ -1,4 +1,6 @@
 class CategoryConfiguration::CreneauAvailability < ApplicationRecord
+  include Creneaux::AvailabilityPeriod
+
   self.table_name = "category_configuration_creneau_availabilities"
 
   belongs_to :category_configuration
@@ -32,5 +34,12 @@ class CategoryConfiguration::CreneauAvailability < ApplicationRecord
 
   def low_availability?
     %w[danger warning].include?(availability_level)
+  end
+
+  def motifs_with_public_creneaux
+    Motif.with_public_creneaux.where(
+      motif_category: category_configuration.motif_category,
+      organisation: category_configuration.organisation
+    )
   end
 end

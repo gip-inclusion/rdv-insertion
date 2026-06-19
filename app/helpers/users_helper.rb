@@ -1,5 +1,14 @@
 # rubocop:disable Metrics/ModuleLength
 module UsersHelper
+  def creneau_availability_tooltip_content(creneau_availability)
+    lines = ["Calculé le #{creneau_availability.created_at.strftime('%d/%m à %Hh%M')}"]
+    period = display_date_period(
+      creneau_availability.creneaux_available_from, creneau_availability.creneaux_available_until
+    )
+    lines.unshift("Pour la période #{period}") if period
+    tooltip(content: safe_join(lines, tag.br))
+  end
+
   def show_convocation?(category_configuration)
     category_configuration.convene_user?
   end

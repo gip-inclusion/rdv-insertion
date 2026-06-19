@@ -6,9 +6,7 @@
     <span class="medium text-dark-green">
       <%= @latest_creneau_availability.number_of_creneaux_available %> créneaux disponibles
     </span>
-    <span class="text-muted small">
-      Calculé le <%= @latest_creneau_availability.created_at.strftime("%d/%m à %Hh%M") %>
-    </span>
+    <i class="ri-information-line text-muted" <%= creneau_availability_tooltip_content(@latest_creneau_availability) %>></i>
   </div>
   <% if (tally_url = ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_URL"]).present? %>
     <% tally_params = { email: current_agent.email,

@@ -19,8 +19,26 @@ class Motif < ApplicationRecord
   scope :active, ->(active = true) { active ? where(deleted_at: nil) : where.not(deleted_at: nil) }
   scope :collectif, -> { where(collectif: true) }
   scope :individuel, -> { where(collectif: false) }
+  scope :bookable_by_everyone_or_invited_users, lambda {
+    where(bookable_by: %w[agents_and_prescripteurs_and_invited_users everyone])
+  }
+  scope :without_referents, -> { where(follow_up: false) }
+  scope :with_public_creneaux, -> { active.bookable_by_everyone_or_invited_users.without_referents }
 
   after_commit :alert_motif_category_has_changed, on: %i[update]
+
+  def self.earliest_booking_date(from:)
+    booking_date_from(from, minimum(:min_public_booking_delay))
+  end
+
+  def self.latest_booking_date(from:)
+    booking_date_from(from, maximum(:max_public_booking_delay))
+  end
+
+  def self.booking_date_from(from, delay)
+    (from + delay.seconds).to_date if delay
+  end
+  private_class_method :booking_date_from
 
   def presential?
     location_type == "public_office"
