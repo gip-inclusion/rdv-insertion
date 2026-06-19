@@ -988,6 +988,17 @@ describe UsersController do
         end
       end
 
+      context "when the booking period cannot be computed" do
+        let!(:motif) { nil }
+
+        it "displays the banner without the period" do
+          get :index, params: index_params
+
+          expect(response.body).to include("11 créneaux disponibles")
+          expect(response.body).not_to include("Pour la période")
+        end
+      end
+
       context "when the category has rdv_with_referents" do
         before { category_configuration.update!(rdv_with_referents: true) }
 

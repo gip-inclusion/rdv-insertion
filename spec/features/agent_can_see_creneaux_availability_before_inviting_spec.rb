@@ -77,6 +77,20 @@ describe "Agents can see créneaux availability before inviting", :js do
     end
   end
 
+  context "when the booking period cannot be computed" do
+    let!(:motif) { nil }
+    let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 0) }
+
+    it "shows the banner without any availability period" do
+      visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+      within(".alert-danger") do
+        expect(page).to have_content("Aucun créneau disponible")
+        expect(page).to have_no_content("2026")
+      end
+    end
+  end
+
   context "when the snapshot has not been retrieved yet" do
     it "shows the loading banner with a one-shot refresh" do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
