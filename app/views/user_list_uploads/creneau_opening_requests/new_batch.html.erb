@@ -62,8 +62,9 @@
         </div>
         <div class="creneau-picker__list">
           <% @recipient_agents.each do |agent| %>
-            <label class="d-flex align-items-center py-1" data-dropdown--filter-options-target="item">
-              <%= check_box_tag "recipient_agent_ids[]", agent.id, false, class: "form-check-input me-2" %>
+            <% already_requested = @already_requested_agent_ids.include?(agent.id) %>
+            <label class="d-flex align-items-center py-1 <%= "opacity-50" if already_requested %>" data-dropdown--filter-options-target="item">
+              <%= check_box_tag "recipient_agent_ids[]", agent.id, already_requested, disabled: already_requested, class: "form-check-input me-2" %>
               <span>
                 <strong><%= agent %></strong>
                 <span class="text-muted ms-2"><%= agent.email %></span>

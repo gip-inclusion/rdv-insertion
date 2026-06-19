@@ -7,6 +7,7 @@ module UserListUploads
       @users_to_invite_count = users_to_invite_count
       @missing_creneaux_count = @users_to_invite_count - @available_creneaux_count
       @recipient_agents = recipient_agents
+      @already_requested_agent_ids = @user_list_upload.creneau_opening_requests.distinct.pluck(:recipient_agent_id)
     end
 
     def create_many

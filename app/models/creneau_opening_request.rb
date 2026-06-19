@@ -6,6 +6,10 @@ class CreneauOpeningRequest < ApplicationRecord
   validates :users_to_invite_count, :available_creneaux_count,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :recipient_agent_id, uniqueness: {
+    scope: :user_list_upload_id,
+    message: "a déjà reçu une demande d'ouverture de créneaux pour cet import"
+  }
 
   after_commit :enqueue_send_email_job, on: :create
 

@@ -36,13 +36,22 @@ module UserListUploads
 
       redirect_to select_rows_user_list_upload_invitation_attempts_path(
         user_list_upload_id: @user_list_upload.id,
-        tally_form_id: ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID"]
+        tally_form_id: ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID"],
+        **tally_hidden_fields
       )
     end
 
     def should_redirect_with_tally_form?
       params[:tally_form_id].nil? && @user_list_upload.creneaux_snapshot &&
         ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_TALLY_ID"].present?
+    end
+
+    def tally_hidden_fields
+      {
+        email: current_agent.email,
+        organisation: @user_list_upload.organisation&.name,
+        department: @user_list_upload.department.name
+      }
     end
 
     def set_user_list_upload
