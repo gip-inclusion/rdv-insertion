@@ -28,14 +28,17 @@ class Motif < ApplicationRecord
   after_commit :alert_motif_category_has_changed, on: %i[update]
 
   def self.earliest_booking_date(from:)
-    delay = minimum(:min_public_booking_delay)
-    (from + delay.seconds).to_date if delay
+    booking_date_from(from, minimum(:min_public_booking_delay))
   end
 
   def self.latest_booking_date(from:)
-    delay = maximum(:max_public_booking_delay)
+    booking_date_from(from, maximum(:max_public_booking_delay))
+  end
+
+  def self.booking_date_from(from, delay)
     (from + delay.seconds).to_date if delay
   end
+  private_class_method :booking_date_from
 
   def presential?
     location_type == "public_office"
