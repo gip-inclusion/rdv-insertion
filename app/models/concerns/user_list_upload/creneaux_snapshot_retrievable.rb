@@ -4,11 +4,7 @@ module UserListUpload::CreneauxSnapshotRetrievable
   CRENEAUX_SNAPSHOT_RETRIEVAL_TIMEOUT = 2.minutes
 
   def retrievable_creneaux_snapshot?
-    creneaux_snapshot_feature_enabled? && category_configuration_id? && !rdv_with_referents?
-  end
-
-  def creneaux_snapshot_feature_enabled?
-    ENV["SHOW_CRENEAUX_BEFORE_INVITATIONS_ENABLED"] == "true"
+    category_configuration_id? && !rdv_with_referents?
   end
 
   def creneaux_snapshot_retrieval_expires_at
@@ -16,6 +12,6 @@ module UserListUpload::CreneauxSnapshotRetrievable
   end
 
   def awaiting_creneaux_snapshot?
-    creneaux_snapshot_retrieval_expires_at.future?
+    creneaux_snapshot.nil? && creneaux_snapshot_retrieval_expires_at.future?
   end
 end
