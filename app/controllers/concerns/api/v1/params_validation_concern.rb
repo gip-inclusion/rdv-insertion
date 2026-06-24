@@ -22,6 +22,7 @@ module Api
         validate_user_params_content(user_attrs.except(:referents_to_add, :tags_to_add))
         Array(user_attrs[:referents_to_add]).each { validate_referent_exists(it[:email]) }
         Array(user_attrs[:tags_to_add]).each { validate_tag_exists(it[:value]) }
+        validate_motif_category_exists(motif_category_attributes)
 
         return if @params_validation_errors.empty?
 
@@ -42,6 +43,7 @@ module Api
           validate_user_params_content(user_params.except(:invitation, :referents_to_add, :tags_to_add), idx)
           Array(user_params[:referents_to_add]).each { validate_referent_exists(it[:email], idx) }
           Array(user_params[:tags_to_add]).each { validate_tag_exists(it[:value], idx) }
+          validate_motif_category_exists(user_params.dig(:invitation, :motif_category), idx)
         end
       end
 
@@ -60,6 +62,16 @@ module Api
         @params_validation_errors << {
           error_details: "Assignation du tag impossible car aucun tag n'a été trouvé " \
                          "avec la valeur #{tag_value} au sein de l'organisation #{@organisation.name}. "
+        }.merge(idx.present? ? { index: idx } : {})
+      end
+
+      def validate_motif_category_exists(motif_category_attributes, idx = nil)
+        return if motif_category_attributes.blank?
+        return if MotifCategory.find_by(motif_category_attributes)
+
+        @params_validation_errors << {
+          error_details: "Ouverture d'un suivi impossible car aucune catégorie de motif ne correspond " \
+                         "aux critères fournis (#{motif_category_attributes.map { |k, v| "#{k}: #{v}" }.join(', ')})."
         }.merge(idx.present? ? { index: idx } : {})
       end
 

@@ -137,6 +137,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
         { users: [user1_params, user2_params.merge(invitation: { motif_category: { name: "RSA orientation" } })] }
       end
 
+      let!(:motif_category) { create(:motif_category, name: "RSA orientation") }
+
       before { allow(CreateAndInviteUserJob).to receive(:perform_later) }
 
       with_authentication
@@ -231,6 +233,22 @@ describe "Users API", swagger_doc: "v1/api.json" do
           parsed_response = JSON.parse(response.body)
           expect(parsed_response["errors"][0]["error_details"]).to eq(
             "Civilité n'est pas inclus(e) dans la liste"
+          )
+        end
+      end
+
+      response 422, "la catégorie de motif n'existe pas" do
+        schema "$ref" => "#/components/schemas/error_unprocessable_entity"
+
+        let!(:users_params) do
+          { users: [user1_params.merge(invitation: { motif_category: { name: "Catégorie inexistante" } })] }
+        end
+
+        run_test! do |response|
+          expect(response.status).to eq(422)
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response["errors"][0]["error_details"]).to include(
+            "aucune catégorie de motif ne correspond"
           )
         end
       end

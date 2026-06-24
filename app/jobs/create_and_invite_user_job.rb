@@ -39,8 +39,7 @@ class CreateAndInviteUserJob < ApplicationJob
   def find_or_create_follow_up
     return if @motif_category_attributes.blank?
 
-    motif_category = MotifCategory.find_by(@motif_category_attributes)
-    @user.find_or_create_follow_up!(motif_category) if motif_category
+    @user.find_or_create_follow_up!(MotifCategory.find_by!(@motif_category_attributes))
   end
 
   def invite_user
