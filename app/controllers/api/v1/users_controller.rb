@@ -39,7 +39,7 @@ module Api
       def create_and_invite_many
         users_attributes.each do |attrs|
           user_attributes = attrs.except(:invitation)
-          invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
+          invitation_attributes = (attrs[:invitation] || {}).except(:motif_category).merge(origin: "api")
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
           CreateAndInviteUserJob.perform_later(
@@ -132,7 +132,7 @@ module Api
           user: @user,
           organisations: [@organisation],
           motif_category_attributes: motif_category_attributes,
-          invitation_attributes: invitation_attributes.merge(format: format)
+          invitation_attributes: invitation_attributes.merge(format: format, origin: "api")
         )
       end
 

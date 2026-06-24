@@ -2,6 +2,7 @@
   <td class="px-4 py-3">
     <%= form_for :invitation, url: structure_user_invitations_path(user_id: user.id), data: { controller: "invitation-button" }, html: { method: :post } do |f| %>
       <%= f.hidden_field :format, value: invitation_format %>
+      <%= f.hidden_field :origin, value: "user_follow_ups_page" %>
       <%= f.fields_for :motif_category do |ff| %>
         <%= ff.hidden_field :id, value: motif_category.id %>
       <% end %>

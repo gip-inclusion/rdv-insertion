@@ -9,7 +9,7 @@ class UserListUpload::InvitationAttempt < ApplicationRecord
       user: user_row.user,
       organisations: user_row.user_list_upload.organisations,
       motif_category_attributes: { id: user_row.user_list_upload.motif_category_id },
-      invitation_attributes: { format: format }
+      invitation_attributes: { format: format, origin: "user_list_upload" }
     )
   rescue StandardError => e
     invite_user_result = OpenStruct.new(

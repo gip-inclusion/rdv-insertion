@@ -7,6 +7,7 @@ const inviteUser = async (
   isDepartmentLevel,
   invitationFormat,
   motifCategoryId,
+  origin,
   accept = "application/json"
 ) => {
   let url;
@@ -22,6 +23,7 @@ const inviteUser = async (
       body: {
         invitation: {
           format: invitationFormat,
+          origin,
           motif_category: { id: motifCategoryId },
         },
       },
