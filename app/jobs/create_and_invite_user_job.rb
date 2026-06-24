@@ -11,7 +11,7 @@ class CreateAndInviteUserJob < ApplicationJob
     @motif_category_attributes = motif_category_attributes.deep_symbolize_keys
 
     upsert_user!
-    create_follow_up
+    find_or_create_follow_up
     invite_user
   end
 
@@ -36,11 +36,11 @@ class CreateAndInviteUserJob < ApplicationJob
     DepartmentMailer.create_user_error(@department, @user_attributes, errors).deliver_now
   end
 
-  def create_follow_up
+  def find_or_create_follow_up
     return if @motif_category_attributes.blank?
 
     motif_category = MotifCategory.find_by(@motif_category_attributes)
-    @user.find_or_create_follow_up(motif_category) if motif_category
+    @user.find_or_create_follow_up!(motif_category) if motif_category
   end
 
   def invite_user

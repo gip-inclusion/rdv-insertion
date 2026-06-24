@@ -239,7 +239,7 @@ module InboundWebhooks
       end
 
       def follow_ups
-        @follow_ups ||= @users.map { |user| user.find_or_create_follow_up(motif_category) }
+        @follow_ups ||= @users.map { |user| user.find_or_create_follow_up!(motif_category) }
       end
 
       def follow_up_ids

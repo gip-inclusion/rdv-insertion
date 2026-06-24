@@ -11,7 +11,7 @@ class InviteUser < BaseService
 
   def call
     set_current_configuration
-    @follow_up = @user.find_or_create_follow_up(@current_configuration.motif_category)
+    find_or_create_follow_up
     set_invitation_organisations
     set_invitation
     result.invitation = @invitation
@@ -19,6 +19,10 @@ class InviteUser < BaseService
   end
 
   private
+
+  def find_or_create_follow_up
+    @follow_up = @user.find_or_create_follow_up!(@current_configuration.motif_category)
+  end
 
   def set_invitation
     @invitation = Invitation.new(
