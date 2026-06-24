@@ -43,7 +43,7 @@ describe Invitations::SendEmail, type: :service do
             format: "email",
             user: user,
             follow_up: build(:follow_up, motif_category: category_rsa_orientation),
-            trigger: "reminder"
+            origin: "reminder"
           )
         end
 
@@ -113,7 +113,7 @@ describe Invitations::SendEmail, type: :service do
             :invitation,
             user: user, format: "email",
             follow_up: build(:follow_up, motif_category: category_psychologue),
-            trigger: "reminder"
+            origin: "reminder"
           )
         end
 
@@ -153,7 +153,7 @@ describe Invitations::SendEmail, type: :service do
             :invitation,
             user: user, format: "email",
             follow_up: build(:follow_up, motif_category: category_atelier_enfants_ados),
-            trigger: "reminder"
+            origin: "reminder"
           )
         end
 
@@ -212,7 +212,7 @@ describe Invitations::SendEmail, type: :service do
             :invitation,
             user: user, format: "email",
             follow_up: build(:follow_up, motif_category: category_rsa_orientation_on_phone_platform),
-            trigger: "reminder"
+            origin: "reminder"
           )
         end
 
