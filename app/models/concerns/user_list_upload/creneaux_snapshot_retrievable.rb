@@ -12,6 +12,6 @@ module UserListUpload::CreneauxSnapshotRetrievable
   end
 
   def awaiting_creneaux_snapshot?
-    creneaux_snapshot_retrieval_expires_at.future?
+    creneaux_snapshot.nil? && creneaux_snapshot_retrieval_expires_at.future?
   end
 end

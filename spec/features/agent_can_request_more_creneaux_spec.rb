@@ -1,0 +1,63 @@
+describe "Agent can request more creneaux", :js do
+  let!(:organisation) { create(:organisation) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:motif_category) { create(:motif_category, name: "RSA Orientation") }
+  let!(:category_configuration) do
+    create(:category_configuration, organisation: organisation, motif_category: motif_category)
+  end
+  let!(:motif) do
+    create(:motif, organisation:, motif_category:, bookable_by: "agents_and_prescripteurs_and_invited_users",
+                   min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
+  end
+  let!(:user_list_upload) do
+    create(:user_list_upload, structure: organisation, category_configuration: category_configuration, agent: agent,
+                              created_at: Time.zone.local(2026, 5, 15, 9))
+  end
+  let!(:recipient_agent) do
+    create(:agent, organisations: [organisation], first_name: "Maria", last_name: "Dupuis")
+  end
+  let!(:foreign_agent) do
+    create(:agent, organisations: [create(:organisation)], first_name: "Jean", last_name: "Etranger")
+  end
+
+  before { setup_agent_session(agent) }
+
+  it "sends a creneau opening request to the selected agents" do
+    visit new_batch_user_list_upload_creneau_opening_requests_path(user_list_upload, available_creneaux_count: 26)
+
+    expect(page).to have_content("Demander plus de créneaux")
+    expect(page).to have_content("26 créneaux disponibles")
+    expect(page).to have_content("du 18 mai au 14 juin 2026")
+    expect(page).to have_content("RSA Orientation")
+    expect(page).to have_no_content("Jean ETRANGER")
+
+    find("label", text: "Maria DUPUIS").click
+
+    click_button "Envoyer la demande"
+
+    expect(page).to have_content("Demande d'ouverture de créneaux envoyée")
+    expect(CreneauOpeningRequest.count).to eq(1)
+    expect(CreneauOpeningRequest.last.recipient_agent).to eq(recipient_agent)
+  end
+
+  it "shows an inline error when no agent is selected" do
+    visit new_batch_user_list_upload_creneau_opening_requests_path(user_list_upload, available_creneaux_count: 26)
+
+    click_button "Envoyer la demande"
+
+    expect(page).to have_content("Aucun agent destinataire sélectionné")
+    expect(CreneauOpeningRequest.count).to eq(0)
+  end
+
+  context "when a request was already sent to an agent for this upload" do
+    before { create(:creneau_opening_request, user_list_upload:, recipient_agent:) }
+
+    it "shows that agent already checked and disabled" do
+      visit new_batch_user_list_upload_creneau_opening_requests_path(user_list_upload, available_creneaux_count: 26)
+
+      checkbox = find("input[type=checkbox][value='#{recipient_agent.id}']", visible: :all)
+      expect(checkbox).to be_checked
+      expect(checkbox).to be_disabled
+    end
+  end
+end

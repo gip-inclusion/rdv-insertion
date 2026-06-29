@@ -160,6 +160,10 @@ Rails.application.routes.draw do
       get :select_rows, on: :collection
       post :create_many, on: :collection
     end
+    resources :creneau_opening_requests, only: [] do
+      get :new_batch, on: :collection
+      post :create_many, on: :collection
+    end
   end
   resources :accept_cgus, only: [:create]
   resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
@@ -177,6 +181,12 @@ Rails.application.routes.draw do
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing
   get '/r/:uuid', to: "invitations#redirect_shortcut", as: :redirect_invitation_shortcut
   resources :invitations, only: [] do
+    get :redirect, on: :collection
+  end
+
+  get '/c/:id', to: "creneau_opening_requests#redirect_shortcut",
+                as: :redirect_creneau_opening_request_shortcut
+  resources :creneau_opening_requests, only: [] do
     get :redirect, on: :collection
   end
 

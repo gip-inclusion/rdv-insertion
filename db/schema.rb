@@ -184,6 +184,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_19_131224) do
     t.index ["agent_id"], name: "index_cookies_consents_on_agent_id"
   end
 
+  create_table "creneau_opening_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "available_creneaux_count", null: false
+    t.datetime "clicked_at"
+    t.datetime "created_at", null: false
+    t.datetime "email_sent_at"
+    t.text "link", null: false
+    t.bigint "recipient_agent_id", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_list_upload_id", null: false
+    t.integer "users_to_invite_count", null: false
+    t.index ["recipient_agent_id"], name: "index_creneau_opening_requests_on_recipient_agent_id"
+    t.index ["user_list_upload_id", "recipient_agent_id"], name: "idx_on_user_list_upload_id_recipient_agent_id_b0a0d7a122", unique: true
+  end
+
   create_table "csv_exports", force: :cascade do |t|
     t.bigint "agent_id", null: false
     t.datetime "created_at", null: false
@@ -350,6 +364,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_19_131224) do
     t.text "instruction_for_rdv", default: ""
     t.datetime "last_webhook_update_received_at"
     t.string "location_type"
+    t.integer "max_public_booking_delay", null: false
+    t.integer "min_public_booking_delay", null: false
     t.bigint "motif_category_id"
     t.string "name"
     t.bigint "organisation_id", null: false
@@ -761,6 +777,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_19_131224) do
   add_foreign_key "category_configurations", "motif_categories"
   add_foreign_key "category_configurations", "organisations"
   add_foreign_key "cookies_consents", "agents"
+  add_foreign_key "creneau_opening_requests", "agents", column: "recipient_agent_id"
+  add_foreign_key "creneau_opening_requests", "user_list_uploads"
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "dpa_agreements", "agents"
   add_foreign_key "dpa_agreements", "organisations"

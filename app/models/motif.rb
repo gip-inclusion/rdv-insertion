@@ -1,7 +1,7 @@
 class Motif < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :deleted_at, :location_type, :name, :bookable_by, :rdv_solidarites_service_id, :collectif,
-    :follow_up, :instruction_for_rdv, :default_duration_in_min
+    :follow_up, :instruction_for_rdv, :default_duration_in_min, :min_public_booking_delay, :max_public_booking_delay
   ].freeze
 
   enum :location_type, { public_office: "public_office", phone: "phone", home: "home", visio: "visio" }
@@ -19,8 +19,26 @@ class Motif < ApplicationRecord
   scope :active, ->(active = true) { active ? where(deleted_at: nil) : where.not(deleted_at: nil) }
   scope :collectif, -> { where(collectif: true) }
   scope :individuel, -> { where(collectif: false) }
+  scope :bookable_by_everyone_or_invited_users, lambda {
+    where(bookable_by: %w[agents_and_prescripteurs_and_invited_users everyone])
+  }
+  scope :without_referents, -> { where(follow_up: false) }
+  scope :with_public_creneaux, -> { active.bookable_by_everyone_or_invited_users.without_referents }
 
   after_commit :alert_motif_category_has_changed, on: %i[update]
+
+  def self.earliest_booking_date(from:)
+    booking_date_from(from, minimum(:min_public_booking_delay))
+  end
+
+  def self.latest_booking_date(from:)
+    booking_date_from(from, maximum(:max_public_booking_delay))
+  end
+
+  def self.booking_date_from(from, delay)
+    (from + delay.seconds).to_date if delay
+  end
+  private_class_method :booking_date_from
 
   def presential?
     location_type == "public_office"

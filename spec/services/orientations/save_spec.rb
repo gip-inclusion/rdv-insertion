@@ -27,6 +27,15 @@ describe Orientations::Save, type: :service do
       expect(orientation.persisted?).to eq(true)
     end
 
+    it "adds the user to the organisation" do
+      expect(Users::AddToOrganisations).to receive(:call)
+        .with(user: user, organisations: [organisation])
+        .once
+        .and_return(OpenStruct.new(success?: true))
+
+      subject
+    end
+
     context "when starts_at is not passed" do
       let!(:starts_at) { nil }
 
@@ -55,6 +64,12 @@ describe Orientations::Save, type: :service do
 
           it "outputs an error" do
             expect(subject.shrinkeable_orientation).not_to be_nil
+          end
+
+          it "does not add the user to the organisation" do
+            expect(Users::AddToOrganisations).not_to receive(:call)
+
+            subject
           end
         end
 
@@ -221,17 +236,6 @@ describe Orientations::Save, type: :service do
         it "does not set the previous ends_at" do
           subject
           expect(second_orientation.reload.ends_at).to be_nil
-        end
-      end
-
-      context "when user is not part of the organisation" do
-        it "adds the user to the organisation" do
-          expect(Users::AddToOrganisations).to receive(:call)
-            .with(user: user, organisations: [organisation])
-            .once
-            .and_return(OpenStruct.new(success?: true))
-
-          subject
         end
       end
 

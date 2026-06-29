@@ -1,0 +1,75 @@
+<h1>Demande d'ouverture de créneaux sur la catégorie « <%= @motif_category.name %> »</h1>
+
+<p><%= @recipient_agent.to_s %>,</p>
+
+<p>
+  Suite à l'import du <%= I18n.l(@user_list_upload.created_at.to_date) %>,
+  <%= @creneau_opening_request.users_to_invite_count %> usagers sont prêts à être invités
+  sur la catégorie « <%= @motif_category.name %> », mais seulement
+  <%= @creneau_opening_request.available_creneaux_count %> créneaux sont disponibles.
+</p>
+
+<p>
+  L'ouverture de <%= @creneau_opening_request.missing_creneaux_count %> créneaux supplémentaires
+  permettrait d'assurer la continuité de parcours de ces usagers.
+</p>
+
+<div class="summary-card">
+  <div class="summary-card__row">
+    <span class="summary-card__label">Catégorie</span>
+    <span class="alignright"><%= @motif_category.name %></span>
+  </div>
+  <hr class="summary-card__separator" />
+
+  <div class="summary-card__row">
+    <span class="summary-card__label">Demandé par</span>
+    <span class="alignright"><%= @sender_agent %></span>
+  </div>
+  <hr class="summary-card__separator" />
+
+  <div class="summary-card__row">
+    <span class="summary-card__label">Date de la demande</span>
+    <span class="alignright"><%= I18n.l(@creneau_opening_request.created_at, format: :long) %></span>
+  </div>
+  <hr class="summary-card__separator" />
+
+  <div class="summary-card__row">
+    <span class="summary-card__label">Dossiers à inviter</span>
+    <span class="alignright"><%= @creneau_opening_request.users_to_invite_count %> usagers</span>
+  </div>
+  <hr class="summary-card__separator" />
+
+  <div class="summary-card__row">
+    <span class="summary-card__label">Créneaux disponibles sur la catégorie</span>
+    <span class="alignright"><%= @creneau_opening_request.available_creneaux_count %> créneaux</span>
+  </div>
+  <hr class="summary-card__separator" />
+
+  <div class="summary-card__row">
+    <strong>Créneaux supplémentaires souhaités</strong>
+    <strong class="alignright"><%= @creneau_opening_request.missing_creneaux_count %> créneaux</strong>
+  </div>
+</div>
+
+<p><strong>Vous pouvez :</strong></p>
+<ul>
+  <li>
+    Ouvrir de nouvelles plages d'ouvertures pour les motifs de rendez-vous de la catégorie « <%= @motif_category.name %> » depuis l'interface RDV-Solidarités.
+  </li>
+</ul>
+
+<p class="btn-wrapper">
+  <%= link_to redirect_creneau_opening_request_shortcut_url(id: @creneau_opening_request.id),
+              target: "_blank", class: "btn-primary btn-primary--blue" do %>
+    <%= @user_list_upload.department_level? ? "Accéder à rdv-solidarites" : "Ouvrir des créneaux" %>
+  <% end %>
+</p>
+
+<p>
+  <strong>Vous n'êtes pas habilité à ouvrir des créneaux ?</strong>
+  Nous vous invitons à transférer cette demande aux collaborateurs en charge des rendez-vous
+  liés à « <%= @motif_category.name %> ».
+</p>
+
+<p>A bientôt,</p>
+<p>L'équipe RDV-Insertion</p>

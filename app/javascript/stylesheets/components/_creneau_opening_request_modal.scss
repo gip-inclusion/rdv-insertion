@@ -1,0 +1,41 @@
+.creneau-card {
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 0px;
+}
+.creneau-card--creneaux { background-color: $brown-light; }
+.creneau-card--users { background-color: $light; }
+
+.creneau-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  color: white;
+}
+.creneau-card-icon--creneaux {
+  background-color: #FFD3BA;
+  color: $orange;
+}
+.creneau-card-icon--users {
+  background-color: #D3D3FF;
+  color: $violet;
+}
+
+.creneau-warning-icon {
+  color: $orange-dark;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.creneau-picker {
+  background-color: $light;
+  border-radius: 8px;
+}
+.creneau-picker__list {
+  max-height: 200px;
+  overflow-y: auto;
+}

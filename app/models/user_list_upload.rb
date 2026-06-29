@@ -2,6 +2,7 @@ class UserListUpload < ApplicationRecord
   include UserListUpload::Metrics
   include UserListUpload::Navigation
   include UserListUpload::CreneauxSnapshotRetrievable
+  include Creneaux::AvailabilityPeriod
 
   STEPS_BY_ORIGIN = {
     file_upload: %i[user_save invitation],
@@ -15,6 +16,7 @@ class UserListUpload < ApplicationRecord
   has_many :user_rows, class_name: "UserListUpload::UserRow", dependent: :destroy
   has_many :processing_logs, class_name: "UserListUpload::ProcessingLog", dependent: :destroy
   has_one :creneaux_snapshot, class_name: "UserListUpload::CreneauxSnapshot", dependent: :destroy
+  has_many :creneau_opening_requests, dependent: :destroy
   has_many :user_save_attempts, class_name: "UserListUpload::UserSaveAttempt", through: :user_rows
   has_many :invitation_attempts, class_name: "UserListUpload::InvitationAttempt", through: :user_rows
 
@@ -78,6 +80,10 @@ class UserListUpload < ApplicationRecord
 
   def structure_organisations
     department_level? ? structure.organisations : [structure]
+  end
+
+  def motifs_with_public_creneaux
+    Motif.with_public_creneaux.where(motif_category:, organisation: organisations)
   end
 
   def invitations_enabled? = category_configuration.present?

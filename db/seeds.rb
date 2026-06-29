@@ -445,7 +445,9 @@ Motif.create!(
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
   follow_up: false,
-  default_duration_in_min: 30
+  default_duration_in_min: 30,
+  min_public_booking_delay: 3.days.to_i,
+  max_public_booking_delay: 1.month.to_i
 )
 
 Motif.create!(
@@ -462,7 +464,9 @@ Motif.create!(
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
   follow_up: false,
-  default_duration_in_min: 30
+  default_duration_in_min: 30,
+  min_public_booking_delay: 3.days.to_i,
+  max_public_booking_delay: 1.month.to_i
 )
 
 Motif.create!(
@@ -479,7 +483,9 @@ Motif.create!(
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
   follow_up: false,
-  default_duration_in_min: 30
+  default_duration_in_min: 30,
+  min_public_booking_delay: 3.days.to_i,
+  max_public_booking_delay: 1.month.to_i
 )
 
 Lieu.create!( # Nécessaire pour la convoc
@@ -504,7 +510,9 @@ Motif.create!(
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome2_organisation.id,
   follow_up: false,
-  default_duration_in_min: 30
+  default_duration_in_min: 30,
+  min_public_booking_delay: 3.days.to_i,
+  max_public_booking_delay: 1.month.to_i
 )
 
 Motif.create!(
@@ -521,7 +529,9 @@ Motif.create!(
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: yonne_organisation.id,
   follow_up: false,
-  default_duration_in_min: 30
+  default_duration_in_min: 30,
+  min_public_booking_delay: 3.days.to_i,
+  max_public_booking_delay: 1.month.to_i
 )
 
 Motif.create!(
@@ -538,7 +548,9 @@ Motif.create!(
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: yonne_organisation.id,
   follow_up: false,
-  default_duration_in_min: 30
+  default_duration_in_min: 30,
+  min_public_booking_delay: 3.days.to_i,
+  max_public_booking_delay: 1.month.to_i
 )
 
 # --------------------------------------------------------------------------------------------------------------------

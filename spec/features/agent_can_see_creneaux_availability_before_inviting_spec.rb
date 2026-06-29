@@ -9,6 +9,10 @@ describe "Agents can see créneaux availability before inviting", :js do
   let!(:category_configuration) do
     create(:category_configuration, organisation:, motif_category:)
   end
+  let!(:motif) do
+    create(:motif, organisation:, motif_category:, bookable_by: "agents_and_prescripteurs_and_invited_users",
+                   min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
+  end
 
   let!(:user_list_upload) do
     create(:user_list_upload, agent:, category_configuration:, structure: organisation)
@@ -26,11 +30,13 @@ describe "Agents can see créneaux availability before inviting", :js do
   context "when there are more créneaux than users to invite" do
     let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 50) }
 
+    before { user_list_upload.update_column(:created_at, Time.zone.local(2026, 5, 15, 9)) }
+
     it "shows an informative banner with a link to the planning" do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
       within(".alert-info") do
-        expect(page).to have_content("50 créneaux disponibles")
+        expect(page).to have_content("50 créneaux disponibles du 18 mai au 14 juin 2026")
         expect(page).to have_content("RSA orientation")
         expect(page).to have_link("Consulter le planning")
       end
@@ -42,11 +48,13 @@ describe "Agents can see créneaux availability before inviting", :js do
   context "when there are fewer créneaux than users to invite" do
     let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 1) }
 
+    before { user_list_upload.update_column(:created_at, Time.zone.local(2026, 5, 15, 9)) }
+
     it "shows a warning banner but still allows inviting" do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
       within(".alert-warning") do
-        expect(page).to have_content("1 créneau disponible")
+        expect(page).to have_content("1 créneau disponible du 18 mai au 14 juin 2026")
         expect(page).to have_link("Demander plus de créneaux")
       end
 
@@ -57,7 +65,7 @@ describe "Agents can see créneaux availability before inviting", :js do
   context "when there are no créneaux available" do
     let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 0) }
 
-    it "shows a danger banner and prevents inviting" do
+    it "shows a danger banner but still allows inviting" do
       visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
       within(".alert-danger") do
@@ -65,7 +73,21 @@ describe "Agents can see créneaux availability before inviting", :js do
         expect(page).to have_link("Demander plus de créneaux")
       end
 
-      expect(page).to have_button("Envoyer les invitations", disabled: true)
+      expect(page).to have_button("Envoyer les invitations", disabled: false)
+    end
+  end
+
+  context "when the booking period cannot be computed" do
+    let!(:motif) { nil }
+    let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 0) }
+
+    it "shows the banner without any availability period" do
+      visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+      within(".alert-danger") do
+        expect(page).to have_content("Aucun créneau disponible")
+        expect(page).to have_no_content("2026")
+      end
     end
   end
 
@@ -113,12 +135,13 @@ describe "Agents can see créneaux availability before inviting", :js do
     context "and a snapshot exists" do
       let!(:creneaux_snapshot) { create(:creneaux_snapshot, user_list_upload:, number_of_creneaux_available: 50) }
 
-      it "redirects to the same page with the tally form so the survey shows up" do
+      it "redirects with the tally form and the hidden fields so the survey shows up" do
         visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
 
         expect(page).to have_current_path(
           select_rows_user_list_upload_invitation_attempts_path(
-            user_list_upload_id: user_list_upload.id, tally_form_id: "creneaux_form_id"
+            user_list_upload_id: user_list_upload.id, tally_form_id: "creneaux_form_id",
+            email: agent.email, organisation: organisation.name, department: department.name
           )
         )
         expect(page).to have_css("div[data-controller='tally'][data-tally-form-id='creneaux_form_id']", visible: :all)

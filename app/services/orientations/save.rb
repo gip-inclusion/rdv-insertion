@@ -9,9 +9,9 @@ module Orientations
       ActiveRecord::Base.transaction do
         validate_starts_at_presence
         fill_current_orientation_ends_at if @orientation.ends_at.nil? && posterior_orientations.any?
-        add_user_to_organisation unless @orientation.user.belongs_to_org?(@orientation.organisation_id)
         save_record!(@orientation)
         shrink_or_ensure_no_overlapping
+        add_user_to_organisation unless @orientation.user.belongs_to_org?(@orientation.organisation_id)
       end
     end
 
