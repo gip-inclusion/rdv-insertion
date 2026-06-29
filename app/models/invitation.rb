@@ -44,7 +44,7 @@ class Invitation < ApplicationRecord
     # We used to track who triggered the invitation but without details the action that triggered it
     legacy_triggered_by_agent: "legacy_triggered_by_agent"
   }
-
+  attr_readonly :origin
   SYSTEM_ORIGINS = %w[reminder legacy_triggered_by_periodic_job].freeze
 
   before_create :assign_uuid
