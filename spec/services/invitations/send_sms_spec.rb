@@ -30,13 +30,14 @@ describe Invitations::SendSms, type: :service do
   end
   let!(:sms_sender_name) { "provider" }
 
+  let(:invitation_origin) { :users_index_page }
   let!(:invitation) do
     create(
       :invitation,
       user: user, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
       organisations: [organisation], link: "https://www.rdv-solidarites-test.localhost/lieux?invitation_token=123",
       format: "sms", sms_provider: "brevo",
-      follow_up: follow_up
+      follow_up: follow_up, origin: invitation_origin
     )
   end
 
@@ -189,8 +190,10 @@ describe Invitations::SendSms, type: :service do
           "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
       end
 
+      let(:invitation_origin) { :reminder }
+
       before do
-        invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+        invitation.update!(expires_at: 5.days.from_now)
       end
 
       it "calls the send transactional service with the right content" do
@@ -274,8 +277,10 @@ describe Invitations::SendSms, type: :service do
                 "En cas de problème, contactez le 0147200001."
             end
 
+            let(:invitation_origin) { :reminder }
+
             before do
-              invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+              invitation.update!(expires_at: 5.days.from_now)
             end
 
             it "calls the send transactional service with the right content" do
@@ -322,8 +327,10 @@ describe Invitations::SendSms, type: :service do
             "0147200001. Cet appel est obligatoire pour le traitement de votre dossier. "
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -373,8 +380,10 @@ describe Invitations::SendSms, type: :service do
             "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -424,8 +433,10 @@ describe Invitations::SendSms, type: :service do
             "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -475,8 +486,10 @@ describe Invitations::SendSms, type: :service do
             "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -528,8 +541,10 @@ describe Invitations::SendSms, type: :service do
             "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -580,8 +595,10 @@ describe Invitations::SendSms, type: :service do
             "En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -633,8 +650,10 @@ describe Invitations::SendSms, type: :service do
             "En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -684,8 +703,10 @@ describe Invitations::SendSms, type: :service do
             "En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -817,8 +838,10 @@ describe Invitations::SendSms, type: :service do
             "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
@@ -945,8 +968,10 @@ describe Invitations::SendSms, type: :service do
             "En cas de problème, contactez le 0147200001."
         end
 
+        let(:invitation_origin) { :reminder }
+
         before do
-          invitation.update!(origin: "reminder", expires_at: 5.days.from_now)
+          invitation.update!(expires_at: 5.days.from_now)
         end
 
         it "calls the send transactional service with the right content" do
