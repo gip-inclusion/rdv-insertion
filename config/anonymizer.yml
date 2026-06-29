@@ -198,11 +198,11 @@ tables:
       - follow_up_id
       - valid_until
       - uuid
-      - trigger
       - rdv_with_referents
       - expires_at
       - sms_provider
       - created_by_agent_id
+      - origin
 
   - table_name: invitations_organisations
     non_anonymized_column_names:

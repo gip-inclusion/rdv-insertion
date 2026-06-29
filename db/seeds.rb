@@ -415,7 +415,7 @@ Invitation.create!(
   rdv_solidarites_lieu_id: nil,
   follow_up: follow_up_for_jean,
   rdv_with_referents: false,
-  trigger: "manual",
+  origin: "user_list_upload",
   delivery_status: nil,
   last_brevo_webhook_received_at: nil
 )
