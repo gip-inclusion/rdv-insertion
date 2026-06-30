@@ -40,7 +40,7 @@ module Invitable
     if participations.any?
       first_invitation_after_last_participation_by(format).present?
     else
-      last_manual_invitation_by(format).present?
+      last_agent_initiated_invitation_by(format).present?
     end
   end
 
@@ -58,18 +58,19 @@ module Invitable
     end
   end
 
-  def last_manual_invitation
-    invitations.select(&:manual?).max_by(&:created_at)
+  def last_agent_initiated_invitation
+    invitations.select(&:agent_initiated?).max_by(&:created_at)
   end
 
-  def last_manual_invitation_by(format)
-    invitations.select { |invitation| invitation.manual? && invitation.format == format }.max_by(&:created_at)
+  def last_agent_initiated_invitation_by(format)
+    invitations.select { |invitation| invitation.agent_initiated? && invitation.format == format }
+               .max_by(&:created_at)
   end
 
   def in_cooldown_for?(format)
     return false if format == "postal"
 
-    last_invitation = last_manual_invitation_by(format)
+    last_invitation = last_agent_initiated_invitation_by(format)
     last_invitation && last_invitation.created_at > 24.hours.ago
   end
 end

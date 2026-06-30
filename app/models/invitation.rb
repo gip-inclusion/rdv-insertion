@@ -7,11 +7,11 @@ class Invitation < ApplicationRecord
   include WebhookDeliverable
   include Deliverable
   include HasSmsProvider
+  include Invitation::CreationOrigin
 
   belongs_to :user
   belongs_to :department
   belongs_to :follow_up
-  belongs_to :created_by_agent, class_name: "Agent", optional: true
 
   has_and_belongs_to_many :organisations
 
@@ -21,8 +21,7 @@ class Invitation < ApplicationRecord
 
   attr_accessor :pdf_data
 
-  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :origin,
-            presence: true
+  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
   delegate :motif_category, :motif_category_name, :motif_category_id, to: :follow_up
@@ -30,37 +29,15 @@ class Invitation < ApplicationRecord
   delegate :post_code, to: :user, prefix: true, allow_nil: true
 
   enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
-  enum :origin, {
-    # Triggered by an agent
-    user_list_upload: "user_list_upload",
-    users_index_page: "users_index_page",
-    user_follow_ups_page: "user_follow_ups_page",
-    api: "api",
-    # Generated automatically by the system
-    reminder: "reminder",
-    # Legacy — never assigned at runtime
-    # We used to trigger some invitations by a CRON periodically. Feature has been removed.
-    legacy_triggered_by_periodic_job: "legacy_triggered_by_periodic_job",
-    # We used to track who triggered the invitation but without details the action that triggered it
-    legacy_triggered_by_agent: "legacy_triggered_by_agent"
-  }
-  attr_readonly :origin
-  SYSTEM_ORIGINS = %w[reminder legacy_triggered_by_periodic_job].freeze
 
   before_create :assign_uuid
   after_commit :refresh_follow_up_status
   after_commit :plan_follow_up_status_refresh, on: [:create, :update]
 
-  scope :manual, -> { where.not(origin: SYSTEM_ORIGINS) }
-
   scope :valid, -> { where("expires_at > ?", Time.zone.now).or(never_expire) }
   scope :expired, -> { where(expires_at: ..Time.zone.now) }
   scope :expireable, -> { where.not(expires_at: nil) }
   scope :never_expire, -> { where(expires_at: nil) }
-
-  def system_generated? = origin.in?(SYSTEM_ORIGINS)
-
-  def manual? = !system_generated?
 
   def send_to_user
     case self.format

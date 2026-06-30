@@ -21,16 +21,16 @@ class SendInvitationReminderJob < ApplicationJob
     @invitation ||= Invitation.new(
       origin: "reminder",
       user: @user,
-      department: last_manual_invitation.department,
-      organisations: last_manual_invitation.organisations,
-      follow_up: last_manual_invitation.follow_up,
+      department: last_agent_initiated_invitation.department,
+      organisations: last_agent_initiated_invitation.organisations,
+      follow_up: last_agent_initiated_invitation.follow_up,
       format: @invitation_format,
-      help_phone_number: last_manual_invitation.help_phone_number,
-      rdv_solidarites_lieu_id: last_manual_invitation.rdv_solidarites_lieu_id,
-      link: last_manual_invitation.link,
-      rdv_solidarites_token: last_manual_invitation.rdv_solidarites_token,
-      expires_at: last_manual_invitation.expires_at,
-      rdv_with_referents: last_manual_invitation.rdv_with_referents
+      help_phone_number: last_agent_initiated_invitation.help_phone_number,
+      rdv_solidarites_lieu_id: last_agent_initiated_invitation.rdv_solidarites_lieu_id,
+      link: last_agent_initiated_invitation.link,
+      rdv_solidarites_token: last_agent_initiated_invitation.rdv_solidarites_token,
+      expires_at: last_agent_initiated_invitation.expires_at,
+      rdv_with_referents: last_agent_initiated_invitation.rdv_with_referents
     )
   end
 
@@ -56,12 +56,15 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def eligible_for_reminder?
-    @follow_up.status == "invitation_pending" &&
-      last_manual_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
-      last_manual_invitation.expireable? && last_manual_invitation.expires_at >= 2.days.from_now
+    @follow_up.status == "invitation_pending" && last_invitation_created_3_days_ago? &&
+      last_agent_initiated_invitation.expireable? && last_agent_initiated_invitation.expires_at >= 2.days.from_now
   end
 
-  def last_manual_invitation
-    @last_manual_invitation ||= @follow_up.last_manual_invitation
+  def last_invitation_created_3_days_ago?
+    last_agent_initiated_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date
+  end
+
+  def last_agent_initiated_invitation
+    @last_agent_initiated_invitation ||= @follow_up.last_agent_initiated_invitation
   end
 end

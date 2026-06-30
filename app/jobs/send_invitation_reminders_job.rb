@@ -5,8 +5,8 @@ class SendInvitationRemindersJob < ApplicationJob
     @sent_reminders_user_ids = []
 
     follow_ups_with_reminder_needed.includes(:invitations, :participations, :user).find_each do |follow_up|
-      invitation = follow_up.last_manual_invitation
-      # we check here that the last manual invitation has been sent Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+      invitation = follow_up.last_agent_initiated_invitation
+      # we check here that the last agent-initiated invitation has been sent Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
       # number of days ago with that value being set to 3
       next unless invitation_sent_3_days_ago?(invitation)
 
@@ -36,8 +36,8 @@ class SendInvitationRemindersJob < ApplicationJob
       # We want the invitation to be valid for at least two days to give time to the user to accept the invitation.
       # We don't send reminders for invitations that never expire since we consider those as invitations
       # to optional rdvs.
-      # We only send reminders for invitations that have been triggered manually and not by the system.
-      Invitation.manual
+      # We only send reminders for invitations that have been initiated by an agent and not by the system.
+      Invitation.agent_initiated
                 .where("expires_at > ?", 2.days.from_now)
                 .where(
                   format: %w[email sms],
