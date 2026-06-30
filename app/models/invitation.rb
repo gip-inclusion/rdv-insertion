@@ -119,6 +119,12 @@ class Invitation < ApplicationRecord
 
   def referent_emails = referents.pluck(:email)
 
+  def eligible_for_reminder?
+    agent_initiated? &&
+      created_at.to_date == NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
+      expireable? && expires_at >= 2.days.from_now
+  end
+
   private
 
   def assign_uuid

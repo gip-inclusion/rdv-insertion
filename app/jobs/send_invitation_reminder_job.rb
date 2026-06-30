@@ -56,12 +56,7 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def eligible_for_reminder?
-    @follow_up.status == "invitation_pending" && last_invitation_created_3_days_ago? &&
-      last_agent_initiated_invitation.expireable? && last_agent_initiated_invitation.expires_at >= 2.days.from_now
-  end
-
-  def last_invitation_created_3_days_ago?
-    last_agent_initiated_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date
+    @follow_up.status == "invitation_pending" && last_agent_initiated_invitation.eligible_for_reminder?
   end
 
   def last_agent_initiated_invitation
