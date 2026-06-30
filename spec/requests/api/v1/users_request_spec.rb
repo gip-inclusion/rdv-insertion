@@ -247,8 +247,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
         run_test! do |response|
           expect(response.status).to eq(422)
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response["errors"][0]["error_details"]).to include(
-            "aucune catégorie de motif ne correspond"
+          expect(parsed_response["errors"][0]["error_details"]).to eq(
+            "Ouverture d'un suivi impossible car aucune catégorie de motif ne correspond " \
+            "aux critères fournis (name: Catégorie inexistante)."
           )
         end
       end
