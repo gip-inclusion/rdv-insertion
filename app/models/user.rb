@@ -122,6 +122,12 @@ class User < ApplicationRecord
     follow_ups.to_a.find { |rc| rc.motif_category_id == motif_category.id }
   end
 
+  def find_or_create_follow_up!(motif_category)
+    with_advisory_lock("setting_follow_up_for_user_#{id}") do
+      follow_ups.find_or_create_by!(motif_category:)
+    end
+  end
+
   def department_numbers
     departments.map(&:number)
   end

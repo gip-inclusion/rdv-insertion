@@ -20,6 +20,10 @@ class InviteUser < BaseService
 
   private
 
+  def find_or_create_follow_up
+    @follow_up = @user.find_or_create_follow_up!(@current_configuration.motif_category)
+  end
+
   def set_invitation
     @invitation = Invitation.new(
       user: @user,
@@ -46,12 +50,6 @@ class InviteUser < BaseService
       else
         @organisations
       end
-  end
-
-  def find_or_create_follow_up
-    FollowUp.with_advisory_lock "setting_follow_up_for_user_#{@user.id}" do
-      @follow_up = FollowUp.find_or_create_by!(motif_category: @current_configuration.motif_category, user: @user)
-    end
   end
 
   def motif_category

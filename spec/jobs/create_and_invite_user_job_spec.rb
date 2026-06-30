@@ -20,6 +20,7 @@ describe CreateAndInviteUserJob do
   end
   let!(:invitation_attributes) { { rdv_solidarites_lieu_id: 888 } }
   let!(:motif_category_attributes) { { short_name: "rsa_orientation" } }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
   let!(:email_invitation_attributes) { invitation_attributes.merge(format: "email") }
   let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms") }
 
@@ -81,6 +82,15 @@ describe CreateAndInviteUserJob do
           user.id, organisation.id, email_invitation_attributes, motif_category_attributes
         )
       subject
+    end
+  end
+
+  context "when the user has neither phone nor email" do
+    before { user.update!(phone_number: nil, email: nil) }
+
+    it "still creates a follow up so the user is tracked in the category" do
+      expect { subject }.to change { user.follow_ups.count }.by(1)
+      expect(user.follow_ups.last.motif_category).to eq(motif_category)
     end
   end
 

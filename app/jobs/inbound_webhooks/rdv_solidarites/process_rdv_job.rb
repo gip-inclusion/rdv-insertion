@@ -239,12 +239,7 @@ module InboundWebhooks
       end
 
       def follow_ups
-        @follow_ups ||=
-          @users.map do |user|
-            FollowUp.with_advisory_lock "setting_follow_up_for_user_#{user.id}" do
-              FollowUp.find_or_create_by!(user: user, motif_category: motif_category)
-            end
-          end
+        @follow_ups ||= @users.map { |user| user.find_or_create_follow_up!(motif_category) }
       end
 
       def follow_up_ids
