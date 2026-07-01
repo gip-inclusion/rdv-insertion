@@ -4,7 +4,7 @@ class InvitationsController < ApplicationController
   # Public invitation endpoints rate limits
   override_rate_limit limit: RATE_LIMITS[:invitations], only: [:redirect_shortcut]
 
-  PERMITTED_ORIGINS = %w[users_index_page user_follow_ups_page].freeze
+  PERMITTED_ORIGINS = %w[users_index_page user_follow_ups_page user_list_upload].freeze
 
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
   before_action :set_invitation, :set_organisations_with_contact, :verify_invitation_validity, only: [:redirect]
