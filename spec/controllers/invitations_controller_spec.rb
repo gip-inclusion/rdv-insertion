@@ -24,6 +24,7 @@ describe InvitationsController do
         user_id: user_id,
         invitation: {
           format: "sms",
+          origin: "users_index_page",
           motif_category: motif_category_attributes
         },
         format: "json"
@@ -31,7 +32,7 @@ describe InvitationsController do
     end
 
     let!(:invitation_attributes) do
-      { format: "sms" }
+      { format: "sms", origin: "users_index_page" }
     end
 
     let!(:motif_category_attributes) { { id: motif_category.id.to_s } }

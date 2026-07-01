@@ -159,14 +159,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
             .with(
               organisation.id,
               user1_transformed,
-              {},
+              { origin: "api" },
               {}
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_later)
             .with(
               organisation.id,
               user2_transformed,
-              {},
+              { origin: "api" },
               { name: "RSA orientation" }
             )
           expect(parsed_response_body["success"]).to eq(true)
@@ -534,13 +534,13 @@ describe "Users API", swagger_doc: "v1/api.json" do
         allow(InviteUser).to receive(:call)
           .with(
             user:, organisations: [organisation], motif_category_attributes:,
-            invitation_attributes: sms_attributes
+            invitation_attributes: sms_attributes.merge(origin: "api")
           )
           .and_return(OpenStruct.new(success?: true, invitation: sms_invitation))
         allow(InviteUser).to receive(:call)
           .with(
             user:, organisations: [organisation], motif_category_attributes:,
-            invitation_attributes: email_attributes
+            invitation_attributes: email_attributes.merge(origin: "api")
           )
           .and_return(OpenStruct.new(success?: true, invitation: email_invitation))
       end
@@ -749,7 +749,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
               user:,
               organisations: [organisation],
               motif_category_attributes: { name: "RSA orientation" },
-              invitation_attributes: { rdv_solidarites_lieu_id: 123, format: "sms" }
+              invitation_attributes: { rdv_solidarites_lieu_id: 123, format: "sms", origin: "api" }
             )
             .and_return(OpenStruct.new(success?: true, invitation: sms_invitation))
         end

@@ -43,9 +43,25 @@ describe InviteUser, type: :service do
         .with(
           organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
           rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
-          help_phone_number: organisation.phone_number
+          help_phone_number: organisation.phone_number, created_by_agent: nil
         )
       subject
+    end
+
+    context "when an agent initiates the invitation" do
+      let!(:agent) { create(:agent) }
+
+      before { Current.agent = agent }
+
+      it "instanciates the invitation with the agent as created_by_agent" do
+        expect(Invitation).to receive(:new)
+          .with(
+            organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
+            rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
+            help_phone_number: organisation.phone_number, created_by_agent: agent
+          )
+        subject
+      end
     end
 
     it "saves and send the invitation" do
@@ -81,7 +97,7 @@ describe InviteUser, type: :service do
             .with(
               organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
               rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
-              help_phone_number: organisation.phone_number
+              help_phone_number: organisation.phone_number, created_by_agent: nil
             )
           subject
         end
@@ -129,7 +145,7 @@ describe InviteUser, type: :service do
               .with(
                 organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
                 rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
-                help_phone_number: organisation.phone_number
+                help_phone_number: organisation.phone_number, created_by_agent: nil
               )
             subject
           end
@@ -147,7 +163,7 @@ describe InviteUser, type: :service do
                 .with(
                   organisations: [], user:, department:, follow_up:, expires_at: 5.days.from_now,
                   rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
-                  help_phone_number: organisation.phone_number
+                  help_phone_number: organisation.phone_number, created_by_agent: nil
                 )
               subject
             end
@@ -164,7 +180,7 @@ describe InviteUser, type: :service do
               .with(
                 organisations: [organisation], user:, department:, follow_up:, expires_at: 5.days.from_now,
                 rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
-                help_phone_number: phone_number
+                help_phone_number: phone_number, created_by_agent: nil
               )
             subject
           end
@@ -182,7 +198,7 @@ describe InviteUser, type: :service do
               .with(
                 organisations:, user:, department:, follow_up:, expires_at: 5.days.from_now,
                 rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
-                help_phone_number: organisation.phone_number
+                help_phone_number: organisation.phone_number, created_by_agent: nil
               )
             subject
           end

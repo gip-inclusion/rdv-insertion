@@ -23,7 +23,8 @@ export default class extends Controller {
       this.element.dataset.departmentId,
       this.element.dataset.organisationId,
       this.element.dataset.isDepartmentLevel,
-      this.element.dataset.motifCategoryId
+      this.element.dataset.motifCategoryId,
+      this.element.dataset.origin
     );
 
     this.button.innerHTML = DOMPurify.sanitize(this.initialButtonHTML);

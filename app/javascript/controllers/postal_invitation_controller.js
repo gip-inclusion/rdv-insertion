@@ -5,10 +5,10 @@ export default class extends Controller {
   async submit(event) {
     event.preventDefault();
 
-    const { userId, departmentId, organisationId, motifCategoryId } = this.element.dataset;
+    const { userId, departmentId, organisationId, motifCategoryId, origin } = this.element.dataset;
 
     await createInvitationLetter(
-      userId, departmentId, organisationId, !organisationId, motifCategoryId
+      userId, departmentId, organisationId, !organisationId, motifCategoryId, origin
     );
   }
 }

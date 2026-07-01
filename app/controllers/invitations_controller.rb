@@ -4,6 +4,8 @@ class InvitationsController < ApplicationController
   # Public invitation endpoints rate limits
   override_rate_limit limit: RATE_LIMITS[:invitations], only: [:redirect_shortcut]
 
+  PERMITTED_ORIGINS = %w[users_index_page user_follow_ups_page user_list_upload].freeze
+
   before_action :set_organisations, :set_user, :ensure_rdv_solidarites_user_exists, only: [:create]
   before_action :set_invitation, :set_organisations_with_contact, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
@@ -56,8 +58,9 @@ class InvitationsController < ApplicationController
 
   def invitation_params
     params.expect(
-      invitation: [:format, :rdv_solidarites_lieu_id, { motif_category: [:id] }]
+      invitation: [:format, :origin, :rdv_solidarites_lieu_id, { motif_category: [:id] }]
     ).to_h.deep_symbolize_keys
+          .tap { |attributes| attributes.delete(:origin) unless attributes[:origin].in?(PERMITTED_ORIGINS) }
   end
 
   def invitation = invite_user.invitation

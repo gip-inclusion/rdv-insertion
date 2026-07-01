@@ -10,6 +10,7 @@ FactoryBot.define do
     follow_up
     rdv_with_referents { false }
     organisations { [create(:organisation)] }
+    origin { :users_index_page }
 
     trait :delivered do
       delivery_status { "delivered" }

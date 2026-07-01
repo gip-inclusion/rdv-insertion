@@ -92,7 +92,7 @@ describe SendInvitationRemindersJob do
         :invitation,
         user: user1, follow_up: follow_up7,
         created_at: 3.days.ago, expires_at: 4.days.from_now,
-        trigger: "reminder"
+        origin: "reminder"
       )
     end
 

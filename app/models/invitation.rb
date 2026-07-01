@@ -7,6 +7,7 @@ class Invitation < ApplicationRecord
   include WebhookDeliverable
   include Deliverable
   include HasSmsProvider
+  include Invitation::CreationOrigin
 
   belongs_to :user
   belongs_to :department
@@ -28,8 +29,6 @@ class Invitation < ApplicationRecord
   delegate :post_code, to: :user, prefix: true, allow_nil: true
 
   enum :format, { sms: "sms", email: "email", postal: "postal" }, prefix: true
-  # "periodic" is not used anymore, but we keep it for database integrity
-  enum :trigger, { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid
   after_commit :refresh_follow_up_status
@@ -119,6 +118,12 @@ class Invitation < ApplicationRecord
   end
 
   def referent_emails = referents.pluck(:email)
+
+  def eligible_for_reminder?
+    agent_initiated? &&
+      created_at.to_date == NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
+      expireable? && expires_at >= 2.days.from_now
+  end
 
   private
 

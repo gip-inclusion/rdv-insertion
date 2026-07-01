@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_18_110000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_19_131224) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -282,6 +282,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_110000) do
   create_table "invitations", force: :cascade do |t|
     t.boolean "clicked", default: false
     t.datetime "created_at", null: false
+    t.bigint "created_by_agent_id"
     t.string "delivery_status"
     t.bigint "department_id"
     t.datetime "expires_at"
@@ -290,18 +291,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_110000) do
     t.string "help_phone_number"
     t.datetime "last_brevo_webhook_received_at"
     t.string "link"
+    t.string "origin", null: false
     t.bigint "rdv_solidarites_lieu_id"
     t.string "rdv_solidarites_token"
     t.boolean "rdv_with_referents", default: false
     t.string "sms_provider"
-    t.string "trigger", default: "manual", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "uuid"
+    t.index ["created_by_agent_id"], name: "index_invitations_on_created_by_agent_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["expires_at"], name: "index_invitations_on_expires_at"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
-    t.index ["trigger"], name: "index_invitations_on_trigger"
+    t.index ["origin"], name: "index_invitations_on_origin"
     t.index ["user_id", "created_at"], name: "index_invitations_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_invitations_on_user_id"
     t.index ["uuid"], name: "index_invitations_on_uuid", unique: true
@@ -783,6 +785,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_18_110000) do
   add_foreign_key "file_configurations", "agents", column: "created_by_agent_id"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
+  add_foreign_key "invitations", "agents", column: "created_by_agent_id"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "follow_ups"
   add_foreign_key "invitations", "users"

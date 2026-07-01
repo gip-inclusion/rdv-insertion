@@ -35,6 +35,7 @@ class InviteUser < BaseService
       expires_at: @current_configuration.new_invitation_will_expire_at,
       help_phone_number: @current_configuration.effective_phone_number,
       rdv_with_referents: @current_configuration.rdv_with_referents,
+      created_by_agent: Current.agent,
       **@invitation_attributes
     )
   end

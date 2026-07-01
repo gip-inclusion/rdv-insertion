@@ -40,8 +40,7 @@ describe Invitations::SaveAndSend, type: :service do
       expect { subject }.to change(Invitation, :count).by(1)
       expect(Invitation.last).to have_attributes(
         user: user,
-        format: "sms",
-        trigger: "manual"
+        format: "sms"
       )
     end
 
