@@ -365,6 +365,7 @@ describe "Agents can upload user list", :js do
       expect(Invitation.count).to eq(2)
       expect(hernan_user.reload.invitations.count).to eq(2)
       expect(hernan_user.invitations.map(&:format)).to contain_exactly("sms", "email")
+      expect(hernan_user.invitations.map(&:origin).uniq).to eq(["user_list_upload"])
 
       click_link "Terminer"
 
@@ -1116,6 +1117,25 @@ describe "Agents can upload user list", :js do
       page.refresh
       expect(page).to have_css("input[type='checkbox'][name='format_sms']:not(:checked)")
       expect(page).to have_css("input[type='checkbox'][name='format_email']:not(:checked)")
+    end
+
+    context "when generating a postal invitation" do
+      before do
+        hernan.update!(address: "127 RUE DE GRENELLE 75007 PARIS", organisations: [organisation])
+        stub_rdv_solidarites_invitation_requests(hernan.rdv_solidarites_user_id, "123456")
+        stub_geo_api_request(hernan.address)
+        stub_request(:post, "#{ENV['PDF_GENERATOR_URL']}/generate")
+          .to_return(status: 200, body: Base64.encode64("mock pdf content"))
+      end
+
+      it "creates the invitation with the user_list_upload origin" do
+        visit select_rows_user_list_upload_invitation_attempts_path(user_list_upload_id: user_list_upload.id)
+
+        find("#rdvi_upload_users-invit_user-download-#{hernan_row.id}").click
+        wait_for_download
+
+        expect(hernan.reload.invitations.pluck(:format, :origin)).to eq([%w[postal user_list_upload]])
+      end
     end
 
     context "when user has already been invited" do

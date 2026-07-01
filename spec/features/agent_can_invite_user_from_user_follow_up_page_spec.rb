@@ -101,6 +101,7 @@ describe "Agents can invite user from user follow up page", :js do
   def expect_successful_invitation
     expect(page).to have_content("Réinviter")
     expect(user.reload.invitations.count).to eq(1)
+    expect(user.invitations.last.origin).to eq("user_follow_ups_page")
   end
 
   def expect_invitation_failure_message

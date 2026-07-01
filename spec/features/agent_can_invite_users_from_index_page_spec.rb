@@ -47,6 +47,8 @@ describe "Agents can invite from index page", :js do
       expect(page).to have_css("#postal_invite_for_user_#{user.id} .ri-checkbox-blank-line")
       perform_enqueued_jobs(only: [FollowUps::RefreshStatusesJob, Turbo::Streams::BroadcastStreamJob])
       expect(page).to have_content("Invitation en attente de réponse")
+
+      expect(user.invitations.last.origin).to eq("users_index_page")
     end
 
     context "when pdf generation fails" do
