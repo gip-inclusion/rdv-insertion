@@ -961,8 +961,12 @@ describe UsersController do
     describe "users list indicators banner" do
       describe "creneau availability" do
         let!(:creneau_availability) do
-          create(:creneau_availability, category_configuration: category_configuration,
-                                        number_of_creneaux_available: 11)
+          create(
+            :creneau_availability,
+            category_configuration: category_configuration,
+            created_at: Time.zone.parse("2026-07-07 05:00:00"),
+            number_of_creneaux_available: 11
+          )
         end
         let!(:motif) do
           create(:motif, organisation:, motif_category: category_orientation,
@@ -970,7 +974,7 @@ describe UsersController do
                          min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
         end
 
-        it "displays the creneau availability banner at organisation level" do
+        it "displays the creneau availability at organisation level" do
           get :index, params: index_params
 
           expect(response.body).to include("11 créneaux disponibles")
