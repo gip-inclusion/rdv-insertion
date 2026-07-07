@@ -14,7 +14,7 @@
              color: "red" %>
   <% if (tally_url = ENV["CRENEAU_AVAILABILITY_BANNER_TALLY_URL"]).present? %>
     <% tally_params = { email: current_agent.email,
-                        organisation: @organisation.name,
+                        organisation: @organisation&.name,
                         department: @department.name } %>
     <div class="position-absolute end-0 d-flex align-items-center gap-3 pe-3">
       <%= link_to "Donnez-nous votre avis", "#{tally_url}?#{tally_params.to_query}",

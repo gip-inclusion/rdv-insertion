@@ -970,7 +970,7 @@ describe UsersController do
                          min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
         end
 
-        it "displays the banner at organisation level" do
+        it "displays the creneau availability banner at organisation level" do
           get :index, params: index_params
 
           expect(response.body).to include("11 créneaux disponibles")
@@ -982,7 +982,7 @@ describe UsersController do
         context "when at department level" do
           let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
 
-          it "does not display the banner" do
+          it "does not display the creneau availability" do
             get :index, params: index_params
 
             expect(response.body).not_to include("créneaux disponibles")
@@ -992,7 +992,7 @@ describe UsersController do
         context "when the booking period cannot be computed" do
           let!(:motif) { nil }
 
-          it "displays the banner without the period" do
+          it "displays the creneau availability without the period" do
             get :index, params: index_params
 
             expect(response.body).to include("11 créneaux disponibles")
@@ -1003,7 +1003,7 @@ describe UsersController do
         context "when the category has rdv_with_referents" do
           before { category_configuration.update!(rdv_with_referents: true) }
 
-          it "does not display the banner" do
+          it "does not display the creneau availability" do
             get :index, params: index_params
 
             expect(response.body).not_to include("créneaux disponibles")
@@ -1013,7 +1013,7 @@ describe UsersController do
         context "when no CreneauAvailability exists for the category" do
           before { CategoryConfiguration::CreneauAvailability.destroy_all }
 
-          it "does not display the banner" do
+          it "does not display the creneau availability" do
             get :index, params: index_params
 
             expect(response.body).not_to include("créneaux disponibles")
