@@ -600,6 +600,55 @@ describe "Users API", swagger_doc: "v1/api.json" do
       end
       # rubocop:enable RSpec/EmptyExampleGroup
 
+      context "gestion du follow_up de la catégorie de motif", :skip_examples do
+        let!(:motif_category) { create(:motif_category, name: "RSA orientation") }
+
+        before { allow(MotifCategory).to receive(:find_by!).and_return(motif_category) }
+
+        it "crée un follow_up pour l'usager dans la catégorie de motif" do
+          expect do
+            post create_and_invite_api_v1_users_path(rdv_solidarites_organisation_id),
+                 params: user_params.to_json,
+                 headers: auth_headers.merge({ "Content-Type" => "application/json" })
+          end.to change { user.follow_ups.where(motif_category:).count }.from(0).to(1)
+
+          expect(response).to have_http_status(:ok)
+        end
+
+        context "quand l'usager a déjà un follow_up fermé pour cette catégorie de motif" do
+          let!(:follow_up) { create(:follow_up, user:, motif_category:, closed_at: 1.day.ago) }
+
+          it "réouvre le follow_up" do
+            expect do
+              post create_and_invite_api_v1_users_path(rdv_solidarites_organisation_id),
+                   params: user_params.to_json,
+                   headers: auth_headers.merge({ "Content-Type" => "application/json" })
+            end.to change { follow_up.reload.closed? }.from(true).to(false)
+
+            expect(response).to have_http_status(:ok)
+          end
+
+          context "quand la réouverture du follow_up est invalide" do
+            before do
+              invalid_follow_up = build(:follow_up)
+              invalid_follow_up.errors.add(:base, "Le suivi ne peut pas être rouvert")
+              allow_any_instance_of(FollowUp).to receive(:reopen!)
+                .and_raise(ActiveRecord::RecordInvalid.new(invalid_follow_up))
+            end
+
+            it "renvoie une erreur 422 avec les messages d'erreur" do
+              post create_and_invite_api_v1_users_path(rdv_solidarites_organisation_id),
+                   params: user_params.to_json,
+                   headers: auth_headers.merge({ "Content-Type" => "application/json" })
+
+              expect(response).to have_http_status(:unprocessable_content)
+              expect(parsed_response_body["success"]).to eq(false)
+              expect(parsed_response_body["errors"]).to include("Le suivi ne peut pas être rouvert")
+            end
+          end
+        end
+      end
+
       it_behaves_like "common API errors"
 
       it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "les paramètres sont incomplets", true do
