@@ -58,6 +58,7 @@ module Api
         return render_errors(["Impossible de créer l'usager: #{upsert_user.errors.join(', ')}"]) if upsert_user.failure?
 
         find_or_create_follow_up
+        reopen_follow_up_if_closed
 
         @invitations, @invitation_errors = [[], []]
         invite_user_by("sms") if @user.phone_number_is_mobile?
@@ -118,7 +119,11 @@ module Api
       def find_or_create_follow_up
         return if motif_category_attributes.blank?
 
-        @user.find_or_create_follow_up!(MotifCategory.find_by!(motif_category_attributes))
+        @follow_up = @user.find_or_create_follow_up!(MotifCategory.find_by!(motif_category_attributes))
+      end
+
+      def reopen_follow_up_if_closed
+        @follow_up.reopen! if @follow_up.closed?
       end
 
       def invite_user_by(format)

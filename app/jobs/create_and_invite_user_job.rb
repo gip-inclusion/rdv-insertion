@@ -12,6 +12,7 @@ class CreateAndInviteUserJob < ApplicationJob
 
     upsert_user!
     find_or_create_follow_up
+    reopen_follow_up_if_closed
     invite_user
   end
 
@@ -39,7 +40,11 @@ class CreateAndInviteUserJob < ApplicationJob
   def find_or_create_follow_up
     return if @motif_category_attributes.blank?
 
-    @user.find_or_create_follow_up!(MotifCategory.find_by!(@motif_category_attributes))
+    @follow_up = @user.find_or_create_follow_up!(MotifCategory.find_by!(@motif_category_attributes))
+  end
+
+  def reopen_follow_up_if_closed
+    @follow_up.reopen! if @follow_up.closed?
   end
 
   def invite_user
