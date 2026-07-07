@@ -961,7 +961,8 @@ describe UsersController do
     describe "creneau availability banner" do
       let!(:creneau_availability) do
         create(:creneau_availability, category_configuration: category_configuration,
-                                      number_of_creneaux_available: 11)
+                                      number_of_creneaux_available: 11,
+                                      created_at: Time.zone.parse("2026-07-07 05:00:00"))
       end
       let!(:motif) do
         create(:motif, organisation:, motif_category: category_orientation,
@@ -974,8 +975,9 @@ describe UsersController do
 
         expect(response.body).to include("11 créneaux disponibles")
                              .and include("ri-information-line")
-                             .and include("Calculé le")
-                             .and include("Pour la période du")
+                             .and include("Nombre de créneaux visibles par les usagers invités à prendre rendez-vous.")
+                             .and include("Visibilité du 10 juillet au 6 août 2026.")
+                             .and include("Nombre de créneaux calculé le 07/07 à 05h00")
       end
 
       context "when at department level" do
@@ -995,7 +997,7 @@ describe UsersController do
           get :index, params: index_params
 
           expect(response.body).to include("11 créneaux disponibles")
-          expect(response.body).not_to include("Pour la période")
+          expect(response.body).not_to include("Visibilité du")
         end
       end
 
