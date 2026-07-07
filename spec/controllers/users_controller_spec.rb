@@ -975,8 +975,11 @@ describe UsersController do
 
           expect(response.body).to include("11 créneaux disponibles")
                                .and include("ri-information-line")
-                               .and include("Calculé le")
-                               .and include("Pour la période du")
+                               .and include(
+                                 "Nombre de créneaux visibles par les usagers invités à prendre rendez-vous."
+                               )
+            .and include("Visibilité du 10 juillet au 6 août 2026.")
+            .and include("Nombre de créneaux calculé le 07/07 à 05h00")
         end
 
         context "when at department level" do
