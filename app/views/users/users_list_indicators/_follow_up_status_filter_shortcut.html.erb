@@ -1,0 +1,10 @@
+<% active = follow_up_statuses_filter_active?(statuses) %>
+<%= link_to structure_users_path(url_params.except(:page).merge(follow_up_statuses: statuses)),
+            class: "status-shortcut status-shortcut--#{color} rounded bg-white p-2 " \
+                   "d-inline-flex align-items-center gap-2 text-decoration-none " \
+                   "#{'status-shortcut--active' if active}" do %>
+  <span class="icon-circle">
+    <i class="ri-user-line"></i>
+  </span>
+  <span class="medium"><%= count %> <%= label %></span>
+<% end %>

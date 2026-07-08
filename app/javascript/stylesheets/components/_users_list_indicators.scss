@@ -1,0 +1,40 @@
+.users-list-indicators {
+  position: relative;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  background-color: $light-3;
+}
+
+.status-shortcut {
+  border: 1px solid transparent;
+
+  &--orange {
+    .icon-circle {
+      background-color: $orange-pale;
+    }
+
+    .medium,
+    i {
+      color: $orange-dark;
+    }
+
+    &.status-shortcut--active {
+      border-color: $orange-dark;
+    }
+  }
+
+  &--red {
+    .icon-circle {
+      background-color: $red-pale;
+    }
+
+    .medium,
+    i {
+      color: $red;
+    }
+
+    &.status-shortcut--active {
+      border-color: $red;
+    }
+  }
+}

@@ -958,66 +958,114 @@ describe UsersController do
       end
     end
 
-    describe "creneau availability banner" do
-      let!(:creneau_availability) do
-        create(:creneau_availability, category_configuration: category_configuration,
-                                      number_of_creneaux_available: 11,
-                                      created_at: Time.zone.parse("2026-07-07 05:00:00"))
-      end
-      let!(:motif) do
-        create(:motif, organisation:, motif_category: category_orientation,
-                       bookable_by: "agents_and_prescripteurs_and_invited_users",
-                       min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
-      end
-
-      it "displays the banner at organisation level" do
-        get :index, params: index_params
-
-        expect(response.body).to include("11 créneaux disponibles")
-                             .and include("ri-information-line")
-                             .and include("Nombre de créneaux visibles par les usagers invités à prendre rendez-vous.")
-                             .and include("Visibilité du 10 juillet au 6 août 2026.")
-                             .and include("Nombre de créneaux calculé le 07/07 à 05h00")
-      end
-
-      context "when at department level" do
-        let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
-
-        it "does not display the banner" do
-          get :index, params: index_params
-
-          expect(response.body).not_to include("créneaux disponibles")
+    describe "users list indicators banner" do
+      describe "creneau availability" do
+        let!(:creneau_availability) do
+          create(
+            :creneau_availability,
+            category_configuration: category_configuration,
+            created_at: Time.zone.parse("2026-07-07 05:00:00"),
+            number_of_creneaux_available: 11
+          )
         end
-      end
+        let!(:motif) do
+          create(:motif, organisation:, motif_category: category_orientation,
+                         bookable_by: "agents_and_prescripteurs_and_invited_users",
+                         min_public_booking_delay: 3.days.to_i, max_public_booking_delay: 30.days.to_i)
+        end
 
-      context "when the booking period cannot be computed" do
-        let!(:motif) { nil }
-
-        it "displays the banner without the period" do
+        it "displays the creneau availability at organisation level" do
           get :index, params: index_params
 
           expect(response.body).to include("11 créneaux disponibles")
-          expect(response.body).not_to include("Visibilité du")
+                               .and include("ri-information-line")
+                               .and include(
+                                 "Nombre de créneaux visibles par les usagers invités à prendre rendez-vous."
+                               )
+            .and include("Visibilité du 10 juillet au 6 août 2026.")
+            .and include("Nombre de créneaux calculé le 07/07 à 05h00")
+        end
+
+        context "when at department level" do
+          let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
+
+          it "does not display the creneau availability" do
+            get :index, params: index_params
+
+            expect(response.body).not_to include("créneaux disponibles")
+          end
+        end
+
+        context "when the booking period cannot be computed" do
+          let!(:motif) { nil }
+
+          it "displays the creneau availability without the period" do
+            get :index, params: index_params
+
+            expect(response.body).to include("11 créneaux disponibles")
+            expect(response.body).not_to include("Pour la période")
+          end
+        end
+
+        context "when the category has rdv_with_referents" do
+          before { category_configuration.update!(rdv_with_referents: true) }
+
+          it "does not display the creneau availability" do
+            get :index, params: index_params
+
+            expect(response.body).not_to include("créneaux disponibles")
+          end
+        end
+
+        context "when no CreneauAvailability exists for the category" do
+          before { CategoryConfiguration::CreneauAvailability.destroy_all }
+
+          it "does not display the creneau availability" do
+            get :index, params: index_params
+
+            expect(response.body).not_to include("créneaux disponibles")
+          end
         end
       end
 
-      context "when the category has rdv_with_referents" do
-        before { category_configuration.update!(rdv_with_referents: true) }
-
-        it "does not display the banner" do
-          get :index, params: index_params
-
-          expect(response.body).not_to include("créneaux disponibles")
+      describe "follow-up status shortcuts" do
+        before do
+          %w[invitation_expired invitation_expired rdv_excused rdv_revoked rdv_noshow].each do |status|
+            create(
+              :user,
+              organisations: [organisation],
+              follow_ups: [build(:follow_up, motif_category: category_orientation, status:)]
+            )
+          end
         end
-      end
 
-      context "when no CreneauAvailability exists for the category" do
-        before { CategoryConfiguration::CreneauAvailability.destroy_all }
-
-        it "does not display the banner" do
+        it "displays the invitation delay shortcut with its count" do
           get :index, params: index_params
 
-          expect(response.body).not_to include("créneaux disponibles")
+          expect(response.body).to include("2 invitations en délai dépassé")
+        end
+
+        it "displays the cancelled-or-absence shortcut summing the three statuses" do
+          get :index, params: index_params
+
+          expect(response.body).to include("3 RDV annulés ou absence")
+        end
+
+        it "links each shortcut to its follow_up_statuses filter" do
+          get :index, params: index_params
+
+          expect(response.body).to include("follow_up_statuses%5B%5D=invitation_expired")
+                               .and include("follow_up_statuses%5B%5D=rdv_excused")
+                               .and include("follow_up_statuses%5B%5D=rdv_revoked")
+                               .and include("follow_up_statuses%5B%5D=rdv_noshow")
+        end
+
+        context "when a shortcut filter is active" do
+          it "highlights the matching shortcut" do
+            get :index, params: index_params.merge(follow_up_statuses: ["invitation_expired"])
+
+            expect(response.body).to include("status-shortcut--active")
+          end
         end
       end
     end

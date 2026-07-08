@@ -1,6 +1,8 @@
 module FollowUpStatus
   extend ActiveSupport::Concern
 
+  RDV_CANCELLED_OR_ABSENCE_STATUSES = %w[rdv_excused rdv_revoked rdv_noshow].freeze
+
   included do
     enum :status, {
       not_invited: "not_invited",

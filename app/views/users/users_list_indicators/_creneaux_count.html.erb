@@ -1,0 +1,9 @@
+<div class="rounded bg-white p-2 d-inline-flex align-items-center gap-2">
+  <span class="icon-circle background-green-light">
+    <i class="ri-calendar-line text-dark-green"></i>
+  </span>
+  <span class="medium text-dark-green">
+    <%= creneau_availability.number_of_creneaux_available %> créneaux disponibles
+  </span>
+  <i class="ri-information-line text-muted" <%= creneau_availability_tooltip_content(creneau_availability) %>></i>
+</div>

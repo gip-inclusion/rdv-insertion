@@ -22,6 +22,11 @@ module UsersFiltersHelper
     filter_list.select { |filter| params[filter].present? }
   end
 
+  def selected_follow_up_statuses_count(statuses_count)
+    displayed_statuses = options_for_select_status(statuses_count).map(&:last)
+    (Array(params[:follow_up_statuses]) & displayed_statuses).length
+  end
+
   def invitation_or_convocation_active_filters_count
     active_filters_count = 0
 
