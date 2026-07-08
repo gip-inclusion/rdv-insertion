@@ -1,4 +1,7 @@
 class ReplaceInvitationsTriggerWithOrigin < ActiveRecord::Migration[8.1]
+  set_lock_timeout(60_000)
+  set_statement_timeout(120_000)
+
   def up
     add_column :invitations, :origin, :string
     add_index :invitations, :origin
