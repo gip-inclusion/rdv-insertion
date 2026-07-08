@@ -17,8 +17,7 @@ class ParticipationsController < ApplicationController
         partial: "post_rdv_orientations/form",
         locals: {
           participation: @participation,
-          orientation_types: OrientationType.for_department(@participation.department),
-          tally_form_id: ENV["POST_RDV_ORIENTATION_TALLY_ID"]
+          orientation_types: OrientationType.for_department(@participation.department)
         }
       )
     else

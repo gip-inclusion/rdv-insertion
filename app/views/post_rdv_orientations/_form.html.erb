@@ -12,7 +12,7 @@
     </div>
     <div class="d-flex justify-content-end gap-2 mt-3 p-4" data-turbo-prefetch="false">
       <%= link_to "Passer cette étape",
-            structure_user_follow_ups_path(user_id: participation.user_id, tally_form_id:),
+            structure_user_follow_ups_path(user_id: participation.user_id),
             id: "post-rdv-orientation-skip",
             class: "btn btn-blue-out",
             data: { turbo_frame: "_top", turbo_action: "replace" } %>
