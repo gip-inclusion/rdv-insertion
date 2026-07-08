@@ -18,6 +18,7 @@ module Api
       private
 
       rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+      rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
       def validate_rdv_solidarites_credentials!
         return if rdv_solidarites_credentials.valid?
@@ -52,6 +53,10 @@ module Api
 
       def authenticated_agent
         @authenticated_agent ||= Agent.find_by(email: rdv_solidarites_credentials.email)
+      end
+
+      def record_invalid(exception)
+        render json: { success: false, errors: exception.record.errors.full_messages }, status: :unprocessable_content
       end
 
       def record_not_found(exception)

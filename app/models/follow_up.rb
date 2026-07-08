@@ -47,6 +47,10 @@ class FollowUp < ApplicationRecord
     closed_at.present?
   end
 
+  def reopen!
+    update!(closed_at: nil)
+  end
+
   def orientation?
     motif_category.rsa_orientation?
   end
