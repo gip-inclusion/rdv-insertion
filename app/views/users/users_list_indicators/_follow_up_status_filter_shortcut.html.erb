@@ -1,5 +1,5 @@
-<% active = follow_up_statuses_filter_active?(statuses) %>
-<%= link_to structure_users_path(url_params.except(:page).merge(follow_up_statuses: statuses)),
+<% active = follow_up_statuses_filter_active?(statuses_filtering) %>
+<%= link_to structure_users_path(shortcut_url_params_for(statuses_filtering, active)),
             class: "status-shortcut status-shortcut--#{color} rounded bg-white p-2 " \
                    "d-inline-flex align-items-center gap-2 text-decoration-none " \
                    "#{'status-shortcut--active' if active}" do %>

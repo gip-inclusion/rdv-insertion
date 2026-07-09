@@ -16,4 +16,12 @@ module UsersListIndicatorsHelper
   def follow_up_statuses_filter_active?(statuses)
     Array(params[:follow_up_statuses]).sort == statuses.sort
   end
+
+  def shortcut_url_params_for(statuses_filtering, active)
+    if active
+      url_params.merge(follow_up_statuses: url_params[:follow_up_statuses] - statuses_filtering)
+    else
+      url_params.merge(follow_up_statuses: statuses_filtering)
+    end.except(:page)
+  end
 end
