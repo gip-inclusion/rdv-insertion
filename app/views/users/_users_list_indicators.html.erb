@@ -3,12 +3,12 @@
     <%= render "users/users_list_indicators/creneaux_count", creneau_availability: @latest_creneau_availability %>
   <% end %>
   <%= render "users/users_list_indicators/follow_up_status_filter_shortcut",
-             statuses: ["invitation_expired"],
+             statuses_filtering: ["invitation_expired"],
              count: @statuses_count["invitation_expired"].to_i,
              label: "invitations en délai dépassé",
              color: "orange" %>
   <%= render "users/users_list_indicators/follow_up_status_filter_shortcut",
-             statuses: FollowUp::RDV_CANCELLED_OR_ABSENCE_STATUSES,
+             statuses_filtering: FollowUp::RDV_CANCELLED_OR_ABSENCE_STATUSES,
              count: rdv_cancelled_or_absence_count(@statuses_count),
              label: "RDV annulés ou absence",
              color: "red" %>
