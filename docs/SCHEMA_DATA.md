@@ -143,7 +143,7 @@ Représente une invitation envoyée à un usager pour qu'il prenne rendez-vous.
 - `uuid` : Identifiant court pour l'URL publique
 - `expires_at` : Date d'expiration de l'invitation
 - `clicked` : L'usager a-t-il cliqué sur le lien ?
-- `trigger` : "manual" (manuelle) ou "reminder" (relance)
+- `origin` : Depuis où a été créé l'invitation ("user_list_upload", "api", "reminder", "users_index_page", "user_follow_ups_page")
 - `delivery_status` : Statut de livraison (Brevo)
 - `sms_provider` : Fournisseur SMS utilisé (pour les invitations SMS)
 - `last_brevo_webhook_received_at` : Date du dernier webhook Brevo reçu
