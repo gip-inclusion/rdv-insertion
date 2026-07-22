@@ -11,7 +11,7 @@ describe RdvSolidaritesOauthToken do
 
     before do
       allow(RdvSolidaritesOauthClient).to receive(:new).and_return(oauth_client)
-      allow(oauth_client).to receive(:refresh).and_return(access_token)
+      allow(oauth_client).to receive(:refresh!).and_return(access_token)
     end
 
     it "updates the tokens with the refreshed ones" do
@@ -24,7 +24,7 @@ describe RdvSolidaritesOauthToken do
 
       it "does not refresh again" do
         subject
-        expect(oauth_client).not_to have_received(:refresh)
+        expect(oauth_client).not_to have_received(:refresh!)
       end
 
       it "keeps the current tokens" do

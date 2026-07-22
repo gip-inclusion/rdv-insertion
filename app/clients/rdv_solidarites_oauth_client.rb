@@ -4,7 +4,7 @@ class RdvSolidaritesOauthClient
     @refresh_token = refresh_token
   end
 
-  def refresh
+  def refresh!
     OAuth2::AccessToken.new(client, @api_token, refresh_token: @refresh_token).refresh!
   end
 
