@@ -105,6 +105,6 @@ module StubHelper
   end
 
   def rdv_solidarites_auth_headers_with_shared_secret(agent)
-    agent.send(:rdv_solidarites_auth_headers_with_shared_secret)
+    RdvSolidaritesAuthentication::SharedSecret.new(agent: agent).headers
   end
 end
