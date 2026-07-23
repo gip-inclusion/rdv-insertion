@@ -18,13 +18,7 @@ class Archive < ApplicationRecord
   private
 
   def invalidate_related_invitations
-    organisation.invitations.where(user: user.reload).includes(:organisations).find_each do |invitation|
-      next unless (invitation.organisations & user.organisations).all? do |organisation|
-        user.archived_in_organisation?(organisation)
-      end
-
-      ExpireInvitationJob.perform_later(invitation.id)
-    end
+    InvalidateInvitationsAfterArchivingJob.perform_later(id)
   end
 
   def user_must_belong_to_organisation
