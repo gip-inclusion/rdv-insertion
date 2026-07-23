@@ -71,33 +71,11 @@ describe Archive do
   end
 
   describe "invitation invalidations" do
-    let!(:department) { create(:department) }
-    let!(:organisation) { create(:organisation, department:) }
     let!(:archive) { build(:archive, user:, organisation:) }
-    let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
-    let!(:other_organisation) { create(:organisation, department:) }
-    let!(:invitation) do
-      create(:invitation, user:, department:,
-                          organisations: [organisation, other_organisation, organisation_user_does_not_belong_to])
-    end
-    let!(:organisation_user_does_not_belong_to) { create(:organisation, department:) }
 
-    context "when the user is not archived in all the organisations he shares with the invitation" do
-      it "does not invalidate the invitation" do
-        expect(ExpireInvitationJob).not_to receive(:perform_later).with(invitation.id)
-        archive.save!
-      end
-    end
-
-    context "when the user is archived in all the organisations he shares with the invitation" do
-      let!(:archive_in_other_organisation) do
-        create(:archive, user:, organisation: other_organisation, archiving_reason: "test")
-      end
-
-      it "invalidates the invitation" do
-        expect(ExpireInvitationJob).to receive(:perform_later).with(invitation.id)
-        archive.save!
-      end
+    it "enqueues a job to invalidate related invitations on creation" do
+      expect(InvalidateInvitationsAfterArchivingJob).to receive(:perform_later)
+      archive.save!
     end
   end
 end
