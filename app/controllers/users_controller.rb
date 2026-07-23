@@ -101,8 +101,11 @@ class UsersController < ApplicationController
   end
 
   def generate_csv
+    # reorder(nil) is needed because plucking ids keeps the ORDER BY on a column that is no longer
+    # selected, which Postgres rejects for DISTINCT queries. Order is irrelevant here anyway:
+    # the export job refetches users by id.
     csv_exporter.perform_later(
-      @users.map(&:id),
+      @users.reorder(nil).ids,
       department_level? ? "Department" : "Organisation",
       department_level? ? @department.id : @organisation.id,
       current_agent.id,
@@ -232,21 +235,27 @@ class UsersController < ApplicationController
   def set_all_users
     @users = policy_scope(User)
              .active.distinct
-             .preload(:organisations).where(organisations: current_organisations)
-    return if request.format == "csv"
+             .where(organisations: current_organisations)
+    return if only_ids_needed?
 
-    @users = @users.preload(:archives, follow_ups: [:invitations])
+    @users = @users.preload(:organisations, :archives, follow_ups: [:invitations])
   end
 
   def set_users_for_motif_category
     @users = policy_scope(User)
-             .preload(:organisations, follow_ups: [:notifications, :invitations, { participations: :rdv }])
              .active.distinct
              .where(organisations: current_organisations)
              .where.not(id: archived_user_ids_in_organisations(current_organisations))
              .joins(:follow_ups)
              .where(follow_ups: { motif_category: @current_motif_category })
              .where.not(follow_ups: { status: "closed" })
+    return if only_ids_needed?
+
+    @users = @users.preload(:organisations, follow_ups: [:notifications, :invitations, { participations: :rdv }])
+  end
+
+  def only_ids_needed?
+    request.format == "csv" || params[:ids_only] == "true"
   end
 
   def set_archived_users
