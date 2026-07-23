@@ -40,7 +40,7 @@ module Users::Filterable
   def filter_users_by_follow_up_statuses
     return if params[:follow_up_statuses].blank?
 
-    @users = @users.joins(:follow_ups).where(follow_ups: @follow_ups.status(params[:follow_up_statuses]))
+    @users = @users.joins(:follow_ups).where(follow_ups: { status: params[:follow_up_statuses] })
   end
 
   def filter_users_by_orientation_types
@@ -59,7 +59,7 @@ module Users::Filterable
   def filter_users_by_action_required
     return unless params[:action_required] == "true"
 
-    @users = @users.joins(:follow_ups).where(follow_ups: @follow_ups.action_required)
+    @users = @users.joins(:follow_ups).where(follow_ups: { status: FollowUp::STATUSES_WITH_ACTION_REQUIRED })
   end
 
   def filter_users_by_referents
