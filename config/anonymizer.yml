@@ -646,3 +646,11 @@ tables:
       - created_at
       - updated_at
       - number_of_creneaux_available
+  - table_name: rdv_solidarites_oauth_tokens
+    anonymized_column_names:
+      - api_token
+      - refresh_token
+    non_anonymized_column_names:
+      - agent_id
+      - created_at
+      - updated_at
