@@ -36,7 +36,15 @@ module.exports = {
       },
       {
         test: /\.(?:sa|sc|c)ss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "sass-loader",
+            // See https://github.com/WordPress/gutenberg/issues/81382
+            options: { sassOptions: { charset: false } },
+          },
+        ],
       },
     ],
   },
