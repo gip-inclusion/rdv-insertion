@@ -48,7 +48,6 @@ tables:
       - agent_id
       - authorized_to_export_csv
       - organisation_id
-      - rdv_solidarites_agent_role_id
       - created_at
       - updated_at
       - last_webhook_update_received_at
