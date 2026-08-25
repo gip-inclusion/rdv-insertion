@@ -52,15 +52,11 @@ u {
   }
 }
 
-.user-address {
-  position: absolute;
-  right: 0;
-}
-
 .direction-names {
   margin-top: 100px;
+  line-height: 1.2;
   p {
-    margin-top: 5px;
+    margin: 0;
   }
 }
 
@@ -71,6 +67,7 @@ u {
 
 .user-address {
   position: absolute;
+  right: 0;
   top: 57mm;
   left: 117mm;
   width: 85mm;
