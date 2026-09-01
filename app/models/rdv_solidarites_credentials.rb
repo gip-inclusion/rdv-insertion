@@ -38,6 +38,8 @@ class RdvSolidaritesCredentials
   end
 
   def rdv_solidarites_client
-    @rdv_solidarites_client ||= RdvSolidaritesClient.new(auth_headers: to_h)
+    @rdv_solidarites_client ||= RdvSolidaritesClient.new(
+      authentication: RdvSolidaritesAuthentication::StaticHeaders.new(headers: to_h)
+    )
   end
 end

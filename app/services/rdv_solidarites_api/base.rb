@@ -15,6 +15,8 @@ module RdvSolidaritesApi
       return if rdv_solidarites_response.success?
 
       fail_with_errors
+    rescue RdvSolidaritesAuthentication::Oauth::MissingCredentials
+      fail!("Cet agent doit se reconnecter à RDV-Solidarités pour réaliser cette action.")
     end
 
     def fail_with_errors
