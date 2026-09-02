@@ -147,7 +147,7 @@ describe "Super admin can manage users" do
       expect(page).to have_field("user[department_internal_id]", with: user.department_internal_id)
       expect(page).to have_css("label[for=\"user_france_travail_id\"]", text: "ID France Travail")
       expect(page).to have_field("user[france_travail_id]", with: user.france_travail_id)
-      expect(page).to have_css("label[for=\"user_rights_opening_date\"]", text: "Date d'entrée flux")
+      expect(page).to have_css("label[for=\"user_rights_opening_date\"]", text: "Date d'ouverture des droits")
       expect(page).to have_field("user[rights_opening_date]", with: user.rights_opening_date)
       expect(page).to have_button("Enregistrer")
 

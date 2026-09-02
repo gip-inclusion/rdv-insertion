@@ -144,7 +144,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Ville")
         expect(csv).to include("Date de naissance")
         expect(csv).to include("Date de création")
-        expect(csv).to include("Date d'entrée flux")
+        expect(csv).to include("Date d'ouverture des droits")
         expect(csv).to include("Rôle")
         expect(csv).to include("Rendez-vous prescrit ? (interne)")
         expect(csv).to include("Prénom du prescripteur (interne)")
