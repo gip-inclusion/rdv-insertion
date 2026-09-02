@@ -33,5 +33,32 @@ describe OutgoingWebhooks::FranceTravail::CancelParticipationJob do
         expect(FranceTravailApi::CancelParticipation).not_to have_received(:call)
       end
     end
+
+    context "when the service fails with regular error" do
+      before do
+        allow(FranceTravailApi::CancelParticipation).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, failure?: true, errors: ["Some error"], error_type: nil))
+      end
+
+      it "raises a FailedServiceError" do
+        expect { subject }.to raise_error(ApplicationJob::FailedServiceError)
+      end
+    end
+
+    context "when the service fails with participation_not_found error_type" do
+      before do
+        allow(FranceTravailApi::CancelParticipation).to receive(:call)
+          .and_return(OpenStruct.new(
+                        success?: false,
+                        failure?: true,
+                        errors: ["L'ID France Travail de la participation n'existe plus"],
+                        error_type: :participation_not_found
+                      ))
+      end
+
+      it "does not raise an error" do
+        expect { subject }.not_to raise_error
+      end
+    end
   end
 end
