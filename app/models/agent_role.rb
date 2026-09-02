@@ -5,7 +5,6 @@ class AgentRole < ApplicationRecord
   belongs_to :agent
   belongs_to :organisation
 
-  validates :rdv_solidarites_agent_role_id, uniqueness: true, allow_nil: true
   validates :agent, uniqueness: { scope: :organisation, message: "est déjà relié à l'organisation" }
 
   validate :organisation_is_not_archived, on: :create

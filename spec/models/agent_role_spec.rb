@@ -1,32 +1,4 @@
 describe AgentRole do
-  describe "rdv_solidarites_agent_role_id uniqueness validation" do
-    context "no collision" do
-      let(:agent_role) { build(:agent_role, rdv_solidarites_agent_role_id: 1) }
-
-      it { expect(agent_role).to be_valid }
-    end
-
-    context "blank rdv_solidarites_agent_role_id" do
-      let!(:agent_role_existing) { create(:agent_role, rdv_solidarites_agent_role_id: 1) }
-
-      let(:agent_role) { build(:agent_role, rdv_solidarites_agent_role_id: "") }
-
-      it { expect(agent_role).to be_valid }
-    end
-
-    context "colliding rdv_solidarites_agent_role_id" do
-      let!(:agent_role_existing) { create(:agent_role, rdv_solidarites_agent_role_id: 1) }
-      let(:agent_role) { build(:agent_role, rdv_solidarites_agent_role_id: 1) }
-
-      it "adds errors" do
-        expect(agent_role).not_to be_valid
-        expect(agent_role.errors.details).to eq({ rdv_solidarites_agent_role_id: [{ error: :taken, value: 1 }] })
-        expect(agent_role.errors.full_messages.to_sentence)
-          .to include("Rdv solidarites agent role est déjà utilisé")
-      end
-    end
-  end
-
   describe "access_level inclusion validation" do
     context "correct access_level value" do
       let(:agent_role) { build(:agent_role, access_level: "basic") }
