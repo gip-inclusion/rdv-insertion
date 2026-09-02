@@ -81,7 +81,7 @@ describe "Super admin can manage users" do
       expect(page).to have_css("dd", class: "attribute-data", text: user.department_internal_id)
       expect(page).to have_css("dt", id: "france_travail_id", text: "ID FRANCE TRAVAIL")
       expect(page).to have_css("dd", class: "attribute-data", text: user.france_travail_id)
-      expect(page).to have_css("dt", id: "rights_opening_date", text: "DATE D'ENTRÉE FLUX")
+      expect(page).to have_css("dt", id: "rights_opening_date", text: "DATE D'OUVERTURE DES DROITS")
       expect(page).to have_css("dd", class: "attribute-data", text: user.rights_opening_date)
       expect(page).to have_css("dt", id: "organisations", text: "ORGANISATION(S)")
       expect(page).to have_css(
