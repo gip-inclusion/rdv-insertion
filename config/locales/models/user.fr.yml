@@ -16,7 +16,7 @@ fr:
         department_internal_id: ID interne au département
         nir: Numéro de sécurité sociale
         france_travail_id: ID France Travail
-        rights_opening_date: Date d'entrée flux
+        rights_opening_date: Date d'ouverture des droits
         organisations: Organisation(s)
         uid: Le couple numéro CAF + rôle
         created_at: Date de création

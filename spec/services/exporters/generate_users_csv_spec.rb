@@ -100,7 +100,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(subject.csv).to include("Ville")
         expect(subject.csv).to include("Date de naissance")
         expect(subject.csv).to include("Date de création")
-        expect(subject.csv).to include("Date d'entrée flux")
+        expect(subject.csv).to include("Date d'ouverture des droits")
         expect(subject.csv).to include("Rôle")
         expect(subject.csv).to include("Archivé le")
         expect(subject.csv).to include("Motif d'archivage")
