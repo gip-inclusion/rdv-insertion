@@ -7,7 +7,7 @@ module Api
       include RateLimitingConcern
       include MaliciousAgentBlockingConcern
 
-      before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
+      before_action :validate_api_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
                     :set_current_agent
       after_action :log_api_call
 
@@ -20,8 +20,8 @@ module Api
       rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
       rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
-      def validate_rdv_solidarites_credentials!
-        return if rdv_solidarites_credentials.valid?
+      def validate_api_credentials!
+        return if api_credentials.valid?
 
         render(
           json: { errors: ["Les identifiants de session RDV-Solidarités sont invalides"] },
@@ -29,8 +29,8 @@ module Api
         )
       end
 
-      def rdv_solidarites_credentials
-        @rdv_solidarites_credentials ||= RdvSolidaritesCredentials.new(
+      def api_credentials
+        @api_credentials ||= ApiCredentials.new(
           uid: request.headers["uid"],
           client: request.headers["client"],
           access_token: request.headers["access-token"]
@@ -52,7 +52,7 @@ module Api
       end
 
       def authenticated_agent
-        @authenticated_agent ||= Agent.find_by(email: rdv_solidarites_credentials.email)
+        @authenticated_agent ||= Agent.find_by(email: api_credentials.email)
       end
 
       def record_invalid(exception)

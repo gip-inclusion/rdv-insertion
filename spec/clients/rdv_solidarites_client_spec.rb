@@ -1,6 +1,6 @@
 describe RdvSolidaritesClient do
   describe "connection settings" do
-    let(:authentication) { RdvSolidaritesAuthentication::StaticHeaders.new(headers: { "Authorization" => "Bearer token" }) }
+    let(:authentication) { instance_double(RdvSolidaritesAuthentication::Oauth) }
     let(:client) { described_class.new(authentication: authentication) }
 
     it "uses the default open_timeout" do
