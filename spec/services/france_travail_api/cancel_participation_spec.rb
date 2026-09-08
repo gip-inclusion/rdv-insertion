@@ -69,10 +69,10 @@ describe FranceTravailApi::CancelParticipation, type: :service do
         .and_return(OpenStruct.new(success?: false, status: 400, body: error_body))
     end
 
-    it("is a failure") { is_a_failure }
+    it("is a success") { is_a_success }
 
-    it "sets error_type to :participation_not_found" do
-      expect(subject.error_type).to eq(:participation_not_found)
+    it "creates the webhook receipt" do
+      expect { subject }.to change(WebhookReceipt, :count).by(1)
     end
   end
 end

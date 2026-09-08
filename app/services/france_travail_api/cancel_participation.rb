@@ -28,22 +28,19 @@ module FranceTravailApi
         headers: ft_user_headers
       )
 
-      handle_failure! unless @response.success?
+      handle_failure! unless @response.success? || participation_not_found?
     end
 
     def handle_failure!
-      result.error_type = :participation_not_found if participation_not_found?
-      fail!(error_message)
-    end
-
-    def error_message
-      "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Suppression de Participation).\n" \
+      fail!(
+        "Impossible d'appeler l'endpoint de l'api rendez-vous-partenaire FT (Suppression de Participation).\n" \
         "Status: #{@response.status}\n Body: #{@response.body.force_encoding('UTF-8')}"
+      )
     end
 
     def participation_not_found?
-      # This error is raised when FT returns ID_NON_RECONNU, when the participation ID is not found
-      # It happens when duplicate users were merged on FT side
+      # FT returns ID_NON_RECONNU when the participation ID is not found, typically after duplicate users
+      # were merged on FT side. The participation no longer exists there, so the cancellation goal is met.
       response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
       response_body["codeErreur"] == "ID_NON_RECONNU"
     rescue JSON::ParserError
