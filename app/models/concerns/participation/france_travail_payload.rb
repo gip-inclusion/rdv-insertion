@@ -82,12 +82,14 @@ module Participation::FranceTravailPayload
     collectif? ? "COL" : "IND"
   end
 
-  # Liste des statuts FT : PRIS, EFFECTUE, MODIFIE, ABSENT, ANNULE
+  # Liste des statuts FT : PRIS, EFFECTUE, MODIFIE, ABSENT, ANNULE, ABSENT_EXC
   def france_travail_statut
     case status
     when "seen"
       "EFFECTUE"
-    when "excused", "revoked"
+    when "excused"
+      "ABSENT_EXC"
+    when "revoked"
       "ANNULE"
     when "noshow"
       "ABSENT"

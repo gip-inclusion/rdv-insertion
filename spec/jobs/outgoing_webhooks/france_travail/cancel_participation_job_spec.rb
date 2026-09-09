@@ -33,5 +33,16 @@ describe OutgoingWebhooks::FranceTravail::CancelParticipationJob do
         expect(FranceTravailApi::CancelParticipation).not_to have_received(:call)
       end
     end
+
+    context "when the service fails" do
+      before do
+        allow(FranceTravailApi::CancelParticipation).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, failure?: true, errors: ["Some error"]))
+      end
+
+      it "raises a FailedServiceError" do
+        expect { subject }.to raise_error(ApplicationJob::FailedServiceError)
+      end
+    end
   end
 end

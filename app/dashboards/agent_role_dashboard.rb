@@ -15,7 +15,6 @@ class AgentRoleDashboard < Administrate::BaseDashboard
     agent: Field::BelongsTo,
     last_webhook_update_received_at: Field::DateTime,
     organisation: Field::BelongsTo,
-    rdv_solidarites_agent_role_id: Field::Number,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -38,7 +37,6 @@ class AgentRoleDashboard < Administrate::BaseDashboard
     agent
     last_webhook_update_received_at
     organisation
-    rdv_solidarites_agent_role_id
     created_at
     updated_at
   ].freeze

@@ -35,7 +35,7 @@ describe Invitations::GenerateLetter, type: :service do
       subject
       content = strip_tags(letter_content(invitation))
       expect(content).to include("20 AVENUE DE SEGUR")
-      expect(content).to include("DIRECTION DÉPARTEMENTAL")
+      expect(content).to include("Direction départemental")
       expect(content).to include(
         " Pour vous aider dans vos démarches, " \
         "le Conseil départemental a mis en place une plateforme de prise de rendez-vous en ligne."

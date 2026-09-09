@@ -132,7 +132,7 @@ describe Participation::FranceTravailPayload, type: :concern do
   describe "france_travail_statut" do
     {
       "seen" => "EFFECTUE",
-      "excused" => "ANNULE",
+      "excused" => "ABSENT_EXC",
       "revoked" => "ANNULE",
       "noshow" => "ABSENT",
       "unknown" => "PRIS"
