@@ -11,7 +11,8 @@ describe SessionsController do
       {
         "omniauth.auth" => {
           "credentials" => {
-            "token" => "some-token"
+            "token" => "some-token",
+            "refresh_token" => "some-refresh-token"
           },
           "info" => {
             "agent" => {
@@ -33,6 +34,14 @@ describe SessionsController do
 
     it "generates a new session key for the agent" do
       expect { post :create }.to(change { agent.reload.session_key })
+    end
+
+    it "stores the rdv-solidarités oauth token" do
+      post :create
+
+      oauth_token = agent.reload.rdv_solidarites_oauth_token
+      expect(oauth_token.api_token).to eq("some-token")
+      expect(oauth_token.refresh_token).to eq("some-refresh-token")
     end
 
     it "sets a session" do

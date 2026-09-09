@@ -476,6 +476,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_170650) do
     t.index ["participation_id"], name: "index_post_rdv_orientations_on_participation_id", unique: true
   end
 
+  create_table "rdv_solidarites_oauth_tokens", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.text "api_token", null: false
+    t.datetime "created_at", null: false
+    t.text "refresh_token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_rdv_solidarites_oauth_tokens_on_agent_id", unique: true
+  end
+
   create_table "rdvs", force: :cascade do |t|
     t.string "address"
     t.datetime "cancelled_at", precision: nil
@@ -805,6 +814,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_170650) do
   add_foreign_key "participations", "follow_ups"
   add_foreign_key "post_rdv_orientations", "orientation_types"
   add_foreign_key "post_rdv_orientations", "participations"
+  add_foreign_key "rdv_solidarites_oauth_tokens", "agents"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"

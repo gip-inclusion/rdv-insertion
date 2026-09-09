@@ -9,6 +9,8 @@ class Agent < ApplicationRecord
   include Agent::CookiesConsentable
   include Agent::SuperAdminAuthentication
 
+  has_one :rdv_solidarites_oauth_token, dependent: :destroy
+
   has_many :agent_roles, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
   has_many :agents_rdvs, dependent: :destroy
@@ -66,6 +68,11 @@ class Agent < ApplicationRecord
     else
       last_name.upcase
     end
+  end
+
+  def store_rdv_solidarites_oauth_token!(api_token:, refresh_token:)
+    (rdv_solidarites_oauth_token || build_rdv_solidarites_oauth_token)
+      .update!(api_token:, refresh_token:)
   end
 
   def with_rdv_solidarites_session(&)

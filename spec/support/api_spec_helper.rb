@@ -52,7 +52,7 @@ module ApiSpecHelper
       description: "Identifiant d'accès (authentification)", example: "amine.dhobb@beta.gouv.fr"
     )
 
-    let(:rdv_solidarites_credentials) { instance_double(RdvSolidaritesCredentials) }
+    let(:api_credentials) { instance_double(ApiCredentials) }
 
     before do
       stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")

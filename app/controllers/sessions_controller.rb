@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
 
   override_rate_limit limit: RATE_LIMITS[:sessions], only: [:create]
 
-  before_action :retrieve_agent!, :mark_agent_as_logged_in!,
+  before_action :retrieve_agent!, :mark_agent_as_logged_in!, :store_rdv_solidarites_oauth_token!,
                 only: [:create]
 
   def create
@@ -33,6 +33,13 @@ class SessionsController < ApplicationController
 
     flash[:error] = authenticated_agent.errors.full_messages
     redirect_to root_path
+  end
+
+  def store_rdv_solidarites_oauth_token!
+    credentials = request.env["omniauth.auth"]["credentials"]
+    authenticated_agent.store_rdv_solidarites_oauth_token!(
+      api_token: credentials["token"], refresh_token: credentials["refresh_token"]
+    )
   end
 
   def authenticated_agent
