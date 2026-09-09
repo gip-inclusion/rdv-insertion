@@ -34,14 +34,23 @@ describe RdvSolidaritesAuthentication::Oauth do
   describe "#renew!" do
     let!(:oauth_token) { create(:rdv_solidarites_oauth_token, agent: agent, api_token: "some-token") }
 
-    before do
-      allow(agent).to receive(:rdv_solidarites_oauth_token).and_return(oauth_token)
-      allow(oauth_token).to receive(:refresh!)
+    before { allow(agent).to receive(:rdv_solidarites_oauth_token).and_return(oauth_token) }
+
+    context "when the refresh succeeds" do
+      before { allow(oauth_token).to receive(:refresh!) }
+
+      it "refreshes the token with the current api token" do
+        subject.renew!
+        expect(oauth_token).to have_received(:refresh!).with("some-token")
+      end
     end
 
-    it "refreshes the token with the current api token" do
-      subject.renew!
-      expect(oauth_token).to have_received(:refresh!).with("some-token")
+    context "when the refresh fails" do
+      before { allow(oauth_token).to receive(:refresh!).and_raise(Faraday::ConnectionFailed, "boom") }
+
+      it "raises a RenewalError" do
+        expect { subject.renew! }.to raise_error(described_class::RenewalError)
+      end
     end
   end
 end

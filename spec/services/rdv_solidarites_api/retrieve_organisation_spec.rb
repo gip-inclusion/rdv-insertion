@@ -49,5 +49,26 @@ describe RdvSolidaritesApi::RetrieveOrganisation, type: :service do
         expect(subject.errors).to eq(["Erreur RDV-Solidarités: some error"])
       end
     end
+
+    context "when the token renewal fails" do
+      before do
+        allow(rdv_solidarites_client).to receive(:get_organisation)
+          .and_raise(RdvSolidaritesAuthentication::Oauth::RenewalError)
+        allow(Sentry).to receive(:capture_exception)
+      end
+
+      it("is a failure") { is_a_failure }
+
+      it "notifies Sentry" do
+        subject
+        expect(Sentry).to have_received(:capture_exception)
+      end
+
+      it "returns a user-facing error" do
+        expect(subject.errors).to eq(
+          ["Une erreur est survenue pour se connecter à RDV-Solidarités. L'équipe a été notifiée."]
+        )
+      end
+    end
   end
 end
