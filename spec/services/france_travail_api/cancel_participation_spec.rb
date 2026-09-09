@@ -54,4 +54,25 @@ describe FranceTravailApi::CancelParticipation, type: :service do
       )
     end
   end
+
+  context "when API call fails with ID_NON_RECONNU error" do
+    let(:error_body) do
+      {
+        codeHttp: 400,
+        codeErreur: "ID_NON_RECONNU",
+        message: "Il n'existe pas de rdv pour l'id et l'utilisateur indiqué"
+      }.to_json
+    end
+
+    before do
+      allow(FranceTravailClient).to receive(:cancel_participation)
+        .and_return(OpenStruct.new(success?: false, status: 400, body: error_body))
+    end
+
+    it("is a success") { is_a_success }
+
+    it "creates the webhook receipt" do
+      expect { subject }.to change(WebhookReceipt, :count).by(1)
+    end
+  end
 end
