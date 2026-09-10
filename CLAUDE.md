@@ -111,6 +111,14 @@ Uses Sidekiq for job processing. Key patterns:
 - Request specs generate API documentation via rswag
 - Feature specs use Capybara with Selenium
 
+## Pull Requests
+
+Description concise, en deux sections :
+- `## Contexte` — le pourquoi (problème, contexte métier/technique)
+- `## Implémentation` — le quoi, en puces courtes
+
+Pour un changement visible (UI), ajouter une section `## Preview` avec des captures avant/après.
+
 ## Environment
 
 Requires:
