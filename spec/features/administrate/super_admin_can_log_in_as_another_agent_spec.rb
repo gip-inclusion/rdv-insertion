@@ -28,6 +28,10 @@ describe "Super admin can log in as another agent", :js do
       expect(page).to have_content(
         "Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}", wait: 10
       )
+      # the impersonated agent has no oauth token, so we warn that rdv-solidarités actions will fail
+      expect(page).to have_content(
+        "Cet agent ne s'est jamais connecté à rdv-insertion et n'a donc pas de tokens pour appeler RDV-Solidarités"
+      )
       expect(page).to have_current_path(organisations_path)
       # We check the organisations displayed to check that it is really the agent's account
       expect(page).to have_content(agent_department.name)
@@ -50,6 +54,20 @@ describe "Super admin can log in as another agent", :js do
       expect(page).to have_no_content(agent_department.name)
       expect(page).to have_no_content(agent_organisation1.name)
       expect(page).to have_no_content(agent_organisation2.name)
+    end
+
+    context "when the impersonated agent has an oauth token" do
+      before { create(:rdv_solidarites_oauth_token, agent: agent) }
+
+      it "does not warn about a missing token" do
+        visit super_admins_agent_path(agent.id)
+        click_button("Se logger en tant que")
+
+        expect(page).to have_content("Vous êtes connecté.e en tant que", wait: 10)
+        expect(page).to have_no_content(
+          "Cet agent ne s'est jamais connecté à rdv-insertion et n'a donc pas de tokens pour appeler RDV-Solidarités"
+        )
+      end
     end
 
     it "cannot impersonate himself" do

@@ -55,6 +55,7 @@ module ApiSpecHelper
     let(:api_credentials) { instance_double(ApiCredentials) }
 
     before do
+      create(:rdv_solidarites_oauth_token, agent: agent)
       stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
         .with(headers: auth_headers.merge({ "Content-Type" => "application/json" }))
         .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
