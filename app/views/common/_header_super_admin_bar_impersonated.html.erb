@@ -21,3 +21,14 @@
     <i class="ri-shield-user-line"></i>
   </button>
 </div>
+
+<% unless current_agent.rdv_solidarites_oauth_token %>
+  <div class="top-bar d-flex orange-style">
+    <div class="container d-flex justify-content-center px-3">
+      <p class="mb-0">
+        <i class="ri-error-warning-line me-1"></i>
+        Cet agent ne s'est jamais connecté à rdv-insertion et n'a donc pas de tokens pour appeler RDV-Solidarités: les actions vers RDV-Solidarités échoueront.
+      </p>
+    </div>
+  </div>
+<% end %>

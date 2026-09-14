@@ -7,8 +7,8 @@ module Api
       include RateLimitingConcern
       include MaliciousAgentBlockingConcern
 
-      before_action :validate_api_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
-                    :set_current_agent
+      before_action :validate_api_credentials!, :retrieve_agent!, :require_rdv_solidarites_oauth_token!,
+                    :mark_agent_as_logged_in!, :set_current_agent
       after_action :log_api_call
 
       include AuthorizationConcern
@@ -42,6 +42,17 @@ module Api
 
         render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
                status: :forbidden
+      end
+
+      def require_rdv_solidarites_oauth_token!
+        return if authenticated_agent.rdv_solidarites_oauth_token
+
+        render(
+          json: { success: false,
+                  errors: ["Vous devez vous connecter à RDV-Insertion et autoriser l'application sur " \
+                           "RDV-Solidarités avant d'utiliser l'API."] },
+          status: :unauthorized
+        )
       end
 
       def mark_agent_as_logged_in!
