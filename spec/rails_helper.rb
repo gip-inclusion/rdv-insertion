@@ -95,7 +95,7 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    DatabaseCleaner.strategy = if example.file_path.include?("/spec/features")
+    DatabaseCleaner.strategy = if example.file_path.include?("/spec/features") || example.metadata[:truncation]
                                  :truncation
                                else
                                  :transaction
