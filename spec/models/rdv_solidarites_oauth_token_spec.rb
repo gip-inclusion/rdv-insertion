@@ -1,4 +1,4 @@
-describe RdvSolidaritesOauthToken do
+describe RdvSolidaritesOauthToken, :truncation do
   describe "#refresh!" do
     subject { oauth_token.refresh!(expired_api_token) }
 
@@ -16,6 +16,15 @@ describe RdvSolidaritesOauthToken do
 
     it "updates the tokens with the refreshed ones" do
       subject
+      expect(oauth_token.reload).to have_attributes(api_token: "new-token", refresh_token: "new-refresh")
+    end
+
+    it "persists the refreshed tokens even if the caller's transaction rolls back" do
+      ApplicationRecord.transaction do
+        subject
+        raise ActiveRecord::Rollback
+      end
+
       expect(oauth_token.reload).to have_attributes(api_token: "new-token", refresh_token: "new-refresh")
     end
 
