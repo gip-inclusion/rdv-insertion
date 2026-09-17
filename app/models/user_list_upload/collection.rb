@@ -22,6 +22,7 @@ class UserListUpload::Collection
 
   def save(user_rows)
     user_rows.each(&:format_attributes)
+    assign_matching_users(user_rows)
     UserListUpload::UserRow.import(
       user_rows,
       on_duplicate_key_update: UserListUpload::UserRow.updatable_attributes
@@ -30,6 +31,7 @@ class UserListUpload::Collection
 
   def save!(user_rows)
     user_rows.each(&:format_attributes)
+    assign_matching_users(user_rows)
     UserListUpload::UserRow.import!(
       user_rows,
       on_duplicate_key_update: UserListUpload::UserRow.updatable_attributes
@@ -119,6 +121,16 @@ class UserListUpload::Collection
   end
 
   private
+
+  def assign_matching_users(user_rows)
+    user_rows_to_match = user_rows.select(&:matching_user_to_retrieve?)
+    return if user_rows_to_match.empty?
+
+    potential_matching_users = @user_list_upload.potential_matching_users_for(user_rows_to_match).to_a
+    user_rows_to_match.each do |user_row|
+      user_row.matching_user = user_row.find_matching_user(potential_matching_users)
+    end
+  end
 
   def load_user_rows
     @user_list_upload.user_rows.preload(

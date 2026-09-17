@@ -97,21 +97,20 @@ class UserListUpload < ApplicationRecord
     super
   end
 
-  # rubocop:disable Metrics/AbcSize
-  def potential_matching_users_in_department
-    @potential_matching_users_in_department ||= begin
-      base = User.active.joins(:organisations).where(organisations: { department_id: department.id })
-
-      User.none
-          .or(base.where(nir: user_row_attributes_formatted_nirs))
-          .or(base.where(email: user_row_attributes.pluck("email").compact))
-          .or(base.where(phone_number: user_row_attributes_formatted_phone_numbers))
-          .or(base.where(department_internal_id: user_row_attributes.pluck("department_internal_id").compact))
-          # Preload associations to avoid N+1 queries when calling user_row.user_valid?
-          .preload(*user_associations_to_preload)
-    end
+  def potential_matching_users
+    # Preload associations to avoid N+1 queries when calling user_row.user_valid?
+    @potential_matching_users ||= potential_matching_users_for(user_rows).preload(*user_associations_to_preload)
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def potential_matching_users_for(user_rows)
+    base = User.active.joins(:organisations).where(organisations: { department_id: department.id })
+
+    User.none
+        .or(base.where(nir: user_rows.filter_map(&:matchable_nir)))
+        .or(base.where(email: user_rows.filter_map(&:matchable_email)))
+        .or(base.where(phone_number: user_rows.filter_map(&:matchable_phone_number)))
+        .or(base.where(department_internal_id: user_rows.filter_map(&:department_internal_id)))
+  end
 
   def handle_user_save? = STEPS_BY_ORIGIN[origin.to_sym].include?(:user_save)
   def handle_invitation_only? = STEPS_BY_ORIGIN[origin.to_sym] == [:invitation]
@@ -127,24 +126,6 @@ class UserListUpload < ApplicationRecord
   end
 
   private
-
-  def user_row_attributes
-    @user_row_attributes ||= user_rows.map(&:attributes)
-  end
-
-  def user_row_attributes_formatted_phone_numbers
-    @user_row_attributes_formatted_phone_numbers ||=
-      user_row_attributes.pluck("phone_number").compact.map do |phone_number|
-        PhoneNumberHelper.format_phone_number(phone_number)
-      end
-  end
-
-  def user_row_attributes_formatted_nirs
-    @user_row_attributes_formatted_nirs ||=
-      user_row_attributes.pluck("nir").compact.map do |nir|
-        NirHelper.format_nir(nir)
-      end
-  end
 
   def remove_duplicates!(attributes)
     attributes.uniq
