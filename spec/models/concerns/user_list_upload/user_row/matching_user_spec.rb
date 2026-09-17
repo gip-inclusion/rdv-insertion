@@ -127,7 +127,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
           let(:email_match) { build(:user, email: "john@example.com", first_name: "John") }
 
           before do
-            allow(user_row).to receive(:potential_matching_users_in_department)
+            allow(user_row).to receive(:potential_matching_users)
               .and_return([internal_id_match, email_match, nir_match])
           end
 
@@ -143,7 +143,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
           let(:phone_match) { build(:user, phone_number: "+33612345678", first_name: "John") }
 
           before do
-            allow(user_row).to receive(:potential_matching_users_in_department)
+            allow(user_row).to receive(:potential_matching_users)
               .and_return([email_match, phone_match, internal_id_match])
           end
 
@@ -187,7 +187,7 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         let(:user_row) { user_list_upload.user_rows.build(user_row_attributes) }
 
         it "retrieves potential matching users from the user_list_upload" do
-          expect(user_list_upload).to receive(:potential_matching_users_in_department).once.and_call_original
+          expect(user_list_upload).to receive(:potential_matching_users).once.and_call_original
           user_row.save!
         end
 
@@ -209,13 +209,44 @@ RSpec.describe UserListUpload::UserRow::MatchingUser, type: :concern do
         let!(:user_row) { user_list_upload.user_rows.create!(user_row_attributes) }
 
         it "does not retrieve the potential matching users from the user_list_upload" do
-          expect(user_list_upload).not_to receive(:potential_matching_users_in_department)
+          expect(user_list_upload).not_to receive(:potential_matching_users)
           user_row.update!(email: "new-email@example.com")
         end
 
         it "attempts to find a matching user" do
           expect(user_row).to receive(:find_matching_user).and_call_original
           user_row.update!(email: "new-email@example.com")
+        end
+      end
+
+      context "when updating an existing record with cnaf data" do
+        subject { user_row.update!(cnaf_data:) }
+
+        let!(:user_row) { user_list_upload.user_rows.create!(user_row_attributes) }
+        let(:org_in_department) { create(:organisation, department: department) }
+
+        context "when the cnaf email matches a user" do
+          let(:cnaf_data) { { "email" => "john.cnaf@example.com" } }
+          let!(:matching_user) do
+            create(:user, email: "john.cnaf@example.com", first_name: "John", organisations: [org_in_department])
+          end
+
+          it "sets the matching user" do
+            subject
+            expect(user_row.reload.matching_user).to eq(matching_user)
+          end
+        end
+
+        context "when the cnaf phone number matches a user" do
+          let(:cnaf_data) { { "phone_number" => "+33687654321" } }
+          let!(:matching_user) do
+            create(:user, phone_number: "+33687654321", first_name: "John", organisations: [org_in_department])
+          end
+
+          it "sets the matching user" do
+            subject
+            expect(user_row.reload.matching_user).to eq(matching_user)
+          end
         end
       end
     end
