@@ -49,6 +49,39 @@ RSpec.describe UserListUpload::Collection do
       expect(user_row1.first_name).to eq("Updated Name 1")
       expect(user_row2.first_name).to eq("Updated Name 2")
     end
+
+    context "when cnaf data matches an existing user of the department" do
+      let(:rows_data) do
+        [
+          { id: user_row1.id, cnaf_data: { "email" => "john.cnaf@example.com" } },
+          { id: user_row2.id, cnaf_data: { "email" => "jane.cnaf@example.com" } }
+        ]
+      end
+
+      let!(:existing_user) do
+        create(
+          :user,
+          first_name: "Jane",
+          email: "jane.cnaf@example.com",
+          organisations: [create(:organisation, department: user_list_upload.department)]
+        )
+      end
+
+      before do
+        allow(user_list_upload).to receive(:potential_matching_users_for).and_call_original
+      end
+
+      it "sets the matching user on the enriched row" do
+        collection.update_rows(rows_data)
+        expect(user_row2.reload.matching_user).to eq(existing_user)
+      end
+
+      it "retrieves the potential matching users once for the rows without matching user" do
+        collection.update_rows(rows_data)
+        expect(user_list_upload).to have_received(:potential_matching_users_for)
+          .once.with([collection.find(user_row2.id)])
+      end
+    end
   end
 
   describe "#save" do
