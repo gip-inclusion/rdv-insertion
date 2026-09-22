@@ -134,16 +134,18 @@ class Stat < ApplicationRecord
 
   def users_first_orientation_follow_up
     # we consider minimum(:id) being the same as minimum(:created_at) as the id increases with created_at
+    # the selection stays in a subquery: loading the ids in memory made the query weigh several MB
     FollowUp.where(user: users_set)
-            .where(id: FollowUp.orientation.group(:user_id).minimum(:id).values)
+            .where(id: FollowUp.orientation.group(:user_id).select("MIN(follow_ups.id)"))
             .preload(participations: :rdv)
             .distinct
   end
 
   def users_first_accompaniement_follow_up
     # we consider minimum(:id) being the same as minimum(:created_at) as the id increases with created_at
+    # the selection stays in a subquery: loading the ids in memory made the query weigh several MB
     FollowUp.where(user: users_set)
-            .where(id: FollowUp.accompagnement.group(:user_id).minimum(:id).values)
+            .where(id: FollowUp.accompagnement.group(:user_id).select("MIN(follow_ups.id)"))
             .preload(participations: :rdv)
             .distinct
   end
