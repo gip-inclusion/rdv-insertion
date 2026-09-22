@@ -15,18 +15,12 @@ module Stats
     attr_reader :follow_ups, :target_delay_days, :consider_orientation_rdv_as_start
 
     def compute_seen_within_delay_percentage
-      (follow_ups_seen_within_delay.count / (mature_follow_ups.count.nonzero? || 1).to_f) * 100
+      (follow_ups_seen_within_delay_count / (mature_follow_ups.count.nonzero? || 1).to_f) * 100
     end
 
-    def follow_ups_seen_within_delay
-      @follow_ups_seen_within_delay ||= begin
-        matches = []
-        mature_seen_follow_ups.find_in_batches(batch_size: 1000) do |batch|
-          matches += batch.select do |follow_up|
-            meets_delay_criteria?(follow_up)
-          end
-        end
-        matches
+    def follow_ups_seen_within_delay_count
+      mature_seen_follow_ups.find_in_batches(batch_size: 1000).sum do |batch|
+        batch.count { |follow_up| meets_delay_criteria?(follow_up) }
       end
     end
 
