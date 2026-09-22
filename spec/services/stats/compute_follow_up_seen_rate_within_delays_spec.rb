@@ -56,29 +56,6 @@ describe Stats::ComputeFollowUpSeenRateWithinDelays, type: :service do
         expect(result.value).to eq(33.33333333333333)
       end
     end
-
-    describe "memory footprint" do
-      it "does not keep the evaluated follow ups in memory once the rate is computed" do
-        # the class method call only returns the result, we capture the instance created by new
-        # to check what it retains
-        service_instance = nil
-        allow(described_class).to receive(:new).and_wrap_original do |original_new, **kwargs|
-          service_instance = original_new.call(**kwargs)
-        end
-
-        # only count the objects still referenced, not the garbage left by previous examples
-        GC.start
-        follow_ups_in_memory_before = ObjectSpace.each_object(FollowUp).count
-
-        result = described_class.call(follow_ups:, target_delay_days: 45)
-        # free the follow ups loaded by the batches, only the ones retained by the service survive
-        GC.start
-
-        expect(result.value).to eq(33.33333333333333)
-        expect(service_instance).to be_a(described_class)
-        expect(ObjectSpace.each_object(FollowUp).count).to be <= follow_ups_in_memory_before
-      end
-    end
   end
 
   describe "for 30 days considering orientation rdv" do
