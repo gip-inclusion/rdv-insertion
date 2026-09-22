@@ -23,5 +23,9 @@ module Website
     def privacy_policy; end
 
     def accessibility; end
+
+    private
+
+    def report_rate_limits_to_sentry? = false
   end
 end
