@@ -41,8 +41,7 @@ class User < ApplicationRecord
   )
 
   encrypts :nir, deterministic: true
-
-  before_validation :format_nir, if: :nir?
+  normalizes :nir, with: ->(nir) { NirHelper.format_nir(nir) }
 
   before_save :format_phone_number
 
@@ -266,10 +265,6 @@ class User < ApplicationRecord
 
   def format_phone_number
     self.phone_number = phone_number_formatted
-  end
-
-  def format_nir
-    self.nir = NirHelper.format_nir(nir)
   end
 end
 # rubocop:enable Metrics/ClassLength

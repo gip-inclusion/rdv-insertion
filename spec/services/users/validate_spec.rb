@@ -30,6 +30,14 @@ describe Users::Validate, type: :service do
       it("is a success") { is_a_success }
     end
 
+    context "when the NIR is assigned without its key and matches a user of the same department" do
+      let!(:other_user) { create(:user, id: 1395, nir: generate_random_nir, organisations: [organisation]) }
+
+      before { user.nir = other_user.nir.first(13) }
+
+      it("is a failure") { is_a_failure }
+    end
+
     context "when a user with the same france_travail_id exists in the same department" do
       let!(:other_user) { create(:user, id: 1395, france_travail_id: "FT123", organisations: [organisation]) }
 
