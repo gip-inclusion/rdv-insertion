@@ -16,9 +16,13 @@ module Api
       private
 
       def authenticate_plateforme_inclusion!
-        authenticate_or_request_with_http_token do |token|
-          ActiveSupport::SecurityUtils.secure_compare(token, ENV.fetch("PLATEFORME_INCLUSION_API_TOKEN"))
-        end
+        return if authenticate_with_http_token { |token| valid_token?(token) }
+
+        render json: { errors: ["Token d'authentification invalide"] }, status: :unauthorized
+      end
+
+      def valid_token?(token)
+        ActiveSupport::SecurityUtils.secure_compare(token, ENV.fetch("PLATEFORME_INCLUSION_API_TOKEN"))
       end
 
       def user
