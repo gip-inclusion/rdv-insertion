@@ -288,6 +288,14 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    namespace :plateforme_inclusion do
+      resources :users, only: [] do
+        collection do
+          post :search
+        end
+      end
+    end
   end
 
   # Error pages
