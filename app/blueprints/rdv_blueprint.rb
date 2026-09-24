@@ -15,4 +15,11 @@ class RdvBlueprint < ApplicationBlueprint
     association :organisation, blueprint: OrganisationBlueprint
     association :participations, blueprint: ParticipationBlueprint
   end
+
+  view :plateforme_inclusion do
+    association :agents, blueprint: AgentBlueprint
+    association :lieu, blueprint: LieuBlueprint
+    association :motif, blueprint: MotifBlueprint
+    association :organisation, blueprint: OrganisationBlueprint, view: :without_motif_categories
+  end
 end
