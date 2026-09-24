@@ -30,6 +30,37 @@ describe "Plateforme de l'inclusion users search" do
     expect(response.body).not_to include(other_participant.email)
   end
 
+  context "when the user has several organisations, follow-ups, invitations and rdvs" do
+    let!(:other_organisation) { create(:organisation) }
+    let!(:user) do
+      create(:user, nir:, organisations: [organisation, other_organisation],
+                    referents: create_list(:agent, 2), tags: create_list(:tag, 2))
+    end
+
+    before do
+      create(:archive, user:, organisation:)
+      create(:archive, user:, organisation: other_organisation)
+      create_list(:follow_up, 2, user:).each do |other_follow_up|
+        create_list(:invitation, 2, user:, follow_up: other_follow_up)
+        create_list(:participation, 2, user:, follow_up: other_follow_up)
+      end
+    end
+
+    it "does not trigger N+1 queries" do
+      Prosopite.enabled = true
+      Prosopite.raise = true
+      Prosopite.scan
+      begin
+        subject
+        Prosopite.finish
+      ensure
+        Prosopite.enabled = false
+        Prosopite.raise = false
+      end
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   context "when no user matches the nir" do
     let!(:user) { create(:user, organisations: [organisation]) }
 
