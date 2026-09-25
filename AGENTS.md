@@ -66,7 +66,11 @@ model, an association, a migration, or a `FollowUp` status transition.
 
 ### Service Objects Pattern
 
-All services inherit from `BaseService` (`app/services/base_service.rb`):
+In `app/services/`, a class is a service object when its `call` runs sequential steps that can each fail (`fail!`,
+`call_service!`, external calls); `call` reads as that sequence of steps and is the service's only public method. A
+class that computes and returns a value is a PORO in `app/models/`, like `UserArchivedStatus`.
+
+Services inherit from `BaseService` (`app/services/base_service.rb`):
 - Implement a single `call` method
 - Called via `ServiceClass.call(**kwargs)`
 - Return an `OpenStruct` responding to `success?` and `failure?`
@@ -107,18 +111,18 @@ pattern that sibling files of the same kind follow, the convention wins.
 - Write comments only for code that is truly difficult to understand.
 - Inline intermediate values used once, and keep guard clauses for cases that can actually occur.
 - When a method becomes complex, extract well-named private methods for readability.
-- Code, comments, and commit messages speak for the team alone: they name no AI tool (Claude, Codex, Cursor, etc.).
+- Code, comments, and commit messages are attributed to the team alone, with no mention of AI assistants.
 - Formatting (quotes, line length, etc.) is enforced by RuboCop and ESLint: run `make lint` before committing.
-- Ruby method names describe what the method returns, without repeating their class's name (`User#archived?`). A
-  predicate method (ending in `?`) returns a boolean and leaves its receiver and arguments unmodified: to test pending
-  changes on a record, work on a `dup`.
-- In application code, an operational value that may need tuning in production (rate limit, timeout, threshold) is
-  read with `ENV.fetch("NAME", default)` and listed in `.env.example`.
+- Ruby method names describe what the method returns, without repeating their class's name
+  (`Organisation#archived?`). A predicate method (ending in `?`) leaves its receiver and arguments unmodified: to test
+  pending changes on a record, work on a `dup`.
+- In application code, rate limits, timeouts, and thresholds are read with `ENV.fetch("NAME", default)` and listed in
+  `.env.example`.
 
 ### Controllers
 
-- In controllers, the `set_*` method that loads a record also authorizes it (`authorize @organisation, :configure?`),
-  so every action using the record goes through the policy.
+- In controllers, the `set_*` method that loads a record also authorizes it (`authorize @organisation, :configure?`).
+  When the policy query differs per action (`close?`, `reopen?`), each action calls `authorize` on its first line.
 - Routes and controllers use the RESTful actions (`index`, `show`, `new`, `create`, `edit`, `update`, `destroy`). An
   operation outside them becomes a standard action on a dedicated resource: closing a follow-up is
   `FollowUps::ClosingsController#create`. Each action returns one kind of response whatever its params; a modal is
@@ -126,29 +130,26 @@ pattern that sibling files of the same kind follow, the convention wins.
 - In controllers, views, and helpers, check that an agent is logged in with `logged_in?`, which also validates the
   session; read `current_agent` once the agent is known to be logged in.
 
-### Services
+### Data changes
 
-- In `app/services/`, a class inherits `BaseService` when its `call` runs sequential steps that can each fail
-  (`fail!`, `call_service!`, external calls). A class that computes and returns a value is a PORO in `app/models/`,
-  like `UserArchivedStatus`. A service's only public method is `call`, which reads as the sequence of its steps.
-- Code that deletes or rewrites existing records in bulk (services, jobs, rake tasks) accepts a `dry_run:` option
-  that logs the affected records and rolls back, like `Organisations::RgpdCleanup`.
+- Rake tasks that delete or rewrite existing records support a dry run that logs the affected records and rolls back,
+  as `Organisations::RgpdCleanup` does with `dry_run:`. Data migrations doing the same log the records they affect.
 
 ### Views
 
 - ERB partials (`_*.html.erb`) receive their data through locals passed to `render`; instance variables are read in
   the action's own template only.
-- In ERB partials, strict locals declarations (`<%# locals: (...) %>`) go on partials shared across views, such as
-  those in `app/views/common/`; a partial rendered from a single template takes its locals without one.
+- In ERB partials, strict locals declarations (`<%# locals: (...) %>`) are reserved for shared components, like
+  `app/views/common/_image_upload_zone.html.erb`; a partial rendered from a single template takes plain locals.
 - ERB templates indent by 2 spaces per nesting level, for HTML tags and ERB blocks alike.
 
 ### Stylesheets and JavaScript
 
-- CSS class names describe appearance and carry their component's prefix (`.btn-primary--blue`, `.footer-bottom-list`),
-  rather than a business meaning such as `--invitation-expired`. Colors come from the variables in
+- CSS class names describe appearance (color, size, emphasis) and carry their component's prefix
+  (`.btn-primary--blue`, `.footer-bottom-list`). Colors come from the variables in
   `app/javascript/stylesheets/_variables.scss`. Styling lives in stylesheets: ERB elements get classes, with no
   `style` attribute.
-- JavaScript classes in `app/javascript/` expose plain methods and properties (`isValid()`), without `get`/`set`
+- JavaScript classes in `app/javascript/` expose plain methods and properties (`isOpen()`), without `get`/`set`
   accessors.
 
 ## Testing
