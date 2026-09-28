@@ -194,13 +194,7 @@ Les résultats sont **automatiquement paginés** avec **25 usagers par page**. L
 
 Il y a plusieurs façons d'inviter les usagers à prendre rdv:
 
-### Endpoints en lot (_many)
-
-- **Création et invitation en lot** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many` - Crée et invite jusqu'à **25** usagers de manière **asynchrone**
-
-Cet endpoint étant asynchrone, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités.
-
-### Endpoints unitaires
+### Endpoints unitaires (recommandés)
 
 - **Création et invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite` - Crée et invite un usager de manière **synchrone**
 
@@ -208,15 +202,26 @@ Cet endpoint étant asynchrone, une requête aboutissant à un succès ne signif
 
 - **Invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/{id}/invite` - Invite un usager existant de manière **synchrone**
 
+Les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
+Les formats des réponses sont spécifiés en bas de page.
+
+**Pour créer et inviter plusieurs usagers, il faut appeler `create_and_invite` pour chaque usager.** Chaque réponse indique directement si l'usager a été créé et invité, avec les erreurs éventuelles. En cas de réponse `429` (trop de requêtes), il faut attendre quelques instants avant de renvoyer la requête.
+
+### Endpoint en lot (déprécié)
+
+- **Création et invitation en lot** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many` - Crée et invite jusqu'à **25** usagers de manière **asynchrone**
+
+**⚠️ Cet endpoint est déprécié et sera supprimé à terme. Il faut utiliser `create_and_invite` pour chaque usager à la place.**
+
+Cet endpoint étant asynchrone, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités (voir la partie « Endpoint en lot (déprécié) : réponse et notifications » plus bas).
+
+### Comportement des invitations
+
 **Pour tous les endpoints d'invitation, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.
 
 **⚠️ Pour tous les endpoints d'invitation, l'usager sera automatiquement désarchivé de l'organisation si l'usager est archivé dans l'organisation en question**.
 
 Pour les endpoints de création et invitation (`create_and_invite` et `create_and_invite_many`), lorsqu'une catégorie de motif est précisée, l'usager est ajouté au suivi de cette catégorie même si aucune invitation ne peut lui être envoyée (ni email ni téléphone). Si ce suivi avait été clôturé, il est rouvert.
-
-
-Les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
-Les formats des réponses sont spécifiés en bas de page.
 
 ## Paramètres de l'URL
 
@@ -260,6 +265,10 @@ Ces endpoints sont idempotents, ce qui veut dire que le fait de jouer ces requê
 
 - Si l'usager que l'on essaie de créer est déjà présent dans l'application, il ne sera pas créé une deuxième fois. Il sera mis à jour si les attributs passés dans la requête sont changés par rapport à ce qui est enregistré en base de données.
 - On ne renverra pas d'invitation à l'usager si une invitation a déjà été envoyée à l'usager il y a moins de 24 heures.
+
+## Endpoint en lot (déprécié) : réponse et notifications
+
+Cette partie ne concerne que l'endpoint déprécié `create_and_invite_many`.
 
 ### Réponse
 
