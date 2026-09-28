@@ -1,5 +1,13 @@
 module ApiSpecSharedExamples
   shared_context "an endpoint that returns 401 - unauthorized" do
+    response 401, "Renvoie 'unauthorized' quand l'agent n'a pas autorisé RDV-Insertion sur RDV-Solidarités" do
+      before { agent.rdv_solidarites_oauth_token.destroy! }
+
+      schema "$ref" => "#/components/schemas/error_authentication"
+
+      run_test!
+    end
+
     response 401, "Renvoie 'unauthorized' quand l'authentification est impossible" do
       before do
         stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
