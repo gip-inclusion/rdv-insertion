@@ -35,6 +35,21 @@ Les endpoints sont réservés aux agents authentifiés, dans la limite de leur r
 
 Comme sur l'interface web, l'authentification se fait via les identifiants rdv-solidarités. **Il est donc nécessaire pour l'authentification d'appeler un endpoint sur rdv-solidarités et non pas sur rdv-insertion**. Les modalités de cet endpoint sont décrits ci-dessous.
 
+## Prérequis : connexion préalable à l'interface web
+
+**Avant de pouvoir utiliser l'API, l'agent doit s'être connecté au moins une fois à l'interface web de rdv-insertion avec son compte rdv-solidarités, et avoir autorisé rdv-insertion à accéder à son compte rdv-solidarités lors de cette connexion.** Cette connexion doit être faite sur l'environnement que l'on souhaite utiliser (production ou démo).
+
+Sans cette autorisation, toutes les requêtes à l'API renverront une erreur `401` :
+
+```json
+{
+  "success": false,
+  "errors": [
+    "Vous devez vous connecter à RDV-Insertion et autoriser l'application sur RDV-Solidarités avant d'utiliser l'API."
+  ]
+}
+```
+
 ## Headers d'authentification
 
 Tous les agents peuvent utiliser l'API. Les requêtes faites sur l'API sont authentifiées grace à des tokens d'accès associés à chaque agent. Chaque action faite via l'API est donc attribuable à un agent.
@@ -179,13 +194,7 @@ Les résultats sont **automatiquement paginés** avec **25 usagers par page**. L
 
 Il y a plusieurs façons d'inviter les usagers à prendre rdv:
 
-### Endpoints en lot (_many)
-
-- **Création et invitation en lot** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many` - Crée et invite jusqu'à **25** usagers de manière **asynchrone**
-
-Cet endpoint étant asynchrone, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités.
-
-### Endpoints unitaires
+### Endpoints unitaires (recommandés)
 
 - **Création et invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite` - Crée et invite un usager de manière **synchrone**
 
@@ -193,13 +202,26 @@ Cet endpoint étant asynchrone, une requête aboutissant à un succès ne signif
 
 - **Invitation unitaire** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/{id}/invite` - Invite un usager existant de manière **synchrone**
 
+Les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
+Les formats des réponses sont spécifiés en bas de page.
+
+**Pour créer et inviter plusieurs usagers, il faut appeler `create_and_invite` pour chaque usager.** Chaque réponse indique directement si l'usager a été créé et invité, avec les erreurs éventuelles. En cas de réponse `429` (trop de requêtes), il faut attendre quelques instants avant de renvoyer la requête.
+
+### Endpoint en lot (déprécié)
+
+- **Création et invitation en lot** : `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many` - Crée et invite jusqu'à **25** usagers de manière **asynchrone**
+
+**⚠️ Cet endpoint est déprécié et sera supprimé à terme. Il faut utiliser `create_and_invite` pour chaque usager à la place.**
+
+Cet endpoint étant asynchrone, une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités (voir la partie « Endpoint en lot (déprécié) : réponse et notifications » plus bas).
+
+### Comportement des invitations
+
 **Pour tous les endpoints d'invitation, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.
 
 **⚠️ Pour tous les endpoints d'invitation, l'usager sera automatiquement désarchivé de l'organisation si l'usager est archivé dans l'organisation en question**.
 
-
-Les réponses sont ici synchrones: La requête est un succès que si la personne a été créée et/ou invitée.
-Les formats des réponses sont spécifiés en bas de page.
+Pour les endpoints de création et invitation (`create_and_invite` et `create_and_invite_many`), lorsqu'une catégorie de motif est précisée, l'usager est ajouté au suivi de cette catégorie même si aucune invitation ne peut lui être envoyée (ni email ni téléphone). Si ce suivi avait été clôturé, il est rouvert.
 
 ## Paramètres de l'URL
 
@@ -235,7 +257,7 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
   - OBJECT:
     - `value` : STRING: nom du tag à ajouter à l'usager. Le tag doit exister au préalable dans l'organisation sinon la requête échoue.
 
-**Au moins un attribut identifiant est requis pour pouvoir créer un usager**. Ces attributs sont: le NIR, l'email, le numéro de téléphone, le numéro d'allocataire avec le rôle.
+**Au moins un attribut identifiant est requis pour pouvoir créer un usager**. Ces attributs sont: le NIR, l'email, le numéro de téléphone, l'ID interne au département (`department_internal_id`).
 
 ## Idempotence
 
@@ -243,6 +265,10 @@ Ces endpoints sont idempotents, ce qui veut dire que le fait de jouer ces requê
 
 - Si l'usager que l'on essaie de créer est déjà présent dans l'application, il ne sera pas créé une deuxième fois. Il sera mis à jour si les attributs passés dans la requête sont changés par rapport à ce qui est enregistré en base de données.
 - On ne renverra pas d'invitation à l'usager si une invitation a déjà été envoyée à l'usager il y a moins de 24 heures.
+
+## Endpoint en lot (déprécié) : réponse et notifications
+
+Cette partie ne concerne que l'endpoint déprécié `create_and_invite_many`.
 
 ### Réponse
 
@@ -356,7 +382,6 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
     "users": [
       {
         "id": 722,
-        "uid": "Nzg2NzY4NyAtIGRlbWFuZGV1cg==",
         "affiliation_number": "7867687",
         "role": "demandeur",
         "created_at": "2023-07-26T12:19:08.522+02:00",
@@ -372,7 +397,7 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
         "birth_name": null,
         "rdv_solidarites_user_id": 468,
         "nir": null,
-        "france_travail_id": null,
+        "france_travail_id": null
       }
     ],
     "organisation": {
@@ -382,6 +407,7 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
       "phone_number": "01 01 01 01 01",
       "department_number": "26",
       "rdv_solidarites_organisation_id": 29,
+      "department_id": 5,
       "motif_categories": [
         {
           "id": 1,
@@ -410,14 +436,10 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
         "id": 291,
         "status": "unknown",
         "created_by": "agent",
-        "created_by_type": "Agent",
-        "created_by_agent_prescripteur": false,
-        "rdv_solidarites_created_by_id": 7,
         "created_at": "2023-11-09T09:25:05.356+01:00",
         "starts_at": "2023-11-14T09:00:00.000+01:00",
         "user": {
           "id": 722,
-          "uid": "Nzg2NzY4NyAtIGRlbWFuZGV1cg==",
           "affiliation_number": "7867687",
           "role": "demandeur",
           "created_at": "2023-07-26T12:19:08.522+02:00",

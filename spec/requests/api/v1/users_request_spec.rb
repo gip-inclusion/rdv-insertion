@@ -113,7 +113,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
       tags "User"
       consumes "application/json"
       produces "application/json"
-      description "Créé et invite une liste d'usagers à prendre rdv.
+      deprecated true
+      description "Déprécié : utiliser create_and_invite pour chaque usager.
+      Créé et invite une liste d'usagers à prendre rdv.
       La création et l'invitation se font de manière asynchrone."
 
       parameter name: :rdv_solidarites_organisation_id, in: :path, type: :string,
