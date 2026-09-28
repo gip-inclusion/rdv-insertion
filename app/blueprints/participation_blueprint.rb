@@ -12,4 +12,9 @@ class ParticipationBlueprint < ApplicationBlueprint
   field :created_by do |participation, _|
     participation.created_by_type.downcase
   end
+
+  view :plateforme_inclusion do
+    exclude :user
+    association :rdv, blueprint: RdvBlueprint, view: :plateforme_inclusion
+  end
 end

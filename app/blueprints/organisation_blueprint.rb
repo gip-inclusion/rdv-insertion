@@ -7,4 +7,8 @@ class OrganisationBlueprint < ApplicationBlueprint
     association :motifs, blueprint: MotifBlueprint
     association :lieux, blueprint: LieuBlueprint
   end
+
+  view :without_motif_categories do
+    exclude :motif_categories
+  end
 end

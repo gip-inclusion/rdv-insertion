@@ -6,4 +6,8 @@ class InvitationBlueprint < ApplicationBlueprint
   view :extended do
     association :user, blueprint: UserBlueprint
   end
+
+  view :without_motif_category do
+    exclude :motif_category
+  end
 end
