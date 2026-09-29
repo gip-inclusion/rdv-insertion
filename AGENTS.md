@@ -1,8 +1,5 @@
 # AGENTS.md
 
-Coding agents read this file when they write code in this repository, and the automated reviewer reads it when it
-reviews a pull request.
-
 ## Project Overview
 
 RDV-Insertion is a French public service application developed by beta.gouv.fr. It facilitates RSA (welfare) appointment management by interfacing with RDV-Solidarités (a separate appointment scheduling application).
@@ -114,15 +111,12 @@ pattern that sibling files of the same kind follow, the convention wins.
 - Code, comments, and commit messages are attributed to the team alone, with no mention of AI assistants.
 - Formatting (quotes, line length, etc.) is enforced by RuboCop and ESLint: run `make lint` before committing.
 - Ruby method names describe what the method returns, without repeating their class's name
-  (`Organisation#archived?`). A predicate method (ending in `?`) leaves its receiver and arguments unmodified: to test
-  pending changes on a record, work on a `dup`.
-- In application code, rate limits, timeouts, and thresholds are read with `ENV.fetch("NAME", default)` and listed in
-  `.env.example`.
+  (`Organisation#archived?`). A predicate method (ending in `?`) leaves its receiver and arguments unmodified.
 
 ### Controllers
 
-- In controllers, the `set_*` method that loads a record also authorizes it (`authorize @organisation, :configure?`).
-  When the policy query differs per action (`close?`, `reopen?`), each action calls `authorize` on its first line.
+- In controllers where every action checks the same policy query, the `set_*` method that loads the record also
+  authorizes it (`authorize @organisation, :configure?`).
 - Routes and controllers use the RESTful actions (`index`, `show`, `new`, `create`, `edit`, `update`, `destroy`). An
   operation outside them becomes a standard action on a dedicated resource: closing a follow-up is
   `FollowUps::ClosingsController#create`. Each action returns one kind of response whatever its params; a modal is
@@ -137,6 +131,8 @@ pattern that sibling files of the same kind follow, the convention wins.
 
 ### Views
 
+- Presentation logic (labels, CSS classes, formatting) lives in helpers; domain knowledge (status groups, business
+  predicates) lives on the model, like `FollowUp::STATUSES_WITH_ACTION_REQUIRED`, and helpers and views call it.
 - ERB partials (`_*.html.erb`) receive their data through locals passed to `render`; instance variables are read in
   the action's own template only.
 - In ERB partials, strict locals declarations (`<%# locals: (...) %>`) are reserved for shared components, like
@@ -155,7 +151,7 @@ pattern that sibling files of the same kind follow, the convention wins.
 ## Testing
 
 - RSpec with FactoryBot
-- Request specs generate API documentation via rswag
+- Request specs under `spec/requests/api/` generate the public API documentation via rswag
 - Feature specs use Capybara with Selenium
 - Controller behavior is tested through feature specs (`spec/features/`), or request specs (`spec/requests/`) for
   the API. `spec/controllers/` holds only cases that no feature spec covers.
