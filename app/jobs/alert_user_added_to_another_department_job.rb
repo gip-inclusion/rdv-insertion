@@ -7,7 +7,6 @@ class AlertUserAddedToAnotherDepartmentJob < ApplicationJob
     return unless added_to_new_department?
 
     alert_on_slack
-    alert_on_sentry
   end
 
   private
@@ -33,9 +32,5 @@ class AlertUserAddedToAnotherDepartmentJob < ApplicationJob
 
   def alert_on_slack
     SlackClient.send_to_private_channel(alert_message)
-  end
-
-  def alert_on_sentry
-    Sentry.capture_message(alert_message)
   end
 end

@@ -7,7 +7,6 @@ class AlertMotifCategoryHasChangedJob < ApplicationJob
     return if motif&.rdvs.blank?
 
     alert_on_slack
-    alert_on_sentry
   end
 
   private
@@ -21,9 +20,5 @@ class AlertMotifCategoryHasChangedJob < ApplicationJob
 
   def alert_on_slack
     SlackClient.send_to_private_channel(alert_message)
-  end
-
-  def alert_on_sentry
-    Sentry.capture_message(alert_message)
   end
 end
