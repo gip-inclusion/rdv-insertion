@@ -131,22 +131,20 @@ pattern that sibling files of the same kind follow, the convention wins.
 
 ### Views
 
-- Presentation logic (labels, CSS classes, formatting) lives in helpers; domain knowledge (status groups, business
-  predicates) lives on the model, like `FollowUp::STATUSES_WITH_ACTION_REQUIRED`, and helpers and views call it.
+- ERB templates display data prepared elsewhere: the controller sets it in instance variables, or the model exposes it
+  through methods. Presentation logic (labels, CSS classes, formatting) lives in helpers.
 - ERB partials (`_*.html.erb`) receive their data through locals passed to `render`; instance variables are read in
   the action's own template only.
 - In ERB partials, strict locals declarations (`<%# locals: (...) %>`) are reserved for shared components, like
   `app/views/common/_image_upload_zone.html.erb`; a partial rendered from a single template takes plain locals.
 - ERB templates indent by 2 spaces per nesting level, for HTML tags and ERB blocks alike.
 
-### Stylesheets and JavaScript
+### Stylesheets
 
 - CSS class names describe appearance (color, size, emphasis) and carry their component's prefix
   (`.btn-primary--blue`, `.footer-bottom-list`). Colors come from the variables in
   `app/javascript/stylesheets/_variables.scss`. Styling lives in stylesheets: ERB elements get classes, with no
   `style` attribute.
-- JavaScript classes in `app/javascript/` expose plain methods and properties (`isOpen()`), without `get`/`set`
-  accessors.
 
 ## Testing
 
