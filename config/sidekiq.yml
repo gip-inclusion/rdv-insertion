@@ -8,7 +8,6 @@
   - creneaux
 
 :limits:
-  stats: 2
   creneaux: 1
 
 :process_limits:
