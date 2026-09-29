@@ -7,8 +7,6 @@ module OutgoingWebhooks
                  FranceTravailApi::RetrieveUserToken::AccessForbidden,
                  FranceTravailApi::RetrieveUserToken::UserAddressNotFound
 
-      retry_on FranceTravailApi::RetrieveUserToken::RateLimited, wait: :polynomially_longer, attempts: 5
-
       def self.lock_key(participation_id:, **)
         "#{base_lock_key}:#{participation_id}"
       end
