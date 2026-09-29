@@ -649,6 +649,20 @@ describe "Users API", swagger_doc: "v1/api.json" do
             end
           end
         end
+
+        context "quand aucune catégorie de motif n'est précisée" do
+          let!(:motif_category_attributes) { {} }
+
+          it "invite l'usager sans créer de follow_up" do
+            expect do
+              post create_and_invite_api_v1_users_path(rdv_solidarites_organisation_id),
+                   params: user_params.to_json,
+                   headers: auth_headers.merge({ "Content-Type" => "application/json" })
+            end.not_to change(FollowUp, :count)
+
+            expect(response).to have_http_status(:ok)
+          end
+        end
       end
 
       it_behaves_like "common API errors"

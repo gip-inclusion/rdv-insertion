@@ -85,6 +85,15 @@ describe CreateAndInviteUserJob do
     end
   end
 
+  context "when no motif category is given" do
+    let!(:motif_category_attributes) { {} }
+
+    it "invites the user without creating a follow up" do
+      expect { subject }.not_to change(FollowUp, :count)
+      expect(InviteUserJob).to have_received(:perform_later).twice
+    end
+  end
+
   context "when the user has neither phone nor email" do
     before { user.update!(phone_number: nil, email: nil) }
 
