@@ -39,6 +39,18 @@ describe OutgoingWebhooks::FranceTravail::UpsertParticipationJob do
           end.not_to raise_error
         end
       end
+
+      context "when create service fails with RateLimited error" do
+        before do
+          allow(FranceTravailApi::CreateParticipation).to receive(:call)
+            .and_raise(FranceTravailApi::RetrieveUserToken::RateLimited, "Status: 429")
+        end
+
+        it "enqueues a retry without raising an error" do
+          expect { subject }.to have_enqueued_job(described_class)
+            .with(participation_id: participation.id, timestamp: timestamp)
+        end
+      end
     end
 
     context "when participation has a france_travail_id" do
