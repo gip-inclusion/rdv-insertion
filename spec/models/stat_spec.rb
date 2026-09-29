@@ -242,6 +242,31 @@ describe Stat do
         end
       end
 
+      describe "#users_first_accompaniement_follow_up" do
+        let!(:first_user) { create(:user, organisations: [organisation]) }
+        let!(:second_user) { create(:user, organisations: [organisation]) }
+        let!(:third_user) { create(:user, organisations: [organisation]) }
+        let!(:first_user_first_accompaniement_follow_up) do
+          create(:follow_up, user: first_user, motif_category: category_rsa_accompagnement)
+        end
+        let!(:first_user_second_accompaniement_follow_up) do
+          create(:follow_up, user: first_user, motif_category: category_rsa_accompagnement_social)
+        end
+        let!(:second_user_accompaniement_follow_up) do
+          create(:follow_up, user: second_user, motif_category: category_rsa_accompagnement)
+        end
+        let!(:third_user_follow_up_not_accompaniement) do
+          create(:follow_up, user: third_user, motif_category: category_rsa_orientation)
+        end
+
+        it "retrieves the first accompaniement follow_up of each user" do
+          expect(stat.users_first_accompaniement_follow_up).to include(first_user_first_accompaniement_follow_up)
+          expect(stat.users_first_accompaniement_follow_up).to include(second_user_accompaniement_follow_up)
+          expect(stat.users_first_accompaniement_follow_up).not_to include(first_user_second_accompaniement_follow_up)
+          expect(stat.users_first_accompaniement_follow_up).not_to include(third_user_follow_up_not_accompaniement)
+        end
+      end
+
       describe "#orientation_follow_ups_with_invitations" do
         let!(:user3) { create(:user, organisations: [organisation], created_at: date) }
         let!(:follow_up3) do
