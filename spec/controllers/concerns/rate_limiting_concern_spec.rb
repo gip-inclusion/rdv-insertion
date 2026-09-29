@@ -12,6 +12,7 @@ RSpec.describe RateLimitingConcern do
 
     before do
       routes.draw { get "trigger_rate_limit" => "anonymous#trigger_rate_limit" }
+      RateLimitingConcern::RATE_LIMIT_CACHE_STORE.clear
     end
 
     it "returns 429 Too Many Requests status" do
@@ -45,9 +46,10 @@ RSpec.describe RateLimitingConcern do
       expect(response.headers["X-RateLimit-Remaining"]).to eq("0")
     end
 
-    it "reports the rate limit exceeded to Sentry" do
+    it "reports the rate limit exceeded to Sentry with a fingerprint per endpoint" do
       expect(Sentry).to receive(:capture_message).with(
         "Rate limit exceeded",
+        fingerprint: %w[rate_limit_exceeded anonymous trigger_rate_limit],
         extra: hash_including(
           path: "/trigger_rate_limit",
           controller: "anonymous",

@@ -35,6 +35,8 @@ class ErrorsController < ApplicationController
 
   private
 
+  def sentry_rate_limits_report_enabled? = false
+
   def set_not_found_error_message
     model_name = request.env["action_dispatch.exception"].model \
       if request.env["action_dispatch.exception"].respond_to?(:model)
