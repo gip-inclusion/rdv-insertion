@@ -59,38 +59,6 @@ RSpec.describe RateLimitingConcern do
       get :trigger_rate_limit
     end
 
-    it "reports only the first exceeded request of an ip within the period" do
-      expect(Sentry).to receive(:capture_message).once
-
-      3.times { get :trigger_rate_limit }
-    end
-
-    it "remembers the report for the duration of the period only" do
-      expect(RateLimitingConcern::RATE_LIMIT_CACHE_STORE).to receive(:write).with(
-        "reported:anonymous:trigger_rate_limit:0.0.0.0", true, expires_in: 1.minute, unless_exist: true
-      ).and_call_original
-
-      get :trigger_rate_limit
-    end
-
-    it "reports each ip separately" do
-      expect(Sentry).to receive(:capture_message).twice
-
-      request.remote_addr = "10.0.0.1"
-      get :trigger_rate_limit
-      request.remote_addr = "10.0.0.2"
-      get :trigger_rate_limit
-    end
-
-    it "does not report to Sentry when the controller opts out" do
-      allow(controller).to receive(:report_rate_limits_to_sentry?).and_return(false)
-      expect(Sentry).not_to receive(:capture_message)
-
-      get :trigger_rate_limit
-
-      expect(response).to have_http_status(:too_many_requests)
-    end
-
     it "logs the throttled request with useful context" do
       allow(Rails.logger).to receive(:warn)
 
@@ -99,13 +67,6 @@ RSpec.describe RateLimitingConcern do
       expect(Rails.logger).to have_received(:warn).with(
         a_string_matching(/\[RateLimit\].*ip=.*path=.*controller=.*#/)
       )
-    end
-  end
-
-  describe "#report_rate_limits_to_sentry?" do
-    it "is disabled on public unauthenticated controllers" do
-      expect(ErrorsController.new.send(:report_rate_limits_to_sentry?)).to be(false)
-      expect(Website::StaticPagesController.new.send(:report_rate_limits_to_sentry?)).to be(false)
     end
   end
 

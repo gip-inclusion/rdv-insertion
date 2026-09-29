@@ -65,7 +65,7 @@ module RateLimitingConcern
 
   def render_rate_limit_exceeded(limit, period)
     log_rate_limit_exceeded(limit)
-    report_rate_limit_to_sentry if report_rate_limits_to_sentry? && first_rate_limit_report_within?(period)
+    report_rate_limit_to_sentry if report_rate_limits_to_sentry?(period)
 
     # we cannot compute precisely the retry_after value without getting
     # the keys from redis relying on rate limiting internals,
@@ -83,7 +83,11 @@ module RateLimitingConcern
     }, status: :too_many_requests
   end
 
-  def report_rate_limits_to_sentry? = true
+  def report_rate_limits_to_sentry?(period)
+    sentry_rate_limits_report_enabled? && first_rate_limit_report_within?(period)
+  end
+
+  def sentry_rate_limits_report_enabled? = true
 
   def first_rate_limit_report_within?(period)
     RATE_LIMIT_CACHE_STORE.write(

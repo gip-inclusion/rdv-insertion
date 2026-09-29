@@ -26,6 +26,6 @@ module Website
 
     private
 
-    def report_rate_limits_to_sentry? = false
+    def sentry_rate_limits_report_enabled? = false
   end
 end
