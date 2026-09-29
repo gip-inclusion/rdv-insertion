@@ -112,6 +112,7 @@ Représente les départements français.
 **Statuts possibles** :
 - `not_invited` : Pas encore invité
 - `invitation_pending` : Invitation envoyée, en attente de RDV
+- `invitation_expired` : Toutes les invitations ont expiré, sans RDV pris
 - `rdv_pending` : RDV prévu
 - `rdv_needs_status_update` : RDV passé, statut à mettre à jour
 - `rdv_noshow` : Usager absent
@@ -238,6 +239,7 @@ Représente les professionnels utilisant l'application.
 - A plusieurs `organisations` via `agent_roles`
 - A plusieurs `referent_assignations` (usagers dont il est référent)
 - A plusieurs `rdvs` via `agents_rdvs`
+- A un `rdv_solidarites_oauth_token` (jetons OAuth pour appeler RDV-Solidarités)
 
 ---
 
@@ -252,7 +254,6 @@ Représente les professionnels utilisant l'application.
 - `organisation_id` : Organisation
 - `access_level` : "basic" ou "admin"
 - `authorized_to_export_csv` : Droit d'export CSV (auto à true pour admin)
-- `rdv_solidarites_agent_role_id` : ID dans RDV-Solidarités
 
 ---
 
@@ -488,6 +489,21 @@ Capture le nombre de créneaux disponibles au moment d'un import, afin d'informe
 
 ---
 
+### **creneau_opening_requests** - Demandes d'ouverture de créneaux
+
+Demande envoyée par email à un agent, depuis un import, pour qu'il ouvre des créneaux dans RDV-Solidarités quand il n'y en a pas assez pour les usagers à inviter.
+
+**Champs clés** :
+- `user_list_upload_id` : Import à l'origine de la demande (l'agent de l'import est l'expéditeur)
+- `recipient_agent_id` : Agent destinataire (une seule demande par agent et par import)
+- `users_to_invite_count` : Nombre d'usagers à inviter
+- `available_creneaux_count` : Nombre de créneaux disponibles au moment de la demande
+- `link` : Lien vers RDV-Solidarités (plages d'ouverture de l'organisation, ou accueil pour un import départemental)
+- `email_sent_at` : Date d'envoi de l'email
+- `clicked_at` : Date du clic de l'agent destinataire sur le lien
+
+---
+
 ## Tables de Configuration
 
 ### **file_configurations** - Configurations d'import
@@ -552,6 +568,17 @@ Représente l'acceptation du DPA (Data Processing Agreement) par une organisatio
 ---
 
 ## Tables Techniques
+
+### **rdv_solidarites_oauth_tokens** - Jetons OAuth RDV-Solidarités
+
+Jetons OAuth d'un agent, utilisés pour appeler l'API de RDV-Solidarités en son nom.
+
+**Champs clés** :
+- `agent_id` : Agent propriétaire (un jeton par agent)
+- `api_token` : Jeton d'accès (chiffré)
+- `refresh_token` : Jeton de rafraîchissement (chiffré), renouvelé à chaque rafraîchissement
+
+---
 
 ### **api_calls** - Journal des appels API
 
