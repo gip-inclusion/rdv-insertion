@@ -4,6 +4,7 @@ module FranceTravailApi
     class NoMatchingUser < StandardError; end
     class AccessForbidden < StandardError; end
     class UserAddressNotFound < StandardError; end
+    class RateLimited < StandardError; end
 
     # https://francetravail.io/produits-partages/catalogue/rechercher-usager-v2/documentation#/api-reference/
     def initialize(user:, access_token:)
@@ -20,6 +21,8 @@ module FranceTravailApi
 
     def send_request!
       @response = retrieve_user_token
+      raise RateLimited, "Erreur 429 lors de l'appel à l'api recherche-usager FT" if @response.status == 429
+
       @response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
 
       @response.success? ? handle_success : handle_error

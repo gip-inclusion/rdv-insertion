@@ -98,6 +98,18 @@ describe FranceTravailApi::RetrieveUserToken do
             expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::UserAddressNotFound)
           end
         end
+
+        context "when the API call returns a 429 with an empty body" do
+          before do
+            allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
+              .with(payload: expected_payload, headers: headers)
+              .and_return(OpenStruct.new(success?: false, status: 429, body: +""))
+          end
+
+          it "raises RateLimited" do
+            expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::RateLimited)
+          end
+        end
       end
 
       context "when user has a valid NIR and a valid France Travail ID" do

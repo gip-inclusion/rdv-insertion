@@ -22,5 +22,8 @@ Sentry.init do |config|
     event
   end
 
-  config.excluded_exceptions += ["WithAdvisoryLock::FailedToAcquireLock"]
+  config.excluded_exceptions += [
+    "WithAdvisoryLock::FailedToAcquireLock",
+    "FranceTravailApi::RetrieveUserToken::RateLimited"
+  ]
 end
