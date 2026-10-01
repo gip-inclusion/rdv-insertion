@@ -12,7 +12,7 @@ pro_connect_auth =
   else
     ["*.dev-agentconnect.fr"]
   end
-matomo = ENV["MATOMO_HOST"]
+matomo = Array(ENV["MATOMO_HOST"])
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
 tally = "tally.so"
@@ -21,15 +21,15 @@ flourish = ["flo.uri.sh", "public.flourish.studio"] # for deployment map
 Rails.application.config.content_security_policy do |policy|
   policy.default_src     :self
   policy.font_src        :self, :data, *crisp
-  policy.img_src         :self, :data, s3_bucket, *crisp, *flourish, matomo
+  policy.img_src         :self, :data, s3_bucket, *crisp, *flourish, *matomo
   policy.media_src       :self, s3_bucket
   policy.frame_src       :self, *flourish, tally
   policy.object_src      :none
-  policy.script_src      :self, matomo, *crisp, *flourish, tally, sentry
+  policy.script_src      :self, *matomo, *crisp, *flourish, tally, sentry
   policy.style_src       :self, :unsafe_inline, *crisp
-  policy.connect_src     :self, rdv_solidarites, sentry, matomo, tally, *crisp
+  policy.connect_src     :self, rdv_solidarites, sentry, *matomo, tally, *crisp
   policy.form_action     :self, rdv_solidarites, *pro_connect_auth
-  policy.frame_ancestors :self, rdv_solidarites, matomo
+  policy.frame_ancestors :self, rdv_solidarites, *matomo
   policy.worker_src      :self, :blob
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report"
