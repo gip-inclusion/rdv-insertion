@@ -12,7 +12,7 @@ pro_connect_auth =
   else
     ["*.dev-agentconnect.fr"]
   end
-matomo = "matomo.inclusion.beta.gouv.fr"
+matomo = ENV["MATOMO_HOST"]
 crisp = ["*.crisp.chat", "wss://client.relay.crisp.chat"]
 sentry = "sentry.incubateur.net"
 tally = "tally.so"

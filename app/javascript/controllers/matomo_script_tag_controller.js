@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 
 export default class extends Controller {
   static values = {
+    host: String,
     containerId: String,
   }
 
@@ -10,6 +11,12 @@ export default class extends Controller {
     if (this.containerIdValue === "") {
       /* eslint-disable-next-line no-console */
       console.error("MATOMO_CONTAINER_ID is not set");
+      return;
+    }
+
+    if (this.hostValue === "") {
+      /* eslint-disable-next-line no-console */
+      console.error("MATOMO_HOST is not set");
       return;
     }
 
@@ -23,7 +30,7 @@ export default class extends Controller {
 
     const matomoScriptTag = document.createElement("script");
     matomoScriptTag.async = true;
-    matomoScriptTag.src = `https://matomo.inclusion.beta.gouv.fr/js/container_${this.containerIdValue}.js`;
+    matomoScriptTag.src = `https://${this.hostValue}/js/container_${this.containerIdValue}.js`;
 
     const firstScriptTag = document.getElementsByTagName("script")[0];
     firstScriptTag.parentNode.insertBefore(matomoScriptTag, firstScriptTag);
