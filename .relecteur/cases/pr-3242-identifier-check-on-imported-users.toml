@@ -1,0 +1,12 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3242"
+description = "Moves the check that a user has an identifier from a service into the User model. Approved by a teammate on 2026-03-12, then fixed by #3252 two days after the merge, because users imported from RDV-Solidarités could no longer be created: the reviewer should flag it."
+base = "3cb0e646c8c743d276a320776cfeb367935511c0"
+head = "ed3b4ef257fb4b9c63753bb2cfe3430cad1a2be8"
+max_findings = 2
+
+[[expected_defects]]
+path = "app/models/user.rb"
+line = 84
+concept = "The identifier check now runs on every save of a user, including users imported from RDV-Solidarités, who can have none of these identifiers: creating them fails."
+fix = "7aef6e18a522cb8b144687aaf2cdcb1c21f511c9"
+escaped_review = true
