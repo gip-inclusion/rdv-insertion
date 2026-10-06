@@ -376,7 +376,7 @@ GEM
     pg_search (2.3.7)
       activerecord (>= 6.1)
       activesupport (>= 6.1)
-    phonelib (0.10.16)
+    phonelib (0.10.27)
     pp (0.6.3)
       prettyprint
     premailer (1.27.0)
