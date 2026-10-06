@@ -23,7 +23,7 @@ describe PhoneNumberHelper do
     end
 
     it "prefixes a Martinique mobile number with +596" do
-      expect(described_class.format_phone_number("0696123456")).to eq("+596696123456")
+      expect(described_class.format_phone_number("0696600000")).to eq("+596696600000")
     end
   end
 
