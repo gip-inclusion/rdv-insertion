@@ -30,6 +30,8 @@ describe "Agents can close or reopen follow_up", :js do
       expect(page).to have_content("Rouvrir")
       expect(page).to have_content("traité le")
       expect(follow_up.reload.status).to eq("closed")
+      expect(follow_up.versions.last.whodunnit).to include("[Agent]")
+      expect(follow_up.versions.last.whodunnit).to include(agent.email)
       expect(page).to have_current_path(department_user_follow_ups_path(department_id: department.id,
                                                                         user_id: user.id))
 
