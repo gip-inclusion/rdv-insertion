@@ -1,0 +1,30 @@
+language: "fr-FR"
+
+reviews:
+  profile: "quiet"
+  high_level_summary: false
+  poem: false
+  allow_author_approval: false
+  path_filters:
+    - "!**/*.lock"
+  auto_review:
+    ignore_usernames:
+      - "dependabot[bot]"
+  # Linters and security scanners already run in CI (Makefile, .github/workflows/security.yml)
+  tools:
+    rubocop:
+      enabled: false
+    eslint:
+      enabled: false
+    brakeman:
+      enabled: false
+    semgrep:
+      enabled: false
+    opengrep:
+      enabled: false
+    gitleaks:
+      enabled: false
+
+knowledge_base:
+  learnings:
+    scope: local
