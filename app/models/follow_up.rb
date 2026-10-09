@@ -4,6 +4,11 @@ class FollowUp < ApplicationRecord
   include Notificable
   include HasParticipationsToRdvs
 
+  has_paper_trail(
+    on: [:update],
+    only: [:closed_at]
+  )
+
   belongs_to :user
   belongs_to :motif_category
   has_many :invitations, dependent: :destroy
