@@ -1,0 +1,5 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3336"
+description = "Adds the user to the orientation's organisation only after the orientation is saved and its overlaps are checked, so that an orientation failing these checks no longer adds the user to the organisation, and updates the specs. Approved by a teammate on 2026-06-23 without any comment: the reviewer should stay silent."
+base = "ea823580a86989614dee6371c9f38f2cbfa86a58"
+head = "357b2cbcc4b52dc55ccf0674033f28c78c39ae9a"
+max_findings = 0

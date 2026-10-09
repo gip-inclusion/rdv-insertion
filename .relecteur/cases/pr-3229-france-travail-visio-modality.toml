@@ -1,0 +1,5 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3229"
+description = "Sends the VISIO modality in the France Travail participation payload for visio motifs, besides PHYSIQUE and TELEPHONE, with specs. Approved by the maintainer on 2026-02-25 without any comment: the reviewer should stay silent."
+base = "1e2fe1355f7150ca1e5a1c550db2cf202424de8f"
+head = "c0f41c5377b837733dfb96c2fbc0de889aec2861"
+max_findings = 0

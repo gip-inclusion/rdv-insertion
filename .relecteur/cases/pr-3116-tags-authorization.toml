@@ -1,0 +1,12 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3116"
+description = "Restricts tag creation and deletion to the organisation's admins, after a security report, through an authorize_organisation_configuration before_action. The maintainer's review on 2025-11-06 asked to authorize in set_organisation instead, as the codebase usually does, and the author did so within the pull request before the approval on 2025-11-12. The case freezes the code that review read: the reviewer should flag it."
+base = "29a6dd394c7e1266871ea0c033f7c551ca15a6f8"
+head = "4f06013ab6570fd06043aa02ee7aa427ea2e5279"
+max_findings = 2
+
+[[expected_defects]]
+path = "app/controllers/tags_controller.rb"
+line = [2, 33]
+concept = "TagsController authorizes the organisation in a separate authorize_organisation_configuration before_action, while both its actions check the same policy query, against the convention that the set_* method loading the record also authorizes it: `authorize @organisation, :configure?` belongs in set_organisation."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3116/commits/38ad05b80ea0c08e30b53f8698a13d07e8de8687"
+escaped_review = false

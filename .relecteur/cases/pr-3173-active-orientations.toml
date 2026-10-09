@@ -1,0 +1,5 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3173"
+description = "Fixes which orientations count as active, so that the CSV export shows the current ones: active? and time_range compare against the current time rather than the date, the unused active scope is removed, and specs cover active?. Approved by a teammate on 2026-01-20 without any comment: the reviewer should stay silent."
+base = "1007e71ea40c5916ef3a991dabcf8a30485b7fb3"
+head = "90ca6d8d3638b1ff9a50f8e6da5bc411c8f7a1f4"
+max_findings = 0

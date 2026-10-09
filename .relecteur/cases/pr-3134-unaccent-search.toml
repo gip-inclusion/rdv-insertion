@@ -1,0 +1,5 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3134"
+description = "Makes the text search ignore accents, by enabling the PostgreSQL unaccent extension in a migration and passing ignoring: :accents to pg_search_scope, with a spec. Approved by the maintainer on 2025-11-26 without any comment: the reviewer should stay silent."
+base = "b53351ce94c9dbcaefbc85312d3603c563f3f56e"
+head = "82fdf5758cee808b6bc65a79e0ededb5722d9dee"
+max_findings = 0

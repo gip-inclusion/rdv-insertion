@@ -1,0 +1,12 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3131"
+description = "Removes the requirement that a user has a title (civilité), from the User validations, the user list upload, the invitation checks and the user form. Approved by a teammate on 2025-11-25, then fixed by #3148 two weeks after the merge, because users without a title were never notified of their rdvs: the reviewer should flag it."
+base = "7585fe258204cc0b50d9816b457f265e9636e57a"
+head = "634cf10e1de07fef65592c02d9ae59bea29e54d2"
+max_findings = 2
+
+[[expected_defects]]
+path = "app/models/user.rb"
+line = [78, 175]
+concept = "Users can now be created and invited without a title, but User#notifiable? still returns title.present?: NotifyParticipationToUserJob returns early for these users, so they silently receive no notification of their rdvs, and the convocation letter link is hidden for them."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3148"
+escaped_review = true

@@ -1,0 +1,12 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3275"
+description = "Replaces the default Sidekiq queue with three queues named after their delay (within_30s, within_5min, whenever) and assigns them to the jobs. Approved by a teammate on 2026-04-14, then fixed by #3280 two days after the merge, because jobs still enqueued on the default queue, scheduled follow-up status refreshes and Turbo broadcasts, were no longer processed: the reviewer should flag it."
+base = "83cf42f72d6c85f8ff387ffab4ce452b54ac198f"
+head = "240cd6a5d2050f02aa855e2114b9311dc709262a"
+max_findings = 2
+
+[[expected_defects]]
+path = "config/sidekiq.yml"
+line = 3
+concept = "The default queue is removed from the queues Sidekiq processes, while jobs are still enqueued on it: Sidekiq::Scheduler sets queue: \"default\" on the jobs it schedules, overriding their queue_as (the FollowUps::RefreshStatusesJob planned by FollowUps::PlanStatusRefreshJob), and jobs that do not inherit ApplicationJob, such as the Turbo broadcasts of broadcast_refresh_later, use ActiveJob's default queue name \"default\". These jobs are never run."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3280"
+escaped_review = true

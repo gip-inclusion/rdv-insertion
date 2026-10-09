@@ -1,0 +1,5 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3387"
+description = "Stops the API invitation endpoints from crashing when no motif category is sent, by reopening a closed follow-up only once it has been found or created, in the controller and in CreateAndInviteUserJob, and adds specs. Approved by a teammate on 2026-09-29 without any comment: the reviewer should stay silent."
+base = "e81ec5d86a3eca81dd0b953cd4880ba139773bd0"
+head = "4e2c7cf440a1ad49066fe81bfbecf9031f80dbf7"
+max_findings = 0

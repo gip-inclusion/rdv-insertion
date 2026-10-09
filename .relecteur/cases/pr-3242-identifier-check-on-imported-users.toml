@@ -6,7 +6,7 @@ max_findings = 2
 
 [[expected_defects]]
 path = "app/models/user.rb"
-line = 84
-concept = "The identifier check now runs on every save of a user, including users imported from RDV-Solidarités, who can have none of these identifiers: creating them fails."
-fix = "7aef6e18a522cb8b144687aaf2cdcb1c21f511c9"
+line = [84, 250]
+concept = "`validate :identifier_must_be_present` now runs on every save of a user, including users imported from RDV-Solidarités, who can have none of these identifiers: creating them fails."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3252"
 escaped_review = true

@@ -1,0 +1,19 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/2974"
+description = "Keeps the phone number of a user list row when the CNAF data bring a landline, through a new pick_most_relevant_phone_number method. The maintainer's review on 2025-07-23 requested changes because the method put the row's own number in the CNAF data, which the author fixed within the pull request; the maintainer then approved on 2025-08-11 (an approval dismissed by the next push, a renaming), and #3094 fixed, two months after the merge, the method raising when the CNAF phone number could not be parsed. The case freezes the code the first review read: the reviewer should flag both."
+base = "ee905317f610bdaf31ac433593a1d23c91db417f"
+head = "a88e4ba95f3dee7e8b2087e3b325053d87de1a39"
+max_findings = 3
+
+[[expected_defects]]
+path = "app/models/user_list_upload/user_row.rb"
+line = [317, 322]
+concept = "pick_most_relevant_phone_number returns the row's own phone_number when the CNAF file gives no phone number, or gives a landline while the row has a number: cnaf_data, meant to hold what the CNAF file says, then holds the uploaded number for most rows, and these rows are presented as enriched by the CNAF file whenever their matching user has another number."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/2974/commits/2f932dbcbcaf9a4f334ea1f60619928994915ac5"
+escaped_review = false
+
+[[expected_defects]]
+path = "app/models/user_list_upload/user_row.rb"
+line = [319, 321]
+concept = "pick_most_relevant_phone_number calls .type and .e164 on the result of PhoneNumberHelper.parsed_number, which returns nil when the CNAF phone number is not a valid number: enriching a row with such CNAF data raises NoMethodError, where format_phone_number used to return nil."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3094"
+escaped_review = true

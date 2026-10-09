@@ -1,0 +1,12 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3130"
+description = "Recreates a participation on France Travail when the update of its France Travail record fails with ID_NON_RECONNU, handling the update result in a new handle_update_result method. Approved by a teammate on 2025-12-02, then fixed by a commit pushed on staging the day after the merge, because handle_update_result used variables local to perform and raised: the reviewer should flag it."
+base = "7585fe258204cc0b50d9816b457f265e9636e57a"
+head = "703a7ae83b8eb72809e43b21cdd6e5d8ef174790"
+max_findings = 2
+
+[[expected_defects]]
+path = "app/jobs/outgoing_webhooks/france_travail/upsert_participation_job.rb"
+line = 22
+concept = "handle_update_result uses participation and timestamp, which are local variables of perform and do not exist in this private method: when France Travail answers ID_NON_RECONNU (error_type :participation_not_found), the job raises NameError instead of clearing france_travail_id and recreating the participation."
+fix = "https://github.com/gip-inclusion/rdv-insertion/commit/a5956b0b6fbced40ccad87d949b8a87cf9dd3600"
+escaped_review = true

@@ -1,0 +1,19 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3128"
+description = "Adds the invitation_expired follow-up status, refreshed by jobs that a new Sidekiq::Scheduler plans at the expiry of the last invitation or after the last rdv. Approved by a teammate on 2025-11-26, then fixed by #3151 and #3153 five and six days after the merge, because computing the last invitation expiry raised when some invitations never expire, and rescheduling a planned job could raise when it left the scheduled set: the reviewer should flag both defects."
+base = "20f50f78abc09eabe776501ec4c8c58c0aa761b3"
+head = "29f4ee1603a1c2bd64c7c10ccd050cbe5b8d98b1"
+max_findings = 3
+
+[[expected_defects]]
+path = "app/models/concerns/invitable.rb"
+line = 52
+concept = "last_invitation_expires_at compares expires_at values with max_by, which raises ArgumentError when a follow-up has both invitations that expire and invitations that never expire (expires_at nil): FollowUp#refresh_status_at calls it, so FollowUps::PlanStatusRefreshJob fails for these follow-ups."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3151"
+escaped_review = true
+
+[[expected_defects]]
+path = "app/models/sidekiq/scheduler.rb"
+line = [14, 28, 35]
+concept = "existing_job scans the Sidekiq scheduled set on every call, and schedule_uniq_job calls it twice, in its check and again in reschedule_existing_job: when the job runs or leaves the set in between, the second call returns nil and existing_job.reschedule raises NoMethodError."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3153"
+escaped_review = true

@@ -1,0 +1,12 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3182"
+description = "Stores department and organisation logos on a new public Scaleway service, so that the logo URLs in emails no longer expire, and adds a rake task that makes the existing logos public. Approved by a teammate on 2026-01-29, then fixed by #3188 the day after the merge, because the rake task raised on the first logo: the reviewer should flag it."
+base = "9aba15736a3bef23955f2514e4bc79b89aa0b69d"
+head = "e7d4927bf89968060191614a59ec2f241c0a74fe"
+max_findings = 2
+
+[[expected_defects]]
+path = "lib/tasks/make_logos_public.rake"
+line = 8
+concept = "The make_logos_public task calls put_object_acl on blob.service.client, but the client of Active Storage's S3 service is an Aws::S3::Resource, which has no put_object_acl method (only Aws::S3::Client has): the task raises NoMethodError on the first attached logo and makes no logo public."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3188"
+escaped_review = true
