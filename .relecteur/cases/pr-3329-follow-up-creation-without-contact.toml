@@ -1,5 +1,5 @@
 pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3329"
-description = "Creates the follow-up of a user created through the invitation API even when the user has no phone nor email, and centralises its find-or-create in User#find_or_create_follow_up. The maintainer's review on 2026-06-23 pointed out that an unknown motif category was silently ignored, which the author fixed within the pull request by validating the attributes. The case freezes the code that review read: the reviewer should flag it."
+notes = "Creates the follow-up of a user created through the invitation API even when the user has no phone nor email, and centralises its find-or-create in User#find_or_create_follow_up. The maintainer's review on 2026-06-23 pointed out that an unknown motif category was silently ignored, which the author fixed within the pull request by validating the attributes. The case freezes the code that review read: the reviewer should flag it."
 base = "8d71d247470bcdcf27e19152249705023f6343ae"
 head = "a24b167e0f744dec4d884733c74532fd662ec6e2"
 max_findings = 2
@@ -10,3 +10,24 @@ line = 42
 concept = "create_follow_up looks the motif category up with find_by and skips the follow-up when no category matches the attributes the API caller sent: the user is created without a follow-up and nothing tells the caller that the category does not exist."
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3329/commits/c0af85978065c90658bc35ba0a3ae5e8702f3fb1"
 escaped_review = false
+
+[pr]
+title = "fix(api): create the follow-up even when the user has no phone nor email"
+description = '''
+Lié à https://app.notion.com/p/gip-inclusion/Bug-API-Les-usagers-sans-t-l-phone-ni-email-ne-sont-pas-cr-s-invit-s-via-l-API-invitations-36c5f321b604807494a1faabc4580bbc
+
+## Bug
+
+Dans l'API (`create_and_invite` / `create_and_invite_many`), un usager sans téléphone ni email n'était pas suivi dans la catégorie : il apparaissait uniquement dans « Tous les contacts ».
+
+ Cause : côté API, le `FollowUp` n'était créé qu'avec l'envoi d'une invitation. Sans contact joignable, aucune invitation n'est envoyée donc pas de `FollowUp` et l'usager n'apparaît pas dans la catégorie.
+
+Les flux upload de fichier et création par fiche usager ne sont pas concernés car ils créent le suivi indépendamment de l'invitation.
+
+  ## Solution
+
+  Le `FollowUp` est désormais créé dès la création de l'usager, indépendamment de l'invitation.
+
+  Au passage, le `find_or_create` du `FollowUp` (avec son advisory lock), dupliqué à 4 endroits, est centralisé sur
+  `User#find_or_create_follow_up` et réutilisé par `InviteUser`, le job API, le controller API et le webhook RDV-Solidarités.
+'''

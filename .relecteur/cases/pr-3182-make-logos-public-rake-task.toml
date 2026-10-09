@@ -1,5 +1,5 @@
 pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3182"
-description = "Stores department and organisation logos on a new public Scaleway service, so that the logo URLs in emails no longer expire, and adds a rake task that makes the existing logos public. Approved by a teammate on 2026-01-29, then fixed by #3188 the day after the merge, because the rake task raised on the first logo: the reviewer should flag it."
+notes = "Stores department and organisation logos on a new public Scaleway service, so that the logo URLs in emails no longer expire, and adds a rake task that makes the existing logos public. Approved by a teammate on 2026-01-29, then fixed by #3188 the day after the merge, because the rake task raised on the first logo: the reviewer should flag it."
 base = "9aba15736a3bef23955f2514e4bc79b89aa0b69d"
 head = "e7d4927bf89968060191614a59ec2f241c0a74fe"
 max_findings = 2
@@ -10,3 +10,30 @@ line = 8
 concept = "The make_logos_public task calls put_object_acl on blob.service.client, but the client of Active Storage's S3 service is an Aws::S3::Resource, which has no put_object_acl method (only Aws::S3::Client has): the task raises NoMethodError on the first attached logo and makes no logo public."
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3188"
 escaped_review = true
+
+[pr]
+title = "fix(attachments): Make logos public"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/Bug-Les-logos-des-d-partements-ne-s-affichent-pas-toujours-dans-les-mail-2e85f321b60480a59948e0cef9cca366
+
+## Problème
+
+Lorsque l'on génère l'url que l'on met dans les emails pour les logos des département et des organisations, on appelle `organisation.logo.url` et `department.logo.url` dans les mailers.
+Or notre bucket scaleway étant privé, cela va généré des url signés qui expirent ! Ce qui fait qu'au bout d'un certain temps (probablement très court) les logos ne s'affichaient plus 😬
+
+## Solution
+
+Pour remédier à ça, il fallait trouver une solution qui nous permettent de rendre publiques les logos des départements et des organisations qui ne sont pas des données confidentielles. Il faut aussi que ces logos apparaissent bien dans les mails déjà envoyés !
+Pour se faire, on créer un nouveau service scaleway `scaleway_public` qui, s'il est utilisé, store les attachments de manière publique. On utilise ce service pour storer les logos des départements et des orgas.
+On fait également un script pour changer les ACL des logos des départements et des orgas et les basculer sur ce service.
+
+## Implémentation
+
+Cette PR peut se lire commit par commit. Elle contient:
+* L'ajout d'un service `scaleway_public` pour les logos (même bucket, ACL public-read)
+* L'ajout d'une option `publicly_accessible` au concern `has_attached_image`
+* Refacto de `has_attached_image` pour améliorer la lisibilité (extraction en méthodes privées)
+* Ajout d'une tâche rake `make_logos_public` pour migrer les logos existants
+
+En parallèle j'en ai profité pour mettre à jour le `CLAUDE.md` et pour supprimer un script qui n'est plus utilisé.
+'''

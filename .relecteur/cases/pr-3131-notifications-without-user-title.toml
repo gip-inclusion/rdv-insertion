@@ -1,8 +1,8 @@
 pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3131"
-description = "Removes the requirement that a user has a title (civilité), from the User validations, the user list upload, the invitation checks and the user form. Approved by a teammate on 2025-11-25, then fixed by #3148 two weeks after the merge, because users without a title were never notified of their rdvs: the reviewer should flag it."
+notes = "Removes the requirement that a user has a title (civilité), from the User validations, the user list upload, the invitation checks and the user form. Approved by a teammate on 2025-11-25, then fixed by #3142 a week after the merge, because the user form still showed the title as required, and by #3148 two weeks after the merge, because users without a title were never notified of their rdvs: the reviewer should flag both."
 base = "7585fe258204cc0b50d9816b457f265e9636e57a"
 head = "634cf10e1de07fef65592c02d9ae59bea29e54d2"
-max_findings = 2
+max_findings = 3
 
 [[expected_defects]]
 path = "app/models/user.rb"
@@ -10,3 +10,18 @@ line = [78, 175]
 concept = "Users can now be created and invited without a title, but User#notifiable? still returns title.present?: NotifyParticipationToUserJob returns early for these users, so they silently receive no notification of their rdvs, and the convocation letter link is hidden for them."
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3148"
 escaped_review = true
+
+[[expected_defects]]
+path = "app/views/users/_user_form.html.erb"
+line = 19
+concept = "The title field keeps `mandatory: true`, which marks it with the asterisk of a required field, while the pull request removes the validation that made the title required: the form tells agents the title is required when it no longer is."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3142"
+escaped_review = true
+
+[pr]
+title = "feat(app): Remove title presence validation"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/Fichier-import-Faire-voluer-la-r-gle-et-supprimer-l-obligation-de-renseigner-la-civilit-2a05f321b60480b7a0bff7443134ee16
+
+Suite à #3121 on a plus besoin de la civilité pour composer les messages d'invitations, du coup j'enlève la validation qui la rendait obligatoire dans le code.
+'''

@@ -1,5 +1,5 @@
 pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3275"
-description = "Replaces the default Sidekiq queue with three queues named after their delay (within_30s, within_5min, whenever) and assigns them to the jobs. Approved by a teammate on 2026-04-14, then fixed by #3280 two days after the merge, because jobs still enqueued on the default queue, scheduled follow-up status refreshes and Turbo broadcasts, were no longer processed: the reviewer should flag it."
+notes = "Replaces the default Sidekiq queue with three queues named after their delay (within_30s, within_5min, whenever) and assigns them to the jobs. Approved by a teammate on 2026-04-14, then fixed by #3280 two days after the merge, because jobs still enqueued on the default queue, scheduled follow-up status refreshes and Turbo broadcasts, were no longer processed: the reviewer should flag it."
 base = "83cf42f72d6c85f8ff387ffab4ce452b54ac198f"
 head = "240cd6a5d2050f02aa855e2114b9311dc709262a"
 max_findings = 2
@@ -7,6 +7,28 @@ max_findings = 2
 [[expected_defects]]
 path = "config/sidekiq.yml"
 line = 3
+also_at = [{ path = "app/jobs/follow_ups/plan_status_refresh_job.rb", line = 2 }]
 concept = "The default queue is removed from the queues Sidekiq processes, while jobs are still enqueued on it: Sidekiq::Scheduler sets queue: \"default\" on the jobs it schedules, overriding their queue_as (the FollowUps::RefreshStatusesJob planned by FollowUps::PlanStatusRefreshJob), and jobs that do not inherit ApplicationJob, such as the Turbo broadcasts of broadcast_refresh_later, use ActiveJob's default queue name \"default\". These jobs are never run."
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3280"
 escaped_review = true
+
+[pr]
+title = "feat(worker): Add new queue priorities mechanism"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/Bug-les-cr-ations-invitations-l-upload-mettent-trop-de-temps-se-lancer-3415f321b60480178eb8e0e0119cfe83
+
+## Contexte
+
+On a reçu quelques retours d'utilisateurs se plaignant de lenteurs dans le parcours d'upload. Grâce à la table `user_list_upload_processing_logs` j'ai pu voir qu'effectivement pour certains upload le temps peut être long (parfois > à 1 minute) entre le moment où le job a été enqueued et le moment où il a commencé à être exécuté.
+C'est dû au fait que dans les périodes de fortes activités ces jobs ne sont pas priorisé par rapport à d'autres et peuvent rester un peu de temps en attente avant d'être popé par redis
+
+## Solution
+
+Jusqu'à présent on en a pas eu besoin mais maintenant il faut donc avoir différents niveau de priorités pour nos queues.
+En général nommer ses queues en fonctions du SLAs est une bonne pratique, je fais donc ça ici. On a donc 3 queues:
+* `within_30s`: ce sont les jobs prioritaires qui doivent être exécutés immédiatement, ceux où l'utilisateur est en attente d'un résultat. Cela concerne donc les 3 jobs liés à l'upload + le job `CreateAndInviteUserJob` qui est trigger par l'API, même si l'endpoint d'invitation asynchrone est de toute façon plus utilisé
+* `within_5min`: c'est la queue par défaut. C'est les jobs qu'on a besoin d'exécuter assez rapidement mais qui sont moins prioritaires que les `within_30s`. Ça va concerner par exemple tous les process de webhooks, ou bien les générations de csv par exemple
+* `whenever`: c'est les jobs qui sont le moins prioritaires, ça concerne principalement nos CRON jobs
+
+P.S: on laisse les queues spécifiques `stats` et `creneaux` pour spécifier une concurrency limit (via la gem `sidekiq-limit-fetch`)
+'''

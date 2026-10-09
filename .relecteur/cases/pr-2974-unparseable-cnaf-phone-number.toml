@@ -1,5 +1,5 @@
 pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/2974"
-description = "Keeps the phone number of a user list row when the CNAF data bring a landline, through a new pick_most_relevant_phone_number method. The maintainer's review on 2025-07-23 requested changes because the method put the row's own number in the CNAF data, which the author fixed within the pull request; the maintainer then approved on 2025-08-11 (an approval dismissed by the next push, a renaming), and #3094 fixed, two months after the merge, the method raising when the CNAF phone number could not be parsed. The case freezes the code the first review read: the reviewer should flag both."
+notes = "Keeps the phone number of a user list row when the CNAF data bring a landline, through a new pick_most_relevant_phone_number method. The maintainer's review on 2025-07-23 requested changes because the method put the row's own number in the CNAF data, which the author fixed within the pull request; the maintainer then approved on 2025-08-11 (an approval dismissed by the next push, a renaming), and #3094 fixed, two months after the merge, the method raising when the CNAF phone number could not be parsed. The case freezes the code the first review read: the reviewer should flag both."
 base = "ee905317f610bdaf31ac433593a1d23c91db417f"
 head = "a88e4ba95f3dee7e8b2087e3b325053d87de1a39"
 max_findings = 3
@@ -17,3 +17,16 @@ line = [319, 321]
 concept = "pick_most_relevant_phone_number calls .type and .e164 on the result of PhoneNumberHelper.parsed_number, which returns nil when the CNAF phone number is not a valid number: enriching a row with such CNAF data raises NoMethodError, where format_phone_number used to return nil."
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3094"
 escaped_review = true
+
+[pr]
+title = "fix(cnaf): make sure mobile lines are not overrided by CNAF landlines"
+description = '''
+Cette PR fait en sorte de garder le numéro de téléphone le plus adapté lors d'une mise à jour de données CNAF.
+
+Pour cela, je rajoute un nouveau formatage lors de la réception des données CNAF qui va vérifier le type de la ligne introduite par les données CNAF.
+Si la ligne est une ligne fixe, alors elle est uniquement gardée dans le cas ou le numéro de téléphone déjà enregistré est vide.
+
+Si la ligne est une ligne mobile, ou si le numéro de téléphone était nil, alors on utilise la nouvelle donnée CNAF.
+
+Fix https://github.com/gip-inclusion/rdv-insertion/issues/2777
+'''

@@ -1,0 +1,53 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3108"
+notes = "Sends Matomo the URLs of the pages visited with their ids replaced by route parameters. Reviewed by the maintainer on 2025-11-05 at the commit frozen here: one remark asks to replace a `sleep` in a feature spec, against a convention now written in AGENTS.md, and was applied in the pull request; the others are outside the mandate (splitting a method, test coverage, performance). The reviewer should flag the `sleep` only."
+base = "361299d08bc23a7087e1501ab32eae9009e50164"
+head = "5c6f14f49b4563537b72d12f4a3b2e1954444634"
+max_findings = 2
+
+[[expected_defects]]
+path = "spec/features/matomo_url_rewriting_spec.rb"
+line = 31
+concept = "The feature spec waits with `sleep 0.5` for the Turbo navigation and the Matomo tracking, against the convention that feature specs wait through Capybara's retrying matchers (`have_content`, `have_css`), with no `sleep`."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3108/commits/8fe32077cf419d32f8873c7fd5486db1092deb5a"
+escaped_review = false
+
+[[forbidden_remarks]]
+path = "app/helpers/matomo_helper.rb"
+line = 17
+concept = "Points out the cost of looking the path up among every route on each GET request, and of setting a cookie on each response: a performance remark, outside the mandate."
+
+[[forbidden_remarks]]
+path = "app/helpers/matomo_helper.rb"
+line = 10
+concept = "Calls the fallback to the raw path, when no route matches, a leak of sensitive ids to Matomo: the pull request groups URLs to make Matomo usable, and falling back to the raw path for an unknown route is intended."
+
+[pr]
+title = "tech(matomo): regroup url without ids in Matomo analytics"
+description = '''
+Lié à : https://www.notion.so/gip-inclusion/Matomo-Regrouper-les-urls-par-route-28d5f321b6048098bc64c5c63c80b96d
+
+## Problème
+
+RDV-Insertion envoie 8-10x plus d'URLs distinctes à Matomo que les autres produits du GIP à cause des IDs non masqués dans les URLs (/organisations/1/users/62, /organisations/2/users/63, etc.).
+Cela surcharge les logs en plus de rendre Matomo difficilement utilisable pour rdv-insertion.
+
+## Réécriture des URLs en patterns de routes avant envoi à Matomo :
+- `/organisations/123/users/456` → `/organisations/:organisation_id/users/:id`
+- `/user_list_uploads/abc-def-123` → `/user_list_uploads/:user_list_upload_id`
+- etc.
+
+## Implémentation
+
+**Approche Rails + JavaScript** :
+- Helper Rails qui utilise le router natif pour extraire le pattern de route
+- Stockage de l'URL masquée dans un cookie `matomo_page_url` via `before_action`
+- Contrôleur Stimulus qui lit le cookie (js-cookie) et l'envoie à Matomo via `customPageUrl`
+- Tracking des navigations Turbo avec `turbo:load` (pas tracké avant)
+- Feature tests pour vérifier le masquage et les navigations Turbo
+
+ ## ⚠️ Action requise côté Matomo après merge et déploiement en production
+
+Publier la version du container Tag Manager nommée "rewrited ids in CustomPageUrl" qui est déjà prête.
+Cette version configure Matomo pour utiliser la variable `customPageUrl` du data layer au lieu de l'URL brute par défaut.
+Sans cette publication, le code ne servira à rien (les URLs resteront comme actuellement dans Matomo).
+'''

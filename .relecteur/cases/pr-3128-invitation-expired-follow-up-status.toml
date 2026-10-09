@@ -1,5 +1,5 @@
 pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3128"
-description = "Adds the invitation_expired follow-up status, refreshed by jobs that a new Sidekiq::Scheduler plans at the expiry of the last invitation or after the last rdv. Approved by a teammate on 2025-11-26, then fixed by #3151 and #3153 five and six days after the merge, because computing the last invitation expiry raised when some invitations never expire, and rescheduling a planned job could raise when it left the scheduled set: the reviewer should flag both defects."
+notes = "Adds the invitation_expired follow-up status, refreshed by jobs that a new Sidekiq::Scheduler plans at the expiry of the last invitation or after the last rdv. Approved by a teammate on 2025-11-26, then fixed by #3151 and #3153 five and six days after the merge, because computing the last invitation expiry raised when some invitations never expire, and rescheduling a planned job could raise when it left the scheduled set: the reviewer should flag both defects."
 base = "20f50f78abc09eabe776501ec4c8c58c0aa761b3"
 head = "29f4ee1603a1c2bd64c7c10ccd050cbe5b8d98b1"
 max_findings = 3
@@ -17,3 +17,58 @@ line = [14, 28, 35]
 concept = "existing_job scans the Sidekiq scheduled set on every call, and schedule_uniq_job calls it twice, in its check and again in reschedule_existing_job: when the job runs or leaves the set in between, the second call returns nil and existing_job.reschedule raises NoMethodError."
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3153"
 escaped_review = true
+
+[[forbidden_remarks]]
+path = "app/jobs/follow_ups/refresh_out_of_date_statuses_job.rb"
+line = 15
+concept = "Points out that the Slack message lists every refreshed follow-up id and could grow long: a low-severity remark on a notification, outside the mandate."
+
+[[forbidden_remarks]]
+path = "app/services/exporters/generate_users_csv.rb"
+line = 154
+concept = "Claims that GenerateUsersParticipationsCsv#human_follow_up_status raises NoMethodError since display_follow_up_status_notice is removed: that method is never called, csv_row of the participations export does not use it."
+
+[pr]
+title = "feat(app): Add invitation_expired follow_up status"
+description = '''
+## Contexte
+
+Lié à https://www.notion.so/gip-inclusion/Filtre-Distinguer-les-statuts-Invitation-en-attente-de-r-ponse-et-Invitation-sans-r-ponse-d-lai-2935f321b60480898e78e187dc1cfc64
+
+On ajoute un nouveau statut "Invitation sans réponse (délai dépassé)" aux suivis pour pouvoir filtrer directement sur ce statut-là.
+Avant ça, pour retrouver les usagers dans cet était il fallait faire un filtre sur le statut "Invitation en attente de réponse" combiné avec un filtre "Intervention nécessaire".
+
+## Implémentation
+
+### Une nouvelle valeur de statut possible
+
+Étant donné que l'on veut rajouter un statut dans les filtres, l'idée est ici de rajouter une nouvelle valeur de `status` possible sur la table `follow_ups` que l'on appelle `invitation_expired`.
+Pour qu'un suivi se retrouve dans cet état il faut que:
+* il ait été invité sans rdv (ou avec rdv antérieure à la dernière invitation)
+* que toutes ses invitations aient expirées
+
+### Un rafraichissement du statut
+
+Pour que l'invitation passe du statut "Invitation en attente de réponse" à "Invitation sans réponse", il faut que le statut soit mis à jour après que les invitations aient expirées. Pour ce faire, on planifie un job qui va s'exécuter une seconde après la dernière invitation envoyée. Cela permet d'avoir un statut à jour sans attendre l'exécution du CRON tous les soirs qui rafraichit les statuts (renommé en `FollowUps::RefreshOutOfDateStatusesJob`).
+
+##### `FollowUps::PlanStatusRefreshJob`
+Pour ça, on enqueue un nouveau job `FollowUps::PlanStatusRefreshJob` à chaque fois qu'une invitation est créée/mis à jour. Ce  job va être  responsable de planifier un job quand la dernière invitation a expirée, **mais pas que**:  J'en profite pour que ce mécanisme soit appliqué aussi aux rdvs. Lorsqu'un rdv est créé/mis à jour, on veut que le statut du suivi soit rafraichit juste après que le rdv soit passé. Ainsi le statut du suivi passera directement en `rdv_needs_status_update`.
+
+Du coup on met en place une nouvelle méthode d'instance `follow_up#refresh_status_at` qui va prendre en compte le moment où l'invitation va expirer ou le moment où le rdv aura lieu.
+
+#### `Sidekiq::Scheduler`
+
+Pour ne pas encombrer notre set de jobs planifiés, on veut qu'il n'y ait qu'un job de planifié par suivi (il n'y a besoin de rafraichir qu'au moment de la dernière expiration d'invitation en cours, ou au moment où le rdv aura lieu si un rdv est prévu). Pour ça  j'introduis une nouvelle classe `Sidekiq::Scheduler` qui via une méthode  `schedule_uniq_job` va:
+* Chercher  s'il y a un job existant sur la même classe avec les mêmes arguments
+* Si oui le reprogrammer à la nouvelle valeur (le `follow_up.refresh_at` dans  notre qu'on passera en argument dans le `FollowUps::PlanStatusRefreshJob`)
+* Si non le planifier
+
+### Développements annexes
+
+* Allègement du `FollowUps::RefreshOutOfDateStatusesJob` en itérant sur un set de `follow_ups` plus restreint en preloadant les associations
+* Retrait de  toute la logique d'`action_required` qui consistait à chaque fois de vérifier que toutes les invitations avaient expiré est enlevés et qui rend le code beaucoup plus clair
+
+### Points d'attentions
+
+D'une manière générale le code est plus clair, mais il faudra être attention au load que ça va créer sur nos workers (à chaque invitation/rdv on va enqueue un job pour programmer ou reprogrammer un job).
+'''

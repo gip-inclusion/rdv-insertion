@@ -1,0 +1,4 @@
+{
+  "include": ["**/*_spec.rb", "**/*.erb"],
+  "exclude": ["db/schema.rb", "db/migrate/**", "Gemfile.lock", "yarn.lock", "swagger/**"]
+}

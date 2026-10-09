@@ -1,0 +1,22 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3262"
+notes = "Sends a user's pending participations to France Travail once a change to their NIR, birth date or France Travail id makes them retrievable there. Reviewed by the maintainer on 2026-04-07 at the commit frozen here, with remarks outside the mandate only (naming, moving the loop to a job, the timestamp sent): the reviewer should stay silent."
+base = "a4c2d49471b4cbf7db0a584f1daaf496fe93313f"
+head = "dda3c8aab291662ebea324046146c4dd436185af"
+max_findings = 0
+
+[pr]
+title = "api(ft): resend ft webhooks when user became retrievable in FT after an update"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/FT-Certains-rdvs-FT-ne-remontent-pas-dans-le-SI-Plateforme-3215f321b60480f48636ee3803ee64c1
+
+### Problème
+
+  Quand un usager est créé sans NIR ni identifiant France Travail, les participations à ses RDV ne sont pas transmises à FT car il n'est pas identifiable dans leur système.
+  Lorsque le NIR est renseigné par la suite, rien ne déclenche l'envoi de ces participations — elles restent absentes du SI FT.
+
+ ### Solution
+
+  Ajout d'un concern `User::FranceTravailWebhooks` qui :
+  - Détecte via `after_commit` quand un usager devient identifiable par FT (ajout de `nir`, `france_travail_id` ou `birth_date`)
+  - Déclenche l'envoi vers FT de toutes ses participations sans `france_travail_id` et éligibles
+'''

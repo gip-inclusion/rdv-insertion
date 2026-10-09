@@ -1,0 +1,13 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3086"
+notes = "Sends invitation reminders to users re-entering a follow-up, by taking the last manual invitation since their last participation. Reviewed by the maintainer on 2025-10-06 at the commit frozen here, with remarks outside the mandate only (a simplification, in-memory filtering against N+1 queries, naming): the reviewer should stay silent."
+base = "05ed990882d69f131ce11cd030a9b9444b5c5ea4"
+head = "59acaa8847a9b77aa2f7079dfe5d2d46a6afbb0e"
+max_findings = 0
+
+[pr]
+title = "fix(reminder): reminders are not sent for re-entry users"
+description = '''
+close https://github.com/gip-inclusion/rdv-insertion/issues/3074
+J'en ai profité pour renommer les méthodes concernées qui n'étaient plus représentatives du comportement réèl.
+J'ai vérifié on a aucun `FollowUp` avec une seule invitation périodique donc `last_manual_invitation` renverra toujours quelque chose (vu que la feature des invitations périodiques a été enlevée).
+'''
