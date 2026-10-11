@@ -28,6 +28,11 @@ path = "app/services/exporters/generate_users_csv.rb"
 line = 154
 concept = "Claims that GenerateUsersParticipationsCsv#human_follow_up_status raises NoMethodError since display_follow_up_status_notice is removed: that method is never called, csv_row of the participations export does not use it."
 
+[[forbidden_remarks]]
+path = "app/jobs/follow_ups/refresh_out_of_date_statuses_job.rb"
+line = 8
+concept = "Points out that every follow-up id to refresh goes in a single job argument and a single Slack message, which could grow large: a performance remark, outside the mandate."
+
 [pr]
 title = "feat(app): Add invitation_expired follow_up status"
 description = '''

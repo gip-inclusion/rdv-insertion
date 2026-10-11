@@ -1,4 +1,4 @@
 # Engine settings of the reviewer, read by `relecteur eval`; the review in CI is to use the same.
 effort = "high"
-concurrency = 2
+concurrency = 1
 language = "French"
