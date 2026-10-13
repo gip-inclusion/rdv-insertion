@@ -31,6 +31,8 @@ module FranceTravailApi
     def parsed_response_body
       JSON.parse(@response.body.force_encoding("UTF-8"))
     rescue JSON::ParserError
+      raise if @response.success?
+
       {}
     end
 

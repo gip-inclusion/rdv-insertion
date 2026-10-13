@@ -52,6 +52,14 @@ describe FranceTravailApi::RetrieveUserToken do
             expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::NoMatchingUser)
           end
         end
+
+        context "when the body is not JSON" do
+          let(:response_body) { +"<html>maintenance</html>" }
+
+          it "raises a parser error instead of returning a blank token" do
+            expect { subject }.to raise_error(JSON::ParserError)
+          end
+        end
       end
 
       context "when the API call fails" do
