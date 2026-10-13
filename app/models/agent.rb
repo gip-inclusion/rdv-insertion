@@ -20,6 +20,11 @@ class Agent < ApplicationRecord
   has_many :dpa_agreements, dependent: :nullify
   has_many :invitations, foreign_key: :created_by_agent_id, inverse_of: :created_by_agent,
                          dependent: :nullify
+  has_many :file_configurations, foreign_key: :created_by_agent_id, inverse_of: :created_by_agent,
+                                 dependent: :nullify
+  has_many :api_calls, dependent: :nullify
+  has_many :creneau_opening_requests, foreign_key: :recipient_agent_id, inverse_of: :recipient_agent,
+                                      dependent: :destroy
   has_many :user_list_uploads, dependent: :destroy
   has_many :organisations, through: :agent_roles
   has_many :departments, -> { distinct }, through: :organisations
