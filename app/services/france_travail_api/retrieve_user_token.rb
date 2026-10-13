@@ -23,9 +23,15 @@ module FranceTravailApi
       @response = retrieve_user_token
       raise RateLimited, "Erreur 429 lors de l'appel à l'api recherche-usager FT" if @response.status == 429
 
-      @response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
+      @response_body = parsed_response_body
 
       @response.success? ? handle_success : handle_error
+    end
+
+    def parsed_response_body
+      JSON.parse(@response.body.force_encoding("UTF-8"))
+    rescue JSON::ParserError
+      {}
     end
 
     def handle_success
