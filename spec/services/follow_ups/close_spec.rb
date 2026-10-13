@@ -20,6 +20,12 @@ describe FollowUps::Close, type: :service do
       expect(follow_up.closed_at.strftime("%d/%m/%Y")).to eq("04/05/2023")
     end
 
+    it "records the closing in a version" do
+      subject
+      expect(follow_up.versions.last.event).to eq("update")
+      expect(follow_up.versions.last.object_changes["closed_at"].last).to eq(follow_up.closed_at.as_json)
+    end
+
     it "calls the ExpireInvitationJob for the users invitations" do
       expect(ExpireInvitationJob).to receive(:perform_later).exactly(1).time.with(invitation1.id)
       expect(ExpireInvitationJob).to receive(:perform_later).exactly(1).time.with(invitation2.id)
