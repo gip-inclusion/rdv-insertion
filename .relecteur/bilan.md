@@ -6,9 +6,9 @@ relecteur rejoue 24 pull requests mergées de rdv-insertion, décrites dans `.re
 chacune comme si elle venait d'être ouverte, avec `REVIEW.md` et `AGENTS.md` pour consignes, puis un juge compare ses
 remarques à ce qui était attendu.
 
-- **13 cas de silence** : des PR approuvées sans remarque de fond (`max_findings = 0`). Le bon comportement est de ne
+- **11 cas de silence** : des PR approuvées sans remarque de fond (`max_findings = 0`). Le bon comportement est de ne
   rien dire. Ces cas seuls décident du verdict.
-- **11 cas de défaut** : des PR qui contenaient en tout 15 défauts connus (bug, faille, convention écrite non
+- **13 cas de défaut** : des PR qui contenaient en tout 18 défauts connus (bug, faille, convention écrite non
   respectée), corrigés ensuite. Le reviewer doit les signaler sans dépasser un plafond de remarques (`max_findings`,
   le nombre de défauts plus un). Un cas de défaut est réussi quand tous ses défauts sont signalés et le plafond
   respecté.
@@ -17,33 +17,36 @@ remarques à ce qui était attendu.
 
 ## Les passes comparées
 
-Toutes en effort élevé, un groupe de fichiers à la fois. Les passes DeepSeek, notées à l'origine par le juge Albert,
-ont été notées à nouveau par Jev pour comparer.
+Toutes en effort élevé, un groupe de fichiers à la fois, et notées par Jev sur les cas tels qu'ils sont aujourd'hui :
+#3173 et #3086, des cas de silence au moment des passes, sont devenus des cas de défaut après la passe Opus (voir plus
+bas). Les reviews DeepSeek du 10 octobre sur #3128 et #3275 ne sont plus disponibles ; ces deux cas n'ayant pas
+changé, leur notation précédente est reprise.
 
 | | DeepSeek V4 Flash (Albert), 10 oct. | DeepSeek V4 Flash (Albert), 11 oct. | Claude Opus 5.5, 13 oct. |
 | --- | --- | --- | --- |
-| Cas de silence sans aucune remarque | 13/13 | 13/13 | 10/13 |
-| Défauts signalés | 8/15 | 5/15 | 12/15 |
-| dont défauts que la review humaine avait laissé passer | 6/11 | 4/11 | 9/11 |
-| Cas de défaut réussis | 3/11 | 4/11 | 4/11 |
+| Cas de silence sans aucune remarque | 11/11 | 11/11 | 10/11 |
+| Défauts signalés | 8/18 | 5/18 | 15/18 |
+| dont défauts que la review humaine avait laissé passer | 6/13 | 4/13 | 11/13 |
+| Cas de défaut réussis | 3/13 | 4/13 | 6/13 |
 | Tokens, durée | 10,6 M, 81 min | 9,2 M, 106 min | 5,4 M, 32 min |
 
 Opus 5.5 a coûté environ 8 $ pour les 24 cas, soit 0,35 $ par review.
 
 - Opus signale bien plus de défauts que DeepSeek, surtout parmi ceux que la review humaine avait laissé passer, en
   deux fois moins de tokens et deux à trois fois moins de temps.
-- Sur les 3 cas de silence où il a parlé, deux de ses remarques décrivent de vrais défauts : c'est le cas qui se
-  trompait, pas le reviewer (voir plus bas).
+- Seul Opus a signalé les défauts de #3173 et #3086 : DeepSeek n'en a signalé aucun sur ses deux passes.
+- Opus ne parle plus que sur un cas de silence, #3318, pour une remarque juste mais de faible gravité.
 - Ses cas de défaut échouent surtout par excès de remarques : sur 7 échecs, 4 ont tous leurs défauts signalés.
-- Le rappel de DeepSeek varie beaucoup d'une passe à l'autre (8 puis 5 défauts) ; sur ses trois passes, 12 défauts sur
-  15 ont été signalés au moins une fois.
+- Le rappel de DeepSeek varie beaucoup d'une passe à l'autre (8 puis 5 défauts).
 
 Le reviewer par défaut reste DeepSeek V4 Flash sur Albert. Opus 5.5 se lance en passant
 `--model-url https://api.anthropic.com --model claude-opus-5-5` à `relecteur eval`.
 
 ## Les cas de silence où Opus a parlé
 
-### #3173 : un vrai défaut, toujours sur `staging`
+Au moment des passes, les cas comptaient 13 cas de silence, et Opus a parlé sur trois d'entre eux.
+
+### #3173 : un vrai défaut, laissé passer par la review
 
 La PR corrige les orientations actives de l'export CSV : celles sans date de fin n'y étaient pas comptées. Elle a été
 approuvée sans commentaire.
@@ -70,8 +73,8 @@ Opus relève que `starts_at` et `ends_at` sont des `Date`. Comparée à un `Time
 
 La remarque interdite du cas visait une autre affirmation, fausse : que la comparaison renverrait `nil`.
 
-**Décision** : le cas devient un cas de défaut, laissé passer par la review (`escaped_review = true`), une fois le
-défaut corrigé sur `staging`, puisqu'un cas de défaut renvoie à son correctif (`fix`).
+**Décision** : le cas est devenu un cas de défaut laissé passer par la review (`escaped_review = true`), avec deux
+défauts, `active?` et `time_range`, que corrige [#3408](https://github.com/gip-inclusion/rdv-insertion/pull/3408).
 
 ### #3318 : juste, mais de faible gravité
 
@@ -109,10 +112,10 @@ non ? S'il y a une participation ou non je ne pense pas que ça change grand cho
 et le code mergé prend la dernière invitation manuelle dans tous les cas. Le cas classait ce commentaire comme une
 simplification.
 
-Opus relève le même point, en bug : un usager qui a eu un rendez-vous, puis une invitation, puis dont le suivi a été
-clos et rouvert, garde l'ancienne invitation pour référence, et aucune relance ne part.
+Opus relève le même point, en bug : un usager qui a eu un rendez-vous, puis une invitation, puis qu'on invite de
+nouveau garde la première invitation pour référence, et la nouvelle ne reçoit aucune relance.
 
-**Décision** : le cas devient un cas de défaut relevé en review (`escaped_review = false`), dont le correctif est le
+**Décision** : le cas est devenu un cas de défaut relevé en review (`escaped_review = false`), dont le correctif est le
 commit de la PR qui a appliqué la remarque.
 
 ## Les cas de défaut échoués par Opus
@@ -136,8 +139,11 @@ Un défaut manqué :
 - #3182, `put_object_acl` ;
 - #3329, `find_by`.
 
-## Ce qui reste
+## Ce qui a changé, et ce qui reste
 
-- Corriger le défaut de #3173 sur `staging`, puis convertir le cas ; convertir #3086.
-- Examiner les remarques en trop d'Opus sur #2974, #3108, #3128 et #3275, puis décider des plafonds face à un reviewer
-  qui trouve davantage.
+- Le cas de #3173 venait du skill `build-eval-cases` de relecteur, qui jugeait une PR saine faute de correctif après
+  son merge ; celui de #3086, ajouté pendant la calibration, rangeait un commentaire parmi les simplifications d'après
+  sa formulation. Le skill relit désormais chaque cas de silence comme le ferait le reviewer, en vérifiant chaque
+  soupçon, et juge un commentaire de review sur le code, pas sur sa formulation.
+- Reste à examiner les remarques en trop d'Opus sur #2974, #3108, #3128 et #3275, puis à décider des plafonds face à un
+  reviewer qui trouve davantage.
