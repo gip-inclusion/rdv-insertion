@@ -1,4 +1,13 @@
-# Engine settings of the reviewer, read by `relecteur eval`; the review in CI is to use the same.
+# What `relecteur eval` measures: the engine and the model that review, as the review in CI is to
+# use them, and the judge of expected defects. The API keys come from the environment.
 effort = "high"
 concurrency = 1
 language = "French"
+
+[model]
+url = "https://albert.api.etalab.gouv.fr/v1"
+name = "deepseek-v4-flash-0731"
+
+[judge]
+name = "jev"
+threshold = 0.5
