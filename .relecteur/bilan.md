@@ -20,7 +20,7 @@ Toutes en effort élevé, un groupe de fichiers à la fois, et notées sur les c
 | Cas de silence sans aucune remarque | 11/11 | 11/11 | 10/11 |
 | Défauts signalés | 8/18 | 5/18 | 15/18 |
 | dont défauts que la review humaine avait laissé passer | 6/13 | 4/13 | 11/13 |
-| Cas de défaut réussis | 3/13 | 4/13 | 6/13 |
+| Cas de défaut réussis | 4/13 | 4/13 | 6/13 |
 | Tokens, durée | 10,6 M, 81 min | 9,2 M, 106 min | 5,4 M, 32 min |
 
 Opus 5.5 a coûté environ 8 $ pour les 24 cas.

@@ -18,21 +18,6 @@ concept = "existing_job scans the Sidekiq scheduled set on every call, and sched
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3153"
 escaped_review = true
 
-[[forbidden_remarks]]
-path = "app/jobs/follow_ups/refresh_out_of_date_statuses_job.rb"
-line = 15
-concept = "Points out that the Slack message lists every refreshed follow-up id and could grow long: a low-severity remark on a notification, outside the mandate."
-
-[[forbidden_remarks]]
-path = "app/services/exporters/generate_users_csv.rb"
-line = 154
-concept = "Claims that GenerateUsersParticipationsCsv#human_follow_up_status raises NoMethodError since display_follow_up_status_notice is removed: that method is never called, csv_row of the participations export does not use it."
-
-[[forbidden_remarks]]
-path = "app/jobs/follow_ups/refresh_out_of_date_statuses_job.rb"
-line = 8
-concept = "Points out that every follow-up id to refresh goes in a single job argument and a single Slack message, which could grow large: a performance remark, outside the mandate."
-
 [pr]
 title = "feat(app): Add invitation_expired follow_up status"
 description = '''

@@ -18,11 +18,6 @@ concept = "time_range now ends at Time.zone.now for an orientation without an en
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3408"
 escaped_review = true
 
-[[forbidden_remarks]]
-path = "app/models/orientation.rb"
-line = 36
-concept = "Claims that comparing a Date with a Time returns nil in Ruby, so that active? would be false for every orientation: wrong with ActiveSupport, where the comparison works, as the specs of the pull request show."
-
 [pr]
 title = "fix(orientations): Show active orientations in csv export"
 description = '''

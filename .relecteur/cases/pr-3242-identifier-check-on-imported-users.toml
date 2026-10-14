@@ -11,11 +11,6 @@ concept = "`validate :identifier_must_be_present` now runs on every save of a us
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3252"
 escaped_review = true
 
-[[forbidden_remarks]]
-path = "app/models/user.rb"
-line = 254
-concept = "Finds the error message « numéro CAF/rôle » misleading because both are required: a remark on the wording of a message, outside the mandate."
-
 [pr]
 title = "feat(app): Remove user unicity validation service"
 description = '''

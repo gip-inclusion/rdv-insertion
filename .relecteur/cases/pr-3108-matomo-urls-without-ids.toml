@@ -11,16 +11,6 @@ concept = "The feature spec waits with `sleep 0.5` for the Turbo navigation and 
 fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3108/commits/8fe32077cf419d32f8873c7fd5486db1092deb5a"
 escaped_review = false
 
-[[forbidden_remarks]]
-path = "app/helpers/matomo_helper.rb"
-line = 17
-concept = "Points out the cost of looking the path up among every route on each GET request, and of setting a cookie on each response: a performance remark, outside the mandate."
-
-[[forbidden_remarks]]
-path = "app/helpers/matomo_helper.rb"
-line = 10
-concept = "Calls the fallback to the raw path, when no route matches, a leak of sensitive ids to Matomo: the pull request groups URLs to make Matomo usable, and falling back to the raw path for an unknown route is intended."
-
 [pr]
 title = "tech(matomo): regroup url without ids in Matomo analytics"
 description = '''
