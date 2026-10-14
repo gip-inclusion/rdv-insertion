@@ -23,12 +23,11 @@ module FranceTravailApi
       @response = retrieve_user_token
       raise RateLimited, "Erreur 429 lors de l'appel à l'api recherche-usager FT" if @response.status == 429
 
-      @response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
-
       @response.success? ? handle_success : handle_error
     end
 
     def handle_success
+      @response_body = JSON.parse(@response.body.force_encoding("UTF-8"))
       raise NoMatchingUser, "Aucun usager trouvé avec l'id #{@user.id}" if no_matching_user?
 
       @france_travail_user_token = @response_body["jetonUsager"]
@@ -42,6 +41,7 @@ module FranceTravailApi
     end
 
     def handle_error
+      @response_body = parsed_error_body
       error_message = "Erreur lors de l'appel à l'api recherche-usager FT.\n" \
                       "Status: #{@response.status}\n Body: #{@response.body.force_encoding('UTF-8')}"
 
@@ -51,6 +51,12 @@ module FranceTravailApi
       raise UserAddressNotFound, error_message if user_address_not_found?
 
       fail!(error_message)
+    end
+
+    def parsed_error_body
+      JSON.parse(@response.body.force_encoding("UTF-8"))
+    rescue JSON::ParserError
+      {}
     end
 
     def access_forbidden?

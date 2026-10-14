@@ -57,6 +57,17 @@ describe FranceTravailApi::RetrieveAccessToken, type: :service do
         expect(subject.access_token).to eq(access_token)
       end
 
+      context "when the token is stored by another process while waiting for the lock" do
+        before do
+          allow(redis).to receive(:exists?).with("france_travail_access_token").and_return(false, true)
+        end
+
+        it "reuses the stored token without requesting a new one" do
+          expect(faraday).not_to receive(:post)
+          expect(subject.access_token).to eq(access_token)
+        end
+      end
+
       context "when the api call fails" do
         before do
           allow(faraday).to receive(:post)

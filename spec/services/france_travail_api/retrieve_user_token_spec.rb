@@ -52,6 +52,14 @@ describe FranceTravailApi::RetrieveUserToken do
             expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::NoMatchingUser)
           end
         end
+
+        context "when the body is not JSON" do
+          let(:response_body) { +"<html>maintenance</html>" }
+
+          it "raises a parser error instead of returning a blank token" do
+            expect { subject }.to raise_error(JSON::ParserError)
+          end
+        end
       end
 
       context "when the API call fails" do
@@ -108,6 +116,20 @@ describe FranceTravailApi::RetrieveUserToken do
 
           it "raises RateLimited" do
             expect { subject }.to raise_error(FranceTravailApi::RetrieveUserToken::RateLimited)
+          end
+        end
+
+        context "when the API call returns a 401 with a plain text body" do
+          before do
+            allow(france_travail_client).to receive(:retrieve_user_token_by_nir)
+              .with(payload: expected_payload, headers: headers)
+              .and_return(OpenStruct.new(success?: false, status: 401, body: +"non autorisé"))
+          end
+
+          it "fails with the raw body in the error" do
+            expect(subject.errors).to eq(
+              ["Erreur lors de l'appel à l'api recherche-usager FT.\nStatus: 401\n Body: non autorisé"]
+            )
           end
         end
       end

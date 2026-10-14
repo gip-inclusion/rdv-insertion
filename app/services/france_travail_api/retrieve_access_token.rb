@@ -36,7 +36,7 @@ module FranceTravailApi
     def retrieve_france_travail_token(redis)
       ActiveRecord::Base.with_advisory_lock("france_travail_token") do
         # we check again in case a token has been retrieved while waiting for the lock to open
-        next assign_access_token_from_redis(redis) if redis.exists?("france_travail_token")
+        next assign_access_token_from_redis(redis) if redis.exists?("france_travail_access_token")
 
         request_token
         store_token_in_redis(redis)
