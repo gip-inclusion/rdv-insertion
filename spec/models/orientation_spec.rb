@@ -82,5 +82,29 @@ describe Orientation do
         expect(orientation).not_to be_active
       end
     end
+
+    context "when the orientation starts today" do
+      let(:orientation) { create(:orientation, starts_at: Time.zone.today, ends_at: 7.days.from_now) }
+
+      it "returns true if the orientation is active" do
+        expect(orientation).to be_active
+      end
+
+      context "without an end date" do
+        let(:orientation) { create(:orientation, starts_at: Time.zone.today, ends_at: nil) }
+
+        it "returns true if the orientation is active" do
+          expect(orientation).to be_active
+        end
+      end
+    end
+
+    context "when the orientation ends today" do
+      let(:orientation) { create(:orientation, starts_at: 10.days.ago, ends_at: Time.zone.today) }
+
+      it "returns false if the orientation is not active" do
+        expect(orientation).not_to be_active
+      end
+    end
   end
 end
