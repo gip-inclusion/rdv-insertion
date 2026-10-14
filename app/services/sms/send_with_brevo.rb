@@ -17,14 +17,7 @@ module Sms
       api_instance = SibApiV3Sdk::TransactionalSMSApi.new
       api_instance.send_transac_sms(transactional_sms)
     rescue SibApiV3Sdk::ApiError => e
-      Sentry.capture_exception(
-        e,
-        extra: {
-          response_body: e.response_body,
-          phone_number: @phone_number
-        }
-      )
-      fail!("une erreur est survenue en envoyant le sms via Brevo. #{e.message}")
+      fail!("une erreur est survenue en envoyant le sms via Brevo. #{e.message} #{e.response_body}".strip)
     end
 
     def transactional_sms
