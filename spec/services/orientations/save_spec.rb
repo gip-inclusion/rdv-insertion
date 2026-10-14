@@ -257,5 +257,23 @@ describe Orientations::Save, type: :service do
         end
       end
     end
+
+    context "when it starts today, early in the morning, during a current orientation too short to be shrinked" do
+      let!(:starts_at) { Date.parse("14/10/2026") }
+      let!(:ends_at) { nil }
+
+      before do
+        travel_to(Time.zone.parse("2026-10-14 00:30"))
+        create(:orientation, user:, starts_at: Date.parse("11/10/2026"), ends_at: nil)
+      end
+
+      it "is a failure" do
+        is_a_failure
+      end
+
+      it "outputs an error" do
+        expect(subject.errors.first).to include("Cette orientation chevauche une autre orientation")
+      end
+    end
   end
 end
