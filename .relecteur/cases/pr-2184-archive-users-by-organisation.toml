@@ -1,0 +1,38 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/2184"
+notes = "Archives users per organisation rather than per department, and shows on each organisation badge of an archived user a tooltip with the archive's date and reason. Approved by a teammate on 2024-08-26, then fixed by #2313 two weeks after the merge, because the badge's attributes were built as a string in which a reason with spaces broke out of its unquoted value, and by #2743 seven months later, which stopped the tooltip from rendering the reason as HTML. The reason is free text that any agent of the organisation types when archiving: both defects let it run a script in the browser of the agents who view the badge. The reviewer should flag both."
+base = "b0a647127767f51551332eaab1bde3aa68aad8bc"
+head = "1cadf9e056d6947bed5f8aa3dd184d80efb6ef33"
+max_findings = 3
+
+[[expected_defects]]
+path = "app/helpers/organisations_badges_helper.rb"
+line = 16
+concept = "tooltip_for_organisation_badge builds the badge's attributes as a string, with archive.archiving_reason interpolated as an unquoted attribute value: html_escape keeps spaces and equal signs, so a reason that any agent of the organisation types, such as `x onmouseover=alert(document.cookie)`, adds attributes to the badge and runs a script in the browser of the agents who view it, and a reason with spaces is cut at its first space."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/2313"
+escaped_review = true
+
+[[expected_defects]]
+path = "app/javascript/controllers/tooltip_controller.js"
+line = [24, 27, 30]
+concept = "organisationArchiveInformations puts the archiveReason read from the badge's dataset into the tooltip content with allowHTML: true: a reason holding HTML, such as `<img src=x onerror=alert(1)>`, runs a script in the browser of the agents who hover the badge."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/2743"
+escaped_review = true
+
+[pr]
+title = "feat(archives): archive users by organisation"
+description = '''
+closes #2057
+
+Dans cette PR, je fais en sorte que les usagers soient archivés au niveau de l'organisation plutôt qu'au niveau du département. Au niveau de l'organisation, la gestion du display est assez simple. Au niveau du département, c'est un peu plus compliqué, je reprends ici les règles édictées dans le ticket.
+
+<img width="575" alt="Capture d’écran 2024-07-06 à 18 10 53" src="https://github.com/gip-inclusion/rdv-insertion/assets/46218316/879e865e-f101-4d0c-a58a-efe0815f195d">
+
+Notes design :
+- au niveau départemental, la maquette de la modal permettant d'archiver ne convenait pas, on s'était mis d'accord avec @samanthaauffret pour que je l'adapte. Voilà ce à quoi j'ai abouti, je vous laisse vérifier si ça convient. Il n'y a pas mention à l'invalidation des invitations d'une part parce que ça rendait vraiment la modal trop grande, et d'autre part parce que ça me paraît de toute façon dispensable : les usagers qui sont archivés ne sont plus considérés comme ayant besoin d'être suivis, donc je ne vois pas de cas où le fait que leurs invitations ne fonctionnent plus puisse être gênant pour les agents.
+
+<img width="648" alt="Capture d’écran 2024-07-06 à 18 12 14" src="https://github.com/gip-inclusion/rdv-insertion/assets/46218316/387ea8fd-a3b7-48c7-bb0e-2993068dea68">
+
+Notes sur l'implem :
+- avec l'implem choisie pour l'invalidation des invitations, on perd la trace qu'une invitation était reliée à une orga si elle était reliée à plusieurs. Sans doute pas grave, mais ça pose encore une fois la question de l'historisation des actions (implémentation de paper_trail ou autre ?)
+- pour l'envoi des reminders : `invitation_related to_archive?` ne me semblait plus nécessaire, j'ai vu que ça avait été mis quand on avait implémenté les archives comme des ressources persistentes, je pense qu'on peut s'en passer maintenant car la méthode `invalidate_related_invitations`dans le modèle `archive` fait déjà le taf
+'''
