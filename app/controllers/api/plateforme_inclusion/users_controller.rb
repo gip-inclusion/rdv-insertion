@@ -5,6 +5,10 @@ module Api
       include RateLimitingConcern
 
       before_action :authenticate_plateforme_inclusion!
+      # Declared after authentication so that unauthenticated requests cannot exhaust a NIR's quota,
+      # and keyed by a digest so that NIRs are not stored in clear in Redis
+      override_rate_limit limit: RATE_LIMITS[:plateforme_inclusion],
+                          by: -> { "#{action_name}:#{Digest::SHA256.hexdigest(params[:nir].to_s)}" }
 
       rescue_from ActiveRecord::RecordNotFound, with: :render_user_not_found
       rescue_from ActiveRecord::SoleRecordExceeded, with: :render_several_users_found

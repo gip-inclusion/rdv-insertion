@@ -40,7 +40,7 @@ curl -X POST https://www.rdv-insertion.fr/api/plateforme_inclusion/users/search 
 | `401` | Le token est absent ou invalide. |
 | `404` | Aucune fiche usager ne correspond au NIR. |
 | `409` | Plusieurs fiches usager correspondent au NIR. Aucune donnée n'est renvoyée, pour ne pas risquer d'afficher les informations d'une autre personne. L'équipe rdv-insertion est alertée pour corriger les données. |
-| `429` | Plus de 500 requêtes en 5 minutes. Réessayer après le délai indiqué dans le header `Retry-After`. |
+| `429` | Plus de 30 requêtes en 1 minute pour un même NIR. Réessayer après le délai indiqué dans le header `Retry-After`. |
 
 Les erreurs `401`, `404` et `409` ont la même forme :
 
