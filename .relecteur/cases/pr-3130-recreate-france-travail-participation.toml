@@ -1,0 +1,22 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3130"
+notes = "Recreates a participation on France Travail when the update of its France Travail record fails with ID_NON_RECONNU, handling the update result in a new handle_update_result method. Approved by a teammate on 2025-12-02, then fixed by a commit pushed on staging the day after the merge, because handle_update_result used variables local to perform and raised: the reviewer should flag it."
+base = "7585fe258204cc0b50d9816b457f265e9636e57a"
+head = "703a7ae83b8eb72809e43b21cdd6e5d8ef174790"
+max_findings = 2
+
+[[expected_defects]]
+path = "app/jobs/outgoing_webhooks/france_travail/upsert_participation_job.rb"
+line = 22
+concept = "handle_update_result uses participation and timestamp, which are local variables of perform and do not exist in this private method: when France Travail answers ID_NON_RECONNU (error_type :participation_not_found), the job raises NameError instead of clearing france_travail_id and recreating the participation."
+fix = "https://github.com/gip-inclusion/rdv-insertion/commit/a5956b0b6fbced40ccad87d949b8a87cf9dd3600"
+escaped_review = true
+
+[pr]
+title = "bug(api_ft): create a new participation when api returns `ID_NON_RECONNU` error"
+description = '''
+Lié à https://www.notion.so/API-FT-En-cas-d-erreur-envoyer-la-modification-de-rdv-comme-une-cr-ation-2a35f321b60480fa8d19ef06e84ca0b7?pvs=23
+
+En développant cette feature je me rend compte que le retour d'erreur `ID_NON_RECONNU` que renvoi FT lorsqu'un merge d'un usager a été réalisé (et que ces rdvs ont été perdus) est le même retour d'erreur si le rdv n'existe plus tout simplement.
+Je me demande quel est le risque de recréer des rdvs chez FT **lorsque le rdv a été mis à jour chez nous** dans le cas par exemple ou le rdv en question a été volontairement supprimé du SI FT.
+Je ne pense pas que cela soit bloquant puisqu'on peut imaginer que si le rdv est mis à jour chez nous c'est normal qu'il existe dans le SI FT.
+'''

@@ -1,0 +1,35 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3273"
+notes = "Fixes the pagination of archived users by grouping them per user and ordering them by their latest archive, and drops the distinct of the archived users query. Approved by a teammate on 2026-04-14, then fixed by #3277 the day after the merge, because the archived users counter counted some users several times and combining some filters crashed the page: the reviewer should flag both defects."
+base = "a47bc2b4055a22419ea0647a312d9a490274da21"
+head = "11ebb1ce88049d828efffee010cdce01734042ea"
+max_findings = 3
+
+[[expected_defects]]
+path = "app/controllers/users_controller.rb"
+line = 247
+concept = "set_archived_users no longer calls distinct while policy_scope(User) joins the agent's organisations: a user who belongs to several of these organisations is returned once per organisation, so the archived users counter set from @users.count counts that user several times."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3277"
+escaped_review = true
+
+[[expected_defects]]
+path = "app/controllers/concerns/users/sortable.rb"
+line = 35
+concept = "archived_order orders by MAX(archives.created_at) without selecting it: when a filter has already made the relation distinct (the orientation type or referent filters), PostgreSQL rejects the SELECT DISTINCT query because its ORDER BY expression is not in the select list, and the archived users page crashes."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3277"
+escaped_review = true
+
+[pr]
+title = "fix(view): Fix archived users pagination"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/Bug-Archiv-s-pagination-absente-dans-la-liste-des-bRSA-3335f321b60480a88126faacce30f756?source=copy_link
+
+## Explication
+
+Lorsqu'on récupère les usagers archivés, le `includes(:archives)` puis `order(archives.created_at)` faisait un join qui faisait qu'on loadait plusieurs fois un user lorsque cet usager avait plusieurs `archives`. Du coup on appliquait la pagination (`LIMIT 25`) sur ces usagers dupliqué, et lorsqu'ils étaient rendus à la fin ils étaient dédupliqués
+=> A la fin on rendait moins de 25 usagers sur la page, ce qui fait que kaminari ne détectait pas le besoin de pagination
+
+## Correction
+
+J'enlève le `includes(:archives)` pour faire un preload à la place, et lorsque je fais l'ordering je le vais en groupant par `users.id` pour être sûr que le filtre de la pagination se fera sur des usagers distincts.
+J'en profite pour améliorer un peu l'ordering et considérer uniquement les archives de l'organisation en question lorsque l'on est au niveau d'une orga.
+'''

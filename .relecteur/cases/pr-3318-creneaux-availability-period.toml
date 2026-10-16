@@ -1,0 +1,11 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3318"
+notes = "Shows agents the period in which invited users can book créneaux, computed from the booking delays of the motifs, in the invitation funnel, the creneaux modal and the user index. Reviewed by the maintainer on 2026-06-15 at the commit frozen here, with remarks outside the mandate only (the abstraction, the helper's signature, guard clauses to drop once another pull request is merged): the reviewer should stay silent."
+base = "95d8cb9a0cfed9db0823cbec92d540d9485219a8"
+head = "7138982afe88160d87021b68294ecc610e81330f"
+max_findings = 0
+
+[pr]
+title = "feat(creneaux): Show créneaux availability period in funnel, modal and user index"
+description = '''
+Calcule la période de réservation des créneaux (du `min_public_booking_delay` au `max_public_booking_delay` et l'affiche dans le funnel d'import, la modal « Demander plus de créneaux » et le bandeau de l'index usagers.
+'''

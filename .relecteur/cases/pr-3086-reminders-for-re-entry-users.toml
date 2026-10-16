@@ -1,0 +1,24 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3086"
+notes = "Sends invitation reminders to users re-entering a follow-up without a rendez-vous (issue #3074), by taking their last manual invitation rather than their first one. The maintainer's review on 2025-10-06 pointed out that the reminder job could take the last manual invitation whether the user had a participation or not, and the author did so within the pull request on 2025-10-07. The case freezes the code that review read: the reviewer should flag it."
+base = "05ed990882d69f131ce11cd030a9b9444b5c5ea4"
+head = "59acaa8847a9b77aa2f7079dfe5d2d46a6afbb0e"
+max_findings = 2
+
+[[expected_defects]]
+path = "app/models/concerns/invitable.rb"
+line = 40
+also_at = [
+  { path = "app/jobs/send_invitation_reminders_job.rb", line = 6 },
+  { path = "app/jobs/send_invitation_reminder_job.rb", line = 65 },
+]
+concept = "SendInvitationRemindersJob takes reference_invitation_for_current_period as the invitation to remind, which returns the first invitation after the last participation whenever the user has one: a user invited again after a first invitation that followed their last participation keeps that first invitation as reference, so invitation_sent_3_days_ago? is false and the new invitation gets no reminder."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3086/commits/a9782ae68013686d1892ab9f7cc6874256a0c7e4"
+escaped_review = false
+
+[pr]
+title = "fix(reminder): reminders are not sent for re-entry users"
+description = '''
+close https://github.com/gip-inclusion/rdv-insertion/issues/3074
+J'en ai profité pour renommer les méthodes concernées qui n'étaient plus représentatives du comportement réèl.
+J'ai vérifié on a aucun `FollowUp` avec une seule invitation périodique donc `last_manual_invitation` renverra toujours quelque chose (vu que la feature des invitations périodiques a été enlevée).
+'''

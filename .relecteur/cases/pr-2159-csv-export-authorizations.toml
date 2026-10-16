@@ -1,0 +1,42 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/2159"
+notes = "Lets the admins of an organisation authorize its basic agents to export CSV files, from a modal of the organisation's configuration. Approved by the maintainer on 2024-07-04, then fixed by #2181 the same day, because an admin downgraded to basic kept the right to export, and by #3101 and #3103 fifteen months later, because any agent of the organisation could change these authorizations, including for agents of other organisations: the reviewer should flag the three defects."
+base = "9b7ce4dd41ed2212de30fedc9b713f7c0151a373"
+head = "825ffb63ae10734010669d41f8d313723728d254"
+max_findings = 4
+
+[[expected_defects]]
+path = "app/controllers/concerns/agent_roles/csv_export_authorizations_controller.rb"
+line = [3, 7, 47]
+concept = "batch_update loads the organisation through current_organisation, whose access? policy only checks that the agent belongs to it, and never authorizes it with configure?: any basic agent of the organisation can grant the right to export CSV files, to themselves or to any other agent."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3101"
+escaped_review = true
+
+[[expected_defects]]
+path = "app/controllers/concerns/agent_roles/csv_export_authorizations_controller.rb"
+line = 26
+concept = "agent_roles_to_authorize loads AgentRole.where(id: agent_role_ids) from the params without restricting them to the organisation's agent roles: a request can grant the right to export CSV files to agent roles of any other organisation."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3103"
+escaped_review = true
+
+[[expected_defects]]
+path = "app/models/agent_role.rb"
+line = 15
+concept = "The before_save sets authorized_to_export_csv to true for an admin agent role, but nothing resets it when its access level goes back to basic: an admin downgraded to basic keeps the right to export CSV files."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/2181"
+escaped_review = true
+
+[pr]
+title = "feat(exports): create export role for basic agents"
+description = '''
+closes #2125
+
+Dans cette PR, j'ajoute une feature permettant d'autoriser les agents "basiques" à télécharger des exports csvs.
+
+Notes sur la PR :
+- je me base sur la nouvelle colonne `export_authorization` pour tous les agents (admin y compris) pour autoriser les exports, je fais donc en sorte que cette colonne soit toujours set à `true` pour les admins
+- comme on ne peut pas configurer ça au niveau département, je considère qu'un agent autorisé dans une organisation l'est dans toutes les orgas du département - sinon ça risque d'être laborieux pour les admins de parcourir toutes les orgas et autoriser chaque agent plusieurs fois
+- les combos nom-prénom + email des agents tenaient rarement sur une ligne dans la modal, pareil pour la modal des référents ou d'assignation d'orga. J'ai donc agrandi (légèrement) la taille standard de nos modals pour un meilleur confort de lecture
+
+<img width="1366" alt="Capture d’écran 2024-06-23 à 01 32 00" src="https://github.com/betagouv/rdv-insertion/assets/46218316/6ca948f8-2006-4518-b194-9a91224ba7b1">
+<img width="672" alt="Capture d’écran 2024-06-24 à 00 57 57" src="https://github.com/betagouv/rdv-insertion/assets/46218316/d6ecbcf3-e267-40a8-8b4a-7005fe7eff55">
+'''

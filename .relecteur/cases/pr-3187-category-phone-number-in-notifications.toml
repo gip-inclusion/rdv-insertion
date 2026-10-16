@@ -1,0 +1,13 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3187"
+notes = "Makes the phone number of an rdv fall back on the category configuration's phone number before the organisation's, so that convocations show it, with specs. Approved by a teammate on 2026-02-03 without any comment: the reviewer should stay silent."
+base = "3b171428fb440162a1789906f021f1595ea316e3"
+head = "a5e0b8858dade1ebb5efdad1f76458b900088a7e"
+max_findings = 0
+
+[pr]
+title = "feat(notifications): Use category configuration number for notifications"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/Prendre-en-compte-le-num-ro-de-t-l-phone-sp-cifique-une-cat-gorie-dans-la-r-gle-d-affichage-des-me-2a75f321b6048044a8ecc126a0eec31b
+
+Nous prenons maintenant compte le numéro de la `category_configuration` pour les convocations avant le numéro de téléphone de l'organisation lorsqu'il est renseigné.
+'''

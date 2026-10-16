@@ -1,0 +1,15 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3134"
+notes = "Makes the text search ignore accents, by enabling the PostgreSQL unaccent extension in a migration and passing ignoring: :accents to pg_search_scope, with a spec. Approved by the maintainer on 2025-11-26 without any comment: the reviewer should stay silent."
+base = "b53351ce94c9dbcaefbc85312d3603c563f3f56e"
+head = "82fdf5758cee808b6bc65a79e0ededb5722d9dee"
+max_findings = 0
+
+[pr]
+title = "feat(search): enable unaccent search with pgsql extension"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/BUG-Le-moteur-de-recherche-est-sensible-aux-accents-2ab5f321b6048091aafbdc5f46b908e2
+J'ajoute l'extension pg permettant de faire cela.
+Rapide et efficace.
+
+J'ai mis à jour stringio car j'ai des erreurs en local (You have already activated stringio 3.1.8, but your Gemfile requires stringio 3.1.7.) c'est un problème qu'on avait déjà eu par le passé.
+'''

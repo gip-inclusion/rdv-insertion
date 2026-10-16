@@ -1,0 +1,13 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3237"
+notes = "Raises a dedicated UserAddressNotFound error when France Travail answers R998 to a user token request, and lets the France Travail webhook jobs discard it instead of retrying, with specs. Approved by a teammate on 2026-03-03 without any comment: the reviewer should stay silent."
+base = "833208db272622ecfcec103b66f458a992617eea"
+head = "c6f38f9a88246a77979444085d154b9bffb6f279"
+max_findings = 0
+
+[pr]
+title = "fix(FT): Handle api R998 error"
+description = '''
+lié à https://www.notion.so/gip-inclusion/Tech-Erreur-API-France-Travail-R998-2f55f321b6048069bf98cf94b4329bef
+
+Je fais en sorte que les jobs ne fail pas et donc ne sont pas retentés lorsque l'on tombe sur l'erreur R998 signifiant que l'adresse de l'usager n'a pas pu être retrouvée côté FT.
+'''

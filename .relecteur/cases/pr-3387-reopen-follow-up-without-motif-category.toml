@@ -1,0 +1,31 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3387"
+notes = "Stops the API invitation endpoints from crashing when no motif category is sent, by reopening a closed follow-up only once it has been found or created, in the controller and in CreateAndInviteUserJob, and adds specs. Approved by a teammate on 2026-09-29 without any comment: the reviewer should stay silent."
+base = "e81ec5d86a3eca81dd0b953cd4880ba139773bd0"
+head = "4e2c7cf440a1ad49066fe81bfbecf9031f80dbf7"
+max_findings = 0
+
+[pr]
+title = "fix(api): Do not crash when inviting without motif category"
+description = '''
+> [!NOTE]
+> Cette PR a été préparée avec l'aide de Claude (Claude Code) : les changements et cette description ont été générés avec son assistance, puis relus par mes soins.
+
+## Contexte
+
+Depuis #3340, `create_and_invite` et `create_and_invite_many` rouvrent le suivi s'il est clôturé. Quand aucune catégorie de motif n'est envoyée, le suivi n'est pas récupéré et `@follow_up.closed?` lève un `NoMethodError`. Du coup après la création de l'usager :
+
+- `create_and_invite` renvoie une erreur 500
+- `create_and_invite_many` : `CreateAndInviteUserJob` plante avant de programmer les invitations, aucune invitation n'est envoyée
+
+Sans catégorie, l'invitation n'est possible que si l'organisation n'a qu'une seule catégorie configurée (`InviteUser` la choisit alors automatiquement), sinon elle échoue avec « Plusieurs catégories de motifs disponibles et aucune n'a été choisie ». Ce correctif rétablit le comportement d'avant #3340 :
+
+- organisation avec une seule catégorie : l'usager est créé et invité, sur les deux endpoints
+- organisation avec plusieurs catégories : l'usager est créé, puis
+  - `create_and_invite` renvoie une 422 explicite au lieu d'une 500
+  - `create_and_invite_many` : `InviteUserJob` échoue (remonté dans Sentry, sans notification à l'agent, comme les autres erreurs d'invitation de cet endpoint)
+
+## Implémentation
+
+- La réouverture est faite dans la méthode qui trouve ou crée le suivi (`find_or_create_open_follow_up`), après le retour anticipé quand aucune catégorie n'est précisée
+- Ajout de tests sans catégorie de motif pour l'endpoint et pour `CreateAndInviteUserJob`
+'''

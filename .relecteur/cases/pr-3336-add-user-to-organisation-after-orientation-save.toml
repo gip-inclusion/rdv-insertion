@@ -1,0 +1,13 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3336"
+notes = "Adds the user to the orientation's organisation only after the orientation is saved and its overlaps are checked, so that an orientation failing these checks no longer adds the user to the organisation, and updates the specs. Approved by a teammate on 2026-06-23 without any comment: the reviewer should stay silent."
+base = "ea823580a86989614dee6371c9f38f2cbfa86a58"
+head = "357b2cbcc4b52dc55ccf0674033f28c78c39ae9a"
+max_findings = 0
+
+[pr]
+title = "fix(orientations): add user to organisation after orientation creation validations"
+description = '''
+Lié à https://app.notion.com/p/gip-inclusion/Bug-Ne-pas-ajouter-la-personne-l-orga-si-la-cr-ation-de-l-orientation-choue-3735f321b60480c1b559de8f95a82bf8
+
+  `Orientations::Save` ajoutait l'usager à l'organisation (avec un appel synchrone à RDV-Solidarités) avant les validations de création de l'orientation. En cas d'échec de cette validation, l'usager se  retrouvait ajouté à l'organisation côté RDV-S alors que l'orientation n'était jamais persistée côté RDV-I. Le fix déplace l'ajout à l'organisation en dernière étape, une fois l'orientation validée et sauvegardée.
+'''

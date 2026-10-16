@@ -1,0 +1,28 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3173"
+notes = "Fixes which orientations count as active, so that the CSV export shows the current ones: active? and time_range compare against the current time rather than the date, the unused active scope is removed, and specs cover active?. Approved by a teammate on 2026-01-20 without any comment, it compared the orientation's dates with times, which Rails does at midnight UTC for a date: an orientation starting today stopped counting as active, and Orientations::Save detected an overlap on today depending on the hour. A reviewer flagged it during the calibration, and #3408 fixes it: the reviewer should flag it."
+base = "1007e71ea40c5916ef3a991dabcf8a30485b7fb3"
+head = "90ca6d8d3638b1ff9a50f8e6da5bc411c8f7a1f4"
+max_findings = 3
+
+[[expected_defects]]
+path = "app/models/orientation.rb"
+line = 37
+concept = "active? checks time_range.cover?(Time.zone.today.beginning_of_day), midnight in Paris, against the starts_at and ends_at dates, which Rails compares with a time as midnight UTC: an orientation starting today is not active, even with an end date, and one ending today is, though its end date is excluded."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3408"
+escaped_review = true
+
+[[expected_defects]]
+path = "app/models/orientation.rb"
+line = 29
+concept = "time_range now ends at Time.zone.now for an orientation without an end date, so that time_range.to_a, which Orientations::Save#overlapping_orientations compares, holds today only from midnight UTC, 1am or 2am in Paris: before then, an overlap with an orientation starting today goes undetected."
+fix = "https://github.com/gip-inclusion/rdv-insertion/pull/3408"
+escaped_review = true
+
+[pr]
+title = "fix(orientations): Show active orientations in csv export"
+description = '''
+Lié à https://www.notion.so/gip-inclusion/Bug-Export-parcours-2c65f321b604803eafd1e1df47efe1eb
+
+Je me suis rendu compte que les orientations dont la date de fin n'étaient pas renseignées n'étaient pas considérées comme `active?`. Je résous ça ici.
+J'en profite pour ajouter des tests et enlever un scope qui n'était plus utilisé.
+'''

@@ -1,0 +1,19 @@
+pull_request = "https://github.com/gip-inclusion/rdv-insertion/pull/3390"
+notes = "Removes Sentry alerts from two jobs and updates their specs. Approved by the maintainer on 2026-09-29 without any comment: the reviewer should stay silent."
+base = "b2f7f9a327f098f6ef64d91d13c193353d92ab5d"
+head = "38ed0cb00af75b0fd9b533521af64be6dd397be0"
+max_findings = 0
+
+[pr]
+title = "fix(sentry): stop sending business alerts to Sentry"
+description = '''
+Lié à https://app.notion.com/p/gip-inclusion/Nettoyage-Sentry-Alertes-m-tier-Slack-suffit-retirer-Sentry-65d5f321b60482b88743015d55b0eb69
+
+## Contexte
+
+`AlertMotifCategoryHasChangedJob` et `AlertUserAddedToAnotherDepartmentJob` envoyaient leur alerte métier à la fois sur Slack et dans Sentry, au niveau `error`, avec une issue par motif ou par usager à fermer à la main.
+
+## Implémentation
+
+- Suppression de l'envoi Sentry dans les deux jobs, Slack reste le canal
+'''
