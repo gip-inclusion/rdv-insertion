@@ -5,6 +5,8 @@ module Api
       include RateLimitingConcern
 
       before_action :authenticate_plateforme_inclusion!
+      override_rate_limit limit: RATE_LIMITS[:plateforme_inclusion],
+                          by: -> { "#{action_name}:#{Digest::SHA256.hexdigest(params[:nir].to_s)}" }
 
       rescue_from ActiveRecord::RecordNotFound, with: :render_user_not_found
       rescue_from ActiveRecord::SoleRecordExceeded, with: :render_several_users_found
