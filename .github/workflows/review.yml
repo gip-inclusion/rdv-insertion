@@ -1,0 +1,33 @@
+name: Review
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  relecteur:
+    name: Relecteur
+    # Pull requests of bots are never reviewed. Those of forks get no secret: a comment of the
+    # team reviews them.
+    if: >-
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft
+        && github.event.pull_request.user.type != 'Bot'
+        && github.event.pull_request.head.repo.full_name == github.repository)
+      || (github.event_name == 'issue_comment' && github.event.issue.pull_request
+        && github.event.issue.state == 'open' && github.event.issue.user.type != 'Bot'
+        && github.event.comment.user.type != 'Bot'
+        && contains(github.event.comment.body, '@relecteur'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    concurrency:
+      group: relecteur-${{ github.event.pull_request.number || github.event.issue.number }}
+    steps:
+      - uses: gip-inclusion/relecteur@4a7f2d75fa8afda2efbb2f93b909f0ce8eb313e2
+        with:
+          api_key: ${{ secrets.RELECTEUR_API_KEY }}
