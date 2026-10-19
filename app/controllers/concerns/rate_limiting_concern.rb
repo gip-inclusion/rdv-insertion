@@ -12,6 +12,7 @@ module RateLimitingConcern
     default: ENV.fetch("RATE_LIMIT_DEFAULT", 500).to_i,
     rdv_solidarites_webhooks: ENV.fetch("RATE_LIMIT_RDV_SOLIDARITES_WEBHOOKS", 1000).to_i,
     api_bulk: ENV.fetch("RATE_LIMIT_API_BULK", 5).to_i,
+    plateforme_inclusion: ENV.fetch("RATE_LIMIT_PLATEFORME_INCLUSION", 30).to_i,
     inbound_emails: ENV.fetch("RATE_LIMIT_INBOUND_EMAILS", 1000).to_i,
     brevo_webhooks: ENV.fetch("RATE_LIMIT_BREVO_WEBHOOKS", 1000).to_i,
     sessions: ENV.fetch("RATE_LIMIT_SESSIONS", 10).to_i,
