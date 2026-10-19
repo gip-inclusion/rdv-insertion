@@ -28,6 +28,6 @@ jobs:
     concurrency:
       group: relecteur-${{ github.event.pull_request.number || github.event.issue.number }}
     steps:
-      - uses: gip-inclusion/relecteur@4a7f2d75fa8afda2efbb2f93b909f0ce8eb313e2
+      - uses: gip-inclusion/relecteur@a7320e8423a2bb27bbe37e95aaab88f4ecc78076
         with:
           api_key: ${{ secrets.RELECTEUR_API_KEY }}
