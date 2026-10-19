@@ -3,6 +3,8 @@
 effort = "high"
 concurrency = 1
 language = "French"
+include = ["**/*_spec.rb", "**/*.erb"]
+exclude = ["db/schema.rb", "db/migrate/**", "Gemfile.lock", "yarn.lock", "swagger/**"]
 
 [model]
 url = "https://albert.api.etalab.gouv.fr/v1"
