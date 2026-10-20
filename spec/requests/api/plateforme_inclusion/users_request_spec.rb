@@ -25,6 +25,12 @@ describe "Plateforme de l'inclusion users search" do
     expect(participation_json.dig("rdv", "id")).to eq(rdv.id)
   end
 
+  it "returns the motif category type of the follow-ups" do
+    subject
+    motif_category_json = response.parsed_body.dig("user", "follow_ups", 0, "motif_category")
+    expect(motif_category_json["motif_category_type"]).to eq("rsa_orientation")
+  end
+
   it "does not return the other participants of the rdv" do
     subject
     expect(response.body).not_to include(other_participant.email)

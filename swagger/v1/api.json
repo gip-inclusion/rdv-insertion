@@ -1106,12 +1106,22 @@
           },
           "short_name": {
             "type": "string"
+          },
+          "motif_category_type": {
+            "type": "string",
+            "enum": [
+              "rsa_orientation",
+              "rsa_accompagnement",
+              "siae",
+              "autre"
+            ]
           }
         },
         "required": [
           "id",
           "name",
-          "short_name"
+          "short_name",
+          "motif_category_type"
         ]
       },
       "department": {
