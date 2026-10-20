@@ -68,5 +68,5 @@ answers an earlier finding gets a finding of its own only when it introduces a d
 
 ## Files left out
 
-Generated files, migrations and lockfiles are left out of the review by `.opencodereview/rule.json`.
+Generated files, migrations and lockfiles are left out of the review by `.relecteur/config.toml`.
 Read them as context when a finding needs it.
