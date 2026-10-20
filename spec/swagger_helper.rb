@@ -473,9 +473,10 @@ RSpec.configure do |config|
             properties: {
               id: { type: "integer" },
               name: { type: "string" },
-              short_name: { type: "string" }
+              short_name: { type: "string" },
+              motif_category_type: { type: "string", enum: %w[rsa_orientation rsa_accompagnement siae autre] }
             },
-            required: %w[id name short_name]
+            required: %w[id name short_name motif_category_type]
           },
           department: {
             type: "object",

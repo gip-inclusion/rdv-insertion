@@ -89,7 +89,12 @@ Les erreurs `401`, `404` et `409` ont la même forme :
         "status": "rdv_seen",
         "human_status": "RDV honoré",
         "closed_at": null,
-        "motif_category": { "id": 1, "short_name": "rsa_orientation", "name": "RSA orientation" },
+        "motif_category": {
+          "id": 1,
+          "short_name": "rsa_orientation",
+          "name": "RSA orientation",
+          "motif_category_type": "rsa_orientation"
+        },
         "participations": [
           {
             "id": 1,
@@ -130,7 +135,12 @@ Les erreurs `401`, `404` et `409` ont la même forme :
                 "collectif": false,
                 "location_type": "public_office",
                 "follow_up": false,
-                "motif_category": { "id": 1, "short_name": "rsa_orientation", "name": "RSA orientation" }
+                "motif_category": {
+                  "id": 1,
+                  "short_name": "rsa_orientation",
+                  "name": "RSA orientation",
+                  "motif_category_type": "rsa_orientation"
+                }
               },
               "organisation": {
                 "id": 1,
@@ -184,7 +194,7 @@ Les dates sont au format ISO 8601, avec le décalage horaire. Les champs `rdv_so
 
 ### Suivis (`follow_ups`)
 
-Un suivi correspond au parcours de l'usager dans une catégorie de motifs (orientation, accompagnement…), indiquée par `motif_category`. `closed_at` est la date de clôture du suivi, ou `null` s'il est en cours.
+Un suivi correspond au parcours de l'usager dans une catégorie de motifs (orientation, accompagnement…), indiquée par `motif_category`. Son `motif_category_type` regroupe les catégories par type : `rsa_orientation`, `rsa_accompagnement`, `siae` ou `autre`. `closed_at` est la date de clôture du suivi, ou `null` s'il est en cours.
 
 | `status` | `human_status` |
 | --- | --- |
