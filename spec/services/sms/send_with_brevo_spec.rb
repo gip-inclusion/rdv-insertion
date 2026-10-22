@@ -33,13 +33,19 @@ describe Sms::SendWithBrevo, type: :service do
     context "when the sending fails" do
       before do
         allow(sib_api_mock).to receive(:send_transac_sms)
-          .and_raise(SibApiV3Sdk::ApiError.new("some message"))
+          .and_raise(
+            SibApiV3Sdk::ApiError.new(
+              code: 400, message: "Bad Request", response_body: '{"code":"invalid_parameter"}'
+            )
+          )
       end
 
       it("is a failure") { is_a_failure }
 
-      it "returns the error" do
-        expect(subject.errors).to eq(["une erreur est survenue en envoyant le sms via Brevo. some message"])
+      it "returns the error with the response body" do
+        expect(subject.errors).to eq(
+          ["une erreur est survenue en envoyant le sms via Brevo. Bad Request {\"code\":\"invalid_parameter\"}"]
+        )
       end
     end
   end
