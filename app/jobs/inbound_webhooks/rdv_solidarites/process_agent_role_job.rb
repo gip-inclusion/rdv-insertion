@@ -9,14 +9,12 @@ module InboundWebhooks
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
 
-        return if organisation.blank? || organisation.archived? || @data[:access_level] == "intervenant"
+        return if organisation.blank? || organisation.archived?
 
-        if event == "destroyed"
+        if event == "destroyed" || @data[:access_level] == "intervenant"
           remove_agent_from_organisation
-        elsif agent.blank?
-          # the agent_role webhook can be received before the agent one
-          self.class.perform_in(30.seconds, data, meta)
         else
+          create_agent if agent.blank?
           upsert_agent_role
         end
       end
@@ -45,6 +43,15 @@ module InboundWebhooks
 
       def agent_role
         @agent_role ||= AgentRole.find_by(agent:, organisation:)
+      end
+
+      def create_agent
+        call_service!(
+          UpsertRecord,
+          klass: Agent,
+          rdv_solidarites_attributes: @data[:agent],
+          additional_attributes: { last_webhook_update_received_at: @meta[:timestamp] }
+        )
       end
 
       def upsert_agent_role
