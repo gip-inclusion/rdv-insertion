@@ -24,7 +24,7 @@ jobs:
         && github.event.issue.state == 'open' && github.event.issue.user.type != 'Bot'
         && github.event.comment.user.type != 'Bot'
         && contains(github.event.comment.body, '@relecteur'))
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 180
     concurrency:
       group: relecteur-${{ github.event.pull_request.number || github.event.issue.number }}

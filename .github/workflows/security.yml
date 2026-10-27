@@ -17,7 +17,7 @@ permissions:
 jobs:
   code-scan:
     name: Code Scan (SAST)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v7
@@ -96,7 +96,7 @@ jobs:
 
   dependency-scan:
     name: Dependency Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v7
@@ -169,7 +169,7 @@ jobs:
 
   secrets-scan:
     name: Secrets Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v7
@@ -241,7 +241,7 @@ jobs:
   # Generate security report artifact (only on schedule/manual)
   security-report:
     name: Security Report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: [code-scan, dependency-scan, secrets-scan]
 

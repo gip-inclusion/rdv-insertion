@@ -9,7 +9,7 @@ on:
 jobs:
   linters:
     name: Linters
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - name: Set up Ruby
@@ -30,7 +30,7 @@ jobs:
         run: yarn lint
   test_unit:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:16.9
@@ -93,7 +93,7 @@ jobs:
 
   test_features:
     name: Feature Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
