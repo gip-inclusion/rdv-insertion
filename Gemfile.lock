@@ -720,7 +720,7 @@ DEPENDENCIES
   with_advisory_lock
 
 RUBY VERSION
-  ruby 4.0.1p0
+  ruby 4.0.9
 
 BUNDLED WITH
-  4.0.12
+  4.0.20
