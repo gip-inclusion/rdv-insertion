@@ -1,11 +1,12 @@
 class UploadedFileSanitizer
   MAX_FILE_SIZE = 5 * 1024 * 1024 # 5MB
-  ALLOWED_EXTENSIONS = %w[.jpg .jpeg .png .pdf .xlsx .csv].freeze
+  ALLOWED_EXTENSIONS = %w[.jpg .jpeg .png .pdf .docx .xlsx .csv].freeze
   ALLOWED_MIME_TYPES = {
     ".jpg" => ["image/jpeg"],
     ".jpeg" => ["image/jpeg"],
     ".png" => ["image/png"],
     ".pdf" => ["application/pdf"],
+    ".docx" => ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/zip"],
     ".xlsx" => ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/zip"],
     ".csv" => ["text/csv"]
   }.freeze
