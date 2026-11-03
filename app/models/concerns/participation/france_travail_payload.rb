@@ -24,7 +24,7 @@ module Participation::FranceTravailPayload
       },
       statut: france_travail_statut,
       telephoneContactUsager: user.phone_number,
-      theme: motif.motif_category.name,
+      theme: motif_category.name,
       typeReception: france_travail_type_reception,
       interlocuteur: {
         email: agents.first&.email,
@@ -57,8 +57,8 @@ module Participation::FranceTravailPayload
   # Liste des motifs FT : AUT, ACC, ORI. ACC ne concerne que le premier rdv d'accompagnement RSA
   # On filtre donc sur le nom de la catégorie de motif
   def france_travail_motif
-    return "ACC" if MOTIF_CATEGORY_SHORT_NAMES_FOR_FIRST_ACCOMPANIEMENT_RDV.include?(motif.motif_category.short_name)
-    return "ORI" if motif.motif_category.motif_category_type == "rsa_orientation"
+    return "ACC" if MOTIF_CATEGORY_SHORT_NAMES_FOR_FIRST_ACCOMPANIEMENT_RDV.include?(motif_category.short_name)
+    return "ORI" if motif_category.motif_category_type == "rsa_orientation"
 
     "AUT"
   end
