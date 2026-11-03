@@ -12,7 +12,7 @@ module Participation::FranceTravailPayload
       duree: duration_in_min,
       information: motif.instruction_for_rdv,
       initiateur: france_travail_initiateur,
-      libelleAdresse: organisation.name,
+      libelleAdresse: lieu&.name || organisation.name,
       modaliteContact: france_travail_modalite,
       motif: france_travail_motif,
       organisme: {
