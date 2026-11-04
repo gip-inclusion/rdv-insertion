@@ -27,6 +27,22 @@ describe Participation::FranceTravailPayload, type: :concern do
     end
   end
 
+  describe "libelleAdresse" do
+    context "when the rdv has a lieu" do
+      it "returns the lieu name" do
+        expect(payload[:libelleAdresse]).to eq(rdv.lieu.name)
+      end
+    end
+
+    context "when the rdv has no lieu" do
+      before { rdv.update!(lieu: nil) }
+
+      it "returns the organisation name" do
+        expect(payload[:libelleAdresse]).to eq(organisation.name)
+      end
+    end
+  end
+
   describe "france_travail_modalite" do
     context "when participation is by phone" do
       before { motif.update(location_type: "phone") }
