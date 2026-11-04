@@ -3,7 +3,7 @@ module Creneaux
     sidekiq_options retry: 5, queue: "creneaux"
 
     def perform(category_configuration_id)
-      category_configuration = CategoryConfiguration.joins(:motif_category, organisation: :agents)
+      category_configuration = CategoryConfiguration.joins(organisation: { agents: :rdv_solidarites_oauth_token })
                                                     .find_by(id: category_configuration_id)
 
       return if category_configuration.blank?

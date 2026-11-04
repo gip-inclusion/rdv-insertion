@@ -12,7 +12,7 @@ describe Users::TransferOrganisation do
       source_motif_category_id: motif_category.id
     )
   end
-  let!(:agent) { create(:agent) }
+  let!(:agent) { create(:agent, :with_rdv_solidarites_oauth_token) }
   let(:user) { create(:user) }
   let(:source_organisation) { create(:organisation) }
   let(:target_organisation) { create(:organisation) }

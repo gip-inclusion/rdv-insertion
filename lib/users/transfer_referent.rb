@@ -9,11 +9,13 @@ module Users
     end
 
     def call
-      ReferentAssignation.where(agent: source_referent).find_each do |referent_assignation|
-        begin
-          referent_assignation.agent.with_rdv_solidarites_session do
-            assign_target_and_remove_source_referent(referent_assignation)
-          end
+      unless target_referent.rdv_solidarites_oauth_token
+        raise "#{target_referent.email} must log in to RDV-Insertion first to get an RDV-Solidarités oauth token"
+      end
+
+      target_referent.with_rdv_solidarites_session do
+        ReferentAssignation.where(agent: source_referent).find_each do |referent_assignation|
+          assign_target_and_remove_source_referent(referent_assignation)
         rescue => e
           @errors << { error: { message: e.message, source: e.class.to_s }, user: referent_assignation.user }
         end

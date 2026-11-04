@@ -2,17 +2,23 @@ class ImportUserAssociationsFromRdvSolidaritesJob < ApplicationJob
   def perform(user_id)
     @user = User.find(user_id)
 
-    # we just need an agent that has a common organisation with the user here.
-    # It is necessary since in RDV-Solidarites we check the Agent::UserPolicy on the user when
-    # retrieving the user. This policy is based on mutual organisation between the agent and the user.
-    random_agent_from_user_organisations.with_rdv_solidarites_session do
-      call_service!(Users::ImportAssociationsFromRdvSolidarites, user: @user)
+    # RDV-Solidarités only lets an agent read a user they share an organisation with (Agent::UserPolicy)
+    if oauth_agent_from_user_organisations
+      oauth_agent_from_user_organisations.with_rdv_solidarites_session do
+        call_service!(Users::ImportAssociationsFromRdvSolidarites, user: @user)
+      end
+    else
+      Rails.logger.info(
+        "Skipping associations import for user #{@user.id}: none of their organisations has an agent " \
+        "with an RDV-Solidarités OAuth token"
+      )
     end
   end
 
   private
 
-  def random_agent_from_user_organisations
-    Agent.joins(:organisations).merge(@user.organisations.active).with_last_name.take
+  def oauth_agent_from_user_organisations
+    @oauth_agent_from_user_organisations ||=
+      Agent.with_rdv_solidarites_oauth_token.joins(:organisations).merge(@user.organisations.active).take
   end
 end

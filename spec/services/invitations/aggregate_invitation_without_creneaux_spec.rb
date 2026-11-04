@@ -5,7 +5,7 @@ describe Invitations::AggregateInvitationWithoutCreneaux, type: :service do
 
   include_context "with all existing categories"
 
-  let!(:organisation) { create(:organisation, agents: [create(:agent)]) }
+  let!(:organisation) { create(:organisation, agents: [create(:agent, :with_rdv_solidarites_oauth_token)]) }
   let!(:invitation_with_no_creneau1) do
     create(:invitation, organisations: [organisation], link: "http://rdv-solidarites-test.fr?referent_ids%5B%5D=17")
   end
