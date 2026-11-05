@@ -234,6 +234,9 @@ Représente les professionnels utilisant l'application.
 - `last_sign_in_at` : Dernière connexion
 - `cgu_accepted_at` : Date d'acceptation des CGU
 
+**Création** : par le webhook `agent_role` de RDV-Solidarités, avec le premier rôle accepté (organisation connue et
+non archivée). Le webhook `agent` ne fait que mettre à jour ou supprimer un agent existant.
+
 **Relations** :
 - A plusieurs `agent_roles` (un par organisation)
 - A plusieurs `organisations` via `agent_roles`
@@ -772,6 +775,15 @@ Tables standard de ActiveStorage pour la gestion des fichiers (logos, CSV, etc.)
 
 1. L'agent met à jour le statut de la `Participation` (seen, noshow, excused)
 2. Le `FollowUp` se met à jour automatiquement (`rdv_seen`, `rdv_noshow`, etc.)
+
+### 4. Arrivée et départ d'un agent
+
+1. Webhook `agent_role` reçu pour une organisation connue et non archivée → création de l'`Agent` s'il n'existe pas,
+   puis de son `AgentRole`
+2. Webhook `agent` reçu → mise à jour de l'`Agent` s'il existe, rien sinon
+3. Rôle supprimé ou passé intervenant dans RDV-Solidarités → suppression de l'`AgentRole`, puis de l'`Agent` s'il n'a
+   plus d'organisation
+4. L'`Organisation` qui perd son dernier agent est archivée
 
 ---
 
