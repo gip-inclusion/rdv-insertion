@@ -15,6 +15,8 @@ module Api::PlateformeInclusion::IpWhitelistConcern
   private
 
   def ensure_ip_comes_from_clever_cloud
+    return if Rails.env.development?
+
     # In case Clever Cloud decides to use some other IP range without notice
     # we need a quick way to skip this check
     return if ENV["DISABLE_PLATEFORME_INCLUSION_IP_WHITELIST"].present?
