@@ -51,7 +51,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué" \
           " à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
@@ -80,7 +80,7 @@ RSpec.describe NotificationMailer do
         end
 
         it "renders the body" do
-          body_string = strip_tags(mail.body.encoded)
+          body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
           expect(body_string).to include(
             "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoquée à " \
             "un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
@@ -106,7 +106,7 @@ RSpec.describe NotificationMailer do
         before { user.update!(title: nil) }
 
         it "renders the body" do
-          body_string = strip_tags(mail.body.encoded)
+          body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
           expect(body_string).to include(
             "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué(e) " \
             "à un rendez-vous d'orientation pour démarrer un parcours d'accompagnement"
@@ -141,7 +141,7 @@ RSpec.describe NotificationMailer do
         end
 
         it "renders the body" do
-          body_string = strip_tags(mail.body.encoded)
+          body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
           expect(body_string).to include(
             "Vous êtes une nouvelle désignation de personne et à ce titre vous êtes convoqué à un" \
             " nouveau type de rendez-vous"
@@ -174,7 +174,7 @@ RSpec.describe NotificationMailer do
           end
 
           it "renders the category configuration phone number" do
-            expect(strip_tags(mail.body.encoded)).to include("Tel : 0101010102")
+            expect(ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)).to include("Tel : 0101010102")
           end
         end
 
@@ -185,7 +185,7 @@ RSpec.describe NotificationMailer do
           end
 
           it "renders the organisation phone number" do
-            expect(strip_tags(mail.body.encoded)).to include("Tel : 0101010103")
+            expect(ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)).to include("Tel : 0101010103")
           end
         end
       end
@@ -201,7 +201,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
           "un rendez-vous d'accompagnement"
@@ -231,7 +231,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
           "un rendez-vous d'accompagnement"
@@ -261,7 +261,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
           "un rendez-vous d'accompagnement"
@@ -291,7 +291,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
           "un rendez-vous de signature de CER " \
@@ -322,7 +322,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous de suivi" \
           " pour faire un point avec votre référent de parcours"
@@ -351,7 +351,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the agent name in the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include("Avec :")
         expect(body_string).to include("Claire DUPONT")
       end
@@ -379,7 +379,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'orientation dans le cadre de votre RSA a été modifié"
         )
@@ -408,7 +408,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié"
         )
@@ -437,7 +437,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié"
         )
@@ -466,7 +466,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié"
         )
@@ -492,7 +492,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de signature de CER" \
           " dans le cadre de votre RSA a été modifié."
@@ -522,7 +522,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de suivi dans le cadre de votre RSA a été modifié"
         )
@@ -563,7 +563,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
           "rendez-vous d'orientation" \
@@ -595,7 +595,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué " \
           "à un rendez-vous d'accompagnement téléphonique pour démarrer " \
@@ -628,7 +628,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué " \
           "à un rendez-vous d'accompagnement téléphonique pour démarrer " \
@@ -661,7 +661,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué " \
           "à un rendez-vous d'accompagnement téléphonique pour démarrer " \
@@ -694,7 +694,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à " \
           "un rendez-vous téléphonique de signature de CER " \
@@ -727,7 +727,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un rendez-vous de suivi " \
           "téléphonique pour faire un point avec votre référent de parcours"
@@ -782,7 +782,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'orientation téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -813,7 +813,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -844,7 +844,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -875,7 +875,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -907,7 +907,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous téléphonique de signature de CER" \
           " dans le cadre de votre RSA a été modifié"
@@ -939,7 +939,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de suivi " \
           "téléphonique dans le cadre de votre RSA a été modifié" \
@@ -995,7 +995,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'orientation dans le cadre de votre RSA a été annulé."
         )
@@ -1018,7 +1018,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé."
         )
@@ -1041,7 +1041,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé."
         )
@@ -1064,7 +1064,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé."
         )
@@ -1087,7 +1087,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de signature de CER dans le cadre de votre RSA a été annulé."
         )
@@ -1110,7 +1110,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de suivi dans le cadre de votre RSA a été annulé."
         )
@@ -1145,7 +1145,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un rendez-vous d'orientation"
         )
@@ -1187,7 +1187,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à " \
           "un rendez-vous d'orientation " \
@@ -1247,7 +1247,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué" \
           " à un rendez-vous d'orientation par visioconférence pour démarrer un parcours d'accompagnement"
@@ -1274,7 +1274,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué" \
           " à un rendez-vous d'accompagnement par visioconférence"
@@ -1325,7 +1325,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'orientation par visioconférence dans le cadre de votre RSA a été modifié"
         )
@@ -1351,7 +1351,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement par visioconférence dans le cadre de votre RSA a été modifié"
         )
@@ -1401,7 +1401,7 @@ RSpec.describe NotificationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(mail.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à " \
           "un rendez-vous d'orientation par visioconférence"

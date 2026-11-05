@@ -44,7 +44,7 @@ describe Notifications::GenerateLetter, type: :service do
 
     it "generates the matching content" do
       subject
-      content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+      content = ActionView::Base.full_sanitizer.sanitize(letter_content(notification)).gsub("&nbsp;", " ")
       expect(content).to include("20 AVENUE DE SEGUR")
       expect(content).to include("Direction départemental")
       expect(content).to include("Convocation à un rendez-vous d'orientation dans le cadre de votre RSA")
@@ -80,7 +80,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
       end
     end
@@ -90,7 +90,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("Direction départemental")
         expect(content).to include("Convocation à un rendez-vous d'orientation téléphonique dans le cadre de votre RSA")
@@ -130,7 +130,7 @@ describe Notifications::GenerateLetter, type: :service do
 
         it "generates the content with the overriden attributes" do
           subject
-          content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+          content = ActionView::Base.full_sanitizer.sanitize(letter_content(notification)).gsub("&nbsp;", " ")
           expect(content).to include("20 AVENUE DE SEGUR")
           expect(content).to include("Direction départemental")
           expect(content).to include(
@@ -155,7 +155,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("Direction départemental")
         expect(content).to include(
@@ -179,7 +179,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the content with the agent name" do
         subject
-        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).to include("Avec :")
         expect(content).to include("Claire DUPONT")
       end
@@ -192,7 +192,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the matching content" do
         subject
-        content = strip_tags(letter_content(notification)).gsub("&nbsp;", " ")
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(notification)).gsub("&nbsp;", " ")
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("Direction départemental")
         expect(content).to include(
