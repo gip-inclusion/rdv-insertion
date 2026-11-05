@@ -3,7 +3,9 @@ module AuthenticationSpecHelper
     request.session["agent_auth"] = agent_auth_hash_from_sign_in_form(agent)
   end
 
+  # signing in stores the agent oauth token (SessionsController#create), which every RDV-Solidarités call needs
   def agent_auth_hash_from_sign_in_form(agent)
+    agent.rdv_solidarites_oauth_token || create(:rdv_solidarites_oauth_token, agent:)
     timestamp = Time.zone.now.to_i
     {
       id: agent.id,

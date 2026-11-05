@@ -51,7 +51,7 @@ describe RdvSolidaritesClient do
     context "when the authentication cannot be renewed" do
       let(:authentication) do
         instance_double(
-          RdvSolidaritesAuthentication::SharedSecret, renewable?: false, headers: { "uid" => "agent@gouv.fr" }
+          RdvSolidaritesAuthentication::Oauth, renewable?: false, headers: { "Authorization" => "Bearer expired" }
         )
       end
 

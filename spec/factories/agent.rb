@@ -24,6 +24,10 @@ FactoryBot.define do
       create_cookies_consent { false }
     end
 
+    trait :with_rdv_solidarites_oauth_token do
+      after(:create) { |agent| create(:rdv_solidarites_oauth_token, agent: agent) }
+    end
+
     trait :super_admin do
       to_create do |instance|
         instance.super_admin = true
