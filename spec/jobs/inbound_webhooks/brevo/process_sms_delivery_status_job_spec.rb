@@ -46,4 +46,17 @@ describe InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob do
       end
     end
   end
+
+  context "for a record that is neither an invitation nor a notification" do
+    let!(:agent) { create(:agent) }
+    let(:record_identifier) { "agent_#{agent.id}" }
+
+    before { allow(InboundWebhooks::Brevo::AssignSmsDeliveryStatusAndDate).to receive(:call) }
+
+    it "does not process the delivery status" do
+      subject
+      expect(InboundWebhooks::Brevo::AssignSmsDeliveryStatusAndDate).not_to have_received(:call)
+      expect(Sentry).to have_received(:capture_message).with("Agent not found", any_args)
+    end
+  end
 end
