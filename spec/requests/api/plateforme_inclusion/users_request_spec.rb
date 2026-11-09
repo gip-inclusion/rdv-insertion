@@ -12,12 +12,22 @@ describe "Plateforme de l'inclusion users search" do
   let!(:participation) { create(:participation, rdv:, user:, follow_up:) }
   let!(:other_participant) { rdv.users.where.not(id: user.id).first }
 
-  before { allow(Sentry).to receive(:capture_message) }
+  before do
+    allow(Sentry).to receive(:capture_message)
+    allow(Rails.logger).to receive(:info).and_call_original
+  end
 
   it "returns the user matching the nir" do
     subject
     expect(response).to have_http_status(:ok)
     expect(response.parsed_body.dig("user", "id")).to eq(user.id)
+  end
+
+  it "logs the returned user with the IP of the request" do
+    subject
+    expect(Rails.logger).to have_received(:info).with(
+      "[PlateformeInclusion] User returned: user_id=#{user.id} ip=91.208.207.10"
+    )
   end
 
   it "returns the rdvs of the user through its follow-ups" do

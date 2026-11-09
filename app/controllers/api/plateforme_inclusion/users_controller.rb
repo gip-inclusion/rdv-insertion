@@ -8,12 +8,14 @@ module Api
       before_action :authenticate_plateforme_inclusion!, :ensure_ip_comes_from_clever_cloud
       override_rate_limit limit: RATE_LIMITS[:plateforme_inclusion],
                           by: -> { "#{action_name}:#{Digest::SHA256.hexdigest(params[:nir].to_s)}" }
+      override_rate_limit limit: ENV.fetch("RATE_LIMIT_PLATEFORME_INCLUSION_GLOBAL", 600).to_i, by: -> { action_name }
 
       rescue_from ActionController::ParameterMissing, with: :render_invalid_nir
       rescue_from ActiveRecord::RecordNotFound, with: :render_user_not_found
       rescue_from ActiveRecord::SoleRecordExceeded, with: :render_several_users_found
 
       def search
+        Rails.logger.info("[PlateformeInclusion] User returned: user_id=#{user.id} ip=#{request.remote_ip}")
         render json: { user: ::PlateformeInclusion::UserBlueprint.render_as_json(user) }
       end
 
@@ -33,7 +35,7 @@ module Api
       end
 
       def user
-        users.preload(
+        @user ||= users.preload(
           :referents, :tags, :archives,
           organisations: :department,
           follow_ups: [

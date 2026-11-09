@@ -44,7 +44,7 @@ curl -X POST https://www.rdv-insertion.fr/api/plateforme_inclusion/users/search 
 | `403` | Le token est valide, mais la requête ne provient pas des plages d'IP autorisées. L'équipe rdv-insertion est alertée. |
 | `404` | Aucune fiche usager ne correspond au NIR. |
 | `409` | Plusieurs fiches usager correspondent au NIR. Aucune donnée n'est renvoyée, pour ne pas risquer d'afficher les informations d'une autre personne. L'équipe rdv-insertion est alertée pour corriger les données. |
-| `429` | Plus de 30 requêtes en 1 minute pour un même NIR. Réessayer après le délai indiqué dans le header `Retry-After`. |
+| `429` | Plus de 30 requêtes en 1 minute pour un même NIR, ou plus de 600 requêtes en 1 minute au total. Réessayer après le délai indiqué dans le header `Retry-After`. |
 
 Les erreurs `400`, `401`, `403`, `404` et `409` ont la même forme :
 
