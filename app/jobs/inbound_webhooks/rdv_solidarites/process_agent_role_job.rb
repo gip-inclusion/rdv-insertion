@@ -14,8 +14,7 @@ module InboundWebhooks
         if event == "destroyed" || @data[:access_level] == "intervenant"
           remove_agent_from_organisation
         else
-          create_agent if agent.blank?
-          upsert_agent_role
+          attach_agent_to_organisation
         end
       end
 
@@ -43,6 +42,13 @@ module InboundWebhooks
 
       def agent_role
         @agent_role ||= AgentRole.find_by(agent:, organisation:)
+      end
+
+      def attach_agent_to_organisation
+        ActiveRecord::Base.transaction do
+          create_agent if agent.blank?
+          upsert_agent_role
+        end
       end
 
       def create_agent
