@@ -2,20 +2,18 @@ name: Review
 
 on:
   pull_request:
-    types: [opened, ready_for_review]
+    types: [opened, ready_for_review, synchronize]
   issue_comment:
     types: [created]
 
 permissions:
   contents: read
   pull-requests: write
+  statuses: write
 
 jobs:
   relecteur:
     name: Relecteur
-    # Pull requests of bots are never reviewed. Those of forks get no secret: a comment of the
-    # team reviews them. On a comment, the action reviews only when its author can push to the
-    # repository.
     if: >-
       (github.event_name == 'pull_request' && !github.event.pull_request.draft
         && github.event.pull_request.user.type != 'Bot'
@@ -28,7 +26,8 @@ jobs:
     timeout-minutes: 180
     concurrency:
       group: relecteur-${{ github.event.pull_request.number || github.event.issue.number }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: gip-inclusion/relecteur@d8689e404aa2f258d12f20fb09c78510dd6a60af
+      - uses: gip-inclusion/relecteur@main
         with:
           api_key: ${{ secrets.RELECTEUR_API_KEY }}

@@ -171,7 +171,7 @@ For a visible (UI) change, add a `## Preview` section with before/after screensh
 ## Environment
 
 Requires:
-- Ruby 4.0.1
+- Ruby 4.0.9
 - PostgreSQL >= 12
 - Redis (for Sidekiq)
 - Node.js + Yarn
