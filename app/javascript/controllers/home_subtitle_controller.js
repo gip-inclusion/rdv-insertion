@@ -2,10 +2,10 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static targets = ["text"];
-  
+
   connect() {
     this.phrases = [
-      "gérer 30 000 rendez-vous RSA par mois",
+      "gérer 40 000 rendez-vous RSA par mois",
       "atteindre les objectifs de délais de la LPE",
       "garantir une parfaite continuité des parcours des bRSA",
       "décupler le potentiel de votre logiciel de parcours",
@@ -56,4 +56,4 @@ export default class extends Controller {
 
     this.timeoutId = setTimeout(() => this.tick(), delta);
   }
-} 
+}

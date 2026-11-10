@@ -3,11 +3,13 @@ module Api
     class UsersController < ActionController::API
       include ActionController::HttpAuthentication::Token::ControllerMethods
       include RateLimitingConcern
+      include IpWhitelistConcern
 
-      before_action :authenticate_plateforme_inclusion!
+      before_action :authenticate_plateforme_inclusion!, :ensure_ip_comes_from_clever_cloud
       override_rate_limit limit: RATE_LIMITS[:plateforme_inclusion],
                           by: -> { "#{action_name}:#{Digest::SHA256.hexdigest(params[:nir].to_s)}" }
 
+      rescue_from ActionController::ParameterMissing, with: :render_invalid_nir
       rescue_from ActiveRecord::RecordNotFound, with: :render_user_not_found
       rescue_from ActiveRecord::SoleRecordExceeded, with: :render_several_users_found
 
@@ -20,6 +22,9 @@ module Api
       def authenticate_plateforme_inclusion!
         return if authenticate_with_http_token { |token| valid_token?(token) }
 
+        Sentry.capture_message(
+          "Plateforme de l'inclusion search without a valid token", extra: { ip: request.remote_ip }
+        )
         render json: { errors: ["Token d'authentification invalide"] }, status: :unauthorized
       end
 
@@ -39,7 +44,11 @@ module Api
       end
 
       def users
-        User.active.where(nir: params.require(:nir))
+        User.active.where(nir: params.expect(:nir))
+      end
+
+      def render_invalid_nir
+        render json: { errors: ["Le paramètre nir doit contenir un seul NIR"] }, status: :bad_request
       end
 
       def render_user_not_found

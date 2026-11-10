@@ -15,6 +15,8 @@ Chaque requête doit contenir le header `Authorization` avec le token transmis p
 Authorization: Bearer <token>
 ```
 
+Les requêtes doivent aussi provenir des plages d'IP de la zone Paris de Clever Cloud.
+
 ## Rechercher un usager par NIR
 
 ```
@@ -37,12 +39,14 @@ curl -X POST https://www.rdv-insertion.fr/api/plateforme_inclusion/users/search 
 | Code | Signification |
 | --- | --- |
 | `200` | Une fiche usager correspond au NIR. |
-| `401` | Le token est absent ou invalide. |
+| `400` | Le paramètre `nir` est absent ou contient autre chose qu'un seul NIR. |
+| `401` | Le token est absent ou invalide. L'équipe rdv-insertion est alertée. |
+| `403` | Le token est valide, mais la requête ne provient pas des plages d'IP autorisées. L'équipe rdv-insertion est alertée. |
 | `404` | Aucune fiche usager ne correspond au NIR. |
 | `409` | Plusieurs fiches usager correspondent au NIR. Aucune donnée n'est renvoyée, pour ne pas risquer d'afficher les informations d'une autre personne. L'équipe rdv-insertion est alertée pour corriger les données. |
 | `429` | Plus de 30 requêtes en 1 minute pour un même NIR. Réessayer après le délai indiqué dans le header `Retry-After`. |
 
-Les erreurs `401`, `404` et `409` ont la même forme :
+Les erreurs `400`, `401`, `403`, `404` et `409` ont la même forme :
 
 ```json
 { "errors": ["Plusieurs usagers correspondent à ce NIR"] }
