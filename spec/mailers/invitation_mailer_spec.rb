@@ -41,7 +41,7 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -100,7 +100,7 @@ RSpec.describe InvitationMailer do
         end
 
         it "renders the body" do
-          body_string = strip_tags(subject.body.encoded)
+          body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
           expect(body_string).to match("Bonjour Jean Valjean")
           expect(body_string).to match("Le département de la Drôme")
           expect(body_string).to match(
@@ -140,7 +140,7 @@ RSpec.describe InvitationMailer do
           end
 
           it "renders the body" do
-            body_string = strip_tags(subject.body.encoded)
+            body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
             expect(body_string).to match("Bonjour Jean Valjean")
             expect(body_string).to match("Le département de la Drôme")
             expect(body_string).to match(
@@ -185,12 +185,12 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq("RSA - Prenez rendez-vous dans le cadre de votre RSA")
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -232,12 +232,12 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq("RSA - Prenez rendez-vous dans le cadre de votre RSA")
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -279,12 +279,12 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq("RSA - Prenez rendez-vous dans le cadre de votre RSA")
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -328,14 +328,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq(
           "RSA - Prenez rendez-vous dans le cadre de votre RSA"
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -379,14 +379,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to(
           eq("DEMANDE D'EMPLOI - Prenez rendez-vous dans le cadre de votre demande d'emploi")
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -429,12 +429,12 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq("RSA - Prenez rendez-vous dans le cadre de votre RSA")
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -475,14 +475,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq(
           "CANDIDATURE SIAE - Prenez rendez-vous dans le cadre de votre candidature SIAE"
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to include(
@@ -523,14 +523,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq(
           "CANDIDATURE SIAE - Prenez rendez-vous dans le cadre de votre candidature SIAE"
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to include(
@@ -559,14 +559,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq(
           "SUIVI SIAE - Prenez rendez-vous dans le cadre de votre suivi SIAE"
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to include(
@@ -595,14 +595,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq(
           "RSA - Prenez rendez-vous dans le cadre de votre RSA"
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match("Dans le cadre du projet 'France Travail'")
@@ -649,7 +649,7 @@ RSpec.describe InvitationMailer do
     end
 
     it "renders the body" do
-      body_string = strip_tags(subject.body.encoded)
+      body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
       expect(body_string).to match("Bonjour Jean Valjean")
       expect(body_string).to match("Le département de la Drôme")
       expect(body_string).to match(
@@ -707,14 +707,14 @@ RSpec.describe InvitationMailer do
     end
 
     it "renders the subject" do
-      email_subject = strip_tags(subject.subject)
+      email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
       expect(email_subject).to eq(
         "RSA - Participez à un atelier dans le cadre de votre parcours"
       )
     end
 
     it "renders the body" do
-      body_string = strip_tags(subject.body.encoded)
+      body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
       expect(body_string).to match("Bonjour Jean Valjean")
       expect(body_string).to match("Le département de la Drôme")
       expect(body_string).to match("Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement.")
@@ -776,7 +776,7 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match("Tu es invité à participer à un atelier organisé par le Département.")
@@ -817,12 +817,12 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq("RSA - Plus que 7 jours pour prendre rendez-vous")
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -875,12 +875,12 @@ RSpec.describe InvitationMailer do
           end
 
           it "renders the subject" do
-            email_subject = strip_tags(subject.subject)
+            email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
             expect(email_subject).to eq("RSA - Plus que 7 jours pour prendre rendez-vous")
           end
 
           it "renders the body" do
-            body_string = strip_tags(subject.body.encoded)
+            body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
             expect(body_string).to match("Bonjour Jean Valjean")
             expect(body_string).to match("Le département de la Drôme")
             expect(body_string).to match(
@@ -923,14 +923,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq(
           "RSA - Plus que 7 jours pour prendre rendez-vous"
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -968,14 +968,14 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq(
           "RSA - Plus que 7 jours pour prendre rendez-vous"
         )
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
@@ -1025,7 +1025,7 @@ RSpec.describe InvitationMailer do
     end
 
     it "renders the body" do
-      body_string = strip_tags(subject.body.encoded)
+      body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
       expect(body_string).to match("Bonjour Jean Valjean")
       expect(body_string).to match("Le département de la Drôme")
       expect(body_string).to match(
@@ -1077,12 +1077,12 @@ RSpec.describe InvitationMailer do
       end
 
       it "renders the subject" do
-        email_subject = strip_tags(subject.subject)
+        email_subject = ActionView::Base.full_sanitizer.sanitize(subject.subject)
         expect(email_subject).to eq("RSA - Plus que 7 jours pour participer à un atelier")
       end
 
       it "renders the body" do
-        body_string = strip_tags(subject.body.encoded)
+        body_string = ActionView::Base.full_sanitizer.sanitize(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean Valjean")
         expect(body_string).to match("Le département de la Drôme")
         expect(body_string).to match(
