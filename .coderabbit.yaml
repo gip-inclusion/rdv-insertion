@@ -3,11 +3,13 @@ language: "fr-FR"
 reviews:
   profile: "quiet"
   high_level_summary: false
+  review_status: false
   allow_author_approval: false
   enable_prompt_for_ai_agents: false
   path_filters:
     - "!**/*.lock"
   auto_review:
+    enabled: false
     ignore_usernames:
       - "dependabot[bot]"
   pre_merge_checks:

@@ -2,7 +2,7 @@ describe Participation::FranceTravailPayload, type: :concern do
   let(:payload) { participation.to_ft_payload }
   let(:organisation) { create(:organisation, organisation_type: "conseil_departemental") }
   let(:user) { create(:user, organisations: [organisation]) }
-  let(:follow_up) { create(:follow_up, user: user) }
+  let(:follow_up) { create(:follow_up, user:, motif_category:) }
   let(:motif) { create(:motif, motif_category:) }
   let(:motif_category) { create(:motif_category, motif_category_type: "rsa_orientation") }
   let(:rdv) { create(:rdv, organisation: organisation, motif: motif) }
@@ -14,8 +14,32 @@ describe Participation::FranceTravailPayload, type: :concern do
         id: participation.france_travail_id,
         date: participation.starts_at.to_datetime,
         duree: participation.duration_in_min,
-        theme: participation.motif.motif_category.name
+        theme: motif_category.name
       )
+    end
+
+    context "when the motif has no motif category" do
+      before { motif.update!(motif_category: nil) }
+
+      it "reads the theme from the follow-up motif category" do
+        expect(payload[:theme]).to eq(motif_category.name)
+      end
+    end
+  end
+
+  describe "libelleAdresse" do
+    context "when the rdv has a lieu" do
+      it "returns the lieu name" do
+        expect(payload[:libelleAdresse]).to eq(rdv.lieu.name)
+      end
+    end
+
+    context "when the rdv has no lieu" do
+      before { rdv.update!(lieu: nil) }
+
+      it "returns the organisation name" do
+        expect(payload[:libelleAdresse]).to eq(organisation.name)
+      end
     end
   end
 

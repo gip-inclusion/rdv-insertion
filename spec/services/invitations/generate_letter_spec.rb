@@ -33,7 +33,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     it "generates the pdf string with the invitation code" do
       subject
-      content = strip_tags(letter_content(invitation))
+      content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
       expect(content).to include("20 AVENUE DE SEGUR")
       expect(content).to include("Direction départemental")
       expect(content).to include(
@@ -198,7 +198,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include("Objet : Rendez-vous d'orientation dans le cadre de votre RSA")
         expect(content).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
@@ -225,7 +225,7 @@ describe Invitations::GenerateLetter, type: :service do
 
         it "generates the pdf with the overriden content" do
           subject
-          content = strip_tags(letter_content(invitation))
+          content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
           expect(content).to include("Objet : Nouveau type de rendez-vous dans le cadre de votre RSA")
           expect(content).to include(
             "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un " \
@@ -248,7 +248,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous d'orientation dans le cadre de votre RSA"
         )
@@ -275,7 +275,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include("Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA")
         expect(content).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
@@ -298,7 +298,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous de signature de CER dans le cadre de votre RSA"
         )
@@ -323,7 +323,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous de suivi dans le cadre de votre RSA"
         )
@@ -348,7 +348,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Entretien d'embauche dans le cadre de votre candidature SIAE"
         )
@@ -375,7 +375,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous de suivi dans le cadre de votre suivi SIAE"
         )
@@ -401,7 +401,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous collectif d'information dans le cadre de votre candidature SIAE"
         )
@@ -428,7 +428,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
@@ -453,7 +453,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
@@ -478,7 +478,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
@@ -502,7 +502,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Rendez-vous d’orientation dans le cadre de votre RSA"
         )
@@ -524,7 +524,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = strip_tags(letter_content(invitation))
+        content = ActionView::Base.full_sanitizer.sanitize(letter_content(invitation))
         expect(content).to include(
           "Objet : Participation à un atelier"
         )
