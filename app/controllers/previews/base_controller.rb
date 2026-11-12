@@ -1,6 +1,6 @@
 module Previews
   class BaseController < ApplicationController
-    before_action :set_category_configuration, :set_template, :set_organisation, :set_motif_category, :set_department
+    before_action :set_category_configuration, :set_organisation, :set_template, :set_motif_category, :set_department
 
     private
 
@@ -14,6 +14,7 @@ module Previews
 
     def set_organisation
       @organisation = @category_configuration.organisation
+      authorize @organisation, :configure?
     end
 
     def set_department
