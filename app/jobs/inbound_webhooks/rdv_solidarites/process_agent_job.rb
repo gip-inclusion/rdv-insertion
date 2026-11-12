@@ -7,8 +7,10 @@ module InboundWebhooks
 
         # email is blank for intervenant role
         return if @data[:email].blank?
+        # agents are created by ProcessAgentRoleJob, along with their first role
+        return if agent.blank?
 
-        event == "destroyed" ? agent&.destroy! : upsert_agent
+        event == "destroyed" ? agent.destroy! : update_agent
       end
 
       private
@@ -21,8 +23,13 @@ module InboundWebhooks
         @agent ||= Agent.find_by(rdv_solidarites_agent_id: @data[:id])
       end
 
-      def upsert_agent
-        UpsertRecordJob.perform_later("Agent", @data, { last_webhook_update_received_at: @meta[:timestamp] })
+      def update_agent
+        call_service!(
+          UpsertRecord,
+          klass: Agent,
+          rdv_solidarites_attributes: @data,
+          additional_attributes: { last_webhook_update_received_at: @meta[:timestamp] }
+        )
       end
     end
   end
