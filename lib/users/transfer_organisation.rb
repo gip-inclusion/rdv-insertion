@@ -10,10 +10,10 @@ module Users
     end
 
     def call
-      source_organisation.agents.take.with_rdv_solidarites_session do
+      source_organisation.agents.with_rdv_solidarites_oauth_token.take.with_rdv_solidarites_session do
         each_matching_user do |user|
           transfer_to_target_organisation(user)
-          remove_from_source_organisation(user) 
+          remove_from_source_organisation(user)
         rescue => error
           errors << { user:, error: }
         end

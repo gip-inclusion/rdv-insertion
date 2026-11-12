@@ -27,40 +27,23 @@ describe RdvSolidaritesClient do
     let(:client) { described_class.new(authentication: authentication) }
     let(:url) { "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/1" }
 
-    context "when the authentication can be renewed" do
-      let(:authentication) { instance_double(RdvSolidaritesAuthentication::Oauth, renewable?: true, renew!: nil) }
+    let(:authentication) { instance_double(RdvSolidaritesAuthentication::Oauth, renew!: nil) }
 
-      before do
-        allow(authentication).to receive(:headers).and_return(
-          { "Authorization" => "Bearer expired" }, { "Authorization" => "Bearer fresh" }
-        )
-      end
-
-      it "renews the credentials and replays the request with the new ones" do
-        stub_request(:get, url).with(headers: { "Authorization" => "Bearer expired" }).to_return(status: 401)
-        replayed = stub_request(:get, url)
-                   .with(headers: { "Authorization" => "Bearer fresh" }).to_return(status: 200, body: {}.to_json)
-
-        request_organisation
-
-        expect(authentication).to have_received(:renew!)
-        expect(replayed).to have_been_requested
-      end
+    before do
+      allow(authentication).to receive(:headers).and_return(
+        { "Authorization" => "Bearer expired" }, { "Authorization" => "Bearer fresh" }
+      )
     end
 
-    context "when the authentication cannot be renewed" do
-      let(:authentication) do
-        instance_double(
-          RdvSolidaritesAuthentication::SharedSecret, renewable?: false, headers: { "uid" => "agent@gouv.fr" }
-        )
-      end
+    it "renews the credentials and replays the request with the new ones" do
+      stub_request(:get, url).with(headers: { "Authorization" => "Bearer expired" }).to_return(status: 401)
+      replayed = stub_request(:get, url)
+                 .with(headers: { "Authorization" => "Bearer fresh" }).to_return(status: 200, body: {}.to_json)
 
-      it "returns the unauthorized response without replaying" do
-        stubbed_request = stub_request(:get, url).to_return(status: 401)
+      request_organisation
 
-        expect(request_organisation.status).to eq(401)
-        expect(stubbed_request).to have_been_requested.once
-      end
+      expect(authentication).to have_received(:renew!)
+      expect(replayed).to have_been_requested
     end
   end
 end

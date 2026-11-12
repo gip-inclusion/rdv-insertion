@@ -1,38 +1,30 @@
 describe Creneaux::RetrieveAndNotifyAllUnavailableCreneauxJob do
   subject { described_class.new.perform }
 
-  describe "#perform" do
-    context "when there are agents" do
-      let(:departments_count) { 3 }
-      let(:organisations_per_department) { 2 }
+  let!(:organisation_with_oauth_agent) do
+    create(:organisation, agents: [create(:agent, :with_rdv_solidarites_oauth_token)])
+  end
+  let!(:other_organisation_with_oauth_agent) do
+    create(:organisation, agents: [create(:agent, :with_rdv_solidarites_oauth_token)])
+  end
+  let!(:organisation_without_oauth_agent) { create(:organisation, agents: [create(:agent)]) }
+  let!(:organisation_without_agent) { create(:organisation) }
 
-      before do
-        departments_count.times do
-          department = create(:department)
-          organisations_per_department.times do |_i|
-            organisation = create(:organisation, department: department)
-            agent = create(:agent)
-            organisation.agents << agent
-          end
-        end
-      end
+  before { allow(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob).to receive(:perform_later) }
 
-      it "perform Creneaux::RetrieveAndNotifyUnavailableCreneauxJob for all organisations" do
-        expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob).to receive(:perform_later).exactly(6).times
+  it "enqueues a job for each organisation having an agent with an oauth token" do
+    subject
+    expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob)
+      .to have_received(:perform_later).with(organisation_with_oauth_agent.id)
+    expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob)
+      .to have_received(:perform_later).with(other_organisation_with_oauth_agent.id)
+  end
 
-        subject
-      end
-    end
-
-    context "when there are no agents" do
-      let(:department) { create(:department) }
-      let(:organisation) { create(:organisation, department: department) }
-
-      it "does not perform Creneaux::RetrieveAndNotifyUnavailableCreneauxJob" do
-        expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob).not_to receive(:perform_later)
-
-        subject
-      end
-    end
+  it "skips the organisations without an agent with an oauth token" do
+    subject
+    expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob)
+      .not_to have_received(:perform_later).with(organisation_without_oauth_agent.id)
+    expect(Creneaux::RetrieveAndNotifyUnavailableCreneauxJob)
+      .not_to have_received(:perform_later).with(organisation_without_agent.id)
   end
 end

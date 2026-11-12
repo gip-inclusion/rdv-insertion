@@ -120,7 +120,7 @@ class RdvSolidaritesClient
 
   def request(http_method, path, payload)
     response = execute(http_method, path, payload)
-    return response unless response.status == 401 && @authentication.renewable?
+    return response unless response.status == 401
 
     @authentication.renew!
     execute(http_method, path, payload)

@@ -5,7 +5,7 @@ describe Users::TransferReferent do
 
   let(:user) { create(:user) }
   let(:source_referent) { create(:agent) }
-  let(:target_referent) { create(:agent) }
+  let(:target_referent) { create(:agent, :with_rdv_solidarites_oauth_token) }
 
   before do
     source_referent.users << user
@@ -41,6 +41,15 @@ describe Users::TransferReferent do
       expect(Users::RemoveReferent).not_to receive(:call)
 
       subject
+    end
+  end
+
+  context "when the target referent has no oauth token" do
+    let(:target_referent) { create(:agent) }
+
+    it "raises before transferring anything" do
+      expect { subject }.to raise_error(RuntimeError, /must log in to RDV-Insertion first/)
+      expect(user.reload.referents).to eq([source_referent])
     end
   end
 end

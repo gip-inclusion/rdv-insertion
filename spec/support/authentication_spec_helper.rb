@@ -1,5 +1,6 @@
 module AuthenticationSpecHelper
   def sign_in(agent)
+    ensure_rdv_solidarites_oauth_token(agent)
     request.session["agent_auth"] = agent_auth_hash_from_sign_in_form(agent)
   end
 
@@ -19,6 +20,11 @@ module AuthenticationSpecHelper
   end
 
   def setup_agent_session(agent)
+    ensure_rdv_solidarites_oauth_token(agent)
     page.set_rack_session(agent_auth: agent_auth_hash_from_sign_in_form(agent))
+  end
+
+  def ensure_rdv_solidarites_oauth_token(agent)
+    agent.rdv_solidarites_oauth_token || create(:rdv_solidarites_oauth_token, agent:)
   end
 end

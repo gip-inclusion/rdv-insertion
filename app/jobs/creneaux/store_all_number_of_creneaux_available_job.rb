@@ -5,7 +5,8 @@ module Creneaux
     def perform
       CategoryConfiguration
         .joins(:organisation)
-        .where(rdv_with_referents: false, organisations: { archived_at: nil })
+        .merge(Organisation.active.with_rdv_solidarites_oauth_agent)
+        .where(rdv_with_referents: false)
         .find_each do |category_configuration|
           Creneaux::StoreNumberOfCreneauxAvailableJob.perform_later(category_configuration.id)
       end

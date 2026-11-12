@@ -3,8 +3,12 @@ describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
     described_class.call(category_configuration:)
   end
 
-  let!(:category_configuration) { create(:category_configuration) }
-  let!(:agent) { create(:agent, admin_role_in_organisations: [category_configuration.organisation]) }
+  let!(:organisation) { create(:organisation) }
+  let!(:category_configuration) { create(:category_configuration, organisation:) }
+  let!(:agent_without_oauth_token) { create(:agent, admin_role_in_organisations: [organisation]) }
+  let!(:agent_with_oauth_token) do
+    create(:agent, :with_rdv_solidarites_oauth_token, admin_role_in_organisations: [organisation])
+  end
   let!(:user) { create(:user) }
   let!(:follow_up) { create(:follow_up, user: user, motif_category: category_configuration.motif_category) }
   let!(:invitation) do
@@ -16,6 +20,14 @@ describe Creneaux::StoreNumberOfCreneauxAvailable, type: :service do
       allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call).and_return(
         OpenStruct.new(success?: true, creneau_availability_count: 3)
       )
+    end
+
+    it "retrieves the creneaux as the agent with an oauth token" do
+      expect(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call) do
+        expect(Current.agent).to eq(agent_with_oauth_token)
+        OpenStruct.new(success?: true, creneau_availability_count: 3)
+      end
+      subject
     end
 
     it "stores the number of creneaux available" do
