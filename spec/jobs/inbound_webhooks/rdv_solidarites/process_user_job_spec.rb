@@ -25,26 +25,39 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
     }.deep_symbolize_keys
   end
 
-  let!(:user) { create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:user) do
+    create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, first_name: "Jane", email: "jane@something.com")
+  end
 
   describe "#call" do
     before do
-      allow(UpsertRecordJob).to receive(:perform_later)
       allow(SoftDeleteUserJob).to receive(:perform_later)
     end
 
-    it "enqueues upsert record job" do
-      expect(UpsertRecordJob).to receive(:perform_later)
-        .with("User", data, { last_webhook_update_received_at: timestamp })
+    it "updates the user" do
       subject
+      expect(user.reload).to have_attributes(
+        first_name: "John",
+        last_name: "Doe",
+        phone_number: "+33624242424",
+        affiliation_number: "CAUCSCUAHSC",
+        email: "user@something.com",
+        last_webhook_update_received_at: timestamp.to_datetime
+      )
     end
 
     context "when the user is not found" do
-      let!(:user) { create(:user, rdv_solidarites_user_id: "some-id") }
+      let!(:user) do
+        create(:user, rdv_solidarites_user_id: 23, first_name: "Jane", email: "jane@something.com")
+      end
 
-      it "does not enqueue a job" do
-        expect(UpsertRecordJob).not_to receive(:perform_later)
+      it "does not create the user" do
+        expect { subject }.not_to change(User, :count)
+      end
+
+      it "does not update any user" do
         subject
+        expect(user.reload).to have_attributes(first_name: "Jane", email: "jane@something.com")
       end
     end
 
@@ -62,9 +75,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
         subject
       end
 
-      it "does not enque an upsert record job" do
-        expect(UpsertRecordJob).not_to receive(:perform_later)
+      it "does not update the user" do
         subject
+        expect(user.reload).to have_attributes(first_name: "Jane", email: "jane@something.com")
       end
     end
   end
