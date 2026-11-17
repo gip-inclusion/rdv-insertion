@@ -1,6 +1,6 @@
 class RdvSolidaritesClient
-  def initialize(authentication:)
-    @authentication = authentication
+  def initialize(agent:)
+    @authentication = RdvSolidaritesAuthentication::Oauth.new(agent:)
   end
 
   def create_user(request_body)

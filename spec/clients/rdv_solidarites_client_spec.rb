@@ -1,7 +1,7 @@
 describe RdvSolidaritesClient do
   describe "connection settings" do
-    let(:authentication) { instance_double(RdvSolidaritesAuthentication::Oauth) }
-    let(:client) { described_class.new(authentication: authentication) }
+    let(:agent) { build(:agent) }
+    let(:client) { described_class.new(agent: agent) }
 
     it "uses the default open_timeout" do
       expect(client.send(:connection).options.open_timeout).to eq(30)
@@ -14,7 +14,7 @@ describe RdvSolidaritesClient do
     it "allows timeout override via environment variable" do
       allow(ENV).to receive(:fetch).with("RDV_SOLIDARITES_TIMEOUT", 60).and_return("120")
       allow(ENV).to receive(:fetch).with("RDV_SOLIDARITES_OPEN_TIMEOUT", 30).and_return("60")
-      new_client = described_class.new(authentication: authentication)
+      new_client = described_class.new(agent: agent)
 
       expect(new_client.send(:connection).options.timeout).to eq(120)
       expect(new_client.send(:connection).options.open_timeout).to eq(60)
@@ -24,15 +24,15 @@ describe RdvSolidaritesClient do
   describe "retrying on an unauthorized response" do
     subject(:request_organisation) { client.get_organisation(1) }
 
-    let(:client) { described_class.new(authentication: authentication) }
+    let(:client) { described_class.new(agent: agent) }
     let(:url) { "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/1" }
 
-    let(:authentication) { instance_double(RdvSolidaritesAuthentication::Oauth, renew!: nil) }
+    let(:agent) { create(:agent) }
+    let(:oauth_token) { create(:rdv_solidarites_oauth_token, agent: agent, api_token: "expired") }
 
     before do
-      allow(authentication).to receive(:headers).and_return(
-        { "Authorization" => "Bearer expired" }, { "Authorization" => "Bearer fresh" }
-      )
+      allow(agent).to receive(:rdv_solidarites_oauth_token).and_return(oauth_token)
+      allow(oauth_token).to receive(:refresh!) { oauth_token.api_token = "fresh" }
     end
 
     it "renews the credentials and replays the request with the new ones" do
@@ -42,7 +42,7 @@ describe RdvSolidaritesClient do
 
       request_organisation
 
-      expect(authentication).to have_received(:renew!)
+      expect(oauth_token).to have_received(:refresh!).with("expired")
       expect(replayed).to have_been_requested
     end
   end
