@@ -144,14 +144,56 @@ Représente une invitation envoyée à un usager pour qu'il prenne rendez-vous.
 - `uuid` : Identifiant court pour l'URL publique
 - `expires_at` : Date d'expiration de l'invitation
 - `clicked` : L'usager a-t-il cliqué sur le lien ?
-- `origin` : Depuis où a été créé l'invitation ("user_list_upload", "api", "reminder", "users_index_page", "user_follow_ups_page")
-- `delivery_status` : Statut de livraison (Brevo)
+- `origin` : Endroit d'où l'invitation a été envoyée (voir ci-dessous)
+- `delivery_status` : Statut de délivrance renvoyé par Brevo (voir ci-dessous)
 - `sms_provider` : Fournisseur SMS utilisé (pour les invitations SMS)
-- `last_brevo_webhook_received_at` : Date du dernier webhook Brevo reçu
+- `last_brevo_webhook_received_at` : Date du dernier webhook Brevo reçu. Pour une invitation délivrée, c'est la date de délivrance.
 - `rdv_with_referents` : Invitation à un rdv avec référent ?
 - `rdv_solidarites_lieu_id` : Lieu pré-sélectionné dans le lien de prise de RDV (optionnel)
 - `help_phone_number` : Numéro d'aide affiché
 - `created_by_agent_id` : Agent ayant initié l'envoi de l'invitation
+
+**Origines possibles** :
+
+Envoyées par un agent :
+- `users_index_page` : depuis la liste des usagers d'une catégorie de motif
+- `user_follow_ups_page` : depuis la page des suivis de l'usager
+- `user_list_upload` : depuis l'étape d'invitation d'un import (fichier importé ou bouton « Inviter les non-invités »)
+- `api` : par l'API (`invite`, `create_and_invite`, `create_and_invite_many`)
+
+Envoyées automatiquement :
+- `reminder` : relance envoyée 3 jours après une invitation d'agent, si l'usager n'a toujours pas pris RDV
+
+Anciennes valeurs, plus attribuées aujourd'hui :
+- `legacy_triggered_by_periodic_job` : invitation envoyée par l'ancien CRON d'invitations périodiques, supprimé depuis
+- `legacy_triggered_by_agent` : invitation envoyée par un agent, avant qu'on enregistre l'endroit de l'envoi
+
+`reminder` et `legacy_triggered_by_periodic_job` sont les origines système. Les autres comptent comme envoyées par
+un agent (scope `agent_initiated`). Seules ces dernières peuvent déclencher une relance.
+
+**Statuts de délivrance possibles** :
+- vide : pas de statut final. Soit Brevo n'a pas encore confirmé, soit le statut n'est pas récupérable (courrier,
+  SMS envoyé par Primotexto).
+- `delivered` : message reçu par le serveur mail du destinataire ou par son téléphone
+- `soft_bounce` : échec temporaire, par exemple une boîte mail pleine
+- `hard_bounce` : échec définitif, par exemple une adresse ou un numéro qui n'existe pas
+- `blocked` : envoi bloqué par Brevo, par exemple parce que le destinataire est sur sa liste de blocage (email
+  uniquement)
+- `invalid_email` : adresse email invalide (email uniquement)
+- `error` : erreur de Brevo pendant l'envoi (email uniquement)
+
+Tous les statuts renseignés sauf `delivered` sont des échecs. L'agent voit alors « Non délivrée ». Une invitation en
+échec ne compte pas comme envoyée : l'agent peut en renvoyer une le jour même, et un import ne considère pas l'usager
+comme déjà invité.
+
+Brevo envoie un webhook à chaque événement d'envoi. `InboundWebhooks::Brevo::AssignDeliveryStatusAndDateBase`
+le traite ainsi :
+- Seuls les statuts ci-dessus sont enregistrés. Les autres événements (`request`, `deferred`, `opened`, `click`
+  pour les emails, `sent`, `accepted`, `rej`, `bl` pour les SMS) mettent seulement à jour
+  `last_brevo_webhook_received_at`.
+- Un webhook plus ancien que `last_brevo_webhook_received_at` est ignoré.
+- `delivered` est définitif : les webhooks suivants sont ignorés.
+- Un échec peut encore passer à `delivered`, par exemple après un `soft_bounce`.
 
 **Relations** :
 - Appartient à un `user`
@@ -415,8 +457,9 @@ Représente les notifications envoyées aux usagers concernant leurs RDVs de con
 - `event` : Type d'événement (participation_created, participation_updated, participation_cancelled, participation_reminder)
 - `format` : "sms", "email" ou "postal"
 - `rdv_solidarites_rdv_id` : ID du RDV
-- `delivery_status` : Statut de livraison
+- `delivery_status` : Statut de délivrance renvoyé par Brevo. Mêmes valeurs et mêmes règles que pour les invitations.
 - `sms_provider` : Fournisseur SMS utilisé (pour les sms)
+- `last_brevo_webhook_received_at` : Date du dernier webhook Brevo reçu
 
 ---
 
@@ -432,6 +475,8 @@ Représente un import de fichier CSV/Excel d'usagers.
 - `agent_id` : Agent ayant importé
 - `structure_type`, `structure_id` : Department ou Organisation (polymorphic)
 - `category_configuration_id` : Configuration (si import avec invitation)
+- `origin` : "file_upload" (import d'un fichier : enregistrement des usagers puis invitation) ou
+  "invite_all_uninvited_button" (bouton « Inviter les non-invités » de la liste des usagers : invitation seule)
 - `file_name` : Nom du fichier
 
 ---
