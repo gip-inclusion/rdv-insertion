@@ -99,9 +99,19 @@ Représente les départements français.
 
 ### **follow_ups** - Suivis
 
-**C'est LA table centrale du métier.** Représente le suivi d'un usager pour une catégorie de motif donnée.
+**C'est LA table centrale du métier.** Un suivi regroupe les invitations et les RDV d'un usager pour une catégorie de motif (orientation RSA, accompagnement, etc.). Un usager a au plus un suivi par catégorie.
 
 **Rôle** : Suit l'état d'avancement d'un usager dans son parcours (orientation, accompagnement, etc.)
+
+**Dans l'app** :
+- Chaque suivi est un bloc de l'onglet « Rendez-vous » de la fiche usager.
+- Un usager figure dans la liste des usagers d'une catégorie tant que son suivi dans cette catégorie n'est pas clôturé.
+
+**Création** :
+- À la main : l'agent clique sur « Ouvrir un suivi » dans l'onglet « Rendez-vous ».
+- À l'import : quand l'agent choisit une catégorie, chaque usager enregistré reçoit un suivi dans cette catégorie. Un suivi clôturé est rouvert.
+- À l'invitation : inviter un usager dans une catégorie crée son suivi s'il n'existe pas encore, depuis l'app comme depuis l'API.
+- À la prise de RDV : un RDV pris dans RDV-Solidarités sur un motif de la catégorie crée le suivi, si l'organisation a configuré cette catégorie.
 
 **Champs clés** :
 - `user_id` : Usager suivi
@@ -110,21 +120,15 @@ Représente les départements français.
 - `closed_at` : Date de clôture du suivi
 
 **Statuts possibles** :
-
-Côté invitation :
 - `not_invited` : ni invitation ni RDV
 - `invitation_pending` : invitation envoyée, l'usager n'a pas encore pris RDV
 - `invitation_expired` : toutes les invitations ont expiré sans prise de RDV
-
-Côté RDV (d'après la dernière participation) :
 - `rdv_pending` : RDV à venir
 - `rdv_needs_status_update` : RDV passé, statut à préciser par l'agent
 - `rdv_seen` : RDV honoré
 - `rdv_excused` : RDV annulé par l'usager (excusé)
 - `rdv_revoked` : RDV annulé par le service
 - `rdv_noshow` : absence non excusée
-
-Fin du suivi :
 - `closed` : suivi clôturé par un agent (« Dossier traité »)
 
 Le statut reflète l'événement le plus récent. Une invitation envoyée après un RDV repasse le suivi en `invitation_pending`.
