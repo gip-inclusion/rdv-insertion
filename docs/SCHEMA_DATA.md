@@ -106,20 +106,30 @@ Représente les départements français.
 **Champs clés** :
 - `user_id` : Usager suivi
 - `motif_category_id` : Catégorie de motif (orientation RSA, accompagnement, etc.)
-- `status` : Statut du suivi (voir ci-dessous)
+- `status` : Statut du suivi, déduit de ses invitations et de ses participations (voir ci-dessous)
 - `closed_at` : Date de clôture du suivi
 
 **Statuts possibles** :
-- `not_invited` : Pas encore invité
-- `invitation_pending` : Invitation envoyée, en attente de RDV
-- `invitation_expired` : Toutes les invitations ont expiré, sans RDV pris
-- `rdv_pending` : RDV prévu
-- `rdv_needs_status_update` : RDV passé, statut à mettre à jour
-- `rdv_noshow` : Usager absent
-- `rdv_revoked` : RDV annulé
-- `rdv_excused` : Absence excusée
+
+Côté invitation :
+- `not_invited` : ni invitation ni RDV
+- `invitation_pending` : invitation envoyée, l'usager n'a pas encore pris RDV
+- `invitation_expired` : toutes les invitations ont expiré sans prise de RDV
+
+Côté RDV (d'après la dernière participation) :
+- `rdv_pending` : RDV à venir
+- `rdv_needs_status_update` : RDV passé, statut à préciser par l'agent
 - `rdv_seen` : RDV honoré
-- `closed` : Suivi terminé
+- `rdv_excused` : RDV annulé par l'usager (excusé)
+- `rdv_revoked` : RDV annulé par le service
+- `rdv_noshow` : absence non excusée
+
+Fin du suivi :
+- `closed` : suivi clôturé par un agent (« Dossier traité »)
+
+Le statut reflète l'événement le plus récent. Une invitation envoyée après un RDV repasse le suivi en `invitation_pending`.
+
+`invitation_expired`, `rdv_needs_status_update`, `rdv_excused`, `rdv_revoked` et `rdv_noshow` demandent une action de l'agent (filtre « Intervention nécessaire »).
 
 **Relations** :
 - Appartient à un `user`
@@ -157,9 +167,9 @@ Représente une invitation envoyée à un usager pour qu'il prenne rendez-vous.
 
 Envoyées par un agent :
 - `users_index_page` : depuis la liste des usagers d'une catégorie de motif
-- `user_follow_ups_page` : depuis la page des suivis de l'usager
+- `user_follow_ups_page` : depuis l'onglet « Rendez-vous » de la fiche usager
 - `user_list_upload` : depuis l'étape d'invitation d'un import (fichier importé ou bouton « Inviter les non-invités »)
-- `api` : par l'API (`invite`, `create_and_invite`, `create_and_invite_many`)
+- `api` : par l'API
 
 Envoyées automatiquement :
 - `reminder` : relance envoyée 3 jours après une invitation d'agent, si l'usager n'a toujours pas pris RDV
@@ -168,32 +178,16 @@ Anciennes valeurs, plus attribuées aujourd'hui :
 - `legacy_triggered_by_periodic_job` : invitation envoyée par l'ancien CRON d'invitations périodiques, supprimé depuis
 - `legacy_triggered_by_agent` : invitation envoyée par un agent, avant qu'on enregistre l'endroit de l'envoi
 
-`reminder` et `legacy_triggered_by_periodic_job` sont les origines système. Les autres comptent comme envoyées par
-un agent (scope `agent_initiated`). Seules ces dernières peuvent déclencher une relance.
-
 **Statuts de délivrance possibles** :
-- vide : pas de statut final. Soit Brevo n'a pas encore confirmé, soit le statut n'est pas récupérable (courrier,
-  SMS envoyé par Primotexto).
+- vide : pas encore de statut, ou statut non récupérable (courrier, SMS envoyé par Primotexto)
 - `delivered` : message reçu par le serveur mail du destinataire ou par son téléphone
 - `soft_bounce` : échec temporaire, par exemple une boîte mail pleine
 - `hard_bounce` : échec définitif, par exemple une adresse ou un numéro qui n'existe pas
-- `blocked` : envoi bloqué par Brevo, par exemple parce que le destinataire est sur sa liste de blocage (email
-  uniquement)
+- `blocked` : envoi bloqué par Brevo, par exemple parce que le destinataire est sur sa liste de blocage (email uniquement)
 - `invalid_email` : adresse email invalide (email uniquement)
 - `error` : erreur de Brevo pendant l'envoi (email uniquement)
 
-Tous les statuts renseignés sauf `delivered` sont des échecs. L'agent voit alors « Non délivrée ». Une invitation en
-échec ne compte pas comme envoyée : l'agent peut en renvoyer une le jour même, et un import ne considère pas l'usager
-comme déjà invité.
-
-Brevo envoie un webhook à chaque événement d'envoi. `InboundWebhooks::Brevo::AssignDeliveryStatusAndDateBase`
-le traite ainsi :
-- Seuls les statuts ci-dessus sont enregistrés. Les autres événements (`request`, `deferred`, `opened`, `click`
-  pour les emails, `sent`, `accepted`, `rej`, `bl` pour les SMS) mettent seulement à jour
-  `last_brevo_webhook_received_at`.
-- Un webhook plus ancien que `last_brevo_webhook_received_at` est ignoré.
-- `delivered` est définitif : les webhooks suivants sont ignorés.
-- Un échec peut encore passer à `delivered`, par exemple après un `soft_bounce`.
+Tous les statuts sauf `delivered` sont des échecs. L'agent voit « Non délivrée » et peut renvoyer une invitation le jour même.
 
 **Relations** :
 - Appartient à un `user`
@@ -216,7 +210,7 @@ Représente un rendez-vous créé dans RDV-Solidarités.
 - `organisation_id` : Organisation concernée
 - `motif_id` : Motif du RDV
 - `lieu_id` : Lieu du RDV (optionnel si à distance)
-- `status` : Statut du RDV
+- `status` : Statut du RDV (voir ci-dessous)
 - `cancelled_at` : Date d'annulation
 - `created_by` : Origine ("agent", "user", "prescripteur")
 - `context` : Contexte/notes
@@ -226,6 +220,13 @@ Représente un rendez-vous créé dans RDV-Solidarités.
 - `time_zone` : Fuseau horaire du RDV
 - `users_count` : Nombre de participants
 - `max_participants_count` : Nombre max de participants RDV collectifs
+
+**Statuts possibles** (mêmes valeurs pour `participations.status`) :
+- `unknown` : pas encore renseigné. Le RDV est à venir, ou il est passé et l'agent doit préciser son statut.
+- `seen` : RDV honoré
+- `excused` : RDV annulé par l'usager, qui a prévenu (excusé)
+- `revoked` : RDV annulé par le service
+- `noshow` : absence non excusée
 
 **Relations** :
 - A plusieurs `participations` (usagers participants)
@@ -247,7 +248,7 @@ Représente un rendez-vous créé dans RDV-Solidarités.
 - `user_id` : Usager participant
 - `rdv_id` : Rendez-vous
 - `follow_up_id` : Suivi associé
-- `status` : Statut de la participation (unknown, excused, seen, noshow, revoked)
+- `status` : Statut de l'usager pour ce RDV, avec les mêmes valeurs que `rdvs.status`. Dans un RDV collectif, chaque participant a le sien. C'est ce statut qui fait évoluer le suivi.
 - `rdv_solidarites_participation_id` : ID dans RDV-Solidarités
 - `convocable` : Est-ce une convocation obligatoire ?
 - `created_by_type` : Qui a créé le RDV ("Agent", "User", "Prescripteur")
@@ -457,7 +458,7 @@ Représente les notifications envoyées aux usagers concernant leurs RDVs de con
 - `event` : Type d'événement (participation_created, participation_updated, participation_cancelled, participation_reminder)
 - `format` : "sms", "email" ou "postal"
 - `rdv_solidarites_rdv_id` : ID du RDV
-- `delivery_status` : Statut de délivrance renvoyé par Brevo. Mêmes valeurs et mêmes règles que pour les invitations.
+- `delivery_status` : Statut de délivrance renvoyé par Brevo, avec les mêmes valeurs que pour les invitations
 - `sms_provider` : Fournisseur SMS utilisé (pour les sms)
 - `last_brevo_webhook_received_at` : Date du dernier webhook Brevo reçu
 
@@ -475,8 +476,7 @@ Représente un import de fichier CSV/Excel d'usagers.
 - `agent_id` : Agent ayant importé
 - `structure_type`, `structure_id` : Department ou Organisation (polymorphic)
 - `category_configuration_id` : Configuration (si import avec invitation)
-- `origin` : "file_upload" (import d'un fichier : enregistrement des usagers puis invitation) ou
-  "invite_all_uninvited_button" (bouton « Inviter les non-invités » de la liste des usagers : invitation seule)
+- `origin` : "file_upload" (import d'un fichier : enregistrement des usagers puis invitation) ou "invite_all_uninvited_button" (bouton « Inviter les non-invités » de la liste des usagers : invitation seule)
 - `file_name` : Nom du fichier
 
 ---
