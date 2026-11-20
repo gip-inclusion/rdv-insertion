@@ -24,7 +24,7 @@ module Creneaux
     private
 
     def get_number_of_creneaux(motif_category, organisation)
-      organisation.agents.first.with_rdv_solidarites_session do
+      organisation.agents.with_rdv_solidarites_oauth_token.first.with_rdv_solidarites_session do
         call_service!(
           RdvSolidaritesApi::RetrieveCreneauAvailability,
           link_params: {

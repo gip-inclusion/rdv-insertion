@@ -6,8 +6,7 @@ module Invitations
     end
 
     def call
-      # On prend le premier agent de l'organisation pour les appels à l'API RDVSP
-      @organisation.agents.first.with_rdv_solidarites_session do
+      @organisation.agents.with_rdv_solidarites_oauth_token.first.with_rdv_solidarites_session do
         aggregate_invitations_without_creneaux
       end
       result.invitations_without_creneaux = @invitations_without_creneaux

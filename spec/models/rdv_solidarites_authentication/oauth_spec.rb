@@ -19,18 +19,6 @@ describe RdvSolidaritesAuthentication::Oauth do
     end
   end
 
-  describe "#renewable?" do
-    context "when the agent has an oauth token" do
-      before { create(:rdv_solidarites_oauth_token, agent: agent) }
-
-      it { expect(subject.renewable?).to be(true) }
-    end
-
-    context "when the agent has no oauth token" do
-      it { expect(subject.renewable?).to be(false) }
-    end
-  end
-
   describe "#renew!" do
     let!(:oauth_token) { create(:rdv_solidarites_oauth_token, agent: agent, api_token: "some-token") }
 
