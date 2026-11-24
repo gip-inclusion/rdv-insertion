@@ -35,7 +35,7 @@ module Exporters
     end
 
     def each_element(&)
-      @users_scope.find_each(batch_size: 500, &)
+      @users_scope.find_each(batch_size: 100, &)
     end
 
     def preload_associations

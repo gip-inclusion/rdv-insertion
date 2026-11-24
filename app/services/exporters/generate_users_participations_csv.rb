@@ -25,22 +25,10 @@ module Exporters
     end
 
     def preload_associations
-      @participations =
-        if @motif_category
-          Participation.preload(user: [{ tags: :organisations }, :referents, :organisations, :address_geocoding])
-        else
-          Participation.preload(user: [{ tags: :organisations }, :referents, :organisations, :invitations,
-                                       :notifications, :address_geocoding])
-        end
-
-      @participations = @participations.preload(
+      @participations = Participation.preload(
         :organisation,
-        rdv: [:motif, :organisation],
-        follow_up: [
-          :invitations,
-          :notifications,
-          { rdvs: [:motif, :organisation, :participations] }
-        ]
+        rdv: :motif,
+        user: [{ tags: :organisations }, :referents, :address_geocoding]
       )
     end
 
@@ -124,10 +112,6 @@ module Exporters
 
     def rdv_type(participation)
       participation.rdv.collectif? ? "collectif" : "individuel"
-    end
-
-    def human_follow_up_status(participation)
-      participation.follow_up.human_status + display_follow_up_status_notice(participation.follow_up)
     end
   end
 end
