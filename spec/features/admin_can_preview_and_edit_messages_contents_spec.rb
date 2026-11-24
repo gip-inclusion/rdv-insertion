@@ -169,4 +169,30 @@ describe "Admins can preview and editmessages contents", :js do
       expect(page).to have_no_link("Convocations")
     end
   end
+
+  context "when the agent is not admin of the organisation" do
+    let!(:agent_role) { create(:agent_role, agent:, organisation:, access_level: "basic") }
+    let(:agent_organisation) { organisation }
+
+    it "cannot access the previews manually" do
+      visit previews_invitations_path(category_configuration_id: category_configuration.id)
+      expect(page).to have_current_path(organisation_users_path(agent_organisation), ignore_query: true)
+
+      visit previews_notifications_path(category_configuration_id: category_configuration.id)
+      expect(page).to have_current_path(organisation_users_path(agent_organisation), ignore_query: true)
+    end
+  end
+
+  context "when the agent is admin of another organisation" do
+    let!(:agent_organisation) { create(:organisation) }
+    let!(:agent_role) { create(:agent_role, agent:, organisation: agent_organisation, access_level: "admin") }
+
+    it "cannot access the previews manually" do
+      visit previews_invitations_path(category_configuration_id: category_configuration.id)
+      expect(page).to have_current_path(organisation_users_path(agent_organisation), ignore_query: true)
+
+      visit previews_notifications_path(category_configuration_id: category_configuration.id)
+      expect(page).to have_current_path(organisation_users_path(agent_organisation), ignore_query: true)
+    end
+  end
 end
