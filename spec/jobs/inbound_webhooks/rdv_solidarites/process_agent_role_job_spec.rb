@@ -6,7 +6,12 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
   let!(:data) do
     {
       "access_level" => "basic",
-      "agent" => { "id" => rdv_solidarites_agent_id },
+      "agent" => {
+        "id" => rdv_solidarites_agent_id,
+        "email" => "linus@linux.com",
+        "first_name" => "Linus",
+        "last_name" => "Torvalds"
+      },
       "organisation" => { "id" => rdv_solidarites_organisation_id }
     }.deep_symbolize_keys
   end
@@ -54,11 +59,18 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
     end
 
     context "when the agent cannot be found" do
-      let!(:agent) { create(:agent, rdv_solidarites_agent_id: "some-other-id") }
+      let!(:agent) { create(:agent, rdv_solidarites_agent_id: 456) }
 
-      it "reenqueues the job 30 seconds later" do
-        expect(described_class).to receive(:perform_in).with(30.seconds, data, meta)
-        subject
+      it "creates the agent and attaches it to the org" do
+        expect { subject }.to change(Agent, :count).by(1)
+        new_agent = Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_agent_id)
+        expect(new_agent).to have_attributes(
+          email: "linus@linux.com",
+          first_name: "Linus",
+          last_name: "Torvalds",
+          last_webhook_update_received_at: "2023-02-09 11:17:22 +0200".to_datetime
+        )
+        expect(new_agent.agent_roles.find_by(organisation: organisation)).to have_attributes(access_level: "basic")
       end
     end
 
@@ -97,15 +109,58 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       end
 
       context "when the agent cannot be found" do
-        let!(:agent) { create(:agent, rdv_solidarites_agent_id: "some-other-id") }
-
-        it "does not reenqueue the job" do
-          expect(described_class).not_to receive(:perform_in)
-          subject
-        end
+        let!(:agent) { create(:agent, rdv_solidarites_agent_id: 456) }
 
         it "does not remove any agent role" do
           expect { subject }.not_to change(AgentRole, :count)
+        end
+      end
+    end
+
+    context "for an intervenant" do
+      let!(:agent_role) do
+        create(:agent_role, organisation: organisation, agent: agent)
+      end
+
+      let!(:data) do
+        {
+          "access_level" => "intervenant",
+          "agent" => {
+            "id" => rdv_solidarites_agent_id,
+            "email" => nil,
+            "first_name" => nil,
+            "last_name" => "Torvalds"
+          },
+          "organisation" => { "id" => rdv_solidarites_organisation_id }
+        }.deep_symbolize_keys
+      end
+
+      let!(:meta) do
+        {
+          "model" => "AgentRole",
+          "timestamp" => "2023-02-09 11:17:22 +0200",
+          "event" => "updated"
+        }.deep_symbolize_keys
+      end
+
+      it "removes the agent from the organisation" do
+        expect { subject }.to change(AgentRole, :count).by(-1)
+      end
+
+      it "destroys the agent" do
+        expect { subject }.to change(Agent, :count).by(-1)
+      end
+
+      it "archives the organisation left without agents" do
+        subject
+        expect(organisation.reload).to be_archived
+      end
+
+      context "when the agent cannot be found" do
+        let!(:agent) { create(:agent, rdv_solidarites_agent_id: 456) }
+
+        it "does not create the agent" do
+          expect { subject }.not_to change(Agent, :count)
         end
       end
     end
@@ -118,22 +173,18 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       end
     end
 
-    context "for an intervenant" do
-      let!(:data) do
-        {
-          "access_level" => "intervenant",
-          "agent" => { "id" => rdv_solidarites_agent_id },
-          "organisation" => { "id" => rdv_solidarites_organisation_id }
-        }.deep_symbolize_keys
-      end
-
-      it "does not attach the agent to the organisation" do
-        expect { subject }.not_to change(AgentRole, :count)
-      end
-    end
-
     context "when the organisation is archived" do
-      let!(:organisation) { create(:organisation, archived_at: Time.current) }
+      let!(:organisation) do
+        create(
+          :organisation,
+          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, archived_at: Time.current
+        )
+      end
+      let!(:agent) { create(:agent, rdv_solidarites_agent_id: 456) }
+
+      it "does not create the agent" do
+        expect { subject }.not_to change(Agent, :count)
+      end
 
       it "does not attach the agent to the organisation" do
         expect { subject }.not_to change(AgentRole, :count)
