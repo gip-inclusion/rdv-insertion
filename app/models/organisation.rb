@@ -54,6 +54,9 @@ class Organisation < ApplicationRecord
   }
 
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
+  scope :with_rdv_solidarites_oauth_agent, lambda {
+    where(id: AgentRole.joins(agent: :rdv_solidarites_oauth_token).select(:organisation_id))
+  }
 
   ORGANISATION_TYPES_WITH_PARCOURS_ACCESS = %w[delegataire_rsa conseil_departemental france_travail].freeze
 

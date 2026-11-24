@@ -13,10 +13,6 @@ module RdvSolidaritesAuthentication
       { "Authorization" => "Bearer #{oauth_token.api_token}" }
     end
 
-    def renewable?
-      oauth_token.present?
-    end
-
     def renew!
       oauth_token.refresh!(oauth_token.api_token)
     rescue OAuth2::Error, Faraday::Error => e

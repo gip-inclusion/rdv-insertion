@@ -43,6 +43,7 @@ class Agent < ApplicationRecord
   }
   scope :super_admins, -> { where(super_admin: true) }
   scope :with_last_name, -> { where.not(last_name: nil) }
+  scope :with_rdv_solidarites_oauth_token, -> { joins(:rdv_solidarites_oauth_token) }
 
   before_create :generate_crisp_token
 
