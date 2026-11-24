@@ -10,7 +10,7 @@ module InboundWebhooks
         @meta = meta.deep_symbolize_keys
         return if user.blank?
 
-        upsert_or_delete_user
+        update_or_delete_user
       end
 
       private
@@ -27,12 +27,21 @@ module InboundWebhooks
         @user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
       end
 
-      def upsert_or_delete_user
+      def update_or_delete_user
         if event == "destroyed"
           SoftDeleteUserJob.perform_later(rdv_solidarites_user_id)
         else
-          UpsertRecordJob.perform_later("User", @data, { last_webhook_update_received_at: @meta[:timestamp] })
+          update_user
         end
+      end
+
+      def update_user
+        call_service!(
+          UpsertRecord,
+          klass: User,
+          rdv_solidarites_attributes: @data,
+          additional_attributes: { last_webhook_update_received_at: @meta[:timestamp] }
+        )
       end
     end
   end
